@@ -1,2 +1,3 @@
-# pokemon-showdown-python-env
-A python interface to play pokemon battles on pokemon showdown
+# The pokemon showdown Python environment
+
+This project aims at providing a Python environment for interacting in pokemon showdown battles, with reinforcement learning in mind.
