@@ -104,4 +104,8 @@ venv.bak/
 .mypy_cache/
 
 # showdownenv
-showdownenv/*
+showdownenv*
+
+# VSCode
+*.code-workspace
+.vscode*
