@@ -10,3 +10,11 @@ repos:
     rev: v1.2.3
     hooks:
       - id: flake8
+      - id: check-docstring-first
+      - id: check-json
+      - id: check-xml
+      - id: check-yaml
+      - id: check-merge-conflict
+      - id: detect-private-key
+      - id: fix-encoding-pragma
+      - id: mixed-line-ending
