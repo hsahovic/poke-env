@@ -50,7 +50,7 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            pytest --cov=coverage_report tests/
+            pytest --cov=./
 
       - store_artifacts:
           path: test-reports
