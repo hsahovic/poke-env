@@ -10,7 +10,6 @@ repos:
     rev: v1.2.3
     hooks:
       - id: flake8
-      - id: check-docstring-first
       - id: check-json
       - id: check-xml
       - id: check-yaml
