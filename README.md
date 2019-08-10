@@ -16,7 +16,7 @@ This project uses python 3.6.8. Install dependencies with `pip install -r requir
 
 ## Acknowledgements
 
-This project is a follow-up of a group project from an artifical intelligence class at Ecole Polytechnique. You can find the original repository [here](https://github.com/hsahovic/inf581-project). It is partially inspired by the [showdown-battle-bot project](https://github.com/Synedh/showdown-battle-bot). 
+This project is a follow-up of a group project from an artifical intelligence class at Ecole Polytechnique. You can find the original repository [here](https://github.com/hsahovic/inf581-project). It is partially inspired by the [showdown-battle-bot project](https://github.com/Synedh/showdown-battle-bot). Of course, none of these would have been possible without [Pokemon Showdown](https://github.com/Zarel/Pokemon-Showdown).
 
 ## License
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
