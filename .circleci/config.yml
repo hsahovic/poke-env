@@ -55,6 +55,3 @@ jobs:
       - store_artifacts:
           path: test-reports
           destination: test-reports
-
-      - codecov/upload:
-          flags: pytest
