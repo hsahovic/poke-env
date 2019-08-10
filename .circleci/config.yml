@@ -50,8 +50,11 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            pytest
+            pytest --cov=coverage_report tests/
 
       - store_artifacts:
           path: test-reports
           destination: test-reports
+
+      - codecov/upload:
+          flags: pytest
