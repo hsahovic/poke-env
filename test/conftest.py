@@ -7,4 +7,4 @@ def pytest_configure(config):
     import os
     import sys
 
-    sys.path.append(os.path.realpath(os.path.dirname(__file__) + "/.."))
+    sys.path.append(os.path.realpath(os.path.dirname(__file__) + "/../src"))
