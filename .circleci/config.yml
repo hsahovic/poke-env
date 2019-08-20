@@ -47,6 +47,18 @@ jobs:
       # https://pytest.org
       # https://nose.readthedocs.io
       - run:
+        name: black
+        command: black pokemon_showdown_env/ test/
+
+      - run:
+        name: flake8
+        command: flake8 pokemon_showdown_env/ test/
+
+      - run:
+        name: pyre
+        command: pyre check
+
+      - run:
           name: run tests
           command: |
             . venv/bin/activate

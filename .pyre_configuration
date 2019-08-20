@@ -1,0 +1,7 @@
+{
+  "binary": "venv/bin/pyre.bin",
+  "source_directories": ["src/pokemon_showdown_env/"],
+  "search_path": ["src/"],
+  "typeshed": "venv/lib/pyre_check/typeshed/",
+  "ignore_all_errors": ["venv"]
+}
