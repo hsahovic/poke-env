@@ -103,9 +103,6 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-# showdownenv
-showdownenv*
-
 # VSCode
 *.code-workspace
 .vscode*
