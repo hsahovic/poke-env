@@ -68,7 +68,7 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            pytest --cov=pokemon_showdown_env test/
+            pytest --cov=src/pokemon_showdown_env test/
 
       - store_artifacts:
           path: test-reports
