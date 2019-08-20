@@ -42,11 +42,11 @@ jobs:
           key: v1-dependencies-{{ checksum "requirements.txt" }}
       - run:
           name: black
-          command: black pokemon_showdown_env/ test/
+          command: black src/ test/
 
       - run:
           name: flake8
-          command: flake8 pokemon_showdown_env/ test/
+          command: flake8 src/ test/
 
       - run:
           name: pyre
