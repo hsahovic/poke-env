@@ -3,7 +3,9 @@
 [![CircleCI](https://circleci.com/gh/hsahovic/pokemon-showdown-python-env/tree/master.svg?style=svg)](https://circleci.com/gh/hsahovic/pokemon-showdown-python-env/tree/master)
 [![codecov](https://codecov.io/gh/hsahovic/pokemon-showdown-python-env/branch/master/graph/badge.svg)](https://codecov.io/gh/hsahovic/pokemon-showdown-python-env)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
+<p>
+  <a href="https://github.com/ambv/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
+</p>
 
 A python interface to play pokemon battles on pokemon showdown
 
