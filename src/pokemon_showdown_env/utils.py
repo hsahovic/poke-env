@@ -35,18 +35,18 @@ def compute_type_chart() -> Dict[str, Dict[str, float]]:
     with open(TYPE_CHART_PATH) as chart:
         json_chart = json.load(chart)
 
-    types = [entry["name"].upper() for entry in json_chart]
+    types = [str(entry["name"]).upper() for entry in json_chart]
 
-    type_chart = {type_1: {type_2: 1 for type_2 in types} for type_1 in types}
+    type_chart = {type_1: {type_2: 1.0 for type_2 in types} for type_1 in types}
 
     for entry in json_chart:
         type_ = entry["name"].upper()
         for immunity in entry["immunes"]:
-            type_chart[type_][immunity.upper()] = 0
+            type_chart[type_][immunity.upper()] = 0.0
         for weakness in entry["weaknesses"]:
             type_chart[type_][weakness.upper()] = 0.5
         for strength in entry["strengths"]:
-            type_chart[type_][strength.upper()] = 2
+            type_chart[type_][strength.upper()] = 2.0
 
     return type_chart
 
