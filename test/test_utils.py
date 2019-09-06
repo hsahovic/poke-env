@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from pokemon_showdown_env.utils import compute_type_chart, TYPE_CHART
-from pokemon_showdown_env.environment.type import Type
+from pokemon_showdown_env.environment.pokemon_type import PokemonType
 
 
 def test_type_chart_corresponds_to_compute_type_chart():
@@ -9,13 +9,13 @@ def test_type_chart_corresponds_to_compute_type_chart():
 
 
 def test_types_correspond_to_type_chart_entries():
-    for type_1 in list(Type):
+    for type_1 in list(PokemonType):
         assert type_1.name in TYPE_CHART
-        for type_2 in list(Type):
+        for type_2 in list(PokemonType):
             assert type_2.name in TYPE_CHART
 
     for type_ in TYPE_CHART.keys():
-        assert Type[type_] is not None
+        assert PokemonType[type_] is not None
 
 
 def test_some_type_weaknesses():

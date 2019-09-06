@@ -1,20 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Utils file
-
-This file contains utility functions and objects.
-
-Functions:
-    compute_type_chart: Returns a dictionnary representing the Pokemon type chart,
-        loaded from a json file in `data`. This dictionnary is computed in this file as
-        TYPE_CHART.
-
-Attributes:
-    TYPE_CHART (Dict[str, Dict[str, float]]): A dictionnary representing the Pokemon
-        type chart. Each key is a string representing a type (corresponding to `Type`
-        names), and each value is a dictionnary whose keys are string representation of
-        types, and whose values are floats. TYPE_CHART[type_1][type_2] corresponds to
-        the damage multiplier of an attack of type_1 on a Pokemon of type_2. This
-        dictionnary is computed using the `compute_type_chart` function.
+"""This module contains utility functions and objects.
 """
 
 import json
@@ -27,10 +12,10 @@ def compute_type_chart() -> Dict[str, Dict[str, float]]:
     """Returns the pokemon type_chart.
 
     Returns a dictionnary representing the Pokemon type chart, loaded from a json file
-    in `data`. This dictionnary is computed in this file as TYPE_CHART.
+    in `data`. This dictionnary is computed in this file as `TYPE_CHART`.
 
-    Returns:
-        type_chart (Dict[str, Dict[str, float]]): the pokemon type chart
+    :return: The pokemon type chart
+    :rtype: Dict[str, Dict[str, float]]
     """
     with open(TYPE_CHART_PATH) as chart:
         json_chart = json.load(chart)
@@ -52,7 +37,8 @@ def compute_type_chart() -> Dict[str, Dict[str, float]]:
 
 
 TYPE_CHART = compute_type_chart()
-"""(Dict[str, Dict[str, float]]): A dictionnary representing the Pokemon type chart.
+"""
+A dictionnary representing the Pokemon type chart.
 
 Each key is a string representing a type (corresponding to `Type` names), and each value
 is a dictionnary whose keys are string representation of types, and whose values are
