@@ -12,5 +12,9 @@ class PlayerNetwork(ABC):
     Responsible for communicating with showdown servers.
     """
 
-    def __init__(self) -> None:
-        pass
+    def __init__(self, *, server_url: str) -> None:
+        self._server_url = server_url
+
+    @property
+    def websocket_url(self) -> str:
+        return f"ws://{self._server_url}/showdown/websocket"
