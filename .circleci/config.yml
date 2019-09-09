@@ -73,7 +73,9 @@ jobs:
 
       - run:
           name: Converting coverage to xml
-          command: coverage xml
+          command: |
+            . venv/bin/activate
+            coverage xml
 
       - codecov/upload:
           file: coverage.xml
