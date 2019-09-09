@@ -1,11 +1,11 @@
 default_language_version:
-  python: python3.6.8
+  python: python3.7.4
 repos:
   - repo: https://github.com/ambv/black
     rev: stable
     hooks:
       - id: black
-        language_version: python3.6
+        language_version: python3.7
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v1.2.3
     hooks:
