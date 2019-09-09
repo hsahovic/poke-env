@@ -71,5 +71,9 @@ jobs:
             . venv/bin/activate
             pytest --cov=src/pokemon_showdown_env test/
 
+      - run:
+          name: Converting coverage to xml
+          command: coverage xml
+
       - codecov/upload:
-          file: .coverage
+          file: coverage.xml
