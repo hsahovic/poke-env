@@ -11,6 +11,8 @@ from abc import ABC
 from asyncio import Lock
 from typing import List, Optional
 
+from pokemon_showdown_env.exceptions import ShowdownException
+
 
 class PlayerNetwork(ABC):
     """
@@ -84,14 +86,50 @@ class PlayerNetwork(ABC):
         await self.send_message(f"/avatar {avatar_id}")
 
     async def handle_message(self, message: str) -> None:
-        pass
+        """Handle received messages.
+
+        :param message: The message to parse.
+        :type message: str
+        """
+        logging.debug("Received message to handle: %s", message)
+
+        # Showdown websocket messages are pipe-separated sequences
+        split_message = message.split("|")
+
+        # The type of message is determined by the first entry in the message
+        # For battles, this is the zero-th entry
+        # Otherwisem it is the one-th entry
+        if split_message[1] == "challstr":
+            # Confirms connection to the server: we can login
+            await self._log_in(split_message)
+        elif split_message[1] == "updateuser" and split_message[2] == self.username:
+            # Confirms successful login
+            self._logged_in = True
+        elif "updatechallenges" in split_message[1]:
+            # Contain information about current challenge
+            self.update_challenges(split_message)
+        elif split_message[0].startswith(">battle"):
+            # Battle update
+            await self.handle_battle_message(split_message)
+        elif split_message[1] in ["updatesearch", "popup", "updateuser"]:
+            logging.info("Ignored message: %s", message)
+            pass
+        elif split_message[1] in ["nametaken"]:
+            logging.critical("Error message received: %s", message)
+            raise ShowdownException("Error message received: %s", message)
+        else:
+            logging.warning("Unhandled message: %s", message)
 
     async def listen(self) -> None:
-        """Listen to a showdown websocket."""
+        """Listen to a showdown websocket and dispatch messages to be handled."""
+        logging.info("Starting listening to showdown websocket")
         async with websockets.connect(self.websocket_url) as websocket:
+            logging.info("Connection to websocket established")
             self._websocket = websocket
-            message = await websocket.recv()
-            await self.handle_message(message)
+            while True:
+                message = await websocket.recv()
+                logging.debug("Received message: %s", message)
+                await self.handle_message(message)
 
     async def send_message(
         self, message: str, room: Optional[str] = "", message_2: Optional[str] = None
