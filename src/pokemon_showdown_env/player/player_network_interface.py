@@ -44,6 +44,14 @@ class PlayerNetwork(ABC):
         self._username = username
         self._server_url = server_url
 
+    async def change_avatar(self, avatar_id: str) -> None:
+        """Changes the player's avatar.
+
+        :param avatar_id: The new avatar id.
+        :type avatar_id: str
+        """
+        await self.send_message(f"/avatar {avatar_id}")
+
     async def handle_message(self, message: str) -> None:
         pass
 
