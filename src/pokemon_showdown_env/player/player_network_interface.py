@@ -126,4 +126,11 @@ class PlayerNetwork(ABC):
 
     @property
     def websocket_url(self) -> str:
+        """The websocket url.
+
+        It is derived from the server url.
+
+        :return: The websocket url.
+        :rtype: str
+        """
         return f"ws://{self._server_url}/showdown/websocket"
