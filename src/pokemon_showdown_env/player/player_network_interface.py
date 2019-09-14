@@ -50,7 +50,8 @@ class PlayerNetwork(ABC):
         self._server_url = server_url
 
         self._logged_in: bool = False
-        self._websocket = None
+
+        self._websocket: websockets.client.WebSocketClientProtocol
 
     async def _log_in(self, split_message: List[str]) -> None:
         """Log the player with specified username and password.
@@ -77,14 +78,14 @@ class PlayerNetwork(ABC):
         )
 
         # If there is an avatar to select, select it
-        if self._avatar:
-            self.change_avatar(self._avatar)
+        if isinstance(self._avatar, int):
+            self.change_avatar(int(self._avatar))
 
-    async def change_avatar(self, avatar_id: str) -> None:
+    async def change_avatar(self, avatar_id: int) -> None:
         """Changes the player's avatar.
 
         :param avatar_id: The new avatar id.
-        :type avatar_id: str
+        :type avatar_id: int
         """
         await self.send_message(f"/avatar {avatar_id}")
 
@@ -134,12 +135,12 @@ class PlayerNetwork(ABC):
             logging.info("Connection to websocket established")
             self._websocket = websocket
             while True:
-                message = await websocket.recv()
+                message = str(await websocket.recv())
                 logging.debug("Received message: %s", message)
                 await self.handle_message(message)
 
     async def send_message(
-        self, message: str, room: Optional[str] = "", message_2: Optional[str] = None
+        self, message: str, room: str = "", message_2: Optional[str] = None
     ) -> None:
         """Sends a message to the specified room.
 
