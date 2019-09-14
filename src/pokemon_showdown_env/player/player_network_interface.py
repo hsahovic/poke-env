@@ -2,6 +2,7 @@
 """This module defines a base class communicating with showdown servers.
 """
 
+import logging
 import websockets
 
 from abc import ABC
@@ -61,6 +62,28 @@ class PlayerNetwork(ABC):
             self._websocket = websocket
             message = await websocket.recv()
             await self.handle_message(message)
+
+    async def send_message(
+        self, message: str, room: Optional[str] = "", message_2: Optional[str] = None
+    ) -> None:
+        """Sends a message to the specified room.
+
+        `message_2` can be used to send a sequence of length 2.
+
+        :param message: The message to send.
+        :type message: str
+        :param room: The room to which the message should be sent.
+        :type room: str
+        :param message_2: Second element of the sequence to be sent. Optional.
+        :type message_2: str, optional
+        """
+        if message_2:
+            to_send = "|".join([room, message, message_2])
+        else:
+            to_send = "|".join([room, message])
+        async with self._lock:
+            await self._websocket.send(to_send)
+        logging.debug("Sent message from %s : %s", self.username, to_send)
 
     @property
     def username(self) -> str:
