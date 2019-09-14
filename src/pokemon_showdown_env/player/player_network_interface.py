@@ -63,5 +63,14 @@ class PlayerNetwork(ABC):
             await self.handle_message(message)
 
     @property
+    def username(self) -> str:
+        """The player's username.
+
+        :return: The player's username.
+        :rtype: str
+        """
+        return self._username
+
+    @property
     def websocket_url(self) -> str:
         return f"ws://{self._server_url}/showdown/websocket"
