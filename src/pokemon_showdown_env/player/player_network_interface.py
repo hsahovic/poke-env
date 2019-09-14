@@ -2,12 +2,14 @@
 """This module defines a base class communicating with showdown servers.
 """
 
+import json
 import logging
+import requests
 import websockets
 
 from abc import ABC
 from asyncio import Lock
-from typing import Optional
+from typing import List, Optional
 
 
 class PlayerNetwork(ABC):
@@ -44,6 +46,34 @@ class PlayerNetwork(ABC):
         self._password = password
         self._username = username
         self._server_url = server_url
+
+    async def _log_in(self, split_message: List[str]) -> None:
+        """Log the player with specified username and password.
+
+        Split message contains information sent by the server. This information is
+        necessary to log in.
+
+        :param split_message: Message received from the server that triggers logging in.
+        :type split_message: List[str]
+        """
+        log_in_request = requests.post(
+            self._authentication_url,
+            data={
+                "act": "login",
+                "name": self._username,
+                "pass": self._password,
+                "challstr": split_message[2] + "%7C" + split_message[3],
+            },
+        )
+        await self.send_message(
+            f"""/trn {self._username},0,{
+                json.loads(log_in_request.text[1:])['assertion']
+            }"""
+        )
+
+        # If there is an avatar to select, select it
+        if self._avatar:
+            self.change_avatar(self._avatar)
 
     async def change_avatar(self, avatar_id: str) -> None:
         """Changes the player's avatar.
