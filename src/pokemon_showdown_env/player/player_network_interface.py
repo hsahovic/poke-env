@@ -7,7 +7,7 @@ import logging
 import requests
 import websockets
 
-from abc import ABC
+from abc import ABC, abstractmethod
 from asyncio import Lock
 from typing import List, Optional
 
@@ -88,6 +88,10 @@ class PlayerNetwork(ABC):
         """
         await self.send_message(f"/avatar {avatar_id}")
 
+    @abstractmethod
+    async def handle_battle_message(self, split_message: List[str]) -> None:
+        pass
+
     async def handle_message(self, message: str) -> None:
         """Handle received messages.
 
@@ -155,6 +159,10 @@ class PlayerNetwork(ABC):
         async with self._lock:
             await self._websocket.send(to_send)
         logging.debug("Sent message from %s : %s", self.username, to_send)
+
+    @abstractmethod
+    def update_challenges(self, split_message: List[str]) -> None:
+        pass
 
     @property
     def username(self) -> str:
