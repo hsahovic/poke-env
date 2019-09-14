@@ -14,6 +14,8 @@ coverage==4.5.4
 docutils==0.15.2
 entrypoints==0.3
 flake8==3.7.8
+gevent==1.4.0
+greenlet==0.4.15
 identify==1.4.5
 idna==2.8
 imagesize==1.1.0
@@ -52,4 +54,5 @@ toml==0.10.0
 urllib3==1.25.3
 virtualenv==16.7.2
 wcwidth==0.1.7
+websockets==8.0.2
 zipp==0.5.2
