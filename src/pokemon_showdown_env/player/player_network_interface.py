@@ -49,6 +49,9 @@ class PlayerNetwork(ABC):
         self._username = username
         self._server_url = server_url
 
+        self._logged_in: bool = False
+        self._websocket = None
+
     async def _log_in(self, split_message: List[str]) -> None:
         """Log the player with specified username and password.
 
