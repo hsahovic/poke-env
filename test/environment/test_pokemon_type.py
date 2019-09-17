@@ -76,3 +76,8 @@ def test_damage_multiplier_strength_double_PokemonType():
 def test_damage_multiplier_compensating_double_PokemonType():
     assert PokemonType.WATER.damage_multiplier(PokemonType.FIRE, PokemonType.GRASS) == 1
     assert PokemonType.WATER.damage_multiplier(PokemonType.GRASS, PokemonType.FIRE) == 1
+
+
+def test_types_str():
+    assert str(PokemonType.WATER) == "WATER (pokemon type) object"
+    assert str(PokemonType.NORMAL) == "NORMAL (pokemon type) object"
