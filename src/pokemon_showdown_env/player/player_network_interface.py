@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""This module defines a base class communicating with showdown servers.
+"""This module defines a base class for communicating with showdown servers.
 """
 
 import json
@@ -28,6 +28,7 @@ class PlayerNetwork(ABC):
         *,
         avatar: Optional[int] = None,
         authentication_url: str,
+        log_level: int = None,
         server_url: str,
     ) -> None:
         """
@@ -39,6 +40,8 @@ class PlayerNetwork(ABC):
         :type avatar: int, optional
         :param authentication_url: Authentication server url.
         :type authentication_url: str
+        :param log_level: The player's logger level.
+        :type log_level: int. Defaults to logging's default level.
         :param server_url: Server URL.
         :type server_url: str
         """
@@ -52,6 +55,31 @@ class PlayerNetwork(ABC):
         self._logged_in: bool = False
 
         self._websocket: websockets.client.WebSocketClientProtocol
+        self._logger: logging.Logger = self._create_player_logger(log_level)
+
+    def _create_player_logger(self, log_level: int) -> logging.Logger:
+        """Creates a logger for the player.
+
+        Returns a Logger displaying asctime and the player's username before messages.
+
+        :param log_level: The logger's level.
+        :type log_level: int
+        :return: The logger.
+        :rtype: logging.Logger
+        """
+        logger = logging.getLogger(self._username)
+
+        stream_handler = logging.StreamHandler()
+        if log_level is not None:
+            stream_handler.setLevel(log_level)
+
+        formatter = logging.Formatter(
+            "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        )
+        stream_handler.setFormatter(formatter)
+
+        logger.addHandler(stream_handler)
+        return logger
 
     async def _log_in(self, split_message: List[str]) -> None:
         """Log the player with specified username and password.
@@ -99,7 +127,7 @@ class PlayerNetwork(ABC):
         :param message: The message to parse.
         :type message: str
         """
-        logging.debug("Received message to handle: %s", message)
+        self._logger.debug("Received message to handle: %s", message)
 
         # Showdown websocket messages are pipe-separated sequences
         split_message = message.split("|")
@@ -120,23 +148,23 @@ class PlayerNetwork(ABC):
             # Battle update
             await self.handle_battle_message(split_message)
         elif split_message[1] in ["updatesearch", "popup", "updateuser"]:
-            logging.info("Ignored message: %s", message)
+            self._logger.info("Ignored message: %s", message)
             pass
         elif split_message[1] in ["nametaken"]:
-            logging.critical("Error message received: %s", message)
+            self._logger.critical("Error message received: %s", message)
             raise ShowdownException("Error message received: %s", message)
         else:
-            logging.warning("Unhandled message: %s", message)
+            self._logger.warning("Unhandled message: %s", message)
 
     async def listen(self) -> None:
         """Listen to a showdown websocket and dispatch messages to be handled."""
-        logging.info("Starting listening to showdown websocket")
+        self._logger.info("Starting listening to showdown websocket")
         async with websockets.connect(self.websocket_url) as websocket:
-            logging.info("Connection to websocket established")
+            self._logger.info("Connection to websocket established")
             self._websocket = websocket
             while True:
                 message = str(await websocket.recv())
-                logging.debug("Received message: %s", message)
+                self._logger.debug("Received message: %s", message)
                 await self.handle_message(message)
 
     async def send_message(
@@ -159,7 +187,7 @@ class PlayerNetwork(ABC):
             to_send = "|".join([room, message])
         async with self._lock:
             await self._websocket.send(to_send)
-        logging.debug("Sent message from %s : %s", self.username, to_send)
+        self._logger.debug("Sent message from %s : %s", self.username, to_send)
 
     @abstractmethod
     def update_challenges(self, split_message: List[str]) -> None:
