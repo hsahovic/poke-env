@@ -1,31 +1,36 @@
 .. _pokemon_showdown_env:
 
-pokemon\_showdown\_env package
-==============================
+The Pokemon Showdown Python environment package
+===============================================
 
-Submodules
-----------
-
-pokemon\_showdown\_env.constants module
----------------------------------------
+Constants
+---------
 
 .. automodule:: pokemon_showdown_env.constants
    :members:
    :undoc-members:
    :show-inheritance:
 
-pokemon\_showdown\_env.utils module
------------------------------------
+Utils
+-----
 
 .. automodule:: pokemon_showdown_env.utils
    :members:
    :undoc-members:
    :show-inheritance:
 
-pokemon_showdown_env.environment.pokemon_type module
-----------------------------------------------------
+Pokemon type
+------------
 
 .. automodule:: pokemon_showdown_env.environment.pokemon_type
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Player Network Interface
+------------------------
+
+.. automodule:: pokemon_showdown_env.player.player_network_interface
    :members:
    :undoc-members:
    :show-inheritance:
