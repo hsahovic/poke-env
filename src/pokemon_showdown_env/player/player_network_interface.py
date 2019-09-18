@@ -119,7 +119,10 @@ class PlayerNetwork(ABC):
 
     @abstractmethod
     async def handle_battle_message(self, split_message: List[str]) -> None:
-        pass
+        """Abstract method.
+
+        Implementation should redirect messages to corresponding battles.
+        """
 
     async def handle_message(self, message: str) -> None:
         """Handle received messages.
@@ -191,7 +194,10 @@ class PlayerNetwork(ABC):
 
     @abstractmethod
     def update_challenges(self, split_message: List[str]) -> None:
-        pass
+        """Abstract method.
+
+        Implementation should keep track of current challenges.
+        """
 
     @property
     def username(self) -> str:
