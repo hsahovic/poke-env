@@ -28,7 +28,7 @@ class PlayerNetwork(ABC):
         *,
         avatar: Optional[int] = None,
         authentication_url: str,
-        log_level: int = None,
+        log_level: Optional[int] = None,
         server_url: str,
     ) -> None:
         """
@@ -57,7 +57,7 @@ class PlayerNetwork(ABC):
         self._websocket: websockets.client.WebSocketClientProtocol
         self._logger: logging.Logger = self._create_player_logger(log_level)
 
-    def _create_player_logger(self, log_level: int) -> logging.Logger:
+    def _create_player_logger(self, log_level: Optional[int]) -> logging.Logger:
         """Creates a logger for the player.
 
         Returns a Logger displaying asctime and the player's username before messages.
@@ -71,7 +71,7 @@ class PlayerNetwork(ABC):
 
         stream_handler = logging.StreamHandler()
         if log_level is not None:
-            stream_handler.setLevel(log_level)
+            logger.setLevel(log_level)
 
         formatter = logging.Formatter(
             "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
