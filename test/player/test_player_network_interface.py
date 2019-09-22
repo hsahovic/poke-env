@@ -12,9 +12,13 @@ from asynctest.mock import PropertyMock
 from mock import MagicMock
 from pokemon_showdown_env.exceptions import ShowdownException
 from pokemon_showdown_env.player.player_network_interface import PlayerNetwork
+from pokemon_showdown_env.player_configuration import PlayerConfiguration
+from pokemon_showdown_env.server_configuration import ServerConfiguration
 
 
+player_configuration = PlayerConfiguration("username", "password")
 requests_tuple = namedtuple("requests_tuple", ["text"])
+server_configuration = ServerConfiguration("server.url", "auth.url")
 
 
 class PlayerNetworkChild(PlayerNetwork):
@@ -27,7 +31,8 @@ class PlayerNetworkChild(PlayerNetwork):
 
 def test_init_and_properties():
     player = PlayerNetworkChild(
-        "username", "password", authentication_url="auth.url", server_url="server.url"
+        player_configuration=player_configuration,
+        server_configuration=server_configuration,
     )
 
     assert player.username == "username"
@@ -36,10 +41,8 @@ def test_init_and_properties():
 
 def test_create_player_logger():
     player = PlayerNetworkChild(
-        "username",
-        "password",
-        authentication_url="auth.url",
-        server_url="server.url",
+        player_configuration=player_configuration,
+        server_configuration=server_configuration,
         log_level=38,
     )
 
@@ -59,11 +62,9 @@ def test_create_player_logger():
 )
 async def test_log_in(post_mock):
     player = PlayerNetworkChild(
-        "username",
-        "password",
+        player_configuration=player_configuration,
         avatar=12,
-        authentication_url="auth.url",
-        server_url="server.url",
+        server_configuration=server_configuration,
         log_level=38,
     )
 
@@ -80,11 +81,9 @@ async def test_log_in(post_mock):
 @pytest.mark.asyncio
 async def test_change_avatar():
     player = PlayerNetworkChild(
-        "username",
-        "password",
+        player_configuration=player_configuration,
         avatar=12,
-        authentication_url="auth.url",
-        server_url="server.url",
+        server_configuration=server_configuration,
     )
 
     player.send_message = CoroutineMock()
@@ -97,11 +96,9 @@ async def test_change_avatar():
 @pytest.mark.asyncio
 async def test_handle_message():
     player = PlayerNetworkChild(
-        "username",
-        "password",
+        player_configuration=player_configuration,
         avatar=12,
-        authentication_url="auth.url",
-        server_url="server.url",
+        server_configuration=server_configuration,
     )
     player._log_in = CoroutineMock()
 
@@ -137,11 +134,9 @@ async def test_handle_message():
 @pytest.mark.asyncio
 async def test_listen():
     player = PlayerNetworkChild(
-        "username",
-        "password",
+        player_configuration=player_configuration,
         avatar=12,
-        authentication_url="auth.url",
-        server_url="server.url",
+        server_configuration=server_configuration,
     )
 
     type(player).websocket_url = PropertyMock(return_value="ws://localhost:8899")
@@ -170,11 +165,9 @@ async def test_listen():
 @pytest.mark.asyncio
 async def test_send_message():
     player = PlayerNetworkChild(
-        "username",
-        "password",
+        player_configuration=player_configuration,
         avatar=12,
-        authentication_url="auth.url",
-        server_url="server.url",
+        server_configuration=server_configuration,
     )
     player._websocket = CoroutineMock()
     player._websocket.send = CoroutineMock()

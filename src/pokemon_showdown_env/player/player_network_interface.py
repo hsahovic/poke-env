@@ -12,6 +12,8 @@ from asyncio import Lock
 from typing import List, Optional
 
 from pokemon_showdown_env.exceptions import ShowdownException
+from pokemon_showdown_env.player_configuration import PlayerConfiguration
+from pokemon_showdown_env.server_configuration import ServerConfiguration
 
 
 class PlayerNetwork(ABC):
@@ -25,13 +27,11 @@ class PlayerNetwork(ABC):
 
     def __init__(
         self,
-        username: str,
-        password: str,
+        player_configuration: PlayerConfiguration,
         *,
         avatar: Optional[int] = None,
-        authentication_url: str,
         log_level: Optional[int] = None,
-        server_url: str,
+        server_configuration: ServerConfiguration,
     ) -> None:
         """
         :param username: Player username.
@@ -47,12 +47,12 @@ class PlayerNetwork(ABC):
         :param server_url: Server URL.
         :type server_url: str
         """
-        self._authentication_url = authentication_url
+        self._authentication_url = server_configuration.authentication_url
         self._avatar = avatar
         self._lock = Lock()
-        self._password = password
-        self._username = username
-        self._server_url = server_url
+        self._password = player_configuration.password
+        self._username = player_configuration.username
+        self._server_url = server_configuration.server_url
 
         self._logged_in: bool = False
 
