@@ -164,13 +164,17 @@ class PlayerNetwork(ABC):
     async def listen(self) -> None:
         """Listen to a showdown websocket and dispatch messages to be handled."""
         self._logger.info("Starting listening to showdown websocket")
-        async with websockets.connect(self.websocket_url) as websocket:
-            self._logger.info("Connection to websocket established")
-            self._websocket = websocket
-            while True:
-                message = str(await websocket.recv())
-                self._logger.debug("Received message: %s", message)
-                await self.handle_message(message)
+        try:
+            async with websockets.connect(self.websocket_url) as websocket:
+                self._websocket = websocket
+                while True:
+                    message = str(await websocket.recv())
+                    self._logger.debug("Received message: %s", message)
+                    await self.handle_message(message)
+        except websockets.exceptions.ConnectionClosedOK:
+            self._logger.warning(
+                "Websocket connection with %s closed", self.websocket_url
+            )
 
     async def send_message(
         self, message: str, room: str = "", message_2: Optional[str] = None
