@@ -136,10 +136,10 @@ class PlayerNetwork(ABC):
 
         # Showdown websocket messages are pipe-separated sequences
         split_message = message.split("|")
-
+        assert len(split_message) > 1
         # The type of message is determined by the first entry in the message
         # For battles, this is the zero-th entry
-        # Otherwisem it is the one-th entry
+        # Otherwise it is the one-th entry
         if split_message[1] == "challstr":
             # Confirms connection to the server: we can login
             await self._log_in(split_message)
