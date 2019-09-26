@@ -34,18 +34,14 @@ class PlayerNetwork(ABC):
         server_configuration: ServerConfiguration,
     ) -> None:
         """
-        :param username: Player username.
-        :type username: str
-        :param password: Player password.
-        :type password: str
+        :param player_configuration: Player configuration.
+        :type player_configuration: PlayerConfiguration
         :param avatar: Player avatar id. Optional.
         :type avatar: int, optional
-        :param authentication_url: Authentication server url.
-        :type authentication_url: str
         :param log_level: The player's logger level.
         :type log_level: int. Defaults to logging's default level.
-        :param server_url: Server URL.
-        :type server_url: str
+        :param server_configuration: Server configuration.
+        :type server_configuration: ServerConfiguration
         """
         self._authentication_url = server_configuration.authentication_url
         self._avatar = avatar
