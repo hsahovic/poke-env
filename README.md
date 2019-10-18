@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 <a href="https://github.com/ambv/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 
-A python interface to play pokemon battles on [pokemon showdown](https://pokemonshowdown.com/).
+A python interface for training Reinforcement Learning bots to battle on pokemon showdown](https://pokemonshowdown.com/).
 
 This project aims at providing a Python environment for interacting in [pokemon showdown](https://pokemonshowdown.com/) battles, with reinforcement learning in mind.
 
