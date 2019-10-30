@@ -69,7 +69,7 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            pytest --cov=src/pokemon_showdown_env test/
+            pytest --cov=src/poke_env test/
 
       - run:
           name: Converting coverage to xml
