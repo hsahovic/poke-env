@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from pokemon_showdown_env.utils import compute_type_chart, TYPE_CHART
-from pokemon_showdown_env.environment.pokemon_type import PokemonType
+from poke_env.utils import compute_type_chart, TYPE_CHART
+from poke_env.environment.pokemon_type import PokemonType
 
 
 def test_type_chart_corresponds_to_compute_type_chart():

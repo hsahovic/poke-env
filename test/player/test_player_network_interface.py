@@ -9,11 +9,10 @@ from collections import namedtuple
 from asynctest.mock import CoroutineMock
 from asynctest.mock import patch
 from asynctest.mock import PropertyMock
-from mock import MagicMock
-from pokemon_showdown_env.exceptions import ShowdownException
-from pokemon_showdown_env.player.player_network_interface import PlayerNetwork
-from pokemon_showdown_env.player_configuration import PlayerConfiguration
-from pokemon_showdown_env.server_configuration import ServerConfiguration
+from poke_env.exceptions import ShowdownException
+from poke_env.player.player_network_interface import PlayerNetwork
+from poke_env.player_configuration import PlayerConfiguration
+from poke_env.server_configuration import ServerConfiguration
 
 
 player_configuration = PlayerConfiguration("username", "password")
@@ -22,10 +21,10 @@ server_configuration = ServerConfiguration("server.url", "auth.url")
 
 
 class PlayerNetworkChild(PlayerNetwork):
-    def handle_battle_message(self, message):
+    async def _handle_battle_message(self, message):
         pass
 
-    def update_challenges(self):
+    async def _update_challenges(self):
         pass
 
 
@@ -33,6 +32,7 @@ def test_init_and_properties():
     player = PlayerNetworkChild(
         player_configuration=player_configuration,
         server_configuration=server_configuration,
+        start_listening=False,
     )
 
     assert player.username == "username"
@@ -43,6 +43,7 @@ def test_create_player_logger():
     player = PlayerNetworkChild(
         player_configuration=player_configuration,
         server_configuration=server_configuration,
+        start_listening=False,
         log_level=38,
     )
 
@@ -57,7 +58,7 @@ def test_create_player_logger():
 
 @pytest.mark.asyncio
 @patch(
-    "pokemon_showdown_env.player.player_network_interface.requests.post",
+    "poke_env.player.player_network_interface.requests.post",
     return_value=requests_tuple(':{"assertion":"content"}'),
 )
 async def test_log_in(post_mock):
@@ -66,15 +67,16 @@ async def test_log_in(post_mock):
         avatar=12,
         server_configuration=server_configuration,
         log_level=38,
+        start_listening=False,
     )
 
-    player.send_message = CoroutineMock()
-    player.change_avatar = CoroutineMock()
+    player._send_message = CoroutineMock()
+    player._change_avatar = CoroutineMock()
 
     await player._log_in(["A", "B", "C", "D"])
 
-    player.change_avatar.assert_called_once_with(12)
-    player.send_message.assert_called_once_with("/trn username,0,content")
+    player._change_avatar.assert_called_once_with(12)
+    player._send_message.assert_called_once_with("/trn username,0,content")
     post_mock.assert_called_once()
 
 
@@ -84,13 +86,15 @@ async def test_change_avatar():
         player_configuration=player_configuration,
         avatar=12,
         server_configuration=server_configuration,
+        start_listening=False,
     )
 
-    player.send_message = CoroutineMock()
+    player._send_message = CoroutineMock()
+    player._logged_in.set()
 
-    await player.change_avatar(8)
+    await player._change_avatar(8)
 
-    player.send_message.assert_called_once_with("/avatar 8")
+    player._send_message.assert_called_once_with("/avatar 8")
 
 
 @pytest.mark.asyncio
@@ -99,34 +103,36 @@ async def test_handle_message():
         player_configuration=player_configuration,
         avatar=12,
         server_configuration=server_configuration,
+        start_listening=False,
     )
     player._log_in = CoroutineMock()
 
-    await player.handle_message("|challstr")
+    await player._handle_message("|challstr")
     player._log_in.assert_called_once()
 
-    assert player._logged_in is False
-    await player.handle_message("|updateuser|username")
-    assert player._logged_in is True
+    assert player.logged_in.is_set() is False
+    await player._handle_message("|updateuser| username")
+    assert player._logged_in.is_set() is True
 
-    player.update_challenges = MagicMock()
-    await player.handle_message("|updatechallenges")
-    player.update_challenges.assert_called_once_with(["", "updatechallenges"])
+    player._update_challenges = CoroutineMock()
+    await player._handle_message("|updatechallenges")
+    player._update_challenges.assert_called_once_with(["", "updatechallenges"])
 
-    player.handle_battle_message = CoroutineMock()
-    await player.handle_message(">battle|thing")
-    player.handle_battle_message.assert_called_once_with([">battle", "thing"])
+    player._handle_battle_message = CoroutineMock()
+    await player._handle_message(">battle|thing")
+    player._handle_battle_message.assert_called_once_with(">battle|thing")
 
-    player._logger.info = MagicMock()
-    await player.handle_message("|popup")
-    player._logger.info.assert_called_once_with("Ignored message: %s", "|popup")
+    player._logger.debug = CoroutineMock()
+    await player._handle_message("|popup")
+    player._logger.debug.assert_called_with("Ignored message: %s", "|popup")
 
     with pytest.raises(ShowdownException):
-        await player.handle_message("|nametaken")
+        await player._handle_message("|nametaken")
 
-    player._logger.warning = MagicMock()
-    await player.handle_message("that was unexpected!|")
-    player._logger.warning.assert_called_once_with(
+    player._logger.critical = CoroutineMock()
+    with pytest.raises(NotImplementedError):
+        await player._handle_message("that was unexpected!|")
+    player._logger.critical.assert_called_once_with(
         "Unhandled message: %s", "that was unexpected!|"
     )
 
@@ -137,19 +143,20 @@ async def test_listen():
         player_configuration=player_configuration,
         avatar=12,
         server_configuration=server_configuration,
+        start_listening=False,
     )
 
     type(player).websocket_url = PropertyMock(return_value="ws://localhost:8899")
 
-    player.handle_message = CoroutineMock()
+    player._handle_message = CoroutineMock()
     semaphore = asyncio.Semaphore()
 
     async def showdown_server_mock(websocket, path):
         semaphore.release()
         await websocket.ping()
-        await websocket.send("test 1")
-        await websocket.send("test 2")
-        await websocket.send("test 3")
+        await websocket.send("error|test 1")
+        await websocket.send("error|test 2")
+        await websocket.send("error|test 3")
 
     await semaphore.acquire()
 
@@ -158,8 +165,8 @@ async def test_listen():
     await player.listen()
 
     await gathered
-    assert player.handle_message.await_count == 3
-    player.handle_message.assert_awaited_with("test 3")
+    assert player._handle_message.await_count == 3
+    player._handle_message.assert_awaited_with("error|test 3")
 
 
 @pytest.mark.asyncio
@@ -168,12 +175,13 @@ async def test_send_message():
         player_configuration=player_configuration,
         avatar=12,
         server_configuration=server_configuration,
+        start_listening=False,
     )
     player._websocket = CoroutineMock()
     player._websocket.send = CoroutineMock()
 
-    await player.send_message("hey", "home")
+    await player._send_message("hey", "home")
     player._websocket.send.assert_called_once_with("home|hey")
 
-    await player.send_message("hey", "home", "hey again")
+    await player._send_message("hey", "home", "hey again")
     player._websocket.send.assert_called_with("home|hey|hey again")

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pokemon_showdown_env.environment.pokemon_type import PokemonType
+from poke_env.environment.pokemon_type import PokemonType
 
 import pytest
 
