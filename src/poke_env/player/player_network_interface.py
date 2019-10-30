@@ -1,0 +1,272 @@
+# -*- coding: utf-8 -*-
+"""This module defines a base class for communicating with showdown servers.
+"""
+
+import json
+import logging
+import requests
+import websockets  # pyre-ignore
+
+from abc import ABC
+from abc import abstractmethod
+from asyncio import ensure_future
+from asyncio import Event
+from asyncio import Lock
+from typing import List
+from typing import Optional
+
+from aiologger import Logger  # pyre-ignore
+from poke_env.exceptions import ShowdownException
+from poke_env.player_configuration import PlayerConfiguration
+from poke_env.server_configuration import ServerConfiguration
+
+
+class PlayerNetwork(ABC):
+    """
+    Network interface of a player.
+
+    Responsible for communicating with showdown servers. Also implements some higher
+    level methods for basic tasks, such as changing avatar and low-level message
+    handling.
+    """
+
+    def __init__(
+        self,
+        player_configuration: PlayerConfiguration,
+        *,
+        avatar: Optional[int] = None,
+        log_level: Optional[int] = None,
+        server_configuration: ServerConfiguration,
+        start_listening: bool = True,
+    ) -> None:
+        """
+        :param player_configuration: Player configuration.
+        :type player_configuration: PlayerConfiguration
+        :param avatar: Player avatar id. Optional.
+        :type avatar: int, optional
+        :param log_level: The player's logger level.
+        :type log_level: int. Defaults to logging's default level.
+        :param server_configuration: Server configuration.
+        :type server_configuration: ServerConfiguration
+        :param start_listening: Wheter to start listening to the server. Defaults to
+            True.
+        :type start_listening: bool
+        """
+        self._authentication_url = server_configuration.authentication_url
+        self._avatar = avatar
+        self._password = player_configuration.password
+        self._username = player_configuration.username
+        self._server_url = server_configuration.server_url
+
+        self._logged_in: Event = Event()
+        self._sending_lock = Lock()
+
+        self._websocket: websockets.client.WebSocketClientProtocol  # pyre-ignore
+        self._logger: Logger = self._create_player_logger(log_level)  # pyre-ignore
+
+        if start_listening:
+            ensure_future(self.listen())
+
+    async def _accept_challenge(self, username: str) -> None:
+        assert self.logged_in.is_set()
+        await self._send_message("/accept %s" % username)
+
+    async def _challenge(self, username: str, format_: str):
+        assert self.logged_in.is_set()
+        await self._send_message(f"/challenge {username}, {format_}")
+
+    async def _change_avatar(self, avatar_id: int) -> None:
+        """Changes the player's avatar.
+
+        :param avatar_id: The new avatar id.
+        :type avatar_id: int
+        """
+        assert self.logged_in.is_set()
+        await self._send_message(f"/avatar {avatar_id}")
+
+    def _create_player_logger(self, log_level: Optional[int]) -> Logger:  # pyre-ignore
+        """Creates a logger for the player.
+
+        Returns a Logger displaying asctime and the player's username before messages.
+
+        :param log_level: The logger's level.
+        :type log_level: int
+        :return: The logger.
+        :rtype: Logger
+        """
+        logger = logging.getLogger(self._username)
+
+        stream_handler = logging.StreamHandler()
+        if log_level is not None:
+            logger.setLevel(log_level)
+
+        formatter = logging.Formatter(
+            "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        )
+        stream_handler.setFormatter(formatter)
+
+        logger.addHandler(stream_handler)
+        return logger
+
+    async def _handle_message(self, message: str) -> None:
+        """Handle received messages.
+
+        :param message: The message to parse.
+        :type message: str
+        """
+        self.logger.debug("Received message to handle: %s", message)
+
+        # Showdown websocket messages are pipe-separated sequences
+        split_message = message.split("|")
+        assert len(split_message) > 1
+        # The type of message is determined by the first entry in the message
+        # For battles, this is the zero-th entry
+        # Otherwise it is the one-th entry
+        if split_message[1] == "challstr":
+            # Confirms connection to the server: we can login
+            await self._log_in(split_message)
+        elif (
+            split_message[1] == "updateuser"
+            and split_message[2] == " " + self._username
+        ):
+            # Confirms successful login
+            self.logged_in.set()
+        elif "updatechallenges" in split_message[1]:
+            # Contain information about current challenge
+            await self._update_challenges(split_message)
+        elif split_message[0].startswith(">battle"):
+            # Battle update
+            await self._handle_battle_message(message)
+        elif split_message[1] in ["updatesearch", "popup", "updateuser"]:
+            self.logger.debug("Ignored message: %s", message)
+            pass
+        elif split_message[1] in ["nametaken"]:
+            self.logger.critical("Error message received: %s", message)
+            raise ShowdownException("Error message received: %s", message)
+        elif split_message[1] == "pm":
+            self.logger.info("Received pm: %s", split_message)
+        else:
+            self.logger.critical("Unhandled message: %s", message)
+            raise NotImplementedError("Unhandled message: %s" % message)
+
+    async def _log_in(self, split_message: List[str]) -> None:
+        """Log the player with specified username and password.
+
+        Split message contains information sent by the server. This information is
+        necessary to log in.
+
+        :param split_message: Message received from the server that triggers logging in.
+        :type split_message: List[str]
+        """
+        if self._password:
+            log_in_request = requests.post(
+                self._authentication_url,
+                data={
+                    "act": "login",
+                    "name": self._username,
+                    "pass": self._password,
+                    "challstr": split_message[2] + "%7C" + split_message[3],
+                },
+            )
+            self.logger.info("Sending authentication request")
+            assertion = json.loads(log_in_request.text[1:])["assertion"]
+        else:
+            self.logger.info("Bypassing authentication request")
+            assertion = ""
+
+        await self._send_message(f"/trn {self._username},0,{assertion}")
+
+        # If there is an avatar to select, select it
+        if isinstance(self._avatar, int):
+            self._change_avatar(int(self._avatar))
+
+    async def _send_message(
+        self, message: str, room: str = "", message_2: Optional[str] = None
+    ) -> None:
+        """Sends a message to the specified room.
+
+        `message_2` can be used to send a sequence of length 2.
+
+        :param message: The message to send.
+        :type message: str
+        :param room: The room to which the message should be sent.
+        :type room: str
+        :param message_2: Second element of the sequence to be sent. Optional.
+        :type message_2: str, optional
+        """
+        if message_2:
+            to_send = "|".join([room, message, message_2])
+        else:
+            to_send = "|".join([room, message])
+        async with self._sending_lock:
+            await self._websocket.send(to_send)
+        self.logger.info(">>> %s", to_send)
+
+    async def listen(self) -> None:
+        """Listen to a showdown websocket and dispatch messages to be handled."""
+        self.logger.info("Starting listening to showdown websocket")
+        try:
+            async with websockets.connect(  # pyre-ignore
+                self.websocket_url
+            ) as websocket:
+                self._websocket = websocket
+                while True:
+                    message = str(await websocket.recv())
+                    self.logger.info("<<< %s", message)
+                    ensure_future(self._handle_message(message))
+        except websockets.exceptions.ConnectionClosedOK:
+            self.logger.warning(
+                "Websocket connection with %s closed", self.websocket_url
+            )
+
+    @abstractmethod
+    async def _handle_battle_message(self, message: str) -> None:
+        """Abstract method.
+
+        Implementation should redirect messages to corresponding battles.
+        """
+
+    @abstractmethod
+    async def _update_challenges(self, split_message: List[str]) -> None:
+        """Abstract method.
+
+        Implementation should keep track of current challenges.
+        """
+
+    @property
+    def logged_in(self) -> Event:
+        """Event object associated with user login.
+
+        :return: The logged-in event
+        :rtype: Event
+        """
+        return self._logged_in
+
+    @property
+    def logger(self) -> Logger:  # pyre-ignore
+        """Logger associated with the player.
+
+        :return: The logger.
+        :rtype: Logger
+        """
+        return self._logger
+
+    @property
+    def username(self) -> str:
+        """The player's username.
+
+        :return: The player's username.
+        :rtype: str
+        """
+        return self._username
+
+    @property
+    def websocket_url(self) -> str:
+        """The websocket url.
+
+        It is derived from the server url.
+
+        :return: The websocket url.
+        :rtype: str
+        """
+        return f"ws://{self._server_url}/showdown/websocket"
