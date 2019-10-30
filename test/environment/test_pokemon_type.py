@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from poke_env.environment.pokemon_type import PokemonType
 
 import pytest

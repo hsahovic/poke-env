@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from poke_env.constants import MOVES
+from poke_env.data import MOVES
 from poke_env.environment.move import Move
 
 
