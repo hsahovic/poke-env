@@ -1,9 +1,5 @@
 aiologger
-asynctest
 numpy
-pre-commit
-pytest
-pytest-asyncio
 requests
 tabulate
 websockets
