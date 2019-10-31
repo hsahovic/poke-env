@@ -6,3 +6,5 @@ pyre-check
 pytest
 pytest-asyncio
 pytest-cov
+sphinx
+sphinx_rtd_theme
