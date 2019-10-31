@@ -41,7 +41,7 @@ def to_id_str(name: str) -> str:
     :param name: The name to convert.
     :type name: str
     :return: The corresponding id string.
-    "rtype: str
+    :rtype: str
     """
     name = name.lower()
 
