@@ -1,0 +1,49 @@
+.. _other_environment:
+
+Other environment objects
+=========================
+
+.. automodule:: poke_env.environment.effect
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: poke_env.environment.field
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: poke_env.environment.move_category
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: poke_env.environment.pokemon_gender
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: poke_env.environment.pokemon_type
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: poke_env.environment.side_condition
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: poke_env.environment.status
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: poke_env.environment.weather
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: poke_env.environment.z_crystal
+   :members:
+   :undoc-members:
+   :show-inheritance:
