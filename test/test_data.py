@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from poke_env.utils import compute_type_chart, TYPE_CHART
+from poke_env.data import TYPE_CHART, TYPE_CHART_PATH
+from poke_env.utils import compute_type_chart
 from poke_env.environment.pokemon_type import PokemonType
 
 
 def test_type_chart_corresponds_to_compute_type_chart():
-    assert compute_type_chart() == TYPE_CHART
+    assert compute_type_chart(TYPE_CHART_PATH) == TYPE_CHART
 
 
 def test_types_correspond_to_type_chart_entries():
