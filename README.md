@@ -6,7 +6,7 @@
 <a href="https://github.com/ambv/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 [![Documentation Status](https://readthedocs.org/projects/poke-env/badge/?version=latest)](https://poke-env.readthedocs.io/en/latest/?badge=latest)
 
-A python interface for training Reinforcement Learning bots to battle on pokemon showdown](https://pokemonshowdown.com/).
+A python interface for training Reinforcement Learning bots to battle on [pokemon showdown](https://pokemonshowdown.com/).
 
 This project aims at providing a Python environment for interacting in [pokemon showdown](https://pokemonshowdown.com/) battles, with reinforcement learning in mind.
 
