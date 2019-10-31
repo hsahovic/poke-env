@@ -5,12 +5,19 @@
 version: 2.1
 orbs:
   codecov: codecov/codecov@1.0.5
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test-3-5
+      - test-3-6
+      - test-3-7
 jobs:
-  build:
+  test-3-5: &test-template
     docker:
       # specify the version you desire here
       # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
-      - image: circleci/python:3.7.4
+      - image: circleci/python:3.5
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -35,6 +42,13 @@ jobs:
             python3 -m venv venv
             . venv/bin/activate
             pip install -r requirements.txt
+
+      - run:
+          name: install dev dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements-dev.txt
 
       - save_cache:
           paths:
@@ -79,3 +93,11 @@ jobs:
 
       - codecov/upload:
           file: coverage.xml
+  test-3-6:
+    <<: *test-template
+    docker:
+      - image: circleci/python:3.6
+  test-3-7:
+    <<: *test-template
+    docker:
+      - image: circleci/python:3.7
