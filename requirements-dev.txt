@@ -1,4 +1,7 @@
 asynctest
+black
+flake8
 pre-commit
+pyre-check
 pytest
 pytest-asyncio
