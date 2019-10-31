@@ -12,11 +12,44 @@ This project aims at providing a Python environment for interacting in [pokemon 
 
 ## Installation
 
-This project uses python 3.7.4. Install dependencies with `pip install -r requirements.txt`.
+This project requires python >= 3.6 and a [Pokemon Showdown](https://github.com/Zarel/Pokemon-Showdown) server.
+
+```
+pip install poke-env
+```
+
+You can use [smogon's server](https://play.pokemonshowdown.com/) to try out your agents against humans, but having a development server is strongly recommended. In particular, [this showdown fork](https://github.com/hsahovic/Pokemon-Showdown) is optimized for performance and can be used locally **without authentication**:
+
+```
+git clone https://github.com/hsahovic/Pokemon-Showdown.git
+```
+
+### Development version
+
+You can also install the latest master version with:
+
+```
+git clone https://github.com/hsahovic/poke-env.git
+```
+
+Dependencies and development dependencies can then be installed with:
+
+```
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+```
+
+## Documentation and examples
+
+Documentation and detailed examples can be found [here](https://poke-env.readthedocs.io/en/latest/).
+
+Examples and starting code can be found [here](https://github.com/hsahovic/poke-env/tree/master/examples).
 
 ## Acknowledgements
 
-This project is a follow-up of a group project from an artifical intelligence class at [Ecole Polytechnique](https://www.polytechnique.edu/). You can find the original repository [here](https://github.com/hsahovic/inf581-project). It is partially inspired by the [showdown-battle-bot project](https://github.com/Synedh/showdown-battle-bot). Of course, none of these would have been possible without [Pokemon Showdown](https://github.com/Zarel/Pokemon-Showdown).
+This project is a follow-up of a group project from an artifical intelligence class at [Ecole Polytechnique](https://www.polytechnique.edu/).
+
+You can find the original repository [here](https://github.com/hsahovic/inf581-project). It is partially inspired by the [showdown-battle-bot project](https://github.com/Synedh/showdown-battle-bot). Of course, none of these would have been possible without [Pokemon Showdown](https://github.com/Zarel/Pokemon-Showdown).
 
 ## Data
 
