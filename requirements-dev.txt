@@ -5,3 +5,4 @@ pre-commit
 pyre-check
 pytest
 pytest-asyncio
+pytest-cov
