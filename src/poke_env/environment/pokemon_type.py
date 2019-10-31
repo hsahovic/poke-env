@@ -6,7 +6,7 @@ from enum import auto
 from enum import Enum
 from enum import unique
 from typing import Optional
-from ..utils import TYPE_CHART
+from ..data import TYPE_CHART
 
 
 @unique
@@ -42,7 +42,7 @@ class PokemonType(Enum):
     def __str__(self) -> str:
         return f"{self.name} (pokemon type) object"
 
-    def damage_multiplier(  # pyre-ignore
+    def damage_multiplier(
         self, type_1: "PokemonType", type_2: Optional["PokemonType"] = None
     ) -> float:
         """Computes the damage multiplier from this type on a pokemon with types `type_1`

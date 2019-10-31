@@ -4,11 +4,10 @@
 
 import json
 
-from poke_env.data import TYPE_CHART_PATH
 from typing import Dict
 
 
-def compute_type_chart() -> Dict[str, Dict[str, float]]:
+def compute_type_chart(chart_path: str) -> Dict[str, Dict[str, float]]:
     """Returns the pokemon type_chart.
 
     Returns a dictionnary representing the Pokemon type chart, loaded from a json file
@@ -17,7 +16,7 @@ def compute_type_chart() -> Dict[str, Dict[str, float]]:
     :return: The pokemon type chart
     :rtype: Dict[str, Dict[str, float]]
     """
-    with open(TYPE_CHART_PATH) as chart:
+    with open(chart_path) as chart:
         json_chart = json.load(chart)
 
     types = [str(entry["name"]).upper() for entry in json_chart]
@@ -50,17 +49,3 @@ def to_id_str(name: str) -> str:
         name = name.replace(c, "")
 
     return name
-
-
-TYPE_CHART: Dict["PokemonType", Dict["PokemonType", float]] = compute_type_chart()
-"""
-A dictionnary representing the Pokemon type chart.
-
-Each key is a string representing a type (corresponding to `Type` names), and each value
-is a dictionnary whose keys are string representation of types, and whose values are
-floats.
-
-TYPE_CHART[type_1][type_2] corresponds to the damage multiplier of an attack of type_1
-on a Pokemon of type_2. This dictionnary isncomputed using the `compute_type_chart`
-function.
-"""
