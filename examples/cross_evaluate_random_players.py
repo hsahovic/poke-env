@@ -21,7 +21,6 @@ async def main():
             battle_format="gen7randombattle",
             server_configuration=LocalhostServerConfiguration,
             max_concurrent_battles=10,
-            log_level=25,
         )
         for player_config in [
             player_1_configuration,
@@ -32,7 +31,7 @@ async def main():
 
     # Now, we can cross evaluate them: every player will player 20 games against every
     # other player.
-    cross_evaluation = await cross_evaluate(players, n_challenges=10)
+    cross_evaluation = await cross_evaluate(players, n_challenges=20)
 
     # Defines a header for displaying results
     table = [["-"] + [p.username for p in players]]

@@ -2,24 +2,19 @@
 import asyncio
 import time
 
+from poke_env.player.player import Player
 from poke_env.player.random_player import RandomPlayer
 from poke_env.player.utils import cross_evaluate
 from poke_env.player_configuration import PlayerConfiguration
 from poke_env.server_configuration import LocalhostServerConfiguration
 
 
-class MaxDamagePlayer(RandomPlayer):
+class MaxDamagePlayer(Player):
     def choose_move(self, battle):
         # If the player can attack, it will
         if battle.available_moves:
-            # Initialize move with the first available one
-            best_move = battle.available_moves[0]
-            max_base_power = best_move.base_power
-
-            for move in battle.available_moves:
-                # Keep the maximum damage move
-                if move.base_power >= max_base_power:
-                    max_base_power, best_move = move.base_power, move
+            # Finds the best move among available ones
+            best_move = max(battle.available_moves, key=lambda move: move.base_power)
             return self.create_order(best_move)
 
         # If no attack is available, a random switch will be made
