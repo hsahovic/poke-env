@@ -379,7 +379,7 @@ class Pokemon:
         :return: Wheter the pokemon has fainted.
         :rtype: bool
         """
-        return Status.FNT in self._status
+        return Status.FNT == self._status
 
     @property
     def gender(self) -> PokemonGender:
