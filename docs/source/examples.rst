@@ -3,6 +3,8 @@
 Examples
 ========
 
+This page lists detailled examples of how to use this package.
+
 .. toctree::
     :maxdepth: 4
 
