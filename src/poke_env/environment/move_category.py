@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
+"""This module defines the MoveCategory class, which represents a move category.
+"""
 from enum import Enum, unique, auto
 
 
 @unique
 class MoveCategory(Enum):
-    """Represent a move category."""
+    """Enumeration, represent a move category."""
 
     PHYSICAL = auto()
     SPECIAL = auto()

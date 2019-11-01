@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
+"""This module defines the PokemonGender class, which represents the gender of a
+Pokemon.
+"""
 from enum import Enum, unique, auto
 from poke_env.exceptions import ShowdownException
 
 
 @unique
 class PokemonGender(Enum):
-    """Represent a pokemon's gender."""
+    """Enumeration, represent a pokemon's gender."""
 
     FEMALE = auto()
     MALE = auto()

@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
+"""This module defines the Weather class, which represents a in-battle weather.
+"""
 from enum import Enum, unique, auto
 
 
 @unique
 class Weather(Enum):
-    """Represent a non null weather in a battle."""
+    """Enumeration, represent a non null weather in a battle."""
 
     DESOLATELAND = auto()
     HAIL = auto()

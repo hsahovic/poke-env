@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-"""This module defines the Type class, which represents a Pokemon type. Types are mainly
-associated with Pokemons and moves.
+"""This module defines the PokemonType class, which represents a Pokemon type.
+PokemonTypes are mainly associated with Pokemons and moves.
 """
 from enum import auto
 from enum import Enum
@@ -15,9 +15,6 @@ class PokemonType(Enum):
 
     This enumeration represents pokemon types. Each type is an instance of this class,
     whose name corresponds to the upper case spelling of its english name (ie. FIRE).
-
-    :param name: The type name.
-    :type name: str
     """
 
     BUG = auto()
@@ -63,4 +60,11 @@ class PokemonType(Enum):
 
     @staticmethod
     def from_name(name: str) -> "PokemonType":
+        """Returns a pokemon type based on its name.
+
+        :param name: The name of the pokemon type.
+        :type name: str
+        :return: The corresponding type object.
+        :rtype: PokemonType
+        """
         return PokemonType[name.upper()]

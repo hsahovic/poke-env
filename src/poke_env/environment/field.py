@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
+"""This module defines the Field class, which represents a battle field.
+"""
 from enum import Enum, unique, auto
 
 
 @unique
 class Field(Enum):
-    """Represent a non null field in a battle."""
+    """Enumeration, represent a non null field in a battle."""
 
     ELECTRIC_TERRAIN = auto()
     GRASSY_TERRAIN = auto()

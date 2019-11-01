@@ -436,6 +436,10 @@ class Battle:
 
     @property
     def active_pokemon(self) -> Pokemon:
+        """
+        :return: The active pokemon
+        :rtype: Pokemon
+        """
         for pokemon in self.team.values():
             if pokemon.active:
                 return pokemon
@@ -443,46 +447,93 @@ class Battle:
 
     @property
     def available_moves(self) -> List[Move]:
+        """
+        :return: The list of moves the player can use during the current move request.
+        :rtype: List[Move]
+        """
         return self._available_moves
 
     @property
     def available_switches(self) -> List[Pokemon]:
+        """
+        :return: The list of switches the player can do during the current move request.
+        :rtype: List[Pokemon]
+        """
         return self._available_switches
 
     @property
     def battle_tag(self) -> str:
+        """
+        :return: The battle identifier.
+        :rtype: str
+        """
         return self._battle_tag
 
     @property
     def can_mega_evolve(self) -> bool:
+        """
+        :return: Wheter of not the current active pokemon can mega evolve.
+        :rtype: bool
+        """
         return self._can_mega_evolve
 
     @property
     def can_z_move(self) -> bool:
+        """
+        :return: Wheter of not the current active pokemon can z-move.
+        :rtype: bool
+        """
         return self._can_z_move
 
     @property
     def fields(self) -> Set[Field]:
+        """
+        :return: The set of active fields.
+        :rtype: Set[Field]
+        """
         return self._fields
 
     @property
-    def finished(self) -> Optional[bool]:
+    def finished(self) -> bool:
+        """
+        :return: A boolean indicating whether the battle is finished.
+        :rtype: Optional[bool]
+        """
         return self._finished
 
     @property
     def force_switch(self) -> bool:
+        """
+        :return: A boolean indicating whether the active pokemon is forced to switch
+            out.
+        :rtype: Optional[bool]
+        """
         return self._force_switch
 
     @property
-    def lost(self) -> bool:
+    def lost(self) -> Optional[bool]:
+        """
+        :return: If the battle is finished, a boolean indicating whether the battle is
+            lost. Otherwise None.
+        :rtype: Optional[bool]
+        """
         return self._won is False
 
     @property
     def maybe_trapped(self) -> bool:
+        """
+        :return: A boolean indicating whether the active pokemon is maybe trapped by the
+            opponent.
+        :rtype: bool
+        """
         return self._maybe_trapped
 
     @property
     def opponent_active_pokemon(self) -> Pokemon:
+        """
+        :return: The opponent active pokemon
+        :rtype: Pokemon
+        """
         for pokemon in self.opponent_team.values():
             if pokemon.active:
                 return pokemon
@@ -490,18 +541,34 @@ class Battle:
 
     @property
     def opponent_side_conditions(self) -> Set[SideCondition]:
+        """
+        :return: The opponent's set of side conditions.
+        :rtype: Set[SideCondition]
+        """
         return self._opponent_side_conditions
 
     @property
     def opponent_team(self) -> Dict[str, Pokemon]:
+        """
+        :return: The opponent's team. Keys are identifiers, values are pokemon objects.
+        :rtype: Dict[str, Pokemon]
+        """
         return self._opponent_team
 
     @property
     def player_username(self) -> str:
+        """
+        :return: The player's username.
+        :rtype: str
+        """
         return self._player_username
 
     @property
     def players(self) -> Tuple[str, str]:
+        """
+        :return: The pair of players' usernames.
+        :rtype: Tuple[str, str]
+        """
         return self._players
 
     @players.setter
@@ -521,18 +588,37 @@ class Battle:
 
     @property
     def rqid(self) -> int:
+        """
+        Should not be used.
+
+        :return: The last request's rqid.
+        :rtype: Tuple[str, str]
+        """
         return self._rqid
 
     @property
     def side_conditions(self) -> Set[SideCondition]:
+        """
+        :return: The player's set of side conditions.
+        :rtype: Set[SideCondition]
+        """
         return self._side_conditions
 
     @property
     def team(self) -> Dict[str, Pokemon]:
+        """
+        :return: The player's team. Keys are identifiers, values are pokemon objects.
+        :rtype: Dict[str, Pokemon]
+        """
         return self._team
 
     @property
     def trapped(self) -> bool:
+        """
+        :return: A boolean indicating whether the active pokemon is trapped by the
+            opponent.
+        :rtype: bool
+        """
         return self._trapped
 
     @trapped.setter
@@ -541,6 +627,10 @@ class Battle:
 
     @property
     def turn(self) -> int:
+        """
+        :return: The current battle turn.
+        :rtype: int
+        """
         return self._turn
 
     @turn.setter
@@ -553,7 +643,11 @@ class Battle:
         self._turn = turn
 
     @property
-    def weather(self):
+    def weather(self) -> Optional[Weather]:
+        """
+        :return: The battle's weather or None if no weather is active.
+        :rtype: Optional[Weather]
+        """
         return self._weather
 
     @weather.setter
@@ -568,4 +662,9 @@ class Battle:
 
     @property
     def won(self) -> Optional[bool]:
-        return self._won is True
+        """
+        :return: If the battle is finished, a boolean indicating whether the battle is
+            won. Otherwise None.
+        :rtype: Optional[bool]
+        """
+        return self._won

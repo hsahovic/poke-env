@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
+"""This module defines the Effect class, which represents in-game effects.
+"""
 from enum import Enum, unique, auto
 
 
 @unique
 class Effect(Enum):
-    """Represent an effect a Pokemon can be affected by."""
+    """Enumeration, represent an effect a Pokemon can be affected by."""
 
     AROMATHERAPY = auto()
     AROMA_VEIL = auto()
