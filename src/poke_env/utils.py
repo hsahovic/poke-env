@@ -7,7 +7,7 @@ import json
 from typing import Dict
 
 
-def compute_type_chart(chart_path: str) -> Dict[str, Dict[str, float]]:
+def _compute_type_chart(chart_path: str) -> Dict[str, Dict[str, float]]:
     """Returns the pokemon type_chart.
 
     Returns a dictionnary representing the Pokemon type chart, loaded from a json file

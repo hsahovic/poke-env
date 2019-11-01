@@ -8,10 +8,10 @@ import os
 from typing import Any
 from typing import Dict
 
-from poke_env.utils import compute_type_chart
+from poke_env.utils import _compute_type_chart
 
 
-TYPE_CHART_PATH: str = os.path.join(
+_TYPE_CHART_PATH: str = os.path.join(
     os.path.dirname(os.path.realpath(__file__)), "data", "typeChart.json"
 )
 "Path to the json file containing type informations."
@@ -30,7 +30,7 @@ with open(
 ) as moves:
     MOVES = json.load(moves)
 
-TYPE_CHART: Dict[Any, Dict[Any, float]] = compute_type_chart(TYPE_CHART_PATH)
+TYPE_CHART: Dict[Any, Dict[Any, float]] = _compute_type_chart(_TYPE_CHART_PATH)
 """
 A dictionnary representing the Pokemon type chart.
 
