@@ -10,6 +10,12 @@ A python interface for training Reinforcement Learning bots to battle on [pokemo
 
 This project aims at providing a Python environment for interacting in [pokemon showdown](https://pokemonshowdown.com/) battles, with reinforcement learning in mind.
 
+## Documentation and examples
+
+Documentation and detailed examples can be found [here](https://poke-env.readthedocs.io/en/latest/).
+
+Examples and starting code can be found [here](https://github.com/hsahovic/poke-env/tree/master/examples).
+
 ## Installation
 
 This project requires python >= 3.6 and a [Pokemon Showdown](https://github.com/Zarel/Pokemon-Showdown) server.
@@ -38,12 +44,6 @@ Dependencies and development dependencies can then be installed with:
 pip install -r requirements.txt
 pip install -r requirements-dev.txt
 ```
-
-## Documentation and examples
-
-Documentation and detailed examples can be found [here](https://poke-env.readthedocs.io/en/latest/).
-
-Examples and starting code can be found [here](https://github.com/hsahovic/poke-env/tree/master/examples).
 
 ## Acknowledgements
 
