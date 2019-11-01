@@ -40,7 +40,7 @@ class Pokemon:
         self._level: int = 100
         self._max_hp: int
         self._moves: Dict[str, Move] = {}
-        self._pokeball: str
+        self._pokeball: Optional[str] = None
         self._shiny: Optional[bool]
 
         # Battle related attributes
@@ -291,6 +291,10 @@ class Pokemon:
 
     @property
     def ability(self) -> str:
+        """
+        :return: The pokemon's ability.
+        :rtype: str
+        """
         return self._ability
 
     @ability.setter
@@ -299,10 +303,20 @@ class Pokemon:
 
     @property
     def active(self) -> Optional[bool]:
+        """
+        :return: Boolean indicating whether the pokemon is active.
+        :rtype: bool
+        """
         return self._active
 
     @property
     def available_z_moves(self) -> Set[Move]:
+        """
+        Caution: this property is not properly tested yet.
+
+        :return: The set of moves that pokemon can use as z-moves.
+        :rtype: Set[Move]
+        """
         if isinstance(self.item, str) and self.item.endswith("iumz"):  # pyre-ignore
             type_, move = Z_CRYSTAL[self.item]  # pyre-ignore
             if type_:
@@ -317,40 +331,78 @@ class Pokemon:
 
     @property
     def base_stats(self) -> Dict[str, int]:
+        """
+        :return: The pokemon's base stats.
+        :rtype: Dict[str, int]
+        """
         return self._base_stats
 
     @property
-    def boosts(self) -> Optional[bool]:
+    def boosts(self) -> Dict[str, int]:
+        """
+        :return: The pokemon's boosts.
+        :rtype: Dict[str, int]
+        """
         return self._boost
 
     @property
     def current_hp(self) -> int:
+        """
+        :return: The pokemon's current hp. For your pokemons, this is the actual value.
+            For opponent's pokemon, this value depends on showdown information: it can
+            be on a scale from 0 to 100 or on a pixel scale.
+        :rtype: int
+        """
         return self._current_hp
 
     @property
     def current_hp_fraction(self) -> float:
+        """
+        :return: The pokemon's current remaining hp fraction.
+        :rtype: float
+        """
         if self.current_hp:
             return self.current_hp / self.max_hp
         return 0
 
     @property
     def effects(self) -> Set[Effect]:
+        """
+        :return: The effects currently affecting the pokemon.
+        :rtype: Set[Effect]
+        """
         return self._effects
 
     @property
     def fainted(self) -> bool:
-        return Status.FNT == self._status
+        """
+        :return: Wheter the pokemon has fainted.
+        :rtype: bool
+        """
+        return Status.FNT in self._status
 
     @property
     def gender(self) -> PokemonGender:
+        """
+        :return: The pokemon's gender.
+        :rtype: PokemonGender
+        """
         return self._gender
 
     @property
     def height(self) -> float:
+        """
+        :return: The pokemon's height, in meters.
+        :rtype: float
+        """
         return self._heightm
 
     @property
     def item(self) -> Optional[str]:
+        """
+        :return: The pokemon's item.
+        :rtype: Optional[str]
+        """
         return self._item
 
     @item.setter
@@ -359,18 +411,36 @@ class Pokemon:
 
     @property
     def level(self) -> int:
+        """
+        :return: The pokemon's level.
+        :rtype: int
+        """
         return self._level
 
     @property
     def max_hp(self) -> int:
+        """
+        :return: The pokemon's max hp. For your pokemons, this is the actual value.
+            For opponent's pokemon, this value depends on showdown information: it can
+            be on a scale from 0 to 100 or on a pixel scale.
+        :rtype: int
+        """
         return self._max_hp
 
     @property
     def moves(self) -> Dict[str, Move]:
+        """
+        :return: A dictionary of the pokemon's known moves.
+        :rtype: Dict[str, Move]
+        """
         return self._moves
 
     @property
     def must_recharge(self) -> bool:
+        """
+        :return: A boolean indicating whether the pokemon must recharge.
+        :rtype: bool
+        """
         return self._must_recharge
 
     @must_recharge.setter
@@ -378,27 +448,51 @@ class Pokemon:
         self._must_recharge = value
 
     @property
-    def pokeball(self) -> str:
+    def pokeball(self) -> Optional[str]:
+        """
+        :return: The pokeball in which is the pokemon.
+        :rtype: Optional[str]
+        """
         return self._pokeball
 
     @property
     def possible_abilities(self) -> List[str]:
+        """
+        :return: The list of possible abilities for this pokemon.
+        :rtype: List[str]
+        """
         return self._possible_abilities
 
     @property
     def preparing(self) -> bool:
+        """
+        :return: Whether this pokemon is preparing a multi-turn move.
+        :rtype: bool
+        """
         return self._preparing
 
     @property
     def shiny(self) -> bool:
+        """
+        :return: Whether this pokemon is shiny.
+        :rtype: bool
+        """
         return bool(self._shiny)
 
     @property
-    def species(self) -> Optional[str]:
+    def species(self) -> str:
+        """
+        :return: The pokemon's species.
+        :rtype: Optional[str]
+        """
         return self._species
 
     @property
     def status(self) -> Optional[Status]:
+        """
+        :return: The pokemon's status.
+        :rtype: Optional[Status]
+        """
         return self._status
 
     @status.setter
@@ -409,16 +503,32 @@ class Pokemon:
 
     @property
     def type_1(self) -> PokemonType:
+        """
+        :return: The pokemon's first type.
+        :rtype: PokemonType
+        """
         return self._type_1
 
     @property
     def type_2(self) -> Optional[PokemonType]:
+        """
+        :return: The pokemon's second type.
+        :rtype: Optional[PokemonType]
+        """
         return self._type_2
 
     @property
     def types(self) -> Tuple[PokemonType, Optional[PokemonType]]:
+        """
+        :return: The pokemon's types, as a tuple.
+        :rtype: Tuple[PokemonType, Optional[PokemonType]]
+        """
         return self.type_1, self._type_2
 
     @property
     def weight(self) -> float:
+        """
+        :return: The pokemon's weight, in kilograms.
+        :rtype: float
+        """
         return self._weightkg
