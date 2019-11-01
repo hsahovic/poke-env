@@ -23,3 +23,8 @@ def test_move_base_power():
     for move in move_generator():
         assert isinstance(move.base_power, int)
         assert 0 <= move.base_power <= 255
+
+
+def test_move_breaks_protect():
+    for move in move_generator():
+        assert isinstance(move.breaks_protect, bool)
