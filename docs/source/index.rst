@@ -22,7 +22,7 @@ Installing ``poke-env``
 
 Installation can be performed via pip with:
 
-.. code-block::
+.. code-block:: bash
 
     pip install poke-env
 
@@ -43,20 +43,20 @@ Therefore, it is recommended to host you own server. Fortunately, Pokemon Showdo
 
 First, you will need to `install node v10+ <https://nodejs.org/en/download/>`__. Then, you can clone the showdown repo:
 
-.. code-block::
+.. code-block:: bash
 
     git clone https://github.com/hsahovic/Pokemon-Showdown.git
 
 Everything is now almost ready to create your first agent: you just have to start the showdown server:
 
-.. code-block::
+.. code-block:: bash
 
     cd Pokemon-Showdown
     node pokemon-showdown
 
 You should then get something like this:
 
-.. code-block::
+.. code-block:: bash
 
     NEW GLOBAL: global
     NEW CHATROOM: lobby
