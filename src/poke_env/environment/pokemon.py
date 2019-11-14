@@ -140,7 +140,7 @@ class Pokemon:
 
         id_ = Move.retrieve_id(move)
 
-        if Move.should_be_stored(id_):
+        if Move._should_be_stored(id_):
             if id_ not in self._moves:
                 self._moves[id_] = Move(id_)
 
