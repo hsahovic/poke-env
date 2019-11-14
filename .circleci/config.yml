@@ -58,13 +58,13 @@ jobs:
           name: black
           command: |
             . venv/bin/activate
-            black src/ test/
+            black src/ unit_tests/
 
       - run:
           name: flake8
           command: |
             . venv/bin/activate
-            flake8 src/ test/
+            flake8 src/ unit_tests/
 
       - run:
           name: pyre
@@ -82,7 +82,7 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            pytest --cov=src/poke_env test/
+            pytest --cov=src/poke_env unit_tests/
 
       - run:
           name: Converting coverage to xml
