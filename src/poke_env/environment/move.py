@@ -55,7 +55,7 @@ class Move:
         self._current_pp -= 1
 
     @staticmethod
-    def _should_be_stored(move_id) -> bool:
+    def should_be_stored(move_id) -> bool:
         if move_id not in special_moves:
             return True
         else:
