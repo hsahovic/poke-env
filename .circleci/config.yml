@@ -82,7 +82,7 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            pytest --cov=src/poke_env unit_tests/
+            PYTHONPATH=src pytest --cov=src/poke_env unit_tests/
 
       - run:
           name: Converting coverage to xml
