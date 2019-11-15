@@ -118,9 +118,27 @@ jobs:
             curl https://www.npmjs.com/install.sh | sudo bash
 
       - run:
-          name: Download and start showdown
+          name: Download showdown
           command: |
-            git clone https://github.com/hsahovic/Pokemon-Showdown.git; cd Pokemon-Showdown; npm install; cd ..;./Pokemon-Showdown/pokemon-showdown&
+            git clone https://github.com/hsahovic/Pokemon-Showdown.git
+
+      - run:
+          name: Install showdown dependencies
+          command: |
+            npm install Pokemon-Showdown
+
+      - run:
+          name: Start showdown server in the background
+          command: |
+            ./Pokemon-Showdown/pokemon-showdown
+          background: true
+
+      - run:
+          name: Wait for server availability
+          command: |
+            until $(curl --output /dev/null --silent --head --fail http://localhost:8000); do
+              sleep .01
+            done
 
       - run:
           name: Run integration tests
@@ -131,3 +149,5 @@ jobs:
     <<: *test-template
     docker:
       - image: circleci/python:3.7
+
+
