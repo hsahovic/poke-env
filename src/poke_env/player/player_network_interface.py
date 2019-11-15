@@ -9,6 +9,7 @@ import websockets  # pyre-ignore
 
 from abc import ABC
 from abc import abstractmethod
+from asyncio import CancelledError
 from asyncio import ensure_future
 from asyncio import Event
 from asyncio import Lock
@@ -65,7 +66,9 @@ class PlayerNetwork(ABC):
         self._logger: Logger = self._create_player_logger(log_level)  # pyre-ignore
 
         if start_listening:
-            ensure_future(self.listen())
+            self._listening_coroutine = ensure_future(self.listen())
+        else:
+            self._listening_coroutine = None
 
     async def _accept_challenge(self, username: str) -> None:
         assert self.logged_in.is_set()
@@ -114,40 +117,43 @@ class PlayerNetwork(ABC):
         :param message: The message to parse.
         :type message: str
         """
-        self.logger.debug("Received message to handle: %s", message)
+        try:
+            self.logger.debug("Received message to handle: %s", message)
 
-        # Showdown websocket messages are pipe-separated sequences
-        split_message = message.split("|")
-        assert len(split_message) > 1
-        # The type of message is determined by the first entry in the message
-        # For battles, this is the zero-th entry
-        # Otherwise it is the one-th entry
-        if split_message[1] == "challstr":
-            # Confirms connection to the server: we can login
-            await self._log_in(split_message)
-        elif (
-            split_message[1] == "updateuser"
-            and split_message[2] == " " + self._username
-        ):
-            # Confirms successful login
-            self.logged_in.set()
-        elif "updatechallenges" in split_message[1]:
-            # Contain information about current challenge
-            await self._update_challenges(split_message)
-        elif split_message[0].startswith(">battle"):
-            # Battle update
-            await self._handle_battle_message(message)
-        elif split_message[1] in ["updatesearch", "popup", "updateuser"]:
-            self.logger.debug("Ignored message: %s", message)
+            # Showdown websocket messages are pipe-separated sequences
+            split_message = message.split("|")
+            assert len(split_message) > 1
+            # The type of message is determined by the first entry in the message
+            # For battles, this is the zero-th entry
+            # Otherwise it is the one-th entry
+            if split_message[1] == "challstr":
+                # Confirms connection to the server: we can login
+                await self._log_in(split_message)
+            elif (
+                split_message[1] == "updateuser"
+                and split_message[2] == " " + self._username
+            ):
+                # Confirms successful login
+                self.logged_in.set()
+            elif "updatechallenges" in split_message[1]:
+                # Contain information about current challenge
+                await self._update_challenges(split_message)
+            elif split_message[0].startswith(">battle"):
+                # Battle update
+                await self._handle_battle_message(message)
+            elif split_message[1] in ["updatesearch", "popup", "updateuser"]:
+                self.logger.debug("Ignored message: %s", message)
+                pass
+            elif split_message[1] in ["nametaken"]:
+                self.logger.critical("Error message received: %s", message)
+                raise ShowdownException("Error message received: %s", message)
+            elif split_message[1] == "pm":
+                self.logger.info("Received pm: %s", split_message)
+            else:
+                self.logger.critical("Unhandled message: %s", message)
+                raise NotImplementedError("Unhandled message: %s" % message)
+        except CancelledError:
             pass
-        elif split_message[1] in ["nametaken"]:
-            self.logger.critical("Error message received: %s", message)
-            raise ShowdownException("Error message received: %s", message)
-        elif split_message[1] == "pm":
-            self.logger.info("Received pm: %s", split_message)
-        else:
-            self.logger.critical("Unhandled message: %s", message)
-            raise NotImplementedError("Unhandled message: %s" % message)
 
     async def _log_in(self, split_message: List[str]) -> None:
         """Log the player with specified username and password.
@@ -205,6 +211,7 @@ class PlayerNetwork(ABC):
     async def listen(self) -> None:
         """Listen to a showdown websocket and dispatch messages to be handled."""
         self.logger.info("Starting listening to showdown websocket")
+        coroutines = []
         try:
             async with websockets.connect(  # pyre-ignore
                 self.websocket_url
@@ -213,11 +220,20 @@ class PlayerNetwork(ABC):
                 while True:
                     message = str(await websocket.recv())
                     self.logger.info("<<< %s", message)
-                    ensure_future(self._handle_message(message))
+                    coroutines.append(ensure_future(self._handle_message(message)))
         except websockets.exceptions.ConnectionClosedOK:
             self.logger.warning(
                 "Websocket connection with %s closed", self.websocket_url
             )
+        except (CancelledError, RuntimeError):
+            pass
+        finally:
+            for coroutine in coroutines:
+                coroutine.cancel()
+
+    async def stop_listening(self) -> None:
+        self._listening_coroutine.cancel()
+        await self._websocket.close()
 
     @abstractmethod
     async def _handle_battle_message(self, message: str) -> None:
