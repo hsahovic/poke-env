@@ -31,9 +31,9 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "requirements.txt" }}
+            - requirements-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}
             # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
+            - requirements
 
       - run:
           name: install dependencies
@@ -52,19 +52,19 @@ jobs:
       - save_cache:
           paths:
             - ./venv
-          key: v1-dependencies-{{ checksum "requirements.txt" }}
+          key: requirements-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}
 
       - run:
           name: black
           command: |
             . venv/bin/activate
-            black src/ test/
+            black src/ unit_tests/
 
       - run:
           name: flake8
           command: |
             . venv/bin/activate
-            flake8 src/ test/
+            flake8 src/ unit_tests/
 
       - run:
           name: pyre
@@ -82,7 +82,7 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            pytest --cov=src/poke_env test/
+            PYTHONPATH=src pytest --cov=src/poke_env unit_tests/
 
       - run:
           name: Converting coverage to xml
@@ -92,7 +92,62 @@ jobs:
 
       - codecov/upload:
           file: coverage.xml
+
+      - run:
+          name: Build package
+          command: |
+            . venv/bin/activate
+            python setup.py sdist bdist_wheel
+
+      - run:
+          name: Install built package
+          command: |
+            . venv/bin/activate
+            pip install dist/*.whl
+
+      - run:
+          name: Package-based tests
+          command: |
+            . venv/bin/activate
+            pytest unit_tests/
+
+      - run:
+          name: Install node
+          command: |
+            curl -sSL "https://nodejs.org/dist/v12.13.0/node-v12.13.0-linux-x64.tar.xz" | sudo tar --strip-components=2 -xJ -C /usr/local/bin/ node-v12.13.0-linux-x64/bin/node
+            curl https://www.npmjs.com/install.sh | sudo bash
+
+      - run:
+          name: Download showdown
+          command: |
+            git clone https://github.com/hsahovic/Pokemon-Showdown.git
+
+      - run:
+          name: Install showdown dependencies
+          command: |
+            npm install Pokemon-Showdown
+
+      - run:
+          name: Start showdown server in the background
+          command: |
+            cd Pokemon-Showdown;./pokemon-showdown
+          background: true
+
+      - run:
+          name: Wait for server availability
+          command: |
+            until $(curl --output /dev/null --silent --head --fail http://localhost:8000); do
+              sleep .01
+            done
+
+      - run:
+          name: Run integration tests
+          command: |
+            . venv/bin/activate
+            pytest integration_tests/
   test-3-7:
     <<: *test-template
     docker:
       - image: circleci/python:3.7
+
+

@@ -200,7 +200,7 @@ class Battle:
             self.get_pokemon(pokemon)._end_effect(effect)
         elif split_message[1] == "-endability":
             pokemon = split_message[2]
-            self.get_pokemon(pokemon).endability()
+            self.get_pokemon(pokemon).ability = None
         elif split_message[1] == "-enditem":
             pokemon, item = split_message[2:4]
             self.get_pokemon(pokemon)._end_item(item)
