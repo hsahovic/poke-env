@@ -116,6 +116,17 @@ jobs:
           command: |
             curl -sSL "https://nodejs.org/dist/v12.13.0/node-v12.13.0-linux-x64.tar.xz" | sudo tar --strip-components=2 -xJ -C /usr/local/bin/ node-v12.13.0-linux-x64/bin/node
             curl https://www.npmjs.com/install.sh | sudo bash
+
+      - run:
+          name: Download and start showdown
+          command: |
+            git clone https://github.com/hsahovic/Pokemon-Showdown.git; cd Pokemon-Showdown; npm install; cd ..;./Pokemon-Showdown/pokemon-showdown&
+
+      - run:
+          name: Run tests
+          command: |
+            . venv/bin/activate
+            pytest
   test-3-7:
     <<: *test-template
     docker:
