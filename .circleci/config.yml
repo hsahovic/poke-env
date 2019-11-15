@@ -123,10 +123,10 @@ jobs:
             git clone https://github.com/hsahovic/Pokemon-Showdown.git; cd Pokemon-Showdown; npm install; cd ..;./Pokemon-Showdown/pokemon-showdown&
 
       - run:
-          name: Run tests
+          name: Run integration tests
           command: |
             . venv/bin/activate
-            pytest
+            pytest integration_tests/
   test-3-7:
     <<: *test-template
     docker:
