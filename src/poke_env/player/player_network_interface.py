@@ -67,8 +67,6 @@ class PlayerNetwork(ABC):
 
         if start_listening:
             self._listening_coroutine = ensure_future(self.listen())
-        else:
-            self._listening_coroutine = None
 
     async def _accept_challenge(self, username: str) -> None:
         assert self.logged_in.is_set()
@@ -232,7 +230,8 @@ class PlayerNetwork(ABC):
                 coroutine.cancel()
 
     async def stop_listening(self) -> None:
-        self._listening_coroutine.cancel()
+        if self._listening_coroutine is not None:
+            self._listening_coroutine.cancel()
         await self._websocket.close()
 
     @abstractmethod
