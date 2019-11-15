@@ -130,7 +130,7 @@ jobs:
       - run:
           name: Start showdown server in the background
           command: |
-            ./Pokemon-Showdown/pokemon-showdown
+            cd Pokemon-Showdown;./pokemon-showdown
           background: true
 
       - run:
