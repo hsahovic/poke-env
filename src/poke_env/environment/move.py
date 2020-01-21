@@ -417,7 +417,7 @@ class Move:
         :rtype: Optional[Status]
         """
         if "status" in self.entry:
-            return Status(self.entry["status"].upper())
+            return Status[self.entry["status"].upper()]
         return None
 
     @property
@@ -514,9 +514,6 @@ class Move:
 class EmptyMove(Move):
     def __init__(self, move_id):
         self._id: str = move_id
-
-    # def __getattr__(self, name):
-    # return 0
 
     def __getattribute__(self, name):
         try:

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from poke_env.data import MOVES
 from poke_env.environment.move import Move
+from poke_env.environment.status import Status
 
 
 def move_generator():
@@ -38,3 +39,21 @@ def test_self_boosts():
     assert fire_blast.self_boost is None
     assert close_combat.self_boost == {"def": -1, "spd": -1}
     assert clanging_scales.self_boost == {"def": -1}
+
+    for move in move_generator():
+        move.self_boost
+
+
+def test_status():
+    dark_void = Move("darkvoid")
+    sleep_powder = Move("sleeppowder")
+    flame_thrower = Move("flamethrower")
+    thunder_wave = Move("thunderwave")
+
+    assert dark_void.status == Status["SLP"]
+    assert sleep_powder.status == Status["SLP"]
+    assert thunder_wave.status == Status["PAR"]
+    assert flame_thrower.status is None
+
+    for move in move_generator():
+        move.status
