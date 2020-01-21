@@ -211,9 +211,7 @@ class PlayerNetwork(ABC):
         self.logger.info("Starting listening to showdown websocket")
         coroutines = []
         try:
-            async with websockets.connect(  # pyre-ignore
-                self.websocket_url
-            ) as websocket:
+            async with websockets.connect(self.websocket_url) as websocket:
                 self._websocket = websocket
                 while True:
                     message = str(await websocket.recv())

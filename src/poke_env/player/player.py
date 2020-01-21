@@ -291,7 +291,7 @@ class Player(PlayerNetwork, ABC):
         for pokemon in battle.available_switches:
             available_orders.append(self.create_order(pokemon))
 
-        order = np.random.choice(available_orders)  # pyre-ignore
+        order = np.random.choice(available_orders)
         return order
 
     async def send_challenges(
