@@ -36,7 +36,7 @@ def test_self_boosts():
     assert clanging_scales.self_boost == {"def": -1}
 
     for move in move_generator():
-        move.self_boost
+        assert move.self_boost is None or isinstance(move.self_boost, dict)
 
 
 def test_status():
@@ -51,7 +51,7 @@ def test_status():
     assert flame_thrower.status is None
 
     for move in move_generator():
-        move.status
+        assert move.status is None or isinstance(move.status, Status)
 
 
 def test_drain():
@@ -62,7 +62,8 @@ def test_drain():
     assert flame_thrower.drain == 0
 
     for move in move_generator():
-        move.drain
+        assert isinstance(move.drain, float)
+        assert 0 <= move.drain <= 1
 
 
 def test_heal():
@@ -73,7 +74,8 @@ def test_heal():
     assert flame_thrower.heal == 0
 
     for move in move_generator():
-        move.heal
+        assert isinstance(move.heal, float)
+        assert 0 <= move.heal <= 1
 
 
 def test_recoil():
@@ -84,7 +86,8 @@ def test_recoil():
     assert flame_thrower.recoil == 0
 
     for move in move_generator():
-        move.recoil
+        assert isinstance(move.recoil, float)
+        assert 0 <= move.recoil <= 1
 
 
 def test_n_hit():
@@ -97,7 +100,7 @@ def test_n_hit():
     assert gear_grind.n_hit == (2, 2)
 
     for move in move_generator():
-        move.n_hit
+        assert isinstance(move.n_hit, tuple) and len(move.n_hit) == 2
 
 
 def test_accuracy():

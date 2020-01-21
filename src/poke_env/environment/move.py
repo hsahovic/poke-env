@@ -161,7 +161,7 @@ class Move:
         """
         if "drain" in self.entry:
             return self.entry["drain"]["0"] / self.entry["drain"]["1"]
-        return 0
+        return 0.0
 
     @property
     def entry(self) -> dict:
@@ -205,7 +205,7 @@ class Move:
         """
         if "heal" in self.entry:
             return self.entry["heal"]["0"] / self.entry["heal"]["1"]
-        return 0
+        return 0.0
 
     @property
     def id(self) -> str:
@@ -326,7 +326,7 @@ class Move:
             return self.entry["recoil"]["0"] / self.entry["recoil"]["1"]
         elif "struggleRecoil" in self.entry:
             return 0.25
-        return 0
+        return 0.0
 
     @staticmethod
     @lru_cache(maxsize=4096)
