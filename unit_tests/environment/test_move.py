@@ -14,12 +14,6 @@ def test_all_moves_instanciate():
         pass
 
 
-def test_move_accuracies():
-    for move in move_generator():
-        assert isinstance(move.accuracy, float)
-        assert 0 <= move.accuracy <= 1
-
-
 def test_move_base_power():
     for move in move_generator():
         assert isinstance(move.base_power, int)
@@ -103,3 +97,17 @@ def test_n_hit():
 
     for move in move_generator():
         move.n_hit
+
+
+def test_accuracy():
+    volt_thunderbolt = Move("10000000voltthunderbolt")
+    absorb = Move("absorb")
+    aeroblast = Move("aeroblast")
+
+    assert volt_thunderbolt.accuracy == 1
+    assert absorb.accuracy == 1
+    assert aeroblast.accuracy == 0.95
+
+    for move in move_generator():
+        assert isinstance(move.accuracy, float)
+        assert 0 <= move.accuracy <= 1

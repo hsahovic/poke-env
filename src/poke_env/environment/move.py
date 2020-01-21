@@ -68,10 +68,10 @@ class Move:
         :rtype: float
         """
         accuracy = self.entry["accuracy"]
-        if isinstance(accuracy, int):
-            return accuracy / 100
         if accuracy is True:
-            return 1
+            return 1.0
+        elif isinstance(accuracy, int):
+            return accuracy / 100
         raise ShowdownException("Unmanaged accuracy: %s", accuracy)
 
     @property
