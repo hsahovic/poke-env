@@ -240,12 +240,20 @@ class Move:
         return self.entry.get("ignoreEvasion", False)
 
     @property
-    def ignore_immunity(self) -> bool:
+    def ignore_immunity(self) -> Union[bool, Set[PokemonType]]:
         """
-        :return: Whether the opponent's immunity is ignored.
-        :rtype: bool
+        :return: Whether the opponent's immunity is ignored, or a list of ignored
+            immunities.
+        :rtype: bool or set of Types
         """
-        return self.entry.get("ignoreImmunity", False)
+        if "ignoreImmunity" in self.entry:
+            if isinstance(self.entry["ignoreImmunity"], bool):
+                return self.entry["ignoreImmunity"]
+            else:
+                return {
+                    PokemonType[t.upper()] for t in self.entry["ignoreImmunity"].keys()
+                }
+        return False
 
     @property
     def is_z(self) -> bool:

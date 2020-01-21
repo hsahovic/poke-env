@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from poke_env.data import MOVES
 from poke_env.environment.move import Move
+from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.status import Status
 
 
@@ -111,3 +112,18 @@ def test_accuracy():
     for move in move_generator():
         assert isinstance(move.accuracy, float)
         assert 0 <= move.accuracy <= 1
+
+
+def test_ignore_immunity():
+    thousand_arrows = Move("thousandarrows")
+    thunder_wave = Move("thunderwave")
+    bide = Move("bide")
+    flame_thrower = Move("flamethrower")
+
+    assert thousand_arrows.ignore_immunity == {PokemonType["GROUND"]}
+    assert thunder_wave.ignore_immunity is False
+    assert bide.ignore_immunity is True
+    assert flame_thrower.ignore_immunity is False
+
+    for move in move_generator():
+        assert type(move.ignore_immunity) in [bool, set]
