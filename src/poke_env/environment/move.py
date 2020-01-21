@@ -359,7 +359,7 @@ class Move:
         return None
 
     @property
-    def self_boost(self) -> Dict[str, int]:
+    def self_boost(self) -> Optional[Dict[str, int]]:
         """
         :return: Boosts applied to the move's user.
         :rtype: Dict[str, int]
