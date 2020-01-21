@@ -356,7 +356,11 @@ class Move:
         :return: Boosts applied to the move's user.
         :rtype: Dict[str, int]
         """
-        return self.entry.get("selfBoost", None)
+        if "selfBoost" in self.entry:
+            return self.entry["selfBoost"].get("boosts", None)
+        elif "self" in self.entry and "boosts" in self.entry["self"]:
+            return self.entry["self"]["boosts"]
+        return None
 
     @property
     def self_destruct(self) -> Optional[str]:

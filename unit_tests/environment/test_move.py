@@ -28,3 +28,13 @@ def test_move_base_power():
 def test_move_breaks_protect():
     for move in move_generator():
         assert isinstance(move.breaks_protect, bool)
+
+
+def test_self_boosts():
+    clanging_scales = Move("clangingscales")
+    close_combat = Move("closecombat")
+    fire_blast = Move("fireblast")
+
+    assert fire_blast.self_boost is None
+    assert close_combat.self_boost == {"def": -1, "spd": -1}
+    assert clanging_scales.self_boost == {"def": -1}
