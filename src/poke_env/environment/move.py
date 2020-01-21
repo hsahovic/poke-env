@@ -160,7 +160,7 @@ class Move:
         :rtype: float
         """
         if "drain" in self.entry:
-            return self.entry["drain"][0] / self.entry["drain"][1]
+            return self.entry["drain"]["0"] / self.entry["drain"]["1"]
         return 0
 
     @property
@@ -204,7 +204,7 @@ class Move:
         :rtype: float
         """
         if "heal" in self.entry:
-            return self.entry["heal"][0] / self.entry["heal"][1]
+            return self.entry["heal"]["0"] / self.entry["heal"]["1"]
         return 0
 
     @property
@@ -270,8 +270,8 @@ class Move:
         :rtype: Tuple[int, int]
         """
         if "multihit" in self.entry:
-            if isinstance(self.entry["multihit"], list):
-                return (self.entry["multihit"][0], self.entry["multihit"][1])
+            if isinstance(self.entry["multihit"], dict):
+                return (self.entry["multihit"]["0"], self.entry["multihit"]["1"])
             else:
                 return (self.entry["multihit"], self.entry["multihit"])
         return (1, 1)
@@ -315,7 +315,7 @@ class Move:
         :rtype: float
         """
         if "recoil" in self.entry:
-            return self.entry["recoil"] / self.entry["recoil"][1]
+            return self.entry["recoil"]["0"] / self.entry["recoil"]["1"]
         elif "struggleRecoil" in self.entry:
             return 0.25
         return 0

@@ -57,3 +57,49 @@ def test_status():
 
     for move in move_generator():
         move.status
+
+
+def test_drain():
+    draining_kiss = Move("drainingkiss")
+    flame_thrower = Move("flamethrower")
+
+    assert draining_kiss.drain == 0.75
+    assert flame_thrower.drain == 0
+
+    for move in move_generator():
+        move.drain
+
+
+def test_heal():
+    roost = Move("roost")
+    flame_thrower = Move("flamethrower")
+
+    assert roost.heal == 0.5
+    assert flame_thrower.heal == 0
+
+    for move in move_generator():
+        move.heal
+
+
+def test_recoil():
+    flare_blitz = Move("flareblitz")
+    flame_thrower = Move("flamethrower")
+
+    assert flare_blitz.recoil == 0.33
+    assert flame_thrower.recoil == 0
+
+    for move in move_generator():
+        move.recoil
+
+
+def test_n_hit():
+    furys_wipes = Move("furyswipes")
+    flame_thrower = Move("flamethrower")
+    gear_grind = Move("geargrind")
+
+    assert furys_wipes.n_hit == (2, 5)
+    assert flame_thrower.n_hit == (1, 1)
+    assert gear_grind.n_hit == (2, 2)
+
+    for move in move_generator():
+        move.n_hit
