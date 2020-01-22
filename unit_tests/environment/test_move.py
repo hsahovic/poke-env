@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from poke_env.data import MOVES
 from poke_env.environment.move import Move
+from poke_env.environment.move_category import MoveCategory
 from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.status import Status
 
@@ -26,7 +27,32 @@ def test_accuracy():
 
 def test_all_moves_instanciate():
     for move in move_generator():
-        pass
+        move_from_id = Move(move_id=move._id)
+        assert str(move) == str(move_from_id)
+
+
+def test_can_z_move():
+    metronome = Move("metronome")
+    flame_thrower = Move("flamethrower")
+
+    assert metronome.can_z_move is False
+    assert flame_thrower.can_z_move is True
+
+    for move in move_generator():
+        assert isinstance(move.can_z_move, bool)
+
+
+def test_category():
+    flame_thrower = Move("flamethrower")
+    close_combat = Move("closecombat")
+    protect = Move("protect")
+
+    assert flame_thrower.category == MoveCategory["SPECIAL"]
+    assert close_combat.category == MoveCategory["PHYSICAL"]
+    assert protect.category == MoveCategory["STATUS"]
+
+    for move in move_generator():
+        assert isinstance(move.category, MoveCategory)
 
 
 def test_drain():
