@@ -491,7 +491,7 @@ class Move:
         :rtype: Optional[Weather]
         """
         if "weather" in self.entry:
-            return Weather(self.entry["weather"].upper())
+            return Weather[self.entry["weather"].upper()]
         return None
 
     @property

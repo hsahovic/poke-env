@@ -80,7 +80,7 @@ class TrainablePlayer(Player, ABC):
         pass
 
     @abstractmethod
-    def state_to_action(self, state: np.array, battle: Battle):
+    def state_to_action(self, state: np.array, battle: Battle):  # pyre-ignore
         pass
 
     @abstractmethod
@@ -100,7 +100,7 @@ class TrainablePlayer(Player, ABC):
         return move
 
     async def train_against(
-        self, opponent: Player, n_battles=100, train_opponent: bool = False
+        self, opponent: "TrainablePlayer", n_battles=100, train_opponent: bool = False
     ):
         self._training_data = {}
         if train_opponent:
