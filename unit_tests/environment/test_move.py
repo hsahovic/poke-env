@@ -295,6 +295,19 @@ def test_recoil():
         assert 0 <= move.recoil <= 1
 
 
+def test_secondary():
+    fake_out = Move("fakeout")
+    flame_thrower = Move("flamethrower")
+    acid_armor = Move("acidarmor")
+
+    assert fake_out.secondary == {"chance": 100, "volatileStatus": "flinch"}
+    assert flame_thrower.secondary == {"chance": 10, "status": "brn"}
+    assert acid_armor.secondary is None
+
+    for move in move_generator():
+        assert move.secondary is None or isinstance(move.secondary, dict)
+
+
 def test_self_boosts():
     clanging_scales = Move("clangingscales")
     close_combat = Move("closecombat")
@@ -306,6 +319,52 @@ def test_self_boosts():
 
     for move in move_generator():
         assert move.self_boost is None or isinstance(move.self_boost, dict)
+
+
+def test_self_destruct():
+    flame_thrower = Move("flamethrower")
+    self_destruct = Move("selfdestruct")
+
+    assert self_destruct.self_destruct == "always"
+    assert flame_thrower.self_destruct is None
+
+    for move in move_generator():
+        assert move.self_destruct is None or isinstance(move.self_destruct, str)
+
+
+def test_self_switch():
+    flame_thrower = Move("flamethrower")
+    baton_pass = Move("batonpass")
+    parting_shot = Move("partingshot")
+
+    assert baton_pass.self_switch == "copyvolatile"
+    assert flame_thrower.self_switch is False
+    assert parting_shot.self_switch is True
+
+    for move in move_generator():
+        assert isinstance(move.self_switch, bool) or isinstance(move.self_switch, str)
+
+
+def test_side_condition():
+    flame_thrower = Move("flamethrower")
+    quick_guard = Move("quickguard")
+
+    assert quick_guard.side_condition == "quickguard"
+    assert flame_thrower.side_condition is None
+
+    for move in move_generator():
+        assert isinstance(move.side_condition, str) or move.side_condition is None
+
+
+def test_sleep_usable():
+    flame_thrower = Move("flamethrower")
+    sleep_talk = Move("sleeptalk")
+
+    assert sleep_talk.sleep_usable is True
+    assert flame_thrower.sleep_usable is False
+
+    for move in move_generator():
+        assert isinstance(move.sleep_usable, bool)
 
 
 def test_status():

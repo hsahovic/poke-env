@@ -385,12 +385,12 @@ class Move:
         return self.entry.get("selfdestruct", None)
 
     @property
-    def self_switch(self) -> Optional[str]:
+    def self_switch(self) -> Union[str, bool]:
         """
         :return: What kind of self swtich this move implies for the user.
         :rtype: Optional[str]
         """
-        return self.entry.get("selfSwitch", None)
+        return self.entry.get("selfSwitch", False)
 
     @property
     def side_condition(self) -> Optional[str]:
