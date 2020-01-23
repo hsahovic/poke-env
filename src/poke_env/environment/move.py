@@ -4,7 +4,6 @@ from poke_env.environment.move_category import MoveCategory
 from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.status import Status
 from poke_env.environment.weather import Weather
-from poke_env.exceptions import ShowdownException
 from poke_env.utils import to_id_str
 
 from functools import lru_cache
@@ -71,9 +70,7 @@ class Move:
         accuracy = self.entry["accuracy"]
         if accuracy is True:
             return 1.0
-        elif isinstance(accuracy, int):
-            return accuracy / 100
-        raise ShowdownException("Unmanaged accuracy: %s", accuracy)
+        return accuracy / 100
 
     @property
     def base_power(self) -> int:
@@ -138,7 +135,7 @@ class Move:
     @property
     def damage(self) -> Union[int, str]:
         """
-        :return: The move's fix damages. Can be an int our 'level' for moves such as
+        :return: The move's fix damages. Can be an int or 'level' for moves such as
             Seismic Toss.
         :rtype: Union[int, str]
         """
@@ -270,7 +267,7 @@ class Move:
         :return: Whether the move is a z move.
         :rtype: bool
         """
-        return self.entry.get("isZ", False)
+        return "isZ" in self.entry
 
     @property
     def max_pp(self) -> int:

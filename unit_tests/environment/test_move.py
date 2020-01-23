@@ -10,6 +10,7 @@ from poke_env.environment.status import Status
 def move_generator():
     for move in MOVES:
         yield Move(move)
+        yield Move("z" + move)
 
 
 def test_accuracy():
@@ -28,8 +29,19 @@ def test_accuracy():
 
 def test_all_moves_instanciate():
     for move in move_generator():
-        move_from_id = Move(move_id=move._id)
+        move_from_id = Move(move_id=move.id)
         assert str(move) == str(move_from_id)
+
+
+def test_boosts():
+    sharpen = Move("sharpen")
+    flame_thrower = Move("flamethrower")
+
+    assert flame_thrower.boosts is None
+    assert sharpen.boosts == {"atk": 1}
+
+    for move in move_generator():
+        assert move.boosts is None or isinstance(move.boosts, dict)
 
 
 def test_can_z_move():
@@ -56,6 +68,49 @@ def test_category():
         assert isinstance(move.category, MoveCategory)
 
 
+def test_crit_ratio():
+    aeroblast = Move("aeroblast")
+    flame_thrower = Move("flamethrower")
+
+    assert aeroblast.crit_ratio == 2
+    assert flame_thrower.crit_ratio == 0
+
+    for move in move_generator():
+        assert isinstance(move.crit_ratio, int)
+
+
+def test_current_pp():
+    for move in move_generator():
+        assert isinstance(move.current_pp, int)
+        assert move.current_pp == move.max_pp
+
+
+def test_damage():
+    flame_thrower = Move("flamethrower")
+    night_shade = Move("nightshade")
+    dragon_rage = Move("dragonrage")
+
+    assert flame_thrower.damage == 0
+    assert night_shade.damage == "level"
+    assert dragon_rage.damage == 40
+
+    for move in move_generator():
+        assert isinstance(move.damage, int) or isinstance(move.damage, str)
+
+
+def test_defensive_category():
+    psyshock = Move("psyshock")
+    close_combat = Move("closecombat")
+    flame_thrower = Move("flamethrower")
+
+    assert psyshock.defensive_category == MoveCategory["PHYSICAL"]
+    assert close_combat.defensive_category == MoveCategory["PHYSICAL"]
+    assert flame_thrower.defensive_category == MoveCategory["SPECIAL"]
+
+    for move in move_generator():
+        assert isinstance(move.defensive_category, MoveCategory)
+
+
 def test_drain():
     draining_kiss = Move("drainingkiss")
     flame_thrower = Move("flamethrower")
@@ -68,12 +123,12 @@ def test_drain():
         assert 0 <= move.drain <= 1
 
 
-def test_empty_move():
-    # instanciation
-    special_move = EmptyMove("justamove")
+def test_empty_move_basic():
+    empty_move = EmptyMove("justamove")
 
-    assert special_move.drain == 0
-    assert special_move.base_power == 0
+    assert empty_move.drain == 0
+    assert empty_move.base_power == 0
+    assert empty_move.is_empty is True
 
 
 def test_heal():
@@ -86,6 +141,39 @@ def test_heal():
     for move in move_generator():
         assert isinstance(move.heal, float)
         assert 0 <= move.heal <= 1
+
+
+def test_ignore_ability():
+    flame_thrower = Move("flamethrower")
+    menacing_moonraze_maelstrom = Move("menacingmoonrazemaelstrom")
+
+    assert menacing_moonraze_maelstrom.ignore_ability is True
+    assert flame_thrower.ignore_ability is False
+
+    for move in move_generator():
+        assert isinstance(move.ignore_ability, bool)
+
+
+def test_ignore_defensive():
+    flame_thrower = Move("flamethrower")
+    chipaway = Move("chipaway")
+
+    assert chipaway.ignore_defensive is True
+    assert flame_thrower.ignore_defensive is False
+
+    for move in move_generator():
+        assert isinstance(move.ignore_defensive, bool)
+
+
+def test_ignore_evasion():
+    flame_thrower = Move("flamethrower")
+    chipaway = Move("chipaway")
+
+    assert chipaway.ignore_evasion is True
+    assert flame_thrower.ignore_evasion is False
+
+    for move in move_generator():
+        assert isinstance(move.ignore_evasion, bool)
 
 
 def test_ignore_immunity():
@@ -101,6 +189,28 @@ def test_ignore_immunity():
 
     for move in move_generator():
         assert type(move.ignore_immunity) in [bool, set]
+
+
+def test_is_z():
+    flame_thrower = Move("flamethrower")
+    clangorous_soul_blaze = Move("clangoroussoulblaze")
+
+    assert clangorous_soul_blaze.is_z is True
+    assert flame_thrower.is_z is False
+
+    for move in move_generator():
+        assert isinstance(move.is_z, bool)
+
+
+def test_force_switch():
+    flame_thrower = Move("flamethrower")
+    dragon_tail = Move("dragontail")
+
+    assert flame_thrower.force_switch is False
+    assert dragon_tail.force_switch is True
+
+    for move in move_generator():
+        assert isinstance(move.force_switch, bool)
 
 
 def test_move_base_power():
@@ -125,6 +235,52 @@ def test_n_hit():
 
     for move in move_generator():
         assert isinstance(move.n_hit, tuple) and len(move.n_hit) == 2
+
+
+def test_no_pp_boosts():
+    flame_thrower = Move("flamethrower")
+    sketch = Move("sketch")
+
+    assert sketch.no_pp_boosts is True
+    assert flame_thrower.no_pp_boosts is False
+
+    for move in move_generator():
+        assert isinstance(move.no_pp_boosts, bool)
+
+
+def test_non_ghost_target():
+    flame_thrower = Move("flamethrower")
+    curse = Move("curse")
+
+    assert curse.non_ghost_target is True
+    assert flame_thrower.non_ghost_target is False
+
+    for move in move_generator():
+        assert isinstance(move.non_ghost_target, bool)
+
+
+def test_priority():
+    flame_thrower = Move("flamethrower")
+    trick_room = Move("trickroom")
+    fake_out = Move("fakeout")
+
+    assert flame_thrower.priority == 0
+    assert trick_room.priority == -7
+    assert fake_out.priority == 3
+
+    for move in move_generator():
+        assert isinstance(move.priority, int)
+
+
+def test_pseudo_weather():
+    flame_thrower = Move("flamethrower")
+    fairy_lock = Move("fairylock")
+
+    assert flame_thrower.pseudo_weather is None
+    assert fairy_lock.pseudo_weather == "fairylock"
+
+    for move in move_generator():
+        assert isinstance(move.pseudo_weather, str) or move.pseudo_weather is None
 
 
 def test_recoil():
