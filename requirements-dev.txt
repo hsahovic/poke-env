@@ -2,7 +2,7 @@ asynctest
 black
 flake8
 pre-commit
-pyre-check
+pyre-check==0.0.40
 pytest
 pytest-asyncio
 pytest-cov
