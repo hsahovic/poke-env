@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from poke_env.data import MOVES
-from poke_env.environment.move import Move
+from poke_env.environment.move import Move, EmptyMove
 from poke_env.environment.move_category import MoveCategory
 from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.weather import Weather
@@ -66,6 +66,14 @@ def test_drain():
     for move in move_generator():
         assert isinstance(move.drain, float)
         assert 0 <= move.drain <= 1
+
+
+def test_empty_move():
+    # instanciation
+    special_move = EmptyMove("justamove")
+
+    assert special_move.drain == 0
+    assert special_move.base_power == 0
 
 
 def test_heal():

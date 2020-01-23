@@ -47,6 +47,7 @@ class Move:
         else:
             self._id: str = self.retrieve_id(move)
         self._current_pp = self.max_pp
+        self._is_empty: bool = False
 
     def __repr__(self) -> str:
         return f"{self._id} (Move object)"
@@ -80,7 +81,7 @@ class Move:
         :return: The move's base power.
         :rtype: int
         """
-        return self.entry["basePower"]
+        return self.entry.get("basePower", 0)
 
     @property
     def boosts(self) -> Optional[Dict[str, float]]:
@@ -254,6 +255,14 @@ class Move:
                     PokemonType[t.upper()] for t in self.entry["ignoreImmunity"].keys()
                 }
         return False
+
+    @property
+    def is_empty(self) -> bool:
+        """
+        :return: Whether the move is an empty move.
+        :rtype: bool
+        """
+        return self._is_empty
 
     @property
     def is_z(self) -> bool:
@@ -522,11 +531,12 @@ class Move:
 class EmptyMove(Move):
     def __init__(self, move_id):
         self._id: str = move_id
+        self._is_empty: bool = True
 
     def __getattribute__(self, name):
         try:
             return super(Move, self).__getattribute__(name)
-        except (ValueError, TypeError):
+        except (AttributeError, TypeError, ValueError):
             return 0
 
 
