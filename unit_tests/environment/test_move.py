@@ -3,6 +3,7 @@ from poke_env.data import MOVES
 from poke_env.environment.move import Move
 from poke_env.environment.move_category import MoveCategory
 from poke_env.environment.pokemon_type import PokemonType
+from poke_env.environment.weather import Weather
 from poke_env.environment.status import Status
 
 
@@ -156,3 +157,50 @@ def test_status():
 
     for move in move_generator():
         assert move.status is None or isinstance(move.status, Status)
+
+
+def test_weather():
+    flame_thrower = Move("flamethrower")
+    sand_storm = Move("sandstorm")
+
+    assert flame_thrower.weather is None
+    assert sand_storm.weather is Weather["SANDSTORM"]
+
+
+def test_z_move_boost():
+    misty_terrain = Move("mistyterrain")
+    flame_thrower = Move("flamethrower")
+    mist = Move("mist")
+
+    assert misty_terrain.z_move_boost == {"spd": 1}
+    assert flame_thrower.z_move_boost is None
+    assert mist.z_move_boost is None
+
+    for move in move_generator():
+        assert move.z_move_boost is None or isinstance(move.z_move_boost, dict)
+
+
+def test_z_move_effect():
+    flare_blitz = Move("flareblitz")
+    flame_thrower = Move("flamethrower")
+    mist = Move("mist")
+
+    assert flare_blitz.z_move_effect is None
+    assert flame_thrower.z_move_effect is None
+    assert mist.z_move_effect == "heal"
+
+    for move in move_generator():
+        assert move.z_move_effect is None or isinstance(move.z_move_effect, str)
+
+
+def test_z_move_power():
+    flare_blitz = Move("flareblitz")
+    flame_thrower = Move("flamethrower")
+    mist = Move("mist")
+
+    assert flare_blitz.z_move_power == 190
+    assert flame_thrower.z_move_power == 175
+    assert mist.z_move_power == 0
+
+    for move in move_generator():
+        assert isinstance(move.z_move_power, int)
