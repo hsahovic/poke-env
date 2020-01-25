@@ -179,6 +179,9 @@ class Move:
     @property
     def flags(self) -> Set[str]:
         """
+        This property is not well defined, and may be missing some information.
+        If you need more information on some flag, please open an issue in the project.
+
         :return: Flags associated with this move. These can come from the data or be
             custom.
         :rtype: Set[str]
@@ -411,7 +414,7 @@ class Move:
     @property
     def slot_condition(self) -> Optional[str]:
         """
-        :return: Which side condition is started by this move.
+        :return: Which slot condition is started by this move.
         :rtype: Optional[str]
         """
         return self.entry.get("slotCondition", None)
