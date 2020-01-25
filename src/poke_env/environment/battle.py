@@ -58,14 +58,14 @@ class Battle:
         "zbroken",
     }
 
-    def __init__(self, battle_tag: str, username: str, logger: Logger):
+    def __init__(self, battle_tag: str, username: str, logger: Logger):  # pyre-ignore
         # Utils attributes
         self._battle_tag: str = battle_tag
-        self._opponent_username: str = None
+        self._opponent_username: Optional[str] = None
         self._player_role = None
         self._player_username: str = username
         self._players = []
-        self.logger: Logger = logger
+        self.logger: Logger = logger  # pyre-ignore
 
         # Turn choice attributes
         self._available_moves: List[Move]
@@ -77,14 +77,14 @@ class Battle:
         self._maybe_trapped: bool
         self._trapped: bool
         self._force_swap: bool
-        self._wait: bool = None
+        self._wait: Optional[bool] = None
 
         # Battle state attributes
         self._finished: bool = False
         self._rqid = 0
         self._rules = []
-        self._turn: int = None
-        self._won: bool = None
+        self._turn: int = 0
+        self._won: Optional[bool] = None
 
         # In game battle state attributes
         self._weather = None
@@ -133,13 +133,13 @@ class Battle:
 
             return team[identifier]
 
-    def _end_illusion(self, pokemon: str):
-        if pokemon[:2] == self._player_role:
+    def _end_illusion(self, pokemon_name: str):
+        if pokemon_name[:2] == self._player_role:
             active = self.active_pokemon
         else:
             active = self.opponent_active_pokemon
 
-        pokemon = self.get_pokemon(pokemon)
+        pokemon = self.get_pokemon(pokemon_name)
         pokemon._set_hp(f"{active.current_hp}/{active.max_hp}")
         active._was_illusionned()
         pokemon._switch_in()

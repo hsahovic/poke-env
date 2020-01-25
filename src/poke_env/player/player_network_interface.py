@@ -76,14 +76,15 @@ class PlayerNetwork(ABC):
         assert self.logged_in.is_set()
         await self._send_message(f"/challenge {username}, {format_}")
 
-    async def _change_avatar(self, avatar_id: int) -> None:
+    async def _change_avatar(self, avatar_id: Optional[int]) -> None:
         """Changes the player's avatar.
 
-        :param avatar_id: The new avatar id.
+        :param avatar_id: The new avatar id. If None, nothing happens.
         :type avatar_id: int
         """
         assert self.logged_in.is_set()
-        await self._send_message(f"/avatar {avatar_id}")
+        if avatar_id is not None:
+            await self._send_message(f"/avatar {avatar_id}")
 
     def _create_player_logger(self, log_level: Optional[int]) -> Logger:  # pyre-ignore
         """Creates a logger for the player.
@@ -180,9 +181,7 @@ class PlayerNetwork(ABC):
 
         await self._send_message(f"/trn {self._username},0,{assertion}")
 
-        # If there is an avatar to select, select it
-        if isinstance(self._avatar, int):
-            self._change_avatar(int(self._avatar))
+        self._change_avatar(self._avatar)
 
     async def _send_message(
         self, message: str, room: str = "", message_2: Optional[str] = None
@@ -211,9 +210,7 @@ class PlayerNetwork(ABC):
         self.logger.info("Starting listening to showdown websocket")
         coroutines = []
         try:
-            async with websockets.connect(  # pyre-ignore
-                self.websocket_url
-            ) as websocket:
+            async with websockets.connect(self.websocket_url) as websocket:
                 self._websocket = websocket
                 while True:
                     message = str(await websocket.recv())

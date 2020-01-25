@@ -4,7 +4,6 @@ from poke_env.environment.move_category import MoveCategory
 from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.status import Status
 from poke_env.environment.weather import Weather
-from poke_env.exceptions import ShowdownException
 from poke_env.utils import to_id_str
 
 from functools import lru_cache
@@ -47,6 +46,7 @@ class Move:
         else:
             self._id: str = self.retrieve_id(move)
         self._current_pp = self.max_pp
+        self._is_empty: bool = False
 
     def __repr__(self) -> str:
         return f"{self._id} (Move object)"
@@ -68,11 +68,9 @@ class Move:
         :rtype: float
         """
         accuracy = self.entry["accuracy"]
-        if isinstance(accuracy, int):
-            return accuracy / 100
         if accuracy is True:
-            return 1
-        raise ShowdownException("Unmanaged accuracy: %s", accuracy)
+            return 1.0
+        return accuracy / 100
 
     @property
     def base_power(self) -> int:
@@ -80,7 +78,7 @@ class Move:
         :return: The move's base power.
         :rtype: int
         """
-        return self.entry["basePower"]
+        return self.entry.get("basePower", 0)
 
     @property
     def boosts(self) -> Optional[Dict[str, float]]:
@@ -137,7 +135,7 @@ class Move:
     @property
     def damage(self) -> Union[int, str]:
         """
-        :return: The move's fix damages. Can be an int our 'level' for moves such as
+        :return: The move's fix damages. Can be an int or 'level' for moves such as
             Seismic Toss.
         :rtype: Union[int, str]
         """
@@ -160,8 +158,8 @@ class Move:
         :rtype: float
         """
         if "drain" in self.entry:
-            return self.entry["drain"][0] / self.entry["drain"][1]
-        return 0
+            return self.entry["drain"]["0"] / self.entry["drain"]["1"]
+        return 0.0
 
     @property
     def entry(self) -> dict:
@@ -204,8 +202,8 @@ class Move:
         :rtype: float
         """
         if "heal" in self.entry:
-            return self.entry["heal"][0] / self.entry["heal"][1]
-        return 0
+            return self.entry["heal"]["0"] / self.entry["heal"]["1"]
+        return 0.0
 
     @property
     def id(self) -> str:
@@ -240,12 +238,28 @@ class Move:
         return self.entry.get("ignoreEvasion", False)
 
     @property
-    def ignore_immunity(self) -> bool:
+    def ignore_immunity(self) -> Union[bool, Set[PokemonType]]:
         """
-        :return: Whether the opponent's immunity is ignored.
+        :return: Whether the opponent's immunity is ignored, or a list of ignored
+            immunities.
+        :rtype: bool or set of Types
+        """
+        if "ignoreImmunity" in self.entry:
+            if isinstance(self.entry["ignoreImmunity"], bool):
+                return self.entry["ignoreImmunity"]
+            else:
+                return {
+                    PokemonType[t.upper()] for t in self.entry["ignoreImmunity"].keys()
+                }
+        return False
+
+    @property
+    def is_empty(self) -> bool:
+        """
+        :return: Whether the move is an empty move.
         :rtype: bool
         """
-        return self.entry.get("ignoreImmunity", False)
+        return self._is_empty
 
     @property
     def is_z(self) -> bool:
@@ -253,7 +267,7 @@ class Move:
         :return: Whether the move is a z move.
         :rtype: bool
         """
-        return self.entry.get("isZ", False)
+        return "isZ" in self.entry
 
     @property
     def max_pp(self) -> int:
@@ -270,8 +284,8 @@ class Move:
         :rtype: Tuple[int, int]
         """
         if "multihit" in self.entry:
-            if isinstance(self.entry["multihit"], list):
-                return (self.entry["multihit"][0], self.entry["multihit"][1])
+            if isinstance(self.entry["multihit"], dict):
+                return (self.entry["multihit"]["0"], self.entry["multihit"]["1"])
             else:
                 return (self.entry["multihit"], self.entry["multihit"])
         return (1, 1)
@@ -315,10 +329,10 @@ class Move:
         :rtype: float
         """
         if "recoil" in self.entry:
-            return self.entry["recoil"] / self.entry["recoil"][1]
+            return self.entry["recoil"]["0"] / self.entry["recoil"]["1"]
         elif "struggleRecoil" in self.entry:
             return 0.25
-        return 0
+        return 0.0
 
     @staticmethod
     @lru_cache(maxsize=4096)
@@ -351,12 +365,16 @@ class Move:
         return None
 
     @property
-    def self_boost(self) -> Dict[str, int]:
+    def self_boost(self) -> Optional[Dict[str, int]]:
         """
         :return: Boosts applied to the move's user.
         :rtype: Dict[str, int]
         """
-        return self.entry.get("selfBoost", None)
+        if "selfBoost" in self.entry:
+            return self.entry["selfBoost"].get("boosts", None)
+        elif "self" in self.entry and "boosts" in self.entry["self"]:
+            return self.entry["self"]["boosts"]
+        return None
 
     @property
     def self_destruct(self) -> Optional[str]:
@@ -367,12 +385,12 @@ class Move:
         return self.entry.get("selfdestruct", None)
 
     @property
-    def self_switch(self) -> Optional[str]:
+    def self_switch(self) -> Union[str, bool]:
         """
         :return: What kind of self swtich this move implies for the user.
         :rtype: Optional[str]
         """
-        return self.entry.get("selfSwitch", None)
+        return self.entry.get("selfSwitch", False)
 
     @property
     def side_condition(self) -> Optional[str]:
@@ -413,7 +431,7 @@ class Move:
         :rtype: Optional[Status]
         """
         if "status" in self.entry:
-            return Status(self.entry["status"].upper())
+            return Status[self.entry["status"].upper()]
         return None
 
     @property
@@ -479,7 +497,7 @@ class Move:
         :rtype: Optional[Weather]
         """
         if "weather" in self.entry:
-            return Weather(self.entry["weather"].upper())
+            return Weather[self.entry["weather"].upper()]
         return None
 
     @property
@@ -510,14 +528,12 @@ class Move:
 class EmptyMove(Move):
     def __init__(self, move_id):
         self._id: str = move_id
-
-    # def __getattr__(self, name):
-    # return 0
+        self._is_empty: bool = True
 
     def __getattribute__(self, name):
         try:
             return super(Move, self).__getattribute__(name)
-        except (ValueError, TypeError):
+        except (AttributeError, TypeError, ValueError):
             return 0
 
 
