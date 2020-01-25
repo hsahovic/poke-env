@@ -131,6 +131,16 @@ def test_empty_move_basic():
     assert empty_move.is_empty is True
 
 
+def test_flags():
+    flame_thrower = Move("flamethrower")
+    sludge_bomb = Move("sludgebomb")
+
+    assert flame_thrower.flags == {"protect", "mirror"}
+    assert sludge_bomb.flags == {"bullet", "protect", "mirror"}
+    for move in move_generator():
+        assert isinstance(move.flags, set)
+
+
 def test_heal():
     roost = Move("roost")
     flame_thrower = Move("flamethrower")
@@ -367,6 +377,28 @@ def test_sleep_usable():
         assert isinstance(move.sleep_usable, bool)
 
 
+def test_slot_condition():
+    flame_thrower = Move("flamethrower")
+    healing_wish = Move("healingwish")
+
+    assert healing_wish.slot_condition == "healingwish"
+    assert flame_thrower.slot_condition is None
+
+    for move in move_generator():
+        assert isinstance(move.slot_condition, str) or move.slot_condition is None
+
+
+def test_stalling_move():
+    flame_thrower = Move("flamethrower")
+    kings_shield = Move("kingsshield")
+
+    assert kings_shield.stalling_move is True
+    assert flame_thrower.stalling_move is False
+
+    for move in move_generator():
+        assert isinstance(move.stalling_move, bool)
+
+
 def test_status():
     dark_void = Move("darkvoid")
     sleep_powder = Move("sleeppowder")
@@ -380,6 +412,83 @@ def test_status():
 
     for move in move_generator():
         assert move.status is None or isinstance(move.status, Status)
+
+
+def test_steals_boosts():
+    flame_thrower = Move("flamethrower")
+    spectral_thief = Move("spectralthief")
+
+    assert spectral_thief.steals_boosts is True
+    assert flame_thrower.steals_boosts is False
+
+    for move in move_generator():
+        assert isinstance(move.steals_boosts, bool)
+
+
+def test_target():
+    flame_thrower = Move("flamethrower")
+    earthquake = Move("earthquake")
+
+    assert earthquake.target == "allAdjacent"
+    assert flame_thrower.target == "normal"
+
+    for move in move_generator():
+        assert isinstance(move.target, str)
+
+
+def test_terrain():
+    flame_thrower = Move("flamethrower")
+    electric_terrain = Move("electricterrain")
+
+    assert electric_terrain.terrain == "electricterrain"
+    assert flame_thrower.terrain is None
+
+    for move in move_generator():
+        assert isinstance(move.terrain, str) or move.terrain is None
+
+
+def test_thaws_target():
+    flame_thrower = Move("flamethrower")
+    scald = Move("scald")
+
+    assert scald.thaws_target is True
+    assert flame_thrower.thaws_target is False
+
+    for move in move_generator():
+        assert isinstance(move.thaws_target, bool)
+
+
+def test_type():
+    flame_thrower = Move("flamethrower")
+    scald = Move("scald")
+
+    assert scald.type == PokemonType["WATER"]
+    assert flame_thrower.type == PokemonType["FIRE"]
+
+    for move in move_generator():
+        assert isinstance(move.type, PokemonType)
+
+
+def test_use_target_offensive():
+    flame_thrower = Move("flamethrower")
+    foul_play = Move("foulplay")
+
+    assert foul_play.use_target_offensive is True
+    assert flame_thrower.use_target_offensive is False
+
+    for move in move_generator():
+        assert isinstance(move.use_target_offensive, bool)
+
+
+def test_volatile_status():
+    flame_thrower = Move("flamethrower")
+    heal_block = Move("healblock")
+
+    assert heal_block.volatile_status == "healblock"
+    assert flame_thrower.volatile_status is None
+
+    for move in move_generator():
+        assert isinstance(move.volatile_status, str) or move.volatile_status is None
 
 
 def test_weather():
