@@ -181,7 +181,7 @@ class PlayerNetwork(ABC):
 
         await self._send_message(f"/trn {self._username},0,{assertion}")
 
-        self._change_avatar(self._avatar)
+        await self._change_avatar(self._avatar)
 
     async def _send_message(
         self, message: str, room: str = "", message_2: Optional[str] = None
