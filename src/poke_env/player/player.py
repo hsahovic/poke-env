@@ -264,6 +264,17 @@ class Player(PlayerNetwork, ABC):
                     break
         await self._battle_count_queue.join()
 
+    @abstractmethod
+    def choose_move(self, battle: Battle) -> str:
+        """Abstract async method to choose a move in a battle.
+
+        :param battle: The battle.
+        :type battle: Battle
+        :return: The move order.
+        :rtype: str
+        """
+        pass
+
     def choose_random_move(self, battle: Battle) -> str:
         """Returns a random legal move from battle.
 
@@ -369,16 +380,9 @@ class Player(PlayerNetwork, ABC):
                 " (should be a Pokemon or Move object)" % order
             )
 
-    @abstractmethod
-    def choose_move(self, battle: Battle) -> str:
-        """Abstract method to choose a move in a battle.
-
-        :param battle: The battle.
-        :type battle: Battle
-        :return: The move order.
-        :rtype: str
-        """
-        pass
+    @property
+    def battles(self) -> Dict[str, Battle]:
+        return self._battles
 
     @property
     def n_finished_battles(self) -> int:
