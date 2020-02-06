@@ -75,6 +75,18 @@ class Pokemon:
         return f"{self._species} (pokemon object) "
         "[Active: {self._active}, Status: {self._status}]"
 
+    def _add_move(self, move_id: str, use: bool = False) -> None:
+        """Store the move if applicable."""
+        id_ = Move.retrieve_id(move_id)
+        if Move.should_be_stored(id_):
+            move = Move(id_)
+            if move.id not in self._moves:
+                if len(self._moves) >= 4:
+                    self._moves = {}
+                self._moves[move.id] = Move(id_)
+            if use:
+                self.moves[move.id].use()
+
     def _boost(self, stat, amount):
         self._boosts[stat] += int(amount)
         if self._boosts[stat] > 6:
