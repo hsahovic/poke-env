@@ -149,14 +149,7 @@ class Pokemon:
     def _moved(self, move):
         self._must_recharge = False
         self._preparing = False
-
-        id_ = Move.retrieve_id(move)
-
-        if Move.should_be_stored(id_):
-            if id_ not in self._moves:
-                self._moves[id_] = Move(id_)
-
-            self.moves[id_].use()
+        self._add_move(move, use=True)
 
     def _prepare(self, move, target):
         self._preparing = (move, target)
@@ -276,11 +269,15 @@ class Pokemon:
         self._gender = gender
         self._level = int(level)
 
+        # This might cause some unnecessary resets with special moves, such as
+        # hiddenpower
+        all_moves = set(self._moves.keys()).union(request_pokemon["moves"])
+        if len(all_moves) > 4:
+            for move in list(self._moves):
+                if move not in request_pokemon["moves"]:
+                    self._moves.pop(move)
         for move in request_pokemon["moves"]:
-            move_id = Move.retrieve_id(move)
-            if move_id not in self._moves:
-                self._moves[move_id] = Move(move_id=move_id)
-
+            self._add_move(move)
         ident = request_pokemon["ident"].split(": ")
 
         if len(ident) == 2:
