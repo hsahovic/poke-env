@@ -151,8 +151,8 @@ class PlayerNetwork(ABC):
             else:
                 self.logger.critical("Unhandled message: %s", message)
                 raise NotImplementedError("Unhandled message: %s" % message)
-        except CancelledError:
-            pass
+        except CancelledError as e:
+            self.logger.critical("CancelledError intercepted. %s", e)
 
     async def _log_in(self, split_message: List[str]) -> None:
         """Log the player with specified username and password.
@@ -220,8 +220,8 @@ class PlayerNetwork(ABC):
             self.logger.warning(
                 "Websocket connection with %s closed", self.websocket_url
             )
-        except (CancelledError, RuntimeError):
-            pass
+        except (CancelledError, RuntimeError) as e:
+            self.logger.critical("Listen interrupted by %s", e)
         finally:
             for coroutine in coroutines:
                 coroutine.cancel()
