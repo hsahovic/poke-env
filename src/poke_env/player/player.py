@@ -98,23 +98,23 @@ class Player(PlayerNetwork, ABC):
                 battle_tag = battle_tag[1:]
             if battle_tag.endswith("\n"):
                 battle_tag = battle_tag[:-1]
-            battle = Battle(
-                battle_tag=battle_tag, username=self.username, logger=self.logger
-            )
 
-            await self._battle_start_condition.acquire()
-
-            if split_message[2] not in self._battles:
-                self._battles[split_message[2]] = battle
-                self._battle_start_condition.release()
-
-                await self._battle_count_queue.put(None)
-                self._battle_semaphore.release()
-
-                async with self._battle_start_condition:
-                    self._battle_start_condition.notify_all()
+            if split_message[2] in self._battles:
+                return self._battles[split_message[2]]
             else:
-                self._battle_start_condition.release()
+                battle = Battle(
+                    battle_tag=battle_tag, username=self.username, logger=self.logger
+                )
+                await self._battle_count_queue.put(None)
+                if split_message[2] in self._battles:
+                    self._battle_count_queue.get()
+                    return self._battles[split_message[2]]
+                async with self._battle_start_condition:
+                    self._battle_semaphore.release()
+                    self._battle_start_condition.notify_all()
+                    self._battles[split_message[2]] = battle
+                return battle
+
             return self._battles[split_message[2]]
         else:
             self.logger.critical(
@@ -124,9 +124,9 @@ class Player(PlayerNetwork, ABC):
 
     async def _get_battle(self, battle_number: str) -> Battle:
         while True:
+            if battle_number in self._battles:
+                return self._battles[battle_number]
             async with self._battle_start_condition:
-                if battle_number in self._battles:
-                    return self._battles[battle_number]
                 await self._battle_start_condition.wait()
 
     async def _handle_battle_message(self, message: str) -> None:
@@ -150,7 +150,6 @@ class Player(PlayerNetwork, ABC):
         if battle is None:
             self.logger.critical("No battle found from message %s", message)
             return
-
         for split_message in messages[1:]:
             if len(split_message) <= 1:
                 self.logger.debug("Battle message too short; ignored: %s", message)
