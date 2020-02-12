@@ -128,12 +128,18 @@ class PlayerNetwork(ABC):
             if split_message[1] == "challstr":
                 # Confirms connection to the server: we can login
                 await self._log_in(split_message)
-            elif (
-                split_message[1] == "updateuser"
-                and split_message[2] == " " + self._username
-            ):
-                # Confirms successful login
-                self.logged_in.set()
+            elif split_message[1] == "updateuser":
+                if split_message[2] == " " + self._username:
+                    # Confirms successful login
+                    self.logged_in.set()
+                elif not split_message[2].startswith(" Guest "):
+                    self.logger.warning(
+                        """Trying to login as %s, showdown returned %s """
+                        """- this might prevent future actions from this agent. """
+                        """Changing the agent's username might solve this problem.""",
+                        self.username,
+                        split_message[2],
+                    )
             elif "updatechallenges" in split_message[1]:
                 # Contain information about current challenge
                 await self._update_challenges(split_message)
