@@ -287,9 +287,6 @@ class Player(PlayerNetwork, ABC):
 
         if battle.can_z_move:
             available_z_moves.update(battle.active_pokemon.available_z_moves)
-            if not available_z_moves:
-                print(battle.active_pokemon.item)
-                print(battle.active_pokemon.moves)
 
         for move in battle.available_moves:
             available_orders.append(self.create_order(move))
