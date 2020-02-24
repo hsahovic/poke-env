@@ -2,6 +2,7 @@
 """This module defines the PokemonType class, which represents a Pokemon type.
 PokemonTypes are mainly associated with Pokemons and moves.
 """
+# pyre-ignore-all-errors[45]
 from enum import auto
 from enum import Enum
 from enum import unique

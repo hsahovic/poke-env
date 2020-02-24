@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """This module defines the Effect class, which represents in-game effects.
 """
+# pyre-ignore-all-errors[45]
 from enum import Enum, unique, auto
 
 

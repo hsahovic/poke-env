@@ -68,15 +68,15 @@ class Battle:
         self.logger: Logger = logger  # pyre-ignore
 
         # Turn choice attributes
-        self._available_moves: List[Move]
-        self._available_switches: List[Pokemon]
-        self._can_mega_evolve: bool
-        self._can_z_move: bool
-        self._force_switch: bool
+        self._available_moves: List[Move] = []
+        self._available_switches: List[Pokemon] = []
+        self._can_mega_evolve: bool = False
+        self._can_z_move: bool = False
+        self._force_switch: bool = False
         self._in_team_preview: bool = False
-        self._maybe_trapped: bool
-        self._trapped: bool
-        self._force_swap: bool
+        self._maybe_trapped: bool = False
+        self._trapped: bool = False
+        self._force_swap: bool = False
         self._wait: Optional[bool] = None
 
         # Battle state attributes
