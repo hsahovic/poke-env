@@ -38,10 +38,10 @@ class Pokemon:
         self._base_ability: str
         self._gender: PokemonGender
         self._level: int = 100
-        self._max_hp: int
+        self._max_hp: int = 0
         self._moves: Dict[str, Move] = {}
         self._pokeball: Optional[str] = None
-        self._shiny: Optional[bool]
+        self._shiny: Optional[bool] = False
 
         # Battle related attributes
 
@@ -55,7 +55,7 @@ class Pokemon:
             "spd": 0,
             "spe": 0,
         }
-        self._current_hp: int
+        self._current_hp: int = 0
         self._effects: Set[Effect] = set()
         self._item: str
         self._must_recharge = False
@@ -230,9 +230,9 @@ class Pokemon:
             else:
                 hps = condition
                 self.status = None
-            self._current_hp, self._max_hp = hps.split("/")
-            self._current_hp = int(self._current_hp)
-            self._max_hp = int(self._max_hp)
+            current_hp, max_hp = hps.split("/")
+            self._current_hp = int(current_hp)
+            self._max_hp = int(max_hp)
 
         self._item = request_pokemon["item"]
 
@@ -267,7 +267,7 @@ class Pokemon:
             self._update_from_pokedex(species)
 
         self._gender = gender
-        self._level = int(level)
+        self._level = level
 
         # This might cause some unnecessary resets with special moves, such as
         # hiddenpower
