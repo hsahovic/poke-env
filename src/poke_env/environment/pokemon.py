@@ -208,7 +208,7 @@ class Pokemon:
         if len(dex_entry["types"]) == 1:
             self._type_2 = None
         else:
-            self._type_1 = PokemonType.from_name(dex_entry["types"][1])
+            self._type_2 = PokemonType.from_name(dex_entry["types"][1])
 
         self._possible_abilities = dex_entry["abilities"]
         self._heightm = dex_entry["heightm"]
