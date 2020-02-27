@@ -141,13 +141,13 @@ class Battle:
 
             return team[identifier]
 
-    def _end_illusion(self, pokemon_name: str):
+    def _end_illusion(self, pokemon_name: str, details: str):
         if pokemon_name[:2] == self._player_role:
             active = self.active_pokemon
         else:
             active = self.opponent_active_pokemon
 
-        pokemon = self.get_pokemon(pokemon_name)
+        pokemon = self.get_pokemon(pokemon_name, details=details)
         pokemon._set_hp(f"{active.current_hp}/{active.max_hp}")
         active._was_illusionned()
         pokemon._switch_in()
@@ -279,7 +279,7 @@ class Battle:
             self._in_team_preview = True
         elif split_message[1] in ["drag", "switch"]:
             pokemon, details, hp_status = split_message[2:5]
-            self._switch(pokemon, hp_status)
+            self._switch(pokemon, details, hp_status)
         elif split_message[1] == "faint":
             pokemon = split_message[2]
             self.get_pokemon(pokemon)._faint()
@@ -305,7 +305,8 @@ class Battle:
             self.register_pokemon(player, details, item)
         elif split_message[1] == "replace":
             pokemon = split_message[2]
-            self._end_illusion(pokemon)
+            details = split_message[3]
+            self._end_illusion(pokemon, details)
         elif split_message[1] == "rule":
             self._rules.append(split_message[2])
         elif split_message[1] == "start":
@@ -415,14 +416,14 @@ class Battle:
     def _swap(self, *args, **kwargs):
         self.logger.warning("swap method in Battle is not implemented")
 
-    def _switch(self, pokemon, hp_status):
+    def _switch(self, pokemon, details, hp_status):
         identifier = pokemon.split(":")[0][:2]
         if identifier == self._player_role:
             self.active_pokemon._switch_out()
         else:
             if self.opponent_team:
                 self.opponent_active_pokemon._switch_out()
-        pokemon = self.get_pokemon(pokemon)
+        pokemon = self.get_pokemon(pokemon, details=details)
         pokemon._switch_in()
         pokemon._set_hp_status(hp_status)
 
@@ -432,7 +433,7 @@ class Battle:
     def _update_team_from_request(self, side: Dict) -> None:
         for pokemon in side["pokemon"]:
             self.get_pokemon(
-                pokemon["ident"], force_self_team=True
+                pokemon["ident"], force_self_team=True, details=pokemon["details"]
             )._update_from_request(pokemon)
 
     async def _won_by(self, player_name: str):
