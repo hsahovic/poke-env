@@ -96,15 +96,20 @@ class Battle:
         self._team: Dict[str, Pokemon] = {}
         self._opponent_team: Dict[str, Pokemon] = {}
 
-    def get_pokemon(self, identifier: str, force_self_team: bool = False) -> Pokemon:
+    def get_pokemon(
+        self, identifier: str, force_self_team: bool = False, details: str = ""
+    ) -> Pokemon:
         """Returns the Pokemon object corresponding to given identifier. Can force to
         return object from the player's team if force_self_team is True. If the Pokemon
-        object does not exist, it will be created.
+        object does not exist, it will be created. Details can be given, which is
+        necessary to initialize alternate forms (eg. alolan pokemons) properly.
 
         :param identifier: The identifier to use to retrieve the pokemon.
         :type identifier: str
         :param force_self_team: Wheter to force returning a Pokemon from the player's
             team. Defaults to False.
+        :type details: str, optional
+        :param details: Detailled information about the pokemon. Defaults to ''.
         :type force_self_team: bool, optional, defaults to False
         :return: The corresponding pokemon object.
         :rtype: Pokemon
@@ -114,7 +119,10 @@ class Battle:
         if identifier[3] != " ":
             identifier = identifier[:2] + identifier[3:]
             species = identifier[5:]
-        species = identifier[4:]
+        if details:
+            species = details.split(", ")[0]
+        else:
+            species = identifier[4:]
 
         if is_mine or force_self_team:
             team: Dict[str, Pokemon] = self.team
