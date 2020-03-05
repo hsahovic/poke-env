@@ -159,6 +159,10 @@ class PlayerNetwork(ABC):
                 raise NotImplementedError("Unhandled message: %s" % message)
         except CancelledError as e:
             self.logger.critical("CancelledError intercepted. %s", e)
+        except Exception:
+            self.logger.exception(
+                "Unhandled exception raised while handling message:\n%s", message
+            )
 
     async def _log_in(self, split_message: List[str]) -> None:
         """Log the player with specified username and password.
