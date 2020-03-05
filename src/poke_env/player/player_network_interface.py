@@ -13,6 +13,8 @@ from asyncio import CancelledError
 from asyncio import ensure_future
 from asyncio import Event
 from asyncio import Lock
+from asyncio import sleep
+from time import perf_counter
 from typing import List
 from typing import Optional
 
@@ -82,7 +84,7 @@ class PlayerNetwork(ABC):
         :param avatar_id: The new avatar id. If None, nothing happens.
         :type avatar_id: int
         """
-        assert self.logged_in.is_set()
+        self._wait_for_login()
         if avatar_id is not None:
             await self._send_message(f"/avatar {avatar_id}")
 
@@ -214,6 +216,16 @@ class PlayerNetwork(ABC):
         async with self._sending_lock:
             await self._websocket.send(to_send)
         self.logger.info(">>> %s", to_send)
+
+    def _wait_for_login(
+        self, checking_interval: float = 0.001, wait_for: int = 5
+    ) -> None:
+        start = perf_counter()
+        while perf_counter() - start < wait_for:
+            sleep(checking_interval)
+            if self.logged_in:
+                return
+        assert self.logged_in
 
     async def listen(self) -> None:
         """Listen to a showdown websocket and dispatch messages to be handled."""
