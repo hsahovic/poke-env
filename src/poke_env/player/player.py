@@ -82,6 +82,9 @@ class Player(PlayerNetwork, ABC):
 
         self.logger.debug("Player initialisation finished")
 
+    def _battle_finished_callback(self, battle: Battle) -> None:
+        pass
+
     async def _create_battle(self, split_message: List[str]) -> Battle:
         """Returns battle object corresponding to received message.
 
@@ -173,10 +176,12 @@ class Player(PlayerNetwork, ABC):
                 await battle._won_by(split_message[2])
                 await self._battle_count_queue.get()
                 self._battle_count_queue.task_done()
+                self._battle_finished_callback(battle)
             elif split_message[1] == "tie":
                 await battle._tied()
                 await self._battle_count_queue.get()
                 self._battle_count_queue.task_done()
+                self._battle_finished_callback(battle)
             elif split_message[1] == "error":
                 if split_message[2].startswith(
                     "[Invalid choice] Sorry, too late to make a different move"
@@ -288,9 +293,6 @@ class Player(PlayerNetwork, ABC):
 
         if battle.can_z_move:
             available_z_moves.update(battle.active_pokemon.available_z_moves)
-            if not available_z_moves:
-                print(battle.active_pokemon.item)
-                print(battle.active_pokemon.moves)
 
         for move in battle.available_moves:
             available_orders.append(self.create_order(move))
