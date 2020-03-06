@@ -8,7 +8,7 @@ from poke_env.player_configuration import PlayerConfiguration
 from poke_env.server_configuration import LocalhostServerConfiguration
 
 
-async def simple_cross_evaluation(n_battles, finished):
+async def simple_cross_evaluation(n_battles):
     player_1_configuration = PlayerConfiguration("Player 1", None)
     player_2_configuration = PlayerConfiguration("Player 2", None)
     player_3_configuration = PlayerConfiguration("Player 3", None)
@@ -33,4 +33,4 @@ async def simple_cross_evaluation(n_battles, finished):
 
 @pytest.mark.asyncio
 async def test_small_cross_evaluation():
-    await asyncio.wait_for(simple_cross_evaluation(5, None), timeout=10)
+    await asyncio.wait_for(simple_cross_evaluation(5), timeout=10)
