@@ -18,6 +18,9 @@ from typing import Optional
 
 
 class TrainablePlayer(Player, ABC):
+    """This is an experimental API.
+    """
+
     def __init__(
         self,
         player_configuration: PlayerConfiguration,
