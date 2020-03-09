@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from abc import ABC, abstractmethod, abstractproperty
-from gym.core import Env  # pyre-ignore
+from gym.core import Env
 
 from queue import Queue
 from threading import Thread
