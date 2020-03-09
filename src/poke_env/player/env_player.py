@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from abc import ABC, abstractmethod, abstractproperty
-from gym.core import Env
+from gym.core import Env  # pyre-ignore
 
 from queue import Queue
 from threading import Thread
@@ -168,6 +168,9 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
 
         loop = asyncio.get_event_loop()
 
+        if training_kwargs is None:
+            training_kwargs = {}
+
         thread = Thread(
             target=training_function, args=(self, n_battles), kwargs=training_kwargs
         )
@@ -181,7 +184,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         pass
 
 
-class Gen7EnvSinglePlayer(EnvPlayer):
+class Gen7EnvSinglePlayer(EnvPlayer):  # pyre-ignore
     _ACTION_SPACE = list(range(3 * 4 + 6))
 
     def _action_to_move(self, action: int, battle: Battle) -> str:
