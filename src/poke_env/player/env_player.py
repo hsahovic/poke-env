@@ -51,7 +51,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
     def _action_to_move(self, action: int, battle: Battle) -> str:
         pass
 
-    def _battle_finished_callback(self, battle: Battle):
+    def _battle_finished_callback(self, battle: Battle) -> None:
         self._observations[battle].put(self.embed_battle(battle))
 
     def _init_battle(self, battle: Battle) -> None:
@@ -184,7 +184,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         pass
 
 
-class Gen7EnvSinglePlayer(EnvPlayer):  # pyre-ignore
+class Gen7EnvSinglePlayer(EnvPlayer):
     _ACTION_SPACE = list(range(3 * 4 + 6))
 
     def _action_to_move(self, action: int, battle: Battle) -> str:
