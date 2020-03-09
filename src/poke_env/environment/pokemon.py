@@ -319,24 +319,24 @@ class Pokemon:
         return self._active
 
     @property
-    def available_z_moves(self) -> Set[Move]:
+    def available_z_moves(self) -> List[Move]:
         """
         Caution: this property is not properly tested yet.
 
         :return: The set of moves that pokemon can use as z-moves.
-        :rtype: Set[Move]
+        :rtype: List[Move]
         """
         if isinstance(self.item, str) and self.item.endswith("iumz"):  # pyre-ignore
             type_, move = Z_CRYSTAL[self.item]  # pyre-ignore
             if type_:
-                return {
+                return [
                     move
                     for move_id, move in self.moves.items()
                     if move.type == type_ and move.can_z_move
-                }
+                ]
             elif move in self.moves:
-                return {self.moves[move]}
-        return set()
+                return [self.moves[move]]
+        return []
 
     @property
     def base_stats(self) -> Dict[str, int]:
