@@ -95,7 +95,30 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
             raise EnvironmentError("User %s has no active battle." % self.username)
 
     def render(self, mode="human") -> None:
-        pass
+        print(
+            "  Turn %4d. | [%s][%3d/%3dhp] %10.10s - %10.10s [%3d%%hp][%s]"
+            % (
+                self._current_battle.turn,
+                "".join(
+                    [
+                        "⦻" if mon.fainted else "●"
+                        for mon in self._current_battle.team.values()
+                    ]
+                ),
+                self._current_battle.active_pokemon.current_hp or 0,
+                self._current_battle.active_pokemon.max_hp or 0,
+                self._current_battle.active_pokemon.species,
+                self._current_battle.opponent_active_pokemon.species,
+                self._current_battle.opponent_active_pokemon.current_hp or 0,
+                "".join(
+                    [
+                        "⦻" if mon.fainted else "●"
+                        for mon in self._current_battle.opponent_team.values()
+                    ]
+                ),
+            ),
+            end="\n" if self._current_battle.finished else "\r",
+        )
 
     def reward_computing_helper(
         self,
