@@ -42,10 +42,11 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
             server_configuration=server_configuration,
             start_listening=start_listening,
         )
-        self._observations = {}
         self._actions = {}
         self._current_battle: Battle
+        self._observations = {}
         self._reward_buffer = {}
+        self._start_new_battle = False
 
     @abstractmethod
     def _action_to_move(self, action: int, battle: Battle) -> str:
