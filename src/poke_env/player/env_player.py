@@ -84,7 +84,8 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
 
     def reset(self):
         for _ in range(self.MAX_BATTLE_SWITCH_RETRY):
-            battles = [b for b in self._actions if not b.finished]
+            battles = dict(self._actions.items())
+            battles = [b for b in battles if not b.finished]
             if battles:
                 self._current_battle = battles[0]
                 observation = self._observations[self._current_battle].get()
