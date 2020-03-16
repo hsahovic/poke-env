@@ -69,6 +69,12 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
     def close(self) -> None:
         pass
 
+    def complete_current_battle(self) -> None:
+        """Completes the current battle by performing random moves."""
+        done = self._current_battle.finished
+        while not done:
+            _, _, done, _ = self.step(np.random.choice(self._ACTION_SPACE))
+
     def compute_reward(self, battle: Battle) -> float:
         return self.reward_computing_helper(battle)
 
