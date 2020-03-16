@@ -176,37 +176,47 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
             {},
         )
 
-    def train_against(
-        self,
-        training_function: Callable,
-        opponent: Player,
-        n_battles: int = 1,
-        training_kwargs=None,
+    def play_against(
+        self, env_algorithm: Callable, opponent: Player, env_algorithm_kwargs=None
     ):
-        async def launch_battles(player: EnvPlayer, opponent: Player, n_battles: int):
+        self._start_new_battle = True
+
+        async def launch_battles(player: EnvPlayer, opponent: Player):
             battles_coroutine = asyncio.gather(
                 player.send_challenges(
                     opponent=to_id_str(opponent.username),
-                    n_challenges=n_battles,
+                    n_challenges=1,
                     to_wait=opponent.logged_in,
                 ),
                 opponent.accept_challenges(
-                    opponent=to_id_str(player.username), n_challenges=n_battles
+                    opponent=to_id_str(player.username), n_challenges=1
                 ),
             )
             await battles_coroutine
 
+        def env_algorithm_wrapper(player, kwargs):
+            env_algorithm(player, **kwargs)
+
+            player._start_new_battle = False
+            while True:
+                try:
+                    player.complete_current_battle()
+                    player.reset()
+                except OSError:
+                    break
+
         loop = asyncio.get_event_loop()
 
-        if training_kwargs is None:
-            training_kwargs = {}
+        if env_algorithm_kwargs is None:
+            env_algorithm_kwargs = {}
 
         thread = Thread(
-            target=training_function, args=(self, n_battles), kwargs=training_kwargs
+            target=lambda: env_algorithm_wrapper(self, env_algorithm_kwargs)
         )
         thread.start()
 
-        loop.run_until_complete(launch_battles(self, opponent, n_battles))
+        while self._start_new_battle:
+            loop.run_until_complete(launch_battles(self, opponent))
         thread.join()
 
     @abstractproperty
