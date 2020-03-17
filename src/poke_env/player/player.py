@@ -82,12 +82,15 @@ class Player(PlayerNetwork, ABC):
 
         self.logger.debug("Player initialisation finished")
 
+    def _battle_finished_callback(self, battle: Battle) -> None:
+        pass
+
     async def _create_battle(self, split_message: List[str]) -> Battle:
         """Returns battle object corresponding to received message.
 
         :param split_message: The battle initialisation message.
         :type split_message: List[str]
-        :return: The corresponding battle object
+        :return: The corresponding battle object.
         :rtype: Battle
         """
         # We check that the battle has the correct format
@@ -172,10 +175,12 @@ class Player(PlayerNetwork, ABC):
                 await battle._won_by(split_message[2])
                 await self._battle_count_queue.get()
                 self._battle_count_queue.task_done()
+                self._battle_finished_callback(battle)
             elif split_message[1] == "tie":
                 await battle._tied()
                 await self._battle_count_queue.get()
                 self._battle_count_queue.task_done()
+                self._battle_finished_callback(battle)
             elif split_message[1] == "error":
                 if split_message[2].startswith(
                     "[Invalid choice] Sorry, too late to make a different move"

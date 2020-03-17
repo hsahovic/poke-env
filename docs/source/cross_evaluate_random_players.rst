@@ -128,3 +128,5 @@ Running the `whole file <https://github.com/hsahovic/poke-env/blob/master/exampl
     --------  --------  --------  --------
 
 If you want to create a custom player, take a look at the :ref:`max_damage_player` example.
+
+If you want to jump into Reinforcement Learning, take a look at the :ref:`rl_with_open_ai_gym_wrapper` example.
