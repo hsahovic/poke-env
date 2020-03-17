@@ -38,10 +38,10 @@ class Pokemon:
         self._base_ability: str
         self._gender: PokemonGender
         self._level: int = 100
-        self._max_hp: int
+        self._max_hp: int = 0
         self._moves: Dict[str, Move] = {}
         self._pokeball: Optional[str] = None
-        self._shiny: Optional[bool]
+        self._shiny: Optional[bool] = False
 
         # Battle related attributes
 
@@ -55,7 +55,7 @@ class Pokemon:
             "spd": 0,
             "spe": 0,
         }
-        self._current_hp: int
+        self._current_hp: int = 0
         self._effects: Set[Effect] = set()
         self._item: str
         self._must_recharge = False
@@ -74,6 +74,18 @@ class Pokemon:
     def __str__(self) -> str:
         return f"{self._species} (pokemon object) "
         "[Active: {self._active}, Status: {self._status}]"
+
+    def _add_move(self, move_id: str, use: bool = False) -> None:
+        """Store the move if applicable."""
+        id_ = Move.retrieve_id(move_id)
+        if Move.should_be_stored(id_):
+            move = Move(id_)
+            if move.id not in self._moves:
+                if len(self._moves) >= 4:
+                    self._moves = {}
+                self._moves[move.id] = Move(id_)
+            if use:
+                self.moves[move.id].use()
 
     def _boost(self, stat, amount):
         self._boosts[stat] += int(amount)
@@ -137,14 +149,7 @@ class Pokemon:
     def _moved(self, move):
         self._must_recharge = False
         self._preparing = False
-
-        id_ = Move.retrieve_id(move)
-
-        if Move.should_be_stored(id_):
-            if id_ not in self._moves:
-                self._moves[id_] = Move(id_)
-
-            self.moves[id_].use()
+        self._add_move(move, use=True)
 
     def _prepare(self, move, target):
         self._preparing = (move, target)
@@ -203,7 +208,7 @@ class Pokemon:
         if len(dex_entry["types"]) == 1:
             self._type_2 = None
         else:
-            self._type_1 = PokemonType.from_name(dex_entry["types"][1])
+            self._type_2 = PokemonType.from_name(dex_entry["types"][1])
 
         self._possible_abilities = dex_entry["abilities"]
         self._heightm = dex_entry["heightm"]
@@ -225,9 +230,9 @@ class Pokemon:
             else:
                 hps = condition
                 self.status = None
-            self._current_hp, self._max_hp = hps.split("/")
-            self._current_hp = int(self._current_hp)
-            self._max_hp = int(self._max_hp)
+            current_hp, max_hp = hps.split("/")
+            self._current_hp = int(current_hp)
+            self._max_hp = int(max_hp)
 
         self._item = request_pokemon["item"]
 
@@ -262,13 +267,17 @@ class Pokemon:
             self._update_from_pokedex(species)
 
         self._gender = gender
-        self._level = int(level)
+        self._level = level
 
+        # This might cause some unnecessary resets with special moves, such as
+        # hiddenpower
+        all_moves = set(self._moves.keys()).union(request_pokemon["moves"])
+        if len(all_moves) > 4:
+            for move in list(self._moves):
+                if move not in request_pokemon["moves"]:
+                    self._moves.pop(move)
         for move in request_pokemon["moves"]:
-            move_id = Move.retrieve_id(move)
-            if move_id not in self._moves:
-                self._moves[move_id] = Move(move_id=move_id)
-
+            self._add_move(move)
         ident = request_pokemon["ident"].split(": ")
 
         if len(ident) == 2:
@@ -310,24 +319,24 @@ class Pokemon:
         return self._active
 
     @property
-    def available_z_moves(self) -> Set[Move]:
+    def available_z_moves(self) -> List[Move]:
         """
         Caution: this property is not properly tested yet.
 
         :return: The set of moves that pokemon can use as z-moves.
-        :rtype: Set[Move]
+        :rtype: List[Move]
         """
         if isinstance(self.item, str) and self.item.endswith("iumz"):  # pyre-ignore
             type_, move = Z_CRYSTAL[self.item]  # pyre-ignore
             if type_:
-                return {
+                return [
                     move
                     for move_id, move in self.moves.items()
                     if move.type == type_ and move.can_z_move
-                }
+                ]
             elif move in self.moves:
-                return {self.moves[move]}
-        return set()
+                return [self.moves[move]]
+        return []
 
     @property
     def base_stats(self) -> Dict[str, int]:

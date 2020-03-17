@@ -8,7 +8,9 @@ Poke-env: A python interface for training Reinforcement Learning pokemon bots
 
 This project aims at providing a Python environment for interacting in `pokemon showdown <https://pokemonshowdown.com/>`__ battles, with reinforcement learning in mind. Welcome to its documentation!
 
-.. warning:: This module currently only supports random battles. Support for other formats will arrive later. If you want a specific format to be supported, please `open an issue <https://github.com/hsahovic/poke-env/issues>`__.
+Poke-env offers a simple and clear API to manipulate Pokemons, Battles, Moves and many other pokemon showdown battle-related objects in Python. If also exposes an `open ai gym <https://gym.openai.com/>`__ interface to train reinforcement learning agents.
+
+.. warning:: This module currently only supports gen 7 random battles. All singles gen 7 and gen 8 formats support is planned for Spring 2020. Support for other formats will arrive later. If you want a specific format to be supported, please `open an issue <https://github.com/hsahovic/poke-env/issues>`__.
 
 Getting started
 ***************
@@ -26,22 +28,22 @@ Installation can be performed via pip with:
 
     pip install poke-env
 
-.. note:: Although the module does not support python 3.5, this can be worked around by replacing `aiologger` imports by `logger` imports. This will however affect performance.
+.. note:: Although the module does not support python 3.5, this can be worked around by replacing `aiologger` imports by `logger` imports. This will however affect performance. If this is an issue for your use case, please `open an issue <https://github.com/hsahovic/poke-env/issues>`__.
 
 Configuring a showdown server
 =============================
 
-``poke-env`` communicates with a showdown server. A public implementation of showdown is hosted `here <https://play.pokemonshowdown.com/>`__, and can be used to try your agents against real humans.
+``poke-env`` communicates with a pokemon showdown server. A public implementation of showdown is hosted `here <https://play.pokemonshowdown.com/>`__, and can be used to test your agents against real humans.
 
 However, this implementation:
 
 - Requires an internet connection at all time
-- Has numerous limitation (move rate, number of battles...)
+- Has numerous performance limitation (move rate, number of concurrent battles...)
 - Is not meant to be used to train agents
 
-Therefore, it is recommended to host you own server. Fortunately, Pokemon Showdown is `open-source <https://play.pokemonshowdown.com/>`__ and just requires `Node.js v10+ <https://nodejs.org/en/>`__. You can either use the official implementation - in this case, you will need to configure it to remove rate limiting and other performance bottlenecks - or our custom and `ready-to-use fork <https://github.com/hsahovic/Pokemon-Showdown>`__, which is recommended and the option covered here.
+Therefore, it is recommended to host you own server. Fortunately, Pokemon Showdown is `open-source <https://play.pokemonshowdown.com/>`__ and just requires `Node.js v10+ <https://nodejs.org/en/>`__. You can either use the official implementation - in this case, you will need to configure it to remove rate limiting and other performance bottlenecks - or our custom and `ready-to-use fork <https://github.com/hsahovic/Pokemon-Showdown>`__, which is the recommended option that will be covered in this guide.
 
-First, you will need to `install node v10+ <https://nodejs.org/en/download/>`__. Then, you can clone the showdown repo:
+First, you will need to `install node v10+ <https://nodejs.org/en/download/>`__. Then, you can clone the optimized showdown repo:
 
 .. code-block:: bash
 
@@ -64,7 +66,7 @@ You should then get something like this:
     Worker 1 now listening on 0.0.0.0:8000
     Test your server at http://localhost:8000
 
-You can now refer to :ref:`examples` to create your first agent.
+If that is the case, congratulations! You just launched your server! You can now refer to :ref:`examples` to create your first agent.
 
 Configuring showdown players
 ****************************
@@ -76,14 +78,14 @@ Configuring showdown players
 Users without authentication
 ============================
 
-If your showdown configuration does not uses\ authentication, you can use any username and set the password to ``None``.
+If your showdown configuration does not require authentication, you can use any username and set the password to ``None``.
 
 .. code-block:: python
 
     from poke_env.player_configuration import PlayerConfiguration
 
-    # This will work on servers not using authentication, which is your case if you followed
-    # our 'Getting Started' section
+    # This will work on servers that do not require authentication, which is the
+    # case of the server launched in our 'Getting Started' section
     my_player_config = PlayerConfiguration("my_username", None)
 
 Users with authentication
@@ -108,9 +110,9 @@ Connecting your bots to showdown
 
 ``poke-env`` includes two ready-to-use ``ServerConfiguration`` objects: ``LocalhostServerConfiguration`` and ``ShowdownServerConfiguration``.
 
-The first one points to locahost:8000, whereas the second one points to https://play.pokemonshowdown.com/. Both use the same authentication endpoint, https://play.pokemonshowdown.com/action.php?.
+The first one points to ``locahost:8000`` (the default endpoint for a local showdown server), whereas the second one points to ``https://play.pokemonshowdown.com/``. Both use the same authentication endpoint, https://play.pokemonshowdown.com/action.php?.
 
-If you use our custom fork of showdown, as mentionned in Getting Started, players do not need to authenticate to battle.
+If you use our custom fork of showdown, as mentionned in Getting Started, players do not need to authenticate to battle. This effectively skips authentication calls to the authentication endpoint: your agents can access your server without an internet connection.
 
 Custom server configuration
 ===========================

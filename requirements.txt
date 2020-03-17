@@ -1,4 +1,5 @@
 aiologger
+gym
 numpy
 requests
 tabulate

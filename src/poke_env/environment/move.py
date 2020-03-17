@@ -55,11 +55,13 @@ class Move:
         self._current_pp -= 1
 
     @staticmethod
-    def should_be_stored(move_id) -> bool:
-        if move_id not in special_moves:
-            return True
-        else:
+    def should_be_stored(move_id: str) -> bool:
+        if move_id in special_moves:
             return False
+        move = Move(move_id)
+        if move.is_z:
+            return False
+        return True
 
     @property
     def accuracy(self) -> float:
@@ -270,6 +272,8 @@ class Move:
         :return: Whether the move is a z move.
         :rtype: bool
         """
+        if self.id.startswith("z") and self.id[1:] in MOVES:
+            return True
         return "isZ" in self.entry
 
     @property
