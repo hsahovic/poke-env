@@ -113,7 +113,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         return self.reward_computing_helper(battle)
 
     @abstractmethod
-    def embed_battle(self, battle: Battle) -> Any:  # pyre-ignore
+    def embed_battle(self, battle: Battle) -> Any:
         """Abstract method for embedding battles.
 
         :param battle: The battle whose state is being embedded
