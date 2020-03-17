@@ -90,7 +90,7 @@ class Player(PlayerNetwork, ABC):
 
         :param split_message: The battle initialisation message.
         :type split_message: List[str]
-        :return: The corresponding battle object
+        :return: The corresponding battle object.
         :rtype: Battle
         """
         # We check that the battle has the correct format
