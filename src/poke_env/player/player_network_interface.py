@@ -13,6 +13,8 @@ from asyncio import CancelledError
 from asyncio import ensure_future
 from asyncio import Event
 from asyncio import Lock
+from asyncio import sleep
+from time import perf_counter
 from typing import List
 from typing import Optional
 
@@ -82,7 +84,7 @@ class PlayerNetwork(ABC):
         :param avatar_id: The new avatar id. If None, nothing happens.
         :type avatar_id: int
         """
-        assert self.logged_in.is_set()
+        self._wait_for_login()
         if avatar_id is not None:
             await self._send_message(f"/avatar {avatar_id}")
 
@@ -128,12 +130,18 @@ class PlayerNetwork(ABC):
             if split_message[1] == "challstr":
                 # Confirms connection to the server: we can login
                 await self._log_in(split_message)
-            elif (
-                split_message[1] == "updateuser"
-                and split_message[2] == " " + self._username
-            ):
-                # Confirms successful login
-                self.logged_in.set()
+            elif split_message[1] == "updateuser":
+                if split_message[2] == " " + self._username:
+                    # Confirms successful login
+                    self.logged_in.set()
+                elif not split_message[2].startswith(" Guest "):
+                    self.logger.warning(
+                        """Trying to login as %s, showdown returned %s """
+                        """- this might prevent future actions from this agent. """
+                        """Changing the agent's username might solve this problem.""",
+                        self.username,
+                        split_message[2],
+                    )
             elif "updatechallenges" in split_message[1]:
                 # Contain information about current challenge
                 await self._update_challenges(split_message)
@@ -151,8 +159,13 @@ class PlayerNetwork(ABC):
             else:
                 self.logger.critical("Unhandled message: %s", message)
                 raise NotImplementedError("Unhandled message: %s" % message)
-        except CancelledError:
-            pass
+        except CancelledError as e:
+            self.logger.critical("CancelledError intercepted. %s", e)
+        except Exception as exception:
+            self.logger.exception(
+                "Unhandled exception raised while handling message:\n%s", message
+            )
+            raise exception
 
     async def _log_in(self, split_message: List[str]) -> None:
         """Log the player with specified username and password.
@@ -205,6 +218,16 @@ class PlayerNetwork(ABC):
             await self._websocket.send(to_send)
         self.logger.info(">>> %s", to_send)
 
+    def _wait_for_login(
+        self, checking_interval: float = 0.001, wait_for: int = 5
+    ) -> None:
+        start = perf_counter()
+        while perf_counter() - start < wait_for:
+            sleep(checking_interval)
+            if self.logged_in:
+                return
+        assert self.logged_in
+
     async def listen(self) -> None:
         """Listen to a showdown websocket and dispatch messages to be handled."""
         self.logger.info("Starting listening to showdown websocket")
@@ -220,8 +243,8 @@ class PlayerNetwork(ABC):
             self.logger.warning(
                 "Websocket connection with %s closed", self.websocket_url
             )
-        except (CancelledError, RuntimeError):
-            pass
+        except (CancelledError, RuntimeError) as e:
+            self.logger.critical("Listen interrupted by %s", e)
         finally:
             for coroutine in coroutines:
                 coroutine.cancel()

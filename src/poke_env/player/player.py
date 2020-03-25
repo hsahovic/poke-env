@@ -82,12 +82,15 @@ class Player(PlayerNetwork, ABC):
 
         self.logger.debug("Player initialisation finished")
 
+    def _battle_finished_callback(self, battle: Battle) -> None:
+        pass
+
     async def _create_battle(self, split_message: List[str]) -> Battle:
         """Returns battle object corresponding to received message.
 
         :param split_message: The battle initialisation message.
         :type split_message: List[str]
-        :return: The corresponding battle object
+        :return: The corresponding battle object.
         :rtype: Battle
         """
         # We check that the battle has the correct format
@@ -98,23 +101,23 @@ class Player(PlayerNetwork, ABC):
                 battle_tag = battle_tag[1:]
             if battle_tag.endswith("\n"):
                 battle_tag = battle_tag[:-1]
-            battle = Battle(
-                battle_tag=battle_tag, username=self.username, logger=self.logger
-            )
 
-            await self._battle_start_condition.acquire()
-
-            if split_message[2] not in self._battles:
-                self._battles[split_message[2]] = battle
-                self._battle_start_condition.release()
-
-                await self._battle_count_queue.put(None)
-                self._battle_semaphore.release()
-
-                async with self._battle_start_condition:
-                    self._battle_start_condition.notify_all()
+            if split_message[2] in self._battles:
+                return self._battles[split_message[2]]
             else:
-                self._battle_start_condition.release()
+                battle = Battle(
+                    battle_tag=battle_tag, username=self.username, logger=self.logger
+                )
+                await self._battle_count_queue.put(None)
+                if split_message[2] in self._battles:
+                    self._battle_count_queue.get()
+                    return self._battles[split_message[2]]
+                async with self._battle_start_condition:
+                    self._battle_semaphore.release()
+                    self._battle_start_condition.notify_all()
+                    self._battles[split_message[2]] = battle
+                return battle
+
             return self._battles[split_message[2]]
         else:
             self.logger.critical(
@@ -124,9 +127,9 @@ class Player(PlayerNetwork, ABC):
 
     async def _get_battle(self, battle_number: str) -> Battle:
         while True:
+            if battle_number in self._battles:
+                return self._battles[battle_number]
             async with self._battle_start_condition:
-                if battle_number in self._battles:
-                    return self._battles[battle_number]
                 await self._battle_start_condition.wait()
 
     async def _handle_battle_message(self, message: str) -> None:
@@ -150,7 +153,6 @@ class Player(PlayerNetwork, ABC):
         if battle is None:
             self.logger.critical("No battle found from message %s", message)
             return
-
         for split_message in messages[1:]:
             if len(split_message) <= 1:
                 self.logger.debug("Battle message too short; ignored: %s", message)
@@ -173,10 +175,12 @@ class Player(PlayerNetwork, ABC):
                 await battle._won_by(split_message[2])
                 await self._battle_count_queue.get()
                 self._battle_count_queue.task_done()
+                self._battle_finished_callback(battle)
             elif split_message[1] == "tie":
                 await battle._tied()
                 await self._battle_count_queue.get()
                 self._battle_count_queue.task_done()
+                self._battle_finished_callback(battle)
             elif split_message[1] == "error":
                 if split_message[2].startswith(
                     "[Invalid choice] Sorry, too late to make a different move"
@@ -264,6 +268,17 @@ class Player(PlayerNetwork, ABC):
                     break
         await self._battle_count_queue.join()
 
+    @abstractmethod
+    def choose_move(self, battle: Battle) -> str:
+        """Abstract async method to choose a move in a battle.
+
+        :param battle: The battle.
+        :type battle: Battle
+        :return: The move order.
+        :rtype: str
+        """
+        pass
+
     def choose_random_move(self, battle: Battle) -> str:
         """Returns a random legal move from battle.
 
@@ -277,9 +292,6 @@ class Player(PlayerNetwork, ABC):
 
         if battle.can_z_move:
             available_z_moves.update(battle.active_pokemon.available_z_moves)
-            if not available_z_moves:
-                print(battle.active_pokemon.item)
-                print(battle.active_pokemon.moves)
 
         for move in battle.available_moves:
             available_orders.append(self.create_order(move))
@@ -369,16 +381,9 @@ class Player(PlayerNetwork, ABC):
                 " (should be a Pokemon or Move object)" % order
             )
 
-    @abstractmethod
-    def choose_move(self, battle: Battle) -> str:
-        """Abstract method to choose a move in a battle.
-
-        :param battle: The battle.
-        :type battle: Battle
-        :return: The move order.
-        :rtype: str
-        """
-        pass
+    @property
+    def battles(self) -> Dict[str, Battle]:
+        return self._battles
 
     @property
     def n_finished_battles(self) -> int:

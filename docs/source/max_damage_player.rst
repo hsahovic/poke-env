@@ -148,3 +148,5 @@ Running it should take a couple of seconds and print something similar to this:
 .. code-block:: python
 
     Max damage player won 92 / 100 battles [this took 6.320682 seconds]
+
+If you want to use Reinforcement Learning, take a look at the :ref:`rl_with_open_ai_gym_wrapper` example.
