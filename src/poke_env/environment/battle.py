@@ -19,6 +19,7 @@ class Battle:
 
     MESSAGES_TO_IGNORE = {
         "-anim",
+        "-block",
         "-cant",
         "-center",
         "-crit",
