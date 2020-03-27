@@ -118,28 +118,23 @@ class Battle:
         is_mine = identifier[:2] == self._player_role
         if identifier[3] != " ":
             identifier = identifier[:2] + identifier[3:]
-            species = identifier[5:]
-        if details:
-            species = details.split(", ")[0]
-        else:
-            species = identifier[4:]
 
         if is_mine or force_self_team:
             team: Dict[str, Pokemon] = self.team
         else:
             team: Dict[str, Pokemon] = self.opponent_team
 
-        if identifier in team:
-            return team[identifier]
-        else:
+        if identifier not in team:
             try:
                 assert len(team) < 6
             except AssertionError:
                 self.logger.critical(team, identifier)
                 raise Exception
+
+            species = details.split(", ")[0] if details else identifier[4:]
             team[identifier] = Pokemon(species=species)
 
-            return team[identifier]
+        return team[identifier]
 
     def _end_illusion(self, pokemon_name: str, details: str):
         if pokemon_name[:2] == self._player_role:
