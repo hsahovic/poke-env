@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+#this file is not yet functional
 import numpy as np
 import tensorflow as tf
 from poke_env.player_configuration import PlayerConfiguration
