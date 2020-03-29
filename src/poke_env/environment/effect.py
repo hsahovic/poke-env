@@ -33,7 +33,6 @@ class Effect(Enum):
     INSOMNIA = auto()
     INFESTATION = auto()
     LEECH_SEED = auto()
-    LIMBER = auto()
     MAGNET_RISE = auto()
     MAGMA_STORM = auto()
     MISTY_TERRAIN = auto()
