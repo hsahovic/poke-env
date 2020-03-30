@@ -158,7 +158,7 @@ if __name__ == "__main__":
         opponent=opponent,
         env_algorithm_kwargs={"dqn": dqn, "nb_steps": NB_TRAINING_STEPS},
     )
-    model.save("model_%d" % NB_TRAINING_STEPS)
+    model.save("saved_models/model_%d" % NB_TRAINING_STEPS)
 
     # Evaluation
     print("Results against random player:")
