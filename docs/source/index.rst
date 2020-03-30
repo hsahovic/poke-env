@@ -8,7 +8,7 @@ Poke-env: A python interface for training Reinforcement Learning pokemon bots
 
 This project aims at providing a Python environment for interacting in `pokemon showdown <https://pokemonshowdown.com/>`__ battles, with reinforcement learning in mind. Welcome to its documentation!
 
-Poke-env offers a simple and clear API to manipulate Pokemons, Battles, Moves and many other pokemon showdown battle-related objects in Python. If also exposes an `open ai gym <https://gym.openai.com/>`__ interface to train reinforcement learning agents.
+Poke-env offers a simple and clear API to manipulate Pokemons, Battles, Moves and many other pokemon showdown battle-related objects in Python. It also exposes an `open ai gym <https://gym.openai.com/>`__ interface to train reinforcement learning agents.
 
 .. warning:: This module currently only supports gen 7 random battles. All singles gen 7 and gen 8 formats support is planned for Spring 2020. Support for other formats will arrive later. If you want a specific format to be supported, please `open an issue <https://github.com/hsahovic/poke-env/issues>`__.
 
@@ -20,7 +20,7 @@ This sections will guide you in installing ``poke-env`` and configuring a suited
 Installing ``poke-env``
 =======================
 
-``poke-env`` requires python >= 3.6 to be installed. It has a number of dependencies that are listed `here <https://github.com/hsahovic/poke-env/blob/master/requirements.txt>`__ and that will be installed automatically, including `numpy <https://numpy.org/>`__.
+``poke-env`` requires python >= 3.6 to be installed. It has a number of dependencies listed `here <https://github.com/hsahovic/poke-env/blob/master/requirements.txt>`__ and that will be installed automatically if you install it via ``pip``.
 
 Installation can be performed via pip with:
 
