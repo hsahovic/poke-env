@@ -73,6 +73,7 @@ class Battle:
         self._available_switches: List[Pokemon] = []
         self._can_mega_evolve: bool = False
         self._can_z_move: bool = False
+        self._can_dynamax: bool = False
         self._force_switch: bool = False
         self._in_team_preview: bool = False
         self._maybe_trapped: bool = False
@@ -334,6 +335,7 @@ class Battle:
         self._available_switches = []
         self._can_mega_evolve = False
         self._can_z_move = False
+        self._can_dynamax = False
         self._maybe_trapped = False
         self._trapped = False
         self._force_switch = request.get("forceSwitch", False)
@@ -372,6 +374,8 @@ class Battle:
                 self._can_mega_evolve = True
             if active_request.get("canZMove", False):
                 self._can_z_move = True
+            if active_request.get("canDynamax", False):
+                self._can_dynamax = True
             if active_request.get("maybeTrapped", False):
                 self._maybe_trapped = True
 
@@ -473,6 +477,14 @@ class Battle:
         :rtype: str
         """
         return self._battle_tag
+
+    @property
+    def can_dynamax(self) -> bool:
+        """
+        :return: Wheter of not the current active pokemon can dynamax
+        :rtype: bool
+        """
+        return self._can_dynamax
 
     @property
     def can_mega_evolve(self) -> bool:

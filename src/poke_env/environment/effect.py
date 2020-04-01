@@ -20,6 +20,7 @@ class Effect(Enum):
     DESTINY_BOND = auto()
     DISABLE = auto()
     DISGUISE = auto()
+    DYNAMAX = auto()
     ELECTRIC_TERRAIN = auto()
     EMERGENCY_EXIT = auto()
     ENCORE = auto()
