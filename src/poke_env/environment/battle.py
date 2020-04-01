@@ -5,6 +5,7 @@ from typing import List
 from typing import Optional
 from typing import Set
 from typing import Tuple
+from pprint import pformat
 
 from poke_env.environment.field import Field
 from poke_env.environment.move import Move
@@ -321,7 +322,7 @@ class Battle:
             request (dict): parsed json request object
         """
         self.logger.debug(
-            "Parsing request update %s in battle %s", request, self.battle_tag
+            "Parsing the following request update in battle %s:\n%s", self.battle_tag, pformat(request)
         )
 
         if "wait" in request and request["wait"]:
