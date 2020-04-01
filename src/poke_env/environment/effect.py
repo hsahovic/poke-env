@@ -59,6 +59,7 @@ class Effect(Enum):
     SUBSTITUTE = auto()
     SYNCHRONIZE = auto()
     TAUNT = auto()
+    THROAT_CHOP = auto()
     TRAPPED = auto()
     TRICK = auto()
     TYPE_CHANGE = auto()
