@@ -10,7 +10,8 @@ class ConstantTeambuilder(Teambuilder):
         if "|" in team:
             self.converted_team = team
         else:
-            self.converted_team = self.convert_showdown_to_packed(team)
+            mons = self.parse_showdown_team(team)
+            self.converted_team = self.join_team(mons)
 
     def yield_team(self):
         return self.converted_team

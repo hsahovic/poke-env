@@ -13,7 +13,7 @@ class Teambuilder(ABC):
         pass
 
     @staticmethod
-    def convert_showdown_to_packed(team: str):
+    def parse_showdown_team(team: List[TeambuilderPokemon]) -> str:
         current_mon = None
         mons = []
 
@@ -87,8 +87,7 @@ class Teambuilder(ABC):
                         current_mon.nickname = " ".join(split_mon_info[:-1])
                     else:
                         current_mon.nickname = split_mon_info[0]
-
-        return Teambuilder.join_team(mons)
+        return mons
 
     @staticmethod
     def join_team(team: List[TeambuilderPokemon]) -> str:
