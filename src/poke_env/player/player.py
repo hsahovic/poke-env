@@ -217,12 +217,16 @@ class Player(PlayerNetwork, ABC):
                 battle.turn = int(split_message[2])
                 await self._handle_battle_request(battle)
             elif split_message[1] == "teampreview":
-                await self._handle_battle_request(battle)
+                await self._handle_battle_request(battle, from_teampreview_request=True)
             else:
                 await battle._parse_message(split_message)
 
-    async def _handle_battle_request(self, battle: Battle):
+    async def _handle_battle_request(
+        self, battle: Battle, from_teampreview_request: bool = False
+    ):
         if battle.teampreview:
+            if not from_teampreview_request:
+                return
             message = self.teampreview(battle)
         else:
             message = self.choose_move(battle)
