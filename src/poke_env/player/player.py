@@ -363,6 +363,13 @@ class Player(PlayerNetwork, ABC):
         )
 
     def random_teampreview(self, battle: Battle) -> str:
+        """Returns a random valid teampreview order for the given battle.
+
+        :param battle: The battle.
+        :type battle: Battle
+        :return: The random teampreview order.
+        :rtype: str
+        """
         members = list(range(1, len(battle.team) + 1))
         choice = np.random.choice(members, size=battle.max_team_size, replace=False)
         return "/team " + "".join([str(c) for c in choice])
@@ -376,6 +383,21 @@ class Player(PlayerNetwork, ABC):
         self._battles = {}
 
     def teampreview(self, battle: Battle) -> str:
+        """Returns a teampreview order for the given battle.
+
+        This order must be of the form /team TEAM, where TEAM is a string defining the
+        team chosen by the player. Multiple formats are supported, among which '3461'
+        and '3, 4, 6, 1' are correct and indicate leading with pokemon 3, with pokemons
+        4, 6 and 1 in the back in single battles or leading with pokemons 3 and 4 with
+        pokemons 6 and 1 in the back in double battles.
+
+        Please refer to Pokemon Showdown's protocol documentation for more information.
+
+        :param battle: The battle.
+        :type battle: Battle
+        :return: The teampreview order.
+        :rtype: str
+        """
         return self.random_teampreview(battle)
 
     @staticmethod
