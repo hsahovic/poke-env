@@ -50,11 +50,11 @@ class Battle:
         "j",
         "l",
         "n",
+        "poke",
         "rated",
         "resisted",
         "supereffective",
         "tier",
-        "teamsize",
         "upkeep",
         "zbroken",
     }
@@ -62,10 +62,13 @@ class Battle:
     def __init__(self, battle_tag: str, username: str, logger: Logger):  # pyre-ignore
         # Utils attributes
         self._battle_tag: str = battle_tag
+        self._max_team_size: Optional[int] = None
         self._opponent_username: Optional[str] = None
         self._player_role = None
         self._player_username: str = username
         self._players = []
+        self._team_size: Dict[str, int] = {}
+        self._teampreview: bool = False
         self.logger: Logger = logger  # pyre-ignore
 
         # Turn choice attributes
@@ -114,9 +117,11 @@ class Battle:
         :type force_self_team: bool, optional, defaults to False
         :return: The corresponding pokemon object.
         :rtype: Pokemon
-        :raises AssertionError: If the team has more than 6 pokemons.
+        :raises AssertionError: If the team has too many pokemons, as determined by the
+            teamsize component of battle initialisation.
         """
-        is_mine = identifier[:2] == self._player_role
+        player_role = identifier[:2]
+        is_mine = player_role == self._player_role
         if identifier[3] != " ":
             identifier = identifier[:2] + identifier[3:]
             species = identifier[5:]
@@ -134,7 +139,8 @@ class Battle:
             return team[identifier]
         else:
             try:
-                assert len(team) < 6
+                if self._team_size:
+                    assert len(team) < self._team_size[player_role]
             except AssertionError:
                 self.logger.critical(team, identifier)
                 raise Exception
@@ -301,9 +307,6 @@ class Battle:
                     "rating": rating,
                 }
             )
-        elif split_message[1] == "poke":
-            player, details, item = split_message[2:5]
-            self.register_pokemon(player, details, item)
         elif split_message[1] == "replace":
             pokemon = split_message[2]
             details = split_message[3]
@@ -315,6 +318,10 @@ class Battle:
         elif split_message[1] == "swap":
             pokemon, position = split_message[2:4]
             self._swap(pokemon, position)
+        elif split_message[1] == "teamsize":
+            player, number = split_message[2:4]
+            number = int(number)
+            self._team_size[player] = number
         else:
             raise NotImplementedError(split_message)
 
@@ -346,6 +353,11 @@ class Battle:
         if request["rqid"]:
             self._rqid = max(self._rqid, int(request["rqid"]))
 
+        if request.get("teamPreview", False):
+            self._teampreview = True
+            self._max_team_size = request["maxTeamSize"]
+        else:
+            self._teampreview = False
         self._update_team_from_request(request["side"])
 
         if "active" in request:
@@ -422,7 +434,7 @@ class Battle:
         if identifier == self._player_role:
             self.active_pokemon._switch_out()
         else:
-            if self.opponent_team:
+            if self.opponent_active_pokemon:
                 self.opponent_active_pokemon._switch_out()
         pokemon = self.get_pokemon(pokemon, details=details)
         pokemon._switch_in()
@@ -530,6 +542,15 @@ class Battle:
         return self._won is False
 
     @property
+    def max_team_size(self) -> Optional[int]:
+        """
+        :return: The maximum acceptable size of the team to return in teampreview, if
+            applicable.
+        :rtype: int, optional
+        """
+        return self._max_team_size
+
+    @property
     def maybe_trapped(self) -> bool:
         """
         :return: A boolean indicating whether the active pokemon is maybe trapped by the
@@ -547,7 +568,7 @@ class Battle:
         for pokemon in self.opponent_team.values():
             if pokemon.active:
                 return pokemon
-        raise EnvironmentError("No active pokemon found in the opponent team")
+        return None
 
     @property
     def opponent_side_conditions(self) -> Set[SideCondition]:
@@ -621,6 +642,22 @@ class Battle:
         :rtype: Dict[str, Pokemon]
         """
         return self._team
+
+    @property
+    def team_size(self) -> int:
+        """
+        :return: The number of Pokemon in the player's team.
+        :rtype: int
+        """
+        return self._team_size[self._player_role]
+
+    @property
+    def teampreview(self) -> bool:
+        """
+        :return: Wheter the battle is awaiting a teampreview order.
+        :rtype: bool
+        """
+        return self._teampreview
 
     @property
     def trapped(self) -> bool:
