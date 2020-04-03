@@ -8,12 +8,35 @@ from typing import List
 
 
 class Teambuilder(ABC):
+    """Teambuilder objects allow the generation of teams by Player instances.
+
+    They must implement the yield_team method, which must return a valid
+    packed-formatted showdown team every time it is called.
+
+    This format is a custom format decribed in Pokemon's showdown protocol
+    documentation:
+    https://github.com/smogon/pokemon-showdown/blob/master/PROTOCOL.md#team-format
+
+    This class also implements a helper function to convert teams from the classical
+    showdown team text format into the packed-format.
+    """
+
     @abstractmethod
-    def yield_team(self):
+    def yield_team(self) -> str:
         pass
 
     @staticmethod
     def parse_showdown_team(team: List[TeambuilderPokemon]) -> str:
+        """Converts a showdown-formatted team string into a list of TeambuilderPokemon
+        objects.
+
+        This method can be used when using teams built in the showdown teambuilder.
+
+        :param team: The showdown-format team to convert.
+        :type team: str
+        :return: The formatted team.
+        :rtype: list of TeambuilderPokemon
+        """
         current_mon = None
         mons = []
 
@@ -95,7 +118,7 @@ class Teambuilder(ABC):
         showdown team format.
 
         :param team: The list of TeambuilderPokemon objects that form the team.
-        :type team: list
+        :type team: list of TeambuilderPokemon
         :return: The formatted team string.
-        :type: str"""
+        :rtype: str"""
         return "]".join([mon.formatted for mon in team])
