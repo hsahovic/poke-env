@@ -22,6 +22,7 @@ class Pokemon:
         *,
         species: Optional[str] = None,
         request_pokemon: Optional[Dict[str, Any]] = None,
+        details: Optional[str] = None,
     ) -> None:
         # Species related attributes
         self._base_stats: Dict[str, int]
@@ -62,11 +63,15 @@ class Pokemon:
         self._preparing = False
         self._status: Optional[Status] = None
 
+        if details and not species:
+            species = details.split(", ")[0]
         if species:
             self._update_from_pokedex(species)
             self._species = species
         elif request_pokemon:
             self._update_from_request(request_pokemon)
+        elif details:
+            self._update_from_details(details)
 
     def __repr__(self) -> str:
         return self.__str__()
@@ -214,30 +219,7 @@ class Pokemon:
         self._heightm = dex_entry["heightm"]
         self._weightkg = dex_entry["weightkg"]
 
-    def _update_from_request(self, request_pokemon: Dict[str, Any]) -> None:
-        self._ability = request_pokemon["ability"]
-        self._active = request_pokemon["active"]
-        self._base_ability = request_pokemon["baseAbility"]
-
-        condition = request_pokemon["condition"]
-        if condition == "0 fnt":
-            self._current_hp = 0
-            self.status = Status.FNT
-        else:
-            if " " in condition:
-                hps, status = condition.split(" ")
-                self.status = status
-            else:
-                hps = condition
-                self.status = None
-            current_hp, max_hp = hps.split("/")
-            self._current_hp = int(current_hp)
-            self._max_hp = int(max_hp)
-
-        self._item = request_pokemon["item"]
-
-        details = request_pokemon["details"]
-
+    def _update_from_details(self, details: str) -> None:
         if ", shiny" in details:
             self._shiny = True
             details = details.replace(", shiny", "")
@@ -268,6 +250,31 @@ class Pokemon:
 
         self._gender = gender
         self._level = level
+
+    def _update_from_request(self, request_pokemon: Dict[str, Any]) -> None:
+        self._ability = request_pokemon["ability"]
+        self._active = request_pokemon["active"]
+        self._base_ability = request_pokemon["baseAbility"]
+
+        condition = request_pokemon["condition"]
+        if condition == "0 fnt":
+            self._current_hp = 0
+            self.status = Status.FNT
+        else:
+            if " " in condition:
+                hps, status = condition.split(" ")
+                self.status = status
+            else:
+                hps = condition
+                self.status = None
+            current_hp, max_hp = hps.split("/")
+            self._current_hp = int(current_hp)
+            self._max_hp = int(max_hp)
+
+        self._item = request_pokemon["item"]
+
+        details = request_pokemon["details"]
+        self._update_from_details(details)
 
         # This might cause some unnecessary resets with special moves, such as
         # hiddenpower
