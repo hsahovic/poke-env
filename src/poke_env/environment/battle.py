@@ -50,7 +50,6 @@ class Battle:
         "j",
         "l",
         "n",
-        "poke",
         "rated",
         "resisted",
         "supereffective",
@@ -69,6 +68,7 @@ class Battle:
         self._players = []
         self._team_size: Dict[str, int] = {}
         self._teampreview: bool = False
+        self._teampreview_opponent_team: Set[Pokemon] = set()
         self.logger: Logger = logger  # pyre-ignore
 
         # Turn choice attributes
@@ -307,6 +307,9 @@ class Battle:
                     "rating": rating,
                 }
             )
+        elif split_message[1] == "poke":
+            player, details = split_message[2:4]
+            self._register_teampreview_pokemon(player, details)
         elif split_message[1] == "replace":
             pokemon = split_message[2]
             details = split_message[3]
@@ -403,6 +406,11 @@ class Battle:
                     pokemon = self._team[pokemon["ident"]]
                     if not pokemon.active and not pokemon.fainted:
                         self.available_switches.append(pokemon)
+
+    def _register_teampreview_pokemon(self, player: str, details: str):
+        if player != self._player_role:
+            mon = Pokemon(details=details)
+            self._teampreview_opponent_team.add(mon)
 
     def _side_end(self, side, condition):
         if side[:2] == self._player_role:
@@ -658,6 +666,10 @@ class Battle:
         :rtype: bool
         """
         return self._teampreview
+
+    @property
+    def teampreview_opponent_team(self) -> Set[Pokemon]:
+        return self._teampreview_opponent_team
 
     @property
     def trapped(self) -> bool:
