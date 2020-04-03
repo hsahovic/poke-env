@@ -24,6 +24,8 @@ from poke_env.exceptions import ShowdownException
 from poke_env.player.player_network_interface import PlayerNetwork
 from poke_env.player_configuration import PlayerConfiguration
 from poke_env.server_configuration import ServerConfiguration
+from poke_env.teambuilder.teambuilder import Teambuilder
+from poke_env.teambuilder.constant_teambuilder import ConstantTeambuilder
 
 
 class Player(PlayerNetwork, ABC):
@@ -43,6 +45,7 @@ class Player(PlayerNetwork, ABC):
         max_concurrent_battles: int = 1,
         server_configuration: ServerConfiguration,
         start_listening: bool = True,
+        team: Optional[Union[str, Teambuilder]] = None,
     ) -> None:
         """
         :param player_configuration: Player configuration.
@@ -61,6 +64,10 @@ class Player(PlayerNetwork, ABC):
         :param start_listening: Wheter to start listening to the server. Defaults to
             True.
         :type start_listening: bool
+        :param team: The team to use for formats requiring a team. Can be a showdown
+            team string, a showdown packed team string, of a ShowdownTeam object.
+            Defaults to None.
+        :type team: str or Teambuilder, optional
         """
         super(Player, self).__init__(
             player_configuration=player_configuration,
@@ -79,6 +86,14 @@ class Player(PlayerNetwork, ABC):
         self._battle_start_condition: Condition = Condition()
         self._battle_count_queue: Queue = Queue(max_concurrent_battles)
         self._challenge_queue: Queue = Queue()
+        if isinstance(team, Teambuilder):
+            self._team = team
+        elif isinstance(team, str):
+            self._team = ConstantTeambuilder(team)
+        elif team is None:
+            self._team = None
+        else:
+            raise ValueError("Team must be a string, Teambuilder instance or None.")
 
         self.logger.debug("Player initialisation finished")
 
