@@ -8,12 +8,13 @@ from gym.core import Env  # pyre-ignore
 from queue import Queue
 from threading import Thread
 
-from typing import Any, Callable, List, Optional, Tuple
+from typing import Any, Callable, List, Optional, Tuple, Union
 
 from poke_env.environment.battle import Battle
 from poke_env.player.player import Player
 from poke_env.player_configuration import PlayerConfiguration
 from poke_env.server_configuration import ServerConfiguration
+from poke_env.teambuilder.teambuilder import Teambuilder
 from poke_env.utils import to_id_str
 
 import asyncio
@@ -37,6 +38,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         log_level: Optional[int] = None,
         server_configuration: ServerConfiguration,
         start_listening: bool = True,
+        team: Optional[Union[str, Teambuilder]] = None,
     ):
         """
         :param player_configuration: Player configuration.
@@ -52,6 +54,10 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         :param start_listening: Wheter to start listening to the server. Defaults to
             True.
         :type start_listening: bool
+        :param team: The team to use for formats requiring a team. Can be a showdown
+            team string, a showdown packed team string, of a ShowdownTeam object.
+            Defaults to None.
+        :type team: str or Teambuilder, optional
         """
         super(EnvPlayer, self).__init__(
             player_configuration=player_configuration,
@@ -61,6 +67,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
             max_concurrent_battles=1,
             server_configuration=server_configuration,
             start_listening=start_listening,
+            team=team,
         )
         self._actions = {}
         self._current_battle: Battle
