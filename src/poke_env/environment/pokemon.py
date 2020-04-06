@@ -118,9 +118,25 @@ class Pokemon:
     def _damage(self, hp_status):
         self._set_hp_status(hp_status)
 
+    def _dynamax(self):
+        if self.is_dynamaxed:
+            raise Exception('Cannot Dynamax a Pokemon that is already Dynamaxed!')
+        self._current_hp *= 2
+        self._effects.add(Effect.DYNAMAX)
+
+    def _end_dynamax(self):
+        if not self.is_dynamaxed:
+            raise Exception('Cannot end Dynamax of a Pokemon that is not Dynamaxed!')
+        self._current_hp = max(self._current_hp // 2, 1)
+        self._effects.remove(Effect.DYNAMAX)
+
     def _end_effect(self, effect):
-        if Effect.from_showdown_message(effect) in self._effects:
-            self._effects.remove(Effect.from_showdown_message(effect))
+        effect_obj = Effect.from_showdown_message(effect)
+        if effect_obj in self._effects:
+            if effect_obj == Effect.DYNAMAX:
+                self._end_dynamax()
+            else:
+                self._effects.remove(effect_obj)
 
     def _end_item(self, item):
         self._item = None
@@ -183,7 +199,11 @@ class Pokemon:
         self._max_hp = int(self._max_hp)
 
     def _start_effect(self, effect):
-        self._effects.add(Effect.from_showdown_message(effect))
+        effect_obj = Effect.from_showdown_message(effect)
+        if effect_obj == Effect.DYNAMAX:
+            self._dynamax()
+        else:
+            self._effects.add(effect_obj)
 
     def _switch_in(self):
         self._active = True
@@ -407,6 +427,14 @@ class Pokemon:
         return self._heightm
 
     @property
+    def is_dynamaxed(self) -> bool:
+        """
+        :return: Whether the pokemon is currently dynamaxed
+        :rtype: bool
+        """
+        return Effect.DYNAMAX in self.effects
+
+    @property
     def item(self) -> Optional[str]:
         """
         :return: The pokemon's item.
@@ -434,6 +462,8 @@ class Pokemon:
             be on a scale from 0 to 100 or on a pixel scale.
         :rtype: int
         """
+        if self.is_dynamaxed:
+            return self._max_hp * 2
         return self._max_hp
 
     @property
