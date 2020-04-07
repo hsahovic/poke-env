@@ -13,5 +13,5 @@ class ConstantTeambuilder(Teambuilder):
             mons = self.parse_showdown_team(team)
             self.converted_team = self.join_team(mons)
 
-    def yield_team(self):
+    def yield_team(self) -> str:
         return self.converted_team

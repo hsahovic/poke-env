@@ -165,8 +165,9 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
                 self._current_battle.active_pokemon.current_hp or 0,
                 self._current_battle.active_pokemon.max_hp or 0,
                 self._current_battle.active_pokemon.species,
-                self._current_battle.opponent_active_pokemon.species,
-                self._current_battle.opponent_active_pokemon.current_hp or 0,
+                self._current_battle.opponent_active_pokemon.species,  # pyre-ignore
+                self._current_battle.opponent_active_pokemon.current_hp  # pyre-ignore
+                or 0,
                 "".join(
                     [
                         "⦻" if mon.fainted else "●"

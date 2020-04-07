@@ -226,20 +226,20 @@ class Pokemon:
         else:
             self._shiny = False
 
-        details = details.split(", ")
+        split_details = details.split(", ")
 
         gender = PokemonGender.NEUTRAL
         level = 100
 
-        if len(details) == 3:
-            species, level, gender = details
-        elif len(details) == 2:
-            if details[1].startswith("L"):
-                species, level = details
+        if len(split_details) == 3:
+            species, level, gender = split_details
+        elif len(split_details) == 2:
+            if split_details[1].startswith("L"):
+                species, level = split_details
             else:
-                species, gender = details
+                species, gender = split_details
         else:
-            species = details[0]
+            species = split_details[0]
 
         if not isinstance(gender, PokemonGender):
             gender = PokemonGender.from_request_details(gender)

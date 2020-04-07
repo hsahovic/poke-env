@@ -154,6 +154,9 @@ class Battle:
         else:
             active = self.opponent_active_pokemon
 
+        if active is None:
+            raise ValueError("Cannot end illusion without an active pokemon.")
+
         pokemon = self.get_pokemon(pokemon_name, details=details)
         pokemon._set_hp(f"{active.current_hp}/{active.max_hp}")
         active._was_illusionned()
@@ -568,7 +571,7 @@ class Battle:
         return self._maybe_trapped
 
     @property
-    def opponent_active_pokemon(self) -> Pokemon:
+    def opponent_active_pokemon(self) -> Optional[Pokemon]:
         """
         :return: The opponent active pokemon
         :rtype: Pokemon
@@ -657,7 +660,12 @@ class Battle:
         :return: The number of Pokemon in the player's team.
         :rtype: int
         """
-        return self._team_size[self._player_role]
+        role = self._player_role
+        if isinstance(role, str):
+            return self._team_size[role]
+        raise ValueError(
+            "Team size cannot be inferred without an assigned player role."
+        )
 
     @property
     def teampreview(self) -> bool:
