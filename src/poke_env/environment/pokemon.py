@@ -99,6 +99,8 @@ class Pokemon:
             self._boosts[stat] = 0
 
     def _clear_effects(self):
+        if self.is_dynamaxed:
+            self._revert_dynamax_hp()
         self._effects = set()
 
     def _clear_negative_boosts(self):
@@ -118,25 +120,14 @@ class Pokemon:
     def _damage(self, hp_status):
         self._set_hp_status(hp_status)
 
-    def _dynamax(self):
-        if self.is_dynamaxed:
-            raise Exception('Cannot Dynamax a Pokemon that is already Dynamaxed!')
-        self._current_hp *= 2
-        self._effects.add(Effect.DYNAMAX)
-
-    def _end_dynamax(self):
-        if not self.is_dynamaxed:
-            raise Exception('Cannot end Dynamax of a Pokemon that is not Dynamaxed!')
-        self._current_hp = max(self._current_hp // 2, 1)
-        self._effects.remove(Effect.DYNAMAX)
-
     def _end_effect(self, effect):
         effect_obj = Effect.from_showdown_message(effect)
         if effect_obj in self._effects:
             if effect_obj == Effect.DYNAMAX:
-                self._end_dynamax()
-            else:
-                self._effects.remove(effect_obj)
+                if not self.is_dynamaxed:
+                    raise Exception('Cannot end Dynamax of a Pokemon that is not Dynamaxed!')
+                self._revert_dynamax_hp()
+            self._effects.remove(Effect.DYNAMAX)
 
     def _end_item(self, item):
         self._item = None
@@ -174,6 +165,10 @@ class Pokemon:
         primal_species = self._species + "primal"
         self._update_from_pokedex(primal_species)
 
+    def _revert_dynamax_hp(self):
+        self._current_hp = max(self._current_hp // 2, 1)
+        self._max_hp = max(self._max_hp // 2, 1)
+
     def _set_boost(self, stat, amount):
         assert abs(int(amount)) <= 6
         self._boosts[stat] = int(amount)
@@ -201,9 +196,12 @@ class Pokemon:
     def _start_effect(self, effect):
         effect_obj = Effect.from_showdown_message(effect)
         if effect_obj == Effect.DYNAMAX:
-            self._dynamax()
-        else:
-            self._effects.add(effect_obj)
+            if self.is_dynamaxed:
+                raise Exception('Cannot Dynamax a Pokemon that is already Dynamaxed!')
+            if self.species.lower() != "shedinja":
+                self._current_hp *= 2
+                self._max_hp *= 2
+        self._effects.add(effect_obj)
 
     def _switch_in(self):
         self._active = True
@@ -462,8 +460,6 @@ class Pokemon:
             be on a scale from 0 to 100 or on a pixel scale.
         :rtype: int
         """
-        if self.is_dynamaxed:
-            return self._max_hp * 2
         return self._max_hp
 
     @property
