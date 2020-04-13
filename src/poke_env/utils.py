@@ -45,7 +45,7 @@ def to_id_str(name: str) -> str:
     """
     name = name.lower()
 
-    for c in " -%:'.":
+    for c in " -%:'._":
         name = name.replace(c, "")
 
     return name
