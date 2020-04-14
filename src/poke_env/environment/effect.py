@@ -33,6 +33,7 @@ class Effect(Enum):
     HYPERSPACE_FURY = auto()
     ILLUSION = auto()
     IMMUNITY = auto()
+    INNARDS_OUT = auto()
     INSOMNIA = auto()
     INFESTATION = auto()
     LEECH_SEED = auto()
