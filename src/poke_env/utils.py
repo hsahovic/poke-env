@@ -43,9 +43,4 @@ def to_id_str(name: str) -> str:
     :return: The corresponding id string.
     :rtype: str
     """
-    name = name.lower()
-
-    for c in " -%:'.":
-        name = name.replace(c, "")
-
-    return name
+    return ''.join(char for char in name if char.isalnum()).lower()
