@@ -21,6 +21,7 @@ from poke_env.environment.battle import Battle
 from poke_env.environment.move import Move
 from poke_env.environment.pokemon import Pokemon
 from poke_env.exceptions import ShowdownException
+from poke_env.exceptions import UnexpectedEffectException
 from poke_env.player.player_network_interface import PlayerNetwork
 from poke_env.player_configuration import PlayerConfiguration
 from poke_env.server_configuration import ServerConfiguration
@@ -211,7 +212,10 @@ class Player(PlayerNetwork, ABC):
                 battle.turn = int(split_message[2])
                 await self._send_message(self.choose_move(battle), battle.battle_tag)
             else:
-                await battle._parse_message(split_message)
+                try:
+                    await battle._parse_message(split_message)
+                except UnexpectedEffectException as e:
+                    self.logger.exception(e)
 
     def _manage_error_in(self, battle: Battle):
         pass
