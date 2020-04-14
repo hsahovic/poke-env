@@ -2,6 +2,9 @@
 """This module defines the Effect class, which represents in-game effects.
 """
 # pyre-ignore-all-errors[45]
+
+from poke_env.exceptions import UnexpectedEffectException
+
 from enum import Enum, unique, auto
 
 
@@ -84,4 +87,7 @@ class Effect(Enum):
         message = message.replace("move: ", "")
         message = message.replace("ability: ", "")
         message = message.replace(" ", "_")
-        return Effect[message.upper()]
+        try:
+            return Effect[message.upper()]
+        except KeyError:
+            raise UnexpectedEffectException("Unexpected effect '%s' received" % message)
