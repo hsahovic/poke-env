@@ -77,8 +77,8 @@ class Teambuilder(ABC):
                 current_mon.moves.append(line)
             elif line.startswith("Shiny"):
                 current_mon.shiny = line.strip().endswith("Yes")
-            elif line.endswith(" Nature  "):
-                nature = line.replace(" Nature  ", "")
+            elif line.strip().endswith(" Nature"):
+                nature = line.strip().replace(" Nature", "")
                 current_mon.nature = nature
             elif line.startswith("Hidden Power: "):
                 hp_type = line.replace("Hidden Power: ", "").strip()
@@ -90,26 +90,26 @@ class Teambuilder(ABC):
                 if "@" in line:
                     mon_info, item = line.split(" @ ")
                     current_mon.item = item.strip()
-                else:
-                    mon_info = line
+                # else:
+                # mon_info = line
                 split_mon_info = mon_info.split(" ")
 
-                if len(split_mon_info) == 1:
-                    current_mon.nickname = split_mon_info[0]
-                else:
-                    if split_mon_info[-1] == "(M)":
-                        current_mon.gender = "M"
-                        split_mon_info.pop()
-                    if split_mon_info[-1] == "(F)":
-                        current_mon.gender = "F"
-                        split_mon_info.pop()
-                    if split_mon_info[-1].startswith("(") and split_mon_info[
-                        -1
-                    ].endswith(")"):
-                        current_mon.species = split_mon_info[-1][1:-1]
-                        current_mon.nickname = " ".join(split_mon_info[:-1])
-                    else:
-                        current_mon.nickname = split_mon_info[0]
+                if split_mon_info[-1] == "(M)":
+                    current_mon.gender = "M"
+                    split_mon_info.pop()
+                if split_mon_info[-1] == "(F)":
+                    current_mon.gender = "F"
+                    split_mon_info.pop()
+                if split_mon_info[-1].endswith(")"):
+                    for i, info in enumerate(split_mon_info):
+                        if info[0] == "(":
+                            current_mon.species = " ".join(split_mon_info[i:])[1:-1]
+                            split_mon_info = split_mon_info[:i]
+                            break
+                    current_mon.nickname = " ".join(split_mon_info)
+                current_mon.nickname = " ".join(split_mon_info)
+        if current_mon is not None:
+            mons.append(current_mon)
         return mons
 
     @staticmethod
