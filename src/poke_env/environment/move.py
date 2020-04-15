@@ -254,7 +254,7 @@ class Move:
                 return self.entry["ignoreImmunity"]
             else:
                 return {
-                    PokemonType[t.upper()] for t in self.entry["ignoreImmunity"].keys()
+                    PokemonType[t.upper().replace("'", "")] for t in self.entry["ignoreImmunity"].keys()
                 }
         return False
 
