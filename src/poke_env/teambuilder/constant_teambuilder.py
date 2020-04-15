@@ -6,7 +6,7 @@ from poke_env.teambuilder.teambuilder import Teambuilder
 
 
 class ConstantTeambuilder(Teambuilder):
-    def __init__(self, team):
+    def __init__(self, team: str):
         if "|" in team:
             self.converted_team = team
         else:
