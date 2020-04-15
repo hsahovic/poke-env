@@ -291,11 +291,11 @@ class Move:
         :rtype: Tuple[int, int]
         """
         if "multihit" in self.entry:
-            if isinstance(self.entry["multihit"], dict):
-                return (self.entry["multihit"]["0"], self.entry["multihit"]["1"])
+            if isinstance(self.entry["multihit"], list):
+                return self.entry["multihit"][0], self.entry["multihit"][1]
             else:
-                return (self.entry["multihit"], self.entry["multihit"])
-        return (1, 1)
+                return self.entry["multihit"], self.entry["multihit"]
+        return 1, 1
 
     @property
     def no_pp_boosts(self) -> bool:
