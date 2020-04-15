@@ -160,7 +160,7 @@ class Move:
         :rtype: float
         """
         if "drain" in self.entry:
-            return self.entry["drain"]["0"] / self.entry["drain"]["1"]
+            return self.entry["drain"][0] / self.entry["drain"][1]
         return 0.0
 
     @property
