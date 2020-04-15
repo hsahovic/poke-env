@@ -23,7 +23,7 @@ class Teambuilder(ABC):
 
     @abstractmethod
     def yield_team(self) -> str:
-        pass
+        """Returns a packed-format team."""
 
     @staticmethod
     def parse_showdown_team(team: List[TeambuilderPokemon]) -> str:
@@ -84,14 +84,10 @@ class Teambuilder(ABC):
                 hp_type = line.replace("Hidden Power: ", "").strip()
                 current_mon.hiddenpowertype = hp_type
             else:
-                if current_mon:
-                    mons.append(current_mon)
                 current_mon = TeambuilderPokemon()
                 if "@" in line:
                     mon_info, item = line.split(" @ ")
                     current_mon.item = item.strip()
-                # else:
-                # mon_info = line
                 split_mon_info = mon_info.split(" ")
 
                 if split_mon_info[-1] == "(M)":
