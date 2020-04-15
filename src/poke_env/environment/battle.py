@@ -355,9 +355,9 @@ class Battle:
             for move in active_request["moves"]:
                 if not move.get("disabled", False):
                     if move["id"] in active_pokemon.moves:
-                        self.available_moves.append(active_pokemon.moves[move["id"]])
+                        self._available_moves.append(active_pokemon.moves[move["id"]])
                     elif move["id"] in special_moves:
-                        self.available_moves.append(special_moves[move["id"]])
+                        self._available_moves.append(special_moves[move["id"]])
                     else:
                         try:
                             self.logger.critical(
@@ -367,7 +367,7 @@ class Battle:
                                 move["id"],
                             )
                             move = Move(move["id"])
-                            self.available_moves.append(move)
+                            self._available_moves.append(move)
                         except AttributeError:
                             pass
             if active_request.get("canMegaEvo", False):
@@ -389,7 +389,7 @@ class Battle:
                 if pokemon:
                     pokemon = self._team[pokemon["ident"]]
                     if not pokemon.active and not pokemon.fainted:
-                        self.available_switches.append(pokemon)
+                        self._available_switches.append(pokemon)
 
     def _side_end(self, side, condition):
         if side[:2] == self._player_role:
