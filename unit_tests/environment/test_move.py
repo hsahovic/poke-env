@@ -315,7 +315,7 @@ def test_secondary():
     assert acid_armor.secondary is None
 
     for move in move_generator():
-        assert move.secondary is None or isinstance(move.secondary, dict)
+        assert move.secondary is None or isinstance(move.secondary, dict) or isinstance(move.secondary, list)
 
 
 def test_self_boosts():
