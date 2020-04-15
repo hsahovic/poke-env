@@ -336,7 +336,7 @@ class Move:
         :rtype: float
         """
         if "recoil" in self.entry:
-            return self.entry["recoil"]["0"] / self.entry["recoil"]["1"]
+            return self.entry["recoil"][0] / self.entry["recoil"][1]
         elif "struggleRecoil" in self.entry:
             return 0.25
         return 0.0
