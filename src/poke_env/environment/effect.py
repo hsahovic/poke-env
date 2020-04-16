@@ -36,6 +36,7 @@ class Effect(Enum):
     LEECH_SEED = auto()
     MAGNET_RISE = auto()
     MAGMA_STORM = auto()
+    MAX_GUARD = auto()
     MISTY_TERRAIN = auto()
     MUMMY = auto()
     OBLIVIOUS = auto()
