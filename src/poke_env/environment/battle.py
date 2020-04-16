@@ -74,6 +74,7 @@ class Battle:
         self._can_mega_evolve: bool = False
         self._can_z_move: bool = False
         self._can_dynamax: bool = False
+        self._opponent_can_dynamax = True
         self._force_switch: bool = False
         self._in_team_preview: bool = False
         self._maybe_trapped: bool = False
@@ -86,6 +87,8 @@ class Battle:
         self._rqid = 0
         self._rules = []
         self._turn: int = 0
+        self._dynamax_turn: Optional[int] = None
+        self._opponent_dynamax_turn: Optional[int] = None
         self._won: Optional[bool] = None
 
         # In game battle state attributes
@@ -253,7 +256,17 @@ class Battle:
             self._side_start(side, condition)
         elif split_message[1] == "-start":
             pokemon, effect = split_message[2:4]
-            self.get_pokemon(pokemon)._start_effect(effect)
+            pokemon_instance = self.get_pokemon(pokemon)
+            was_dynamaxed = pokemon_instance.is_dynamaxed
+            pokemon_instance._start_effect(effect)
+            is_dynamaxed = pokemon_instance.is_dynamaxed
+            if not was_dynamaxed and is_dynamaxed:
+                if pokemon_instance in set(self.team.values()):
+                    self._dynamax_turn = self.turn
+                    # self._can_dynamax value is set via _parse_request()
+                else:
+                    self._opponent_dynamax_turn = self.turn
+                    self._opponent_can_dynamax = False
         elif split_message[1] == "-status":
             pokemon, status = split_message[2:4]
             self.get_pokemon(pokemon).status = status
@@ -503,6 +516,15 @@ class Battle:
         return self._can_z_move
 
     @property
+    def dynamax_turns_left(self) -> Optional[int]:
+        """
+        :return: How many turns of dynamax are left. None if dynamax is not active
+        :rtype: Optional[int]
+        """
+        if self.active_pokemon.is_dynamaxed:
+            return 3 - (self.turn - self._dynamax_turn)
+
+    @property
     def fields(self) -> Set[Field]:
         """
         :return: The set of active fields.
@@ -555,6 +577,23 @@ class Battle:
             if pokemon.active:
                 return pokemon
         raise EnvironmentError("No active pokemon found in the opponent team")
+
+    @property
+    def opponent_can_dynamax(self) -> bool:
+        """
+        :return: Wheter of not opponent's current active pokemon can dynamax
+        :rtype: bool
+        """
+        return self._opponent_can_dynamax
+
+    @property
+    def opponent_dynamax_turns_left(self) -> Optional[int]:
+        """
+        :return: How many turns of dynamax are left for the opponent's pokemon. None if dynamax is not active
+        :rtype: Optional[int]
+        """
+        if self.opponent_active_pokemon.is_dynamaxed:
+            return 3 - (self.turn - self._opponent_dynamax_turn)
 
     @property
     def opponent_side_conditions(self) -> Set[SideCondition]:
