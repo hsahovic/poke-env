@@ -5,7 +5,7 @@ import json
 from pytest import fixture
 
 
-FIXTURE_DIR = os.path.join("unit_tests", "fixture_data")
+FIXTURE_DIR = os.path.join("fixture_data")
 
 
 @fixture
