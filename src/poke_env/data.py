@@ -23,6 +23,14 @@ with open(
 ) as pokedex:
     POKEDEX = json.load(pokedex)
 
+_missing_dex = {}
+for key, value in POKEDEX.items():
+    if "otherForms" in value:
+        for other_form in value["otherForms"]:
+            _missing_dex[other_form] = value
+
+POKEDEX.update(_missing_dex)
+
 MOVES: Dict = {}
 
 with open(
