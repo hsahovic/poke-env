@@ -51,6 +51,8 @@ This project is a follow-up of a group project from an artifical intelligence cl
 
 You can find the original repository [here](https://github.com/hsahovic/inf581-project). It is partially inspired by the [showdown-battle-bot project](https://github.com/Synedh/showdown-battle-bot). Of course, none of these would have been possible without [Pokemon Showdown](https://github.com/Zarel/Pokemon-Showdown).
 
+Fixture team data comes from [Smogon forums' RMT section](https://www.smogon.com/).
+
 ## Data
 
 Data files are adapted version of the `js` data files of [Pokemon Showdown](https://github.com/Zarel/Pokemon-Showdown).
