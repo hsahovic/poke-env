@@ -32,6 +32,7 @@ class Effect(Enum):
     IMMUNITY = auto()
     INSOMNIA = auto()
     INFESTATION = auto()
+    IRON_BARBS = auto()
     LEECH_SEED = auto()
     LIMBER = auto()
     MAGNET_RISE = auto()
