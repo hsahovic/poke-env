@@ -1,4 +1,26 @@
 {
+    "gen7ubers": [
+        {
+            "showdown-file": "times like these.showdown",
+            "packed-format": "Clefable||leftovers|magicguard|stealthrock,moonblast,flamethrower,softboiled|Bold|248,,172,,88,||,0,,,,|||]Gengar||choicespecs|cursedbody|shadowball,sludgewave,thunderbolt,focusblast|Timid|,,,252,4,252||,0,,,,|||]Landorus-Therian||rockiumz|intimidate|stoneedge,earthquake,swordsdance,rockpolish|Adamant|,252,,,4,252|||||]Keldeo-Resolute||choicescarf|justified|hydropump,scald,secretsword,stoneedge|Hasty|,,,252,4,252|||||]Metagross||metagrossite|clearbody|meteormash,zenheadbutt,earthquake,thunderpunch|Jolly|,252,4,,,252|||||]Tangrowth||assaultvest|regenerator|knockoff,leafstorm,hiddenpowerfire,earthquake|Sassy|252,,72,,184,||,30,,30,,30|||"
+        },
+        {
+            "showdown-file": "core4.showdown",
+            "packed-format": "Landorus-Therian||rockiumz|intimidate|earthquake,swordsdance,stealthrock,stoneedge|Adamant|,252,4,,,252|||||]Ferrothorn||leftovers|ironbarbs|spikes,leechseed,powerwhip,gyroball|Relaxed|252,,88,,168,|F|,,,,,0|||]Greninja||choicespecs|battlebond|hydropump,darkpulse,watershuriken,uturn|Timid|,,,252,4,252|M||||]Garchomp||choicescarf|roughskin|earthquake,dragonclaw,outrage,firefang|Jolly|,252,4,,,252|M||||]Metagross||metagrossite|clearbody|meteormash,thunderpunch,icepunch,hammerarm|Jolly|,252,4,,,252|||||]Tapu Lele||shedshell|psychicsurge|taunt,psyshock,moonblast,hiddenpowerfire|Timid|,,,252,4,252||,0,,,,|||"
+        },
+        {
+            "showdown-file": "under the rainbow.showdown",
+            "packed-format": "Tapu Bulu||fightiniumz|grassysurge|hornleech,superpower,zenheadbutt,swordsdance|Adamant|40,252,,,,216|||||]Landorus-Therian||rockyhelmet|intimidate|earthquake,hiddenpowerice,stealthrock,uturn|Impish|248,,244,,,16||,30,30,,,|S||]Zygarde||leftovers|aurabreak|thousandarrows,substitute,coil,toxic|Careful|216,,12,,176,104|||||]Heatran||choicescarf|flashfire|fireblast,flashcannon,earthpower,flamethrower|Timid|,,,252,4,252||,0,,,,|||]Scizor-Mega||scizorite|technician|bulletpunch,uturn,roost,defog|Impish|248,,48,,56,156|M|,,,,,30|||]Toxapex||blacksludge|regenerator|scald,toxicspikes,recover,haze|Calm|248,,156,,104,||,0,,,,|||"
+        },
+        {
+            "showdown-file": "la familia.showdown",
+            "packed-format": "Ninetales-Alola||lightclay|snowwarning|auroraveil,hypnosis,freezedry,hail|Timid|252,,,4,,252||,0,,,,|||]Magearna||leftovers|soulheart|thunderbolt,icebeam,shiftgear,calmmind|Timid|,,,252,4,252||,0,,,,|||]Zygarde||figyberry|aurabreak|thousandarrows,extremespeed,coil,dragondance|Adamant|80,236,,,,192|||||]Mawile-Mega||mawilite|intimidate|playrough,suckerpunch,thunderpunch,swordsdance|Adamant|84,252,,,,172|||||]Manaphy||wateriumz|hydration|surf,psychic,tailglow,raindance|Modest|,,,252,4,252||,0,,,,|||]Landorus-Therian||earthplate|intimidate|earthquake,smackdown,knockoff,stealthrock|Jolly|4,252,,,,252|||||"
+        },
+        {
+            "showdown-file": "ghost town.showdown",
+            "packed-format": "Ditto||choicescarf|imposter|transform|Relaxed|252,4,252,,,||,,,,,0|||]Chansey||eviolite|naturalcure|stealthrock,healingwish,softboiled,seismictoss|Bold|248,,252,,8,||,0,,,,|||]Tornadus-Therian||flyiniumz|regenerator|hurricane,superpower,defog,knockoff|Naive|,4,,252,,252|||||]Toxapex||blacksludge|regenerator|scald,toxicspikes,recover,haze|Bold|252,,136,,120,||,0,,,,|||]Scizor-Mega||scizorite|lightmetal|curse,uturn,bulletpunch,roost|Impish|248,,252,,8,|||||]Zygarde||choiceband|aurabreak|thousandarrows,outrage,extremespeed,irontail|Adamant|,252,,,4,252|||||"
+        }
+    ],
     "gen7ou": [
         {
             "showdown-file": "ash-greninja balance.showdown",
@@ -13,32 +35,12 @@
             "packed-format": "Tapu Koko||electriumz|electricsurge|thunderbolt,uturn,hiddenpowerice,taunt|Timid|,,4,252,,252||,30,30,,,|||]Landorus-Therian||leftovers|intimidate|earthquake,uturn,stealthrock,hiddenpowerice|Impish|120,,252,,,136||,30,30,,,|||]Toxapex||shedshell|regenerator|scald,toxicspikes,recover,toxic|Bold|252,,60,,196,||,0,,,,|||]Serperior||leftovers|contrary|leafstorm,leechseed,substitute,hiddenpowerfire|Timid|,,4,252,,252||,0,,,,|||]Celesteela||leftovers|beastboost|heavyslam,protect,earthquake,leechseed|Sassy|252,,28,,228,|||||]Medicham-Mega||medichamite|purepower|fakeout,highjumpkick,zenheadbutt,icepunch|Adamant|,252,,,4,252|||||"
         },
         {
-            "showdown-file": "core4.showdown",
-            "packed-format": "Landorus-Therian||rockiumz|intimidate|earthquake,swordsdance,stealthrock,stoneedge|Adamant|,252,4,,,252|||||]Ferrothorn||leftovers|ironbarbs|spikes,leechseed,powerwhip,gyroball|Relaxed|252,,88,,168,|F|,,,,,0|||]Greninja||choicespecs|battlebond|hydropump,darkpulse,watershuriken,uturn|Timid|,,,252,4,252|M||||]Garchomp||choicescarf|roughskin|earthquake,dragonclaw,outrage,firefang|Jolly|,252,4,,,252|M||||]Metagross||metagrossite|clearbody|meteormash,thunderpunch,icepunch,hammerarm|Jolly|,252,4,,,252|||||]Tapu Lele||shedshell|psychicsurge|taunt,psyshock,moonblast,hiddenpowerfire|Timid|,,,252,4,252||,0,,,,|||"
-        },
-        {
-            "showdown-file": "ghost town.showdown",
-            "packed-format": "Ditto||choicescarf|imposter|transform|Relaxed|252,4,252,,,||,,,,,0|||]Chansey||eviolite|naturalcure|stealthrock,healingwish,softboiled,seismictoss|Bold|248,,252,,8,||,0,,,,|||]Tornadus-Therian||flyiniumz|regenerator|hurricane,superpower,defog,knockoff|Naive|,4,,252,,252|||||]Toxapex||blacksludge|regenerator|scald,toxicspikes,recover,haze|Bold|252,,136,,120,||,0,,,,|||]Scizor-Mega||scizorite|lightmetal|curse,uturn,bulletpunch,roost|Impish|248,,252,,8,|||||]Zygarde||choiceband|aurabreak|thousandarrows,outrage,extremespeed,irontail|Adamant|,252,,,4,252|||||"
-        },
-        {
-            "showdown-file": "la familia.showdown",
-            "packed-format": "Ninetales-Alola||lightclay|snowwarning|auroraveil,hypnosis,freezedry,hail|Timid|252,,,4,,252||,0,,,,|||]Magearna||leftovers|soulheart|thunderbolt,icebeam,shiftgear,calmmind|Timid|,,,252,4,252||,0,,,,|||]Zygarde||figyberry|aurabreak|thousandarrows,extremespeed,coil,dragondance|Adamant|80,236,,,,192|||||]Mawile-Mega||mawilite|intimidate|playrough,suckerpunch,thunderpunch,swordsdance|Adamant|84,252,,,,172|||||]Manaphy||wateriumz|hydration|surf,psychic,tailglow,raindance|Modest|,,,252,4,252||,0,,,,|||]Landorus-Therian||earthplate|intimidate|earthquake,smackdown,knockoff,stealthrock|Jolly|4,252,,,,252|||||"
-        },
-        {
             "showdown-file": "mega mawile balance.showdown",
             "packed-format": "Clefable||leftovers|magicguard|stealthrock,moonblast,softboiled,wish|Bold|252,,248,,,8|F|,0,,,,|||]Mawile-Mega||mawilite|hypercutter|ironhead,icepunch,thunderpunch,firefang|Adamant|112,216,,,,180|F||||]Heatran||firiumz|flashfire|taunt,magmastorm,earthpower,willowisp|Timid|,,,252,4,252|M|,0,,,,|||]Gastrodon-East||leftovers|stormdrain|scald,earthquake,toxic,recover|Sassy|240,,,,248,20|F||||]Tornadus-Therian||rockyhelmet|regenerator|defog,hurricane,knockoff,uturn|Naive|192,,,68,,248|||||]Landorus-Therian||choicescarf|intimidate|earthquake,hiddenpowerice,punishment,uturn|Jolly|96,20,136,,4,252||,30,30,,,|||"
         },
         {
             "showdown-file": "the PO show.showdown",
             "packed-format": "BARNEY|tyranitarmega|tyranitarite|sandstream|dragondance,stoneedge,icepunch,earthquake|Jolly|,252,,,4,252|||||]LELESORIO|tapulele|choicescarf|psychicsurge|psychic,moonblast,focusblast,hiddenpowerfire|Timid|,,,252,4,252||,0,,,,|||]KUZCO|empoleon|leftovers|torrent|defog,toxic,scald,roar|Calm|248,,8,,252,||,0,,,,|||]ARBUSTO|tangrowth|assaultvest|regenerator|knockoff,gigadrain,earthquake,hiddenpowerfire|Sassy|248,,8,,252,||,30,,30,,30|||]FAUCES|landorustherian|rockyhelmet|intimidate|uturn,hiddenpowerice,earthquake,stealthrock|Impish|248,8,252,,,||,30,30,,,|||]EMPTYNESS|kyuremblack|iciumz|teravolt|freezeshock,dragonclaw,fusionbolt,icebeam|Lonely|,252,,4,,252|||||"
-        },
-        {
-            "showdown-file": "times like these.showdown",
-            "packed-format": "Clefable||leftovers|magicguard|stealthrock,moonblast,flamethrower,softboiled|Bold|248,,172,,88,||,0,,,,|||]Gengar||choicespecs|cursedbody|shadowball,sludgewave,thunderbolt,focusblast|Timid|,,,252,4,252||,0,,,,|||]Landorus-Therian||rockiumz|intimidate|stoneedge,earthquake,swordsdance,rockpolish|Adamant|,252,,,4,252|||||]Keldeo-Resolute||choicescarf|justified|hydropump,scald,secretsword,stoneedge|Hasty|,,,252,4,252|||||]Metagross||metagrossite|clearbody|meteormash,zenheadbutt,earthquake,thunderpunch|Jolly|,252,4,,,252|||||]Tangrowth||assaultvest|regenerator|knockoff,leafstorm,hiddenpowerfire,earthquake|Sassy|252,,72,,184,||,30,,30,,30|||"
-        },
-        {
-            "showdown-file": "under the rainbow.showdown",
-            "packed-format": "Tapu Bulu||fightiniumz|grassysurge|hornleech,superpower,zenheadbutt,swordsdance|Adamant|40,252,,,,216|||||]Landorus-Therian||rockyhelmet|intimidate|earthquake,hiddenpowerice,stealthrock,uturn|Impish|248,,244,,,16||,30,30,,,|S||]Zygarde||leftovers|aurabreak|thousandarrows,substitute,coil,toxic|Careful|216,,12,,176,104|||||]Heatran||choicescarf|flashfire|fireblast,flashcannon,earthpower,flamethrower|Timid|,,,252,4,252||,0,,,,|||]Scizor-Mega||scizorite|technician|bulletpunch,uturn,roost,defog|Impish|248,,48,,56,156|M|,,,,,30|||]Toxapex||blacksludge|regenerator|scald,toxicspikes,recover,haze|Calm|248,,156,,104,||,0,,,,|||"
         },
         {
             "showdown-file": "custom gen7 ou.showdown",
