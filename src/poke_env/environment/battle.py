@@ -589,7 +589,8 @@ class Battle:
     @property
     def opponent_dynamax_turns_left(self) -> Optional[int]:
         """
-        :return: How many turns of dynamax are left for the opponent's pokemon. None if dynamax is not active
+        :return: How many turns of dynamax are left for the opponent's pokemon.
+            None if dynamax is not active
         :rtype: Optional[int]
         """
         if self.opponent_active_pokemon.is_dynamaxed:
