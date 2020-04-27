@@ -45,10 +45,12 @@ def test_boosts():
 
 
 def test_can_z_move():
+    struggle = Move("struggle")
     metronome = Move("metronome")
     flame_thrower = Move("flamethrower")
 
-    assert metronome.can_z_move is False
+    assert struggle.can_z_move is False
+    assert metronome.can_z_move is True
     assert flame_thrower.can_z_move is True
 
     for move in move_generator():

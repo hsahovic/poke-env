@@ -104,7 +104,7 @@ class Move:
         :return: Wheter there exist a z-move version of this move.
         :rtype: bool
         """
-        return bool(self.z_move_boost or self.z_move_power or self.z_move_effect)
+        return self.id not in special_moves
 
     @property
     def category(self) -> MoveCategory:
@@ -529,7 +529,36 @@ class Move:
         :return: Base power of the z-move version of this move.
         :rtype: int
         """
-        return self.entry.get("zMovePower", 0)
+        pwr = self.entry.get("zMovePower")
+        if pwr is not None:
+            return pwr
+
+        # this logic has been copied over directly from PS codebase
+        base_power = self.base_power
+        if self.n_hit != (1, 1):
+            base_power *= 3
+        if base_power == 0:
+            return 0
+        elif base_power >= 140:
+            return 200
+        elif base_power >= 130:
+            return 195
+        elif base_power >= 120:
+            return 190
+        elif base_power >= 110:
+            return 185
+        elif base_power >= 100:
+            return 180
+        elif base_power >= 90:
+            return 175
+        elif base_power >= 80:
+            return 160
+        elif base_power >= 70:
+            return 140
+        elif base_power >= 60:
+            return 120
+        else:
+            return 100
 
 
 class EmptyMove(Move):
