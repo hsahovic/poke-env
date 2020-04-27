@@ -522,7 +522,7 @@ class Battle:
         :rtype: Optional[int]
         """
         if self.active_pokemon.is_dynamaxed:
-            return 3 - (self.turn - self._dynamax_turn)
+            return 3 - (self.turn - self._dynamax_turn)  # pyre-ignore
 
     @property
     def fields(self) -> Set[Field]:
@@ -594,7 +594,7 @@ class Battle:
         :rtype: Optional[int]
         """
         if self.opponent_active_pokemon.is_dynamaxed:
-            return 3 - (self.turn - self._opponent_dynamax_turn)
+            return 3 - (self.turn - self._opponent_dynamax_turn)  # pyre-ignore
 
     @property
     def opponent_side_conditions(self) -> Set[SideCondition]:
