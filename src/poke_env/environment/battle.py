@@ -137,7 +137,10 @@ class Battle:
                 assert len(team) < 6
             except AssertionError:
                 self.logger.critical(team, identifier)
-                raise Exception
+                raise ValueError(
+                    "%s's team already has 6 pokemons: cannot add %s to %s"
+                    % (identifier[:2], identifier, ", ".join(team.keys()))
+                )
             team[identifier] = Pokemon(species=species)
 
             return team[identifier]
