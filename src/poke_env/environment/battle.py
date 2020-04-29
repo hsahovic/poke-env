@@ -137,7 +137,10 @@ class Battle:
                 assert len(team) < 6
             except AssertionError:
                 self.logger.critical(team, identifier)
-                raise Exception
+                raise ValueError(
+                    "%s's team already has 6 pokemons: cannot add %s to %s"
+                    % (identifier[:2], identifier, ", ".join(team.keys()))
+                )
             team[identifier] = Pokemon(species=species)
 
             return team[identifier]
@@ -564,6 +567,14 @@ class Battle:
         :rtype: Dict[str, Pokemon]
         """
         return self._opponent_team
+
+    @property
+    def opponent_username(self) -> Optional[str]:
+        """
+        :return: The opponent's username, or None if unknown.
+        :rtype: str, optional.
+        """
+        return self._opponent_username
 
     @property
     def player_username(self) -> str:

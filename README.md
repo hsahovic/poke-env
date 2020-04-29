@@ -6,15 +6,38 @@
 <a href="https://github.com/ambv/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 [![Documentation Status](https://readthedocs.org/projects/poke-env/badge/?version=latest)](https://poke-env.readthedocs.io/en/latest/?badge=latest)
 
-A python interface for training Reinforcement Learning bots to battle on [pokemon showdown](https://pokemonshowdown.com/).
+A Python interface to create battling pokemon agents. `poke-env` offers an easy-to-use interface for creating rule-based or training Reinforcement Learning bots to battle on [pokemon showdown](https://pokemonshowdown.com/).
 
-This project aims at providing a Python environment for interacting in [pokemon showdown](https://pokemonshowdown.com/) battles, with reinforcement learning in mind.
+![A simple agent in action](rl-gif.gif)
+
+# Getting started
+
+Agents are instance of python classes inheriting from `Player`. Here is what your first agent could look like:
+
+```python
+class YourFirstAgent(Player):
+    def choose_move(self, battle):
+        for move in battle.available:
+            if move.base_power > 90:
+                # A powerful move! Let's use it
+                return self.create_order(move)
+
+        for switch in battle.available_switches:
+            if switch.current_hp_fraction > battle.active_pokemon.current_hp_fraction:
+                # This other pokemon has more HP left... Let's switch it in?
+                return self.create_order(switch)
+
+        # Not sure what to do?
+        return self.choose_random_move(battle)
+```
+
+To get started, take a look at [our documentation](https://poke-env.readthedocs.io/en/latest/)!
+
 
 ## Documentation and examples
 
-Documentation and detailed examples can be found [here](https://poke-env.readthedocs.io/en/latest/).
+Documentation, detailed examples and starting code can be found [on readthedocs](https://poke-env.readthedocs.io/en/latest/).
 
-Examples and starting code can be found [here](https://github.com/hsahovic/poke-env/tree/master/examples).
 
 ## Installation
 

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
+import pytest
 
 from poke_env.player.env_player import Gen7EnvSinglePlayer
 from poke_env.player.random_player import RandomPlayer
@@ -20,6 +21,7 @@ def play_function(player, n_battles):
             _, _, done, _ = player.step(np.random.choice(player.action_space))
 
 
+@pytest.mark.timeout(60)
 def test_random_gym_player():
     env_player = RandomEnvPlayer(
         player_configuration=PlayerConfiguration("EnvPlayer", None),
