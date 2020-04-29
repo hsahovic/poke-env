@@ -359,7 +359,7 @@ class Pokemon:
         :return: The pokemon's boosts.
         :rtype: Dict[str, int]
         """
-        return self._boost
+        return self._boosts
 
     @property
     def current_hp(self) -> int:
