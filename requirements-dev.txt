@@ -6,6 +6,7 @@ pyre-check==0.0.41
 pytest
 pytest-asyncio
 pytest-cov
+pytest-timeout
 sphinx
 sphinx_rtd_theme
 twine
