@@ -566,6 +566,14 @@ class Battle:
         return self._opponent_team
 
     @property
+    def opponent_username(self) -> Optional[str]:
+        """
+        :return: The opponent's username, or None if unknown.
+        :rtype: str, optional.
+        """
+        return self._opponent_username
+
+    @property
     def player_username(self) -> str:
         """
         :return: The player's username.
