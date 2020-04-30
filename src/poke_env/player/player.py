@@ -209,7 +209,9 @@ class Player(PlayerNetwork, ABC):
                     await self._handle_battle_request(battle)
                 elif split_message[2].startswith("[Invalid choice]"):
                     self._manage_error_in(battle)
-                elif split_message[2].startswith("[Unavailable choice]"):
+                elif split_message[2].startswith(
+                    "[Unavailable choice]"
+                ) and split_message[2].endswith("is disabled"):
                     self._manage_error_in(battle)
                     unavailable_move = Move.retrieve_id(split_message[2].split(" ")[-3])
                     for i, m in enumerate(battle.available_moves):
