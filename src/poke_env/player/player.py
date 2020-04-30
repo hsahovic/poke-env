@@ -330,7 +330,10 @@ class Player(PlayerNetwork, ABC):
         for pokemon in battle.available_switches:
             available_orders.append(self.create_order(pokemon))
 
-        order = np.random.choice(available_orders)
+        if available_orders:
+            order = np.random.choice(available_orders)
+        else:
+            order = "/choose default"
         return order
 
     async def send_challenges(
