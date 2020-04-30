@@ -208,8 +208,15 @@ class Player(PlayerNetwork, ABC):
                     battle.trapped = True
                     await self._handle_battle_request(battle)
                 elif split_message[2].startswith("[Invalid choice]"):
-
                     self._manage_error_in(battle)
+                elif split_message[2].startswith("[Unavailable choice]"):
+                    self._manage_error_in(battle)
+                    unavailable_move = Move.retrieve_id(split_message[2].split(" ")[-3])
+                    for i, m in enumerate(battle.available_moves):
+                        if m.id == unavailable_move:
+                            break
+                    battle.available_moves.pop(i)
+                    await self._handle_battle_request(battle)
                 else:
                     self.logger.critical("Unexpected error message: %s", split_message)
             elif split_message[1] == "expire":
