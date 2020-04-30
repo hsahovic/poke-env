@@ -331,7 +331,7 @@ class Battle:
         else:
             raise NotImplementedError(split_message)
 
-    async def _parse_request(self, request: Dict) -> None:
+    def _parse_request(self, request: Dict) -> None:
         """
         Update the object from a request.
         The player's pokemon are all updated, as well as available moves, switches and

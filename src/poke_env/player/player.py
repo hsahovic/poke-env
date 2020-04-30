@@ -178,7 +178,7 @@ class Player(PlayerNetwork, ABC):
                 if split_message[2]:
                     request = json.loads(split_message[2])
                     if request:
-                        await battle._parse_request(request)
+                        battle._parse_request(request)
                         if battle.force_switch:
                             await self._handle_battle_request(battle)
             elif split_message[1] == "title":
