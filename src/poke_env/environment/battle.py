@@ -201,7 +201,7 @@ class Battle:
             self.get_pokemon(pokemon)._clear_positive_boosts()
         elif split_message[1] == "-copyboost":
             source, target = split_message[2:4]
-            self.get_pokemon(target).copy_boosts(self.get_pokemon(source))
+            self.get_pokemon(target)._copy_boosts(self.get_pokemon(source))
         elif split_message[1] == "-curestatus":
             pokemon, status = split_message[2:4]
             self.get_pokemon(pokemon)._cure_status(status)
@@ -236,7 +236,7 @@ class Battle:
             self.get_pokemon(pokemon)._heal(hp_status)
         elif split_message[1] == "-invertboost":
             pokemon = split_message[2]
-            self.get_pokemon(pokemon).invertboosts()
+            self.get_pokemon(pokemon)._invert_boosts()
         elif split_message[1] == "-item":
             pokemon, item = split_message[2:4]
             self.get_pokemon(pokemon).item = to_id_str(item)
@@ -272,7 +272,7 @@ class Battle:
             self.get_pokemon(pokemon).status = status
         elif split_message[1] == "-swapboost":
             source, target, stats = split_message[2:5]
-            self.get_pokemon(source).swap_boosts(self.get_pokemon(target))
+            self.get_pokemon(target)._swap_boosts
         elif split_message[1] == "-transform":
             pokemon, into = split_message[2:4]
             self.get_pokemon(pokemon)._transform(self.get_pokemon(into))
