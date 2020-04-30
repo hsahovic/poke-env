@@ -131,6 +131,7 @@ class TeambuilderPokemon:
         for move in self.moves:
             move = to_id_str(move)
             if move.startswith("hiddenpower") and all([iv is None for iv in self.ivs]):
-                self.ivs = list(self.HP_TO_IVS[move[11:]])
+                if len(move) > 11:
+                    self.ivs = list(self.HP_TO_IVS[move[11:]])
         self.ivs = [iv if iv is not None else 31 for iv in self.ivs]
         self.evs = [ev if ev is not None else 0 for ev in self.evs]
