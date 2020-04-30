@@ -88,9 +88,9 @@ class Pokemon:
             if move.id not in self._moves:
                 if len(self._moves) >= 4:
                     self._moves = {}
-                self._moves[move.id] = Move(id_)
+                self._moves[id_] = Move(id_)
             if use:
-                self.moves[move.id].use()
+                self.moves[id_].use()
 
     def _boost(self, stat, amount):
         self._boosts[stat] += int(amount)
