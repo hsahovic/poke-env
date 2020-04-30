@@ -19,6 +19,8 @@ class SideCondition(Enum):
     SPIKES = auto()
     STEALTH_ROCK = auto()
     STICKY_WEB = auto()
+    TAILWIND = auto()
+    TOXIC_SPIKES = auto()
 
     def __str__(self) -> str:
         return f"{self.name} (side condition) object"
