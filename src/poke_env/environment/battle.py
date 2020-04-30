@@ -29,6 +29,7 @@ class Battle:
         "-hint",
         "-hitcount",
         "-immune",
+        "-ohko",
         "-message",
         "-miss",
         "-notarget",
@@ -180,7 +181,8 @@ class Battle:
             self.get_pokemon(pokemon).ability = ability
         elif split_message[1] == "-activate":
             target, effect = split_message[2:4]
-            self.get_pokemon(target)._start_effect(effect)
+            if target:
+                self.get_pokemon(target)._start_effect(effect)
         elif split_message[1] == "-boost":
             pokemon, stat, amount = split_message[2:5]
             self.get_pokemon(pokemon)._boost(stat, int(amount))
@@ -420,22 +422,16 @@ class Battle:
             conditions = self.side_conditions
         else:
             conditions = self.opponent_side_conditions
-        try:
-            condition = SideCondition.from_showdown_message(condition)
-            conditions.remove(condition)
-        except Exception:
-            self.logger.warning("Condition %s unknown", condition)
+        condition = SideCondition.from_showdown_message(condition)
+        conditions.remove(condition)
 
     def _side_start(self, side, condition):
         if side[:2] == self._player_role:
             conditions = self.side_conditions
         else:
             conditions = self.opponent_side_conditions
-        try:
-            condition = SideCondition.from_showdown_message(condition)
-            conditions.add(condition)
-        except Exception:
-            self.logger.warning("Condition %s unknown", condition)
+        condition = SideCondition.from_showdown_message(condition)
+        conditions.add(condition)
 
     def _swap(self, *args, **kwargs):
         self.logger.warning("swap method in Battle is not implemented")
@@ -476,7 +472,7 @@ class Battle:
         for pokemon in self.team.values():
             if pokemon.active:
                 return pokemon
-        raise EnvironmentError("No active pokemon found in the current team")
+        raise ValueError("No active pokemon found in the current team")
 
     @property
     def available_moves(self) -> List[Move]:
@@ -592,6 +588,9 @@ class Battle:
     @property
     def opponent_team(self) -> Dict[str, Pokemon]:
         """
+        This property is not available during teampreview. During teampreview, please
+        use ``teampreview_opponent_team`` instead.
+
         :return: The opponent's team. Keys are identifiers, values are pokemon objects.
         :rtype: Dict[str, Pokemon]
         """
@@ -677,6 +676,10 @@ class Battle:
 
     @property
     def teampreview_opponent_team(self) -> Set[Pokemon]:
+        """
+        :return: The opponent's team, as a set.
+        :rtype: Set[Pokemon]
+        """
         return self._teampreview_opponent_team
 
     @property
