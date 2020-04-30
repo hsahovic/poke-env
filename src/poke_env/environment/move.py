@@ -356,6 +356,8 @@ class Move:
             return "hiddenpower"
         if move_name.startswith("return"):
             return "return"
+        if move_name.startswith("frustration"):
+            return "frustration"
         return move_name
 
     @property
