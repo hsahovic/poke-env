@@ -383,12 +383,33 @@ class Battle:
                         self.available_moves.append(special_moves[move["id"]])
                     else:
                         try:
-                            self.logger.critical(
-                                "An error occured while adding available moves. The "
-                                "following move was either unknown or not available for"
-                                " the active pokemon: %s",
-                                move["id"],
-                            )
+                            if not {
+                                "copycat",
+                                "metronome",
+                                "mefirst",
+                                "mirrormove",
+                                "assist",
+                            }.intersection(self.active_pokemon.moves.keys()):
+                                self.logger.critical(
+                                    "An error occured in battle %s while adding "
+                                    "available moves. The move '%s' was either unknown "
+                                    "or not available for the active pokemon: %s",
+                                    self.battle_tag,
+                                    move["id"],
+                                    self.active_pokemon,
+                                )
+                            else:
+                                self.logger.warning(
+                                    "The move '%s' was received in battle %s for your "
+                                    "active pokemon %s. This move could not be added, "
+                                    "but it might come from a special move such as "
+                                    "copycat or me first. If that is not the case, "
+                                    "please make sure there is an explanation for this "
+                                    "behavior or report it if it is an error.",
+                                    move["id"],
+                                    self.battle_tag,
+                                    self.active_pokemon,
+                                )
                             move = Move(move["id"])
                             self.available_moves.append(move)
                         except AttributeError:
