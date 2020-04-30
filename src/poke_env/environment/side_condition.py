@@ -12,13 +12,13 @@ class SideCondition(Enum):
 
     AURORA_VEIL = auto()
     LIGHT_SCREEN = auto()
+    LUCKY_CHANT = auto()
+    MIST = auto()
     REFLECT = auto()
     SAFEGUARD = auto()
     SPIKES = auto()
     STEALTH_ROCK = auto()
     STICKY_WEB = auto()
-    TAILWIND = auto()
-    TOXIC_SPIKES = auto()
 
     def __str__(self) -> str:
         return f"{self.name} (side condition) object"
