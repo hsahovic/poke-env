@@ -169,9 +169,10 @@ class Player(PlayerNetwork, ABC):
             return
         for split_message in messages[1:]:
             if len(split_message) <= 1:
-                self.logger.debug("Battle message too short; ignored: %s", message)
-                continue
-            if split_message[1] in self.MESSAGES_TO_IGNORE:
+                self.logger.debug(
+                    "Battle message too short; ignored: '%s'", "".join(split_message)
+                )
+            elif split_message[1] in self.MESSAGES_TO_IGNORE:
                 pass
             elif split_message[1] == "request":
                 if split_message[2]:
