@@ -10,6 +10,7 @@ class Weather(Enum):
     """Enumeration, represent a non null weather in a battle."""
 
     DESOLATELAND = auto()
+    DELTASTREAM = auto()
     HAIL = auto()
     PRIMORDIALSEA = auto()
     RAINDANCE = auto()
