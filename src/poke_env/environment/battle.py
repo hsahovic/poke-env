@@ -133,9 +133,9 @@ class Battle:
             species = identifier[4:]
 
         if is_mine or force_self_team:
-            team: Dict[str, Pokemon] = self.team
+            team: Dict[str, Pokemon] = self._team
         else:
-            team: Dict[str, Pokemon] = self.opponent_team
+            team: Dict[str, Pokemon] = self._opponent_team
 
         if identifier in team:
             return team[identifier]
