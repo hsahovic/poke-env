@@ -11,9 +11,16 @@ class Field(Enum):
 
     ELECTRIC_TERRAIN = auto()
     GRASSY_TERRAIN = auto()
+    GRAVITY = auto()
+    HEAL_BLOCK = auto()
+    MAGIC_ROOM = auto()
     MISTY_TERRAIN = auto()
+    MUD_SPORT = auto()
+    MUD_SPOT = auto()
     PSYCHIC_TERRAIN = auto()
     TRICK_ROOM = auto()
+    WATER_SPORT = auto()
+    WONDER_ROOM = auto()
 
     def __str__(self) -> str:
         return f"{self.name} (field) object"

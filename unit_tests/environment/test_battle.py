@@ -8,7 +8,8 @@ from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.side_condition import SideCondition
 
 
-def test_battle_get_pokemon():
+@pytest.mark.asyncio
+async def test_battle_get_pokemon():
     logger = MagicMock()
     battle = Battle("tag", "username", logger)
 
@@ -18,6 +19,10 @@ def test_battle_get_pokemon():
     assert "p2: azumarill" in battle.team
 
     battle._player_role = "p2"
+
+    await battle._parse_message(["", "teamsize", "p1", 6])
+    await battle._parse_message(["", "teamsize", "p2", 6])
+
     battle.get_pokemon("p2a: tapukoko")
     assert "p2: tapukoko" in battle.team
 

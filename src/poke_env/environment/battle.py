@@ -29,6 +29,7 @@ class Battle:
         "-hint",
         "-hitcount",
         "-immune",
+        "-ohko",
         "-message",
         "-miss",
         "-notarget",
@@ -54,7 +55,6 @@ class Battle:
         "resisted",
         "supereffective",
         "tier",
-        "teamsize",
         "upkeep",
         "zbroken",
     }
@@ -62,10 +62,14 @@ class Battle:
     def __init__(self, battle_tag: str, username: str, logger: Logger):  # pyre-ignore
         # Utils attributes
         self._battle_tag: str = battle_tag
+        self._max_team_size: Optional[int] = None
         self._opponent_username: Optional[str] = None
         self._player_role = None
         self._player_username: str = username
         self._players = []
+        self._team_size: Dict[str, int] = {}
+        self._teampreview: bool = False
+        self._teampreview_opponent_team: Set[Pokemon] = set()
         self.logger: Logger = logger  # pyre-ignore
 
         # Turn choice attributes
@@ -76,6 +80,7 @@ class Battle:
         self._force_switch: bool = False
         self._in_team_preview: bool = False
         self._maybe_trapped: bool = False
+        self._move_on_next_request: bool = False
         self._trapped: bool = False
         self._force_swap: bool = False
         self._wait: Optional[bool] = None
@@ -114,9 +119,11 @@ class Battle:
         :type force_self_team: bool, optional, defaults to False
         :return: The corresponding pokemon object.
         :rtype: Pokemon
-        :raises AssertionError: If the team has more than 6 pokemons.
+        :raises AssertionError: If the team has too many pokemons, as determined by the
+            teamsize component of battle initialisation.
         """
-        is_mine = identifier[:2] == self._player_role
+        player_role = identifier[:2]
+        is_mine = player_role == self._player_role
         if identifier[3] != " ":
             identifier = identifier[:2] + identifier[3:]
             species = identifier[5:]
@@ -126,15 +133,16 @@ class Battle:
             species = identifier[4:]
 
         if is_mine or force_self_team:
-            team: Dict[str, Pokemon] = self.team
+            team: Dict[str, Pokemon] = self._team
         else:
-            team: Dict[str, Pokemon] = self.opponent_team
+            team: Dict[str, Pokemon] = self._opponent_team
 
         if identifier in team:
             return team[identifier]
         else:
             try:
-                assert len(team) < 6
+                if self._team_size:
+                    assert len(team) < self._team_size[player_role]
             except AssertionError:
                 self.logger.critical(team, identifier)
                 raise ValueError(
@@ -150,6 +158,9 @@ class Battle:
             active = self.active_pokemon
         else:
             active = self.opponent_active_pokemon
+
+        if active is None:
+            raise ValueError("Cannot end illusion without an active pokemon.")
 
         pokemon = self.get_pokemon(pokemon_name, details=details)
         pokemon._set_hp(f"{active.current_hp}/{active.max_hp}")
@@ -174,7 +185,8 @@ class Battle:
             self.get_pokemon(pokemon).ability = ability
         elif split_message[1] == "-activate":
             target, effect = split_message[2:4]
-            self.get_pokemon(target)._start_effect(effect)
+            if target:
+                self.get_pokemon(target)._start_effect(effect)
         elif split_message[1] == "-boost":
             pokemon, stat, amount = split_message[2:5]
             self.get_pokemon(pokemon)._boost(stat, int(amount))
@@ -195,7 +207,7 @@ class Battle:
             self.get_pokemon(pokemon)._clear_positive_boosts()
         elif split_message[1] == "-copyboost":
             source, target = split_message[2:4]
-            self.get_pokemon(target).copy_boosts(self.get_pokemon(source))
+            self.get_pokemon(target)._copy_boosts(self.get_pokemon(source))
         elif split_message[1] == "-curestatus":
             pokemon, status = split_message[2:4]
             self.get_pokemon(pokemon)._cure_status(status)
@@ -230,7 +242,7 @@ class Battle:
             self.get_pokemon(pokemon)._heal(hp_status)
         elif split_message[1] == "-invertboost":
             pokemon = split_message[2]
-            self.get_pokemon(pokemon).invertboosts()
+            self.get_pokemon(pokemon)._invert_boosts()
         elif split_message[1] == "-item":
             pokemon, item = split_message[2:4]
             self.get_pokemon(pokemon).item = to_id_str(item)
@@ -266,7 +278,7 @@ class Battle:
             self.get_pokemon(pokemon).status = status
         elif split_message[1] == "-swapboost":
             source, target, stats = split_message[2:5]
-            self.get_pokemon(source).swap_boosts(self.get_pokemon(target))
+            self.get_pokemon(target)._swap_boosts
         elif split_message[1] == "-transform":
             pokemon, into = split_message[2:4]
             self.get_pokemon(pokemon)._transform(self.get_pokemon(into))
@@ -305,8 +317,8 @@ class Battle:
                 }
             )
         elif split_message[1] == "poke":
-            player, details, item = split_message[2:5]
-            self.register_pokemon(player, details, item)
+            player, details = split_message[2:4]
+            self._register_teampreview_pokemon(player, details)
         elif split_message[1] == "replace":
             pokemon = split_message[2]
             details = split_message[3]
@@ -318,10 +330,14 @@ class Battle:
         elif split_message[1] == "swap":
             pokemon, position = split_message[2:4]
             self._swap(pokemon, position)
+        elif split_message[1] == "teamsize":
+            player, number = split_message[2:4]
+            number = int(number)
+            self._team_size[player] = number
         else:
             raise NotImplementedError(split_message)
 
-    async def _parse_request(self, request: Dict) -> None:
+    def _parse_request(self, request: Dict) -> None:
         """
         Update the object from a request.
         The player's pokemon are all updated, as well as available moves, switches and
@@ -346,9 +362,17 @@ class Battle:
         self._trapped = False
         self._force_switch = request.get("forceSwitch", False)
 
-        if request["rqid"]:
-            self._rqid = max(self._rqid, int(request["rqid"]))
+        if self._force_switch:
+            self._move_on_next_request = True
 
+        if request["rqid"]:
+            self._rqid = max(self._rqid, request["rqid"])
+
+        if request.get("teamPreview", False):
+            self._teampreview = True
+            self._max_team_size = request["maxTeamSize"]
+        else:
+            self._teampreview = False
         self._update_team_from_request(request["side"])
 
         if "active" in request:
@@ -366,12 +390,33 @@ class Battle:
                         self.available_moves.append(special_moves[move["id"]])
                     else:
                         try:
-                            self.logger.critical(
-                                "An error occured while adding available moves. The "
-                                "following move was either unknown or not available for"
-                                " the active pokemon: %s",
-                                move["id"],
-                            )
+                            if not {
+                                "copycat",
+                                "metronome",
+                                "mefirst",
+                                "mirrormove",
+                                "assist",
+                            }.intersection(self.active_pokemon.moves.keys()):
+                                self.logger.critical(
+                                    "An error occured in battle %s while adding "
+                                    "available moves. The move '%s' was either unknown "
+                                    "or not available for the active pokemon: %s",
+                                    self.battle_tag,
+                                    move["id"],
+                                    self.active_pokemon.species,
+                                )
+                            else:
+                                self.logger.warning(
+                                    "The move '%s' was received in battle %s for your "
+                                    "active pokemon %s. This move could not be added, "
+                                    "but it might come from a special move such as "
+                                    "copycat or me first. If that is not the case, "
+                                    "please make sure there is an explanation for this "
+                                    "behavior or report it if it is an error.",
+                                    move["id"],
+                                    self.battle_tag,
+                                    self.active_pokemon.species,
+                                )
                             move = Move(move["id"])
                             self.available_moves.append(move)
                         except AttributeError:
@@ -395,27 +440,26 @@ class Battle:
                     if not pokemon.active and not pokemon.fainted:
                         self.available_switches.append(pokemon)
 
+    def _register_teampreview_pokemon(self, player: str, details: str):
+        if player != self._player_role:
+            mon = Pokemon(details=details)
+            self._teampreview_opponent_team.add(mon)
+
     def _side_end(self, side, condition):
         if side[:2] == self._player_role:
             conditions = self.side_conditions
         else:
             conditions = self.opponent_side_conditions
-        try:
-            condition = SideCondition.from_showdown_message(condition)
-            conditions.remove(condition)
-        except Exception:
-            self.logger.warning("Condition %s unknown", condition)
+        condition = SideCondition.from_showdown_message(condition)
+        conditions.remove(condition)
 
     def _side_start(self, side, condition):
         if side[:2] == self._player_role:
             conditions = self.side_conditions
         else:
             conditions = self.opponent_side_conditions
-        try:
-            condition = SideCondition.from_showdown_message(condition)
-            conditions.add(condition)
-        except Exception:
-            self.logger.warning("Condition %s unknown", condition)
+        condition = SideCondition.from_showdown_message(condition)
+        conditions.add(condition)
 
     def _swap(self, *args, **kwargs):
         self.logger.warning("swap method in Battle is not implemented")
@@ -425,7 +469,7 @@ class Battle:
         if identifier == self._player_role:
             self.active_pokemon._switch_out()
         else:
-            if self.opponent_team:
+            if self.opponent_active_pokemon:
                 self.opponent_active_pokemon._switch_out()
         pokemon = self.get_pokemon(pokemon, details=details)
         pokemon._switch_in()
@@ -456,7 +500,7 @@ class Battle:
         for pokemon in self.team.values():
             if pokemon.active:
                 return pokemon
-        raise EnvironmentError("No active pokemon found in the current team")
+        raise ValueError("No active pokemon found in the current team")
 
     @property
     def available_moves(self) -> List[Move]:
@@ -533,6 +577,15 @@ class Battle:
         return self._won is False
 
     @property
+    def max_team_size(self) -> Optional[int]:
+        """
+        :return: The maximum acceptable size of the team to return in teampreview, if
+            applicable.
+        :rtype: int, optional
+        """
+        return self._max_team_size
+
+    @property
     def maybe_trapped(self) -> bool:
         """
         :return: A boolean indicating whether the active pokemon is maybe trapped by the
@@ -542,7 +595,7 @@ class Battle:
         return self._maybe_trapped
 
     @property
-    def opponent_active_pokemon(self) -> Pokemon:
+    def opponent_active_pokemon(self) -> Optional[Pokemon]:
         """
         :return: The opponent active pokemon
         :rtype: Pokemon
@@ -550,7 +603,7 @@ class Battle:
         for pokemon in self.opponent_team.values():
             if pokemon.active:
                 return pokemon
-        raise EnvironmentError("No active pokemon found in the opponent team")
+        return None
 
     @property
     def opponent_side_conditions(self) -> Set[SideCondition]:
@@ -563,10 +616,15 @@ class Battle:
     @property
     def opponent_team(self) -> Dict[str, Pokemon]:
         """
+        During teampreview, keys are not definitive: please rely on values.
+
         :return: The opponent's team. Keys are identifiers, values are pokemon objects.
         :rtype: Dict[str, Pokemon]
         """
-        return self._opponent_team
+        if self._opponent_team:
+            return self._opponent_team
+        else:
+            return {mon.species: mon for mon in self._teampreview_opponent_team}
 
     @property
     def opponent_username(self) -> Optional[str]:
@@ -634,6 +692,27 @@ class Battle:
         return self._team
 
     @property
+    def team_size(self) -> int:
+        """
+        :return: The number of Pokemon in the player's team.
+        :rtype: int
+        """
+        role = self._player_role
+        if isinstance(role, str):
+            return self._team_size[role]
+        raise ValueError(
+            "Team size cannot be inferred without an assigned player role."
+        )
+
+    @property
+    def teampreview(self) -> bool:
+        """
+        :return: Wheter the battle is awaiting a teampreview order.
+        :rtype: bool
+        """
+        return self._teampreview
+
+    @property
     def trapped(self) -> bool:
         """
         :return: A boolean indicating whether the active pokemon is trapped by the
@@ -689,3 +768,16 @@ class Battle:
         :rtype: Optional[bool]
         """
         return self._won
+
+    @property
+    def move_on_next_request(self) -> bool:
+        """
+        :return: Wheter the next received request should yield a move order directly.
+            This can happen when a switch is forced, or an error is encountered.
+        :rtype: bool
+        """
+        return self._move_on_next_request
+
+    @move_on_next_request.setter
+    def move_on_next_request(self, value) -> None:
+        self._move_on_next_request = value
