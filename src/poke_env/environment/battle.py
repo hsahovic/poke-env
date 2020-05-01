@@ -80,6 +80,7 @@ class Battle:
         self._force_switch: bool = False
         self._in_team_preview: bool = False
         self._maybe_trapped: bool = False
+        self._move_on_next_request: bool = False
         self._trapped: bool = False
         self._force_swap: bool = False
         self._wait: Optional[bool] = None
@@ -357,6 +358,9 @@ class Battle:
         self._maybe_trapped = False
         self._trapped = False
         self._force_switch = request.get("forceSwitch", False)
+
+        if self._force_switch:
+            self._move_on_next_request = True
 
         if request["rqid"]:
             self._rqid = max(self._rqid, int(request["rqid"]))
@@ -759,3 +763,16 @@ class Battle:
         :rtype: Optional[bool]
         """
         return self._won
+
+    @property
+    def move_on_next_request(self) -> bool:
+        """
+        :return: Wheter the next received request should yield a move order directly.
+            This can happen when a switch is forced, or an error is encountered.
+        :rtype: bool
+        """
+        return self._move_on_next_request
+
+    @move_on_next_request.setter
+    def move_on_next_request(self, value) -> None:
+        self._move_on_next_request = value

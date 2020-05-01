@@ -179,8 +179,9 @@ class Player(PlayerNetwork, ABC):
                     request = json.loads(split_message[2])
                     if request:
                         battle._parse_request(request)
-                        if battle.force_switch:
+                        if battle.move_on_next_request:
                             await self._handle_battle_request(battle)
+                            battle.move_on_next_request = False
             elif split_message[1] == "title":
                 player_1, player_2 = split_message[2].split(" vs. ")
                 battle.players = player_1, player_2
@@ -213,12 +214,7 @@ class Player(PlayerNetwork, ABC):
                     "[Unavailable choice]"
                 ) and split_message[2].endswith("is disabled"):
                     self._manage_error_in(battle)
-                    unavailable_move = Move.retrieve_id(split_message[2].split(" ")[-3])
-                    for i, m in enumerate(battle.available_moves):
-                        if m.id == unavailable_move:
-                            break
-                    battle.available_moves.pop(i)
-                    await self._handle_battle_request(battle)
+                    battle.move_on_next_request = True
                 else:
                     self.logger.critical("Unexpected error message: %s", split_message)
             elif split_message[1] == "expire":
