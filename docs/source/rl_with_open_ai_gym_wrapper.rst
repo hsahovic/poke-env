@@ -7,7 +7,7 @@ The corresponding complete source code can be found `here <https://github.com/hs
 
 The goal of this example is to demonstrate how to use the `open ai gym <https://gym.openai.com/>`__ interface proposed by ``EnvPlayer``, and to train a simple deep reinforcement learning agent comparable in performance to the ``MaxDamagePlayer`` we created in :ref:`max_damage_player`.
 
-.. note:: This example necessitates `keras-rl <https://github.com/keras-rl/keras-rl>`__, which implements numerous reinforcement learning algorithms and offers a simple API fully compatible with the Open AI Gym API. You can install it by running ``pip install keras-rl``.
+.. note:: This example necessitates `keras-rl <https://github.com/keras-rl/keras-rl>`__ (compatible with Tensorflow 1.X) or `keras-rl2 <https://github.com/wau/keras-rl2>`__ (Tensorflow 2.X), which implement numerous reinforcement learning algorithms and offer a simple API fully compatible with the Open AI Gym API. You can install them by running ``pip install keras-rl`` or ``pip install keras-rl2``. If you are unsure, ``pip install keras-rl2`` is recommended.
 
 Implementing rewards and observations
 *************************************
@@ -109,7 +109,7 @@ Now that our custom class is defined, we can instantiate a player.
 Creating a DQN with keras-rl
 ****************************
 
-Wwe have defined observations and rewards. We can now build a model that will control our player. In this section, we will implement the `DQN algorithm <https://web.stanford.edu/class/psych209/Readings/MnihEtAlHassibis15NatureControlDeepRL.pdf>`__ using `keras-rl <https://github.com/keras-rl/keras-rl>`__.
+We have defined observations and rewards. We can now build a model that will control our player. In this section, we will implement the `DQN algorithm <https://web.stanford.edu/class/psych209/Readings/MnihEtAlHassibis15NatureControlDeepRL.pdf>`__ using `keras-rl <https://github.com/keras-rl/keras-rl>`__.
 
 Defining a base model
 ^^^^^^^^^^^^^^^^^^^^^

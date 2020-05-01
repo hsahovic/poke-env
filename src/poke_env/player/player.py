@@ -21,6 +21,7 @@ from poke_env.environment.battle import Battle
 from poke_env.environment.move import Move
 from poke_env.environment.pokemon import Pokemon
 from poke_env.exceptions import ShowdownException
+from poke_env.exceptions import UnexpectedEffectException
 from poke_env.player.player_network_interface import PlayerNetwork
 from poke_env.player_configuration import PlayerConfiguration
 from poke_env.server_configuration import ServerConfiguration
@@ -225,7 +226,10 @@ class Player(PlayerNetwork, ABC):
             elif split_message[1] == "teampreview":
                 await self._handle_battle_request(battle, from_teampreview_request=True)
             else:
-                await battle._parse_message(split_message)
+                try:
+                    await battle._parse_message(split_message)
+                except UnexpectedEffectException as e:
+                    self.logger.exception(e)
 
     async def _handle_battle_request(
         self, battle: Battle, from_teampreview_request: bool = False

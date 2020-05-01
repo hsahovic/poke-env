@@ -8,3 +8,10 @@ class ShowdownException(Exception):
     """
 
     pass
+
+
+class UnexpectedEffectException(Exception):
+    """This exception is raised when a non-managed effect is received from the server.
+    """
+
+    pass

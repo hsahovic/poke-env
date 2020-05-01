@@ -1,7 +1,4 @@
-.. Poke-env documentation master file, created by
-   sphinx-quickstart on Sat Aug 10 13:11:15 2019.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+.. _index
 
 #############################################################################
 Poke-env: A python interface for training Reinforcement Learning pokemon bots
@@ -9,7 +6,7 @@ Poke-env: A python interface for training Reinforcement Learning pokemon bots
 
 This project aims at providing a Python environment for interacting in `pokemon showdown <https://pokemonshowdown.com/>`__ battles, with reinforcement learning in mind. Welcome to its documentation!
 
-Poke-env offers a simple and clear API to manipulate Pokemons, Battles, Moves and many other pokemon showdown battle-related objects in Python. If also exposes an `open ai gym <https://gym.openai.com/>`__ interface to train reinforcement learning agents.
+Poke-env offers a simple and clear API to manipulate Pokemons, Battles, Moves and many other pokemon showdown battle-related objects in Python. It also exposes an `open ai gym <https://gym.openai.com/>`__ interface to train reinforcement learning agents.
 
 .. warning:: This module currently supports most gen 7 single battles. Gen 8 single formats support is planned for Spring 2020. Support for other formats will arrive later. If you want a specific format to be supported, please `open an issue <https://github.com/hsahovic/poke-env/issues>`__.
 
