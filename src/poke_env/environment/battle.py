@@ -363,7 +363,7 @@ class Battle:
             self._move_on_next_request = True
 
         if request["rqid"]:
-            self._rqid = max(self._rqid, int(request["rqid"]))
+            self._rqid = max(self._rqid, request["rqid"])
 
         if request.get("teamPreview", False):
             self._teampreview = True
@@ -400,7 +400,7 @@ class Battle:
                                     "or not available for the active pokemon: %s",
                                     self.battle_tag,
                                     move["id"],
-                                    self.active_pokemon,
+                                    self.active_pokemon.species,
                                 )
                             else:
                                 self.logger.warning(
@@ -412,7 +412,7 @@ class Battle:
                                     "behavior or report it if it is an error.",
                                     move["id"],
                                     self.battle_tag,
-                                    self.active_pokemon,
+                                    self.active_pokemon.species,
                                 )
                             move = Move(move["id"])
                             self.available_moves.append(move)
