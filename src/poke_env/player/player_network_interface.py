@@ -86,7 +86,7 @@ class PlayerNetwork(ABC):
         :param avatar_id: The new avatar id. If None, nothing happens.
         :type avatar_id: int
         """
-        self._wait_for_login()
+        await self._wait_for_login()
         if avatar_id is not None:
             await self._send_message(f"/avatar {avatar_id}")
 
@@ -226,12 +226,12 @@ class PlayerNetwork(ABC):
         if self._team is not None:
             await self._send_message("/utm %s" % self._team.yield_team())
 
-    def _wait_for_login(
+    async def _wait_for_login(
         self, checking_interval: float = 0.001, wait_for: int = 5
     ) -> None:
         start = perf_counter()
         while perf_counter() - start < wait_for:
-            sleep(checking_interval)
+            await sleep(checking_interval)
             if self.logged_in:
                 return
         assert self.logged_in
