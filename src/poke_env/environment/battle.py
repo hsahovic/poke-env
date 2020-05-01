@@ -613,13 +613,15 @@ class Battle:
     @property
     def opponent_team(self) -> Dict[str, Pokemon]:
         """
-        This property is not available during teampreview. During teampreview, please
-        use ``teampreview_opponent_team`` instead.
+        During teampreview, keys are not definitive: please rely on values.
 
         :return: The opponent's team. Keys are identifiers, values are pokemon objects.
         :rtype: Dict[str, Pokemon]
         """
-        return self._opponent_team
+        if self._opponent_team:
+            return self._opponent_team
+        else:
+            return {mon.species: mon for mon in self._teampreview_opponent_team}
 
     @property
     def player_username(self) -> str:
@@ -698,14 +700,6 @@ class Battle:
         :rtype: bool
         """
         return self._teampreview
-
-    @property
-    def teampreview_opponent_team(self) -> Set[Pokemon]:
-        """
-        :return: The opponent's team, as a set.
-        :rtype: Set[Pokemon]
-        """
-        return self._teampreview_opponent_team
 
     @property
     def trapped(self) -> bool:
