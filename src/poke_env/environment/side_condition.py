@@ -12,6 +12,8 @@ class SideCondition(Enum):
 
     AURORA_VEIL = auto()
     LIGHT_SCREEN = auto()
+    LUCKY_CHANT = auto()
+    MIST = auto()
     REFLECT = auto()
     SAFEGUARD = auto()
     SPIKES = auto()

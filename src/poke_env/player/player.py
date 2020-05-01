@@ -25,6 +25,8 @@ from poke_env.exceptions import UnexpectedEffectException
 from poke_env.player.player_network_interface import PlayerNetwork
 from poke_env.player_configuration import PlayerConfiguration
 from poke_env.server_configuration import ServerConfiguration
+from poke_env.teambuilder.teambuilder import Teambuilder
+from poke_env.teambuilder.constant_teambuilder import ConstantTeambuilder
 
 
 class Player(PlayerNetwork, ABC):
@@ -44,6 +46,7 @@ class Player(PlayerNetwork, ABC):
         max_concurrent_battles: int = 1,
         server_configuration: ServerConfiguration,
         start_listening: bool = True,
+        team: Optional[Union[str, Teambuilder]] = None,
     ) -> None:
         """
         :param player_configuration: Player configuration.
@@ -62,6 +65,10 @@ class Player(PlayerNetwork, ABC):
         :param start_listening: Wheter to start listening to the server. Defaults to
             True.
         :type start_listening: bool
+        :param team: The team to use for formats requiring a team. Can be a showdown
+            team string, a showdown packed team string, of a ShowdownTeam object.
+            Defaults to None.
+        :type team: str or Teambuilder, optional
         """
         super(Player, self).__init__(
             player_configuration=player_configuration,
@@ -80,6 +87,14 @@ class Player(PlayerNetwork, ABC):
         self._battle_start_condition: Condition = Condition()
         self._battle_count_queue: Queue = Queue(max_concurrent_battles)
         self._challenge_queue: Queue = Queue()
+        if isinstance(team, Teambuilder):
+            self._team = team
+        elif isinstance(team, str):
+            self._team = ConstantTeambuilder(team)
+        elif team is None:
+            self._team = None
+        else:
+            raise ValueError("Team must be a string, Teambuilder instance or None.")
 
         self.logger.debug("Player initialisation finished")
 
@@ -141,7 +156,6 @@ class Player(PlayerNetwork, ABC):
         """
         # Battle messages can be multiline
         messages = [m.split("|") for m in message.split("\n")]
-
         split_first_message = messages[0]
         battle_info = split_first_message[0].split("-")
 
@@ -156,19 +170,19 @@ class Player(PlayerNetwork, ABC):
             return
         for split_message in messages[1:]:
             if len(split_message) <= 1:
-                self.logger.debug("Battle message too short; ignored: %s", message)
-                continue
-            if split_message[1] in self.MESSAGES_TO_IGNORE:
+                self.logger.debug(
+                    "Battle message too short; ignored: '%s'", "".join(split_message)
+                )
+            elif split_message[1] in self.MESSAGES_TO_IGNORE:
                 pass
             elif split_message[1] == "request":
                 if split_message[2]:
                     request = json.loads(split_message[2])
                     if request:
-                        await battle._parse_request(request)
-                        if battle.force_switch:
-                            await self._send_message(
-                                self.choose_move(battle), battle.battle_tag
-                            )
+                        battle._parse_request(request)
+                        if battle.move_on_next_request:
+                            await self._handle_battle_request(battle)
+                            battle.move_on_next_request = False
             elif split_message[1] == "title":
                 player_1, player_2 = split_message[2].split(" vs. ")
                 battle.players = player_1, player_2
@@ -187,35 +201,46 @@ class Player(PlayerNetwork, ABC):
                     "[Invalid choice] Sorry, too late to make a different move"
                 ):
                     if battle.trapped:
-                        await self._send_message(
-                            self.choose_move(battle), battle.battle_tag
-                        )
+                        await self._handle_battle_request(battle)
                 elif split_message[2].startswith(
                     "[Unavailable choice] Can't switch: The active Pokémon is trapped"
                 ) or split_message[2].startswith(
                     "[Invalid choice] Can't switch: The active Pokémon is trapped"
                 ):
                     battle.trapped = True
-                    await self._send_message(
-                        self.choose_move(battle), battle.battle_tag
-                    )
+                    await self._handle_battle_request(battle)
                 elif split_message[2].startswith("[Invalid choice]"):
-                    await self._send_message(
-                        self.choose_move(battle), battle.battle_tag
-                    )
                     self._manage_error_in(battle)
+                elif split_message[2].startswith(
+                    "[Unavailable choice]"
+                ) and split_message[2].endswith("is disabled"):
+                    self._manage_error_in(battle)
+                    battle.move_on_next_request = True
                 else:
                     self.logger.critical("Unexpected error message: %s", split_message)
             elif split_message[1] == "expire":
                 pass
             elif split_message[1] == "turn":
                 battle.turn = int(split_message[2])
-                await self._send_message(self.choose_move(battle), battle.battle_tag)
+                await self._handle_battle_request(battle)
+            elif split_message[1] == "teampreview":
+                await self._handle_battle_request(battle, from_teampreview_request=True)
             else:
                 try:
                     await battle._parse_message(split_message)
                 except UnexpectedEffectException as e:
                     self.logger.exception(e)
+
+    async def _handle_battle_request(
+        self, battle: Battle, from_teampreview_request: bool = False
+    ):
+        if battle.teampreview:
+            if not from_teampreview_request:
+                return
+            message = self.teampreview(battle)
+        else:
+            message = self.choose_move(battle)
+        await self._send_message(message, battle.battle_tag)
 
     def _manage_error_in(self, battle: Battle):
         pass
@@ -307,7 +332,10 @@ class Player(PlayerNetwork, ABC):
         for pokemon in battle.available_switches:
             available_orders.append(self.create_order(pokemon))
 
-        order = np.random.choice(available_orders)
+        if available_orders:
+            order = np.random.choice(available_orders)
+        else:
+            order = "/choose default"
         return order
 
     async def send_challenges(
@@ -347,6 +375,20 @@ class Player(PlayerNetwork, ABC):
             perf_counter() - start_time,
         )
 
+    def random_teampreview(self, battle: Battle) -> str:
+        """Returns a random valid teampreview order for the given battle.
+
+        :param battle: The battle.
+        :type battle: Battle
+        :return: The random teampreview order.
+        :rtype: str
+        """
+        members = list(range(1, len(battle.team) + 1))
+        choice = np.random.choice(
+            members, size=min(battle.max_team_size, len(members)), replace=False
+        )
+        return "/team " + "".join([str(c) for c in choice])
+
     def reset_battles(self) -> None:
         for battle in self._battles.values():
             if not battle.finished:
@@ -354,6 +396,24 @@ class Player(PlayerNetwork, ABC):
                     "Can not reset player's battles while they are still running"
                 )
         self._battles = {}
+
+    def teampreview(self, battle: Battle) -> str:
+        """Returns a teampreview order for the given battle.
+
+        This order must be of the form /team TEAM, where TEAM is a string defining the
+        team chosen by the player. Multiple formats are supported, among which '3461'
+        and '3, 4, 6, 1' are correct and indicate leading with pokemon 3, with pokemons
+        4, 6 and 1 in the back in single battles or leading with pokemons 3 and 4 with
+        pokemons 6 and 1 in the back in double battles.
+
+        Please refer to Pokemon Showdown's protocol documentation for more information.
+
+        :param battle: The battle.
+        :type battle: Battle
+        :return: The teampreview order.
+        :rtype: str
+        """
+        return self.random_teampreview(battle)
 
     @staticmethod
     def create_order(

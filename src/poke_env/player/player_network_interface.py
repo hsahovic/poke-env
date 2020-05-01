@@ -72,10 +72,12 @@ class PlayerNetwork(ABC):
 
     async def _accept_challenge(self, username: str) -> None:
         assert self.logged_in.is_set()
+        await self._set_team()
         await self._send_message("/accept %s" % username)
 
     async def _challenge(self, username: str, format_: str):
         assert self.logged_in.is_set()
+        await self._set_team()
         await self._send_message(f"/challenge {username}, {format_}")
 
     async def _change_avatar(self, avatar_id: Optional[int]) -> None:
@@ -148,9 +150,11 @@ class PlayerNetwork(ABC):
             elif split_message[0].startswith(">battle"):
                 # Battle update
                 await self._handle_battle_message(message)
-            elif split_message[1] in ["updatesearch", "popup", "updateuser"]:
+            elif split_message[1] == "updatesearch":
                 self.logger.debug("Ignored message: %s", message)
                 pass
+            elif split_message[1] == "popup":
+                self.logger.warning("Popup message received: %s", message)
             elif split_message[1] in ["nametaken"]:
                 self.logger.critical("Error message received: %s", message)
                 raise ShowdownException("Error message received: %s", message)
@@ -217,6 +221,10 @@ class PlayerNetwork(ABC):
         async with self._sending_lock:
             await self._websocket.send(to_send)
         self.logger.info(">>> %s", to_send)
+
+    async def _set_team(self):
+        if self._team is not None:
+            await self._send_message("/utm %s" % self._team.yield_team())
 
     def _wait_for_login(
         self, checking_interval: float = 0.001, wait_for: int = 5

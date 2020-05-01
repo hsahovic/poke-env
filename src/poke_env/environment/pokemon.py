@@ -22,6 +22,7 @@ class Pokemon:
         *,
         species: Optional[str] = None,
         request_pokemon: Optional[Dict[str, Any]] = None,
+        details: Optional[str] = None,
     ) -> None:
         # Species related attributes
         self._base_stats: Dict[str, int]
@@ -62,11 +63,15 @@ class Pokemon:
         self._preparing = False
         self._status: Optional[Status] = None
 
+        if details and not species:
+            species = details.split(", ")[0]
         if species:
             self._update_from_pokedex(species)
             self._species = species
         elif request_pokemon:
             self._update_from_request(request_pokemon)
+        elif details:
+            self._update_from_details(details)
 
     def __repr__(self) -> str:
         return self.__str__()
@@ -83,9 +88,9 @@ class Pokemon:
             if move.id not in self._moves:
                 if len(self._moves) >= 4:
                     self._moves = {}
-                self._moves[move.id] = Move(id_)
+                self._moves[id_] = Move(id_)
             if use:
-                self.moves[move.id].use()
+                self.moves[id_].use()
 
     def _boost(self, stat, amount):
         self._boosts[stat] += int(amount)
@@ -111,6 +116,9 @@ class Pokemon:
             if value > 0:
                 self._boosts[stat] = 0
 
+    def _copy_boosts(self, mon):
+        self._boosts = dict(mon._boosts.items())
+
     def _cure_status(self, status):
         if Status[status.upper()] == self._status:
             self._status = None
@@ -135,6 +143,9 @@ class Pokemon:
 
     def _heal(self, hp_status):
         self._set_hp_status(hp_status)
+
+    def _invert_boosts(self):
+        self._boosts = {k: -v for k, v in self._boosts.items()}
 
     def _mega_evolve(self, stone):
         mega_species = self.species + "mega"
@@ -185,6 +196,12 @@ class Pokemon:
     def _start_effect(self, effect):
         self._effects.add(Effect.from_showdown_message(effect))
 
+    def _swap_boosts(self):
+        self._boosts["atk"], self._boosts["spa"] = (
+            self._boosts["spa"],
+            self._boosts["atk"],
+        )
+
     def _switch_in(self):
         self._active = True
 
@@ -214,6 +231,38 @@ class Pokemon:
         self._heightm = dex_entry["heightm"]
         self._weightkg = dex_entry["weightkg"]
 
+    def _update_from_details(self, details: str) -> None:
+        if ", shiny" in details:
+            self._shiny = True
+            details = details.replace(", shiny", "")
+        else:
+            self._shiny = False
+
+        split_details = details.split(", ")
+
+        gender = PokemonGender.NEUTRAL
+        level = 100
+
+        if len(split_details) == 3:
+            species, level, gender = split_details
+        elif len(split_details) == 2:
+            if split_details[1].startswith("L"):
+                species, level = split_details
+            else:
+                species, gender = split_details
+        else:
+            species = split_details[0]
+
+        if not isinstance(gender, PokemonGender):
+            gender = PokemonGender.from_request_details(gender)
+        if not isinstance(level, int):
+            level = int(level[1:])
+        if species != self._species:
+            self._update_from_pokedex(species)
+
+        self._gender = gender
+        self._level = level
+
     def _update_from_request(self, request_pokemon: Dict[str, Any]) -> None:
         self._ability = request_pokemon["ability"]
         self._active = request_pokemon["active"]
@@ -237,37 +286,7 @@ class Pokemon:
         self._item = request_pokemon["item"]
 
         details = request_pokemon["details"]
-
-        if ", shiny" in details:
-            self._shiny = True
-            details = details.replace(", shiny", "")
-        else:
-            self._shiny = False
-
-        details = details.split(", ")
-
-        gender = PokemonGender.NEUTRAL
-        level = 100
-
-        if len(details) == 3:
-            species, level, gender = details
-        elif len(details) == 2:
-            if details[1].startswith("L"):
-                species, level = details
-            else:
-                species, gender = details
-        else:
-            species = details[0]
-
-        if not isinstance(gender, PokemonGender):
-            gender = PokemonGender.from_request_details(gender)
-        if not isinstance(level, int):
-            level = int(level[1:])
-        if species != self._species:
-            self._update_from_pokedex(species)
-
-        self._gender = gender
-        self._level = level
+        self._update_from_details(details)
 
         # This might cause some unnecessary resets with special moves, such as
         # hiddenpower

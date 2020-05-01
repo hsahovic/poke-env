@@ -45,10 +45,8 @@ def test_boosts():
 
 
 def test_can_z_move():
-    metronome = Move("metronome")
     flame_thrower = Move("flamethrower")
 
-    assert metronome.can_z_move is False
     assert flame_thrower.can_z_move is True
 
     for move in move_generator():
@@ -310,12 +308,16 @@ def test_secondary():
     flame_thrower = Move("flamethrower")
     acid_armor = Move("acidarmor")
 
-    assert fake_out.secondary == {"chance": 100, "volatileStatus": "flinch"}
-    assert flame_thrower.secondary == {"chance": 10, "status": "brn"}
-    assert acid_armor.secondary is None
+    assert fake_out.secondary == [{"chance": 100, "volatileStatus": "flinch"}]
+    assert flame_thrower.secondary == [{"chance": 10, "status": "brn"}]
+    assert acid_armor.secondary == []
 
     for move in move_generator():
-        assert move.secondary is None or isinstance(move.secondary, dict)
+        if move.secondary:
+            print(move.id, move.secondary)
+        assert isinstance(move.secondary, list)
+        for secondary in move.secondary:
+            assert isinstance(secondary, dict)
 
 
 def test_self_boosts():

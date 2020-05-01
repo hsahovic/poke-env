@@ -11,4 +11,5 @@ Module documentation
     other_environment
     player
     pokemon
+    teambuilder
     top_level_modules

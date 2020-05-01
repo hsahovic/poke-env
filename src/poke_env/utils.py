@@ -37,10 +37,9 @@ def _compute_type_chart(chart_path: str) -> Dict[str, Dict[str, float]]:
 
 def to_id_str(name: str) -> str:
     """Converts a full-name to its corresponding id string.
-
     :param name: The name to convert.
     :type name: str
     :return: The corresponding id string.
     :rtype: str
     """
-    return ''.join(char for char in name if char.isalnum()).lower()
+    return "".join(char for char in name if char.isalnum()).lower()

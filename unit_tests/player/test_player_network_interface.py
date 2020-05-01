@@ -123,8 +123,8 @@ async def test_handle_message():
     player._handle_battle_message.assert_called_once_with(">battle|thing")
 
     player._logger.debug = CoroutineMock()
-    await player._handle_message("|popup")
-    player._logger.debug.assert_called_with("Ignored message: %s", "|popup")
+    await player._handle_message("|updatesearch")
+    player._logger.debug.assert_called_with("Ignored message: %s", "|updatesearch")
 
     with pytest.raises(ShowdownException):
         await player._handle_message("|nametaken")
