@@ -354,7 +354,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         pass
 
 
-class Gen7EnvSinglePlayer(EnvPlayer):
+class Gen7EnvSinglePlayer(EnvPlayer):  # pyre-ignore
     _ACTION_SPACE = list(range(3 * 4 + 6))
 
     def _action_to_move(self, action: int, battle: Battle) -> str:

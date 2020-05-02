@@ -34,7 +34,7 @@ class Pokemon:
         self._weightkg: int
 
         # Individual related attributes
-        self._ability: str
+        self._ability: Optional[str] = None
         self._active: bool
         self._base_ability: str
         self._gender: PokemonGender
@@ -318,15 +318,15 @@ class Pokemon:
         self._switch_out()
 
     @property
-    def ability(self) -> str:
+    def ability(self) -> Optional[str]:
         """
-        :return: The pokemon's ability.
-        :rtype: str
+        :return: The pokemon's ability. None if unknown.
+        :rtype: str, optional
         """
         return self._ability
 
     @ability.setter
-    def ability(self, ability: str):
+    def ability(self, ability: Optional[str]):
         self._ability = ability
 
     @property

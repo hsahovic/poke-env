@@ -19,6 +19,7 @@ class Battle:
 
     MESSAGES_TO_IGNORE = {
         "-anim",
+        "-burst",
         "-block",
         "-cant",
         "-center",
@@ -62,6 +63,7 @@ class Battle:
     def __init__(self, battle_tag: str, username: str, logger: Logger):  # pyre-ignore
         # Utils attributes
         self._battle_tag: str = battle_tag
+        self._format: Optional[str] = None
         self._max_team_size: Optional[int] = None
         self._opponent_username: Optional[str] = None
         self._player_role = None
@@ -190,12 +192,10 @@ class Battle:
         elif split_message[1] == "-boost":
             pokemon, stat, amount = split_message[2:5]
             self.get_pokemon(pokemon)._boost(stat, int(amount))
-        elif split_message[1] == "-burst":
-            pokemon, species, item = split_message[2:5]
-            self.get_pokemon(pokemon).burst(species, item)
         elif split_message[1] == "-clearallboost":
             self.active_pokemon._clear_boosts()
-            self.opponent_active_pokemon._clear_boosts()
+            if self.opponent_active_pokemon is not None:
+                self.opponent_active_pokemon._clear_boosts()  # pyre-ignore
         elif split_message[1] == "-clearboost":
             pokemon = split_message[2]
             self.get_pokemon(pokemon)._clear_boosts()
