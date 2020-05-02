@@ -87,14 +87,13 @@ class Player(PlayerNetwork, ABC):
         self._battle_start_condition: Condition = Condition()
         self._battle_count_queue: Queue = Queue(max_concurrent_battles)
         self._challenge_queue: Queue = Queue()
+
         if isinstance(team, Teambuilder):
             self._team = team
         elif isinstance(team, str):
             self._team = ConstantTeambuilder(team)
-        elif team is None:
-            self._team = None
         else:
-            raise ValueError("Team must be a string, Teambuilder instance or None.")
+            self._team = None
 
         self.logger.debug("Player initialisation finished")
 
@@ -289,7 +288,7 @@ class Player(PlayerNetwork, ABC):
                 )
                 if (
                     (opponent is None)
-                    or (opponent == username)  # pyre-ignore
+                    or (opponent == username)
                     or (isinstance(opponent, list) and (username in opponent))
                 ):
                     await self._accept_challenge(username)
@@ -437,13 +436,8 @@ class Player(PlayerNetwork, ABC):
             if z_move:
                 return order + " zmove"
             return order
-        elif isinstance(order, Pokemon):
-            return f"/choose switch {order.species}"
         else:
-            raise ValueError(
-                "Can not process order corresponding to '%s'"
-                " (should be a Pokemon or Move object)" % order
-            )
+            return f"/choose switch {order.species}"
 
     @property
     def battles(self) -> Dict[str, Battle]:
