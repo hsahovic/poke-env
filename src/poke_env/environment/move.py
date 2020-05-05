@@ -105,8 +105,7 @@ class Move:
         :return: Wheter there exist a z-move version of this move.
         :rtype: bool
         """
-        return True
-        # return bool(self.z_move_boost or self.z_move_power or self.z_move_effect)
+        return self.id not in special_moves
 
     @property
     def category(self) -> MoveCategory:
@@ -256,7 +255,8 @@ class Move:
                 return self.entry["ignoreImmunity"]
             else:
                 return {
-                    PokemonType[t.upper()] for t in self.entry["ignoreImmunity"].keys()
+                    PokemonType[t.upper().replace("'", "")]
+                    for t in self.entry["ignoreImmunity"].keys()
                 }
         return False
 
@@ -296,8 +296,8 @@ class Move:
             if isinstance(self.entry["multihit"], list):
                 return tuple(self.entry["multihit"])
             else:
-                return (self.entry["multihit"], self.entry["multihit"])
-        return (1, 1)
+                return self.entry["multihit"], self.entry["multihit"]
+        return 1, 1
 
     @property
     def no_pp_boosts(self) -> bool:
@@ -537,23 +537,26 @@ class Move:
             return self.entry["zMovePower"]
         elif self.category == MoveCategory.STATUS:
             return 0
-        elif self.base_power <= 55:
+        base_power = self.base_power
+        if self.n_hit != (1, 1):
+            base_power *= 3
+        elif base_power <= 55:
             return 100
-        elif self.base_power <= 65:
+        elif base_power <= 65:
             return 120
-        elif self.base_power <= 75:
+        elif base_power <= 75:
             return 140
-        elif self.base_power <= 85:
+        elif base_power <= 85:
             return 160
-        elif self.base_power <= 95:
+        elif base_power <= 95:
             return 175
-        elif self.base_power <= 100:
+        elif base_power <= 100:
             return 180
-        elif self.base_power <= 110:
+        elif base_power <= 110:
             return 185
-        elif self.base_power <= 125:
+        elif base_power <= 125:
             return 190
-        elif self.base_power <= 130:
+        elif base_power <= 130:
             return 195
         return 200
 

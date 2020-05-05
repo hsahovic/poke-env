@@ -327,6 +327,8 @@ class Player(PlayerNetwork, ABC):
                 available_orders.append(self.create_order(move, mega=True))
             if battle.can_z_move and move in available_z_moves:
                 available_orders.append(self.create_order(move, z_move=True))
+            if battle.can_dynamax:
+                available_orders.append(self.create_order(move, dynamax=True))
 
         for pokemon in battle.available_switches:
             available_orders.append(self.create_order(pokemon))
@@ -416,7 +418,10 @@ class Player(PlayerNetwork, ABC):
 
     @staticmethod
     def create_order(
-        order: Union[Move, Pokemon], mega: bool = False, z_move: bool = False
+        order: Union[Move, Pokemon],
+        mega: bool = False,
+        z_move: bool = False,
+        dynamax: bool = False,
     ) -> str:
         """Formats an move order corresponding to the provided pokemon or move.
 
@@ -426,6 +431,8 @@ class Player(PlayerNetwork, ABC):
         :type mega: bool
         :param z_move: Whether to make a zmove, if a move is chosen.
         :type z_move: bool
+        :param dynamax: Whether to dynamax, if a move is chosen.
+        :type dynamax: bool
         :return: Formatted move order
         :rtype: str
         """
@@ -435,6 +442,8 @@ class Player(PlayerNetwork, ABC):
                 return order + " mega"
             if z_move:
                 return order + " zmove"
+            if dynamax:
+                return order + " dynamax"
             return order
         else:
             return f"/choose switch {order.species}"
