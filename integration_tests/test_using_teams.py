@@ -8,7 +8,7 @@ from poke_env.player_configuration import PlayerConfiguration
 from poke_env.server_configuration import LocalhostServerConfiguration
 
 
-async def gen7ou_cross_evaluation(n_battles, format_, teams):
+async def cross_evaluation(n_battles, format_, teams):
     players = [
         RandomPlayer(
             player_configuration=PlayerConfiguration("Player %d" % i, None),
@@ -26,9 +26,9 @@ async def gen7ou_cross_evaluation(n_battles, format_, teams):
 
 
 @pytest.mark.asyncio
-async def test_gen7ou_cross_evaluation(showdown_format_teams):
+async def test_all_formats_cross_evaluation(showdown_format_teams):
     for format_, teams in showdown_format_teams.items():
         await asyncio.wait_for(
-            gen7ou_cross_evaluation(n_battles=5, format_=format_, teams=teams),
+            cross_evaluation(n_battles=5, format_=format_, teams=teams),
             timeout=3 * len(teams) + 3,
         )
