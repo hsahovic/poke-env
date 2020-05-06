@@ -18,7 +18,7 @@ async def main():
     players = [
         RandomPlayer(
             player_configuration=player_config,
-            battle_format="gen8randombattle",
+            battle_format="gen7randombattle",
             server_configuration=LocalhostServerConfiguration,
             max_concurrent_battles=10,
         )
