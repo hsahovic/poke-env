@@ -210,7 +210,11 @@ class Pokemon:
                 raise ShowdownException(
                     "Cannot Dynamax a Pokemon that is already Dynamaxed."
                 )
-            if self.species.lower() != "shedinja":
+            if (
+                self.species.lower() != "shedinja"
+                and self._current_hp is not None
+                and self._max_hp is not None
+            ):
                 self._current_hp *= 2
                 self._max_hp *= 2
         self._effects.add(effect)
