@@ -13,7 +13,6 @@ from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.move import Move
 from poke_env.environment.status import Status
 from poke_env.environment.z_crystal import Z_CRYSTAL
-from poke_env.exceptions import ShowdownException
 from poke_env.utils import to_id_str
 
 
@@ -105,8 +104,6 @@ class Pokemon:
             self._boosts[stat] = 0
 
     def _clear_effects(self):
-        if self.is_dynamaxed:
-            self._revert_dynamax_hp()
         self._effects = set()
 
     def _clear_negative_boosts(self):
@@ -132,8 +129,6 @@ class Pokemon:
     def _end_effect(self, effect):
         effect = Effect.from_showdown_message(effect)
         if effect in self._effects:
-            if effect == Effect.DYNAMAX and self.is_dynamaxed:
-                self._revert_dynamax_hp()
             self._effects.remove(effect)
 
     def _end_item(self, item):
@@ -175,10 +170,6 @@ class Pokemon:
         primal_species = self._species + "primal"
         self._update_from_pokedex(primal_species)
 
-    def _revert_dynamax_hp(self):
-        self._current_hp = max(self._current_hp // 2, 1)
-        self._max_hp = max(self._max_hp // 2, 1)
-
     def _set_boost(self, stat, amount):
         assert abs(int(amount)) <= 6
         self._boosts[stat] = int(amount)
@@ -205,18 +196,6 @@ class Pokemon:
 
     def _start_effect(self, effect):
         effect = Effect.from_showdown_message(effect)
-        if effect == Effect.DYNAMAX:
-            if self.is_dynamaxed:
-                raise ShowdownException(
-                    "Cannot Dynamax a Pokemon that is already Dynamaxed."
-                )
-            if (
-                self.species.lower() != "shedinja"
-                and self._current_hp is not None
-                and self._max_hp is not None
-            ):
-                self._current_hp *= 2
-                self._max_hp *= 2
         self._effects.add(effect)
 
     def _swap_boosts(self):
