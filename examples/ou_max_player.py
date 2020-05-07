@@ -2,22 +2,63 @@
 import asyncio
 import numpy as np
 
+from poke_env.player.player import Player
 from poke_env.player.random_player import RandomPlayer
 from poke_env.player.utils import cross_evaluate
 from poke_env.player_configuration import PlayerConfiguration
 from poke_env.server_configuration import LocalhostServerConfiguration
-from poke_env.teambuilder.teambuilder import Teambuilder
 
 
-class RandomTeamFromPool(Teambuilder):
-    def __init__(self, teams):
-        self.teams = [self.join_team(self.parse_showdown_team(team)) for team in teams]
+class MaxDamagePlayer(Player):
+    def choose_move(self, battle):
+        # If the player can attack, it will
+        if battle.available_moves:
+            # Finds the best move among available ones
+            best_move = max(battle.available_moves, key=lambda move: move.base_power)
+            return self.create_order(best_move)
 
-    def yield_team(self):
-        return np.random.choice(self.teams)
+        # If no attack is available, a random switch will be made
+        else:
+            return self.choose_random_move(battle)
+
+    def teampreview(self, battle):
+        mon_performance = {}
+
+        # For each of our pokemons
+        for i, mon in enumerate(battle.team.values()):
+            # We store their average performance against the opponent team
+            mon_performance[i] = np.mean(
+                [
+                    teampreview_performance(mon, opp)
+                    for opp in battle.opponent_team.values()
+                ]
+            )
+
+        # We sort our mons by performance
+        ordered_mons = sorted(mon_performance, key=lambda k: -mon_performance[k])
+
+        # We start with the one we consider best overall
+        # We use i + 1 as python indexes start from 0
+        #  but showdown's indexes start from 1
+        return "/team " + "".join([str(i + 1) for i in ordered_mons])
 
 
-team_1 = """
+def teampreview_performance(mon_a, mon_b):
+    # We evaluate the performance on mon_a against mon_b as its type advantage
+    a_on_b = b_on_a = -np.inf
+    for type_ in mon_a.types:
+        if type_:
+            a_on_b = max(a_on_b, type_.damage_multiplier(*mon_b.types))
+    # We do the same for mon_b over mon_a
+    for type_ in mon_b.types:
+        if type_:
+            b_on_a = max(b_on_a, type_.damage_multiplier(*mon_a.types))
+    # Our performance metric is the different between the two
+    return a_on_b - b_on_a
+
+
+async def main():
+    team_1 = """
 Goodra (M) @ Assault Vest
 Ability: Sap Sipper
 EVs: 248 HP / 252 SpA / 8 Spe
@@ -74,8 +115,7 @@ Impish Nature
 - Roost
 - U-turn
 """
-
-team_2 = """
+    team_2 = """
 Togekiss @ Leftovers
 Ability: Serene Grace
 EVs: 248 HP / 8 SpA / 252 Spe
@@ -133,35 +173,35 @@ Jolly Nature
 - Tail Slap
 """
 
-custom_builder = RandomTeamFromPool([team_1, team_2])
-
-
-async def main():
-
     # We define two player configurations.
-    player_1_configuration = PlayerConfiguration("Random player 1", None)
-    player_2_configuration = PlayerConfiguration("Random player 2", None)
+    player_1_configuration = PlayerConfiguration("Random player", None)
+    player_2_configuration = PlayerConfiguration("Max damage player", None)
 
     # We create the corresponding players.
-    player_1 = RandomPlayer(
+    random_player = RandomPlayer(
         player_configuration=player_1_configuration,
         battle_format="gen8ou",
         server_configuration=LocalhostServerConfiguration,
-        team=custom_builder,
+        team=team_1,
         max_concurrent_battles=10,
     )
-    player_2 = RandomPlayer(
+    max_damage_player = MaxDamagePlayer(
         player_configuration=player_2_configuration,
         battle_format="gen8ou",
         server_configuration=LocalhostServerConfiguration,
-        team=custom_builder,
+        team=team_2,
         max_concurrent_battles=10,
     )
 
-    await cross_evaluate([player_1, player_2], n_challenges=5)
+    # Now, let's evaluate our player
+    cross_evaluation = await cross_evaluate(
+        [random_player, max_damage_player], n_challenges=50
+    )
 
-    for battle in player_1.battles:
-        print(battle)
+    print(
+        "Max damage player won %d / 100 battles"
+        % (cross_evaluation[max_damage_player.username][random_player.username] * 100)
+    )
 
 
 if __name__ == "__main__":
