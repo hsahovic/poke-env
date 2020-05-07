@@ -11,6 +11,7 @@ class SideCondition(Enum):
     """Enumeration, represent a in-battle side condition."""
 
     AURORA_VEIL = auto()
+    G_MAX_VOLCALITH = auto()
     LIGHT_SCREEN = auto()
     LUCKY_CHANT = auto()
     MIST = auto()
@@ -36,4 +37,5 @@ class SideCondition(Enum):
         """
         message = message.replace("move: ", "")
         message = message.replace(" ", "_")
+        message = message.replace("-", "_")
         return SideCondition[message.upper()]
