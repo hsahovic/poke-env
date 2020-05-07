@@ -31,6 +31,10 @@ for key, value in POKEDEX.items():
 
 POKEDEX.update(_missing_dex)
 
+_equivalent_forms = {"darmanitangalarzen": "darmanitanzengalar"}
+
+POKEDEX.update({k: POKEDEX[v] for k, v in _equivalent_forms.items()})
+
 MOVES: Dict = {}
 
 with open(
