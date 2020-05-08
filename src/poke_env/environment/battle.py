@@ -276,15 +276,17 @@ class Battle:
             self._side_start(side, condition)
         elif split_message[1] == "-start":
             pokemon, effect = split_message[2:4]
-            pokemon_instance = self.get_pokemon(pokemon)
-            was_dynamaxed = pokemon_instance.is_dynamaxed
-            pokemon_instance._start_effect(effect)
-            is_dynamaxed = pokemon_instance.is_dynamaxed
-            if not was_dynamaxed and is_dynamaxed:
-                if pokemon_instance in set(self.team.values()):
+            pokemon = self.get_pokemon(pokemon)
+            pokemon._start_effect(effect)
+
+            if pokemon.is_dynamaxed:
+                if pokemon in set(self.team.values()) and self._dynamax_turn is None:
                     self._dynamax_turn = self.turn
                     # self._can_dynamax value is set via _parse_request()
-                else:
+                elif (
+                    pokemon in set(self.opponent_team.values())
+                    and self._opponent_dynamax_turn is None
+                ):
                     self._opponent_dynamax_turn = self.turn
                     self._opponent_can_dynamax = False
         elif split_message[1] == "-status":
