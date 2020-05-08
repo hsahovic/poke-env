@@ -5,9 +5,12 @@ Creating a custom teambuilder
 
 The corresponding complete source code can be found `here <https://github.com/hsahovic/poke-env/blob/master/examples/custom_teambuilder.py>`__.
 
+.. note::
+    A similar example using gen 7 mechanics is available `here <https://github.com/hsahovic/poke-env/blob/master/examples/gen7/custom_teambuilder.py>`__.
+
 In :ref:`ou_max_player`, we chose a team by passing a `str` containing the team we want to use as a showdown format team.
 
-However, we might want to use different teams with a given agent, or using more complex mechanisms to create teams. ``Teambuilder`` objects are meant for specifying teams in such a custom fashion. This example demonstrates how to build a simple custom ``Teambuilder``: we will specify a pool of teams, and each game will be played using a team randomly selected from the pool.
+However, we might want to use different teams in different battles with the same agent, and use more complex mechanisms to generate and select teams. ``Teambuilder`` objects are meant for specifying teams in such a custom fashion. This example demonstrates how to build a simple custom ``Teambuilder``: we will specify a pool of teams, and each game will be played using a team randomly selected from the pool.
 
 Creating a custom ``Teambuilder``
 *********************************
@@ -21,8 +24,8 @@ Our custom ``Teambuilder`` will be initialized with a list of showdown formatted
 
 We therefore need to convert showdown formatted teams to the packed-formatted string required by showdown's protocol. We can do that in two steps:
 
-- Convert showdown formatted teams to list of ``TeambuilderPokemon`` objects. These objects are used internally by ``poke-env`` to describe pokemons used in a team in a flexible way. You can read more about them in :ref:`teambuilder`. This can be accomplished with ``Teambuilder``'s ``parse_showdown_team`` method.
-- Convert this list of ``TeambuilderPokemon`` object into the required formatted string. This can be achieved with ``Teambuilder``'s ``join_team`` method.
+- Convert showdown formatted teams to lists of ``TeambuilderPokemon`` objects. These objects are used internally by ``poke-env`` to describe pokemons used in a team in a flexible way. You can read more about them in :ref:`teambuilder`. This can be accomplished with ``Teambuilder``'s ``parse_showdown_team`` method.
+- Convert this list of ``TeambuilderPokemon`` objects into the required formatted string. This can be achieved with ``Teambuilder``'s ``join_team`` method.
 
 All in all, we get the following ``Teambuilder``:
 
@@ -48,122 +51,119 @@ We can instantiate it as follows:
 .. code-block:: python
 
     team_1 = """
-    Zapdos @ Leftovers
-    Ability: Pressure
-    EVs: 252 SpA / 4 SpD / 252 Spe
-    Timid Nature
+    Goodra (M) @ Assault Vest
+    Ability: Sap Sipper
+    EVs: 248 HP / 252 SpA / 8 Spe
+    Modest Nature
     IVs: 0 Atk
-    - Discharge
-    - Heat Wave
-    - Hidden Power [Ice]
-    - Roost
+    - Dragon Pulse
+    - Flamethrower
+    - Sludge Wave
+    - Thunderbolt
 
-    Mew @ Leftovers
-    Ability: Synchronize
-    EVs: 240 HP / 56 Def / 8 SpA / 140 SpD / 64 Spe
-    Bold Nature
-    IVs: 0 Atk
-    - Stealth Rock
-    - Will-O-Wisp
-    - Soft-Boiled
-    - Psychic
-
-    Scizor-Mega (M) @ Scizorite
-    Ability: Light Metal
-    EVs: 248 HP / 120 Def / 124 SpD / 16 Spe
-    Impish Nature
-    - Bullet Punch
-    - U-turn
-    - Roost
-    - Defog
-
-    Garchomp (M) @ Choice Scarf
-    Ability: Rough Skin
-    EVs: 252 Atk / 4 SpD / 252 Spe
-    Jolly Nature
-    - Outrage
-    - Earthquake
-    - Toxic
-    - Dragon Claw
-
-    Amoonguss (F) @ Black Sludge
-    Ability: Regenerator
-    EVs: 248 HP / 44 Def / 216 SpD
+    Sylveon (M) @ Leftovers
+    Ability: Pixilate
+    EVs: 248 HP / 244 Def / 16 SpD
     Calm Nature
     IVs: 0 Atk
-    - Spore
-    - Giga Drain
-    - Hidden Power [Fire]
+    - Hyper Voice
+    - Mystical Fire
+    - Protect
+    - Wish
+
+    Cinderace (M) @ Life Orb
+    Ability: Blaze
+    EVs: 252 Atk / 4 SpD / 252 Spe
+    Jolly Nature
+    - Pyro Ball
+    - Sucker Punch
+    - U-turn
+    - High Jump Kick
+
+    Toxtricity (M) @ Throat Spray
+    Ability: Punk Rock
+    EVs: 4 Atk / 252 SpA / 252 Spe
+    Rash Nature
+    - Overdrive
+    - Boomburst
+    - Shift Gear
+    - Fire Punch
+
+    Seismitoad (M) @ Leftovers
+    Ability: Water Absorb
+    EVs: 252 HP / 252 Def / 4 SpD
+    Relaxed Nature
+    - Stealth Rock
+    - Scald
+    - Earthquake
     - Toxic
 
-    Greninja-Ash @ Choice Specs
-    Ability: Battle Bond
-    EVs: 252 SpA / 4 SpD / 252 Spe
-    Timid Nature
-    - Water Shuriken
-    - Hydro Pump
-    - Dark Pulse
-    - Spikes
+    Corviknight (M) @ Leftovers
+    Ability: Pressure
+    EVs: 248 HP / 80 SpD / 180 Spe
+    Impish Nature
+    - Defog
+    - Brave Bird
+    - Roost
+    - U-turn
     """
 
     team_2 = """
-    Gliscor @ Toxic Orb
-    Ability: Poison Heal
-    EVs: 244 HP / 44 Def / 68 SpD / 152 Spe
-    Jolly Nature
-    - Swords Dance
-    - Earthquake
-    - Facade
-    - Roost
-
-    Clefable @ Leftovers
-    Ability: Magic Guard
-    EVs: 252 HP / 252 Def / 4 Spe
-    Bold Nature
-    IVs: 0 Atk
-    - Stealth Rock
-    - Moonblast
-    - Wish
-    - Soft-Boiled
-
-    Toxapex @ Payapa Berry
-    Ability: Regenerator
-    EVs: 252 HP / 92 Def / 164 SpD
-    Calm Nature
-    IVs: 0 Atk
-    - Toxic
-    - Scald
-    - Haze
-    - Recover
-
-    Latias @ Latiasite
-    Ability: Levitate
-    EVs: 248 HP / 8 Def / 252 Spe
+    Togekiss @ Leftovers
+    Ability: Serene Grace
+    EVs: 248 HP / 8 SpA / 252 Spe
     Timid Nature
     IVs: 0 Atk
-    - Surf
-    - Ice Beam
-    - Hidden Power [Fire]
-    - Recover
+    - Air Slash
+    - Nasty Plot
+    - Substitute
+    - Thunder Wave
 
-    Ferrothorn @ Leftovers
-    Ability: Iron Barbs
-    EVs: 252 HP / 92 Def / 164 SpD
-    Sassy Nature
-    IVs: 0 Spe
-    - Spikes
-    - Leech Seed
-    - Power Whip
-    - Gyro Ball
+    Galvantula @ Focus Sash
+    Ability: Compound Eyes
+    EVs: 252 SpA / 4 SpD / 252 Spe
+    Timid Nature
+    IVs: 0 Atk
+    - Sticky Web
+    - Thunder Wave
+    - Thunder
+    - Energy Ball
 
-    Tyranitar @ Choice Scarf
-    Ability: Sand Stream
+    Cloyster @ King's Rock
+    Ability: Skill Link
+    EVs: 252 Atk / 4 SpD / 252 Spe
+    Adamant Nature
+    - Icicle Spear
+    - Rock Blast
+    - Ice Shard
+    - Shell Smash
+
+    Sandaconda @ Focus Sash
+    Ability: Sand Spit
     EVs: 252 Atk / 4 SpD / 252 Spe
     Jolly Nature
-    - Stone Edge
-    - Crunch
-    - Pursuit
+    - Stealth Rock
+    - Glare
     - Earthquake
+    - Rock Tomb
+
+    Excadrill @ Focus Sash
+    Ability: Sand Rush
+    EVs: 252 Atk / 4 SpD / 252 Spe
+    Adamant Nature
+    - Iron Head
+    - Rock Slide
+    - Earthquake
+    - Rapid Spin
+
+    Cinccino @ King's Rock
+    Ability: Skill Link
+    EVs: 252 Atk / 4 Def / 252 Spe
+    Jolly Nature
+    - Bullet Seed
+    - Knock Off
+    - Rock Blast
+    - Tail Slap
     """
 
     custom_builder = RandomTeamFromPool([team_1, team_2])
@@ -182,14 +182,14 @@ Our ``custom_builder`` can now be used! To use a ``Teambuilder`` with a given ``
 
     player_1 = RandomPlayer(
         player_configuration=player_1_configuration,
-        battle_format="gen7ou",
+        battle_format="gen8ou",
         server_configuration=LocalhostServerConfiguration,
         team=custom_builder,
         max_concurrent_battles=10,
     )
     player_2 = RandomPlayer(
         player_configuration=player_2_configuration,
-        battle_format="gen7ou",
+        battle_format="gen8ou",
         server_configuration=LocalhostServerConfiguration,
         team=custom_builder,
         max_concurrent_battles=10,
@@ -208,7 +208,8 @@ The complete example looks like that:
 
 .. code-block:: python
 
-    # -*- coding: utf-8 -*-
+ # -*- coding: utf-8 -*-
+
     import asyncio
     import numpy as np
 
@@ -228,125 +229,123 @@ The complete example looks like that:
 
 
     team_1 = """
-    Zapdos @ Leftovers
-    Ability: Pressure
-    EVs: 252 SpA / 4 SpD / 252 Spe
-    Timid Nature
+    Goodra (M) @ Assault Vest
+    Ability: Sap Sipper
+    EVs: 248 HP / 252 SpA / 8 Spe
+    Modest Nature
     IVs: 0 Atk
-    - Discharge
-    - Heat Wave
-    - Hidden Power [Ice]
-    - Roost
+    - Dragon Pulse
+    - Flamethrower
+    - Sludge Wave
+    - Thunderbolt
 
-    Mew @ Leftovers
-    Ability: Synchronize
-    EVs: 240 HP / 56 Def / 8 SpA / 140 SpD / 64 Spe
-    Bold Nature
-    IVs: 0 Atk
-    - Stealth Rock
-    - Will-O-Wisp
-    - Soft-Boiled
-    - Psychic
-
-    Scizor-Mega (M) @ Scizorite
-    Ability: Light Metal
-    EVs: 248 HP / 120 Def / 124 SpD / 16 Spe
-    Impish Nature
-    - Bullet Punch
-    - U-turn
-    - Roost
-    - Defog
-
-    Garchomp (M) @ Choice Scarf
-    Ability: Rough Skin
-    EVs: 252 Atk / 4 SpD / 252 Spe
-    Jolly Nature
-    - Outrage
-    - Earthquake
-    - Toxic
-    - Dragon Claw
-
-    Amoonguss (F) @ Black Sludge
-    Ability: Regenerator
-    EVs: 248 HP / 44 Def / 216 SpD
+    Sylveon (M) @ Leftovers
+    Ability: Pixilate
+    EVs: 248 HP / 244 Def / 16 SpD
     Calm Nature
     IVs: 0 Atk
-    - Spore
-    - Giga Drain
-    - Hidden Power [Fire]
+    - Hyper Voice
+    - Mystical Fire
+    - Protect
+    - Wish
+
+    Cinderace (M) @ Life Orb
+    Ability: Blaze
+    EVs: 252 Atk / 4 SpD / 252 Spe
+    Jolly Nature
+    - Pyro Ball
+    - Sucker Punch
+    - U-turn
+    - High Jump Kick
+
+    Toxtricity (M) @ Throat Spray
+    Ability: Punk Rock
+    EVs: 4 Atk / 252 SpA / 252 Spe
+    Rash Nature
+    - Overdrive
+    - Boomburst
+    - Shift Gear
+    - Fire Punch
+
+    Seismitoad (M) @ Leftovers
+    Ability: Water Absorb
+    EVs: 252 HP / 252 Def / 4 SpD
+    Relaxed Nature
+    - Stealth Rock
+    - Scald
+    - Earthquake
     - Toxic
 
-    Greninja-Ash @ Choice Specs
-    Ability: Battle Bond
-    EVs: 252 SpA / 4 SpD / 252 Spe
-    Timid Nature
-    - Water Shuriken
-    - Hydro Pump
-    - Dark Pulse
-    - Spikes
+    Corviknight (M) @ Leftovers
+    Ability: Pressure
+    EVs: 248 HP / 80 SpD / 180 Spe
+    Impish Nature
+    - Defog
+    - Brave Bird
+    - Roost
+    - U-turn
     """
 
     team_2 = """
-    Gliscor @ Toxic Orb
-    Ability: Poison Heal
-    EVs: 244 HP / 44 Def / 68 SpD / 152 Spe
-    Jolly Nature
-    - Swords Dance
-    - Earthquake
-    - Facade
-    - Roost
-
-    Clefable @ Leftovers
-    Ability: Magic Guard
-    EVs: 252 HP / 252 Def / 4 Spe
-    Bold Nature
-    IVs: 0 Atk
-    - Stealth Rock
-    - Moonblast
-    - Wish
-    - Soft-Boiled
-
-    Toxapex @ Payapa Berry
-    Ability: Regenerator
-    EVs: 252 HP / 92 Def / 164 SpD
-    Calm Nature
-    IVs: 0 Atk
-    - Toxic
-    - Scald
-    - Haze
-    - Recover
-
-    Latias @ Latiasite
-    Ability: Levitate
-    EVs: 248 HP / 8 Def / 252 Spe
+    Togekiss @ Leftovers
+    Ability: Serene Grace
+    EVs: 248 HP / 8 SpA / 252 Spe
     Timid Nature
     IVs: 0 Atk
-    - Surf
-    - Ice Beam
-    - Hidden Power [Fire]
-    - Recover
+    - Air Slash
+    - Nasty Plot
+    - Substitute
+    - Thunder Wave
 
-    Ferrothorn @ Leftovers
-    Ability: Iron Barbs
-    EVs: 252 HP / 92 Def / 164 SpD
-    Sassy Nature
-    IVs: 0 Spe
-    - Spikes
-    - Leech Seed
-    - Power Whip
-    - Gyro Ball
+    Galvantula @ Focus Sash
+    Ability: Compound Eyes
+    EVs: 252 SpA / 4 SpD / 252 Spe
+    Timid Nature
+    IVs: 0 Atk
+    - Sticky Web
+    - Thunder Wave
+    - Thunder
+    - Energy Ball
 
-    Tyranitar @ Choice Scarf
-    Ability: Sand Stream
+    Cloyster @ King's Rock
+    Ability: Skill Link
+    EVs: 252 Atk / 4 SpD / 252 Spe
+    Adamant Nature
+    - Icicle Spear
+    - Rock Blast
+    - Ice Shard
+    - Shell Smash
+
+    Sandaconda @ Focus Sash
+    Ability: Sand Spit
     EVs: 252 Atk / 4 SpD / 252 Spe
     Jolly Nature
-    - Stone Edge
-    - Crunch
-    - Pursuit
+    - Stealth Rock
+    - Glare
     - Earthquake
+    - Rock Tomb
+
+    Excadrill @ Focus Sash
+    Ability: Sand Rush
+    EVs: 252 Atk / 4 SpD / 252 Spe
+    Adamant Nature
+    - Iron Head
+    - Rock Slide
+    - Earthquake
+    - Rapid Spin
+
+    Cinccino @ King's Rock
+    Ability: Skill Link
+    EVs: 252 Atk / 4 Def / 252 Spe
+    Jolly Nature
+    - Bullet Seed
+    - Knock Off
+    - Rock Blast
+    - Tail Slap
     """
 
     custom_builder = RandomTeamFromPool([team_1, team_2])
+
 
     async def main():
 
@@ -357,14 +356,14 @@ The complete example looks like that:
         # We create the corresponding players.
         player_1 = RandomPlayer(
             player_configuration=player_1_configuration,
-            battle_format="gen7ou",
+            battle_format="gen8ou",
             server_configuration=LocalhostServerConfiguration,
             team=custom_builder,
             max_concurrent_battles=10,
         )
         player_2 = RandomPlayer(
             player_configuration=player_2_configuration,
-            battle_format="gen7ou",
+            battle_format="gen8ou",
             server_configuration=LocalhostServerConfiguration,
             team=custom_builder,
             max_concurrent_battles=10,
@@ -374,6 +373,7 @@ The complete example looks like that:
 
         for battle in player_1.battles:
             print(battle)
+
 
     if __name__ == "__main__":
         asyncio.get_event_loop().run_until_complete(main())

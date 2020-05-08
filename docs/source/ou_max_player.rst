@@ -1,11 +1,14 @@
 .. _ou_max_player:
 
-Adapting the max player to gen 7 OU and managing team preview
+Adapting the max player to gen 8 OU and managing team preview
 =============================================================
 
-The corresponding complete source code can be found `here <https://github.com/hsahovic/poke-env/blob/master/examples/gen7_ou_max_player.py>`__.
+The corresponding complete source code can be found `here <https://github.com/hsahovic/poke-env/blob/master/examples/ou_max_player.py>`__.
 
-This example adapts :ref:`max_damage_player` to the gen 7 overused format. In particular, it shows how to specify a team and manage team preview.
+.. note::
+    A similar example using gen 7 mechanics is available `here <https://github.com/hsahovic/poke-env/blob/master/examples/gen7/ou_max_player.py>`__.
+
+This example adapts :ref:`max_damage_player` to the gen 8 overused format. In particular, it shows how to specify a team and manage team preview.
 
 Team Preview management
 ***********************
@@ -166,121 +169,118 @@ To attribute a team to an agent, you need to pass a ``team`` argument to the age
 .. code-block:: python
 
     team_1 = """
-    Zapdos @ Leftovers
-    Ability: Pressure
-    EVs: 252 SpA / 4 SpD / 252 Spe
-    Timid Nature
+    Goodra (M) @ Assault Vest
+    Ability: Sap Sipper
+    EVs: 248 HP / 252 SpA / 8 Spe
+    Modest Nature
     IVs: 0 Atk
-    - Discharge
-    - Heat Wave
-    - Hidden Power [Ice]
-    - Roost
+    - Dragon Pulse
+    - Flamethrower
+    - Sludge Wave
+    - Thunderbolt
 
-    Mew @ Leftovers
-    Ability: Synchronize
-    EVs: 240 HP / 56 Def / 8 SpA / 140 SpD / 64 Spe
-    Bold Nature
-    IVs: 0 Atk
-    - Stealth Rock
-    - Will-O-Wisp
-    - Soft-Boiled
-    - Psychic
-
-    Scizor-Mega (M) @ Scizorite
-    Ability: Light Metal
-    EVs: 248 HP / 120 Def / 124 SpD / 16 Spe
-    Impish Nature
-    - Bullet Punch
-    - U-turn
-    - Roost
-    - Defog
-
-    Garchomp (M) @ Choice Scarf
-    Ability: Rough Skin
-    EVs: 252 Atk / 4 SpD / 252 Spe
-    Jolly Nature
-    - Outrage
-    - Earthquake
-    - Toxic
-    - Dragon Claw
-
-    Amoonguss (F) @ Black Sludge
-    Ability: Regenerator
-    EVs: 248 HP / 44 Def / 216 SpD
+    Sylveon (M) @ Leftovers
+    Ability: Pixilate
+    EVs: 248 HP / 244 Def / 16 SpD
     Calm Nature
     IVs: 0 Atk
-    - Spore
-    - Giga Drain
-    - Hidden Power [Fire]
+    - Hyper Voice
+    - Mystical Fire
+    - Protect
+    - Wish
+
+    Cinderace (M) @ Life Orb
+    Ability: Blaze
+    EVs: 252 Atk / 4 SpD / 252 Spe
+    Jolly Nature
+    - Pyro Ball
+    - Sucker Punch
+    - U-turn
+    - High Jump Kick
+
+    Toxtricity (M) @ Throat Spray
+    Ability: Punk Rock
+    EVs: 4 Atk / 252 SpA / 252 Spe
+    Rash Nature
+    - Overdrive
+    - Boomburst
+    - Shift Gear
+    - Fire Punch
+
+    Seismitoad (M) @ Leftovers
+    Ability: Water Absorb
+    EVs: 252 HP / 252 Def / 4 SpD
+    Relaxed Nature
+    - Stealth Rock
+    - Scald
+    - Earthquake
     - Toxic
 
-    Greninja-Ash @ Choice Specs
-    Ability: Battle Bond
-    EVs: 252 SpA / 4 SpD / 252 Spe
-    Timid Nature
-    - Water Shuriken
-    - Hydro Pump
-    - Dark Pulse
-    - Spikes
+    Corviknight (M) @ Leftovers
+    Ability: Pressure
+    EVs: 248 HP / 80 SpD / 180 Spe
+    Impish Nature
+    - Defog
+    - Brave Bird
+    - Roost
+    - U-turn
     """
     team_2 = """
-    Gliscor @ Toxic Orb
-    Ability: Poison Heal
-    EVs: 244 HP / 44 Def / 68 SpD / 152 Spe
-    Jolly Nature
-    - Swords Dance
-    - Earthquake
-    - Facade
-    - Roost
-
-    Clefable @ Leftovers
-    Ability: Magic Guard
-    EVs: 252 HP / 252 Def / 4 Spe
-    Bold Nature
-    IVs: 0 Atk
-    - Stealth Rock
-    - Moonblast
-    - Wish
-    - Soft-Boiled
-
-    Toxapex @ Payapa Berry
-    Ability: Regenerator
-    EVs: 252 HP / 92 Def / 164 SpD
-    Calm Nature
-    IVs: 0 Atk
-    - Toxic
-    - Scald
-    - Haze
-    - Recover
-
-    Latias @ Latiasite
-    Ability: Levitate
-    EVs: 248 HP / 8 Def / 252 Spe
+    Togekiss @ Leftovers
+    Ability: Serene Grace
+    EVs: 248 HP / 8 SpA / 252 Spe
     Timid Nature
     IVs: 0 Atk
-    - Surf
-    - Ice Beam
-    - Hidden Power [Fire]
-    - Recover
+    - Air Slash
+    - Nasty Plot
+    - Substitute
+    - Thunder Wave
 
-    Ferrothorn @ Leftovers
-    Ability: Iron Barbs
-    EVs: 252 HP / 92 Def / 164 SpD
-    Sassy Nature
-    IVs: 0 Spe
-    - Spikes
-    - Leech Seed
-    - Power Whip
-    - Gyro Ball
+    Galvantula @ Focus Sash
+    Ability: Compound Eyes
+    EVs: 252 SpA / 4 SpD / 252 Spe
+    Timid Nature
+    IVs: 0 Atk
+    - Sticky Web
+    - Thunder Wave
+    - Thunder
+    - Energy Ball
 
-    Tyranitar @ Choice Scarf
-    Ability: Sand Stream
+    Cloyster @ King's Rock
+    Ability: Skill Link
+    EVs: 252 Atk / 4 SpD / 252 Spe
+    Adamant Nature
+    - Icicle Spear
+    - Rock Blast
+    - Ice Shard
+    - Shell Smash
+
+    Sandaconda @ Focus Sash
+    Ability: Sand Spit
     EVs: 252 Atk / 4 SpD / 252 Spe
     Jolly Nature
-    - Stone Edge
-    - Crunch
-    - Pursuit
+    - Stealth Rock
+    - Glare
     - Earthquake
+    - Rock Tomb
+
+    Excadrill @ Focus Sash
+    Ability: Sand Rush
+    EVs: 252 Atk / 4 SpD / 252 Spe
+    Adamant Nature
+    - Iron Head
+    - Rock Slide
+    - Earthquake
+    - Rapid Spin
+
+    Cinccino @ King's Rock
+    Ability: Skill Link
+    EVs: 252 Atk / 4 Def / 252 Spe
+    Jolly Nature
+    - Bullet Seed
+    - Knock Off
+    - Rock Blast
+    - Tail Slap
     """
     # We define two player configurations.
     player_1_configuration = PlayerConfiguration("Random player", None)
@@ -289,14 +289,14 @@ To attribute a team to an agent, you need to pass a ``team`` argument to the age
     # We create the corresponding players.
     random_player = RandomPlayer(
         player_configuration=player_1_configuration,
-        battle_format="gen7ou",
+        battle_format="gen8ou",
         server_configuration=LocalhostServerConfiguration,
         team=team_1,
         max_concurrent_battles=10,
     )
     max_damage_player = MaxDamagePlayer(
         player_configuration=player_2_configuration,
-        battle_format="gen7ou",
+        battle_format="gen8ou",
         server_configuration=LocalhostServerConfiguration,
         team=team_2,
         max_concurrent_battles=10,
@@ -310,14 +310,12 @@ To attribute a team to an agent, you need to pass a ``team`` argument to the age
 Running and testing our agent
 *****************************
 
-We can now test our agent by crossing evaluating with a random agent. The complete code is:
+We can now test our agent by crossing evaluating it with a random agent. The complete code is:
 
 .. code-block:: python
 
-    # -*- coding: utf-8 -*-
     import asyncio
     import numpy as np
-    import time
 
     from poke_env.player.player import Player
     from poke_env.player.random_player import RandomPlayer
@@ -376,157 +374,153 @@ We can now test our agent by crossing evaluating with a random agent. The comple
 
     async def main():
         team_1 = """
-    Zapdos @ Leftovers
-    Ability: Pressure
-    EVs: 252 SpA / 4 SpD / 252 Spe
-    Timid Nature
+    Goodra (M) @ Assault Vest
+    Ability: Sap Sipper
+    EVs: 248 HP / 252 SpA / 8 Spe
+    Modest Nature
     IVs: 0 Atk
-    - Discharge
-    - Heat Wave
-    - Hidden Power [Ice]
-    - Roost
+    - Dragon Pulse
+    - Flamethrower
+    - Sludge Wave
+    - Thunderbolt
 
-    Mew @ Leftovers
-    Ability: Synchronize
-    EVs: 240 HP / 56 Def / 8 SpA / 140 SpD / 64 Spe
-    Bold Nature
-    IVs: 0 Atk
-    - Stealth Rock
-    - Will-O-Wisp
-    - Soft-Boiled
-    - Psychic
-
-    Scizor-Mega (M) @ Scizorite
-    Ability: Light Metal
-    EVs: 248 HP / 120 Def / 124 SpD / 16 Spe
-    Impish Nature
-    - Bullet Punch
-    - U-turn
-    - Roost
-    - Defog
-
-    Garchomp (M) @ Choice Scarf
-    Ability: Rough Skin
-    EVs: 252 Atk / 4 SpD / 252 Spe
-    Jolly Nature
-    - Outrage
-    - Earthquake
-    - Toxic
-    - Dragon Claw
-
-    Amoonguss (F) @ Black Sludge
-    Ability: Regenerator
-    EVs: 248 HP / 44 Def / 216 SpD
+    Sylveon (M) @ Leftovers
+    Ability: Pixilate
+    EVs: 248 HP / 244 Def / 16 SpD
     Calm Nature
     IVs: 0 Atk
-    - Spore
-    - Giga Drain
-    - Hidden Power [Fire]
+    - Hyper Voice
+    - Mystical Fire
+    - Protect
+    - Wish
+
+    Cinderace (M) @ Life Orb
+    Ability: Blaze
+    EVs: 252 Atk / 4 SpD / 252 Spe
+    Jolly Nature
+    - Pyro Ball
+    - Sucker Punch
+    - U-turn
+    - High Jump Kick
+
+    Toxtricity (M) @ Throat Spray
+    Ability: Punk Rock
+    EVs: 4 Atk / 252 SpA / 252 Spe
+    Rash Nature
+    - Overdrive
+    - Boomburst
+    - Shift Gear
+    - Fire Punch
+
+    Seismitoad (M) @ Leftovers
+    Ability: Water Absorb
+    EVs: 252 HP / 252 Def / 4 SpD
+    Relaxed Nature
+    - Stealth Rock
+    - Scald
+    - Earthquake
     - Toxic
 
-    Greninja-Ash @ Choice Specs
-    Ability: Battle Bond
-    EVs: 252 SpA / 4 SpD / 252 Spe
-    Timid Nature
-    - Water Shuriken
-    - Hydro Pump
-    - Dark Pulse
-    - Spikes
+    Corviknight (M) @ Leftovers
+    Ability: Pressure
+    EVs: 248 HP / 80 SpD / 180 Spe
+    Impish Nature
+    - Defog
+    - Brave Bird
+    - Roost
+    - U-turn
     """
         team_2 = """
-    Gliscor @ Toxic Orb
-    Ability: Poison Heal
-    EVs: 244 HP / 44 Def / 68 SpD / 152 Spe
-    Jolly Nature
-    - Swords Dance
-    - Earthquake
-    - Facade
-    - Roost
-
-    Clefable @ Leftovers
-    Ability: Magic Guard
-    EVs: 252 HP / 252 Def / 4 Spe
-    Bold Nature
-    IVs: 0 Atk
-    - Stealth Rock
-    - Moonblast
-    - Wish
-    - Soft-Boiled
-
-    Toxapex @ Payapa Berry
-    Ability: Regenerator
-    EVs: 252 HP / 92 Def / 164 SpD
-    Calm Nature
-    IVs: 0 Atk
-    - Toxic
-    - Scald
-    - Haze
-    - Recover
-
-    Latias @ Latiasite
-    Ability: Levitate
-    EVs: 248 HP / 8 Def / 252 Spe
+    Togekiss @ Leftovers
+    Ability: Serene Grace
+    EVs: 248 HP / 8 SpA / 252 Spe
     Timid Nature
     IVs: 0 Atk
-    - Surf
-    - Ice Beam
-    - Hidden Power [Fire]
-    - Recover
+    - Air Slash
+    - Nasty Plot
+    - Substitute
+    - Thunder Wave
 
-    Ferrothorn @ Leftovers
-    Ability: Iron Barbs
-    EVs: 252 HP / 92 Def / 164 SpD
-    Sassy Nature
-    IVs: 0 Spe
-    - Spikes
-    - Leech Seed
-    - Power Whip
-    - Gyro Ball
+    Galvantula @ Focus Sash
+    Ability: Compound Eyes
+    EVs: 252 SpA / 4 SpD / 252 Spe
+    Timid Nature
+    IVs: 0 Atk
+    - Sticky Web
+    - Thunder Wave
+    - Thunder
+    - Energy Ball
 
-    Tyranitar @ Choice Scarf
-    Ability: Sand Stream
+    Cloyster @ King's Rock
+    Ability: Skill Link
+    EVs: 252 Atk / 4 SpD / 252 Spe
+    Adamant Nature
+    - Icicle Spear
+    - Rock Blast
+    - Ice Shard
+    - Shell Smash
+
+    Sandaconda @ Focus Sash
+    Ability: Sand Spit
     EVs: 252 Atk / 4 SpD / 252 Spe
     Jolly Nature
-    - Stone Edge
-    - Crunch
-    - Pursuit
+    - Stealth Rock
+    - Glare
     - Earthquake
+    - Rock Tomb
+
+    Excadrill @ Focus Sash
+    Ability: Sand Rush
+    EVs: 252 Atk / 4 SpD / 252 Spe
+    Adamant Nature
+    - Iron Head
+    - Rock Slide
+    - Earthquake
+    - Rapid Spin
+
+    Cinccino @ King's Rock
+    Ability: Skill Link
+    EVs: 252 Atk / 4 Def / 252 Spe
+    Jolly Nature
+    - Bullet Seed
+    - Knock Off
+    - Rock Blast
+    - Tail Slap
     """
 
-        # We define two player configurations.
-        player_1_configuration = PlayerConfiguration("Random player", None)
-        player_2_configuration = PlayerConfiguration("Max damage player", None)
+    # We define two player configurations.
+    player_1_configuration = PlayerConfiguration("Random player", None)
+    player_2_configuration = PlayerConfiguration("Max damage player", None)
 
-        # We create the corresponding players.
-        random_player = RandomPlayer(
-            player_configuration=player_1_configuration,
-            battle_format="gen7ou",
-            server_configuration=LocalhostServerConfiguration,
-            team=team_1,
-            max_concurrent_battles=10,
-        )
-        max_damage_player = MaxDamagePlayer(
-            player_configuration=player_2_configuration,
-            battle_format="gen7ou",
-            server_configuration=LocalhostServerConfiguration,
-            team=team_2,
-            max_concurrent_battles=10,
-        )
+    # We create the corresponding players.
+    random_player = RandomPlayer(
+        player_configuration=player_1_configuration,
+        battle_format="gen8ou",
+        server_configuration=LocalhostServerConfiguration,
+        team=team_1,
+        max_concurrent_battles=10,
+    )
+    max_damage_player = MaxDamagePlayer(
+        player_configuration=player_2_configuration,
+        battle_format="gen8ou",
+        server_configuration=LocalhostServerConfiguration,
+        team=team_2,
+        max_concurrent_battles=10,
+    )
 
-        # Now, let's evaluate our player
-        cross_evaluation = await cross_evaluate(
-            [random_player, max_damage_player], n_challenges=50
-        )
+    # Now, let's evaluate our player
+    cross_evaluation = await cross_evaluate(
+        [random_player, max_damage_player], n_challenges=50
+    )
 
-        print(
-            "Max damage player won %d / 100 battles"
-            % (cross_evaluation[max_damage_player.username][random_player.username] * 100)
-        )
+    print(
+        "Max damage player won %d / 100 battles"
+        % (cross_evaluation[max_damage_player.username][random_player.username] * 100)
+    )
 
 
     if __name__ == "__main__":
         asyncio.get_event_loop().run_until_complete(main())
-
 
 
 Running it should take a couple of seconds and print something similar to this:

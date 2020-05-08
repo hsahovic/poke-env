@@ -5,6 +5,9 @@ Reinforcement learning with the OpenAI Gym wrapper
 
 The corresponding complete source code can be found `here <https://github.com/hsahovic/poke-env/blob/master/examples/rl_with_open_ai_gym_wrapper.py>`__.
 
+.. note::
+    A similar example using gen 7 mechanics is available `here <https://github.com/hsahovic/poke-env/blob/master/examples/gen7/rl_with_open_ai_gym_wrapper.py>`__.
+
 The goal of this example is to demonstrate how to use the `open ai gym <https://gym.openai.com/>`__ interface proposed by ``EnvPlayer``, and to train a simple deep reinforcement learning agent comparable in performance to the ``MaxDamagePlayer`` we created in :ref:`max_damage_player`.
 
 .. note:: This example necessitates `keras-rl <https://github.com/keras-rl/keras-rl>`__ (compatible with Tensorflow 1.X) or `keras-rl2 <https://github.com/wau/keras-rl2>`__ (Tensorflow 2.X), which implement numerous reinforcement learning algorithms and offer a simple API fully compatible with the Open AI Gym API. You can install them by running ``pip install keras-rl`` or ``pip install keras-rl2``. If you are unsure, ``pip install keras-rl2`` is recommended.
@@ -45,14 +48,14 @@ To define our rewards, we will create a custom ``compute_reward`` method. It tak
 Defining our custom class
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Our player will play the ``gen7randombattle`` format. We can therefore inheritate from ``Gen7EnvSinglePlayer``.
+Our player will play the ``gen8randombattle`` format. We can therefore inheritate from ``gen8EnvSinglePlayer``.
 
 .. code-block:: python
 
     # -*- coding: utf-8 -*-
-    from poke_env.player.env_player import Gen7EnvSinglePlayer
+    from poke_env.player.env_player import gen8EnvSinglePlayer
 
-    class SimpleRLPlayer(Gen7EnvSinglePlayer):
+    class SimpleRLPlayer(gen8EnvSinglePlayer):
         def embed_battle(self, battle):
             # -1 indicates that the move does not have a base power
             # or is not available
@@ -100,7 +103,7 @@ Now that our custom class is defined, we can instantiate a player.
 
     env_player = SimpleRLPlayer(
         player_configuration=PlayerConfiguration("RL Player", None),
-        battle_format="gen7randombattle",
+        battle_format="gen8randombattle",
         server_configuration=LocalhostServerConfiguration,
     )
     ...
@@ -116,7 +119,7 @@ Defining a base model
 
 We build a simple keras sequential model. Our observation vectors have 10 components; our model will therefore accept inputs of dimension 10.
 
-The output of the model must map to the environment's action space. The action space can be accessed through the ``action_space`` property.
+The output of the model must map to the environment's action space. The action space can be accessed through the ``action_space`` property. Each action correspond to one order: a switch or an attack, with additional options for dynamaxing, mega-evolving and using z-moves.
 
 .. code-block:: python
 
@@ -209,7 +212,7 @@ We will create a ``dqn_training`` function. In addition to the player, it will a
 
     opponent = RandomPlayer(
         player_configuration=PlayerConfiguration("Random player", None),
-        battle_format="gen7randombattle",
+        battle_format="gen8randombattle",
         server_configuration=LocalhostServerConfiguration,
     )
 
@@ -244,7 +247,7 @@ Similarly to the training function above, we can define an evaluation function.
     # It can be found in the complete code linked above, or in the max damage example
     second_opponent = MaxDamagePlayer(
         player_configuration=PlayerConfiguration("Max damage player", None),
-        battle_format="gen7randombattle",
+        battle_format="gen8randombattle",
         server_configuration=LocalhostServerConfiguration,
     )
 

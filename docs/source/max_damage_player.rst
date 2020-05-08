@@ -5,6 +5,9 @@ Creating a simple max damage player
 
 The corresponding complete source code can be found `here <https://github.com/hsahovic/poke-env/blob/master/examples/max_damage_player.py>`__.
 
+.. note::
+    A similar example using gen 7 mechanics is available `here <https://github.com/hsahovic/poke-env/blob/master/examples/gen7/max_damage_player.py>`__.
+
 The goal of this example is to explain how to create a first custom agent. This agent will follow simple rules:
 
 - If the active pokemon can attack, it will attack and use the move with the highest base power
@@ -25,7 +28,7 @@ Let's create the base class:
     class MaxDamagePlayer(Player):
         pass
 
-``Player``'s ``choose_move`` method is abstract: it needs to be implemented if we want to instantiate our player.
+``Player``'s ``choose_move`` method is abstract: it needs to be implemented if we want to instantiate our player. It is the only method that we have to define to be able to use the agent.
 
 Creating a ``choose_move`` method
 *********************************
@@ -35,16 +38,16 @@ Method signature
 
 The signature of ``choose_move`` is ``choose_move(self, battle: Battle) -> str``.
 
-We therefore have to take care of two things: first, we have to use the ``battle`` parameter properly. Second, we have to return a properly formatted string.
+We therefore have to take care of two things: first, reading the information we need from the ``battle`` parameter. Then, we have to return a properly formatted response, corresponding to our move order.
 
 Selecting a move
 ****************
 
-The ``battle`` parameter is an object of type ``Battle`` representing the agent's current knowledge of the game state. In particular, it offers serveral properties that can help easily accessing the information it contains. Some of the most useful properties are ``active_pokemon``, ``available_moves``, ``available_switches``, ``opponent_active_pokemon``, ``opponent_team`` and ``team``.
+The ``battle`` parameter is an object of type ``Battle`` representing the agent's current knowledge of the game state. It offers serveral properties that make accessing the game state easy. Some of these properties are ``active_pokemon``, ``available_moves``, ``available_switches``, ``opponent_active_pokemon``, ``opponent_team`` and ``team``.
 
-In this example, we are going to use ``available_moves``. It returns a list of ``Move`` objects which can be used this turn.
+In this example, we are going to use ``available_moves``: it returns a list of ``Move`` objects which are available this turn.
 
-We can therefore test if any move can be used with ``if battle.available_moves:``. We are interested in the base power of available_moves, so if we can use moves, we are going to select the move with the highest base power:
+We can therefore test if at least one move can be used with ``if battle.available_moves:``. We are interested in the base power of available_moves, which can be accessed with the ``base_power`` property of ``Move`` objects.
 
 .. code-block:: python
 
@@ -58,9 +61,9 @@ We can therefore test if any move can be used with ``if battle.available_moves:`
 Returning a choice
 ******************
 
-Now that we have selected a move, we have to return a string corresponding to this choice. Fortunately, ``Player`` provides a method designed to craft such strings: ``create_order``. It takes a ``Pokemon`` (for switches) or ``Move`` object, and returns a string corresponding to the order. Additionally, you can use its ``mega`` and ``z_move`` parameters to mega evolve or use a z-move, if this is possible.
+Now that we have selected a move, we need to return a corresponding order, which takes the form of a string. Fortunately, ``Player`` provides a method designed to craft such strings directly: ``create_order``. It takes a ``Pokemon`` (for switches) or ``Move`` object, and returns a string corresponding to the order. Additionally, you can use its ``mega``, ``z_move`` and ``dynamax`` parameters to mega evolve, use a z-move, dynamax or gigantamax, if possible this turn.
 
-We also have to return an order corresponding to a random switch if the player can not attack: if that is the case, we can use ``Player``'s ``choose_random_move`` method.
+We also have to return an order corresponding to a random switch if the player can not attack. ``Player`` objects incorporate a ``choose_random_move`` method, which we will use if no attacking move is available.
 
 .. code-block:: python
 
@@ -117,12 +120,12 @@ We can now test our agent by crossing evaluating with a random agent. The final 
         # We create the corresponding players.
         random_player = RandomPlayer(
             player_configuration=player_1_configuration,
-            battle_format="gen7randombattle",
+            battle_format="gen8randombattle",
             server_configuration=LocalhostServerConfiguration,
         )
         max_damage_player = MaxDamagePlayer(
             player_configuration=player_2_configuration,
-            battle_format="gen7randombattle",
+            battle_format="gen8randombattle",
             server_configuration=LocalhostServerConfiguration,
         )
 
