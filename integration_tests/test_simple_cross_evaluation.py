@@ -8,14 +8,14 @@ from poke_env.player_configuration import PlayerConfiguration
 from poke_env.server_configuration import LocalhostServerConfiguration
 
 
-async def simple_cross_evaluation(n_battles):
-    player_1_configuration = PlayerConfiguration("Player 1", None)
-    player_2_configuration = PlayerConfiguration("Player 2", None)
-    player_3_configuration = PlayerConfiguration("Player 3", None)
+async def simple_cross_evaluation(n_battles, format_, i=0):
+    player_1_configuration = PlayerConfiguration("Player %d" % (i + 1), None)
+    player_2_configuration = PlayerConfiguration("Player %d" % (i + 2), None)
+    player_3_configuration = PlayerConfiguration("Player %d" % (i + 3), None)
     players = [
         RandomPlayer(
             player_configuration=player_config,
-            battle_format="gen7randombattle",
+            battle_format=format_,
             server_configuration=LocalhostServerConfiguration,
             max_concurrent_battles=n_battles,
         )
@@ -33,4 +33,9 @@ async def simple_cross_evaluation(n_battles):
 
 @pytest.mark.asyncio
 async def test_small_cross_evaluation():
-    await asyncio.wait_for(simple_cross_evaluation(5), timeout=10)
+    await asyncio.wait_for(
+        simple_cross_evaluation(5, format_="gen7randombattle"), timeout=10
+    )
+    await asyncio.wait_for(
+        simple_cross_evaluation(5, format_="gen8randombattle", i=3), timeout=10
+    )

@@ -32,12 +32,12 @@ async def main():
     # We create the corresponding players.
     random_player = RandomPlayer(
         player_configuration=player_1_configuration,
-        battle_format="gen8randombattle",
+        battle_format="gen7randombattle",
         server_configuration=LocalhostServerConfiguration,
     )
     max_damage_player = MaxDamagePlayer(
         player_configuration=player_2_configuration,
-        battle_format="gen8randombattle",
+        battle_format="gen7randombattle",
         server_configuration=LocalhostServerConfiguration,
     )
 

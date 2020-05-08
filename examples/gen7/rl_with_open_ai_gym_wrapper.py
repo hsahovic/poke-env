@@ -3,7 +3,7 @@ import numpy as np
 import tensorflow as tf
 
 from poke_env.player_configuration import PlayerConfiguration
-from poke_env.player.env_player import Gen8EnvSinglePlayer
+from poke_env.player.env_player import Gen7EnvSinglePlayer
 from poke_env.player.random_player import RandomPlayer
 from poke_env.server_configuration import LocalhostServerConfiguration
 
@@ -17,7 +17,7 @@ from tensorflow.keras.optimizers import Adam
 
 # We define our RL player
 # It needs a state embedder and a reward computer, hence these two methods
-class SimpleRLPlayer(Gen8EnvSinglePlayer):
+class SimpleRLPlayer(Gen7EnvSinglePlayer):
     def embed_battle(self, battle):
         # -1 indicates that the move does not have a base power
         # or is not available
@@ -96,19 +96,19 @@ def dqn_evaluation(player, dqn, nb_episodes):
 if __name__ == "__main__":
     env_player = SimpleRLPlayer(
         player_configuration=PlayerConfiguration("RL Player", None),
-        battle_format="gen8randombattle",
+        battle_format="gen7randombattle",
         server_configuration=LocalhostServerConfiguration,
     )
 
     opponent = RandomPlayer(
         player_configuration=PlayerConfiguration("Random player", None),
-        battle_format="gen8randombattle",
+        battle_format="gen7randombattle",
         server_configuration=LocalhostServerConfiguration,
     )
 
     second_opponent = MaxDamagePlayer(
         player_configuration=PlayerConfiguration("Max damage player", None),
-        battle_format="gen8randombattle",
+        battle_format="gen7randombattle",
         server_configuration=LocalhostServerConfiguration,
     )
 
@@ -140,7 +140,7 @@ if __name__ == "__main__":
     # Defining our DQN
     dqn = DQNAgent(
         model=model,
-        nb_actions=len(env_player.action_space),
+        nb_actions=18,
         policy=policy,
         memory=memory,
         nb_steps_warmup=1000,

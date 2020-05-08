@@ -5,16 +5,19 @@ Cross evaluating random players
 
 The corresponding complete source code can be found `here <https://github.com/hsahovic/poke-env/blob/master/examples/cross_evaluate_random_players.py>`__.
 
-The goal of this example is to demonstrate how to run existing agents locally, and how to easily measure the relative performance of multiple agents with the ``cross_evaluate`` function.
+.. note::
+    A similar example using gen 7 mechanics is available `here <https://github.com/hsahovic/poke-env/blob/master/examples/gen7/cross_evaluate_random_players.py>`__.
 
-.. note:: This example necessitates ``tabulate``. You can install it by running ``pip install tabulate``.
+The goal of this example is to demonstrate how to run existing agents locally, and how to easily measure the relative performance of multiple agents with the ``cross_evaluate`` utility function.
+
+.. note:: This example uses ``tabulate`` ti format results. You can install it by running ``pip install tabulate``.
 
 Getting *something* to run
 **************************
 
-``poke-env`` uses ``asyncio`` for concurrency:your code must therefore manage asyncio to run.
+``poke-env`` uses ``asyncio`` for concurrency: most of the function used to run ``poke-env`` code are async functions. Using asyncio is therefore recommended.
 
-Let's start by defining a ``main`` and some boilerplate code to run it with ``asyncio``.
+Let's start by defining a ``main`` and some boilerplate code to run it with ``asyncio``:
 
 .. code-block:: python
 
@@ -30,7 +33,7 @@ Let's start by defining a ``main`` and some boilerplate code to run it with ``as
 Creating player configurations
 ******************************
 
-Now that we can run our ``main``, let's create three player configurations.
+Now that we can run our ``main`` function, let's create three player configurations. For each configuration, we define a username, and leave the password field to ``None``. This means that authentication will be skipped: this only works on versions of showdown configured to skip it, such as the recommended fork. If you want to run this code on `play.pokemonshowdown.com <https://play.pokemonshowdown.com/>`__, you will need to enter valid usernames and passwords.
 
 .. code-block:: python
 
@@ -44,12 +47,14 @@ Now that we can run our ``main``, let's create three player configurations.
 
     ...
 
-.. Note:: This example suppose that you use a local showdown server that does not require authentication.
+.. Note::
+    This example suppose that you use a local showdown server that does not require authentication.
+
 
 Creating random players
 ***********************
 
-Now that we have our player configurations, we will create the corresponding players.
+Now that we have our player configurations, we can create the corresponding players. Players (or agents) are the instances that control the decisions taken in battle: here, we create ``RandomPlayer``s, which take decisions randomly.
 
 .. code-block:: python
 
@@ -62,7 +67,7 @@ Now that we have our player configurations, we will create the corresponding pla
         players = [
             RandomPlayer(
                 player_configuration=player_config,
-                battle_format="gen7randombattle",
+                battle_format="gen8randombattle",
                 server_configuration=LocalhostServerConfiguration,
                 max_concurrent_battles=10,
             )
@@ -75,7 +80,7 @@ Now that we have our player configurations, we will create the corresponding pla
 
     ...
 
-These players will play battles in the ``gen7randombattle`` battle format, connect to a local server, and play up to 10 battles simultaneously.
+These players will play battles in the ``gen8randombattle`` battle format, connect to a local server, and play up to 10 battles simultaneously.
 
 Cross evaluating players
 ************************

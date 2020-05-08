@@ -127,8 +127,9 @@ class Pokemon:
         self._set_hp_status(hp_status)
 
     def _end_effect(self, effect):
-        if Effect.from_showdown_message(effect) in self._effects:
-            self._effects.remove(Effect.from_showdown_message(effect))
+        effect = Effect.from_showdown_message(effect)
+        if effect in self._effects:
+            self._effects.remove(effect)
 
     def _end_item(self, item):
         self._item = None
@@ -194,7 +195,8 @@ class Pokemon:
         self._max_hp = int(self._max_hp)
 
     def _start_effect(self, effect):
-        self._effects.add(Effect.from_showdown_message(effect))
+        effect = Effect.from_showdown_message(effect)
+        self._effects.add(effect)
 
     def _swap_boosts(self):
         self._boosts["atk"], self._boosts["spa"] = (
@@ -424,6 +426,14 @@ class Pokemon:
         :rtype: float
         """
         return self._heightm
+
+    @property
+    def is_dynamaxed(self) -> bool:
+        """
+        :return: Whether the pokemon is currently dynamaxed
+        :rtype: bool
+        """
+        return Effect.DYNAMAX in self.effects
 
     @property
     def item(self) -> Optional[str]:

@@ -79,6 +79,8 @@ class Battle:
         self._available_switches: List[Pokemon] = []
         self._can_mega_evolve: bool = False
         self._can_z_move: bool = False
+        self._can_dynamax: bool = False
+        self._opponent_can_dynamax = True
         self._force_switch: bool = False
         self._in_team_preview: bool = False
         self._maybe_trapped: bool = False
@@ -92,6 +94,8 @@ class Battle:
         self._rqid = 0
         self._rules = []
         self._turn: int = 0
+        self._dynamax_turn: Optional[int] = None
+        self._opponent_dynamax_turn: Optional[int] = None
         self._won: Optional[bool] = None
 
         # In game battle state attributes
@@ -272,7 +276,19 @@ class Battle:
             self._side_start(side, condition)
         elif split_message[1] == "-start":
             pokemon, effect = split_message[2:4]
-            self.get_pokemon(pokemon)._start_effect(effect)
+            pokemon = self.get_pokemon(pokemon)
+            pokemon._start_effect(effect)
+
+            if pokemon.is_dynamaxed:
+                if pokemon in set(self.team.values()) and self._dynamax_turn is None:
+                    self._dynamax_turn = self.turn
+                    # self._can_dynamax value is set via _parse_request()
+                elif (
+                    pokemon in set(self.opponent_team.values())
+                    and self._opponent_dynamax_turn is None
+                ):
+                    self._opponent_dynamax_turn = self.turn
+                    self._opponent_can_dynamax = False
         elif split_message[1] == "-status":
             pokemon, status = split_message[2:4]
             self.get_pokemon(pokemon).status = status
@@ -346,7 +362,9 @@ class Battle:
             request (dict): parsed json request object
         """
         self.logger.debug(
-            "Parsing request update %s in battle %s", request, self.battle_tag
+            "Parsing the following request update in battle %s:\n%s",
+            self.battle_tag,
+            request,
         )
 
         if "wait" in request and request["wait"]:
@@ -358,6 +376,7 @@ class Battle:
         self._available_switches = []
         self._can_mega_evolve = False
         self._can_z_move = False
+        self._can_dynamax = False
         self._maybe_trapped = False
         self._trapped = False
         self._force_switch = request.get("forceSwitch", False)
@@ -385,9 +404,9 @@ class Battle:
             for move in active_request["moves"]:
                 if not move.get("disabled", False):
                     if move["id"] in active_pokemon.moves:
-                        self.available_moves.append(active_pokemon.moves[move["id"]])
+                        self._available_moves.append(active_pokemon.moves[move["id"]])
                     elif move["id"] in special_moves:
-                        self.available_moves.append(special_moves[move["id"]])
+                        self._available_moves.append(special_moves[move["id"]])
                     else:
                         try:
                             if not {
@@ -418,13 +437,15 @@ class Battle:
                                     self.active_pokemon.species,
                                 )
                             move = Move(move["id"])
-                            self.available_moves.append(move)
+                            self._available_moves.append(move)
                         except AttributeError:
                             pass
             if active_request.get("canMegaEvo", False):
                 self._can_mega_evolve = True
             if active_request.get("canZMove", False):
                 self._can_z_move = True
+            if active_request.get("canDynamax", False):
+                self._can_dynamax = True
             if active_request.get("maybeTrapped", False):
                 self._maybe_trapped = True
 
@@ -438,7 +459,7 @@ class Battle:
                 if pokemon:
                     pokemon = self._team[pokemon["ident"]]
                     if not pokemon.active and not pokemon.fainted:
-                        self.available_switches.append(pokemon)
+                        self._available_switches.append(pokemon)
 
     def _register_teampreview_pokemon(self, player: str, details: str):
         if player != self._player_role:
@@ -527,6 +548,14 @@ class Battle:
         return self._battle_tag
 
     @property
+    def can_dynamax(self) -> bool:
+        """
+        :return: Wheter of not the current active pokemon can dynamax
+        :rtype: bool
+        """
+        return self._can_dynamax
+
+    @property
     def can_mega_evolve(self) -> bool:
         """
         :return: Wheter of not the current active pokemon can mega evolve.
@@ -541,6 +570,15 @@ class Battle:
         :rtype: bool
         """
         return self._can_z_move
+
+    @property
+    def dynamax_turns_left(self) -> Optional[int]:
+        """
+        :return: How many turns of dynamax are left. None if dynamax is not active
+        :rtype: int, optional
+        """
+        if self.active_pokemon.is_dynamaxed:
+            return 3 - (self.turn - self._dynamax_turn)  # pyre-ignore
 
     @property
     def fields(self) -> Set[Field]:
@@ -604,6 +642,26 @@ class Battle:
             if pokemon.active:
                 return pokemon
         return None
+
+    @property
+    def opponent_can_dynamax(self) -> bool:
+        """
+        :return: Wheter of not opponent's current active pokemon can dynamax
+        :rtype: bool
+        """
+        return self._opponent_can_dynamax
+
+    @property
+    def opponent_dynamax_turns_left(self) -> Optional[int]:
+        """
+        :return: How many turns of dynamax are left for the opponent's pokemon.
+            None if dynamax is not active
+        :rtype: Optional[int]
+        """
+        if (
+            self.opponent_active_pokemon is not None
+        ) and self.opponent_active_pokemon.is_dynamaxed:  # pyre-ignore
+            return 3 - (self.turn - self._opponent_dynamax_turn)  # pyre-ignore
 
     @property
     def opponent_side_conditions(self) -> Set[SideCondition]:
