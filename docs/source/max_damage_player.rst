@@ -43,7 +43,7 @@ We therefore have to take care of two things: first, reading the information we 
 Selecting a move
 ****************
 
-The ``battle`` parameter is an object of type ``Battle`` representing the agent's current knowledge of the game state. It offers serveral properties that make accessing the game state easy. Some of these properties are ``active_pokemon``, ``available_moves``, ``available_switches``, ``opponent_active_pokemon``, ``opponent_team`` and ``team``.
+The ``battle`` parameter is an object of type ``Battle`` representing the agent's current knowledge of the game state. It offers several properties that make accessing the game state easy. Some of the most notable are ``active_pokemon``, ``available_moves``, ``available_switches``, ``opponent_active_pokemon``, ``opponent_team`` and ``team``.
 
 In this example, we are going to use ``available_moves``: it returns a list of ``Move`` objects which are available this turn.
 
@@ -61,7 +61,7 @@ We can therefore test if at least one move can be used with ``if battle.availabl
 Returning a choice
 ******************
 
-Now that we have selected a move, we need to return a corresponding order, which takes the form of a string. Fortunately, ``Player`` provides a method designed to craft such strings directly: ``create_order``. It takes a ``Pokemon`` (for switches) or ``Move`` object, and returns a string corresponding to the order. Additionally, you can use its ``mega``, ``z_move`` and ``dynamax`` parameters to mega evolve, use a z-move, dynamax or gigantamax, if possible this turn.
+Now that we have selected a move, we need to return a corresponding order, which takes the form of a string. Fortunately, ``Player`` provides a method designed to craft such strings directly: ``create_order``. It takes a ``Pokemon`` (for switches) or ``Move`` object as argument, and returns a string corresponding to the order. Additionally, you can use its ``mega``, ``z_move`` and ``dynamax`` parameters to mega evolve, use a z-move, dynamax or gigantamax, if possible this turn.
 
 We also have to return an order corresponding to a random switch if the player can not attack. ``Player`` objects incorporate a ``choose_random_move`` method, which we will use if no attacking move is available.
 

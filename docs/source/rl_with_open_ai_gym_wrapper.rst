@@ -48,14 +48,14 @@ To define our rewards, we will create a custom ``compute_reward`` method. It tak
 Defining our custom class
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Our player will play the ``gen8randombattle`` format. We can therefore inheritate from ``gen8EnvSinglePlayer``.
+Our player will play the ``gen8randombattle`` format. We can therefore inheritate from ``Gen8EnvSinglePlayer``.
 
 .. code-block:: python
 
     # -*- coding: utf-8 -*-
-    from poke_env.player.env_player import gen8EnvSinglePlayer
+    from poke_env.player.env_player import Gen8EnvSinglePlayer
 
-    class SimpleRLPlayer(gen8EnvSinglePlayer):
+    class SimpleRLPlayer(Gen8EnvSinglePlayer):
         def embed_battle(self, battle):
             # -1 indicates that the move does not have a base power
             # or is not available
