@@ -4,7 +4,7 @@
 [![codecov](https://codecov.io/gh/hsahovic/poke-env/branch/master/graph/badge.svg)](https://codecov.io/gh/hsahovic/poke-env)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 <a href="https://github.com/ambv/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
-[![Documentation Status](https://readthedocs.org/projects/poke-env/badge/?version=latest)](https://poke-env.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/poke-env/badge/?version=stable)](https://poke-env.readthedocs.io/en/stable/?badge=stable)
 
 A Python interface to create battling pokemon agents. `poke-env` offers an easy-to-use interface for creating rule-based or training Reinforcement Learning bots to battle on [pokemon showdown](https://pokemonshowdown.com/).
 
@@ -31,12 +31,12 @@ class YourFirstAgent(Player):
         return self.choose_random_move(battle)
 ```
 
-To get started, take a look at [our documentation](https://poke-env.readthedocs.io/en/latest/)!
+To get started, take a look at [our documentation](https://poke-env.readthedocs.io/en/stable/)!
 
 
 ## Documentation and examples
 
-Documentation, detailed examples and starting code can be found [on readthedocs](https://poke-env.readthedocs.io/en/latest/).
+Documentation, detailed examples and starting code can be found [on readthedocs](https://poke-env.readthedocs.io/en/stable/).
 
 
 ## Installation
