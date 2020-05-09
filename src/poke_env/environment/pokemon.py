@@ -59,6 +59,7 @@ class Pokemon:
         self._current_hp: int = 0
         self._effects: Set[Effect] = set()
         self._item: Optional[str]
+        self._last_request: dict = {}
         self._must_recharge = False
         self._preparing = False
         self._status: Optional[Status] = None
@@ -269,10 +270,11 @@ class Pokemon:
         if species != self._species:
             self._update_from_pokedex(species)
 
-        self._gender = gender
-        self._level = level
-
     def _update_from_request(self, request_pokemon: Dict[str, Any]) -> None:
+        if request_pokemon == self._last_request:
+            return
+        self._last_request = request_pokemon
+
         self._ability = request_pokemon["ability"]
         self._active = request_pokemon["active"]
         self._base_ability = request_pokemon["baseAbility"]
