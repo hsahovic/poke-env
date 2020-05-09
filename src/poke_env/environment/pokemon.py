@@ -83,14 +83,15 @@ class Pokemon:
     def _add_move(self, move_id: str, use: bool = False) -> None:
         """Store the move if applicable."""
         id_ = Move.retrieve_id(move_id)
-        if Move.should_be_stored(id_):
+
+        if not Move.should_be_stored(id_):
+            return
+
+        if id_ not in self._moves:
             move = Move(id_)
-            if move.id not in self._moves:
-                if len(self._moves) >= 4:
-                    self._moves = {}
-                self._moves[id_] = Move(id_)
-            if use:
-                self.moves[id_].use()
+            self._moves[id_] = move
+        if use:
+            self._moves[id_].use()
 
     def _boost(self, stat, amount):
         self._boosts[stat] += int(amount)
@@ -296,15 +297,14 @@ class Pokemon:
         details = request_pokemon["details"]
         self._update_from_details(details)
 
-        # This might cause some unnecessary resets with special moves, such as
-        # hiddenpower
-        all_moves = set(self._moves.keys()).union(request_pokemon["moves"])
-        if len(all_moves) > 4:
-            for move in list(self._moves):
-                if move not in request_pokemon["moves"]:
-                    self._moves.pop(move)
         for move in request_pokemon["moves"]:
             self._add_move(move)
+
+        if len(self._moves) > 4:
+            self._moves = {}
+            for move in request_pokemon["moves"]:
+                self._add_move(move)
+
         ident = request_pokemon["ident"].split(": ")
 
         if len(ident) == 2:
