@@ -756,7 +756,7 @@ class Battle:
         :rtype: int
         """
         role = self._player_role
-        if isinstance(role, str):
+        if role is not None:
             return self._team_size[role]
         raise ValueError(
             "Team size cannot be inferred without an assigned player role."
