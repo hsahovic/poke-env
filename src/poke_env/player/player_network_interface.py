@@ -218,8 +218,7 @@ class PlayerNetwork(ABC):
             to_send = "|".join([room, message, message_2])
         else:
             to_send = "|".join([room, message])
-        async with self._sending_lock:
-            await self._websocket.send(to_send)
+        await self._websocket.send(to_send)
         self.logger.info(">>> %s", to_send)
 
     async def _set_team(self):
@@ -241,10 +240,11 @@ class PlayerNetwork(ABC):
         self.logger.info("Starting listening to showdown websocket")
         coroutines = []
         try:
-            async with websockets.connect(self.websocket_url) as websocket:
+            async with websockets.connect(
+                self.websocket_url, max_queue=None
+            ) as websocket:
                 self._websocket = websocket
-                while True:
-                    message = str(await websocket.recv())
+                async for message in websocket:
                     self.logger.info("<<< %s", message)
                     coroutines.append(ensure_future(self._handle_message(message)))
         except websockets.exceptions.ConnectionClosedOK:
