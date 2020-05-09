@@ -17,6 +17,36 @@ from poke_env.utils import to_id_str
 
 
 class Pokemon:
+
+    __slots__ = (
+        "_ability",
+        "_active",
+        "_active",
+        "_base_ability",
+        "_base_stats",
+        "_boosts",
+        "_current_hp",
+        "_effects",
+        "_gender",
+        "_heightm",
+        "_item",
+        "_last_request",
+        "_level",
+        "_max_hp",
+        "_moves",
+        "_must_recharge",
+        "_pokeball",
+        "_possible_abilities",
+        "_preparing",
+        "_shiny",
+        "_species",
+        "_stats",
+        "_status",
+        "_type_1",
+        "_type_2",
+        "_weightkg",
+    )
+
     def __init__(
         self,
         *,
@@ -37,7 +67,7 @@ class Pokemon:
         self._ability: Optional[str] = None
         self._active: bool
         self._base_ability: str
-        self._gender: PokemonGender
+        self._gender: Optional[PokemonGender] = None
         self._level: int = 100
         self._max_hp: int = 0
         self._moves: Dict[str, Move] = {}
@@ -58,7 +88,8 @@ class Pokemon:
         }
         self._current_hp: int = 0
         self._effects: Set[Effect] = set()
-        self._item: str
+        self._item: Optional[str]
+        self._last_request: dict = {}
         self._must_recharge = False
         self._preparing = False
         self._status: Optional[Status] = None
@@ -83,14 +114,15 @@ class Pokemon:
     def _add_move(self, move_id: str, use: bool = False) -> None:
         """Store the move if applicable."""
         id_ = Move.retrieve_id(move_id)
-        if Move.should_be_stored(id_):
+
+        if not Move.should_be_stored(id_):
+            return
+
+        if id_ not in self._moves:
             move = Move(id_)
-            if move.id not in self._moves:
-                if len(self._moves) >= 4:
-                    self._moves = {}
-                self._moves[id_] = Move(id_)
-            if use:
-                self.moves[id_].use()
+            self._moves[id_] = move
+        if use:
+            self._moves[id_].use()
 
     def _boost(self, stat, amount):
         self._boosts[stat] += int(amount)
@@ -242,8 +274,8 @@ class Pokemon:
 
         split_details = details.split(", ")
 
-        gender = PokemonGender.NEUTRAL
-        level = 100
+        gender = None
+        level = None
 
         if len(split_details) == 3:
             species, level, gender = split_details
@@ -255,17 +287,24 @@ class Pokemon:
         else:
             species = split_details[0]
 
-        if not isinstance(gender, PokemonGender):
-            gender = PokemonGender.from_request_details(gender)
-        if not isinstance(level, int):
-            level = int(level[1:])
+        if gender:
+            self._gender = PokemonGender.from_request_details(gender)
+        else:
+            self._gender = PokemonGender.NEUTRAL
+
+        if level:
+            self._level = int(level[1:])
+        else:
+            self._level = 100
+
         if species != self._species:
             self._update_from_pokedex(species)
 
-        self._gender = gender
-        self._level = level
-
     def _update_from_request(self, request_pokemon: Dict[str, Any]) -> None:
+        if request_pokemon == self._last_request:
+            return
+        self._last_request = request_pokemon
+
         self._ability = request_pokemon["ability"]
         self._active = request_pokemon["active"]
         self._base_ability = request_pokemon["baseAbility"]
@@ -290,15 +329,14 @@ class Pokemon:
         details = request_pokemon["details"]
         self._update_from_details(details)
 
-        # This might cause some unnecessary resets with special moves, such as
-        # hiddenpower
-        all_moves = set(self._moves.keys()).union(request_pokemon["moves"])
-        if len(all_moves) > 4:
-            for move in list(self._moves):
-                if move not in request_pokemon["moves"]:
-                    self._moves.pop(move)
         for move in request_pokemon["moves"]:
             self._add_move(move)
+
+        if len(self._moves) > 4:
+            self._moves = {}
+            for move in request_pokemon["moves"]:
+                self._add_move(move)
+
         ident = request_pokemon["ident"].split(": ")
 
         if len(ident) == 2:
@@ -352,11 +390,11 @@ class Pokemon:
             if type_:
                 return [
                     move
-                    for move_id, move in self.moves.items()
+                    for move_id, move in self._moves.items()
                     if move.type == type_ and move.can_z_move
                 ]
-            elif move in self.moves:
-                return [self.moves[move]]
+            elif move in self._moves:
+                return [self._moves[move]]
         return []
 
     @property
@@ -412,10 +450,10 @@ class Pokemon:
         return Status.FNT == self._status
 
     @property
-    def gender(self) -> PokemonGender:
+    def gender(self) -> Optional[PokemonGender]:
         """
         :return: The pokemon's gender.
-        :rtype: PokemonGender
+        :rtype: PokemonGender, optional
         """
         return self._gender
 

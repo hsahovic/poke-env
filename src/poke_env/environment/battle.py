@@ -60,13 +60,53 @@ class Battle:
         "zbroken",
     }
 
+    __slots__ = (
+        "_available_moves",
+        "_available_switches",
+        "_battle_tag",
+        "_can_dynamax",
+        "_can_mega_evolve",
+        "_can_z_move",
+        "_dynamax_turn",
+        "_fields",
+        "_finished",
+        "_force_swap",
+        "_force_switch",
+        "_format",
+        "_in_team_preview",
+        "_max_team_size",
+        "_maybe_trapped",
+        "_move_on_next_request",
+        "_opponent_can_dynamax",
+        "_opponent_dynamax_turn",
+        "_opponent_side_conditions",
+        "_opponent_team",
+        "_opponent_username",
+        "_player_role",
+        "_player_username",
+        "_players",
+        "_rqid",
+        "_rules",
+        "_side_conditions",
+        "_team",
+        "_team_size",
+        "_teampreview",
+        "_teampreview_opponent_team",
+        "_trapped",
+        "_turn",
+        "_wait",
+        "_weather",
+        "_won",
+        "logger",
+    )
+
     def __init__(self, battle_tag: str, username: str, logger: Logger):  # pyre-ignore
         # Utils attributes
         self._battle_tag: str = battle_tag
         self._format: Optional[str] = None
         self._max_team_size: Optional[int] = None
         self._opponent_username: Optional[str] = None
-        self._player_role = None
+        self._player_role: Optional[str] = None
         self._player_username: str = username
         self._players = []
         self._team_size: Dict[str, int] = {}
@@ -183,7 +223,7 @@ class Battle:
         field = Field.from_showdown_message(field)
         self._fields.add(field)
 
-    async def _parse_message(self, split_message: List[str]) -> None:
+    def _parse_message(self, split_message: List[str]) -> None:
         if split_message[1] in self.MESSAGES_TO_IGNORE:
             return
         elif split_message[1] == "-ability":
@@ -496,7 +536,7 @@ class Battle:
         pokemon._switch_in()
         pokemon._set_hp_status(hp_status)
 
-    async def _tied(self):
+    def _tied(self):
         self._finished = True
 
     def _update_team_from_request(self, side: Dict) -> None:
@@ -505,7 +545,7 @@ class Battle:
                 pokemon["ident"], force_self_team=True, details=pokemon["details"]
             )._update_from_request(pokemon)
 
-    async def _won_by(self, player_name: str):
+    def _won_by(self, player_name: str):
         if player_name == self._player_username:
             self._won = True
         else:
@@ -756,7 +796,7 @@ class Battle:
         :rtype: int
         """
         role = self._player_role
-        if isinstance(role, str):
+        if role is not None:
             return self._team_size[role]
         raise ValueError(
             "Team size cannot be inferred without an assigned player role."

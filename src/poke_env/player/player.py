@@ -2,8 +2,7 @@
 """This module defines a base class for players.
 """
 
-import json
-import numpy as np  # pyre-ignore
+import random
 
 from abc import ABC
 from abc import abstractmethod
@@ -11,6 +10,7 @@ from asyncio import Condition
 from asyncio import Event
 from asyncio import Queue
 from asyncio import Semaphore
+from json import JSONDecoder
 from time import perf_counter
 from typing import Dict
 from typing import List
@@ -96,6 +96,7 @@ class Player(PlayerNetwork, ABC):
             self._team = None
 
         self.logger.debug("Player initialisation finished")
+        self._json_decoder = JSONDecoder()
 
     def _battle_finished_callback(self, battle: Battle) -> None:
         pass
@@ -176,7 +177,7 @@ class Player(PlayerNetwork, ABC):
                 pass
             elif split_message[1] == "request":
                 if split_message[2]:
-                    request = json.loads(split_message[2])
+                    request = self._json_decoder.decode(split_message[2])
                     if request:
                         battle._parse_request(request)
                         if battle.move_on_next_request:
@@ -186,12 +187,12 @@ class Player(PlayerNetwork, ABC):
                 player_1, player_2 = split_message[2].split(" vs. ")
                 battle.players = player_1, player_2
             elif split_message[1] == "win":
-                await battle._won_by(split_message[2])
+                battle._won_by(split_message[2])
                 await self._battle_count_queue.get()
                 self._battle_count_queue.task_done()
                 self._battle_finished_callback(battle)
             elif split_message[1] == "tie":
-                await battle._tied()
+                battle._tied()
                 await self._battle_count_queue.get()
                 self._battle_count_queue.task_done()
                 self._battle_finished_callback(battle)
@@ -226,7 +227,7 @@ class Player(PlayerNetwork, ABC):
                 await self._handle_battle_request(battle, from_teampreview_request=True)
             else:
                 try:
-                    await battle._parse_message(split_message)
+                    battle._parse_message(split_message)
                 except UnexpectedEffectException as e:
                     self.logger.exception(e)
 
@@ -254,7 +255,9 @@ class Player(PlayerNetwork, ABC):
         :type split_message: List[str]
         """
         self.logger.debug("Updating challenges with %s", split_message)
-        challenges = json.loads(split_message[2]).get("challengesFrom", {})
+        challenges = self._json_decoder.decode(split_message[2]).get(
+            "challengesFrom", {}
+        )
         for user, format_ in challenges.items():
             if format_ == self._format:
                 await self._challenge_queue.put(user)
@@ -298,7 +301,7 @@ class Player(PlayerNetwork, ABC):
 
     @abstractmethod
     def choose_move(self, battle: Battle) -> str:
-        """Abstract async method to choose a move in a battle.
+        """Abstract method to choose a move in a battle.
 
         :param battle: The battle.
         :type battle: Battle
@@ -334,7 +337,7 @@ class Player(PlayerNetwork, ABC):
             available_orders.append(self.create_order(pokemon))
 
         if available_orders:
-            order = np.random.choice(available_orders)
+            order = random.choice(available_orders)
         else:
             order = "/choose default"
         return order
@@ -385,10 +388,8 @@ class Player(PlayerNetwork, ABC):
         :rtype: str
         """
         members = list(range(1, len(battle.team) + 1))
-        choice = np.random.choice(
-            members, size=min(battle.max_team_size, len(members)), replace=False
-        )
-        return "/team " + "".join([str(c) for c in choice])
+        random.shuffle(members)
+        return "/team " + "".join([str(c) for c in members])
 
     def reset_battles(self) -> None:
         for battle in self._battles.values():
