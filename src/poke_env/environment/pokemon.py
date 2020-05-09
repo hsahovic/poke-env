@@ -58,7 +58,7 @@ class Pokemon:
         }
         self._current_hp: int = 0
         self._effects: Set[Effect] = set()
-        self._item: str
+        self._item: Optional[str]
         self._must_recharge = False
         self._preparing = False
         self._status: Optional[Status] = None
@@ -242,8 +242,8 @@ class Pokemon:
 
         split_details = details.split(", ")
 
-        gender = PokemonGender.NEUTRAL
-        level = 100
+        gender = None
+        level = None
 
         if len(split_details) == 3:
             species, level, gender = split_details
@@ -255,10 +255,16 @@ class Pokemon:
         else:
             species = split_details[0]
 
-        if not isinstance(gender, PokemonGender):
-            gender = PokemonGender.from_request_details(gender)
-        if not isinstance(level, int):
-            level = int(level[1:])
+        if gender:
+            self._gender = PokemonGender.from_request_details(gender)
+        else:
+            self._gender = PokemonGender.NEUTRAL
+
+        if level:
+            self._level = int(level[1:])
+        else:
+            self._level = 100
+
         if species != self._species:
             self._update_from_pokedex(species)
 
@@ -352,11 +358,11 @@ class Pokemon:
             if type_:
                 return [
                     move
-                    for move_id, move in self.moves.items()
+                    for move_id, move in self._moves.items()
                     if move.type == type_ and move.can_z_move
                 ]
-            elif move in self.moves:
-                return [self.moves[move]]
+            elif move in self._moves:
+                return [self._moves[move]]
         return []
 
     @property
