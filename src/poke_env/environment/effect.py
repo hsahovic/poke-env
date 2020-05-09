@@ -101,6 +101,7 @@ class Effect(Enum):
     ROUGH_SKIN = auto()
     SAFEGUARD = auto()
     SAND_TOMB = auto()
+    SCREEN_CLEANER = auto()
     SHADOW_FORCE = auto()
     SHED_SKIN = auto()
     SKETCH = auto()
