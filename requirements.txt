@@ -3,4 +3,4 @@ gym
 numpy
 requests
 tabulate
-websockets
+websockets>=8.0
