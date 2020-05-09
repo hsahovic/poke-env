@@ -3,7 +3,7 @@
 """
 
 import json
-import numpy as np  # pyre-ignore
+import random
 
 from abc import ABC
 from abc import abstractmethod
@@ -334,7 +334,7 @@ class Player(PlayerNetwork, ABC):
             available_orders.append(self.create_order(pokemon))
 
         if available_orders:
-            order = np.random.choice(available_orders)
+            order = random.choice(available_orders)
         else:
             order = "/choose default"
         return order
@@ -385,7 +385,7 @@ class Player(PlayerNetwork, ABC):
         :rtype: str
         """
         members = list(range(1, len(battle.team) + 1))
-        choice = np.random.choice(
+        choice = random.choice(
             members, size=min(battle.max_team_size, len(members)), replace=False
         )
         return "/team " + "".join([str(c) for c in choice])
