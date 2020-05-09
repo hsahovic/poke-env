@@ -56,13 +56,19 @@ class Move:
         self._current_pp -= 1
 
     @staticmethod
+    def is_id_z(id_) -> bool:
+        if id_.startswith("z") and id_[1:] in MOVES:
+            return True
+        return "isZ" in MOVES[id_]
+
+    @staticmethod
+    @lru_cache(4096)
     def should_be_stored(move_id: str) -> bool:
         if move_id in special_moves:
             return False
-        move = Move(move_id)
-        if move.is_z:
+        if move_id not in MOVES:
             return False
-        return True
+        return not Move.is_id_z(move_id)
 
     @property
     def accuracy(self) -> float:
@@ -274,9 +280,7 @@ class Move:
         :return: Whether the move is a z move.
         :rtype: bool
         """
-        if self.id.startswith("z") and self.id[1:] in MOVES:
-            return True
-        return "isZ" in self.entry
+        return Move.is_id_z(self.id)
 
     @property
     def max_pp(self) -> int:
