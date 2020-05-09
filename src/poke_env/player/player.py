@@ -2,7 +2,6 @@
 """This module defines a base class for players.
 """
 
-import json
 import random
 
 from abc import ABC
@@ -11,6 +10,7 @@ from asyncio import Condition
 from asyncio import Event
 from asyncio import Queue
 from asyncio import Semaphore
+from json import JSONDecoder
 from time import perf_counter
 from typing import Dict
 from typing import List
@@ -96,6 +96,7 @@ class Player(PlayerNetwork, ABC):
             self._team = None
 
         self.logger.debug("Player initialisation finished")
+        self._json_decoder = JSONDecoder()
 
     def _battle_finished_callback(self, battle: Battle) -> None:
         pass
@@ -176,7 +177,7 @@ class Player(PlayerNetwork, ABC):
                 pass
             elif split_message[1] == "request":
                 if split_message[2]:
-                    request = json.loads(split_message[2])
+                    request = self._json_decoder.decode(split_message[2])
                     if request:
                         battle._parse_request(request)
                         if battle.move_on_next_request:
@@ -254,7 +255,9 @@ class Player(PlayerNetwork, ABC):
         :type split_message: List[str]
         """
         self.logger.debug("Updating challenges with %s", split_message)
-        challenges = json.loads(split_message[2]).get("challengesFrom", {})
+        challenges = self._json_decoder.decode(split_message[2]).get(
+            "challengesFrom", {}
+        )
         for user, format_ in challenges.items():
             if format_ == self._format:
                 await self._challenge_queue.put(user)
