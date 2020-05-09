@@ -67,7 +67,7 @@ class Pokemon:
         self._ability: Optional[str] = None
         self._active: bool
         self._base_ability: str
-        self._gender: PokemonGender
+        self._gender: Optional[PokemonGender] = None
         self._level: int = 100
         self._max_hp: int = 0
         self._moves: Dict[str, Move] = {}
@@ -450,10 +450,10 @@ class Pokemon:
         return Status.FNT == self._status
 
     @property
-    def gender(self) -> PokemonGender:
+    def gender(self) -> Optional[PokemonGender]:
         """
         :return: The pokemon's gender.
-        :rtype: PokemonGender
+        :rtype: PokemonGender, optional
         """
         return self._gender
 

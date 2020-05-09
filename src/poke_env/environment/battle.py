@@ -106,7 +106,7 @@ class Battle:
         self._format: Optional[str] = None
         self._max_team_size: Optional[int] = None
         self._opponent_username: Optional[str] = None
-        self._player_role = None
+        self._player_role: Optional[str] = None
         self._player_username: str = username
         self._players = []
         self._team_size: Dict[str, int] = {}

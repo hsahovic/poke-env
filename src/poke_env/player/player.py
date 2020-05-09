@@ -388,10 +388,8 @@ class Player(PlayerNetwork, ABC):
         :rtype: str
         """
         members = list(range(1, len(battle.team) + 1))
-        choice = random.choice(
-            members, size=min(battle.max_team_size, len(members)), replace=False
-        )
-        return "/team " + "".join([str(c) for c in choice])
+        random.shuffle(members)
+        return "/team " + "".join([str(c) for c in members])
 
     def reset_battles(self) -> None:
         for battle in self._battles.values():
