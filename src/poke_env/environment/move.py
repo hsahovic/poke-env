@@ -41,6 +41,8 @@ class Move:
         "beforeMoveCallback",
     ]
 
+    __slots__ = "_id", "_current_pp", "_is_empty"
+
     def __init__(self, move: str = "", move_id: Optional[str] = None):
         if move_id:
             self._id = move_id

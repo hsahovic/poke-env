@@ -60,6 +60,46 @@ class Battle:
         "zbroken",
     }
 
+    __slots__ = (
+        "_available_moves",
+        "_available_switches",
+        "_battle_tag",
+        "_can_dynamax",
+        "_can_mega_evolve",
+        "_can_z_move",
+        "_dynamax_turn",
+        "_fields",
+        "_finished",
+        "_force_swap",
+        "_force_switch",
+        "_format",
+        "_in_team_preview",
+        "_max_team_size",
+        "_maybe_trapped",
+        "_move_on_next_request",
+        "_opponent_can_dynamax",
+        "_opponent_dynamax_turn",
+        "_opponent_side_conditions",
+        "_opponent_team",
+        "_opponent_username",
+        "_player_role",
+        "_player_username",
+        "_players",
+        "_rqid",
+        "_rules",
+        "_side_conditions",
+        "_team",
+        "_team_size",
+        "_teampreview",
+        "_teampreview_opponent_team",
+        "_trapped",
+        "_turn",
+        "_wait",
+        "_weather",
+        "_won",
+        "logger",
+    )
+
     def __init__(self, battle_tag: str, username: str, logger: Logger):  # pyre-ignore
         # Utils attributes
         self._battle_tag: str = battle_tag

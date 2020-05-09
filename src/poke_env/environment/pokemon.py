@@ -17,6 +17,36 @@ from poke_env.utils import to_id_str
 
 
 class Pokemon:
+
+    __slots__ = (
+        "_ability",
+        "_active",
+        "_active",
+        "_base_ability",
+        "_base_stats",
+        "_boosts",
+        "_current_hp",
+        "_effects",
+        "_gender",
+        "_heightm",
+        "_item",
+        "_last_request",
+        "_level",
+        "_max_hp",
+        "_moves",
+        "_must_recharge",
+        "_pokeball",
+        "_possible_abilities",
+        "_preparing",
+        "_shiny",
+        "_species",
+        "_stats",
+        "_status",
+        "_type_1",
+        "_type_2",
+        "_weightkg",
+    )
+
     def __init__(
         self,
         *,
