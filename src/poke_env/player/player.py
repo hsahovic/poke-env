@@ -187,12 +187,12 @@ class Player(PlayerNetwork, ABC):
                 player_1, player_2 = split_message[2].split(" vs. ")
                 battle.players = player_1, player_2
             elif split_message[1] == "win":
-                await battle._won_by(split_message[2])
+                battle._won_by(split_message[2])
                 await self._battle_count_queue.get()
                 self._battle_count_queue.task_done()
                 self._battle_finished_callback(battle)
             elif split_message[1] == "tie":
-                await battle._tied()
+                battle._tied()
                 await self._battle_count_queue.get()
                 self._battle_count_queue.task_done()
                 self._battle_finished_callback(battle)
@@ -227,7 +227,7 @@ class Player(PlayerNetwork, ABC):
                 await self._handle_battle_request(battle, from_teampreview_request=True)
             else:
                 try:
-                    await battle._parse_message(split_message)
+                    battle._parse_message(split_message)
                 except UnexpectedEffectException as e:
                     self.logger.exception(e)
 
@@ -301,7 +301,7 @@ class Player(PlayerNetwork, ABC):
 
     @abstractmethod
     def choose_move(self, battle: Battle) -> str:
-        """Abstract async method to choose a move in a battle.
+        """Abstract method to choose a move in a battle.
 
         :param battle: The battle.
         :type battle: Battle

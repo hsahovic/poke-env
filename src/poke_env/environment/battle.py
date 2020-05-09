@@ -183,7 +183,7 @@ class Battle:
         field = Field.from_showdown_message(field)
         self._fields.add(field)
 
-    async def _parse_message(self, split_message: List[str]) -> None:
+    def _parse_message(self, split_message: List[str]) -> None:
         if split_message[1] in self.MESSAGES_TO_IGNORE:
             return
         elif split_message[1] == "-ability":
@@ -496,7 +496,7 @@ class Battle:
         pokemon._switch_in()
         pokemon._set_hp_status(hp_status)
 
-    async def _tied(self):
+    def _tied(self):
         self._finished = True
 
     def _update_team_from_request(self, side: Dict) -> None:
@@ -505,7 +505,7 @@ class Battle:
                 pokemon["ident"], force_self_team=True, details=pokemon["details"]
             )._update_from_request(pokemon)
 
-    async def _won_by(self, player_name: str):
+    def _won_by(self, player_name: str):
         if player_name == self._player_username:
             self._won = True
         else:
