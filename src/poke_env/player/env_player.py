@@ -31,26 +31,30 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
 
     def __init__(
         self,
-        player_configuration: PlayerConfiguration,
+        player_configuration: Optional[PlayerConfiguration] = None,
         *,
         avatar: Optional[int] = None,
-        battle_format: str,
+        battle_format: str = "gen8randombattle",
         log_level: Optional[int] = None,
-        server_configuration: ServerConfiguration,
+        server_configuration: Optional[ServerConfiguration] = None,
         start_listening: bool = True,
         team: Optional[Union[str, Teambuilder]] = None,
     ):
         """
-        :param player_configuration: Player configuration.
-        :type player_configuration: PlayerConfiguration
+        :param player_configuration: Player configuration. If empty, defaults to an
+            automatically generated username with no password. This option must be set
+            if the server configuration requires authentication.
+        :type player_configuration: PlayerConfiguration, optional
         :param avatar: Player avatar id. Optional.
         :type avatar: int, optional
-        :param battle_format: Name of the battle format this player plays.
+        :param battle_format: Name of the battle format this player plays. Defaults to
+            gen8randombattle.
         :type battle_format: str
         :param log_level: The player's logger level.
         :type log_level: int. Defaults to logging's default level.
-        :param server_configuration: Server configuration.
-        :type server_configuration: ServerConfiguration
+        :param server_configuration: Server configuration. Defaults to Localhost Server
+            Configuration.
+        :type server_configuration: ServerConfiguration, optional
         :param start_listening: Wheter to start listening to the server. Defaults to
             True.
         :type start_listening: bool
