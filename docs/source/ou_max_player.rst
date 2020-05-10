@@ -39,7 +39,9 @@ You can access your team with ``Battle.team`` and your opponent's team with ``Ba
 
 The order of the keys in ``Battle.team`` is the same as the order that showdown is considering: if you want to lead with the second pokemon in your team, returning ``/team 213456`` would work.
 
-Here, we are going to evaluate how good of a lead each pokemon we have is, and return the one we deem to be best. To do that, we are going to need an evaluation function:
+Here, we are going to evaluate how good of a lead each pokemon we have is, and return the one we deem to be best. To do that, we are going to need an evaluation function.
+
+We define it as follows: we evaluate the performance of a pokemon against another one as the difference between the effectiveness of the first pokemon and the second's pokemon types. Here is an implementation:
 
 .. code-block:: python
 
@@ -56,7 +58,7 @@ Here, we are going to evaluate how good of a lead each pokemon we have is, and r
         # Our performance metric is the different between the two
         return a_on_b - b_on_a
 
-We define a simple performance evaluation function: the difference between effectiveness of our pokemon and the opponent's pokemon types. We can now create a teampreview method:
+We can now use it in our ``teampreview`` method:
 
 .. code-block:: python
 
@@ -80,7 +82,6 @@ We define a simple performance evaluation function: the difference between effec
         return "/team " + ''.join([str(i + 1) for i in ordered_mons])
 
 This method sends our pokemons ordered by their average estimated performance against the opponent team.
-
 
 Specifying a team
 *****************

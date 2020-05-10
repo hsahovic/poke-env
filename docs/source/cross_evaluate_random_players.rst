@@ -15,7 +15,7 @@ The goal of this example is to demonstrate how to run existing agents locally, a
 Getting *something* to run
 **************************
 
-``poke-env`` uses ``asyncio`` for concurrency: most of the function used to run ``poke-env`` code are async functions. Using asyncio is therefore recommended.
+``poke-env`` uses ``asyncio`` for concurrency: most of the functions used to run ``poke-env`` code are async functions. Using asyncio is therefore required.
 
 Let's start by defining a ``main`` and some boilerplate code to run it with ``asyncio``:
 
@@ -34,11 +34,11 @@ Let's start by defining a ``main`` and some boilerplate code to run it with ``as
 Creating random players
 ***********************
 
-We can now create three players. Players (or agents) are the instances that control the decisions taken in battle: here, we create ``RandomPlayer``s, which take decisions randomly. By default, ``Player`` instances will automatically use a generated username and try to connect to a local server.
+We can start by creating three players. Players (or agents) are the objects that control the decisions taken in battle: here, we create ``RandomPlayer`` s, which take decisions randomly. By default, ``Player`` instances will automatically use a generated username and try to connect to a showdown server hosted locally.
 
-You can modify this behavior by using the ``player_configuration`` and ``server_configuration`` parameters of the ``Player`` constructor.
+You can modify this behavior by using the ``player_configuration`` and ``server_configuration`` parameters of the constructor of ``Player`` objects, during initialization.
 
-Additionally, these players will play the ``gen8randombattle`` formats, which is the default battle format of ``Player`` instances: we do not need to specify it explicitly.
+By default, players play the ``gen8randombattle`` format. You can specify another battle format by passing a ``battle_format`` parameter. If you choose to play a format that requires teams, you'll also need to define it with the ``team`` parameter. You can refer to :ref:`ou_max_player` for an example using a custom team and format.
 
 .. code-block:: python
 
@@ -46,23 +46,21 @@ Additionally, these players will play the ``gen8randombattle`` formats, which is
     async def main():
         # We create three random players
         players = [
-            RandomPlayer(
-                max_concurrent_battles=10,
-            ) for _ in range(3)
+            RandomPlayer(max_concurrent_battles=10) for _ in range(3)
         ]
 
     ...
 
-.. Note::
-This example supposes that you use a local showdown server that does not require authentication.
+
+.. Note:: This example supposes that you use a local showdown server that does not require authentication.
 
 
-These players will play battles in the ``gen8randombattle`` battle format, connect to a local server, and play up to 10 battles simultaneously.
+These players will play battles in the ``gen8randombattle`` battle format, connect to a locally hosted server, and play up to 10 battles simultaneously.
 
 Cross evaluating players
 ************************
 
-Now that our players are defined, we can evaluate them: every player will play 20 games against every other player (for a total of 60 battles).
+Now that our players are defined, we can evaluate them: every player will play 20 games against every other player, for a total of 60 battles.
 
 To do so, we can use the helper function ``cross_evaluate``:
 

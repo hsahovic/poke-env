@@ -12,15 +12,18 @@ The goal of this example is to demonstrate how to use the `open ai gym <https://
 
 .. note:: This example necessitates `keras-rl <https://github.com/keras-rl/keras-rl>`__ (compatible with Tensorflow 1.X) or `keras-rl2 <https://github.com/wau/keras-rl2>`__ (Tensorflow 2.X), which implement numerous reinforcement learning algorithms and offer a simple API fully compatible with the Open AI Gym API. You can install them by running ``pip install keras-rl`` or ``pip install keras-rl2``. If you are unsure, ``pip install keras-rl2`` is recommended.
 
+.. warning:: ``keras-rl2`` version 1.0.4 seems to be causing problems with this example. While we are trying to find a workaround, please try using version 1.0.3
+
+
 Implementing rewards and observations
 *************************************
 
-The open ai gym API provides *rewards* and *observations* for each step of each episode. In our case, each step corresponds to one decision in one battle and battles correspond to episodes.
+The open ai gym API provides *rewards* and *observations* for each step of each episode. In our case, each step corresponds to one decision in a battle and battles correspond to episodes.
 
 Defining observations
 ^^^^^^^^^^^^^^^^^^^^^
 
-Observations are embeddings of the current state of the battle. They can be an arbitrarily precise description of battle state, or a very simple representation. In this example, we will create embedding vectors containing:
+Observations are embeddings of the current state of the battle. They can be an arbitrarily precise description of battle states, or a very simple representation. In this example, we will create embedding vectors containing:
 
 - the base power of each available move
 - the damage multiplier of each available move against the current active opponent pokemon
@@ -37,11 +40,11 @@ Rewards are signals that the agent will use in its optimization process (a commo
 We will use this method to define the following reward:
 
 - Winning corresponds to a positive reward of 30
-- Making an opponent's pokemon faint corresponds to a positive reward
-- Making an opponent lose n% hp corresponds to a positive reward of %
+- Making an opponent's pokemon faint corresponds to a positive reward of 1
+- Making an opponent lose % hp corresponds to a positive reward of %
 - Other status conditions are ignored
 
-Conversly, symmetric actions lead to symmetric rewards: losing would make you lose 30 points, etc.
+Conversly, negative actions lead to symettrically negative rewards: losing is a reward of -30 points, etc.
 
 To define our rewards, we will create a custom ``compute_reward`` method. It takes one argument, a ``Battle`` object, and returns the reward.
 
@@ -93,7 +96,7 @@ Our player will play the ``gen8randombattle`` format. We can therefore inheritat
 Instanciating a player
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-Now that our custom class is defined, we can instantiate a player.
+Now that our custom class is defined, we can instantiate our RL player.
 
 .. code-block:: python
 
@@ -136,7 +139,7 @@ The output of the model must map to the environment's action space. The action s
 Defining the DQN
 ^^^^^^^^^^^^^^^^
 
-Now that we have a model, we can build the DQN agent. It additionally needs a *policy* and a *memory*. The *memory* is an object that will store past actions and define samples used during learning. The *policy* describes how actions are chosen during learning.
+Now that we have a model, we can build the DQN agent. This agent combines our model with a *policy* and a *memory*. The *memory* is an object that will store past actions and define samples used during learning. The *policy* describes how actions are chosen during learning.
 
 We will use a simple memory containing 10000 steps, and an epsilon greedy policy.
 
@@ -190,7 +193,7 @@ This method accepts three arguments:
 - ``opponent``: another ``Player`` that will be faced by the ``env_player``
 - ``env_algorithm_kwargs``: a dictionary containing other objects that will be passed to ``env_algorithm``
 
-We will create a ``dqn_training`` function. In addition to the player, it will accept two additional arguments: ``dqn`` and ``nb_steps``.
+To train our agent, we will create a custom ``dqn_training`` function. In addition to the player, it will accept two additional arguments: ``dqn`` and ``nb_steps``. We can pass it in a call to ``play_against`` as the ``env_algorithm`` argument.
 
 .. code-block:: python
 
