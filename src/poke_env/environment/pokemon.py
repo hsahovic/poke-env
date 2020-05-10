@@ -237,9 +237,11 @@ class Pokemon:
         )
 
     def _switch_in(self):
+        self._last_request = {}
         self._active = True
 
     def _switch_out(self):
+        self._last_request = {}
         self._active = False
         self._clear_boosts()
         self._clear_effects()
