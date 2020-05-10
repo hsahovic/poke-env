@@ -23,7 +23,9 @@ from poke_env.environment.pokemon import Pokemon
 from poke_env.exceptions import ShowdownException
 from poke_env.exceptions import UnexpectedEffectException
 from poke_env.player.player_network_interface import PlayerNetwork
+from poke_env.player_configuration import _create_player_configuration_from_player
 from poke_env.player_configuration import PlayerConfiguration
+from poke_env.server_configuration import LocalhostServerConfiguration
 from poke_env.server_configuration import ServerConfiguration
 from poke_env.teambuilder.teambuilder import Teambuilder
 from poke_env.teambuilder.constant_teambuilder import ConstantTeambuilder
@@ -38,30 +40,34 @@ class Player(PlayerNetwork, ABC):
 
     def __init__(
         self,
-        player_configuration: PlayerConfiguration,
+        player_configuration: Optional[PlayerConfiguration] = None,
         *,
         avatar: Optional[int] = None,
-        battle_format: str,
+        battle_format: str = "gen8randombattle",
         log_level: Optional[int] = None,
         max_concurrent_battles: int = 1,
-        server_configuration: ServerConfiguration,
+        server_configuration: Optional[ServerConfiguration] = None,
         start_listening: bool = True,
         team: Optional[Union[str, Teambuilder]] = None,
     ) -> None:
         """
-        :param player_configuration: Player configuration.
-        :type player_configuration: PlayerConfiguration
+        :param player_configuration: Player configuration. If empty, defaults to an
+            automatically generated username with no password. This option must be set
+            if the server configuration requires authentication.
+        :type player_configuration: PlayerConfiguration, optional
         :param avatar: Player avatar id. Optional.
         :type avatar: int, optional
-        :param battle_format: Name of the battle format this player plays.
+        :param battle_format: Name of the battle format this player plays. Defaults to
+            gen8randombattle.
         :type battle_format: str
         :param log_level: The player's logger level.
         :type log_level: int. Defaults to logging's default level.
         :param max_concurrent_battles: Maximum number of battles this player will play
             concurrently. If 0, no limit will be applied. Defaults to 1.
         :type max_concurrent_battles: int
-        :param server_configuration: Server configuration.
-        :type server_configuration: ServerConfiguration
+        :param server_configuration: Server configuration. Defaults to Localhost Server
+            Configuration.
+        :type server_configuration: ServerConfiguration, optional
         :param start_listening: Wheter to start listening to the server. Defaults to
             True.
         :type start_listening: bool
@@ -70,6 +76,11 @@ class Player(PlayerNetwork, ABC):
             Defaults to None.
         :type team: str or Teambuilder, optional
         """
+        if player_configuration is None:
+            player_configuration = _create_player_configuration_from_player(self)
+
+        if server_configuration is None:
+            server_configuration = LocalhostServerConfiguration
         super(Player, self).__init__(
             player_configuration=player_configuration,
             avatar=avatar,

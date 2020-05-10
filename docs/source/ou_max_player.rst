@@ -39,7 +39,9 @@ You can access your team with ``Battle.team`` and your opponent's team with ``Ba
 
 The order of the keys in ``Battle.team`` is the same as the order that showdown is considering: if you want to lead with the second pokemon in your team, returning ``/team 213456`` would work.
 
-Here, we are going to evaluate how good of a lead each pokemon we have is, and return the one we deem to be best. To do that, we are going to need an evaluation function:
+Here, we are going to evaluate how good of a lead each pokemon we have is, and return the one we deem to be best. To do that, we are going to need an evaluation function.
+
+We define it as follows: we evaluate the performance of a pokemon against another one as the difference between the effectiveness of the first pokemon and the second's pokemon types. Here is an implementation:
 
 .. code-block:: python
 
@@ -56,7 +58,7 @@ Here, we are going to evaluate how good of a lead each pokemon we have is, and r
         # Our performance metric is the different between the two
         return a_on_b - b_on_a
 
-We define a simple performance evaluation function: the difference between effectiveness of our pokemon and the opponent's pokemon types. We can now create a teampreview method:
+We can now use it in our ``teampreview`` method:
 
 .. code-block:: python
 
@@ -80,7 +82,6 @@ We define a simple performance evaluation function: the difference between effec
         return "/team " + ''.join([str(i + 1) for i in ordered_mons])
 
 This method sends our pokemons ordered by their average estimated performance against the opponent team.
-
 
 Specifying a team
 *****************
@@ -282,22 +283,15 @@ To attribute a team to an agent, you need to pass a ``team`` argument to the age
     - Rock Blast
     - Tail Slap
     """
-    # We define two player configurations.
-    player_1_configuration = PlayerConfiguration("Random player", None)
-    player_2_configuration = PlayerConfiguration("Max damage player", None)
 
-    # We create the corresponding players.
+    # We create two players.
     random_player = RandomPlayer(
-        player_configuration=player_1_configuration,
         battle_format="gen8ou",
-        server_configuration=LocalhostServerConfiguration,
         team=team_1,
         max_concurrent_battles=10,
     )
     max_damage_player = MaxDamagePlayer(
-        player_configuration=player_2_configuration,
         battle_format="gen8ou",
-        server_configuration=LocalhostServerConfiguration,
         team=team_2,
         max_concurrent_battles=10,
     )
@@ -320,8 +314,6 @@ We can now test our agent by crossing evaluating it with a random agent. The com
     from poke_env.player.player import Player
     from poke_env.player.random_player import RandomPlayer
     from poke_env.player.utils import cross_evaluate
-    from poke_env.player_configuration import PlayerConfiguration
-    from poke_env.server_configuration import LocalhostServerConfiguration
 
 
     class MaxDamagePlayer(Player):
@@ -488,22 +480,14 @@ We can now test our agent by crossing evaluating it with a random agent. The com
     - Tail Slap
     """
 
-    # We define two player configurations.
-    player_1_configuration = PlayerConfiguration("Random player", None)
-    player_2_configuration = PlayerConfiguration("Max damage player", None)
-
-    # We create the corresponding players.
+    # We create two players.
     random_player = RandomPlayer(
-        player_configuration=player_1_configuration,
         battle_format="gen8ou",
-        server_configuration=LocalhostServerConfiguration,
         team=team_1,
         max_concurrent_battles=10,
     )
     max_damage_player = MaxDamagePlayer(
-        player_configuration=player_2_configuration,
         battle_format="gen8ou",
-        server_configuration=LocalhostServerConfiguration,
         team=team_2,
         max_concurrent_battles=10,
     )

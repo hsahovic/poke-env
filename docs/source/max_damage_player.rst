@@ -28,7 +28,7 @@ Let's create the base class:
     class MaxDamagePlayer(Player):
         pass
 
-``Player``'s ``choose_move`` method is abstract: it needs to be implemented if we want to instantiate our player. It is the only method that we have to define to be able to use the agent.
+``Player``'s has one abstract method, ``choose_move``. Once implemented, we will be able to instantiate and use our player.
 
 Creating a ``choose_move`` method
 *********************************
@@ -36,14 +36,14 @@ Creating a ``choose_move`` method
 Method signature
 ****************
 
-The signature of ``choose_move`` is ``choose_move(self, battle: Battle) -> str``.
+The signature of ``choose_move`` is ``choose_move(self, battle: Battle) -> str``: it takes a ``Battle`` object representing the game state as argument, and returns a move order encoded as a string. This move order must be formatted according to the `showdown protocol <https://github.com/smogon/pokemon-showdown/blob/master/sim/SIM-PROTOCOL.md>`__. Fortunately, ``poke-env`` provides utility functions allowing us to directly format such orders from ``Pokemon`` and ``Move`` objects.
 
 We therefore have to take care of two things: first, reading the information we need from the ``battle`` parameter. Then, we have to return a properly formatted response, corresponding to our move order.
 
 Selecting a move
 ****************
 
-The ``battle`` parameter is an object of type ``Battle`` representing the agent's current knowledge of the game state. It offers several properties that make accessing the game state easy. Some of the most notable are ``active_pokemon``, ``available_moves``, ``available_switches``, ``opponent_active_pokemon``, ``opponent_team`` and ``team``.
+The ``battle`` parameter is an object of type ``Battle`` which encodes the agent's current knowledge of the game state. It offers several properties that make accessing the game state easy. Some of the most notable are ``active_pokemon``, ``available_moves``, ``available_switches``, ``opponent_active_pokemon``, ``opponent_team`` and ``team``.
 
 In this example, we are going to use ``available_moves``: it returns a list of ``Move`` objects which are available this turn.
 
@@ -63,7 +63,7 @@ Returning a choice
 
 Now that we have selected a move, we need to return a corresponding order, which takes the form of a string. Fortunately, ``Player`` provides a method designed to craft such strings directly: ``create_order``. It takes a ``Pokemon`` (for switches) or ``Move`` object as argument, and returns a string corresponding to the order. Additionally, you can use its ``mega``, ``z_move`` and ``dynamax`` parameters to mega evolve, use a z-move, dynamax or gigantamax, if possible this turn.
 
-We also have to return an order corresponding to a random switch if the player can not attack. ``Player`` objects incorporate a ``choose_random_move`` method, which we will use if no attacking move is available.
+We also have to return an order corresponding to a random switch if the player cannot attack. ``Player`` objects incorporate a ``choose_random_move`` method, which we will use if no attacking move is available.
 
 .. code-block:: python
 
@@ -82,7 +82,7 @@ We also have to return an order corresponding to a random switch if the player c
 Running and testing our agent
 *****************************
 
-We can now test our agent by crossing evaluating with a random agent. The final code is:
+We can now test our agent by crossing evaluating it with a random agent. The complete code is:
 
 .. code-block:: python
 
@@ -93,8 +93,6 @@ We can now test our agent by crossing evaluating with a random agent. The final 
     from poke_env.player.player import Player
     from poke_env.player.random_player import RandomPlayer
     from poke_env.player.utils import cross_evaluate
-    from poke_env.player_configuration import PlayerConfiguration
-    from poke_env.server_configuration import LocalhostServerConfiguration
 
 
     class MaxDamagePlayer(Player):
@@ -113,20 +111,12 @@ We can now test our agent by crossing evaluating with a random agent. The final 
     async def main():
         start = time.time()
 
-        # We define two player configurations.
-        player_1_configuration = PlayerConfiguration("Random player", None)
-        player_2_configuration = PlayerConfiguration("Max damage player", None)
-
-        # We create the corresponding players.
+        # We create two players.
         random_player = RandomPlayer(
-            player_configuration=player_1_configuration,
             battle_format="gen8randombattle",
-            server_configuration=LocalhostServerConfiguration,
         )
         max_damage_player = MaxDamagePlayer(
-            player_configuration=player_2_configuration,
             battle_format="gen8randombattle",
-            server_configuration=LocalhostServerConfiguration,
         )
 
         # Now, let's evaluate our player

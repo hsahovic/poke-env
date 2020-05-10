@@ -4,8 +4,6 @@ import numpy as np
 
 from poke_env.player.random_player import RandomPlayer
 from poke_env.player.utils import cross_evaluate
-from poke_env.player_configuration import PlayerConfiguration
-from poke_env.server_configuration import LocalhostServerConfiguration
 from poke_env.teambuilder.teambuilder import Teambuilder
 
 
@@ -137,25 +135,12 @@ custom_builder = RandomTeamFromPool([team_1, team_2])
 
 
 async def main():
-
-    # We define two player configurations.
-    player_1_configuration = PlayerConfiguration("Random player 1", None)
-    player_2_configuration = PlayerConfiguration("Random player 2", None)
-
-    # We create the corresponding players.
+    # We create two players
     player_1 = RandomPlayer(
-        player_configuration=player_1_configuration,
-        battle_format="gen8ou",
-        server_configuration=LocalhostServerConfiguration,
-        team=custom_builder,
-        max_concurrent_battles=10,
+        battle_format="gen8ou", team=custom_builder, max_concurrent_battles=10
     )
     player_2 = RandomPlayer(
-        player_configuration=player_2_configuration,
-        battle_format="gen8ou",
-        server_configuration=LocalhostServerConfiguration,
-        team=custom_builder,
-        max_concurrent_battles=10,
+        battle_format="gen8ou", team=custom_builder, max_concurrent_battles=10
     )
 
     await cross_evaluate([player_1, player_2], n_challenges=5)

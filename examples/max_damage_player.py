@@ -5,8 +5,6 @@ import time
 from poke_env.player.player import Player
 from poke_env.player.random_player import RandomPlayer
 from poke_env.player.utils import cross_evaluate
-from poke_env.player_configuration import PlayerConfiguration
-from poke_env.server_configuration import LocalhostServerConfiguration
 
 
 class MaxDamagePlayer(Player):
@@ -25,21 +23,9 @@ class MaxDamagePlayer(Player):
 async def main():
     start = time.time()
 
-    # We define two player configurations.
-    player_1_configuration = PlayerConfiguration("Random player", None)
-    player_2_configuration = PlayerConfiguration("Max damage player", None)
-
-    # We create the corresponding players.
-    random_player = RandomPlayer(
-        player_configuration=player_1_configuration,
-        battle_format="gen8randombattle",
-        server_configuration=LocalhostServerConfiguration,
-    )
-    max_damage_player = MaxDamagePlayer(
-        player_configuration=player_2_configuration,
-        battle_format="gen8randombattle",
-        server_configuration=LocalhostServerConfiguration,
-    )
+    # We create two players.
+    random_player = RandomPlayer(battle_format="gen8randombattle")
+    max_damage_player = MaxDamagePlayer(battle_format="gen8randombattle")
 
     # Now, let's evaluate our player
     cross_evaluation = await cross_evaluate(
