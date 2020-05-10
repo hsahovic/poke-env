@@ -30,55 +30,32 @@ Let's start by defining a ``main`` and some boilerplate code to run it with ``as
     if __name__ == "__main__":
         asyncio.get_event_loop().run_until_complete(main())
 
-Creating player configurations
-******************************
-
-Now that we can run our ``main`` function, let's create three player configurations. For each configuration, we define a username, and leave the password field to ``None``. This means that authentication will be skipped: this only works on versions of showdown configured to skip it, such as the recommended fork. If you want to run this code on `play.pokemonshowdown.com <https://play.pokemonshowdown.com/>`__, you will need to enter valid usernames and passwords.
-
-.. code-block:: python
-
-    ...
-    from poke_env.player_configuration import PlayerConfiguration
-
-    async def main():
-        player_1_configuration = PlayerConfiguration("Player 1", None)
-        player_2_configuration = PlayerConfiguration("Player 2", None)
-        player_3_configuration = PlayerConfiguration("Player 3", None)
-
-    ...
-
-.. Note::
-    This example suppose that you use a local showdown server that does not require authentication.
-
 
 Creating random players
 ***********************
 
-Now that we have our player configurations, we can create the corresponding players. Players (or agents) are the instances that control the decisions taken in battle: here, we create ``RandomPlayer``s, which take decisions randomly.
+We can now create three players. Players (or agents) are the instances that control the decisions taken in battle: here, we create ``RandomPlayer``s, which take decisions randomly. By default, ``Player`` instances will automatically use a generated username and try to connect to a local server.
+
+You can modify this behavior by using the ``player_configuration`` and ``server_configuration`` parameters of the ``Player`` constructor.
+
+Additionally, these players will play the ``gen8randombattle`` formats, which is the default battle format of ``Player`` instances: we do not need to specify it explicitly.
 
 .. code-block:: python
 
     ...
-    from poke_env.server_configuration import LocalhostServerConfiguration
-
     async def main():
-        ...
-        # We create the corresponding players.
+        # We create three random players
         players = [
             RandomPlayer(
-                player_configuration=player_config,
-                battle_format="gen8randombattle",
-                server_configuration=LocalhostServerConfiguration,
                 max_concurrent_battles=10,
-            )
-            for player_config in [
-                player_1_configuration,
-                player_2_configuration,
-                player_3_configuration,
-            ]
+            ) for _ in range(3)
         ]
 
     ...
+
+.. Note::
+This example supposes that you use a local showdown server that does not require authentication.
+
 
 These players will play battles in the ``gen8randombattle`` battle format, connect to a local server, and play up to 10 battles simultaneously.
 
@@ -125,12 +102,12 @@ Running the `whole file <https://github.com/hsahovic/poke-env/blob/master/exampl
 
 .. code-block:: python
 
-    --------  --------  --------  --------
-    -         Player 1  Player 2  Player 3
-    Player 1            0.6       0.5
-    Player 2  0.4                 0.35
-    Player 3  0.5       0.65
-    --------  --------  --------  --------
+    --------------  --------------  --------------  --------------
+    -               RandomPlayer 1  RandomPlayer 2  RandomPlayer 3
+    RandomPlayer 1                  0.53            0.52
+    RandomPlayer 2  0.47                            0.5
+    RandomPlayer 3  0.48            0.5
+    --------------  --------------  --------------  --------------
 
 If you want to create a custom player, take a look at the :ref:`max_damage_player` example.
 

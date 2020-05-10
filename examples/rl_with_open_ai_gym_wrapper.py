@@ -2,10 +2,8 @@
 import numpy as np
 import tensorflow as tf
 
-from poke_env.player_configuration import PlayerConfiguration
 from poke_env.player.env_player import Gen8EnvSinglePlayer
 from poke_env.player.random_player import RandomPlayer
-from poke_env.server_configuration import LocalhostServerConfiguration
 
 from rl.agents.dqn import DQNAgent
 from rl.policy import LinearAnnealedPolicy, EpsGreedyQPolicy
@@ -94,23 +92,10 @@ def dqn_evaluation(player, dqn, nb_episodes):
 
 
 if __name__ == "__main__":
-    env_player = SimpleRLPlayer(
-        player_configuration=PlayerConfiguration("RL Player", None),
-        battle_format="gen8randombattle",
-        server_configuration=LocalhostServerConfiguration,
-    )
+    env_player = SimpleRLPlayer(battle_format="gen8randombattle")
 
-    opponent = RandomPlayer(
-        player_configuration=PlayerConfiguration("Random player", None),
-        battle_format="gen8randombattle",
-        server_configuration=LocalhostServerConfiguration,
-    )
-
-    second_opponent = MaxDamagePlayer(
-        player_configuration=PlayerConfiguration("Max damage player", None),
-        battle_format="gen8randombattle",
-        server_configuration=LocalhostServerConfiguration,
-    )
+    opponent = RandomPlayer(battle_format="gen8randombattle")
+    second_opponent = MaxDamagePlayer(battle_format="gen8randombattle")
 
     # Output dimension
     n_action = len(env_player.action_space)

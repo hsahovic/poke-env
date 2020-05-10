@@ -98,14 +98,7 @@ Now that our custom class is defined, we can instantiate a player.
 .. code-block:: python
 
     ...
-    from poke_env.player_configuration import PlayerConfiguration
-    from poke_env.server_configuration import LocalhostServerConfiguration
-
-    env_player = SimpleRLPlayer(
-        player_configuration=PlayerConfiguration("RL Player", None),
-        battle_format="gen8randombattle",
-        server_configuration=LocalhostServerConfiguration,
-    )
+    env_player = SimpleRLPlayer(battle_format="gen8randombattle")
     ...
 
 
@@ -210,11 +203,7 @@ We will create a ``dqn_training`` function. In addition to the player, it will a
         # This call will finished eventual unfinshed battles before returning
         player.complete_current_battle()
 
-    opponent = RandomPlayer(
-        player_configuration=PlayerConfiguration("Random player", None),
-        battle_format="gen8randombattle",
-        server_configuration=LocalhostServerConfiguration,
-    )
+    opponent = RandomPlayer(battle_format="gen8randombattle")
 
     # Training
     env_player.play_against(
@@ -245,11 +234,7 @@ Similarly to the training function above, we can define an evaluation function.
 
     # Ths code of MaxDamagePlayer is not reproduced for brevity and legibility
     # It can be found in the complete code linked above, or in the max damage example
-    second_opponent = MaxDamagePlayer(
-        player_configuration=PlayerConfiguration("Max damage player", None),
-        battle_format="gen8randombattle",
-        server_configuration=LocalhostServerConfiguration,
-    )
+    second_opponent = MaxDamagePlayer(battle_format="gen8randombattle")
 
     # Evaluation
     print("Results against random player:")

@@ -93,8 +93,6 @@ We can now test our agent by crossing evaluating with a random agent. The final 
     from poke_env.player.player import Player
     from poke_env.player.random_player import RandomPlayer
     from poke_env.player.utils import cross_evaluate
-    from poke_env.player_configuration import PlayerConfiguration
-    from poke_env.server_configuration import LocalhostServerConfiguration
 
 
     class MaxDamagePlayer(Player):
@@ -113,20 +111,12 @@ We can now test our agent by crossing evaluating with a random agent. The final 
     async def main():
         start = time.time()
 
-        # We define two player configurations.
-        player_1_configuration = PlayerConfiguration("Random player", None)
-        player_2_configuration = PlayerConfiguration("Max damage player", None)
-
-        # We create the corresponding players.
+        # We create two players.
         random_player = RandomPlayer(
-            player_configuration=player_1_configuration,
             battle_format="gen8randombattle",
-            server_configuration=LocalhostServerConfiguration,
         )
         max_damage_player = MaxDamagePlayer(
-            player_configuration=player_2_configuration,
             battle_format="gen8randombattle",
-            server_configuration=LocalhostServerConfiguration,
         )
 
         # Now, let's evaluate our player
