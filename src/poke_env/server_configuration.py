@@ -16,6 +16,6 @@ LocalhostServerConfiguration = ServerConfiguration(
 """Server configuration with localhost and smogon's authentication endpoint."""
 
 ShowdownServerConfiguration = ServerConfiguration(
-    "https://play.pokemonshowdown.com/", "https://play.pokemonshowdown.com/action.php?"
+    "sim.smogon.com:8000", "https://play.pokemonshowdown.com/action.php?"
 )
 """Server configuration with smogon's server and authentication endpoint."""
