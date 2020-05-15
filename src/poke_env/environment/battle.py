@@ -784,6 +784,26 @@ class Battle:
             self._opponent_username = player_2
 
     @property
+    def rating(self) -> Optional[int]:
+        """
+        Player's rating after the end of the battle, if it was received.
+
+        :return: The player's rating after the end of the battle.
+        :rtype: int, optional
+        """
+        return self._rating
+
+    @property
+    def opponent_rating(self) -> Optional[int]:
+        """
+        Opponent's rating after the end of the battle, if it was received.
+
+        :return: The opponent's rating after the end of the battle.
+        :rtype: int, optional
+        """
+        return self._opponent_rating
+
+    @property
     def rqid(self) -> int:
         """
         Should not be used.
