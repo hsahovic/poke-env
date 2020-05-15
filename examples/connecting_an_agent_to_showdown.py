@@ -9,11 +9,25 @@ from poke_env.server_configuration import ShowdownServerConfiguration
 async def main():
     # We create a random player
     player = RandomPlayer(
-        player_configuration=PlayerConfiguration("keop998", "aaaaaa"),
+        player_configuration=PlayerConfiguration("bot_username", "bot_password"),
         server_configuration=ShowdownServerConfiguration,
     )
-    # await player.send_challenges("your_username", n_challenges=1)
-    await player.accept_challenges(None, 1)
+
+    # Sending challenges to 'your_username'
+    await player.send_challenges("your_username", n_challenges=1)
+
+    # Accepting one challenge from any user
+    # await player.accept_challenges(None, 1)
+
+    # Accepting three challenges from 'your_username'
+    # await player.accept_challenges('your_username', 3)
+
+    # Playing 5 games on the ladder
+    # await player.ladder(5)
+
+    # Print the rating of the player and its opponent after each battle
+    # for battle in player.battles.values():
+    #     print(battle.rating, battle.opponent_rating)
 
 
 if __name__ == "__main__":
