@@ -41,6 +41,7 @@ class Battle:
         "-supereffective",
         "-waiting",
         "-zbroken",
+        "askreg",
         "c",
         "cant",
         "crit",
@@ -80,11 +81,13 @@ class Battle:
         "_opponent_can_dynamax",
         "_opponent_dynamax_turn",
         "_opponent_side_conditions",
+        "_opponent_rating",
         "_opponent_team",
         "_opponent_username",
         "_player_role",
         "_player_username",
         "_players",
+        "_rating",
         "_rqid",
         "_rules",
         "_side_conditions",
@@ -130,12 +133,14 @@ class Battle:
         self._wait: Optional[bool] = None
 
         # Battle state attributes
+        self._dynamax_turn: Optional[int] = None
         self._finished: bool = False
         self._rqid = 0
         self._rules = []
         self._turn: int = 0
-        self._dynamax_turn: Optional[int] = None
         self._opponent_dynamax_turn: Optional[int] = None
+        self._opponent_rating: Optional[int] = None
+        self._rating: Optional[int] = None
         self._won: Optional[bool] = None
 
         # In game battle state attributes
@@ -375,6 +380,21 @@ class Battle:
         elif split_message[1] == "poke":
             player, details = split_message[2:4]
             self._register_teampreview_pokemon(player, details)
+        elif split_message[1] == "raw":
+            username, rating_info = split_message[2].split("'s rating: ")
+            rating = int(rating_info[:4])
+            if username == self.player_username:
+                self._rating = rating
+            elif username == self.opponent_username:
+                self._opponent_rating = rating
+            else:
+                self.logger.warning(
+                    "Rating information regarding an unrecognized username received. "
+                    "Received '%s', while only known players are '%s' and '%s'",
+                    username,
+                    self.player_username,
+                    self.opponent_username,
+                )
         elif split_message[1] == "replace":
             pokemon = split_message[2]
             details = split_message[3]
