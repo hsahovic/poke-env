@@ -48,6 +48,7 @@ class Battle:
         "deinit",
         "gametype",
         "gen",
+        "html",
         "inactive",
         "immune",
         "j",
