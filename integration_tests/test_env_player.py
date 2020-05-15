@@ -49,7 +49,7 @@ def test_random_gym_player_gen8():
         server_configuration=LocalhostServerConfiguration,
     )
     random_player = RandomPlayer(
-        player_configuration=PlayerConfiguration("RandomPlayeGen8r", None),
+        player_configuration=PlayerConfiguration("RandomPlayerGen8", None),
         battle_format="gen8randombattle",
         server_configuration=LocalhostServerConfiguration,
     )
