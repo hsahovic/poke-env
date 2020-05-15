@@ -215,10 +215,18 @@ class Player(PlayerNetwork, ABC):
                 ):
                     if battle.trapped:
                         await self._handle_battle_request(battle)
-                elif split_message[2].startswith(
-                    "[Unavailable choice] Can't switch: The active Pokémon is trapped"
-                ) or split_message[2].startswith(
-                    "[Invalid choice] Can't switch: The active Pokémon is trapped"
+                elif (
+                    split_message[2].startswith(
+                        "[Unavailable choice] Can't switch: The active Pokémon is "
+                        "trapped"
+                    )
+                    or split_message[2].startswith(
+                        "[Invalid choice] Can't switch: The active Pokémon is trapped"
+                    )
+                    or split_message[2].startswith(
+                        "[Invalid choice] Can't switch: You can't switch to an active "
+                        "Pokémon"
+                    )
                 ):
                     battle.trapped = True
                     await self._handle_battle_request(battle)
