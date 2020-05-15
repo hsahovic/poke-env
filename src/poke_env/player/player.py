@@ -81,6 +81,7 @@ class Player(PlayerNetwork, ABC):
 
         if server_configuration is None:
             server_configuration = LocalhostServerConfiguration
+
         super(Player, self).__init__(
             player_configuration=player_configuration,
             avatar=avatar,
@@ -97,6 +98,7 @@ class Player(PlayerNetwork, ABC):
 
         self._battle_start_condition: Condition = Condition()
         self._battle_count_queue: Queue = Queue(max_concurrent_battles)
+        self._battle_end_condition: Condition = Condition()
         self._challenge_queue: Queue = Queue()
 
         if isinstance(team, Teambuilder):
@@ -197,16 +199,16 @@ class Player(PlayerNetwork, ABC):
             elif split_message[1] == "title":
                 player_1, player_2 = split_message[2].split(" vs. ")
                 battle.players = player_1, player_2
-            elif split_message[1] == "win":
-                battle._won_by(split_message[2])
+            elif split_message[1] == "win" or split_message[1] == "tie":
+                if split_message[1] == "win":
+                    battle._won_by(split_message[2])
+                else:
+                    battle._tied()
                 await self._battle_count_queue.get()
                 self._battle_count_queue.task_done()
                 self._battle_finished_callback(battle)
-            elif split_message[1] == "tie":
-                battle._tied()
-                await self._battle_count_queue.get()
-                self._battle_count_queue.task_done()
-                self._battle_finished_callback(battle)
+                async with self._battle_end_condition:
+                    self._battle_end_condition.notify_all()
             elif split_message[1] == "error":
                 if split_message[2].startswith(
                     "[Invalid choice] Sorry, too late to make a different move"
