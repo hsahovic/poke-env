@@ -355,6 +355,32 @@ class Player(PlayerNetwork, ABC):
             order = "/choose default"
         return order
 
+    async def ladder(self, n_games):
+        """Make the player play games on the ladder.
+
+        n_games defines how many battles will be played.
+
+        :param n_games: Number of battles that will be played
+        :type n_games: int
+        """
+        await self._logged_in.wait()
+        start_time = perf_counter()
+
+        for _ in range(n_games):
+            async with self._battle_start_condition:
+                await self._search_ladder_game(self._format)
+                await self._battle_start_condition.wait()
+                while self._battle_count_queue.full():
+                    async with self._battle_end_condition:
+                        await self._battle_end_condition.wait()
+                await self._battle_semaphore.acquire()
+        await self._battle_count_queue.join()
+        self.logger.info(
+            "Laddering (%d battles) finished in %fs",
+            n_games,
+            perf_counter() - start_time,
+        )
+
     async def send_challenges(
         self, opponent: str, n_challenges: int, to_wait: Optional[Event] = None
     ) -> None:
