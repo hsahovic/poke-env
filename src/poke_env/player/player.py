@@ -81,6 +81,7 @@ class Player(PlayerNetwork, ABC):
 
         if server_configuration is None:
             server_configuration = LocalhostServerConfiguration
+
         super(Player, self).__init__(
             player_configuration=player_configuration,
             avatar=avatar,
@@ -97,6 +98,7 @@ class Player(PlayerNetwork, ABC):
 
         self._battle_start_condition: Condition = Condition()
         self._battle_count_queue: Queue = Queue(max_concurrent_battles)
+        self._battle_end_condition: Condition = Condition()
         self._challenge_queue: Queue = Queue()
 
         if isinstance(team, Teambuilder):
@@ -197,26 +199,34 @@ class Player(PlayerNetwork, ABC):
             elif split_message[1] == "title":
                 player_1, player_2 = split_message[2].split(" vs. ")
                 battle.players = player_1, player_2
-            elif split_message[1] == "win":
-                battle._won_by(split_message[2])
+            elif split_message[1] == "win" or split_message[1] == "tie":
+                if split_message[1] == "win":
+                    battle._won_by(split_message[2])
+                else:
+                    battle._tied()
                 await self._battle_count_queue.get()
                 self._battle_count_queue.task_done()
                 self._battle_finished_callback(battle)
-            elif split_message[1] == "tie":
-                battle._tied()
-                await self._battle_count_queue.get()
-                self._battle_count_queue.task_done()
-                self._battle_finished_callback(battle)
+                async with self._battle_end_condition:
+                    self._battle_end_condition.notify_all()
             elif split_message[1] == "error":
                 if split_message[2].startswith(
                     "[Invalid choice] Sorry, too late to make a different move"
                 ):
                     if battle.trapped:
                         await self._handle_battle_request(battle)
-                elif split_message[2].startswith(
-                    "[Unavailable choice] Can't switch: The active Pokémon is trapped"
-                ) or split_message[2].startswith(
-                    "[Invalid choice] Can't switch: The active Pokémon is trapped"
+                elif (
+                    split_message[2].startswith(
+                        "[Unavailable choice] Can't switch: The active Pokémon is "
+                        "trapped"
+                    )
+                    or split_message[2].startswith(
+                        "[Invalid choice] Can't switch: The active Pokémon is trapped"
+                    )
+                    or split_message[2].startswith(
+                        "[Invalid choice] Can't switch: You can't switch to an active "
+                        "Pokémon"
+                    )
                 ):
                     battle.trapped = True
                     await self._handle_battle_request(battle)
@@ -352,6 +362,32 @@ class Player(PlayerNetwork, ABC):
         else:
             order = "/choose default"
         return order
+
+    async def ladder(self, n_games):
+        """Make the player play games on the ladder.
+
+        n_games defines how many battles will be played.
+
+        :param n_games: Number of battles that will be played
+        :type n_games: int
+        """
+        await self._logged_in.wait()
+        start_time = perf_counter()
+
+        for _ in range(n_games):
+            async with self._battle_start_condition:
+                await self._search_ladder_game(self._format)
+                await self._battle_start_condition.wait()
+                while self._battle_count_queue.full():
+                    async with self._battle_end_condition:
+                        await self._battle_end_condition.wait()
+                await self._battle_semaphore.acquire()
+        await self._battle_count_queue.join()
+        self.logger.info(
+            "Laddering (%d battles) finished in %fs",
+            n_games,
+            perf_counter() - start_time,
+        )
 
     async def send_challenges(
         self, opponent: str, n_challenges: int, to_wait: Optional[Event] = None

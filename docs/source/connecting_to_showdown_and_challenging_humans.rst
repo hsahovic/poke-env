@@ -37,16 +37,42 @@ Now that your agent is configured to access showdown, you can use it to challeng
 
     await player.send_challenges("your_username", n_challenges=1)
 
-Alternatively, you can also use ``accept_challenges`` to automatically accept the challenges from a player. To do so, run:
+Accepting challenges from human players
+***************************************
+
+You can use the ``accept_challenges`` method to automatically accept challenges from a player. To do so, run:
 
 .. code-block:: python
 
     # Replace opp_username with None to accept challenges from any player
     await player.accept_challenges('opp_username', 1)
 
-Alternatively, you can also use ``accept_challenges`` and ``send_challenges`` locally, either to test your agents yourself or to create custom battle schedules.
+Passing ``None`` instead of a username will make the agent accept challenges from any player.
 
-The complete source code is:
+.. code-block:: python
+
+    # Replace opp_username with None to accept challenges from any player
+    await player.accept_challenges('opp_username', 1)
+
+Playing on the ladder
+*********************
+
+Finally, you can use the ``ladder`` method to play games on the ladder.
+
+.. code-block:: python
+
+    # Play five games on the ladder
+    await player.ladder(5)
+
+After playing games on the ladder, you may receive rating information. You can access them with the ``Battle.rating`` and ``Battle.opponent_rating`` methods:
+
+.. code-block:: python
+
+    # Print the rating of the player and its opponent after each battle
+    for battle in player.battles.values():
+        print(battle.rating, battle.opponent_rating)
+
+A complete example source code is:
 
 .. code-block:: python
 
@@ -61,11 +87,25 @@ The complete source code is:
     async def main():
         # We create a random player
         player = RandomPlayer(
-            player_configuration=PlayerConfiguration("keop998", "aaaaaa"),
+            player_configuration=PlayerConfiguration("bot_username", "bot_password")
             server_configuration=ShowdownServerConfiguration,
         )
-        # await player.send_challenges("your_username", n_challenges=1)
+
+        # Sending challenges to 'your_username'
+        await player.send_challenges("your_username", n_challenges=1)
+
+        # Accepting one challenge from any user
         await player.accept_challenges(None, 1)
+
+        # Accepting three challenges from 'your_username'
+        await player.accept_challenges('your_username', 3)
+
+        # Playing 5 games on the ladder
+        await player.ladder(5)
+
+        # Print the rating of the player and its opponent after each battle
+        for battle in player.battles.values():
+            print(battle.rating, battle.opponent_rating)
 
 
     if __name__ == "__main__":
