@@ -85,20 +85,25 @@ async def test_laddering_parallel():
 
     await asyncio.wait_for(asyncio.gather(player.ladder(5)), timeout=1)
 
-    assert interactions == [
-        "Search start",
-        "Battle 0 start",
-        "Search start",
-        "Battle 1 start",
-        "Search start",
-        "Battle 2 start",
-        "Battle 0 end",
-        "Battle 1 end",
-        "Battle 2 end",
-        "Search start",
-        "Battle 3 start",
-        "Search start",
-        "Battle 4 start",
-        "Battle 3 end",
-        "Battle 4 end",
-    ]
+    assert set(interactions) == set(
+        [
+            "Search start",
+            "Battle 0 start",
+            "Search start",
+            "Battle 1 start",
+            "Search start",
+            "Battle 2 start",
+            "Battle 0 end",
+            "Battle 1 end",
+            "Battle 2 end",
+            "Search start",
+            "Battle 3 start",
+            "Search start",
+            "Battle 4 start",
+            "Battle 3 end",
+            "Battle 4 end",
+        ]
+    )
+    for i in range(3):
+        assert interactions[2 * i] == "Search start"
+        assert interactions[2 * i + 1] == "Battle %d start" % i
