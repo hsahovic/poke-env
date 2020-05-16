@@ -64,7 +64,7 @@ Finally, you can use the ``ladder`` method to play games on the ladder.
     # Play five games on the ladder
     await player.ladder(5)
 
-After playing games on the ladder, you may receive ranking information. You can access them with the ``Battle.rating`` and ``Battle.opponent_rating`` methods:
+After playing games on the ladder, you may receive rating information. You can access them with the ``Battle.rating`` and ``Battle.opponent_rating`` methods:
 
 .. code-block:: python
 
