@@ -17,7 +17,7 @@ Agents are instance of python classes inheriting from `Player`. Here is what you
 ```python
 class YourFirstAgent(Player):
     def choose_move(self, battle):
-        for move in battle.available:
+        for move in battle.available_moves:
             if move.base_power > 90:
                 # A powerful move! Let's use it
                 return self.create_order(move)
