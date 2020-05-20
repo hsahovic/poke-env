@@ -6,6 +6,7 @@ from typing import Optional
 from typing import Set
 from typing import Tuple
 
+from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.field import Field
 from poke_env.environment.move import Move
 from poke_env.environment.move import special_moves
@@ -15,52 +16,7 @@ from poke_env.environment.weather import Weather
 from poke_env.utils import to_id_str
 
 
-class Battle:
-
-    MESSAGES_TO_IGNORE = {
-        "-anim",
-        "-burst",
-        "-block",
-        "-cant",
-        "-center",
-        "-crit",
-        "-combine",
-        "-fail",
-        "-fieldactivate",
-        "-hint",
-        "-hitcount",
-        "-immune",
-        "-ohko",
-        "-message",
-        "-miss",
-        "-notarget",
-        "-nothing",
-        "-resisted",
-        "-singlemove",
-        "-singleturn",
-        "-supereffective",
-        "-waiting",
-        "-zbroken",
-        "askreg",
-        "c",
-        "cant",
-        "crit",
-        "deinit",
-        "gametype",
-        "gen",
-        "html",
-        "inactive",
-        "immune",
-        "j",
-        "l",
-        "n",
-        "rated",
-        "resisted",
-        "supereffective",
-        "tier",
-        "upkeep",
-        "zbroken",
-    }
+class Battle(AbstractBattle):
 
     __slots__ = (
         "_available_moves",
