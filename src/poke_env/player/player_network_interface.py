@@ -257,6 +257,8 @@ class PlayerNetwork(ABC):
             )
         except (CancelledError, RuntimeError) as e:
             self.logger.critical("Listen interrupted by %s", e)
+        except Exception as e:
+            self.logger.exception(e)
         finally:
             for coroutine in coroutines:
                 coroutine.cancel()

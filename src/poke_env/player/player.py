@@ -409,7 +409,7 @@ class Player(PlayerNetwork, ABC):
         :type to_wait: Event, optional.
         """
         await self._logged_in.wait()
-        self.logger.info("Event logged in received in challenge")
+        self.logger.info("Event logged in received in send challenge")
 
         if to_wait is not None:
             await to_wait.wait()
