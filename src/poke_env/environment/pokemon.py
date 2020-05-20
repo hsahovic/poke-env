@@ -59,6 +59,13 @@ class Pokemon:
         self._heightm: int
         self._possible_abilities: List[str]
         self._species: str
+        self._stats: Dict[str, Optional[int]] = {
+            "atk": None,
+            "def": None,
+            "spa": None,
+            "spd": None,
+            "spe": None,
+        }
         self._type_1: PokemonType
         self._type_2: Optional[PokemonType] = None
         self._weightkg: int
@@ -564,6 +571,14 @@ class Pokemon:
         :rtype: Optional[str]
         """
         return self._species
+
+    @property
+    def stats(self) -> Dict[str, Optional[int]]:
+        """
+        :return: The pokemon's stats, as a dictionary.
+        :rtype: Dict[str, Optional[int]]
+        """
+        return self._stats
 
     @property
     def status(self) -> Optional[Status]:
