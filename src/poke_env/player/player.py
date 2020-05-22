@@ -2,6 +2,7 @@
 """This module defines a base class for players.
 """
 
+import asyncio
 import random
 
 from abc import ABC
@@ -29,6 +30,7 @@ from poke_env.server_configuration import LocalhostServerConfiguration
 from poke_env.server_configuration import ServerConfiguration
 from poke_env.teambuilder.teambuilder import Teambuilder
 from poke_env.teambuilder.constant_teambuilder import ConstantTeambuilder
+from poke_env.utils import to_id_str
 
 
 class Player(PlayerNetwork, ABC):
@@ -387,6 +389,23 @@ class Player(PlayerNetwork, ABC):
             "Laddering (%d battles) finished in %fs",
             n_games,
             perf_counter() - start_time,
+        )
+
+    async def battle_against(self, opponent: "Player", n_battles: int) -> None:
+        """Make the player play n_battles against opponent.
+
+        This function is a wrapper around send_challenges and accept challenges.
+
+        :param opponent: The opponent to play against.
+        :type opponent: Player
+        :param n_battles: The number of games to play.
+        :type n_battles: int
+        """
+        await asyncio.gather(
+            self.send_challenges(
+                to_id_str(opponent.username), n_battles, to_wait=opponent.logged_in
+            ),
+            opponent.accept_challenges(to_id_str(self.username), n_battles),
         )
 
     async def send_challenges(
