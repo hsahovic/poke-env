@@ -31,7 +31,7 @@ async def main():
 
     # Now, we can cross evaluate them: every player will player 20 games against every
     # other player.
-    cross_evaluation = await cross_evaluate(players, n_challenges=10)
+    cross_evaluation = await cross_evaluate(players, n_challenges=20)
 
     # Defines a header for displaying results
     table = [["-"] + [p.username for p in players]]
