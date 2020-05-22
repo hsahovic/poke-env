@@ -501,6 +501,10 @@ class Player(PlayerNetwork, ABC):
         return self._battles
 
     @property
+    def format(self) -> str:
+        return self._format
+
+    @property
     def n_finished_battles(self) -> int:
         return len([None for b in self._battles.values() if b.finished])
 
