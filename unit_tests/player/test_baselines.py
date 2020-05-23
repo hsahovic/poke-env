@@ -60,3 +60,42 @@ def test_simple_heuristics_player_estimate_matchup():
         player._estimate_matchup(dragapult, mamoswine)
         == -1 + player.SPEED_TIER_COEFICIENT + player.HP_FRACTION_COEFICIENT / 2
     )
+
+
+def test_simple_heuristics_player_should_dynamax():
+    PseudoBattle = namedtuple(
+        "PseudoBattle",
+        ["active_pokemon", "opponent_active_pokemon", "team", "can_dynamax"],
+    )
+    player = SimpleHeuristicsPlayer(start_listening=False)
+
+    battle = PseudoBattle(
+        Pokemon(species="charmander"), Pokemon(species="charmander"), {}, False
+    )
+    assert player._should_dynamax(battle, 4) is False
+
+    battle = PseudoBattle(
+        Pokemon(species="charmander"), Pokemon(species="charmander"), {}, True
+    )
+    assert player._should_dynamax(battle, 1) is True
+
+    battle.active_pokemon._set_hp("100/100")
+    battle.team["charmander"] = battle.active_pokemon
+    assert player._should_dynamax(battle, 4) is True
+
+    battle = PseudoBattle(
+        Pokemon(species="squirtle"),
+        Pokemon(species="charmander"),
+        {
+            "kakuna": Pokemon(species="kakuna"),
+            "venusaur": Pokemon(species="venusaur"),
+            "charmander": Pokemon(species="charmander"),
+        },
+        True,
+    )
+    for mon in battle.team.values():
+        mon._set_hp("100/100")
+    battle.active_pokemon._set_hp("100/100")
+    battle.opponent_active_pokemon._set_hp("100/100")
+
+    assert player._should_dynamax(battle, 4) is True
