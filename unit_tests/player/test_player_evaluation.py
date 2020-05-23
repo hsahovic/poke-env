@@ -2,6 +2,7 @@
 from poke_env.player.random_player import RandomPlayer
 from poke_env.player.utils import evaluate_player, _estimate_strength_from_results
 
+import math
 import pytest
 
 
@@ -67,6 +68,8 @@ def test_estimate_strength_from_results():
         0.8269230769230771,
         (0.5444919968130197, 1.2357621837082962),
     )
+
+    assert _estimate_strength_from_results(10 ** 17, 10 ** 17 - 10, 1)[1][1] == math.inf
 
 
 @pytest.mark.asyncio
