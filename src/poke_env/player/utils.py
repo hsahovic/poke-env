@@ -12,7 +12,7 @@ from typing import Optional
 from typing import Tuple
 
 import asyncio
-import numpy as np
+import math
 
 _EVALUATION_RATINGS = {
     RandomPlayer: 1,
@@ -76,7 +76,7 @@ def _estimate_strength_from_results(
 
     estimate = opponent_rating * p / q
     error = (
-        np.sqrt(n * p * q) / n * 1.96
+        math.sqrt(n * p * q) / n * 1.96
     )  # 95% confidence interval for normal distribution
 
     lower_bound = max(0, p - error)
@@ -85,7 +85,7 @@ def _estimate_strength_from_results(
     higher_bound = min(1, p + error)
 
     if higher_bound == 1:
-        higher_bound = np.inf
+        higher_bound = math.inf
     else:
         higher_bound = opponent_rating * higher_bound / (1 - higher_bound)
 
