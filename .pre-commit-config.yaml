@@ -17,5 +17,6 @@ repos:
       - id: detect-private-key
       - id: fix-encoding-pragma
       - id: mixed-line-ending
+      - id: pretty-format-json
       - id: requirements-txt-fixer
       - id: trailing-whitespace
