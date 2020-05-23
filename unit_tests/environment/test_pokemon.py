@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from poke_env.environment.move import Move
 from poke_env.environment.pokemon import Pokemon
 from poke_env.environment.pokemon_type import PokemonType
 
@@ -49,3 +50,17 @@ def test_pokemon_types():
     mon._primal()
     assert mon.type_1 == PokemonType.GROUND
     assert mon.type_2 == PokemonType.FIRE
+
+
+def test_pokemon_damage_multiplier():
+    mon = Pokemon(species="pikachu")
+    assert mon.damage_multiplier(PokemonType.GROUND) == 2
+    assert mon.damage_multiplier(PokemonType.ELECTRIC) == 0.5
+
+    mon = Pokemon(species="garchomp")
+    assert mon.damage_multiplier(Move("icebeam")) == 4
+    assert mon.damage_multiplier(Move("dracometeor")) == 2
+
+    mon = Pokemon(species="linoone")
+    assert mon.damage_multiplier(Move("closecombat")) == 2
+    assert mon.damage_multiplier(PokemonType.GHOST) == 0
