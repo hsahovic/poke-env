@@ -3,7 +3,6 @@ import asyncio
 import numpy as np
 
 from poke_env.player.random_player import RandomPlayer
-from poke_env.player.utils import cross_evaluate
 from poke_env.teambuilder.teambuilder import Teambuilder
 
 
@@ -143,10 +142,7 @@ async def main():
         battle_format="gen8ou", team=custom_builder, max_concurrent_battles=10
     )
 
-    await cross_evaluate([player_1, player_2], n_challenges=5)
-
-    for battle in player_1.battles:
-        print(battle)
+    await player_1.battle_against(player_2, n_battles=5)
 
 
 if __name__ == "__main__":

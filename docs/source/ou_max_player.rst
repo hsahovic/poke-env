@@ -304,7 +304,7 @@ To attribute a team to an agent, you need to pass a ``team`` argument to the age
 Running and testing our agent
 *****************************
 
-We can now test our agent by crossing evaluating it with a random agent. The complete code is:
+We can now test our agent. To do so, we can use the ``cross_evaluate`` function from ``poke_env.player.utils`` or the ``battle_against`` method from ``Player``.
 
 .. code-block:: python
 
@@ -313,7 +313,6 @@ We can now test our agent by crossing evaluating it with a random agent. The com
 
     from poke_env.player.player import Player
     from poke_env.player.random_player import RandomPlayer
-    from poke_env.player.utils import cross_evaluate
 
 
     class MaxDamagePlayer(Player):
@@ -493,13 +492,11 @@ We can now test our agent by crossing evaluating it with a random agent. The com
     )
 
     # Now, let's evaluate our player
-    cross_evaluation = await cross_evaluate(
-        [random_player, max_damage_player], n_challenges=50
-    )
+    await max_damage_player.battle_against(random_player, n_battles = 100)
 
     print(
         "Max damage player won %d / 100 battles"
-        % (cross_evaluation[max_damage_player.username][random_player.username] * 100)
+        % max_damage_player.n_won_battles
     )
 
 
