@@ -99,3 +99,99 @@ def test_simple_heuristics_player_should_dynamax():
     battle.opponent_active_pokemon._set_hp("100/100")
 
     assert player._should_dynamax(battle, 4) is True
+
+
+def test_simple_heuristics_player_should_switch_out():
+    PseudoBattle = namedtuple(
+        "PseudoBattle",
+        ["active_pokemon", "opponent_active_pokemon", "available_switches"],
+    )
+    player = SimpleHeuristicsPlayer(start_listening=False)
+
+    battle = PseudoBattle(
+        Pokemon(species="charmander"), Pokemon(species="charmander"), []
+    )
+    assert player._should_switch_out(battle) is False
+
+    battle.available_switches.append(Pokemon(species="venusaur"))
+    assert player._should_switch_out(battle) is False
+
+    battle.available_switches.append(Pokemon(species="gyarados"))
+    assert player._should_switch_out(battle) is False
+
+    battle.active_pokemon._boost("spa", -3)
+    battle.active_pokemon.stats.update({"atk": 10, "spa": 20})
+    assert player._should_switch_out(battle) is True
+
+    battle.active_pokemon.stats.update({"atk": 30, "spa": 20})
+    assert player._should_switch_out(battle) is False
+
+    battle.active_pokemon._boost("atk", -3)
+    assert player._should_switch_out(battle) is True
+
+    battle = PseudoBattle(
+        Pokemon(species="gible"),
+        Pokemon(species="mamoswine"),
+        [Pokemon(species="charizard")],
+    )
+    assert player._should_switch_out(battle) is True
+
+
+def test_simple_heuristics_player_stat_estimation():
+    player = SimpleHeuristicsPlayer(start_listening=False)
+    mon = Pokemon(species="charizard")
+
+    assert player._stat_estimation(mon, "spe") == 236
+
+    mon._boost("spe", 2)
+    assert player._stat_estimation(mon, "spe") == 472
+
+    mon._boost("atk", -1)
+    assert player._stat_estimation(mon, "atk") == 136
+
+
+def test_simple_heuristics_player():
+    player = SimpleHeuristicsPlayer(start_listening=False)
+
+    PseudoBattle = namedtuple(
+        "PseudoBattle",
+        (
+            "active_pokemon",
+            "opponent_active_pokemon",
+            "available_moves",
+            "available_switches",
+            "team",
+            "can_dynamax",
+            "side_conditions",
+            "opponent_side_conditions",
+        ),
+    )
+    battle = PseudoBattle(
+        Pokemon(species="dragapult"),
+        Pokemon(species="gengar"),
+        [],
+        [Pokemon(species="togekiss")],
+        {},
+        True,
+        set(),
+        set(),
+    )
+    battle.active_pokemon._stats = {stat: 100 for stat in battle.active_pokemon._stats}
+
+    battle.available_switches[0]._set_hp("100/100")
+    assert player.choose_move(battle) == "/choose switch togekiss"
+
+    battle.available_moves.append(Move("quickattack"))
+    assert player.choose_move(battle) == "/choose move quickattack"
+
+    battle.available_moves.append(Move("flamethrower"))
+    assert player.choose_move(battle) == "/choose move flamethrower"
+
+    battle.available_moves.append(Move("dracometeor"))
+    assert player.choose_move(battle) == "/choose move dracometeor"
+
+    battle.active_pokemon._boost("atk", -3)
+    battle.active_pokemon._boost("spa", -3)
+    battle.available_switches.append(Pokemon(species="sneasel"))
+    battle.available_switches[1]._set_hp("100/100")
+    assert player.choose_move(battle) == "/choose switch sneasel"
