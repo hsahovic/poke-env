@@ -4,7 +4,6 @@ import numpy as np
 
 from poke_env.player.player import Player
 from poke_env.player.random_player import RandomPlayer
-from poke_env.player.utils import cross_evaluate
 
 
 class MaxDamagePlayer(Player):
@@ -180,14 +179,9 @@ Jolly Nature
     )
 
     # Now, let's evaluate our player
-    cross_evaluation = await cross_evaluate(
-        [random_player, max_damage_player], n_challenges=50
-    )
+    await max_damage_player.battle_against(random_player, n_battles=100)
 
-    print(
-        "Max damage player won %d / 100 battles"
-        % (cross_evaluation[max_damage_player.username][random_player.username] * 100)
-    )
+    print("Max damage player won %d / 100 battles" % max_damage_player.n_won_battles)
 
 
 if __name__ == "__main__":

@@ -99,7 +99,6 @@ class SimpleHeuristicsPlayer(Player):
             boost = (2 + mon.boosts[stat]) / 2
         else:
             boost = 2 / (2 - mon.boosts[stat])
-
         return ((2 * mon.base_stats[stat] + 31) + 5) * boost
 
     def choose_move(self, battle):
