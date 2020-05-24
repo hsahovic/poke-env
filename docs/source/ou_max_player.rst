@@ -304,7 +304,9 @@ To attribute a team to an agent, you need to pass a ``team`` argument to the age
 Running and testing our agent
 *****************************
 
-We can now test our agent by crossing evaluating it with a random agent. The complete code is:
+We can now test our agent. To do so, we can use the ``cross_evaluate`` function from ``poke_env.player.utils`` or the ``battle_against`` method from ``Player``. Here, we will use the ``battle_against`` method.
+
+The complete example code is:
 
 .. code-block:: python
 
