@@ -5,6 +5,7 @@ from typing import List
 from typing import Optional
 from typing import Set
 from typing import Tuple
+from typing import Union
 
 from poke_env.data import POKEDEX
 from poke_env.environment.effect import Effect
@@ -59,6 +60,13 @@ class Pokemon:
         self._heightm: int
         self._possible_abilities: List[str]
         self._species: str
+        self._stats: Dict[str, Optional[int]] = {
+            "atk": None,
+            "def": None,
+            "spa": None,
+            "spd": None,
+            "spe": None,
+        }
         self._type_1: PokemonType
         self._type_2: Optional[PokemonType] = None
         self._weightkg: int
@@ -359,6 +367,22 @@ class Pokemon:
         self._status = None
         self._switch_out()
 
+    def damage_multiplier(self, type_or_move: Union[PokemonType, Move]) -> float:
+        """
+        Returns the damage multiplier associated with a given type or move on this
+        pokemon.
+
+        This method is a shortcut for PokemonType.damage_multiplier with relevant types.
+
+        :param type_or_move: The type or move of interest.
+        :type type_or_move: PokemonType or Move
+        :return: The damage multiplier associated with given type on the pokemon.
+        :rtype: float
+        """
+        if isinstance(type_or_move, Move):
+            type_or_move = type_or_move.type
+        return type_or_move.damage_multiplier(self._type_1, self._type_2)
+
     @property
     def ability(self) -> Optional[str]:
         """
@@ -564,6 +588,14 @@ class Pokemon:
         :rtype: Optional[str]
         """
         return self._species
+
+    @property
+    def stats(self) -> Dict[str, Optional[int]]:
+        """
+        :return: The pokemon's stats, as a dictionary.
+        :rtype: Dict[str, Optional[int]]
+        """
+        return self._stats
 
     @property
     def status(self) -> Optional[Status]:

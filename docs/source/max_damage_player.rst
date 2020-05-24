@@ -82,7 +82,7 @@ We also have to return an order corresponding to a random switch if the player c
 Running and testing our agent
 *****************************
 
-We can now test our agent by crossing evaluating it with a random agent. The complete code is:
+We can now test our agent by making it battle a random agent. The complete code is:
 
 .. code-block:: python
 
@@ -92,7 +92,6 @@ We can now test our agent by crossing evaluating it with a random agent. The com
 
     from poke_env.player.player import Player
     from poke_env.player.random_player import RandomPlayer
-    from poke_env.player.utils import cross_evaluate
 
 
     class MaxDamagePlayer(Player):
@@ -119,18 +118,15 @@ We can now test our agent by crossing evaluating it with a random agent. The com
             battle_format="gen8randombattle",
         )
 
-        # Now, let's evaluate our player
-        cross_evaluation = await cross_evaluate(
-            [random_player, max_damage_player], n_challenges=100
-        )
+    # Now, let's evaluate our player
+    await max_damage_player.battle_against(random_player, n_battles=100)
 
-        print(
-            "Max damage player won %d / 100 battles [this took %f seconds]"
-            % (
-                cross_evaluation[max_damage_player.username][random_player.username] * 100,
-                time.time() - start,
-            )
+    print(
+        "Max damage player won %d / 100 battles [this took %f seconds]"
+        % (
+            max_damage_player.n_won_battles, time.time() - start
         )
+    )
 
 
     if __name__ == "__main__":

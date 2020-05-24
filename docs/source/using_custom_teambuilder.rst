@@ -192,7 +192,7 @@ Now that we have two players with custom teambuilders, we can make them battle!
 
 .. code-block:: python
 
-    await cross_evaluate([player_1, player_2], n_challenges=5)
+    await player_1.battle_against(player_2, n_battles=5)
 
 The complete example looks like that:
 
@@ -203,7 +203,6 @@ The complete example looks like that:
     import numpy as np
 
     from poke_env.player.random_player import RandomPlayer
-    from poke_env.player.utils import cross_evaluate
     from poke_env.teambuilder.teambuilder import Teambuilder
 
 
@@ -347,10 +346,7 @@ The complete example looks like that:
             max_concurrent_battles=10,
         )
 
-        await cross_evaluate([player_1, player_2], n_challenges=5)
-
-        for battle in player_1.battles:
-            print(battle)
+        await player_1.battle_against(player_2, n_battles=5)
 
 
     if __name__ == "__main__":
