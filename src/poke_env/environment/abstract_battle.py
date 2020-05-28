@@ -238,7 +238,7 @@ class AbstractBattle(ABC):
         elif split_message[1] == "-clearallboost":
             self.active_pokemon._clear_boosts()
             if self.opponent_active_pokemon is not None:
-                self.opponent_active_pokemon._clear_boosts()  # pyre-ignore
+                self.opponent_active_pokemon._clear_boosts()
         elif split_message[1] == "-clearboost":
             pokemon = split_message[2]
             self.get_pokemon(pokemon)._clear_boosts()
@@ -581,7 +581,7 @@ class AbstractBattle(ABC):
         """
         if (
                 self.opponent_active_pokemon is not None
-        ) and self.opponent_active_pokemon.is_dynamaxed:  # pyre-ignore
+        ) and self.opponent_active_pokemon.is_dynamaxed:
             return 3 - (self.turn - self._opponent_dynamax_turn)  # pyre-ignore
 
     @property
