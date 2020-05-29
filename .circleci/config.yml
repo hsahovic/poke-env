@@ -29,10 +29,15 @@ jobs:
     steps:
       - checkout
 
+      - run:
+          name: Store python version into a file
+          command: |
+            python3 --version > python-version.txt
+
       # Download and cache dependencies
       - restore_cache:
           keys:
-            - requirements-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}-{{ python -version }}
+            - requirements-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}-{{ checksum "python-version.txt" }}
 
       - run:
           name: install dependencies
