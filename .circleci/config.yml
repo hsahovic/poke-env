@@ -135,7 +135,7 @@ jobs:
           paths:
             - ./venv
             - ./Pokemon-Showdown
-          key: requirements-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}-{{ python -v }}
+          key: requirements-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}-{{ checksum "python-version.txt" }}
 
       - run:
           name: Start showdown server in the background
