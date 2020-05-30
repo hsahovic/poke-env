@@ -7,6 +7,7 @@ from poke_env.environment.battle import Battle
 from poke_env.environment.field import Field
 from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.side_condition import SideCondition
+from poke_env.environment.status import Status
 from poke_env.environment.weather import Weather
 
 
@@ -61,13 +62,13 @@ def test_battle_side_start_end():
     assert not battle.side_conditions
 
     condition = "safeguard"
-    battle._side_start("p1", condition)
-    battle._side_start("p2", condition)
+    battle._parse_message(["", "-sidestart", "p1", condition])
+    battle._parse_message(["", "-sidestart", "p2", condition])
     assert battle.side_conditions == {SideCondition.SAFEGUARD}
     assert battle.opponent_side_conditions == {SideCondition.SAFEGUARD}
 
-    battle._side_end("p1", condition)
-    battle._side_end("p2", condition)
+    battle._parse_message(["", "-sideend", "p1", condition])
+    battle._parse_message(["", "-sideend", "p2", condition])
     assert not battle.side_conditions
     assert not battle.opponent_side_conditions
 
@@ -117,3 +118,58 @@ def test_battle_weather_interactions():
 
     battle._parse_message(["", "-weather", "none"])
     assert battle.weather is None
+
+
+def test_battle_player_role_interaction():
+    logger = MagicMock()
+    battle = Battle("tag", "username", logger)
+
+    battle._parse_message(["", "player", "p4", "username", "", ""])
+    assert battle._player_role == "p4"
+
+
+def test_battle_tag():
+    logger = MagicMock()
+    battle = Battle("tag", "username", logger)
+
+    assert battle.battle_tag == "tag"
+
+
+def test_battle_request_parsing(example_request):
+    logger = MagicMock()
+    battle = Battle("tag", "username", logger)
+
+    battle._parse_request(example_request)
+
+    mon = battle.active_pokemon
+
+    assert mon.species == "Venusaur"
+    assert mon.current_hp_fraction == 139 / 265
+    assert mon.stats == {"atk": 139, "def": 183, "spa": 211, "spd": 211, "spe": 178}
+
+    moves = mon.moves
+    assert (
+        len(moves) == 4
+        and "leechseed" in moves
+        and "sleeppowder" in moves
+        and "substitute" in moves
+        and "sludgebomb" in moves
+    )
+    assert mon.ability == "chlorophyll"
+
+    team = battle.team
+
+    species = {m.species for m in team.values()}
+    assert species == {
+        "Venusaur",
+        "Morpeko",
+        "Unfezant",
+        "Giratina",
+        "Necrozma",
+        "Marshadow",
+    }
+
+    assert len(battle.available_switches) == 4
+    assert len(battle.available_moves) == 4
+
+    assert team["p2: Necrozma"].status == Status.TOX
