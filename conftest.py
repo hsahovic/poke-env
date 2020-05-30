@@ -35,3 +35,9 @@ def packed_format_teams(raw_team_data):
 def raw_team_data():
     with open(os.path.join(FIXTURE_DIR, "teams.json")) as f:
         return json.load(f)
+
+
+@fixture
+def example_request():
+    with open(os.path.join(FIXTURE_DIR, "example_request.json")) as f:
+        return json.load(f)
