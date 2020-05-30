@@ -119,7 +119,7 @@ jobs:
       - run:
           name: Download showdown or update it
           command: |
-            if [ -d "/Pokemon-Showdown" ]
+            if [ -d "Pokemon-Showdown" ]
             then
                 cd Pokemon-Showdown;git pull
             else
