@@ -173,3 +173,55 @@ def test_battle_request_parsing(example_request):
     assert len(battle.available_moves) == 4
 
     assert team["p2: Necrozma"].status == Status.TOX
+
+
+def test_battle_request_and_interactions(example_request):
+    logger = MagicMock()
+    battle = Battle("tag", "username", logger)
+
+    battle._parse_request(example_request)
+    mon = battle.active_pokemon
+
+    battle._parse_message(["", "-boost", "p2: Venusaur", "atk", "4"])
+    assert mon.boosts["atk"] == 4
+
+    battle._parse_message(["", "-clearallboost"])
+    assert mon.boosts["atk"] == 0
+
+    battle._parse_message(["", "-boost", "p2: Venusaur", "atk", "4"])
+    assert mon.boosts["atk"] == 4
+
+    battle._parse_message(["", "-clearboost", "p2: Venusaur"])
+    assert mon.boosts["atk"] == 0
+
+    battle._parse_message(["", "-boost", "p2: Venusaur", "atk", "4"])
+    assert mon.boosts["atk"] == 4
+
+    battle._parse_message(["", "-clearpositiveboost", "p2: Venusaur"])
+    assert mon.boosts["atk"] == 0
+
+    battle._parse_message(["", "-boost", "p2: Venusaur", "atk", "4"])
+    assert mon.boosts["atk"] == 4
+
+    battle._parse_message(["", "-clearpositiveboost", "p2: Venusaur"])
+    assert mon.boosts["atk"] == 0
+
+    battle._parse_message(["", "-boost", "p2: Venusaur", "atk", "4"])
+    assert mon.boosts["atk"] == 4
+
+    battle._parse_message(["", "-clearnegativeboost", "p2: Venusaur"])
+    assert mon.boosts["atk"] == 4
+
+    battle._parse_message(
+        ["", "switch", "p2: Necrozma", "Necrozma, L82", "121/293 tox"]
+    )
+    assert mon.boosts["atk"] == 0
+
+    assert battle.active_pokemon.species == "Necrozma"
+    assert battle.active_pokemon.status == Status.TOX
+
+    battle._parse_message(["", "-curestatus", "p2: Necrozma", "par"])
+    assert battle.active_pokemon.status == Status.TOX
+
+    battle._parse_message(["", "-curestatus", "p2: Necrozma", "tox"])
+    assert not battle.active_pokemon.status
