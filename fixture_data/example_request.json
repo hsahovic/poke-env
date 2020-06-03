@@ -1,0 +1,185 @@
+{
+    "active": [
+        {
+            "moves": [
+                {
+                    "move": "Leech Seed",
+                    "id": "leechseed",
+                    "pp": 15,
+                    "maxpp": 16,
+                    "target": "normal",
+                    "disabled": false
+                },
+                {
+                    "move": "Sleep Powder",
+                    "id": "sleeppowder",
+                    "pp": 24,
+                    "maxpp": 24,
+                    "target": "normal",
+                    "disabled": false
+                },
+                {
+                    "move": "Substitute",
+                    "id": "substitute",
+                    "pp": 15,
+                    "maxpp": 16,
+                    "target": "self",
+                    "disabled": false
+                },
+                {
+                    "move": "Sludge Bomb",
+                    "id": "sludgebomb",
+                    "pp": 15,
+                    "maxpp": 16,
+                    "target": "normal",
+                    "disabled": false
+                }
+            ]
+        }
+    ],
+    "side": {
+        "name": "RandomPlayer 3",
+        "id": "p2",
+        "pokemon": [
+            {
+                "ident": "p2: Venusaur",
+                "details": "Venusaur, L82, M",
+                "condition": "139/265",
+                "active": true,
+                "stats": {
+                    "atk": 139,
+                    "def": 183,
+                    "spa": 211,
+                    "spd": 211,
+                    "spe": 178
+                },
+                "moves": [
+                    "leechseed",
+                    "sleeppowder",
+                    "substitute",
+                    "sludgebomb"
+                ],
+                "baseAbility": "chlorophyll",
+                "item": "blacksludge",
+                "pokeball": "pokeball",
+                "ability": "chlorophyll"
+            },
+            {
+                "ident": "p2: Morpeko",
+                "details": "Morpeko, L84, F",
+                "condition": "0 fnt",
+                "active": false,
+                "stats": {
+                    "atk": 208,
+                    "def": 146,
+                    "spa": 166,
+                    "spd": 146,
+                    "spe": 211
+                },
+                "moves": [
+                    "partingshot",
+                    "psychicfangs",
+                    "foulplay",
+                    "aurawheel"
+                ],
+                "baseAbility": "hungerswitch",
+                "item": "choiceband",
+                "pokeball": "pokeball",
+                "ability": "hungerswitch"
+            },
+            {
+                "ident": "p2: Unfezant",
+                "details": "Unfezant, L86, M",
+                "condition": "79/278",
+                "active": false,
+                "stats": {
+                    "atk": 247,
+                    "def": 187,
+                    "spa": 161,
+                    "spd": 144,
+                    "spe": 209
+                },
+                "moves": [
+                    "defog",
+                    "bravebird",
+                    "uturn",
+                    "roost"
+                ],
+                "baseAbility": "superluck",
+                "item": "",
+                "pokeball": "pokeball",
+                "ability": "superluck"
+            },
+            {
+                "ident": "p2: Giratina",
+                "details": "Giratina, L72",
+                "condition": "191/335",
+                "active": false,
+                "stats": {
+                    "atk": 149,
+                    "def": 215,
+                    "spa": 186,
+                    "spd": 215,
+                    "spe": 172
+                },
+                "moves": [
+                    "dracometeor",
+                    "calmmind",
+                    "willowisp",
+                    "shadowball"
+                ],
+                "baseAbility": "pressure",
+                "item": "leftovers",
+                "pokeball": "pokeball",
+                "ability": "pressure"
+            },
+            {
+                "ident": "p2: Necrozma",
+                "details": "Necrozma, L82",
+                "condition": "121/293 tox",
+                "active": false,
+                "stats": {
+                    "atk": 180,
+                    "def": 213,
+                    "spa": 255,
+                    "spd": 193,
+                    "spe": 177
+                },
+                "moves": [
+                    "moonlight",
+                    "photongeyser",
+                    "calmmind",
+                    "heatwave"
+                ],
+                "baseAbility": "prismarmor",
+                "item": "leftovers",
+                "pokeball": "pokeball",
+                "ability": "prismarmor"
+            },
+            {
+                "ident": "p2: Marshadow",
+                "details": "Marshadow, L72",
+                "condition": "95/249",
+                "active": false,
+                "stats": {
+                    "atk": 222,
+                    "def": 157,
+                    "spa": 172,
+                    "spd": 172,
+                    "spe": 222
+                },
+                "moves": [
+                    "bulkup",
+                    "icepunch",
+                    "closecombat",
+                    "spectralthief"
+                ],
+                "baseAbility": "technician",
+                "item": "lifeorb",
+                "pokeball": "pokeball",
+                "ability": "technician"
+            }
+        ]
+    },
+    "rqid": 137
+}

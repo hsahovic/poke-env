@@ -2,20 +2,14 @@
 import asyncio
 import pytest
 
-from poke_env.player.random_player import RandomPlayer
+from poke_env.player.baselines import SimpleHeuristicsPlayer
 from poke_env.player.utils import cross_evaluate
-from poke_env.player_configuration import PlayerConfiguration
-from poke_env.server_configuration import LocalhostServerConfiguration
 
 
 async def cross_evaluation(n_battles, format_, teams):
     players = [
-        RandomPlayer(
-            player_configuration=PlayerConfiguration("Player %d" % i, None),
-            battle_format=format_,
-            server_configuration=LocalhostServerConfiguration,
-            max_concurrent_battles=n_battles,
-            team=team,
+        SimpleHeuristicsPlayer(
+            battle_format=format_, max_concurrent_battles=n_battles, team=team
         )
         for i, team in enumerate(teams)
     ]
@@ -27,8 +21,11 @@ async def cross_evaluation(n_battles, format_, teams):
 
 @pytest.mark.asyncio
 async def test_all_formats_cross_evaluation(showdown_format_teams):
-    for format_, teams in showdown_format_teams.items():
-        await asyncio.wait_for(
+    coroutines = [
+        asyncio.wait_for(
             cross_evaluation(n_battles=5, format_=format_, teams=teams),
             timeout=3 * (len(teams) ** 2) + 3,
         )
+        for format_, teams in showdown_format_teams.items()
+    ]
+    await asyncio.gather(*coroutines)

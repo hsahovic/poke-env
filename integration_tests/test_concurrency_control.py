@@ -5,10 +5,8 @@ These tests aim to verify that concurrency control is working properly.
 import asyncio
 import pytest
 
-from poke_env.player.random_player import RandomPlayer
+from poke_env.player.baselines import RandomPlayer, SimpleHeuristicsPlayer
 from poke_env.player.utils import cross_evaluate
-from poke_env.player_configuration import PlayerConfiguration
-from poke_env.server_configuration import LocalhostServerConfiguration
 
 
 class MoveCallTrackingRandomPlayer(RandomPlayer):
@@ -21,21 +19,9 @@ class MoveCallTrackingRandomPlayer(RandomPlayer):
 
 
 async def simple_cross_evaluation(n_battles, n_concurrent_battles):
-    player_1_configuration = PlayerConfiguration("Player 1", None)
-    player_2_configuration = PlayerConfiguration("Player 2", None)
     players = [
-        RandomPlayer(
-            player_configuration=player_1_configuration,
-            battle_format="gen7randombattle",
-            server_configuration=LocalhostServerConfiguration,
-            max_concurrent_battles=n_concurrent_battles,
-        ),
-        MoveCallTrackingRandomPlayer(
-            player_configuration=player_2_configuration,
-            battle_format="gen7randombattle",
-            server_configuration=LocalhostServerConfiguration,
-            max_concurrent_battles=n_concurrent_battles,
-        ),
+        SimpleHeuristicsPlayer(max_concurrent_battles=n_concurrent_battles),
+        MoveCallTrackingRandomPlayer(max_concurrent_battles=n_concurrent_battles),
     ]
     await cross_evaluate(players, n_challenges=n_battles)
 
