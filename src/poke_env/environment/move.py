@@ -462,7 +462,22 @@ class Move:
     @property
     def target(self) -> str:
         """
-        :return: Move target.
+        :return: Move target. Possible targets (copied from PS codebase):
+            * adjacentAlly - Only relevant to Doubles or Triples, the move only targets an ally of the user.
+            * adjacentAllyOrSelf - The move can target the user or its ally.
+            * adjacentFoe - The move can target a foe, but not (in Triples) a distant foe.
+            * all - The move targets the field or all Pokémon at once.
+            * allAdjacent - The move is a spread move that also hits the user's ally.
+            * allAdjacentFoes - The move is a spread move.
+            * allies - The move affects all active Pokémon on the user's team.
+            * allySide - The move adds a side condition on the user's side.
+            * allyTeam - The move affects all unfainted Pokémon on the user's team.
+            * any - The move can hit any other active Pokémon, not just those adjacent.
+            * foeSide - The move adds a side condition on the foe's side.
+            * normal - The move can hit one adjacent Pokémon of your choice.
+            * randomNormal - The move targets an adjacent foe at random.
+            * scripted - The move targets the foe that damaged the user.
+            * self - The move affects the user of the move.
         :rtype: str
         """
         return self.entry["target"]
