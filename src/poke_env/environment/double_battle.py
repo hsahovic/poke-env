@@ -5,6 +5,7 @@ from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Tuple
+from typing import Union
 
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.move import Move
@@ -73,7 +74,7 @@ class DoubleBattle(AbstractBattle):
             self._wait = False
 
         self._available_moves = [[], []]
-        self._available_switches = [[], []]
+        self._available_switches = []
         self._can_mega_evolve = [False, False]
         self._can_z_move = [False, False]
         self._can_dynamax = [False, False]
@@ -186,7 +187,7 @@ class DoubleBattle(AbstractBattle):
         team[pokemon_identifier] = pokemon_in
 
     @property
-    def active_pokemon(self) -> Tuple[Pokemon]:
+    def active_pokemon(self) -> Tuple[Pokemon, ...]:
         """
         :return: The active pokemon
         :rtype: a tuple of one/two Pokemon
@@ -206,6 +207,14 @@ class DoubleBattle(AbstractBattle):
         :rtype: List[bool]
         """
         return self._available_moves
+
+    @property
+    def can_dynamax(self) -> List[bool]:
+        """
+        :return: Wheter of not the current active pokemon can dynamax
+        :rtype: List[bool
+        """
+        return self._can_dynamax
 
     @property
     def can_mega_evolve(self) -> List[bool]:
@@ -242,7 +251,7 @@ class DoubleBattle(AbstractBattle):
         return self._maybe_trapped
 
     @property
-    def opponent_active_pokemon(self) -> Optional[Tuple[Pokemon]]:
+    def opponent_active_pokemon(self) -> Optional[Tuple[Pokemon, ...]]:
         """
         :return: The opponent active pokemon (one or two).
         :rtype: a tuple of two Pokemon or a single Pokemon instance
@@ -253,6 +262,21 @@ class DoubleBattle(AbstractBattle):
         if len(active_pokemon) > 0:
             return active_pokemon
         return None
+
+    @property
+    def opponent_can_dynamax(self) -> List[bool]:
+        """
+        :return: Wheter of not opponent's current active pokemon can dynamax
+        :rtype: bool
+        """
+        return self._opponent_can_dynamax
+
+    @opponent_can_dynamax.setter
+    def opponent_can_dynamax(self, value: Union[bool, List[bool]]) -> None:
+        if isinstance(value, bool):
+            self._opponent_can_dynamax = [value, value]
+        else:
+            self._opponent_can_dynamax = value
 
     @property
     def trapped(self) -> List[bool]:

@@ -185,6 +185,14 @@ class Battle(AbstractBattle):
         return self._available_moves
 
     @property
+    def can_dynamax(self) -> bool:
+        """
+        :return: Wheter of not the current active pokemon can dynamax
+        :rtype: bool
+        """
+        return self._can_dynamax
+
+    @property
     def can_mega_evolve(self) -> bool:
         """
         :return: Wheter of not the current active pokemon can mega evolve.
@@ -228,6 +236,18 @@ class Battle(AbstractBattle):
             if pokemon.active:
                 return pokemon
         return None
+
+    @property
+    def opponent_can_dynamax(self) -> bool:
+        """
+        :return: Wheter of not opponent's current active pokemon can dynamax
+        :rtype: bool
+        """
+        return self._opponent_can_dynamax
+
+    @opponent_can_dynamax.setter
+    def opponent_can_dynamax(self, value: bool) -> None:
+        self._opponent_can_dynamax = value
 
     @property
     def trapped(self) -> bool:

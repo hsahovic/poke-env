@@ -146,7 +146,7 @@ class AbstractBattle(ABC):
         self._opponent_team: Dict[str, Pokemon] = {}
 
     def get_pokemon(
-            self, identifier: str, force_self_team: bool = False, details: str = ""
+        self, identifier: str, force_self_team: bool = False, details: str = ""
     ) -> Pokemon:
         """Returns the Pokemon object corresponding to given identifier. Can force to
         return object from the player's team if force_self_team is True. If the Pokemon
@@ -312,14 +312,11 @@ class AbstractBattle(ABC):
                     self._dynamax_turn = self.turn
                 # self._can_dynamax value is set via _parse_request()
                 elif (
-                        pokemon in set(self.opponent_team.values())
-                        and self._opponent_dynamax_turn is None
+                    pokemon in set(self.opponent_team.values())
+                    and self._opponent_dynamax_turn is None
                 ):
                     self._opponent_dynamax_turn = self.turn
-                    if isinstance(self._opponent_can_dynamax, list):
-                        self._opponent_can_dynamax = [False, False]
-                    else:
-                        self._opponent_can_dynamax = False
+                    self.opponent_can_dynamax = False
         elif split_message[1] == "-status":
             pokemon, status = split_message[2:4]
             self.get_pokemon(pokemon).status = status
@@ -474,14 +471,6 @@ class AbstractBattle(ABC):
         return self._battle_tag
 
     @property
-    def can_dynamax(self) -> bool:
-        """
-        :return: Wheter of not the current active pokemon can dynamax
-        :rtype: bool
-        """
-        return self._can_dynamax
-
-    @property
     @abstractmethod
     def can_mega_evolve(self):
         pass
@@ -550,12 +539,14 @@ class AbstractBattle(ABC):
         pass
 
     @property
+    @abstractmethod
     def opponent_can_dynamax(self) -> bool:
-        """
-        :return: Wheter of not opponent's current active pokemon can dynamax
-        :rtype: bool
-        """
-        return self._opponent_can_dynamax
+        pass
+
+    @opponent_can_dynamax.setter
+    @abstractmethod
+    def opponent_can_dynamax(self, value) -> None:
+        pass
 
     @property
     def opponent_dynamax_turns_left(self) -> Optional[int]:
