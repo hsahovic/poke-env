@@ -2,13 +2,57 @@
 
 from aiologger import Logger  # pyre-ignore
 from typing import Dict
+from typing import List
+from typing import Optional
+from typing import Tuple
+from typing import Union
 
 from poke_env.environment.abstract_battle import AbstractBattle
+from poke_env.environment.move import Move
+from poke_env.environment.pokemon import Pokemon
+from poke_env.environment.move import special_moves
 
 
 class DoubleBattle(AbstractBattle):
     def __init__(self, battle_tag: str, username: str, logger: Logger):  # pyre-ignore
         super(DoubleBattle, self).__init__(battle_tag, username, logger)
+
+        # Turn choice attributes
+        self._available_moves: List[List[Move]] = [[], []]
+        self._can_mega_evolve: List[bool] = [False, False]
+        self._can_z_move: List[bool] = [False, False]
+        self._can_dynamax: List[bool] = [False, False]
+        self._opponent_can_dynamax: List[bool] = [True, True]
+        self._force_switch: List[bool] = [False, False]
+        self._maybe_trapped: List[bool] = [False, False]
+        self._trapped: List[bool] = [False, False]
+        self._force_swap: List[bool] = [False, False]
+
+        # Battle state attributes
+        self._active_pokemon: Dict[str, Pokemon] = {}
+        self._opponent_active_pokemon: Dict[str, Pokemon] = {}
+
+    def _clear_all_boosts(self):
+        for active_pokemon_group in (self.active_pokemon, self.opponent_active_pokemon):
+            for active_pokemon in active_pokemon_group:
+                active_pokemon._clear_boosts()
+
+    def _end_illusion(self, pokemon_name: str, details: str):
+        player_identifier = pokemon_name[:2]
+        pokemon_identifier = pokemon_name[:3]
+        if player_identifier == self._player_role:
+            active = self._active_pokemon.get(pokemon_identifier)
+        else:
+            active = self._opponent_active_pokemon.get(pokemon_identifier)
+
+        if active is None:
+            raise ValueError("Cannot end illusion without an active pokemon.")
+
+        pokemon = self.get_pokemon(pokemon_name, details=details)
+        pokemon._set_hp(f"{active.current_hp}/{active.max_hp}")
+        active._was_illusionned()
+        pokemon._switch_in()
+        pokemon.status = active.status
 
     def _parse_request(self, request: Dict) -> None:
         """
@@ -18,67 +62,188 @@ class DoubleBattle(AbstractBattle):
         Args:
             request (dict): parsed json request object
         """
-        pass
+        self.logger.debug(
+            "Parsing the following request update in battle %s:\n%s",
+            self.battle_tag,
+            request,
+        )
+
+        if "wait" in request and request["wait"]:
+            self._wait = True
+        else:
+            self._wait = False
+
+        self._available_moves = [[], []]
+        self._available_switches = [[], []]
+        self._can_mega_evolve = [False, False]
+        self._can_z_move = [False, False]
+        self._can_dynamax = [False, False]
+        self._maybe_trapped = [False, False]
+        self._trapped = [False, False]
+        self._force_switch = request.get("forceSwitch", False)
+
+        if self._force_switch:
+            self._move_on_next_request = True
+
+        if request["rqid"]:
+            self._rqid = max(self._rqid, request["rqid"])
+
+        if request.get("teamPreview", False):
+            self._teampreview = True
+            self._max_team_size = request["maxTeamSize"]
+        else:
+            self._teampreview = False
+        self._update_team_from_request(request["side"])
+
+        if "active" in request:
+            for active_pokemon_number, active_request in enumerate(request["active"]):
+                active_pokemon = self.active_pokemon[active_pokemon_number]
+                if active_request.get("trapped"):
+                    self._trapped[active_pokemon_number] = True
+
+                for move in active_request["moves"]:
+                    if not move.get("disabled", False):
+                        if move["id"] in active_pokemon.moves:
+                            self._available_moves[active_pokemon_number].append(active_pokemon.moves[move["id"]])
+                        elif move["id"] in special_moves:
+                            self._available_moves[active_pokemon_number].append(special_moves[move["id"]])
+                        else:
+                            try:
+                                if not {
+                                    "copycat",
+                                    "metronome",
+                                    "mefirst",
+                                    "mirrormove",
+                                    "assist",
+                                }.intersection(active_pokemon.moves.keys()):
+                                    self.logger.critical(
+                                        "An error occured in battle %s while adding "
+                                        "available moves. The move '%s' was either unknown "
+                                        "or not available for the active pokemon: %s",
+                                        self.battle_tag,
+                                        move["id"],
+                                        active_pokemon.species,
+                                    )
+                                else:
+                                    self.logger.warning(
+                                        "The move '%s' was received in battle %s for your "
+                                        "active pokemon %s. This move could not be added, "
+                                        "but it might come from a special move such as "
+                                        "copycat or me first. If that is not the case, "
+                                        "please make sure there is an explanation for this "
+                                        "behavior or report it if it is an error.",
+                                        move["id"],
+                                        self.battle_tag,
+                                        active_pokemon.species,
+                                    )
+                                move = Move(move["id"])
+                                self._available_moves[active_pokemon_number].append(move)
+                            except AttributeError:
+                                pass
+
+                if active_request.get("canMegaEvo", False):
+                    self._can_mega_evolve[active_pokemon_number] = True
+                if active_request.get("canZMove", False):
+                    self._can_z_move[active_pokemon_number] = True
+                if active_request.get("canDynamax", False):
+                    self._can_dynamax[active_pokemon_number] = True
+                if active_request.get("maybeTrapped", False):
+                    self._maybe_trapped[active_pokemon_number] = True
+
+        side = request["side"]
+
+        if side["pokemon"]:
+            self._player_role = side["pokemon"][0]["ident"][:2]
+
+        if not self.trapped:
+            for pokemon in side["pokemon"]:
+                if pokemon:
+                    pokemon = self._team[pokemon["ident"]]
+                    if not pokemon.active and not pokemon.fainted:
+                        self._available_switches.append(pokemon)
+
+    def _switch(self, pokemon, details, hp_status):
+        pokemon_identifier = pokemon.split(":")[0][:3]
+        player_identifier = pokemon_identifier[:2]
+        team = self._active_pokemon if player_identifier == self._player_role else self._opponent_active_pokemon
+        pokemon_out = team.pop(pokemon_identifier, None)
+        if pokemon_out is not None:
+            pokemon_out._switch_out()
+        pokemon_in = self.get_pokemon(pokemon, details=details)
+        pokemon_in._switch_in()
+        pokemon_in._set_hp_status(hp_status)
+        team[pokemon_identifier] = pokemon_in
 
     @property
-    def active_pokemon(self):
+    def active_pokemon(self) -> Tuple[Pokemon]:
         """
         :return: The active pokemon
+        :rtype: a tuple of one/two Pokemon
         """
-        raise NotImplementedError
+        active_pokemon = tuple(pokemon for pokemon in self.team.values() if pokemon.active)
+        if len(active_pokemon) > 0:
+            return active_pokemon
+        raise ValueError("No active pokemon found in the current team")
 
     @property
-    def available_moves(self):
+    def available_moves(self) -> List[List[Move]]:
         """
-        :return: The list of moves the player can use during the current move request.
+        :return: A list of two lists of moves the player can use during the current move request for each Pokemon.
+        :rtype: List[bool]
         """
-        raise NotImplementedError
+        return self._available_moves
 
     @property
-    def can_mega_evolve(self):
+    def can_mega_evolve(self) -> List[bool]:
         """
-        :return: Wheter of not the current active pokemon can mega evolve.
+        :return: Whether of not either current active pokemon can mega evolve.
+        :rtype: List[bool]
         """
-        raise NotImplementedError
+        return self._can_mega_evolve
 
     @property
-    def can_z_move(self):
+    def can_z_move(self) -> List[bool]:
         """
         :return: Wheter of not the current active pokemon can z-move.
+        :rtype: List[bool]
         """
-        raise NotImplementedError
+        return self._can_z_move
 
     @property
-    def force_switch(self):
+    def force_switch(self) -> List[bool]:
         """
-        :return: A boolean indicating whether the active pokemon is forced to switch
-            out.
+        :return: A boolean indicating whether the active pokemon is forced to switch out.
+        :rtype: List[bool]
         """
-        raise NotImplementedError
+        return self._force_switch
 
     @property
-    def maybe_trapped(self):
+    def maybe_trapped(self) -> List[bool]:
         """
-        :return: A boolean indicating whether the active pokemon is maybe trapped by the
-            opponent.
+        :return: A boolean indicating whether either active pokemon is maybe trapped by the opponent.
+        :rtype: List[bool]
         """
-        raise NotImplementedError
+        return self._maybe_trapped
 
     @property
-    def opponent_active_pokemon(self):
+    def opponent_active_pokemon(self) -> Optional[Tuple[Pokemon]]:
         """
-        :return: The opponent active pokemon
+        :return: The opponent active pokemon (one or two).
+        :rtype: a tuple of two Pokemon or a single Pokemon instance
         """
-        raise NotImplementedError
+        active_pokemon = tuple(pokemon for pokemon in self.opponent_team.values() if pokemon.active)
+        if len(active_pokemon) > 0:
+            return active_pokemon
+        return None
 
     @property
-    def trapped(self):
+    def trapped(self) -> List[bool]:
         """
-        :return: A boolean indicating whether the active pokemon is trapped by the
-            opponent.
+        :return: A boolean indicating whether either active pokemon is trapped by the opponent.
+        :rtype: List[bool]
         """
-        raise NotImplementedError
+        return self._trapped
 
     @trapped.setter
-    def trapped(self, value):
-        raise NotImplementedError
+    def trapped(self, value: List[bool]):
+        self._trapped = value

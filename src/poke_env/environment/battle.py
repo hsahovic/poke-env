@@ -19,10 +19,32 @@ class Battle(AbstractBattle):
         self._available_moves: List[Move] = []
         self._can_mega_evolve: bool = False
         self._can_z_move: bool = False
+        self._can_dynamax: bool = False
+        self._opponent_can_dynamax = True
         self._force_switch: bool = False
         self._maybe_trapped: bool = False
         self._trapped: bool = False
         self._force_swap: bool = False
+
+    def _clear_all_boosts(self):
+        self.active_pokemon._clear_boosts()
+        if self.opponent_active_pokemon is not None:
+            self.opponent_active_pokemon._clear_boosts()
+
+    def _end_illusion(self, pokemon_name: str, details: str):
+        if pokemon_name[:2] == self._player_role:
+            active = self.active_pokemon
+        else:
+            active = self.opponent_active_pokemon
+
+        if active is None:
+            raise ValueError("Cannot end illusion without an active pokemon.")
+
+        pokemon = self.get_pokemon(pokemon_name, details=details)
+        pokemon._set_hp(f"{active.current_hp}/{active.max_hp}")
+        active._was_illusionned()
+        pokemon._switch_in()
+        pokemon.status = active.status
 
     def _parse_request(self, request: Dict) -> None:
         """
@@ -131,6 +153,17 @@ class Battle(AbstractBattle):
                     pokemon = self._team[pokemon["ident"]]
                     if not pokemon.active and not pokemon.fainted:
                         self._available_switches.append(pokemon)
+
+    def _switch(self, pokemon, details, hp_status):
+        identifier = pokemon.split(":")[0][:2]
+        if identifier == self._player_role:
+            self.active_pokemon._switch_out()
+        else:
+            if self.opponent_active_pokemon:
+                self.opponent_active_pokemon._switch_out()
+        pokemon = self.get_pokemon(pokemon, details=details)
+        pokemon._switch_in()
+        pokemon._set_hp_status(hp_status)
 
     @property
     def active_pokemon(self) -> Pokemon:

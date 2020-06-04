@@ -120,8 +120,6 @@ class AbstractBattle(ABC):
 
         # Turn choice attributes
         self._available_switches: List[Pokemon] = []
-        self._can_dynamax: bool = False
-        self._opponent_can_dynamax = True
         self._in_team_preview: bool = False
         self._move_on_next_request: bool = False
         self._wait: Optional[bool] = None
@@ -198,20 +196,13 @@ class AbstractBattle(ABC):
 
             return team[identifier]
 
+    @abstractmethod
+    def _clear_all_boosts(self):
+        pass
+
+    @abstractmethod
     def _end_illusion(self, pokemon_name: str, details: str):
-        if pokemon_name[:2] == self._player_role:
-            active = self.active_pokemon
-        else:
-            active = self.opponent_active_pokemon
-
-        if active is None:
-            raise ValueError("Cannot end illusion without an active pokemon.")
-
-        pokemon = self.get_pokemon(pokemon_name, details=details)
-        pokemon._set_hp(f"{active.current_hp}/{active.max_hp}")
-        active._was_illusionned()
-        pokemon._switch_in()
-        pokemon.status = active.status
+        pass
 
     def _field_end(self, field):
         field = Field.from_showdown_message(field)
@@ -236,9 +227,7 @@ class AbstractBattle(ABC):
             pokemon, stat, amount = split_message[2:5]
             self.get_pokemon(pokemon)._boost(stat, int(amount))
         elif split_message[1] == "-clearallboost":
-            self.active_pokemon._clear_boosts()
-            if self.opponent_active_pokemon is not None:
-                self.opponent_active_pokemon._clear_boosts()
+            self._clear_all_boosts()
         elif split_message[1] == "-clearboost":
             pokemon = split_message[2]
             self.get_pokemon(pokemon)._clear_boosts()
@@ -327,7 +316,10 @@ class AbstractBattle(ABC):
                         and self._opponent_dynamax_turn is None
                 ):
                     self._opponent_dynamax_turn = self.turn
-                    self._opponent_can_dynamax = False
+                    if isinstance(self._opponent_can_dynamax, list):
+                        self._opponent_can_dynamax = [False, False]
+                    else:
+                        self._opponent_can_dynamax = False
         elif split_message[1] == "-status":
             pokemon, status = split_message[2:4]
             self.get_pokemon(pokemon).status = status
@@ -435,16 +427,9 @@ class AbstractBattle(ABC):
     def _swap(self, *args, **kwargs):
         self.logger.warning("swap method in Battle is not implemented")
 
+    @abstractmethod
     def _switch(self, pokemon, details, hp_status):
-        identifier = pokemon.split(":")[0][:2]
-        if identifier == self._player_role:
-            self.active_pokemon._switch_out()
-        else:
-            if self.opponent_active_pokemon:
-                self.opponent_active_pokemon._switch_out()
-        pokemon = self.get_pokemon(pokemon, details=details)
-        pokemon._switch_in()
-        pokemon._set_hp_status(hp_status)
+        pass
 
     def _tied(self):
         self._finished = True
@@ -512,8 +497,8 @@ class AbstractBattle(ABC):
         :return: How many turns of dynamax are left. None if dynamax is not active
         :rtype: int, optional
         """
-        if self.active_pokemon.is_dynamaxed:
-            return 3 - (self.turn - self._dynamax_turn)  # pyre-ignore
+        if self._dynamax_turn is not None:
+            return max(3 - (self.turn - self._dynamax_turn), 0)  # pyre-ignore
 
     @property
     def fields(self) -> Set[Field]:
@@ -579,10 +564,8 @@ class AbstractBattle(ABC):
             None if dynamax is not active
         :rtype: Optional[int]
         """
-        if (
-                self.opponent_active_pokemon is not None
-        ) and self.opponent_active_pokemon.is_dynamaxed:
-            return 3 - (self.turn - self._opponent_dynamax_turn)  # pyre-ignore
+        if self._opponent_dynamax_turn is not None:
+            return max(3 - (self.turn - self._opponent_dynamax_turn), 0)  # pyre-ignore
 
     @property
     def opponent_side_conditions(self) -> Set[SideCondition]:
