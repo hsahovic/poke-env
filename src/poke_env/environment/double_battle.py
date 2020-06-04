@@ -204,7 +204,7 @@ class DoubleBattle(AbstractBattle):
         """
         :return: A list of two lists of moves the player can use during the current
             move request for each Pokemon.
-        :rtype: List[bool]
+        :rtype: List[List[Move]]
         """
         return self._available_moves
 
@@ -212,7 +212,7 @@ class DoubleBattle(AbstractBattle):
     def can_dynamax(self) -> List[bool]:
         """
         :return: Wheter of not the current active pokemon can dynamax
-        :rtype: List[bool
+        :rtype: List[bool]
         """
         return self._can_dynamax
 
@@ -254,7 +254,7 @@ class DoubleBattle(AbstractBattle):
     def opponent_active_pokemon(self) -> Optional[Tuple[Pokemon, ...]]:
         """
         :return: The opponent active pokemon (one or two).
-        :rtype: a tuple of two Pokemon or a single Pokemon instance
+        :rtype: Optional[Tuple[Pokemon, ...]]
         """
         active_pokemon = tuple(
             pokemon for pokemon in self.opponent_team.values() if pokemon.active
@@ -267,7 +267,7 @@ class DoubleBattle(AbstractBattle):
     def opponent_can_dynamax(self) -> List[bool]:
         """
         :return: Wheter of not opponent's current active pokemon can dynamax
-        :rtype: bool
+        :rtype: List[bool]
         """
         return self._opponent_can_dynamax
 
