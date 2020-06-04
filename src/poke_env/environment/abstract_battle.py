@@ -486,7 +486,11 @@ class AbstractBattle(ABC):
         :return: How many turns of dynamax are left. None if dynamax is not active
         :rtype: int, optional
         """
-        if self._dynamax_turn is not None:
+        if self._dynamax_turn is not None \
+                and any(map(
+                    lambda pokemon: pokemon.is_dynamaxed,
+                    self._team.values()
+                )):
             return max(3 - (self.turn - self._dynamax_turn), 0)  # pyre-ignore
 
     @property
@@ -555,7 +559,11 @@ class AbstractBattle(ABC):
             None if dynamax is not active
         :rtype: Optional[int]
         """
-        if self._opponent_dynamax_turn is not None:
+        if self._opponent_dynamax_turn is not None \
+                and any(map(
+                    lambda pokemon: pokemon.is_dynamaxed,
+                    self._opponent_team.values()
+                )):
             return max(3 - (self.turn - self._opponent_dynamax_turn), 0)  # pyre-ignore
 
     @property
