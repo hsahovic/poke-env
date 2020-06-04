@@ -226,7 +226,8 @@ class DoubleBattle(AbstractBattle):
     @property
     def force_switch(self) -> List[bool]:
         """
-        :return: A boolean indicating whether the active pokemon is forced to switch out.
+        :return: A boolean indicating whether the active pokemon is forced
+            to switch out.
         :rtype: List[bool]
         """
         return self._force_switch

@@ -463,9 +463,11 @@ class Move:
     def target(self) -> str:
         """
         :return: Move target. Possible targets (copied from PS codebase):
-            * adjacentAlly - Only relevant to Doubles or Triples, the move only targets an ally of the user.
+            * adjacentAlly - Only relevant to Doubles or Triples, the move only
+                targets an ally of the user.
             * adjacentAllyOrSelf - The move can target the user or its ally.
-            * adjacentFoe - The move can target a foe, but not (in Triples) a distant foe.
+            * adjacentFoe - The move can target a foe, but not (in Triples)
+                a distant foe.
             * all - The move targets the field or all Pokémon at once.
             * allAdjacent - The move is a spread move that also hits the user's ally.
             * allAdjacentFoes - The move is a spread move.
