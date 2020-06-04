@@ -5,7 +5,6 @@ from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Tuple
-from typing import Union
 
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.move import Move
@@ -104,9 +103,13 @@ class DoubleBattle(AbstractBattle):
                 for move in active_request["moves"]:
                     if not move.get("disabled", False):
                         if move["id"] in active_pokemon.moves:
-                            self._available_moves[active_pokemon_number].append(active_pokemon.moves[move["id"]])
+                            self._available_moves[active_pokemon_number].append(
+                                active_pokemon.moves[move["id"]]
+                            )
                         elif move["id"] in special_moves:
-                            self._available_moves[active_pokemon_number].append(special_moves[move["id"]])
+                            self._available_moves[active_pokemon_number].append(
+                                special_moves[move["id"]]
+                            )
                         else:
                             try:
                                 if not {
@@ -118,26 +121,30 @@ class DoubleBattle(AbstractBattle):
                                 }.intersection(active_pokemon.moves.keys()):
                                     self.logger.critical(
                                         "An error occured in battle %s while adding "
-                                        "available moves. The move '%s' was either unknown "
-                                        "or not available for the active pokemon: %s",
+                                        "available moves. The move '%s' was either "
+                                        "unknown or not available for the active "
+                                        "pokemon: %s",
                                         self.battle_tag,
                                         move["id"],
                                         active_pokemon.species,
                                     )
                                 else:
                                     self.logger.warning(
-                                        "The move '%s' was received in battle %s for your "
-                                        "active pokemon %s. This move could not be added, "
-                                        "but it might come from a special move such as "
-                                        "copycat or me first. If that is not the case, "
-                                        "please make sure there is an explanation for this "
-                                        "behavior or report it if it is an error.",
+                                        "The move '%s' was received in battle %s for "
+                                        "your active pokemon %s. This move could not "
+                                        "be added, but it might come from a special "
+                                        "move such as copycat or me first. If that is "
+                                        "not the case, please make sure there is an "
+                                        "explanation for this behavior or report it "
+                                        "if it is an error.",
                                         move["id"],
                                         self.battle_tag,
                                         active_pokemon.species,
                                     )
                                 move = Move(move["id"])
-                                self._available_moves[active_pokemon_number].append(move)
+                                self._available_moves[active_pokemon_number].append(
+                                    move
+                                )
                             except AttributeError:
                                 pass
 
@@ -165,7 +172,11 @@ class DoubleBattle(AbstractBattle):
     def _switch(self, pokemon, details, hp_status):
         pokemon_identifier = pokemon.split(":")[0][:3]
         player_identifier = pokemon_identifier[:2]
-        team = self._active_pokemon if player_identifier == self._player_role else self._opponent_active_pokemon
+        team = (
+            self._active_pokemon
+            if player_identifier == self._player_role
+            else self._opponent_active_pokemon
+        )
         pokemon_out = team.pop(pokemon_identifier, None)
         if pokemon_out is not None:
             pokemon_out._switch_out()
@@ -180,7 +191,9 @@ class DoubleBattle(AbstractBattle):
         :return: The active pokemon
         :rtype: a tuple of one/two Pokemon
         """
-        active_pokemon = tuple(pokemon for pokemon in self.team.values() if pokemon.active)
+        active_pokemon = tuple(
+            pokemon for pokemon in self.team.values() if pokemon.active
+        )
         if len(active_pokemon) > 0:
             return active_pokemon
         raise ValueError("No active pokemon found in the current team")
@@ -188,7 +201,8 @@ class DoubleBattle(AbstractBattle):
     @property
     def available_moves(self) -> List[List[Move]]:
         """
-        :return: A list of two lists of moves the player can use during the current move request for each Pokemon.
+        :return: A list of two lists of moves the player can use during the current
+            move request for each Pokemon.
         :rtype: List[bool]
         """
         return self._available_moves
@@ -220,7 +234,8 @@ class DoubleBattle(AbstractBattle):
     @property
     def maybe_trapped(self) -> List[bool]:
         """
-        :return: A boolean indicating whether either active pokemon is maybe trapped by the opponent.
+        :return: A boolean indicating whether either active pokemon is maybe trapped
+            by the opponent.
         :rtype: List[bool]
         """
         return self._maybe_trapped
@@ -231,7 +246,9 @@ class DoubleBattle(AbstractBattle):
         :return: The opponent active pokemon (one or two).
         :rtype: a tuple of two Pokemon or a single Pokemon instance
         """
-        active_pokemon = tuple(pokemon for pokemon in self.opponent_team.values() if pokemon.active)
+        active_pokemon = tuple(
+            pokemon for pokemon in self.opponent_team.values() if pokemon.active
+        )
         if len(active_pokemon) > 0:
             return active_pokemon
         return None
@@ -239,7 +256,8 @@ class DoubleBattle(AbstractBattle):
     @property
     def trapped(self) -> List[bool]:
         """
-        :return: A boolean indicating whether either active pokemon is trapped by the opponent.
+        :return: A boolean indicating whether either active pokemon is trapped by the
+            opponent.
         :rtype: List[bool]
         """
         return self._trapped
