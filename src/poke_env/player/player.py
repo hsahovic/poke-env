@@ -40,6 +40,10 @@ class Player(PlayerNetwork, ABC):
 
     MESSAGES_TO_IGNORE = [""]
 
+    # When an error resulting from an invalid choice is made, the next order has this
+    # chance of being showdown's default order to prevent infinite loops
+    DEFAULT_CHOICE_CHANCE = 1 / 1000
+
     def __init__(
         self,
         player_configuration: Optional[PlayerConfiguration] = None,
@@ -217,21 +221,19 @@ class Player(PlayerNetwork, ABC):
                 ):
                     if battle.trapped:
                         await self._handle_battle_request(battle)
-                elif (
-                    split_message[2].startswith(
-                        "[Unavailable choice] Can't switch: The active Pokémon is "
-                        "trapped"
-                    )
-                    or split_message[2].startswith(
-                        "[Invalid choice] Can't switch: The active Pokémon is trapped"
-                    )
-                    or split_message[2].startswith(
-                        "[Invalid choice] Can't switch: You can't switch to an active "
-                        "Pokémon"
-                    )
+                elif split_message[2].startswith(
+                    "[Unavailable choice] Can't switch: The active Pokémon is "
+                    "trapped"
+                ) or split_message[2].startswith(
+                    "[Invalid choice] Can't switch: The active Pokémon is trapped"
                 ):
                     battle.trapped = True
                     await self._handle_battle_request(battle)
+                elif split_message[2].startswith(
+                    "[Invalid choice] Can't switch: You can't switch to an active "
+                    "Pokémon"
+                ):
+                    await self._handle_battle_request(battle, maybe_default_order=True)
                 elif split_message[2].startswith("[Invalid choice]"):
                     self._manage_error_in(battle)
                 elif split_message[2].startswith(
@@ -255,9 +257,14 @@ class Player(PlayerNetwork, ABC):
                     self.logger.exception(e)
 
     async def _handle_battle_request(
-        self, battle: Battle, from_teampreview_request: bool = False
+        self,
+        battle: Battle,
+        from_teampreview_request: bool = False,
+        maybe_default_order=False,
     ):
-        if battle.teampreview:
+        if maybe_default_order and random.random() < self.DEFAULT_CHOICE_CHANCE:
+            message = self.choose_default_move(battle)
+        elif battle.teampreview:
             if not from_teampreview_request:
                 return
             message = self.teampreview(battle)
@@ -332,6 +339,14 @@ class Player(PlayerNetwork, ABC):
         :rtype: str
         """
         pass
+
+    def choose_default_move(self, *args, **kwargs) -> str:
+        """Returns showdown's default move order.
+
+        This order will result in the first legal order - according to showdown's
+        ordering - being chosen.
+        """
+        return "/choose default"
 
     def choose_random_move(self, battle: Battle) -> str:
         """Returns a random legal move from battle.

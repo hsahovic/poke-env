@@ -37,7 +37,7 @@ def test_random_gym_player_gen7():
     env_player.play_against(
         env_algorithm=play_function,
         opponent=random_player,
-        env_algorithm_kwargs={"n_battles": 10},
+        env_algorithm_kwargs={"n_battles": 5},
     )
 
 
@@ -57,5 +57,5 @@ def test_random_gym_player_gen8():
     env_player.play_against(
         env_algorithm=play_function,
         opponent=random_player,
-        env_algorithm_kwargs={"n_battles": 10},
+        env_algorithm_kwargs={"n_battles": 5},
     )

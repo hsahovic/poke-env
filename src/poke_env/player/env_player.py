@@ -83,7 +83,6 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
     def _action_to_move(self, action: int, battle: Battle) -> str:
         """Abstract method converting elements of the action space to move orders.
         """
-        pass
 
     def _battle_finished_callback(self, battle: Battle) -> None:
         self._observations[battle].put(self.embed_battle(battle))
@@ -102,7 +101,6 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
 
     def close(self) -> None:
         """Unimplemented. Has no effect."""
-        pass
 
     def complete_current_battle(self) -> None:
         """Completes the current battle by performing random moves."""
@@ -132,7 +130,6 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         :return: The computed embedding
         :rtype: Any
         """
-        pass
 
     def reset(self) -> Any:
         """Resets the internal environment state. The current battle will be set to an

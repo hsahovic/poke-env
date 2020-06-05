@@ -11,6 +11,7 @@ workflows:
     jobs:
       - test-3-6
       - test-3-7
+      - test-3-8
 jobs:
   test-3-6: &test-template
     docker:
@@ -28,12 +29,15 @@ jobs:
     steps:
       - checkout
 
+      - run:
+          name: Store python version into a file
+          command: |
+            python3 --version > python-version.txt
+
       # Download and cache dependencies
       - restore_cache:
           keys:
-            - requirements-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}
-            # fallback to using the latest cache if no exact match is found
-            - requirements
+            - requirements-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}-{{ checksum "python-version.txt" }}
 
       - run:
           name: install dependencies
@@ -48,11 +52,6 @@ jobs:
             python3 -m venv venv
             . venv/bin/activate
             pip install -r requirements-dev.txt
-
-      - save_cache:
-          paths:
-            - ./venv
-          key: requirements-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}
 
       - run:
           name: black
@@ -118,14 +117,25 @@ jobs:
             curl https://www.npmjs.com/install.sh | sudo bash
 
       - run:
-          name: Download showdown
+          name: Download showdown or update it
           command: |
-            git clone https://github.com/hsahovic/Pokemon-Showdown.git
+            if [ -d "Pokemon-Showdown" ]
+            then
+                cd Pokemon-Showdown;git pull
+            else
+                git clone https://github.com/hsahovic/Pokemon-Showdown.git
+            fi
 
       - run:
           name: Install showdown dependencies
           command: |
             npm install Pokemon-Showdown
+
+      - save_cache:
+          paths:
+            - ./venv
+            - ./Pokemon-Showdown
+          key: requirements-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}-{{ checksum "python-version.txt" }}
 
       - run:
           name: Start showdown server in the background
@@ -145,9 +155,14 @@ jobs:
           command: |
             . venv/bin/activate
             pytest -x integration_tests/
+
   test-3-7:
     <<: *test-template
     docker:
       - image: circleci/python:3.7
+  test-3-8:
+    <<: *test-template
+    docker:
+      - image: circleci/python:3.8
 
 

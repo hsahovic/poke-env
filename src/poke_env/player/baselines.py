@@ -2,6 +2,7 @@
 from poke_env.environment.move_category import MoveCategory
 from poke_env.environment.side_condition import SideCondition
 from poke_env.player.player import Player
+from poke_env.player.random_player import RandomPlayer  # noqa: F401
 
 
 class MaxBasePowerPlayer(Player):
