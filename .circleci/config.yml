@@ -57,13 +57,13 @@ jobs:
           name: black
           command: |
             . venv/bin/activate
-            black src/ unit_tests/
+            black src/ unit_tests/ integration_tests/
 
       - run:
           name: flake8
           command: |
             . venv/bin/activate
-            flake8 src/ unit_tests/
+            flake8 src/ unit_tests/ integration_tests/
 
       - run:
           name: pyre
