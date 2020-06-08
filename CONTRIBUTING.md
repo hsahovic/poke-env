@@ -36,9 +36,9 @@ First, make sure your code is black-formatted by running `black .`.
 
 To run tests locally, you can run:
 
-- 'PYTHONPATH=src/ pytest unit_tests/`
-- 'PYTHONPATH=src/ pytest integration_tests/`
-- 'pyre check`
+- `PYTHONPATH=src/ pytest unit_tests/`
+- `PYTHONPATH=src/ pytest integration_tests/`
+- `pyre check`
 
 If you do not have `pre-commit`s installed, be sure to also run `flake8`.
 
