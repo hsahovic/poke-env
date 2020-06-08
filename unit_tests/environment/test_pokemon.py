@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from poke_env.environment.move import Move
+from poke_env.environment.move import SPECIAL_MOVES
 from poke_env.environment.pokemon import Pokemon
 from poke_env.environment.pokemon_type import PokemonType
 
@@ -64,3 +65,6 @@ def test_pokemon_damage_multiplier():
     mon = Pokemon(species="linoone")
     assert mon.damage_multiplier(Move("closecombat")) == 2
     assert mon.damage_multiplier(PokemonType.GHOST) == 0
+
+    mon = Pokemon(species="linoone")
+    assert mon.damage_multiplier(SPECIAL_MOVES["recharge"]) == 1
