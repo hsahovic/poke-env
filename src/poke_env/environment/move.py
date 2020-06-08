@@ -15,7 +15,7 @@ from typing import Tuple
 from typing import Union
 
 
-special_moves: Dict
+SPECIAL_MOVES: Dict
 
 
 class Move:
@@ -66,7 +66,7 @@ class Move:
     @staticmethod
     @lru_cache(4096)
     def should_be_stored(move_id: str) -> bool:
-        if move_id in special_moves:
+        if move_id in SPECIAL_MOVES:
             return False
         if move_id not in MOVES:
             return False
@@ -113,7 +113,7 @@ class Move:
         :return: Wheter there exist a z-move version of this move.
         :rtype: bool
         """
-        return self.id not in special_moves
+        return self.id not in SPECIAL_MOVES
 
     @property
     def category(self) -> MoveCategory:
@@ -579,4 +579,4 @@ class EmptyMove(Move):
             return 0
 
 
-special_moves = {"struggle": Move("struggle"), "recharge": EmptyMove("recharge")}
+SPECIAL_MOVES = {"struggle": Move("struggle"), "recharge": EmptyMove("recharge")}
