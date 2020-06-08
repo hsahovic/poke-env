@@ -16,14 +16,14 @@ _TYPE_CHART_PATH: str = os.path.join(
 )
 "Path to the json file containing type informations."
 
-POKEDEX: Dict = {}
+POKEDEX: Dict[str, Any] = {}
 
 with open(
     os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "pokedex.json")
 ) as pokedex:
     POKEDEX = json.load(pokedex)
 
-_missing_dex = {}
+_missing_dex: Dict[str, Any] = {}
 for key, value in POKEDEX.items():
     if "otherForms" in value:
         for other_form in value["otherForms"]:
@@ -35,14 +35,14 @@ _equivalent_forms = {"darmanitangalarzen": "darmanitanzengalar"}
 
 POKEDEX.update({k: POKEDEX[v] for k, v in _equivalent_forms.items()})
 
-MOVES: Dict = {}
+MOVES: Dict[str, Any] = {}
 
 with open(
     os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "moves.json")
 ) as moves:
     MOVES = json.load(moves)
 
-TYPE_CHART: Dict[Any, Dict[Any, float]] = _compute_type_chart(_TYPE_CHART_PATH)
+TYPE_CHART: Dict[str, Dict[str, float]] = _compute_type_chart(_TYPE_CHART_PATH)
 """
 A dictionnary representing the Pokemon type chart.
 
