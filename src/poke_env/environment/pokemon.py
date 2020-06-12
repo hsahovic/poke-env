@@ -96,7 +96,7 @@ class Pokemon:
         }
         self._current_hp: int = 0
         self._effects: Set[Effect] = set()
-        self._item: Optional[str]
+        self._item: Optional[str] = None
         self._last_request: dict = {}
         self._must_recharge = False
         self._preparing = False
