@@ -18,7 +18,9 @@ from typing import List
 from typing import Optional
 from typing import Union
 
+from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.battle import Battle
+from poke_env.environment.double_battle import DoubleBattle
 from poke_env.environment.move import Move
 from poke_env.environment.pokemon import Pokemon
 from poke_env.exceptions import ShowdownException
@@ -99,7 +101,7 @@ class Player(PlayerNetwork, ABC):
         self._format: str = battle_format
         self._max_concurrent_battles: int = max_concurrent_battles
 
-        self._battles: Dict[str, Battle] = {}
+        self._battles: Dict[str, AbstractBattle] = {}
         self._battle_semaphore: Semaphore = Semaphore(0)
 
         self._battle_start_condition: Condition = Condition()
@@ -117,16 +119,16 @@ class Player(PlayerNetwork, ABC):
         self.logger.debug("Player initialisation finished")
         self._json_decoder = JSONDecoder()
 
-    def _battle_finished_callback(self, battle: Battle) -> None:
+    def _battle_finished_callback(self, battle: AbstractBattle) -> None:
         pass
 
-    async def _create_battle(self, split_message: List[str]) -> Battle:
+    async def _create_battle(self, split_message: List[str]) -> AbstractBattle:
         """Returns battle object corresponding to received message.
 
         :param split_message: The battle initialisation message.
         :type split_message: List[str]
         :return: The corresponding battle object.
-        :rtype: Battle
+        :rtype: AbstractBattle
         """
         # We check that the battle has the correct format
         if split_message[1] == self._format and len(split_message) >= 2:
@@ -140,9 +142,18 @@ class Player(PlayerNetwork, ABC):
             if split_message[2] in self._battles:
                 return self._battles[split_message[2]]
             else:
-                battle = Battle(
-                    battle_tag=battle_tag, username=self.username, logger=self.logger
-                )
+                if self.format_is_doubles:
+                    battle = DoubleBattle(
+                        battle_tag=battle_tag,
+                        username=self.username,
+                        logger=self.logger,
+                    )
+                else:
+                    battle = Battle(
+                        battle_tag=battle_tag,
+                        username=self.username,
+                        logger=self.logger,
+                    )
                 await self._battle_count_queue.put(None)
                 if split_message[2] in self._battles:
                     self._battle_count_queue.get()
@@ -160,7 +171,7 @@ class Player(PlayerNetwork, ABC):
             )
             raise ShowdownException()
 
-    async def _get_battle(self, battle_number: str) -> Battle:
+    async def _get_battle(self, battle_number: str) -> AbstractBattle:
         while True:
             if battle_number in self._battles:
                 return self._battles[battle_number]
@@ -258,7 +269,7 @@ class Player(PlayerNetwork, ABC):
 
     async def _handle_battle_request(
         self,
-        battle: Battle,
+        battle: AbstractBattle,
         from_teampreview_request: bool = False,
         maybe_default_order=False,
     ):
@@ -272,7 +283,7 @@ class Player(PlayerNetwork, ABC):
             message = self.choose_move(battle)
         await self._send_message(message, battle.battle_tag)
 
-    def _manage_error_in(self, battle: Battle):
+    def _manage_error_in(self, battle: AbstractBattle):
         pass
 
     async def _update_challenges(self, split_message: List[str]) -> None:
@@ -330,11 +341,11 @@ class Player(PlayerNetwork, ABC):
         await self._battle_count_queue.join()
 
     @abstractmethod
-    def choose_move(self, battle: Battle) -> str:
+    def choose_move(self, battle: AbstractBattle) -> str:
         """Abstract method to choose a move in a battle.
 
         :param battle: The battle.
-        :type battle: Battle
+        :type battle: AbstractBattle
         :return: The move order.
         :rtype: str
         """
@@ -348,36 +359,40 @@ class Player(PlayerNetwork, ABC):
         """
         return "/choose default"
 
-    def choose_random_move(self, battle: Battle) -> str:
+    def choose_random_move(self, battle: AbstractBattle) -> str:
         """Returns a random legal move from battle.
 
         :param battle: The battle in which to move.
-        :type battle: Battle
+        :type battle: AbstractBattle
         :return: Move order
         :rtype: str
         """
-        available_orders = []
-        available_z_moves = set()
+        if isinstance(battle, Battle):
+            available_orders = []
+            available_z_moves = set()
 
-        if battle.can_z_move:
-            available_z_moves.update(battle.active_pokemon.available_z_moves)
+            if battle.can_z_move:
+                available_z_moves.update(battle.active_pokemon.available_z_moves)
 
-        for move in battle.available_moves:
-            available_orders.append(self.create_order(move))
-            if battle.can_mega_evolve:
-                available_orders.append(self.create_order(move, mega=True))
-            if battle.can_z_move and move in available_z_moves:
-                available_orders.append(self.create_order(move, z_move=True))
-            if battle.can_dynamax:
-                available_orders.append(self.create_order(move, dynamax=True))
+            for move in battle.available_moves:
+                available_orders.append(self.create_order(move))
+                if battle.can_mega_evolve:
+                    available_orders.append(self.create_order(move, mega=True))
+                if battle.can_z_move and move in available_z_moves:
+                    available_orders.append(self.create_order(move, z_move=True))
+                if battle.can_dynamax:
+                    available_orders.append(self.create_order(move, dynamax=True))
 
-        for pokemon in battle.available_switches:
-            available_orders.append(self.create_order(pokemon))
+            for pokemon in battle.available_switches:
+                available_orders.append(self.create_order(pokemon))
 
-        if available_orders:
-            order = random.choice(available_orders)
+            if available_orders:
+                order = random.choice(available_orders)
+            else:
+                order = "/choose default"
         else:
-            order = "/choose default"
+            order = "/choose default"  # todo
+
         return order
 
     async def ladder(self, n_games):
@@ -460,11 +475,11 @@ class Player(PlayerNetwork, ABC):
             perf_counter() - start_time,
         )
 
-    def random_teampreview(self, battle: Battle) -> str:
+    def random_teampreview(self, battle: AbstractBattle) -> str:
         """Returns a random valid teampreview order for the given battle.
 
         :param battle: The battle.
-        :type battle: Battle
+        :type battle: AbstractBattle
         :return: The random teampreview order.
         :rtype: str
         """
@@ -480,7 +495,7 @@ class Player(PlayerNetwork, ABC):
                 )
         self._battles = {}
 
-    def teampreview(self, battle: Battle) -> str:
+    def teampreview(self, battle: AbstractBattle) -> str:
         """Returns a teampreview order for the given battle.
 
         This order must be of the form /team TEAM, where TEAM is a string defining the
@@ -492,7 +507,7 @@ class Player(PlayerNetwork, ABC):
         Please refer to Pokemon Showdown's protocol documentation for more information.
 
         :param battle: The battle.
-        :type battle: Battle
+        :type battle: AbstractBattle
         :return: The teampreview order.
         :rtype: str
         """
@@ -531,12 +546,17 @@ class Player(PlayerNetwork, ABC):
             return f"/choose switch {order.species}"
 
     @property
-    def battles(self) -> Dict[str, Battle]:
+    def battles(self) -> Dict[str, AbstractBattle]:
         return self._battles
 
     @property
     def format(self) -> str:
         return self._format
+
+    @property
+    def format_is_doubles(self) -> bool:
+        format_lowercase = self._format.lower()
+        return "vgc" in format_lowercase or "double" in format_lowercase
 
     @property
     def n_finished_battles(self) -> int:
