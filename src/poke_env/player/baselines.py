@@ -115,7 +115,9 @@ class SimpleHeuristicsPlayer(Player):
             opponent, "spd"
         )
 
-        if battle.available_moves and (not self._should_switch_out(battle)):
+        if battle.available_moves and (
+            not self._should_switch_out(battle) or not battle.available_switches
+        ):
             n_remaining_mons = len(
                 [m for m in battle.team.values() if m.fainted is False]
             )
@@ -171,9 +173,12 @@ class SimpleHeuristicsPlayer(Player):
                 move, dynamax=self._should_dynamax(battle, n_remaining_mons)
             )
 
-        return self.create_order(
-            max(
-                battle.available_switches,
-                key=lambda s: self._estimate_matchup(s, opponent),
+        if battle.available_switches:
+            return self.create_order(
+                max(
+                    battle.available_switches,
+                    key=lambda s: self._estimate_matchup(s, opponent),
+                )
             )
-        )
+
+        return self.choose_random_move(battle)
