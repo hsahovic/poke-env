@@ -337,6 +337,9 @@ class DoubleBattle(AbstractBattle):
         active_pokemon = tuple(
             pokemon for pokemon in self.opponent_team.values() if pokemon.active
         )
+        if len(active_pokemon) > 0:
+            return active_pokemon
+        raise ValueError("No active pokemon found in the current team")
 
     @property
     def opponent_can_dynamax(self) -> List[bool]:
