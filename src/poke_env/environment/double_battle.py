@@ -70,7 +70,10 @@ class DoubleBattle(AbstractBattle):
                 if pokemon_move is move:
                     self._move_to_pokemon_id[move] = pokemon_id
                     return pokemon_id
-        raise Exception(f"Selected move {move.id} is not owned by any Pokemon that is currently battling")
+        raise Exception(
+            f"Selected move {move.id} is not owned by any Pokemon that is currently "
+            f"battling"
+        )
 
     def _parse_request(self, request: Dict) -> None:
         """
