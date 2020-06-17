@@ -115,7 +115,12 @@ class DoubleBattle(AbstractBattle):
 
         if "active" in request:
             for active_pokemon_number, active_request in enumerate(request["active"]):
-                active_pokemon = self.active_pokemon[active_pokemon_number]
+                pokemon_dict = request["side"]["pokemon"][active_pokemon_number]
+                active_pokemon = self.get_pokemon(
+                    pokemon_dict["ident"],
+                    force_self_team=True,
+                    details=pokemon_dict["details"],
+                )
                 if active_request.get("trapped"):
                     self._trapped[active_pokemon_number] = True
 
