@@ -567,6 +567,17 @@ class AbstractBattle(ABC):
             return max(3 - (self.turn - self._opponent_dynamax_turn), 0)  # pyre-ignore
 
     @property
+    def opponent_role(self) -> Optional[str]:
+        """
+        :return: Opponent's role in given battle. p1/p2
+        :rtype: str, optional
+        """
+        if self.player_role == 'p1':
+            return 'p2'
+        if self.player_role == 'p2':
+            return 'p1'
+
+    @property
     def opponent_side_conditions(self) -> Set[SideCondition]:
         """
         :return: The opponent's set of side conditions.
@@ -594,6 +605,14 @@ class AbstractBattle(ABC):
         :rtype: str, optional.
         """
         return self._opponent_username
+
+    @property
+    def player_role(self) -> Optional[str]:
+        """
+        :return: Player's role in given battle. p1/p2
+        :rtype: str, optional
+        """
+        return self._player_role
 
     @property
     def player_username(self) -> str:
