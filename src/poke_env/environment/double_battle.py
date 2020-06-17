@@ -11,6 +11,7 @@ from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.move import Move
 from poke_env.environment.pokemon import Pokemon
 from poke_env.environment.move import special_moves
+from poke_env.environment.move_category import MoveCategory
 
 
 class DoubleBattle(AbstractBattle):
@@ -31,6 +32,9 @@ class DoubleBattle(AbstractBattle):
         # Battle state attributes
         self._active_pokemon: Dict[str, Pokemon] = {}
         self._opponent_active_pokemon: Dict[str, Pokemon] = {}
+
+        # Other
+        self._move_to_pokemon_id: Dict[Move: str] = {}
 
     def _clear_all_boosts(self):
         for active_pokemon_group in (self.active_pokemon, self.opponent_active_pokemon):
@@ -53,6 +57,20 @@ class DoubleBattle(AbstractBattle):
         active._was_illusionned()
         pokemon._switch_in()
         pokemon.status = active.status
+
+    def _get_pokemon_id_for_move(self, move: Move) -> str:
+        cached_pokemon_id = self._move_to_pokemon_id.get(move)
+        if cached_pokemon_id is not None:
+            return cached_pokemon_id
+        all_battle_active_pokemon = {}
+        all_battle_active_pokemon.update(self._active_pokemon)
+        all_battle_active_pokemon.update(self._opponent_active_pokemon)
+        for pokemon_id, pokemon in all_battle_active_pokemon.items():
+            for pokemon_move in pokemon.moves.values():
+                if pokemon_move is move:
+                    self._move_to_pokemon_id[move] = pokemon_id
+                    return pokemon_id
+        raise Exception(f"Selected move {move.id} is not owned by any Pokemon that is currently battling")
 
     def _parse_request(self, request: Dict) -> None:
         """
@@ -186,6 +204,61 @@ class DoubleBattle(AbstractBattle):
         pokemon_in._set_hp_status(hp_status)
         team[pokemon_identifier] = pokemon_in
 
+    def get_possible_showdown_targets(self, move: Move, dynamax=False) -> List[int]:
+        pokemon_id = self._get_pokemon_id_for_move(move)
+        move_target = move.target
+
+        ally_position = -2 if pokemon_id[-1] == "a" else -1
+        self_position = -1 if pokemon_id[-1] == "a" else -2
+        opponent_1_position = 1
+        opponent_2_position = 2
+
+        if dynamax or self.dynamax_turns_left is not None:
+            if move.category == MoveCategory.STATUS:
+                return [self_position]
+            return [opponent_1_position, opponent_2_position]
+
+        if move.non_ghost_target:  # changing target to "self" in case of Curse
+            from poke_env.environment.pokemon_type import PokemonType
+            pokemon = self._active_pokemon.get(pokemon_id) \
+                or self._opponent_active_pokemon.get(pokemon_id)
+            if PokemonType.GHOST in pokemon.types:
+                move_target = "self"
+
+        targets = {
+            "adjacentAlly": [ally_position],
+            "adjacentAllyOrSelf": [ally_position, self_position],
+            "adjacentFoe": [opponent_1_position, opponent_2_position],
+            "all": [None],
+            "allAdjacent": [None],
+            "allAdjacentFoes": [None],
+            "allies": [None],
+            "allySide": [None],
+            "allyTeam": [None],
+            "any": [ally_position, opponent_1_position, opponent_2_position],
+            "foeSide": [None],
+            "normal": [ally_position, opponent_1_position, opponent_2_position],
+            "randomNormal": [None],
+            "scripted": [None],
+            "self": [None],
+        }[move_target]
+
+        pokemon_ids = set(self._opponent_active_pokemon.keys())
+        pokemon_ids.update(self._active_pokemon.keys())
+        targets_to_keep = {
+            {
+                f"{self.player_role}a": -1,
+                f"{self.player_role}b": -2,
+                f"{self.opponent_role}a": 1,
+                f"{self.opponent_role}b": 2,
+            }[pokemon_identifier]
+            for pokemon_identifier in pokemon_ids
+        }
+        targets_to_keep.add(None)
+        targets = [target for target in targets if target in targets_to_keep]
+
+        return targets
+
     @property
     def active_pokemon(self) -> Tuple[Pokemon, ...]:
         """
@@ -259,9 +332,6 @@ class DoubleBattle(AbstractBattle):
         active_pokemon = tuple(
             pokemon for pokemon in self.opponent_team.values() if pokemon.active
         )
-        if len(active_pokemon) > 0:
-            return active_pokemon
-        return None
 
     @property
     def opponent_can_dynamax(self) -> List[bool]:
