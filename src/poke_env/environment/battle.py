@@ -340,7 +340,7 @@ class Battle:
             self.get_pokemon(pokemon).status = status
         elif split_message[1] == "-swapboost":
             source, target, stats = split_message[2:5]
-            self.get_pokemon(target)._swap_boosts
+            self.get_pokemon(target)._swap_boosts()
         elif split_message[1] == "-transform":
             pokemon, into = split_message[2:4]
             self.get_pokemon(pokemon)._transform(self.get_pokemon(into))
