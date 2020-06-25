@@ -34,7 +34,7 @@ class DoubleBattle(AbstractBattle):
         self._opponent_active_pokemon: Dict[str, Pokemon] = {}
 
         # Other
-        self._move_to_pokemon_id: Dict[Move: str] = {}
+        self._move_to_pokemon_id: Dict[Move, str] = {}
 
     def _clear_all_boosts(self):
         for active_pokemon_group in (self.active_pokemon, self.opponent_active_pokemon):
@@ -228,8 +228,10 @@ class DoubleBattle(AbstractBattle):
 
         if move.non_ghost_target:  # changing target to "self" in case of Curse
             from poke_env.environment.pokemon_type import PokemonType
-            pokemon = self._active_pokemon.get(pokemon_id) \
-                or self._opponent_active_pokemon.get(pokemon_id)
+
+            pokemon = self._active_pokemon.get(
+                pokemon_id
+            ) or self._opponent_active_pokemon.get(pokemon_id)
             if PokemonType.GHOST in pokemon.types:
                 move_target = "self"
 

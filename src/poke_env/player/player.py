@@ -404,27 +404,22 @@ class Player(PlayerNetwork, ABC):
 
             for move in battle.available_moves[0]:
                 for target in battle.get_possible_showdown_targets(move):
-                    available_orders.append(
-                        self.create_order(
-                            move, move_target=target
-                        ))
+                    available_orders.append(self.create_order(move, move_target=target))
                     if battle.can_mega_evolve[0]:
                         available_orders.append(
-                            self.create_order(
-                                move, mega=True, move_target=target
-                            ))
+                            self.create_order(move, mega=True, move_target=target)
+                        )
                     if battle.can_z_move[0] and move in available_z_moves:
                         available_orders.append(
-                            self.create_order(
-                                move, z_move=True, move_target=target
-                            ))
+                            self.create_order(move, z_move=True, move_target=target)
+                        )
                 if battle.can_dynamax[0]:
                     for target in battle.get_possible_showdown_targets(
-                            move, dynamax=True):
+                        move, dynamax=True
+                    ):
                         available_orders.append(
-                            self.create_order(
-                                move, dynamax=True, move_target=target
-                            ))
+                            self.create_order(move, dynamax=True, move_target=target)
+                        )
 
             for pokemon in battle.available_switches:
                 available_orders.append(self.create_order(pokemon))
@@ -448,27 +443,29 @@ class Player(PlayerNetwork, ABC):
                 for move in battle.available_moves[1]:
                     for target in battle.get_possible_showdown_targets(move):
                         available_orders.append(
-                            self.create_order(
-                                move, move_target=target
-                            ))
+                            self.create_order(move, move_target=target)
+                        )
                         if not mega_selected and battle.can_mega_evolve[1]:
                             available_orders.append(
-                                self.create_order(
-                                    move, mega=True, move_target=target
-                                ))
-                        if not zmove_selected and battle.can_z_move[1] \
-                                and move in available_z_moves:
+                                self.create_order(move, mega=True, move_target=target)
+                            )
+                        if (
+                            not zmove_selected
+                            and battle.can_z_move[1]
+                            and move in available_z_moves
+                        ):
                             available_orders.append(
-                                self.create_order(
-                                    move, z_move=True, move_target=target
-                                ))
+                                self.create_order(move, z_move=True, move_target=target)
+                            )
                     if not dynamax_selected and battle.can_dynamax[1]:
                         for target in battle.get_possible_showdown_targets(
-                                move, dynamax=True):
+                            move, dynamax=True
+                        ):
                             available_orders.append(
                                 self.create_order(
                                     move, dynamax=True, move_target=target
-                                ))
+                                )
+                            )
 
                 for pokemon in battle.available_switches:
                     if not ("switch" in order and pokemon.species in order):

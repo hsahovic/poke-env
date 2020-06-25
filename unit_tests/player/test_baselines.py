@@ -40,7 +40,9 @@ def test_max_base_power_player():
     battle.available_moves.append(Move("flamethrower"))
     assert player.choose_move(battle) == "/choose move flamethrower"
 
-    player_pkg.Battle = Battle  # this is in case a test runner shares memory between tests
+    player_pkg.Battle = (
+        Battle  # this is in case a test runner shares memory between tests
+    )
 
 
 def test_simple_heuristics_player_estimate_matchup():
