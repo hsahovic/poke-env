@@ -7,7 +7,7 @@ import numpy as np  # pyre-ignore
 
 from abc import ABC
 from abc import abstractmethod
-from poke_env.environment.battle import Battle
+from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.player.player import Player
 from poke_env.player_configuration import PlayerConfiguration
 from poke_env.server_configuration import ServerConfiguration
@@ -75,7 +75,7 @@ class TrainablePlayer(Player, ABC):
 
         self._n_replays = 0
 
-    def _manage_error_in(self, battle: Battle):
+    def _manage_error_in(self, battle: AbstractBattle):
         self._training_data[battle].pop()
 
     @staticmethod
@@ -83,22 +83,22 @@ class TrainablePlayer(Player, ABC):
         pass
 
     @abstractmethod
-    def action_to_move(self, action, battle: Battle):
+    def action_to_move(self, action, battle: AbstractBattle):
         pass
 
     @abstractmethod
-    def battle_to_state(self, battle: Battle):
+    def battle_to_state(self, battle: AbstractBattle):
         pass
 
     @abstractmethod
-    def state_to_action(self, state: np.array, battle: Battle):  # pyre-ignore
+    def state_to_action(self, state: np.array, battle: AbstractBattle):  # pyre-ignore
         pass
 
     @abstractmethod
     def replay(self, battle_history: Dict):
         pass
 
-    def choose_move(self, battle: Battle) -> str:
+    def choose_move(self, battle: AbstractBattle) -> str:
         state = self.battle_to_state(battle)
         action = self.state_to_action(state, battle)
         move = self.action_to_move(action, battle)
@@ -135,7 +135,7 @@ class TrainablePlayer(Player, ABC):
         self._n_replays += 1
 
     @property
-    def training_data(self) -> Dict[Battle, List]:
+    def training_data(self) -> Dict[AbstractBattle, List]:
         return self._training_data
 
     @property
