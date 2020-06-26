@@ -604,7 +604,7 @@ class Player(PlayerNetwork, ABC):
         mega: bool = False,
         z_move: bool = False,
         dynamax: bool = False,
-        move_target: Optional[int] = None,
+        move_target: int = DoubleBattle.ALL_TARGETS_POSITION,
     ) -> str:
         """Formats an move order corresponding to the provided pokemon or move.
 
@@ -617,7 +617,7 @@ class Player(PlayerNetwork, ABC):
         :param dynamax: Whether to dynamax, if a move is chosen.
         :type dynamax: bool
         :param move_target: Target Pokemon slot of a given move
-        :type move_target: int, optional
+        :type move_target: int
         :return: Formatted move order
         :rtype: str
         """
@@ -629,7 +629,7 @@ class Player(PlayerNetwork, ABC):
                 order += " zmove"
             elif dynamax:
                 order += " dynamax"
-            if move_target:
+            if move_target != DoubleBattle.ALL_TARGETS_POSITION:
                 order += f" {move_target}"
             return order
         else:

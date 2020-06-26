@@ -15,6 +15,12 @@ from poke_env.environment.move_category import MoveCategory
 
 
 class DoubleBattle(AbstractBattle):
+    POKEMON_1_POSITION = -1
+    POKEMON_2_POSITION = -2
+    OPPONENT_1_POSITION = 1
+    OPPONENT_2_POSITION = 2
+    ALL_TARGETS_POSITION = 0  # symbolic, not used by showdown
+
     def __init__(self, battle_tag: str, username: str, logger: Logger):  # pyre-ignore
         super(DoubleBattle, self).__init__(battle_tag, username, logger)
 
@@ -216,41 +222,52 @@ class DoubleBattle(AbstractBattle):
         pokemon_id = self._get_pokemon_id_for_move(move)
         move_target = move.target
 
-        ally_position = -2 if pokemon_id[-1] == "a" else -1
-        self_position = -1 if pokemon_id[-1] == "a" else -2
-        opponent_1_position = 1
-        opponent_2_position = 2
+        self_position = (
+            self.POKEMON_1_POSITION
+            if pokemon_id[-1] == "a"
+            else self.POKEMON_2_POSITION
+        )
+        ally_position = (
+            self.POKEMON_2_POSITION
+            if pokemon_id[-1] == "a"
+            else self.POKEMON_1_POSITION
+        )
 
         if dynamax or self.dynamax_turns_left is not None:
             if move.category == MoveCategory.STATUS:
                 return [self_position]
-            return [opponent_1_position, opponent_2_position]
+            return [self.OPPONENT_1_POSITION, self.OPPONENT_2_POSITION]
 
         if move.non_ghost_target:  # changing target to "self" in case of Curse
             from poke_env.environment.pokemon_type import PokemonType
 
-            pokemon = self._active_pokemon.get(
-                pokemon_id
-            ) or self._opponent_active_pokemon.get(pokemon_id)
+            pokemon = (
+                self._active_pokemon.get(pokemon_id)
+                or self._opponent_active_pokemon[pokemon_id]
+            )
             if PokemonType.GHOST in pokemon.types:
                 move_target = "self"
 
         targets = {
             "adjacentAlly": [ally_position],
             "adjacentAllyOrSelf": [ally_position, self_position],
-            "adjacentFoe": [opponent_1_position, opponent_2_position],
-            "all": [None],
-            "allAdjacent": [None],
-            "allAdjacentFoes": [None],
-            "allies": [None],
-            "allySide": [None],
-            "allyTeam": [None],
-            "any": [ally_position, opponent_1_position, opponent_2_position],
-            "foeSide": [None],
-            "normal": [ally_position, opponent_1_position, opponent_2_position],
-            "randomNormal": [None],
-            "scripted": [None],
-            "self": [None],
+            "adjacentFoe": [self.OPPONENT_1_POSITION, self.OPPONENT_2_POSITION],
+            "all": [self.ALL_TARGETS_POSITION],
+            "allAdjacent": [self.ALL_TARGETS_POSITION],
+            "allAdjacentFoes": [self.ALL_TARGETS_POSITION],
+            "allies": [self.ALL_TARGETS_POSITION],
+            "allySide": [self.ALL_TARGETS_POSITION],
+            "allyTeam": [self.ALL_TARGETS_POSITION],
+            "any": [ally_position, self.OPPONENT_1_POSITION, self.OPPONENT_2_POSITION],
+            "foeSide": [self.ALL_TARGETS_POSITION],
+            "normal": [
+                ally_position,
+                self.OPPONENT_1_POSITION,
+                self.OPPONENT_2_POSITION,
+            ],
+            "randomNormal": [self.ALL_TARGETS_POSITION],
+            "scripted": [self.ALL_TARGETS_POSITION],
+            "self": [self.ALL_TARGETS_POSITION],
         }[move_target]
 
         pokemon_ids = set(self._opponent_active_pokemon.keys())
@@ -264,7 +281,7 @@ class DoubleBattle(AbstractBattle):
             }[pokemon_identifier]
             for pokemon_identifier in pokemon_ids
         }
-        targets_to_keep.add(None)
+        targets_to_keep.add(self.ALL_TARGETS_POSITION)
         targets = [target for target in targets if target in targets_to_keep]
 
         return targets
