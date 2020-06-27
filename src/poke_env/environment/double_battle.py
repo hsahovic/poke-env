@@ -222,16 +222,12 @@ class DoubleBattle(AbstractBattle):
         pokemon_id = self._get_pokemon_id_for_move(move)
         move_target = move.target
 
-        self_position = (
-            self.POKEMON_1_POSITION
-            if pokemon_id[-1] == "a"
-            else self.POKEMON_2_POSITION
-        )
-        ally_position = (
-            self.POKEMON_2_POSITION
-            if pokemon_id[-1] == "a"
-            else self.POKEMON_1_POSITION
-        )
+        if pokemon_id[-1] == "a":
+            self_position = self.POKEMON_1_POSITION
+            ally_position = self.POKEMON_2_POSITION
+        else:
+            self_position = self.POKEMON_2_POSITION
+            ally_position = self.POKEMON_1_POSITION
 
         if dynamax or self.dynamax_turns_left is not None:
             if move.category == MoveCategory.STATUS:
