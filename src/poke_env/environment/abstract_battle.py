@@ -432,6 +432,9 @@ class AbstractBattle(ABC):
         self._finished = True
 
     def _update_team_from_request(self, side: Dict) -> None:
+        for pokemon in self.team.values():
+            pokemon._active = False
+
         for pokemon in side["pokemon"]:
             self.get_pokemon(
                 pokemon["ident"], force_self_team=True, details=pokemon["details"]

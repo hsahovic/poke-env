@@ -312,6 +312,7 @@ class Pokemon:
 
     def _update_from_request(self, request_pokemon: Dict[str, Any]) -> None:
         if request_pokemon == self._last_request:
+            self._active = request_pokemon["active"]
             return
         self._last_request = request_pokemon
 

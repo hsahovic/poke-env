@@ -120,7 +120,9 @@ class DoubleBattle(AbstractBattle):
             self._max_team_size = request["maxTeamSize"]
         else:
             self._teampreview = False
-        self._update_team_from_request(request["side"])
+
+        side = request["side"]
+        self._update_team_from_request(side)
 
         if "active" in request:
             for active_pokemon_number, active_request in enumerate(request["active"]):
@@ -189,8 +191,6 @@ class DoubleBattle(AbstractBattle):
                     self._can_dynamax[active_pokemon_number] = True
                 if active_request.get("maybeTrapped", False):
                     self._maybe_trapped[active_pokemon_number] = True
-
-        side = request["side"]
 
         if side["pokemon"]:
             self._player_role = side["pokemon"][0]["ident"][:2]
