@@ -221,6 +221,10 @@ class DoubleBattle(AbstractBattle):
     def get_possible_showdown_targets(self, move: Move, dynamax=False) -> List[int]:
         pokemon_id = self._get_pokemon_id_for_move(move)
         move_target = move.target
+        pokemon = (
+            self._active_pokemon.get(pokemon_id)
+            or self._opponent_active_pokemon[pokemon_id]
+        )
 
         if pokemon_id[-1] == "a":
             self_position = self.POKEMON_1_POSITION
@@ -229,7 +233,7 @@ class DoubleBattle(AbstractBattle):
             self_position = self.POKEMON_2_POSITION
             ally_position = self.POKEMON_1_POSITION
 
-        if dynamax or self.dynamax_turns_left is not None:
+        if dynamax or pokemon.is_dynamaxed:
             if move.category == MoveCategory.STATUS:
                 return [self_position]
             return [self.OPPONENT_1_POSITION, self.OPPONENT_2_POSITION]
@@ -237,10 +241,6 @@ class DoubleBattle(AbstractBattle):
         if move.non_ghost_target:  # changing target to "self" in case of Curse
             from poke_env.environment.pokemon_type import PokemonType
 
-            pokemon = (
-                self._active_pokemon.get(pokemon_id)
-                or self._opponent_active_pokemon[pokemon_id]
-            )
             if PokemonType.GHOST in pokemon.types:
                 move_target = "self"
 
