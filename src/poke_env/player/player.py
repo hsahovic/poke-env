@@ -604,7 +604,7 @@ class Player(PlayerNetwork, ABC):
         mega: bool = False,
         z_move: bool = False,
         dynamax: bool = False,
-        move_target: int = DoubleBattle.ALL_TARGETS_POSITION,
+        move_target: int = DoubleBattle.EMPTY_TARGET_POSITION,
     ) -> str:
         """Formats an move order corresponding to the provided pokemon or move.
 
@@ -629,7 +629,7 @@ class Player(PlayerNetwork, ABC):
                 order += " zmove"
             elif dynamax:
                 order += " dynamax"
-            if move_target != DoubleBattle.ALL_TARGETS_POSITION:
+            if move_target != DoubleBattle.EMPTY_TARGET_POSITION:
                 order += f" {move_target}"
             return order
         else:
