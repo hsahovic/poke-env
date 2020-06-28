@@ -232,6 +232,8 @@ class Pokemon:
             self.status = status
         self._current_hp, self._max_hp = hp.split("/")
         self._current_hp = int(self._current_hp)
+        while self._max_hp[-1].isalpha():
+            self._max_hp = self._max_hp[:-1]
         self._max_hp = int(self._max_hp)
 
     def _start_effect(self, effect):
