@@ -177,6 +177,7 @@ class Pokemon:
     def _faint(self):
         self._current_hp = 0
         self.status = Status.FNT
+        self._active = False
 
     def _forme_change(self, species):
         species = species.split(",")[0]
