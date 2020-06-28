@@ -235,7 +235,7 @@ class DoubleBattle(AbstractBattle):
 
         if dynamax or pokemon.is_dynamaxed:
             if move.category == MoveCategory.STATUS:
-                return [self_position]
+                return [self.ALL_TARGETS_POSITION]
             return [self.OPPONENT_1_POSITION, self.OPPONENT_2_POSITION]
 
         if move.non_ghost_target:  # changing target to "self" in case of Curse
