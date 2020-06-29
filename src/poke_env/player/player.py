@@ -392,28 +392,31 @@ class Player(PlayerNetwork, ABC):
                 order = "/choose default"
 
         elif isinstance(battle, DoubleBattle):
-            pokemon_1 = battle.active_pokemon[0]
             available_orders = []
             available_z_moves = set()
             mega_selected = False
             zmove_selected = False
             dynamax_selected = False
 
-            if battle.can_z_move:
-                available_z_moves.update(pokemon_1.available_z_moves)
+            pokemon_1, pokemon_2 = battle.active_pokemon
+            pokemon_1_index = 0 if pokemon_1 is not None else 1
+            pokemon_1 = battle.active_pokemon[pokemon_1_index]
 
-            for move in battle.available_moves[0]:
+            if battle.can_z_move:
+                available_z_moves.update(pokemon_1.available_z_moves)  # pyre-ignore
+
+            for move in battle.available_moves[pokemon_1_index]:
                 for target in battle.get_possible_showdown_targets(move):
                     available_orders.append(self.create_order(move, move_target=target))
-                    if battle.can_mega_evolve[0]:
+                    if battle.can_mega_evolve[pokemon_1_index]:
                         available_orders.append(
                             self.create_order(move, mega=True, move_target=target)
                         )
-                    if battle.can_z_move[0] and move in available_z_moves:
+                    if battle.can_z_move[pokemon_1_index] and move in available_z_moves:
                         available_orders.append(
                             self.create_order(move, z_move=True, move_target=target)
                         )
-                if battle.can_dynamax[0]:
+                if battle.can_dynamax[pokemon_1_index]:
                     for target in battle.get_possible_showdown_targets(
                         move, dynamax=True
                     ):
@@ -432,7 +435,7 @@ class Player(PlayerNetwork, ABC):
             else:
                 order = "/choose default"
 
-            if len(battle.active_pokemon) == 2:
+            if pokemon_1 is not None and pokemon_2 is not None:
                 pokemon_2 = battle.active_pokemon[1]
                 available_orders = []
                 available_z_moves = set()

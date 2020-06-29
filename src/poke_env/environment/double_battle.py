@@ -283,17 +283,20 @@ class DoubleBattle(AbstractBattle):
         return targets
 
     @property
-    def active_pokemon(self) -> Tuple[Pokemon, ...]:
+    def active_pokemon(self) -> List[Optional[Pokemon]]:
         """
-        :return: The active pokemon
-        :rtype: a tuple of one/two Pokemon
+        :return: The active pokemon, always at least one is not None
+        :rtype: List[Optional[Pokemon]]
         """
-        active_pokemon = tuple(
-            pokemon for pokemon in self.team.values() if pokemon.active
-        )
-        if len(active_pokemon) > 0:
-            return active_pokemon
-        raise ValueError("No active pokemon found in the current team")
+        pokemon_1 = self._active_pokemon.get(f"{self.player_role}a")
+        pokemon_2 = self._active_pokemon.get(f"{self.player_role}b")
+        if pokemon_1 is None or not pokemon_1.active:
+            pokemon_1 = None
+        if pokemon_2 is None or not pokemon_2.active:
+            pokemon_2 = None
+        if pokemon_1 is None and pokemon_2 is None:
+            raise ValueError("No active pokemon found in the current team")
+        return [pokemon_1, pokemon_2]
 
     @property
     def available_moves(self) -> List[List[Move]]:
