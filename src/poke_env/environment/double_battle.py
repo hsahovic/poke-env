@@ -202,6 +202,17 @@ class DoubleBattle(AbstractBattle):
         team[pokemon_identifier] = pokemon_in
 
     def get_possible_showdown_targets(self, move: Move, dynamax=False) -> List[int]:
+        """
+        Given move of an ALLY Pokemon, returns a list of possible Pokemon Showdown
+        targets for it. This is smart enough so that it figures whether the Pokemon
+        is already dynamaxed.
+        :param move: Move instance for which possible targets should be returned
+        :type move: Move
+        :param dynamax: whether given move also STARTS dynamax for its user
+        :return: a list of integers indicating Pokemon Showdown targets:
+            -1, -2, 1, 2 or self.EMPTY_TARGET_POSITION that indicates "no target"
+        :rtype: List[int]
+        """
         if move in self.available_moves[0]:
             pokemon = self.active_pokemon[0]
             self_position = self.POKEMON_1_POSITION
