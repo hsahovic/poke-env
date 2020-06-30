@@ -213,17 +213,18 @@ class DoubleBattle(AbstractBattle):
             -1, -2, 1, 2 or self.EMPTY_TARGET_POSITION that indicates "no target"
         :rtype: List[int]
         """
-        if move in self.available_moves[0]:
-            pokemon = self.active_pokemon[0]
+        pokemon_1, pokemon_2 = self.active_pokemon
+        if pokemon_1 is not None and move in self.available_moves[0]:
+            pokemon = pokemon_1
             self_position = self.POKEMON_1_POSITION
             ally_position = self.POKEMON_2_POSITION
-        elif move in self.available_moves[1]:
-            pokemon = self.active_pokemon[1]
+        elif pokemon_2 is not None and move in self.available_moves[1]:
+            pokemon = pokemon_2
             self_position = self.POKEMON_2_POSITION
             ally_position = self.POKEMON_1_POSITION
         else:
             raise Exception(
-                f"Selected move {move.id} is not owned by any ally Pokemon "
+                f"Selected move {move.id} is not owned by any active ally Pokemon "
                 f"that is currently battling"
             )
 
