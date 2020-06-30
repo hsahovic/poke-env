@@ -64,23 +64,6 @@ class DoubleBattle(AbstractBattle):
         pokemon._switch_in()
         pokemon.status = active.status
 
-    def _get_pokemon_id_for_move(self, move: Move) -> str:
-        cached_pokemon_id = self._move_to_pokemon_id.get(move)
-        if cached_pokemon_id is not None:
-            return cached_pokemon_id
-        all_battle_active_pokemon = {}
-        all_battle_active_pokemon.update(self._active_pokemon)
-        all_battle_active_pokemon.update(self._opponent_active_pokemon)
-        for pokemon_id, pokemon in all_battle_active_pokemon.items():
-            for pokemon_move in pokemon.moves.values():
-                if pokemon_move is move:
-                    self._move_to_pokemon_id[move] = pokemon_id
-                    return pokemon_id
-        raise Exception(
-            f"Selected move {move.id} is not owned by any Pokemon that is currently "
-            f"battling"
-        )
-
     def _parse_request(self, request: Dict) -> None:
         """
         Update the object from a request.
@@ -219,24 +202,26 @@ class DoubleBattle(AbstractBattle):
         team[pokemon_identifier] = pokemon_in
 
     def get_possible_showdown_targets(self, move: Move, dynamax=False) -> List[int]:
-        pokemon_id = self._get_pokemon_id_for_move(move)
-        move_target = move.target
-        pokemon = (
-            self._active_pokemon.get(pokemon_id)
-            or self._opponent_active_pokemon[pokemon_id]
-        )
-
-        if pokemon_id[-1] == "a":
+        if move in self.available_moves[0]:
+            pokemon = self.active_pokemon[0]
             self_position = self.POKEMON_1_POSITION
             ally_position = self.POKEMON_2_POSITION
-        else:
+        elif move in self.available_moves[1]:
+            pokemon = self.active_pokemon[1]
             self_position = self.POKEMON_2_POSITION
             ally_position = self.POKEMON_1_POSITION
+        else:
+            raise Exception(
+                f"Selected move {move.id} is not owned by any ally Pokemon "
+                f"that is currently battling"
+            )
 
         if dynamax or pokemon.is_dynamaxed:
             if move.category == MoveCategory.STATUS:
                 return [self.EMPTY_TARGET_POSITION]
             return [self.OPPONENT_1_POSITION, self.OPPONENT_2_POSITION]
+
+        move_target = move.target
 
         if move.non_ghost_target:  # changing target to "self" in case of Curse
             from poke_env.environment.pokemon_type import PokemonType
@@ -264,6 +249,7 @@ class DoubleBattle(AbstractBattle):
             "randomNormal": [self.EMPTY_TARGET_POSITION],
             "scripted": [self.EMPTY_TARGET_POSITION],
             "self": [self.EMPTY_TARGET_POSITION],
+            0: [self_position],
         }[move_target]
 
         pokemon_ids = set(self._opponent_active_pokemon.keys())
