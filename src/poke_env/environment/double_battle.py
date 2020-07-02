@@ -213,6 +213,8 @@ class DoubleBattle(AbstractBattle):
             -1, -2, 1, 2 or self.EMPTY_TARGET_POSITION that indicates "no target"
         :rtype: List[int]
         """
+        if move in special_moves:
+            return [self.EMPTY_TARGET_POSITION]
         pokemon_1, pokemon_2 = self.active_pokemon
         if pokemon_1 is not None and move in self.available_moves[0]:
             pokemon = pokemon_1
@@ -261,7 +263,7 @@ class DoubleBattle(AbstractBattle):
             "randomNormal": [self.EMPTY_TARGET_POSITION],
             "scripted": [self.EMPTY_TARGET_POSITION],
             "self": [self.EMPTY_TARGET_POSITION],
-            0: [self_position],
+            0: [self.EMPTY_TARGET_POSITION],
         }[move_target]
 
         pokemon_ids = set(self._opponent_active_pokemon.keys())
