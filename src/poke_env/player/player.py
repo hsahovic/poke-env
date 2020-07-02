@@ -399,8 +399,10 @@ class Player(PlayerNetwork, ABC):
             dynamax_selected = False
 
             pokemon_1, pokemon_2 = battle.active_pokemon
-            pokemon_1_index = 0 if pokemon_1 is not None else 1
-            pokemon_1 = battle.active_pokemon[pokemon_1_index]
+            pokemon_1_index = 0
+            if pokemon_1 is None:
+                pokemon_1, pokemon_2 = pokemon_2, pokemon_1
+                pokemon_1_index = 1
 
             if battle.can_z_move:
                 available_z_moves.update(pokemon_1.available_z_moves)  # pyre-ignore
@@ -435,7 +437,7 @@ class Player(PlayerNetwork, ABC):
             else:
                 order = "/choose default"
 
-            if pokemon_1 is not None and pokemon_2 is not None:
+            if pokemon_2 is not None:
                 pokemon_2 = battle.active_pokemon[1]
                 available_orders = []
                 available_z_moves = set()
