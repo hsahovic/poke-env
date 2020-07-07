@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from poke_env.data import TYPE_CHART, _TYPE_CHART_PATH
-from poke_env.utils import _compute_type_chart
+from poke_env.data import TYPE_CHART, _TYPE_CHART_PATH, _compute_type_chart
 from poke_env.environment.pokemon_type import PokemonType
 
 

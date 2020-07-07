@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from poke_env.utils import to_id_str
-from poke_env.raw_stats_converter import get_raw_stats
+from poke_env.utils import to_id_str, get_raw_stats
 
 
 def test_amoonguss_raw_stats_match_actual_stats():
