@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-"""This module contains utilies to convert to raw stats based on species, level, nature, EVs and IVs.
+"""This module contains utilities to convert to raw stats based on
+species, level, nature, EVs and IVs.
 """
 
 import math
-from typing import List, Any
+from typing import List
 
 from poke_env.data import POKEDEX, STATS_TO_IDX, NATURES
 
