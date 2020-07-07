@@ -51,17 +51,6 @@ with open(
 ) as natures:
     NATURES = json.load(natures)
 
-STATS_TO_IDX = {
-    "hp": 0,
-    "atk": 1,
-    "def": 2,
-    "spa": 3,
-    "spd": 4,
-    "spe": 5,
-    "satk": 3,
-    "sdef": 4,
-}
-
 """
 A dictionnary representing the Pokemon type chart.
 

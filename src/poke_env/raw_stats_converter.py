@@ -6,9 +6,18 @@ species, level, nature, EVs and IVs.
 import math
 from typing import List
 
-from poke_env.data import POKEDEX, STATS_TO_IDX, NATURES
+from poke_env.data import POKEDEX, NATURES
 
-StatList = List[int]
+STATS_TO_IDX = {
+    "hp": 0,
+    "atk": 1,
+    "def": 2,
+    "spa": 3,
+    "spd": 4,
+    "spe": 5,
+    "satk": 3,
+    "sdef": 4,
+}
 
 
 def _raw_stat(base: int, ev: int, iv: int, level: int, nature_multiplier: float) -> int:
@@ -40,8 +49,8 @@ def _raw_hp(base: int, ev: int, iv: int, level: int) -> int:
 
 
 def get_raw_stats(
-    species: str, evs: StatList, ivs: StatList, level: int, nature: str
-) -> StatList:
+    species: str, evs: List[int], ivs: List[int], level: int, nature: str
+) -> List[int]:
     """ Converts to raw stats
     :param species: pokemon species
     :param evs: list of pokemon's EVs (size 6)
