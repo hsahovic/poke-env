@@ -43,6 +43,25 @@ with open(
     MOVES = json.load(moves)
 
 TYPE_CHART: Dict[str, Dict[str, float]] = _compute_type_chart(_TYPE_CHART_PATH)
+
+NATURES: Dict[str, Any] = {}
+
+with open(
+    os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "natures.json")
+) as natures:
+    NATURES = json.load(natures)
+
+STATS_TO_IDX = {
+    "hp": 0,
+    "atk": 1,
+    "def": 2,
+    "spa": 3,
+    "spd": 4,
+    "spe": 5,
+    "satk": 3,
+    "sdef": 4,
+}
+
 """
 A dictionnary representing the Pokemon type chart.
 
