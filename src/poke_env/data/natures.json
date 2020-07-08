@@ -1,0 +1,205 @@
+{
+  "adamant": {
+    "num": 0,
+    "atk": 1.1,
+    "def": 1,
+    "spa": 0.9,
+    "spd": 1,
+    "spe": 1
+  },
+  "bashful": {
+    "num": 1,
+    "atk": 1,
+    "def": 1,
+    "spa": 1,
+    "spd": 1,
+    "spe": 1
+  },
+  "bold": {
+    "num": 2,
+    "atk": 0.9,
+    "def": 1.1,
+    "spa": 1,
+    "spd": 1,
+    "spe": 1
+  },
+  "brave": {
+    "num": 3,
+    "atk": 1.1,
+    "def": 1,
+    "spa": 1,
+    "spd": 1,
+    "spe": 0.9
+  },
+  "calm": {
+    "num": 4,
+    "atk": 0.9,
+    "def": 1,
+    "spa": 1,
+    "spd": 1.1,
+    "spe": 1
+  },
+  "careful": {
+    "num": 5,
+    "atk": 1,
+    "def": 1,
+    "spa": 0.9,
+    "spd": 1.1,
+    "spe": 1
+  },
+  "docile": {
+    "num": 6,
+    "atk": 1,
+    "def": 1,
+    "spa": 1,
+    "spd": 1,
+    "spe": 1
+  },
+  "gentle": {
+    "num": 7,
+    "atk": 1,
+    "def": 0.9,
+    "spa": 1,
+    "spd": 1.1,
+    "spe": 1
+  },
+  "hardy": {
+    "num": 8,
+    "atk": 1,
+    "def": 1,
+    "spa": 1,
+    "spd": 1,
+    "spe": 1
+  },
+  "hasty": {
+    "num": 9,
+    "atk": 1,
+    "def": 0.9,
+    "spa": 1,
+    "spd": 1,
+    "spe": 1.1
+  },
+  "impish": {
+    "num": 10,
+    "atk": 1,
+    "def": 1.1,
+    "spa": 0.9,
+    "spd": 1,
+    "spe": 1
+  },
+  "jolly": {
+    "num": 11,
+    "atk": 1,
+    "def": 1,
+    "spa": 0.9,
+    "spd": 1,
+    "spe": 1.1
+  },
+  "lax": {
+    "num": 12,
+    "atk": 1,
+    "def": 1.1,
+    "spa": 1,
+    "spd": 0.9,
+    "spe": 1
+  },
+  "lonely": {
+    "num": 13,
+    "atk": 1.1,
+    "def": 0.9,
+    "spa": 1,
+    "spd": 1,
+    "spe": 1
+  },
+  "mild": {
+    "num": 14,
+    "atk": 1,
+    "def": 0.9,
+    "spa": 1.1,
+    "spd": 1,
+    "spe": 1
+  },
+  "modest": {
+    "num": 15,
+    "atk": 0.9,
+    "def": 1,
+    "spa": 1.1,
+    "spd": 1,
+    "spe": 1
+  },
+  "naive": {
+    "num": 16,
+    "atk": 1,
+    "def": 1,
+    "spa": 1,
+    "spd": 0.9,
+    "spe": 1.1
+  },
+  "naughty": {
+    "num": 17,
+    "atk": 1.1,
+    "def": 1,
+    "spa": 1,
+    "spd": 0.9,
+    "spe": 1
+  },
+  "quiet": {
+    "num": 18,
+    "atk": 1,
+    "def": 1,
+    "spa": 1.1,
+    "spd": 1,
+    "spe": 0.9
+  },
+  "quirky": {
+    "num": 19,
+    "atk": 1,
+    "def": 1,
+    "spa": 1,
+    "spd": 1,
+    "spe": 1
+  },
+  "rash": {
+    "num": 20,
+    "atk": 1,
+    "def": 1,
+    "spa": 1.1,
+    "spd": 0.9,
+    "spe": 1
+  },
+  "relaxed": {
+    "num": 21,
+    "atk": 1,
+    "def": 1.1,
+    "spa": 1,
+    "spd": 1,
+    "spe": 0.9
+  },
+  "sassy": {
+    "num": 22,
+    "atk": 1,
+    "def": 1,
+    "spa": 1,
+    "spd": 1.1,
+    "spe": 0.9
+  },
+  "serious": {
+    "num": 23,
+    "atk": 1,
+    "def": 1,
+    "spa": 1,
+    "spd": 1,
+    "spe": 1
+  },
+  "timid": {
+    "num": 24,
+    "atk": 0.9,
+    "def": 1,
+    "spa": 1,
+    "spd": 1,
+    "spe": 1.1
+  }
+}
+
+
+
