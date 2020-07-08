@@ -58,7 +58,7 @@ def _raw_hp(base: int, ev: int, iv: int, level: int) -> int:
     return int(s)
 
 
-def get_raw_stats(
+def compute_raw_stats(
     species: str, evs: List[int], ivs: List[int], level: int, nature: str
 ) -> List[int]:
     """ Converts to raw stats

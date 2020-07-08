@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from poke_env.utils import to_id_str, get_raw_stats
+from poke_env.utils import to_id_str, compute_raw_stats
 
 
 def test_amoonguss_raw_stats_match_actual_stats():
@@ -12,7 +12,7 @@ def test_amoonguss_raw_stats_match_actual_stats():
     level = 50
 
     actual_stats = [198, 81, 90, 105, 124, 90]
-    raw_stats = get_raw_stats(species, evs, ivs, level, nature)
+    raw_stats = compute_raw_stats(species, evs, ivs, level, nature)
 
     assert actual_stats == raw_stats
 
@@ -25,7 +25,7 @@ def test_incineroar_raw_stats_match_actual_stats():
     level = 50
 
     actual_stats = [202, 165, 110, 90, 128, 79]
-    raw_stats = get_raw_stats(species, evs, ivs, level, nature)
+    raw_stats = compute_raw_stats(species, evs, ivs, level, nature)
 
     assert actual_stats == raw_stats
 
@@ -38,7 +38,7 @@ def test_togedemaru_raw_stats_match_actual_stats():
     level = 100
 
     actual_stats = [262, 295, 117, 85, 183, 320]
-    raw_stats = get_raw_stats(species, evs, ivs, level, nature)
+    raw_stats = compute_raw_stats(species, evs, ivs, level, nature)
 
     assert actual_stats == raw_stats
 
@@ -51,7 +51,7 @@ def test_blissey_raw_stats_match_actual_stats():
     level = 100
 
     actual_stats = [714, 50, 57, 186, 306, 229]
-    raw_stats = get_raw_stats(species, evs, ivs, level, nature)
+    raw_stats = compute_raw_stats(species, evs, ivs, level, nature)
 
     assert actual_stats == raw_stats
 
@@ -64,10 +64,10 @@ def test_shedinja_raw_stats_match_actual_stats():
 
     level = 50
     actual_stats = [1, 156, 66, 45, 50, 92]
-    raw_stats = get_raw_stats(species, evs, ivs, level, nature)
+    raw_stats = compute_raw_stats(species, evs, ivs, level, nature)
     assert actual_stats == raw_stats
 
     level = 100
     actual_stats = [1, 306, 127, 86, 96, 179]
-    raw_stats = get_raw_stats(species, evs, ivs, level, nature)
+    raw_stats = compute_raw_stats(species, evs, ivs, level, nature)
     assert actual_stats == raw_stats
