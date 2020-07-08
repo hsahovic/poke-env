@@ -75,16 +75,20 @@ def get_raw_stats(
 
     base_stats = [0] * 6
     for stat, value in POKEDEX[species]["baseStats"].items():
-        if stat in STATS_TO_IDX:
-            base_stats[STATS_TO_IDX[stat]] = value
+        base_stats[STATS_TO_IDX[stat]] = value
 
-    nature_multiplier = [1] * 6
+    nature_multiplier = [1.0] * 6
     for stat, multiplier in NATURES[nature].items():
-        if stat in STATS_TO_IDX:
+        if stat != "num":
             nature_multiplier[STATS_TO_IDX[stat]] = multiplier
 
     raw_stats = [0] * 6
-    raw_stats[0] = _raw_hp(base_stats[0], evs[0], ivs[0], level)
+
+    if species == "shedinja":
+        raw_stats[0] = 1
+    else:
+        raw_stats[0] = _raw_hp(base_stats[0], evs[0], ivs[0], level)
+
     for i in range(1, 6):
         raw_stats[i] = _raw_stat(
             base_stats[i], evs[i], ivs[i], level, nature_multiplier[i]

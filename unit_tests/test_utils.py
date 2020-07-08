@@ -41,3 +41,33 @@ def test_togedemaru_raw_stats_match_actual_stats():
     raw_stats = get_raw_stats(species, evs, ivs, level, nature)
 
     assert actual_stats == raw_stats
+
+
+def test_blissey_raw_stats_match_actual_stats():
+    species = to_id_str("Blissey")
+    nature = to_id_str("Timid")
+    evs = [252, 0, 4, 0, 0, 252]
+    ivs = [31, 31, 31, 31, 31, 31]
+    level = 100
+
+    actual_stats = [714, 50, 57, 186, 306, 229]
+    raw_stats = get_raw_stats(species, evs, ivs, level, nature)
+
+    assert actual_stats == raw_stats
+
+
+def test_shedinja_raw_stats_match_actual_stats():
+    species = to_id_str("Shedinja")
+    nature = to_id_str("Adamant")
+    evs = [0, 252, 4, 0, 0, 252]
+    ivs = [31, 31, 31, 31, 31, 31]
+
+    level = 50
+    actual_stats = [1, 156, 66, 45, 50, 92]
+    raw_stats = get_raw_stats(species, evs, ivs, level, nature)
+    assert actual_stats == raw_stats
+
+    level = 100
+    actual_stats = [1, 306, 127, 86, 96, 179]
+    raw_stats = get_raw_stats(species, evs, ivs, level, nature)
+    assert actual_stats == raw_stats
