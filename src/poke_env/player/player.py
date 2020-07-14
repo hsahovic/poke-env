@@ -404,7 +404,7 @@ class Player(PlayerNetwork, ABC):
                 pokemon_1, pokemon_2 = pokemon_2, pokemon_1
                 pokemon_1_index = 1
 
-            if battle.can_z_move:
+            if any(battle.can_z_move):
                 available_z_moves.update(pokemon_1.available_z_moves)  # pyre-ignore
 
             for move in battle.available_moves[pokemon_1_index]:
