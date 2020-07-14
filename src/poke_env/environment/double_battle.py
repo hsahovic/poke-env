@@ -290,9 +290,9 @@ class DoubleBattle(AbstractBattle):
         """
         pokemon_1 = self._active_pokemon.get(f"{self.player_role}a")
         pokemon_2 = self._active_pokemon.get(f"{self.player_role}b")
-        if pokemon_1 is None or not pokemon_1.active:
+        if pokemon_1 is None or not pokemon_1.active or pokemon_1.fainted:
             pokemon_1 = None
-        if pokemon_2 is None or not pokemon_2.active:
+        if pokemon_2 is None or not pokemon_2.active or pokemon_2.fainted:
             pokemon_2 = None
         if pokemon_1 is None and pokemon_2 is None:
             raise ValueError("No active pokemon found in the current team")
