@@ -426,7 +426,7 @@ class Player(PlayerNetwork, ABC):
                             self.create_order(move, dynamax=True, move_target=target)
                         )
 
-            for pokemon in battle.available_switches:
+            for pokemon in battle.available_switches[pokemon_1_index]:
                 available_orders.append(self.create_order(pokemon))
 
             if available_orders:
@@ -472,7 +472,7 @@ class Player(PlayerNetwork, ABC):
                                 )
                             )
 
-                for pokemon in battle.available_switches:
+                for pokemon in battle.available_switches[1]:
                     if not ("switch" in order and pokemon.species in order):
                         available_orders.append(self.create_order(pokemon))
 
@@ -627,6 +627,8 @@ class Player(PlayerNetwork, ABC):
         :rtype: str
         """
         if isinstance(order, Move):
+            if order.id == "recharge":
+                return "/choose move 1"
             order = f"/choose move {order.id}"
             if mega:
                 order += " mega"

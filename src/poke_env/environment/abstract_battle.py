@@ -458,12 +458,9 @@ class AbstractBattle(ABC):
         pass
 
     @property
+    @abstractmethod
     def available_switches(self) -> List[Pokemon]:
-        """
-        :return: The list of switches the player can do during the current move request.
-        :rtype: List[Pokemon]
-        """
-        return self._available_switches
+        pass
 
     @property
     def battle_tag(self) -> str:

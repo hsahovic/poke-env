@@ -84,7 +84,7 @@ class DoubleBattle(AbstractBattle):
             self._wait = False
 
         self._available_moves = [[], []]
-        self._available_switches = []
+        self._available_switches = [[], []]
         self._can_mega_evolve = [False, False]
         self._can_z_move = [False, False]
         self._can_dynamax = [False, False]
@@ -178,12 +178,13 @@ class DoubleBattle(AbstractBattle):
         if side["pokemon"]:
             self._player_role = side["pokemon"][0]["ident"][:2]
 
-        if not self.trapped:
-            for pokemon in side["pokemon"]:
-                if pokemon:
-                    pokemon = self._team[pokemon["ident"]]
-                    if not pokemon.active and not pokemon.fainted:
-                        self._available_switches.append(pokemon)
+        for trapped, pokemon_index in enumerate(self.trapped):
+            if not trapped:
+                for pokemon in side["pokemon"]:
+                    if pokemon:
+                        pokemon = self._team[pokemon["ident"]]
+                        if not pokemon.active and not pokemon.fainted:
+                            self._available_switches[pokemon_index].append(pokemon)
 
     def _switch(self, pokemon, details, hp_status):
         pokemon_identifier = pokemon.split(":")[0][:3]
@@ -294,8 +295,6 @@ class DoubleBattle(AbstractBattle):
             pokemon_1 = None
         if pokemon_2 is None or not pokemon_2.active or pokemon_2.fainted:
             pokemon_2 = None
-        if pokemon_1 is None and pokemon_2 is None:
-            raise ValueError("No active pokemon found in the current team")
         return [pokemon_1, pokemon_2]
 
     @property
@@ -306,6 +305,15 @@ class DoubleBattle(AbstractBattle):
         :rtype: List[List[Move]]
         """
         return self._available_moves
+
+    @property
+    def available_switches(self) -> List[List[Pokemon]]:
+        """
+        :return: The list of two lists of switches the player can do during the
+            current move request for each active pokemon
+        :rtype: List[List[Pokemon]]
+        """
+        return self._available_switches
 
     @property
     def can_dynamax(self) -> List[bool]:
