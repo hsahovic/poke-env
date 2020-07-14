@@ -119,7 +119,6 @@ class AbstractBattle(ABC):
         self.logger: Logger = logger  # pyre-ignore
 
         # Turn choice attributes
-        self._available_switches: List[Pokemon] = []
         self._in_team_preview: bool = False
         self._move_on_next_request: bool = False
         self._wait: Optional[bool] = None

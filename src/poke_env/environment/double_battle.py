@@ -26,6 +26,7 @@ class DoubleBattle(AbstractBattle):
 
         # Turn choice attributes
         self._available_moves: List[List[Move]] = [[], []]
+        self._available_switches: List[List[Pokemon]] = [[], []]
         self._can_mega_evolve: List[bool] = [False, False]
         self._can_z_move: List[bool] = [False, False]
         self._can_dynamax: List[bool] = [False, False]
