@@ -116,8 +116,10 @@ class Pokemon:
         return self.__str__()
 
     def __str__(self) -> str:
-        return f"{self._species} (pokemon object) "
-        "[Active: {self._active}, Status: {self._status}]"
+        return (
+            f"{self._species} (pokemon object) "
+            f"[Active: {self._active}, Status: {self._status}]"
+        )
 
     def _add_move(self, move_id: str, use: bool = False) -> None:
         """Store the move if applicable."""
