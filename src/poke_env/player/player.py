@@ -371,8 +371,10 @@ class Player(PlayerNetwork, ABC):
             available_orders = []
             available_z_moves = set()
 
-            if battle.can_z_move:
-                available_z_moves.update(battle.active_pokemon.available_z_moves)
+            if battle.can_z_move and battle.active_pokemon:
+                available_z_moves.update(
+                    battle.active_pokemon.available_z_moves  # pyre-ignore
+                )
 
             for move in battle.available_moves:
                 available_orders.append(self.create_order(move))
@@ -405,7 +407,7 @@ class Player(PlayerNetwork, ABC):
                 pokemon_1_index = 1
 
             if any(battle.can_z_move):
-                available_z_moves.update(pokemon_1.available_z_moves)  # pyre-ignore
+                available_z_moves.update(pokemon_1.available_z_moves)
 
             for move in battle.available_moves[pokemon_1_index]:
                 for target in battle.get_possible_showdown_targets(move):

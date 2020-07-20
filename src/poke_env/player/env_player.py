@@ -392,7 +392,10 @@ class Gen7EnvSinglePlayer(EnvPlayer):  # pyre-ignore
         elif (
             not battle.force_switch
             and battle.can_z_move
-            and 0 <= action - 4 < len(battle.active_pokemon.available_z_moves)
+            and battle.active_pokemon
+            and 0
+            <= action - 4
+            < len(battle.active_pokemon.available_z_moves)  # pyre-ignore
         ):
             return self.create_order(
                 battle.active_pokemon.available_z_moves[action - 4], z_move=True
@@ -472,7 +475,10 @@ class Gen8EnvSinglePlayer(EnvPlayer):  # pyre-ignore
         elif (
             not battle.force_switch
             and battle.can_z_move
-            and 0 <= action - 4 < len(battle.active_pokemon.available_z_moves)
+            and battle.active_pokemon
+            and 0
+            <= action - 4
+            < len(battle.active_pokemon.available_z_moves)  # pyre-ignore
         ):
             return self.create_order(
                 battle.active_pokemon.available_z_moves[action - 4], z_move=True

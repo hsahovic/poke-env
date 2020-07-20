@@ -95,45 +95,50 @@ class Battle(AbstractBattle):
             if active_request.get("trapped"):
                 self._trapped = True
 
-            for move in active_request["moves"]:
-                if not move.get("disabled", False):
-                    if move["id"] in active_pokemon.moves:
-                        self._available_moves.append(active_pokemon.moves[move["id"]])
-                    elif move["id"] in special_moves:
-                        self._available_moves.append(special_moves[move["id"]])
-                    else:
-                        try:
-                            if not {
-                                "copycat",
-                                "metronome",
-                                "mefirst",
-                                "mirrormove",
-                                "assist",
-                            }.intersection(self.active_pokemon.moves.keys()):
-                                self.logger.critical(
-                                    "An error occured in battle %s while adding "
-                                    "available moves. The move '%s' was either unknown "
-                                    "or not available for the active pokemon: %s",
-                                    self.battle_tag,
-                                    move["id"],
-                                    self.active_pokemon.species,
-                                )
-                            else:
-                                self.logger.warning(
-                                    "The move '%s' was received in battle %s for your "
-                                    "active pokemon %s. This move could not be added, "
-                                    "but it might come from a special move such as "
-                                    "copycat or me first. If that is not the case, "
-                                    "please make sure there is an explanation for this "
-                                    "behavior or report it if it is an error.",
-                                    move["id"],
-                                    self.battle_tag,
-                                    self.active_pokemon.species,
-                                )
-                            move = Move(move["id"])
-                            self._available_moves.append(move)
-                        except AttributeError:
-                            pass
+            if active_pokemon:
+                for move in active_request["moves"]:
+                    if not move.get("disabled", False):
+                        if move["id"] in active_pokemon.moves:
+                            self._available_moves.append(
+                                active_pokemon.moves[move["id"]]
+                            )
+                        elif move["id"] in special_moves:
+                            self._available_moves.append(special_moves[move["id"]])
+                        else:
+                            try:
+                                if not {
+                                    "copycat",
+                                    "metronome",
+                                    "mefirst",
+                                    "mirrormove",
+                                    "assist",
+                                }.intersection(active_pokemon.moves.keys()):
+                                    self.logger.critical(
+                                        "An error occured in battle %s while adding "
+                                        "available moves. The move '%s' was either "
+                                        "unknown or not available for the active "
+                                        "pokemon: %s",
+                                        self.battle_tag,
+                                        move["id"],
+                                        active_pokemon.species,
+                                    )
+                                else:
+                                    self.logger.warning(
+                                        "The move '%s' was received in battle %s for "
+                                        "your active pokemon %s. This move could not "
+                                        "be added, but it might come from a special "
+                                        "move such as copycat or me first. If that is "
+                                        "not the case, please make sure there is an "
+                                        "explanation for this behavior or report it if "
+                                        "it is an error.",
+                                        move["id"],
+                                        self.battle_tag,
+                                        active_pokemon.species,
+                                    )
+                                move = Move(move["id"])
+                                self._available_moves.append(move)
+                            except AttributeError:
+                                pass
             if active_request.get("canMegaEvo", False):
                 self._can_mega_evolve = True
             if active_request.get("canZMove", False):
@@ -168,10 +173,10 @@ class Battle(AbstractBattle):
         pokemon._set_hp_status(hp_status)
 
     @property
-    def active_pokemon(self) -> Pokemon:
+    def active_pokemon(self) -> Optional[Pokemon]:
         """
         :return: The active pokemon
-        :rtype: Pokemon
+        :rtype: Optional[Pokemon]
         """
         for pokemon in self.team.values():
             if pokemon.active:
