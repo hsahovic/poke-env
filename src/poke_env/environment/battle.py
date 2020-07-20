@@ -158,7 +158,8 @@ class Battle(AbstractBattle):
     def _switch(self, pokemon, details, hp_status):
         identifier = pokemon.split(":")[0][:2]
         if identifier == self._player_role:
-            self.active_pokemon._switch_out()
+            if self.active_pokemon:
+                self.active_pokemon._switch_out()
         else:
             if self.opponent_active_pokemon:
                 self.opponent_active_pokemon._switch_out()
@@ -175,7 +176,6 @@ class Battle(AbstractBattle):
         for pokemon in self.team.values():
             if pokemon.active:
                 return pokemon
-        raise ValueError("No active pokemon found in the current team")
 
     @property
     def available_moves(self) -> List[Move]:
