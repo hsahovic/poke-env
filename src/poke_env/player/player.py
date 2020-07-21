@@ -400,71 +400,36 @@ class Player(PlayerNetwork, ABC):
             zmove_selected = False
             dynamax_selected = False
 
-            pokemon_1, pokemon_2 = battle.active_pokemon
-            pokemon_1_index = 0
-            if pokemon_1 is None:
-                pokemon_1, pokemon_2 = pokemon_2, pokemon_1
-                pokemon_1_index = 1
+            if any(battle.active_pokemon):
+                pokemon_1, pokemon_2 = battle.active_pokemon
 
-            if any(battle.can_z_move):
-                available_z_moves.update(pokemon_1.available_z_moves)
-
-            for move in battle.available_moves[pokemon_1_index]:
-                for target in battle.get_possible_showdown_targets(move):
-                    available_orders.append(self.create_order(move, move_target=target))
-                    if battle.can_mega_evolve[pokemon_1_index]:
-                        available_orders.append(
-                            self.create_order(move, mega=True, move_target=target)
-                        )
-                    if battle.can_z_move[pokemon_1_index] and move in available_z_moves:
-                        available_orders.append(
-                            self.create_order(move, z_move=True, move_target=target)
-                        )
-                if battle.can_dynamax[pokemon_1_index]:
-                    for target in battle.get_possible_showdown_targets(
-                        move, dynamax=True
-                    ):
-                        available_orders.append(
-                            self.create_order(move, dynamax=True, move_target=target)
-                        )
-
-            for pokemon in battle.available_switches[pokemon_1_index]:
-                available_orders.append(self.create_order(pokemon))
-
-            if available_orders:
-                order = random.choice(available_orders)
-                mega_selected = "mega" in order
-                zmove_selected = "zmove" in order
-                dynamax_selected = "dynamax" in order
-            else:
-                order = "/choose default"
-
-            if pokemon_2 is not None:
-                pokemon_2 = battle.active_pokemon[1]
-                available_orders = []
-                available_z_moves = set()
-
-                if battle.can_z_move:
+                if pokemon_1 and battle.can_z_move[0]:
+                    available_z_moves.update(pokemon_1.available_z_moves)
+                if pokemon_2 and battle.can_z_move[1]:
                     available_z_moves.update(pokemon_2.available_z_moves)
 
-                for move in battle.available_moves[1]:
+                pokemon_1_index = 0
+                if pokemon_1 is None:
+                    pokemon_1, pokemon_2 = pokemon_2, pokemon_1
+                    pokemon_1_index = 1
+
+                for move in battle.available_moves[pokemon_1_index]:
                     for target in battle.get_possible_showdown_targets(move):
                         available_orders.append(
                             self.create_order(move, move_target=target)
                         )
-                        if not mega_selected and battle.can_mega_evolve[1]:
+                        if battle.can_mega_evolve[pokemon_1_index]:
                             available_orders.append(
                                 self.create_order(move, mega=True, move_target=target)
                             )
                         if (
-                            not zmove_selected
-                            and battle.can_z_move[1]
+                            battle.can_z_move[pokemon_1_index]
                             and move in available_z_moves
                         ):
                             available_orders.append(
                                 self.create_order(move, z_move=True, move_target=target)
                             )
-                    if not dynamax_selected and battle.can_dynamax[1]:
+                    if battle.can_dynamax[pokemon_1_index]:
                         for target in battle.get_possible_showdown_targets(
                             move, dynamax=True
                         ):
@@ -474,14 +439,68 @@ class Player(PlayerNetwork, ABC):
                                 )
                             )
 
-                for pokemon in battle.available_switches[1]:
-                    if not ("switch" in order and pokemon.species in order):
-                        available_orders.append(self.create_order(pokemon))
+                for pokemon in battle.available_switches[pokemon_1_index]:
+                    available_orders.append(self.create_order(pokemon))
 
                 if available_orders:
-                    order += random.choice(available_orders).replace("/choose ", ",")
+                    order = random.choice(available_orders)
+                    mega_selected = "mega" in order
+                    zmove_selected = "zmove" in order
+                    dynamax_selected = "dynamax" in order
                 else:
-                    order += ",default"
+                    order = "/choose default"
+
+                if pokemon_2 is not None:
+                    pokemon_2 = battle.active_pokemon[1]
+                    available_orders = []
+                    available_z_moves = set()
+
+                    if battle.can_z_move:
+                        available_z_moves.update(pokemon_2.available_z_moves)
+
+                    for move in battle.available_moves[1]:
+                        for target in battle.get_possible_showdown_targets(move):
+                            available_orders.append(
+                                self.create_order(move, move_target=target)
+                            )
+                            if not mega_selected and battle.can_mega_evolve[1]:
+                                available_orders.append(
+                                    self.create_order(
+                                        move, mega=True, move_target=target
+                                    )
+                                )
+                            if (
+                                not zmove_selected
+                                and battle.can_z_move[1]
+                                and move in available_z_moves
+                            ):
+                                available_orders.append(
+                                    self.create_order(
+                                        move, z_move=True, move_target=target
+                                    )
+                                )
+                        if not dynamax_selected and battle.can_dynamax[1]:
+                            for target in battle.get_possible_showdown_targets(
+                                move, dynamax=True
+                            ):
+                                available_orders.append(
+                                    self.create_order(
+                                        move, dynamax=True, move_target=target
+                                    )
+                                )
+
+                    for pokemon in battle.available_switches[1]:
+                        if not ("switch" in order and pokemon.species in order):
+                            available_orders.append(self.create_order(pokemon))
+
+                    if available_orders:
+                        order += random.choice(available_orders).replace(
+                            "/choose ", ","
+                        )
+                    else:
+                        order += ",default"
+            else:
+                order = "/choose default"
         else:
             order = "/choose default"
 

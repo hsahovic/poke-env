@@ -45,7 +45,8 @@ class DoubleBattle(AbstractBattle):
     def _clear_all_boosts(self):
         for active_pokemon_group in (self.active_pokemon, self.opponent_active_pokemon):
             for active_pokemon in active_pokemon_group:
-                active_pokemon._clear_boosts()
+                if active_pokemon is not None:
+                    active_pokemon._clear_boosts()
 
     def _end_illusion(self, pokemon_name: str, details: str):
         player_identifier = pokemon_name[:2]
@@ -63,6 +64,18 @@ class DoubleBattle(AbstractBattle):
         active._was_illusionned()
         pokemon._switch_in()
         pokemon.status = active.status
+
+    @staticmethod
+    def _get_active_pokemon(
+        active_pokemon: Dict[str, Pokemon], role: str
+    ) -> List[Optional[Pokemon]]:
+        pokemon_1 = active_pokemon.get(f"{role}a")
+        pokemon_2 = active_pokemon.get(f"{role}b")
+        if pokemon_1 is None or not pokemon_1.active or pokemon_1.fainted:
+            pokemon_1 = None
+        if pokemon_2 is None or not pokemon_2.active or pokemon_2.fainted:
+            pokemon_2 = None
+        return [pokemon_1, pokemon_2]
 
     def _parse_request(self, request: Dict) -> None:
         """
@@ -213,20 +226,6 @@ class DoubleBattle(AbstractBattle):
         slot_b = f"{player_identifier}b"
         team[slot_a], team[slot_b] = team[slot_b], team[slot_a]
 
-    @staticmethod
-    def _verify_active(pokemon_1, pokemon_2):
-        """
-        Replaces Pokemon to None if inactive and ensures that at least one of the
-        two Pokemon is active
-        """
-        if pokemon_1 is None or not pokemon_1.active or pokemon_1.fainted:
-            pokemon_1 = None
-        if pokemon_2 is None or not pokemon_2.active or pokemon_2.fainted:
-            pokemon_2 = None
-        if pokemon_1 is None and pokemon_2 is None:
-            raise ValueError("No active pokemon found in the current team")
-        return pokemon_1, pokemon_2
-
     def get_possible_showdown_targets(self, move: Move, dynamax=False) -> List[int]:
         """
         Given move of an ALLY Pokemon, returns a list of possible Pokemon Showdown
@@ -311,10 +310,11 @@ class DoubleBattle(AbstractBattle):
         :return: The active pokemon, always at least one is not None
         :rtype: List[Optional[Pokemon]]
         """
-        pokemon_1 = self._active_pokemon.get(f"{self.player_role}a")
-        pokemon_2 = self._active_pokemon.get(f"{self.player_role}b")
-        pokemon_1, pokemon_2 = self._verify_active(pokemon_1, pokemon_2)
-        return [pokemon_1, pokemon_2]
+        if self.player_role is None:
+            raise ValueError("Unable to get active_pokemon, player_role is None")
+        return self._get_active_pokemon(
+            self._active_pokemon, self.player_role  # pyre-ignore
+        )
 
     @property
     def available_moves(self) -> List[List[Move]]:
@@ -382,10 +382,13 @@ class DoubleBattle(AbstractBattle):
         :return: The opponent active pokemon, always at least one is not None
         :rtype: List[Optional[Pokemon]]
         """
-        pokemon_1 = self._opponent_active_pokemon.get(f"{self.opponent_role}a")
-        pokemon_2 = self._opponent_active_pokemon.get(f"{self.opponent_role}b")
-        pokemon_1, pokemon_2 = self._verify_active(pokemon_1, pokemon_2)
-        return [pokemon_1, pokemon_2]
+        if self.opponent_role is None:
+            raise ValueError(
+                "Unable to get opponent_active_pokemon, opponent_role is None"
+            )
+        return self._get_active_pokemon(
+            self._opponent_active_pokemon, self.opponent_role  # pyre-ignore
+        )
 
     @property
     def opponent_can_dynamax(self) -> List[bool]:
