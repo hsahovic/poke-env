@@ -263,11 +263,8 @@ class DoubleBattle(AbstractBattle):
 
         move_target = move.target
 
-        if move.non_ghost_target:  # changing target to "self" in case of Curse
-            from poke_env.environment.pokemon_type import PokemonType
-
-            if PokemonType.GHOST in pokemon.types:
-                move_target = self.EMPTY_TARGET_POSITION
+        if move.non_ghost_target:  # fixing target for Curse
+            move_target = self.EMPTY_TARGET_POSITION
 
         targets = {
             "adjacentAlly": [ally_position],
