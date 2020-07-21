@@ -267,7 +267,7 @@ class DoubleBattle(AbstractBattle):
             from poke_env.environment.pokemon_type import PokemonType
 
             if PokemonType.GHOST in pokemon.types:
-                move_target = "self"
+                move_target = self.EMPTY_TARGET_POSITION
 
         targets = {
             "adjacentAlly": [ally_position],
