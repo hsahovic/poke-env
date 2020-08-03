@@ -381,7 +381,7 @@ class Pokemon:
         """
         if isinstance(type_or_move, Move):
             type_or_move = type_or_move.type
-        if isinstance(type_or_move, PokemonType):  # pyre-ignore
+        if isinstance(type_or_move, PokemonType):
             return type_or_move.damage_multiplier(self._type_1, self._type_2)
         # This can happen with special moves, which do not necessarily have a type
         return 1
