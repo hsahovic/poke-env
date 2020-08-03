@@ -116,7 +116,7 @@ class Battle:
         self._team_size: Dict[str, int] = {}
         self._teampreview: bool = False
         self._teampreview_opponent_team: Set[Pokemon] = set()
-        self.logger: Logger = logger  # pyre-ignore
+        self.logger: Logger = logger
 
         # Turn choice attributes
         self._available_moves: List[Move] = []

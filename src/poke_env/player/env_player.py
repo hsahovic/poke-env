@@ -26,6 +26,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
     """Player exposing the Open AI Gym Env API. Recommended use is with play_against.
     """
 
+    _ACTION_SPACE = None
     MAX_BATTLE_SWITCH_RETRY = 10000
     PAUSE_BETWEEN_RETRIES = 0.001
 

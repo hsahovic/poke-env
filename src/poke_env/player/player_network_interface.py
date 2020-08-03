@@ -90,7 +90,7 @@ class PlayerNetwork(ABC):
         if avatar_id is not None:
             await self._send_message(f"/avatar {avatar_id}")
 
-    def _create_player_logger(self, log_level: Optional[int]) -> Logger:  # pyre-ignore
+    def _create_player_logger(self, log_level: Optional[int]) -> Logger:
         """Creates a logger for the player.
 
         Returns a Logger displaying asctime and the player's username before messages.
@@ -292,7 +292,7 @@ class PlayerNetwork(ABC):
         return self._logged_in
 
     @property
-    def logger(self) -> Logger:  # pyre-ignore
+    def logger(self) -> Logger:
         """Logger associated with the player.
 
         :return: The logger.
