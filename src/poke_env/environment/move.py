@@ -197,7 +197,7 @@ class Move:
         if self._id=="triplekick" or self._id=="tripleaxel":
             #Triple Kick and Triple Axel have an accuracy check for each hit, and also rise in BP for each hit
             return 1+2*0.9+3*0.81
-        min, max = self.n_hits
+        min, max = self.n_hit
         if min==max:
             return min
         else:
