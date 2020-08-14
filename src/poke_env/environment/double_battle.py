@@ -128,10 +128,11 @@ class DoubleBattle(AbstractBattle):
                     force_self_team=True,
                     details=pokemon_dict["details"],
                 )
-                if active_pokemon_number == 0:
-                    self._active_pokemon[f"{self.player_role}a"] = active_pokemon
-                else:
-                    self._active_pokemon[f"{self.player_role}b"] = active_pokemon
+                if self.player_role is not None:
+                    if active_pokemon_number == 0:
+                        self._active_pokemon[f"{self.player_role}a"] = active_pokemon
+                    else:
+                        self._active_pokemon[f"{self.player_role}b"] = active_pokemon
                 if active_request.get("trapped"):
                     self._trapped[active_pokemon_number] = True
 
