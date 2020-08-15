@@ -186,23 +186,26 @@ class Move:
             return MOVES[self._id[1:]]
         else:
             raise ValueError("Unknown move: %s" % self._id)
-            
+
     @property
     def expected_hits(self) -> float:
-        """        
-        :return: Expected number of hits, between 1 and 5. Equal to n_hits if n_hits is constant.
+        """
+        :return: Expected number of hits, between 1 and 5. Equal to n_hits if n_hits is
+            constant.
         :rtype: float
         """
-        
-        if self._id=="triplekick" or self._id=="tripleaxel":
-            #Triple Kick and Triple Axel have an accuracy check for each hit, and also rise in BP for each hit
-            return 1+2*0.9+3*0.81
-        min, max = self.n_hit
-        if min==max:
-            return min
+
+        if self._id == "triplekick" or self._id == "tripleaxel":
+            # Triple Kick and Triple Axel have an accuracy check for each hit, and also
+            # rise in BP for each hit
+            return 1 + 2 * 0.9 + 3 * 0.81
+        min_hits, max_hits = self.n_hit
+        if min_hits == max_hits:
+            return min_hits
         else:
-            #It hits 2-5 times
-            return (2+3)/3+(4+5)/6
+            # It hits 2-5 times
+            assert min_hits == 2 and max_hits == 5
+            return (2 + 3) / 3 + (4 + 5) / 6
 
     @property
     def flags(self) -> Set[str]:
