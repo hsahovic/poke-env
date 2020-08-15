@@ -167,6 +167,7 @@ class SimpleHeuristicsPlayer(Player):
                     else special_ratio
                 )
                 * m.accuracy
+                * m.expected_hits
                 * opponent.damage_multiplier(m),
             )
             return self.create_order(
