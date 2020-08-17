@@ -154,6 +154,10 @@ class SimpleHeuristicsPlayer(Player):
                         move.boosts
                         and sum(move.boosts.values()) >= 2
                         and move.target == "self"
+                        and min(
+                            [active.boosts[s] for s, v in move.boosts.items() if v > 0]
+                        )
+                        < 6
                     ):
                         return self.create_order(move)
 
