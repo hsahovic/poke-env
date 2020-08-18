@@ -1,0 +1,173 @@
+{
+    "active": [
+        {
+            "canDynamax": true,
+            "maxMoves": {
+                "maxMoves": [
+                    {"move": "maxmindstorm", "target": "adjacentFoe"},
+                    {"move": "maxstrike", "target": "adjacentFoe"},
+                    {"move": "maxhailstorm", "target": "adjacentFoe"},
+                    {"move": "maxguard", "target": "self"}
+                ]
+            },
+            "moves": [
+                {
+                    "disabled": false,
+                    "id": "psychic",
+                    "maxpp": 16,
+                    "move": "Psychic",
+                    "pp": 16,
+                    "target": "normal"
+                },
+                {
+                    "disabled": false,
+                    "id": "rapidspin",
+                    "maxpp": 64,
+                    "move": "Rapid Spin",
+                    "pp": 64,
+                    "target": "normal"
+                },
+                {
+                    "disabled": false,
+                    "id": "freezedry",
+                    "maxpp": 32,
+                    "move": "Freeze-Dry",
+                    "pp": 32,
+                    "target": "normal"
+                },
+                {
+                    "disabled": false,
+                    "id": "slackoff",
+                    "maxpp": 16,
+                    "move": "Slack Off",
+                    "pp": 16,
+                    "target": "self"
+                }
+            ]
+        },
+        {
+            "canDynamax": true,
+            "maxMoves": {
+                "maxMoves": [
+                    {"move": "maxsteelspike", "target": "adjacentFoe"},
+                    {"move": "maxguard", "target": "self"},
+                    {"move": "maxlightning", "target": "adjacentFoe"},
+                    {"move": "maxguard", "target": "self"}
+                ]
+            },
+            "moves": [
+                {
+                    "disabled": false,
+                    "id": "geargrind",
+                    "maxpp": 24,
+                    "move": "Gear Grind",
+                    "pp": 24,
+                    "target": "normal"
+                },
+                {
+                    "disabled": false,
+                    "id": "shiftgear",
+                    "maxpp": 16,
+                    "move": "Shift Gear",
+                    "pp": 16,
+                    "target": "self"
+                },
+                {
+                    "disabled": false,
+                    "id": "wildcharge",
+                    "maxpp": 24,
+                    "move": "Wild Charge",
+                    "pp": 24,
+                    "target": "normal"
+                },
+                {
+                    "disabled": false,
+                    "id": "substitute",
+                    "maxpp": 16,
+                    "move": "Substitute",
+                    "pp": 16,
+                    "target": "self"
+                }
+            ]
+        }
+    ],
+    "rqid": 2,
+    "side": {
+        "id": "p1",
+        "name": "Player 1",
+        "pokemon": [
+            {
+                "ability": "screencleaner",
+                "active": true,
+                "baseAbility": "screencleaner",
+                "condition": "250/250",
+                "details": "Mr. Rime, L77, M",
+                "ident": "p1: Mr. Rime",
+                "item": "sitrusberry",
+                "moves": ["psychic", "rapidspin", "freezedry", "slackoff"],
+                "pokeball": "pokeball",
+                "stats": {"atk": 175, "def": 160, "spa": 214, "spd": 199, "spe": 152}
+            },
+            {
+                "ability": "clearbody",
+                "active": true,
+                "baseAbility": "clearbody",
+                "condition": "216/216",
+                "details": "Klinklang, L77",
+                "ident": "p1: Klinklang",
+                "item": "sitrusberry",
+                "moves": ["geargrind", "shiftgear", "wildcharge", "substitute"],
+                "pokeball": "pokeball",
+                "stats": {"atk": 199, "def": 222, "spa": 152, "spd": 175, "spe": 183}
+            },
+            {
+                "ability": "dauntlessshield",
+                "active": false,
+                "baseAbility": "dauntlessshield",
+                "condition": "245/245",
+                "details": "Zamazenta-Crowned, L70",
+                "ident": "p1: Zamazenta",
+                "item": "rustedshield",
+                "moves": ["closecombat", "crunch", "psychicfangs", "behemothbash"],
+                "pokeball": "pokeball",
+                "stats": {"atk": 223, "def": 244, "spa": 153, "spd": 244, "spe": 220}
+            },
+            {
+                "ability": "surgesurfer",
+                "active": false,
+                "baseAbility": "surgesurfer",
+                "condition": "230/230",
+                "details": "Raichu-Alola, L81, F",
+                "ident": "p1: Raichu",
+                "item": "lifeorb",
+                "moves": ["thunderbolt", "psychic", "voltswitch", "surf"],
+                "pokeball": "pokeball",
+                "stats": {"atk": 142, "def": 128, "spa": 201, "spd": 184, "spe": 225}
+            },
+            {
+                "ability": "waterabsorb",
+                "active": false,
+                "baseAbility": "waterabsorb",
+                "condition": "260/260",
+                "details": "Maractus, L83, F",
+                "ident": "p1: Maractus",
+                "item": "sitrusberry",
+                "moves": ["spikes", "energyball", "spikyshield", "drainpunch"],
+                "pokeball": "pokeball",
+                "stats": {"atk": 190, "def": 159, "spa": 224, "spd": 159, "spe": 147}
+            },
+            {
+                "ability": "prankster",
+                "active": false,
+                "baseAbility": "prankster",
+                "condition": "230/230",
+                "details": "Thundurus, L71, M",
+                "ident": "p1: Thundurus",
+                "item": "lifeorb",
+                "moves": ["thunderwave", "thunderbolt", "grassknot", "knockoff"],
+                "pokeball": "pokeball",
+                "stats": {"atk": 205, "def": 141, "spa": 219, "spd": 155, "spe": 199}
+            }
+        ]
+    }
+}
