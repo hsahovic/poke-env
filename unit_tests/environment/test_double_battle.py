@@ -101,3 +101,21 @@ def test_battle_request_parsing_and_interactions(example_doubles_request):
     assert tyranitar.species == "Tyranitar"
 
     assert all(battle.opponent_can_dynamax)
+
+
+def test_get_possible_showdown_targets(example_doubles_request):
+    logger = MagicMock()
+    battle = DoubleBattle("tag", "username", logger)
+
+    battle._parse_request(example_doubles_request)
+    mr_rime, klinklang = battle.active_pokemon
+    psychic = mr_rime.moves["psychic"]
+    slackoff = mr_rime.moves["slackoff"]
+
+    battle._switch("p2a: Milotic", "Milotic, L50, F", "48/48")
+    battle._switch("p2b: Tyranitar", "Tyranitar, L50, M", "48/48")
+
+    assert battle.get_possible_showdown_targets(psychic) == [-2, 1, 2]
+    assert battle.get_possible_showdown_targets(slackoff) == [0]
+    assert battle.get_possible_showdown_targets(psychic, dynamax=True) == [1, 2]
+    assert battle.get_possible_showdown_targets(slackoff, dynamax=True) == [0]
