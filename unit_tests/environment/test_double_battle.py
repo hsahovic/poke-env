@@ -120,3 +120,22 @@ def test_get_possible_showdown_targets(example_doubles_request):
     assert battle.get_possible_showdown_targets(slackoff) == [0]
     assert battle.get_possible_showdown_targets(psychic, dynamax=True) == [1, 2]
     assert battle.get_possible_showdown_targets(slackoff, dynamax=True) == [0]
+
+
+def test_end_illusion():
+    logger = MagicMock()
+    battle = DoubleBattle("tag", "username", logger)
+    battle._player_role = "p2"
+
+    battle._switch("p2a: Celebi", "Celebi", "100/100")
+    battle._switch("p2b: Ferrothorn", "Ferrothorn, M", "100/100")
+    battle._switch("p1a: Pelipper", "Pelipper, F", "100/100")
+    battle._switch("p1b: Kingdra", "Kingdra, F", "100/100")
+
+    battle._end_illusion("p2a: Zoroark", "Zoroark, M")
+    zoroark = battle.team["p2: Zoroark"]
+    celebi = battle.team["p2: Celebi"]
+    ferrothorn = battle.team["p2: Ferrothorn"]
+    assert zoroark in battle.active_pokemon
+    assert ferrothorn in battle.active_pokemon
+    assert celebi not in battle.active_pokemon
