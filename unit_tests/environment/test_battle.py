@@ -225,3 +225,40 @@ def test_battle_request_and_interactions(example_request):
 
     battle._parse_message(["", "-curestatus", "p2: Necrozma", "tox"])
     assert not battle.active_pokemon.status
+
+
+def test_end_illusion():
+    logger = MagicMock()
+    battle = Battle("tag", "username", logger)
+    empty_boosts = {
+        "accuracy": 0,
+        "atk": 0,
+        "def": 0,
+        "evasion": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0,
+    }
+    non_empty_boosts = {
+        "accuracy": 1,
+        "atk": 0,
+        "def": -2,
+        "evasion": 3,
+        "spa": 5,
+        "spd": -6,
+        "spe": 2,
+    }
+
+    battle._player_role = "p2"
+    battle._switch("p2: Celebi", "Celebi", "100/100")
+    battle._switch("p1: Kingdra", "Kingdra, F", "100/100")
+    battle.active_pokemon._boosts = non_empty_boosts
+
+    assert battle.active_pokemon.species == "Celebi"
+
+    battle._end_illusion("p2: Zoroark", "Zoroark, M")
+
+    assert battle.active_pokemon.species == "Zoroark"
+    assert battle.opponent_active_pokemon.species == "Kingdra"
+    assert battle.get_pokemon("p2: Zoroark").boosts == non_empty_boosts
+    assert battle.get_pokemon("p2: Celebi").boosts == empty_boosts
