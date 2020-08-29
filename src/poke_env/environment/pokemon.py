@@ -195,11 +195,9 @@ class Pokemon:
         species_id_str = to_id_str(self.species)
         mega_species = species_id_str + "mega"
         if mega_species in POKEDEX:
-            self._species = mega_species
             self._update_from_pokedex(mega_species)
         elif stone[-1] in "XY":
             mega_species = species_id_str + "mega" + stone[-1].lower()
-            self._species = mega_species
             self._update_from_pokedex(mega_species)
 
     def _moved(self, move):
@@ -211,7 +209,7 @@ class Pokemon:
         self._preparing = (move, target)
 
     def _primal(self):
-        primal_species = self._species + "primal"
+        primal_species = to_id_str(self._species) + "primal"
         self._update_from_pokedex(primal_species)
 
     def _set_boost(self, stat, amount):
@@ -269,6 +267,7 @@ class Pokemon:
 
     def _update_from_pokedex(self, species: str) -> None:
         dex_entry = POKEDEX[to_id_str(species)]
+        self._species = dex_entry["species"]
         self._base_stats = dex_entry["baseStats"]
 
         self._type_1 = PokemonType.from_name(dex_entry["types"][0])
