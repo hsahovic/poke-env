@@ -4,6 +4,7 @@ import pytest
 from unittest.mock import MagicMock
 
 from poke_env.environment.battle import Battle
+from poke_env.environment.effect import Effect
 from poke_env.environment.field import Field
 from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.side_condition import SideCondition
@@ -225,6 +226,88 @@ def test_battle_request_and_interactions(example_request):
 
     battle._parse_message(["", "-curestatus", "p2: Necrozma", "tox"])
     assert not battle.active_pokemon.status
+
+    assert battle._parse_message(["", "-supereffective"]) is None
+
+    battle._parse_message(["", "-activate", "p2: Necrozma", "leech seed"])
+    leech_seed_effect = Effect.from_showdown_message("leech seed")
+    assert leech_seed_effect in battle.active_pokemon.effects
+
+    cleared_boosts = {
+        "accuracy": 0,
+        "atk": 0,
+        "def": 0,
+        "evasion": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0,
+    }
+    some_boosts = {
+        "accuracy": -6,
+        "atk": 6,
+        "def": -1,
+        "evasion": 1,
+        "spa": 4,
+        "spd": -3,
+        "spe": 2,
+    }
+    assert battle.active_pokemon.boosts == cleared_boosts
+
+    battle._parse_message(["", "switch", "p1: Tyranitar", "Tyranitar, L82", "100/100"])
+    battle.active_pokemon._boosts = some_boosts
+    battle._parse_message(["", "-copyboost", "p2: Necrozma", "p1: Tyranitar"])
+    assert battle.opponent_active_pokemon.boosts == some_boosts
+
+    assert battle.active_pokemon.current_hp == 121
+    battle._parse_message(["", "-damage", "p2: Necrozma", "10/293"])
+    assert battle.active_pokemon.current_hp == 10
+
+    assert battle.active_pokemon.ability is not None
+    battle._parse_message(["", "-endability", "p2: Necrozma"])
+    assert battle.active_pokemon.ability is None
+
+    battle.active_pokemon.item = "focussash"
+    battle._parse_message(["", "-enditem", "p2: Necrozma", "focussash"])
+    assert battle.active_pokemon.item is None
+
+    assert battle.opponent_active_pokemon.base_stats["atk"] == 134
+    battle._parse_message(["", "detailschange", "p1: Tyranitar", "Tyranitar-Mega, L82"])
+    assert battle.opponent_active_pokemon.base_stats["atk"] == 164
+
+    battle._parse_message(["", "-heal", "p2: Necrozma", "293/293"])
+    assert battle.active_pokemon.current_hp == 293
+
+    boosts_before_invertion = battle.opponent_active_pokemon.boosts.copy()
+    battle._parse_message(["", "-invertboost", "p1: Tyranitar"])
+    for stat, boost in battle.opponent_active_pokemon.boosts.items():
+        assert boost == -boosts_before_invertion[stat]
+
+    battle._parse_message(
+        [
+            "",
+            "-item",
+            "p1: Tyranitar",
+            "Tyranitarite",
+            "[from] ability: Frisk",
+            "[of] p2: Necrozma",
+            "[identify]",
+        ]
+    )
+    assert battle.opponent_active_pokemon.item == "tyranitarite"
+
+    battle._parse_message(["", "switch", "p1: Latias", "Latias, L82", "100/100"])
+    assert battle.opponent_active_pokemon.base_stats["def"] == 90
+    battle._parse_message(["", "-mega", "p1: Latias", "latiasite"])
+    assert battle.opponent_active_pokemon.species == "latiasmega"
+    assert battle.opponent_active_pokemon.base_stats["def"] == 120
+
+    battle._parse_message(["", "-mustrecharge", "p1: Latias"])
+    assert battle.opponent_active_pokemon.must_recharge is True
+
+    battle._parse_message(["", "-prepare", "p1: Latias", "Solar Beam", "p2: Necrozma"])
+    move, target = battle.opponent_active_pokemon._preparing
+    assert move == "Solar Beam"
+    assert target.species == "Necrozma"
 
 
 def test_end_illusion():
