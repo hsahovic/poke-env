@@ -192,12 +192,13 @@ class Pokemon:
         self._boosts = {k: -v for k, v in self._boosts.items()}
 
     def _mega_evolve(self, stone):
-        mega_species = self.species + "mega"
+        species_id_str = to_id_str(self.species)
+        mega_species = species_id_str + "mega"
         if mega_species in POKEDEX:
             self._species = mega_species
             self._update_from_pokedex(mega_species)
         elif stone[-1] in "XY":
-            mega_species = self.species + "mega" + stone[-1].lower()
+            mega_species = species_id_str + "mega" + stone[-1].lower()
             self._species = mega_species
             self._update_from_pokedex(mega_species)
 
