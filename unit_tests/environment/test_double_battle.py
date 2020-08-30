@@ -90,7 +90,7 @@ def test_battle_request_parsing_and_interactions(example_doubles_request):
     assert klinklang.boosts == cleared_boosts
 
     assert battle.active_pokemon == [mr_rime, klinklang]
-    battle._swap("p1b: Klinklang", None)
+    battle._parse_message(["", "swap", "p1b: Klinklang", ""])
     assert battle.active_pokemon == [klinklang, mr_rime]
 
     battle._switch("p2a: Milotic", "Milotic, L50, F", "48/48")
