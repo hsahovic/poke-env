@@ -258,6 +258,7 @@ class Pokemon:
         current_hp = self.current_hp
         self._update_from_pokedex(into.species)
         self._current_hp = int(current_hp)
+        self._boosts = into.boosts.copy()
 
     def _update_from_pokedex(self, species: str) -> None:
         dex_entry = POKEDEX[to_id_str(species)]
