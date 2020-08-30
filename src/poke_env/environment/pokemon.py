@@ -242,12 +242,6 @@ class Pokemon:
         effect = Effect.from_showdown_message(effect)
         self._effects.add(effect)
 
-    def _swap_boosts(self):
-        self._boosts["atk"], self._boosts["spa"] = (
-            self._boosts["spa"],
-            self._boosts["atk"],
-        )
-
     def _switch_in(self):
         self._last_request = {}
         self._active = True
