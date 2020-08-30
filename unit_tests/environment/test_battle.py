@@ -309,6 +309,87 @@ def test_battle_request_and_interactions(example_request):
     assert move == "Solar Beam"
     assert target.species == "Necrozma"
 
+    battle._parse_message(["", "switch", "p1: Groudon", "Groudon, L82", "100/100"])
+    battle._parse_message(["", "-primal", "p1: Groudon"])
+    assert battle.opponent_active_pokemon.species == "Groudon-Primal"
+
+    battle._parse_message(["", "-setboost", "p1: Groudon", "atk", "6"])
+    assert battle.opponent_active_pokemon.boosts["atk"] == 6
+
+    assert battle.opponent_active_pokemon.current_hp == 100
+    battle._parse_message(["", "-sethp", "p1: Groudon", "99/100"])
+    assert battle.opponent_active_pokemon.current_hp == 99
+
+    battle._parse_message(["", "-status", "p1: Groudon", "tox"])
+    assert battle.opponent_active_pokemon.status == Status.TOX
+
+    battle.active_pokemon.boosts["atk"] = 0
+    battle.active_pokemon.boosts["def"] = 3
+    battle.active_pokemon.boosts["spe"] = -1
+    battle.opponent_active_pokemon.boosts["atk"] = 6
+    battle.opponent_active_pokemon.boosts["def"] = -2
+    battle.opponent_active_pokemon.boosts["spe"] = 0
+    battle._parse_message(["", "-swapboost", "p1: Groudon", "p2: Necrozma", "atk, def"])
+    assert battle.active_pokemon.boosts["atk"] == 6
+    assert battle.active_pokemon.boosts["def"] == -2
+    assert battle.active_pokemon.boosts["spe"] == -1
+    assert battle.opponent_active_pokemon.boosts["atk"] == 0
+    assert battle.opponent_active_pokemon.boosts["def"] == 3
+    assert battle.opponent_active_pokemon.boosts["spe"] == 0
+
+    battle._parse_message(["", "-transform", "p1: Groudon", "p2: Necrozma"])
+    assert battle.opponent_active_pokemon.species == "Necrozma"
+    assert battle.opponent_active_pokemon.boosts == battle.active_pokemon.boosts
+
+    battle._parse_message(["", "switch", "p1: Sunflora", "Sunflora, L82", "100/100"])
+    battle.opponent_active_pokemon._boosts = cleared_boosts.copy()
+    battle.opponent_active_pokemon._boosts["atk"] = 4
+    battle._parse_message(["", "-unboost", "p1: Sunflora", "atk", "5"])
+    assert battle.opponent_active_pokemon._boosts["atk"] == -1
+
+    battle.opponent_active_pokemon.item = "grassiumz"
+    battle._parse_message(["", "-zpower", "p1: Sunflora"])
+    assert battle.opponent_active_pokemon.item is None
+
+    sunflora = battle.opponent_active_pokemon
+    assert sunflora.fainted is False
+    battle._parse_message(["", "faint", "p1: Sunflora"])
+    assert sunflora.fainted is True
+
+    battle._parse_message(["", "switch", "p1: Groudon", "Groudon, L82", "100/100"])
+    battle._parse_message(
+        ["", "move", "p1: Groudon", "Precipice Blades", "p2: Necrozma"]
+    )
+    assert "precipiceblades" in battle.opponent_active_pokemon.moves
+
+    battle._player_username = "ray"
+    battle._opponent_username = "wolfe"
+    battle._parse_message(
+        [
+            "",
+            "raw",
+            "ray's rating: 1049 &rarr; <strong>1079</strong><br />(+30 for winning)",
+        ]
+    )
+    assert battle.rating == 1049
+    battle._parse_message(
+        [
+            "",
+            "raw",
+            "wolfe's rating: 1025 &rarr; <strong>1012</strong><br />(-13 for losing)",
+        ]
+    )
+    assert battle.opponent_rating == 1025
+
+    battle._in_team_preview = True
+    battle._parse_message(["", "start"])
+    assert battle._in_team_preview is False
+
+    with pytest.raises(NotImplementedError) as excinfo:
+        msg_type = "bad message type that should raise an exception"
+        battle._parse_message(["", msg_type])
+    assert msg_type in str(excinfo.value)
+
 
 def test_end_illusion():
     logger = MagicMock()
@@ -339,7 +420,7 @@ def test_end_illusion():
 
     assert battle.active_pokemon.species == "Celebi"
 
-    battle._end_illusion("p2: Zoroark", "Zoroark, M")
+    battle._parse_message(["", "replace", "p2: Zoroark", "Zoroark, M"])
 
     assert battle.active_pokemon.species == "Zoroark"
     assert battle.opponent_active_pokemon.species == "Kingdra"
