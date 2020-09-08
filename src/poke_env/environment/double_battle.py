@@ -261,38 +261,43 @@ class DoubleBattle(AbstractBattle):
                 f"that is currently battling"
             )
 
-        if dynamax or pokemon.is_dynamaxed:
-            if move.category == MoveCategory.STATUS:
-                return [self.EMPTY_TARGET_POSITION]
-            return [self.OPPONENT_1_POSITION, self.OPPONENT_2_POSITION]
-
         move_target = move.target
 
         if move.non_ghost_target:  # fixing target for Curse
             move_target = self.EMPTY_TARGET_POSITION
 
-        targets = {
-            "adjacentAlly": [ally_position],
-            "adjacentAllyOrSelf": [ally_position, self_position],
-            "adjacentFoe": [self.OPPONENT_1_POSITION, self.OPPONENT_2_POSITION],
-            "all": [self.EMPTY_TARGET_POSITION],
-            "allAdjacent": [self.EMPTY_TARGET_POSITION],
-            "allAdjacentFoes": [self.EMPTY_TARGET_POSITION],
-            "allies": [self.EMPTY_TARGET_POSITION],
-            "allySide": [self.EMPTY_TARGET_POSITION],
-            "allyTeam": [self.EMPTY_TARGET_POSITION],
-            "any": [ally_position, self.OPPONENT_1_POSITION, self.OPPONENT_2_POSITION],
-            "foeSide": [self.EMPTY_TARGET_POSITION],
-            "normal": [
-                ally_position,
-                self.OPPONENT_1_POSITION,
-                self.OPPONENT_2_POSITION,
-            ],
-            "randomNormal": [self.EMPTY_TARGET_POSITION],
-            "scripted": [self.EMPTY_TARGET_POSITION],
-            "self": [self.EMPTY_TARGET_POSITION],
-            0: [self.EMPTY_TARGET_POSITION],
-        }[move_target]
+        if dynamax or pokemon.is_dynamaxed:
+            if move.category == MoveCategory.STATUS:
+                targets = [self.EMPTY_TARGET_POSITION]
+            else:
+                targets = [self.OPPONENT_1_POSITION, self.OPPONENT_2_POSITION]
+        else:
+            targets = {
+                "adjacentAlly": [ally_position],
+                "adjacentAllyOrSelf": [ally_position, self_position],
+                "adjacentFoe": [self.OPPONENT_1_POSITION, self.OPPONENT_2_POSITION],
+                "all": [self.EMPTY_TARGET_POSITION],
+                "allAdjacent": [self.EMPTY_TARGET_POSITION],
+                "allAdjacentFoes": [self.EMPTY_TARGET_POSITION],
+                "allies": [self.EMPTY_TARGET_POSITION],
+                "allySide": [self.EMPTY_TARGET_POSITION],
+                "allyTeam": [self.EMPTY_TARGET_POSITION],
+                "any": [
+                    ally_position,
+                    self.OPPONENT_1_POSITION,
+                    self.OPPONENT_2_POSITION,
+                ],
+                "foeSide": [self.EMPTY_TARGET_POSITION],
+                "normal": [
+                    ally_position,
+                    self.OPPONENT_1_POSITION,
+                    self.OPPONENT_2_POSITION,
+                ],
+                "randomNormal": [self.EMPTY_TARGET_POSITION],
+                "scripted": [self.EMPTY_TARGET_POSITION],
+                "self": [self.EMPTY_TARGET_POSITION],
+                0: [self.EMPTY_TARGET_POSITION],
+            }[move_target]
 
         pokemon_ids = set(self._opponent_active_pokemon.keys())
         pokemon_ids.update(self._active_pokemon.keys())
