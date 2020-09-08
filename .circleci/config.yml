@@ -36,7 +36,7 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-            - requirements-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}-{{ checksum "python-version.txt" }}-v4
+            - requirements-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}-{{ checksum "python-version.txt" }}-v5
 
       - run:
           name: install dependencies
@@ -124,7 +124,7 @@ jobs:
           paths:
             - ./venv
             - ./Pokemon-Showdown
-          key: requirements-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}-{{ checksum "python-version.txt" }}-v4
+          key: requirements-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}-{{ checksum "python-version.txt" }}-v5
 
       - run:
           name: Start showdown server in the background
