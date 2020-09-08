@@ -197,7 +197,7 @@ class DoubleBattle(AbstractBattle):
                 if active_request.get("maybeTrapped", False):
                     self._maybe_trapped[active_pokemon_number] = True
 
-        for trapped, pokemon_index in enumerate(self.trapped):
+        for pokemon_index, trapped in enumerate(self.trapped):
             if not trapped:
                 for pokemon in side["pokemon"]:
                     if pokemon:
