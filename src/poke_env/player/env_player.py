@@ -10,6 +10,7 @@ from threading import Thread
 
 from typing import Any, Callable, List, Optional, Tuple, Union
 
+from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.battle import Battle
 from poke_env.player.player import Player
 from poke_env.player_configuration import PlayerConfiguration
@@ -75,24 +76,24 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
             team=team,
         )
         self._actions = {}
-        self._current_battle: Battle
+        self._current_battle: AbstractBattle
         self._observations = {}
         self._reward_buffer = {}
         self._start_new_battle = False
 
     @abstractmethod
-    def _action_to_move(self, action: int, battle: Battle) -> str:
+    def _action_to_move(self, action: int, battle: AbstractBattle) -> str:
         """Abstract method converting elements of the action space to move orders.
         """
 
-    def _battle_finished_callback(self, battle: Battle) -> None:
+    def _battle_finished_callback(self, battle: AbstractBattle) -> None:
         self._observations[battle].put(self.embed_battle(battle))
 
-    def _init_battle(self, battle: Battle) -> None:
+    def _init_battle(self, battle: AbstractBattle) -> None:
         self._observations[battle] = Queue()
         self._actions[battle] = Queue()
 
-    def choose_move(self, battle: Battle) -> str:
+    def choose_move(self, battle: AbstractBattle) -> str:
         if battle not in self._observations or battle not in self._actions:
             self._init_battle(battle)
         self._observations[battle].put(self.embed_battle(battle))
@@ -109,25 +110,25 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         while not done:
             _, _, done, _ = self.step(np.random.choice(self._ACTION_SPACE))
 
-    def compute_reward(self, battle: Battle) -> float:
+    def compute_reward(self, battle: AbstractBattle) -> float:
         """Returns a reward for the given battle.
 
         The default implementation corresponds to the default parameters of the
         reward_computing_helper method.
 
         :param battle: The battle for which to compute the reward.
-        :type battle: Battle
+        :type battle: AbstractBattle
         :return: The computed reward.
         :rtype: float
         """
         return self.reward_computing_helper(battle)
 
     @abstractmethod
-    def embed_battle(self, battle: Battle) -> Any:
+    def embed_battle(self, battle: AbstractBattle) -> Any:
         """Abstract method for embedding battles.
 
         :param battle: The battle whose state is being embedded
-        :type battle: Battle
+        :type battle: AbstractBattle
         :return: The computed embedding
         :rtype: Any
         """
@@ -167,9 +168,8 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
                 self._current_battle.active_pokemon.current_hp or 0,
                 self._current_battle.active_pokemon.max_hp or 0,
                 self._current_battle.active_pokemon.species,
-                self._current_battle.opponent_active_pokemon.species,  # pyre-ignore
-                self._current_battle.opponent_active_pokemon.current_hp  # pyre-ignore
-                or 0,
+                self._current_battle.opponent_active_pokemon.species,
+                self._current_battle.opponent_active_pokemon.current_hp or 0,
                 "".join(
                     [
                         "⦻" if mon.fainted else "●"
@@ -182,7 +182,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
 
     def reward_computing_helper(
         self,
-        battle: Battle,
+        battle: AbstractBattle,
         *,
         fainted_value: float = 0.0,
         hp_value: float = 0.0,
@@ -216,7 +216,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
             = - 3 + 3 * 0 - 1.5 = -4.5
 
         :param battle: The battle for which to compute rewards.
-        :type battle: Battle
+        :type battle: AbstractBattle
         :param fainted_value: The reward weight for fainted pokemons. Defaults to 0.
         :type fainted_value: float
         :param hp_value: The reward weight for hp per pokemon. Defaults to 0.
@@ -359,7 +359,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
 class Gen7EnvSinglePlayer(EnvPlayer):  # pyre-ignore
     _ACTION_SPACE = list(range(3 * 4 + 6))
 
-    def _action_to_move(self, action: int, battle: Battle) -> str:
+    def _action_to_move(self, action: int, battle: Battle) -> str:  # pyre-ignore
         """Converts actions to move orders.
 
         The conversion is done as follows:
@@ -393,7 +393,10 @@ class Gen7EnvSinglePlayer(EnvPlayer):  # pyre-ignore
         elif (
             not battle.force_switch
             and battle.can_z_move
-            and 0 <= action - 4 < len(battle.active_pokemon.available_z_moves)
+            and battle.active_pokemon
+            and 0
+            <= action - 4
+            < len(battle.active_pokemon.available_z_moves)  # pyre-ignore
         ):
             return self.create_order(
                 battle.active_pokemon.available_z_moves[action - 4], z_move=True
@@ -433,7 +436,7 @@ class Gen7EnvSinglePlayer(EnvPlayer):  # pyre-ignore
 class Gen8EnvSinglePlayer(EnvPlayer):  # pyre-ignore
     _ACTION_SPACE = list(range(4 * 4 + 6))
 
-    def _action_to_move(self, action: int, battle: Battle) -> str:
+    def _action_to_move(self, action: int, battle: Battle) -> str:  # pyre-ignore
         """Converts actions to move orders.
 
         The conversion is done as follows:
@@ -473,7 +476,10 @@ class Gen8EnvSinglePlayer(EnvPlayer):  # pyre-ignore
         elif (
             not battle.force_switch
             and battle.can_z_move
-            and 0 <= action - 4 < len(battle.active_pokemon.available_z_moves)
+            and battle.active_pokemon
+            and 0
+            <= action - 4
+            < len(battle.active_pokemon.available_z_moves)  # pyre-ignore
         ):
             return self.create_order(
                 battle.active_pokemon.available_z_moves[action - 4], z_move=True

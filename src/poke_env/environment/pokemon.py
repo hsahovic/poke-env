@@ -96,7 +96,7 @@ class Pokemon:
         }
         self._current_hp: int = 0
         self._effects: Set[Effect] = set()
-        self._item: Optional[str]
+        self._item: Optional[str] = None
         self._last_request: dict = {}
         self._must_recharge = False
         self._preparing = False
@@ -116,8 +116,10 @@ class Pokemon:
         return self.__str__()
 
     def __str__(self) -> str:
-        return f"{self._species} (pokemon object) "
-        "[Active: {self._active}, Status: {self._status}]"
+        return (
+            f"{self._species} (pokemon object) "
+            f"[Active: {self._active}, Status: {self._status}]"
+        )
 
     def _add_move(self, move_id: str, use: bool = False) -> None:
         """Store the move if applicable."""
@@ -177,6 +179,7 @@ class Pokemon:
     def _faint(self):
         self._current_hp = 0
         self.status = Status.FNT
+        self._active = False
 
     def _forme_change(self, species):
         species = species.split(",")[0]
@@ -189,13 +192,16 @@ class Pokemon:
         self._boosts = {k: -v for k, v in self._boosts.items()}
 
     def _mega_evolve(self, stone):
-        mega_species = self.species + "mega"
+        species_id_str = to_id_str(self.species)
+        mega_species = (
+            species_id_str + "mega"
+            if not species_id_str.endswith("mega")
+            else species_id_str
+        )
         if mega_species in POKEDEX:
-            self._species = mega_species
             self._update_from_pokedex(mega_species)
         elif stone[-1] in "XY":
-            mega_species = self.species + "mega" + stone[-1].lower()
-            self._species = mega_species
+            mega_species = mega_species + stone[-1].lower()
             self._update_from_pokedex(mega_species)
 
     def _moved(self, move):
@@ -207,7 +213,12 @@ class Pokemon:
         self._preparing = (move, target)
 
     def _primal(self):
-        primal_species = self._species + "primal"
+        species_id_str = to_id_str(self._species)
+        primal_species = (
+            species_id_str + "primal"
+            if not species_id_str.endswith("primal")
+            else species_id_str
+        )
         self._update_from_pokedex(primal_species)
 
     def _set_boost(self, stat, amount):
@@ -232,17 +243,13 @@ class Pokemon:
             self.status = status
         self._current_hp, self._max_hp = hp.split("/")
         self._current_hp = int(self._current_hp)
+        while self._max_hp[-1].isalpha():
+            self._max_hp = self._max_hp[:-1]
         self._max_hp = int(self._max_hp)
 
     def _start_effect(self, effect):
         effect = Effect.from_showdown_message(effect)
         self._effects.add(effect)
-
-    def _swap_boosts(self):
-        self._boosts["atk"], self._boosts["spa"] = (
-            self._boosts["spa"],
-            self._boosts["atk"],
-        )
 
     def _switch_in(self):
         self._last_request = {}
@@ -260,9 +267,11 @@ class Pokemon:
         current_hp = self.current_hp
         self._update_from_pokedex(into.species)
         self._current_hp = int(current_hp)
+        self._boosts = into.boosts.copy()
 
     def _update_from_pokedex(self, species: str) -> None:
         dex_entry = POKEDEX[to_id_str(species)]
+        self._species = dex_entry["species"]
         self._base_stats = dex_entry["baseStats"]
 
         self._type_1 = PokemonType.from_name(dex_entry["types"][0])
@@ -312,6 +321,7 @@ class Pokemon:
 
     def _update_from_request(self, request_pokemon: Dict[str, Any]) -> None:
         if request_pokemon == self._last_request:
+            self._active = request_pokemon["active"]
             return
         self._last_request = request_pokemon
 

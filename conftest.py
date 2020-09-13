@@ -41,3 +41,9 @@ def raw_team_data():
 def example_request():
     with open(os.path.join(FIXTURE_DIR, "example_request.json")) as f:
         return json.load(f)
+
+
+@fixture
+def example_doubles_request():
+    with open(os.path.join(FIXTURE_DIR, "example_doubles_request.json")) as f:
+        return json.load(f)
