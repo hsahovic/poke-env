@@ -33,7 +33,6 @@ jobs:
           name: Store python version into a file
           command: |
             python3 --version > python-version.txt
-
       # Download and cache dependencies
       - restore_cache:
           keys:
@@ -45,14 +44,12 @@ jobs:
             python3 -m venv venv
             . venv/bin/activate
             pip install -r requirements.txt
-
       - run:
           name: install dev dependencies
           command: |
             python3 -m venv venv
             . venv/bin/activate
             pip install -r requirements-dev.txt
-
       - run:
           name: black
           command: |
@@ -64,14 +61,11 @@ jobs:
           command: |
             . venv/bin/activate
             flake8 src/ unit_tests/ integration_tests/
-
       - run:
           name: pyre
           command: |
             . venv/bin/activate
             pyre check
-
-
       # run tests!
       # this example uses Django's built-in test-runner
       # other common Python testing frameworks include pytest and nose
@@ -82,13 +76,11 @@ jobs:
           command: |
             . venv/bin/activate
             PYTHONPATH=src pytest -x --cov=src/poke_env unit_tests/
-
       - run:
           name: Converting coverage to xml
           command: |
             . venv/bin/activate
             coverage xml
-
       - codecov/upload:
           file: coverage.xml
 
@@ -97,25 +89,21 @@ jobs:
           command: |
             . venv/bin/activate
             python setup.py sdist bdist_wheel
-
       - run:
           name: Install built package
           command: |
             . venv/bin/activate
             pip install dist/*.whl
-
       - run:
           name: Package-based tests
           command: |
             . venv/bin/activate
             pytest -x unit_tests/
-
       - run:
           name: Install node
           command: |
             curl -sSL "https://nodejs.org/dist/v12.13.0/node-v12.13.0-linux-x64.tar.xz" | sudo tar --strip-components=2 -xJ -C /usr/local/bin/ node-v12.13.0-linux-x64/bin/node
             curl https://www.npmjs.com/install.sh | sudo bash
-
       - run:
           name: Download showdown or update it
           command: |
@@ -125,12 +113,10 @@ jobs:
             else
                 git clone https://github.com/hsahovic/Pokemon-Showdown.git
             fi
-
       - run:
           name: Install showdown dependencies
           command: |
             npm install Pokemon-Showdown
-
       - run:
           name: Uninstall poke-env before caching
           command: |
@@ -140,7 +126,7 @@ jobs:
           paths:
             - ./venv
             - ./Pokemon-Showdown
-          key: requirements-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}-{{ checksum "python-version.txt" }}-v4
+          key: requirements-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}-{{ checksum "python-version.txt" }}-v6
 
       - run:
           name: Start showdown server in the background
@@ -154,13 +140,11 @@ jobs:
             until $(curl --output /dev/null --silent --head --fail http://localhost:8000); do
               sleep .01
             done
-
       - run:
           name: Run integration tests
           command: |
             . venv/bin/activate
             pytest -x integration_tests/
-
   test-3-7:
     <<: *test-template
     docker:
@@ -169,5 +153,4 @@ jobs:
     <<: *test-template
     docker:
       - image: circleci/python:3.8
-
 

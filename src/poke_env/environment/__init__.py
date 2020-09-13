@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+from poke_env.environment import abstract_battle
 from poke_env.environment import battle
+from poke_env.environment import double_battle
 from poke_env.environment import effect
 from poke_env.environment import field
 from poke_env.environment import move_category
@@ -14,7 +16,9 @@ from poke_env.environment import z_crystal
 
 
 __all__ = [
+    "abstract_battle",
     "battle",
+    "double_battle",
     "effect",
     "field",
     "move_category",
