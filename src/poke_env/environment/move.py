@@ -15,7 +15,7 @@ from typing import Tuple
 from typing import Union
 
 
-special_moves: Dict
+SPECIAL_MOVES: Dict
 
 
 class Move:
@@ -66,7 +66,7 @@ class Move:
     @staticmethod
     @lru_cache(4096)
     def should_be_stored(move_id: str) -> bool:
-        if move_id in special_moves:
+        if move_id in SPECIAL_MOVES:
             return False
         if move_id not in MOVES:
             return False
@@ -113,7 +113,7 @@ class Move:
         :return: Wheter there exist a z-move version of this move.
         :rtype: bool
         """
-        return self.id not in special_moves
+        return self.id not in SPECIAL_MOVES
 
     @property
     def category(self) -> MoveCategory:
@@ -186,6 +186,26 @@ class Move:
             return MOVES[self._id[1:]]
         else:
             raise ValueError("Unknown move: %s" % self._id)
+
+    @property
+    def expected_hits(self) -> float:
+        """
+        :return: Expected number of hits, between 1 and 5. Equal to n_hits if n_hits is
+            constant.
+        :rtype: float
+        """
+
+        if self._id == "triplekick" or self._id == "tripleaxel":
+            # Triple Kick and Triple Axel have an accuracy check for each hit, and also
+            # rise in BP for each hit
+            return 1 + 2 * 0.9 + 3 * 0.81
+        min_hits, max_hits = self.n_hit
+        if min_hits == max_hits:
+            return min_hits
+        else:
+            # It hits 2-5 times
+            assert min_hits == 2 and max_hits == 5
+            return (2 + 3) / 3 + (4 + 5) / 6
 
     @property
     def flags(self) -> Set[str]:
@@ -596,4 +616,4 @@ class EmptyMove(Move):
             return 0
 
 
-special_moves = {"struggle": Move("struggle"), "recharge": EmptyMove("recharge")}
+SPECIAL_MOVES = {"struggle": Move("struggle"), "recharge": EmptyMove("recharge")}

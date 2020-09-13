@@ -16,8 +16,8 @@ import math
 
 _EVALUATION_RATINGS = {
     RandomPlayer: 1,
-    MaxBasePowerPlayer: 7.608901,
-    SimpleHeuristicsPlayer: 121.885905,
+    MaxBasePowerPlayer: 7.665994,
+    SimpleHeuristicsPlayer: 128.757145,
 }
 
 
