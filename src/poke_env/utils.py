@@ -31,7 +31,7 @@ def to_id_str(name: str) -> str:
 
 
 def _raw_stat(base: int, ev: int, iv: int, level: int, nature_multiplier: float) -> int:
-    """ Converts to raw stat
+    """Converts to raw stat
     :param base: the base stat
     :param ev: Stat Effort Value (EV)
     :param iv: Stat Individual Values (IV)
@@ -47,12 +47,12 @@ def _raw_stat(base: int, ev: int, iv: int, level: int, nature_multiplier: float)
 
 
 def _raw_hp(base: int, ev: int, iv: int, level: int) -> int:
-    """ Converts to raw hp
-        :param base: the base stat
-        :param ev: HP Effort Value (EV)
-        :param iv: HP Individual Value (IV)
-        :param level: pokemon level
-        :return: the raw hp
+    """Converts to raw hp
+    :param base: the base stat
+    :param ev: HP Effort Value (EV)
+    :param iv: HP Individual Value (IV)
+    :param level: pokemon level
+    :return: the raw hp
     """
     s = math.floor((math.floor(ev / 4) + iv + 2 * base) * level / 100) + level + 10
     return int(s)
@@ -61,7 +61,7 @@ def _raw_hp(base: int, ev: int, iv: int, level: int) -> int:
 def compute_raw_stats(
     species: str, evs: List[int], ivs: List[int], level: int, nature: str
 ) -> List[int]:
-    """ Converts to raw stats
+    """Converts to raw stats
     :param species: pokemon species
     :param evs: list of pokemon's EVs (size 6)
     :param ivs: list of pokemon's IVs (size 6)
