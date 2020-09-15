@@ -1,5 +1,5 @@
 asynctest
-black
+black==20.8b1
 flake8
 pre-commit
 pyre-check==0.0.52
