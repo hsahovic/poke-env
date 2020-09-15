@@ -20,8 +20,7 @@ from typing import Union
 
 
 class TrainablePlayer(Player, ABC):
-    """This is an experimental API.
-    """
+    """This is an experimental API."""
 
     def __init__(
         self,

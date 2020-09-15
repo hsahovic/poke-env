@@ -23,8 +23,7 @@ import time
 
 
 class EnvPlayer(Player, Env, ABC):  # pyre-ignore
-    """Player exposing the Open AI Gym Env API. Recommended use is with play_against.
-    """
+    """Player exposing the Open AI Gym Env API. Recommended use is with play_against."""
 
     _ACTION_SPACE = None
     MAX_BATTLE_SWITCH_RETRY = 10000
@@ -82,8 +81,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
 
     @abstractmethod
     def _action_to_move(self, action: int, battle: Battle) -> str:
-        """Abstract method converting elements of the action space to move orders.
-        """
+        """Abstract method converting elements of the action space to move orders."""
 
     def _battle_finished_callback(self, battle: Battle) -> None:
         self._observations[battle].put(self.embed_battle(battle))
@@ -152,8 +150,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
             raise EnvironmentError("User %s has no active battle." % self.username)
 
     def render(self, mode="human") -> None:
-        """A one line rendering of the current state of the battle.
-        """
+        """A one line rendering of the current state of the battle."""
         print(
             "  Turn %4d. | [%s][%3d/%3dhp] %10.10s - %10.10s [%3d%%hp][%s]"
             % (
