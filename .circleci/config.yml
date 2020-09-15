@@ -57,7 +57,7 @@ jobs:
           name: black
           command: |
             . venv/bin/activate
-            black src/ unit_tests/ integration_tests/
+            black --check src/ unit_tests/ integration_tests/
 
       - run:
           name: flake8
