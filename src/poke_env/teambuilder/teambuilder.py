@@ -88,6 +88,8 @@ class Teambuilder(ABC):
                 if "@" in line:
                     mon_info, item = line.split(" @ ")
                     current_mon.item = item.strip()
+                else:
+                    mon_info = line
                 split_mon_info = mon_info.split(" ")
 
                 if split_mon_info[-1] == "(M)":
