@@ -42,6 +42,7 @@ class AbstractBattle(ABC):
         "-waiting",
         "-zbroken",
         "askreg",
+        "debug",
         "c",
         "cant",
         "crit",
