@@ -9,7 +9,7 @@ from typing import Union
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.move import Move
 from poke_env.environment.pokemon import Pokemon
-from poke_env.environment.move import special_moves
+from poke_env.environment.move import SPECIAL_MOVES
 from poke_env.environment.move_category import MoveCategory
 
 
@@ -146,9 +146,9 @@ class DoubleBattle(AbstractBattle):
                             self._available_moves[active_pokemon_number].append(
                                 active_pokemon.moves[move["id"]]
                             )
-                        elif move["id"] in special_moves:
+                        elif move["id"] in SPECIAL_MOVES:
                             self._available_moves[active_pokemon_number].append(
-                                special_moves[move["id"]]
+                                SPECIAL_MOVES[move["id"]]
                             )
                         else:
                             try:
@@ -244,7 +244,7 @@ class DoubleBattle(AbstractBattle):
             -1, -2, 1, 2 or self.EMPTY_TARGET_POSITION that indicates "no target"
         :rtype: List[int]
         """
-        if move in special_moves:
+        if move in SPECIAL_MOVES:
             return [self.EMPTY_TARGET_POSITION]
         pokemon_1, pokemon_2 = self.active_pokemon
         if pokemon_1 is not None and move in self.available_moves[0]:

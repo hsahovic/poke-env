@@ -8,7 +8,7 @@ from typing import Optional
 from poke_env.environment.move import Move
 from poke_env.environment.pokemon import Pokemon
 from poke_env.environment.abstract_battle import AbstractBattle
-from poke_env.environment.move import special_moves
+from poke_env.environment.move import SPECIAL_MOVES
 
 
 class Battle(AbstractBattle):
@@ -102,8 +102,8 @@ class Battle(AbstractBattle):
                             self._available_moves.append(
                                 active_pokemon.moves[move["id"]]
                             )
-                        elif move["id"] in special_moves:
-                            self._available_moves.append(special_moves[move["id"]])
+                        elif move["id"] in SPECIAL_MOVES:
+                            self._available_moves.append(SPECIAL_MOVES[move["id"]])
                         else:
                             try:
                                 if not {
