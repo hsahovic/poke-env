@@ -9,6 +9,7 @@ from typing import Union
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.move import Move
 from poke_env.environment.pokemon import Pokemon
+from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.move import SPECIAL_MOVES
 from poke_env.environment.move_category import MoveCategory
 
@@ -232,7 +233,9 @@ class DoubleBattle(AbstractBattle):
         slot_b = f"{player_identifier}b"
         team[slot_a], team[slot_b] = team[slot_b], team[slot_a]
 
-    def get_possible_showdown_targets(self, move: Move, dynamax=False) -> List[int]:
+    def get_possible_showdown_targets(
+        self, move: Move, pokemon: Pokemon, dynamax=False
+    ) -> List[int]:
         """
         Given move of an ALLY Pokemon, returns a list of possible Pokemon Showdown
         targets for it. This is smart enough so that it figures whether the Pokemon
@@ -263,7 +266,9 @@ class DoubleBattle(AbstractBattle):
 
         move_target = move.target
 
-        if move.non_ghost_target:  # fixing target for Curse
+        if (
+            move.non_ghost_target and PokemonType.GHOST not in pokemon.types
+        ):  # fixing target for Curse
             move_target = self.EMPTY_TARGET_POSITION
 
         if dynamax or pokemon.is_dynamaxed:
