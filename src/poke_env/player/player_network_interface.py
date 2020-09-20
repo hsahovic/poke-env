@@ -223,7 +223,7 @@ class PlayerNetwork(ABC):
         else:
             to_send = "|".join([room, message])
         await self._websocket.send(to_send)
-        self.logger.info(">>> %s", to_send)
+        self.logger.info("\033[93m\033[1m>>>\033[0m %s", to_send)
 
     async def _set_team(self):
         if self._team is not None:
@@ -249,7 +249,7 @@ class PlayerNetwork(ABC):
             ) as websocket:
                 self._websocket = websocket
                 async for message in websocket:
-                    self.logger.info("<<< %s", message)
+                    self.logger.info("\033[92m\033[1m<<<\033[0m %s", message)
                     coroutines.append(ensure_future(self._handle_message(message)))
         except websockets.exceptions.ConnectionClosedOK:
             self.logger.warning(
