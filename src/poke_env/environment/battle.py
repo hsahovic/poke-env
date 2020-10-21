@@ -58,6 +58,7 @@ class Battle:
         "resisted",
         "supereffective",
         "tier",
+        "t:",
         "upkeep",
         "zbroken",
     }
