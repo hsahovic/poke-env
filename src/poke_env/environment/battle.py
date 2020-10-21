@@ -304,8 +304,13 @@ class Battle:
             pokemon = split_message[2]
             self.get_pokemon(pokemon).must_recharge = True
         elif split_message[1] == "-prepare":
-            attacker, move, defender = split_message[2:5]
-            self.get_pokemon(attacker)._prepare(move, self.get_pokemon(defender))
+            try:
+                attacker, move, defender = split_message[2:5]
+                self.get_pokemon(defender)
+            except ValueError:
+                attacker, move = split_message[2:4]
+                defender = None
+            self.get_pokemon(attacker)._prepare(move, defender)
         elif split_message[1] == "-primal":
             pokemon = split_message[2]
             self.get_pokemon(pokemon)._primal()
