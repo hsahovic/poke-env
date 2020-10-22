@@ -7,12 +7,21 @@ from poke_env.player.utils import cross_evaluate
 
 
 async def cross_evaluation(n_battles, format_, teams):
-    players = [
-        SimpleHeuristicsPlayer(
-            battle_format=format_, max_concurrent_battles=n_battles, team=team
-        )
-        for i, team in enumerate(teams)
-    ]
+    if len(teams) > 1:
+        players = [
+            SimpleHeuristicsPlayer(
+                battle_format=format_, max_concurrent_battles=n_battles, team=team
+            )
+            for i, team in enumerate(teams)
+        ]
+    else:
+        assert len(teams) == 1
+        players = [
+            SimpleHeuristicsPlayer(
+                battle_format=format_, max_concurrent_battles=n_battles, team=teams[0]
+            )
+            for _ in range(2)
+        ]
     await cross_evaluate(players, n_challenges=n_battles)
 
     for player in players:
