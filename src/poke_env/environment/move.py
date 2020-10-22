@@ -538,12 +538,14 @@ class Move:
         return None
 
     @property
-    def z_move_boost(self) -> Dict[str, int]:
+    def z_move_boost(self) -> Optional[Dict[str, int]]:
         """
         :return: Boosts associated with the z-move version of this move.
         :rtype: Dict[str, int]
         """
-        return self.entry.get("zMoveBoost", None)
+        if "zMove" in self.entry and "boost" in self.entry["zMove"]:
+            return self.entry["zMove"]["boost"]
+        return None
 
     @property
     def z_move_effect(self) -> Optional[str]:
@@ -551,7 +553,9 @@ class Move:
         :return: Effects associated with the z-move version of this move.
         :rtype: Optional[str]
         """
-        return self.entry.get("zMoveEffect", None)
+        if "zMove" in self.entry and "effect" in self.entry["zMove"]:
+            return self.entry["zMove"]["effect"]
+        return None
 
     @property
     def z_move_power(self) -> int:
@@ -559,8 +563,8 @@ class Move:
         :return: Base power of the z-move version of this move.
         :rtype: int
         """
-        if "zMovePower" in self.entry:
-            return self.entry["zMovePower"]
+        if "zMove" in self.entry and "basePower" in self.entry["zMove"]:
+            return self.entry["zMove"]["basePower"]
         elif self.category == MoveCategory.STATUS:
             return 0
         base_power = self.base_power
