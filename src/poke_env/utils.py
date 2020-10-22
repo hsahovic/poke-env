@@ -6,7 +6,7 @@ import math
 
 from typing import List
 
-from poke_env.data import POKEDEX, NATURES
+from poke_env.data import POKEDEX, NATURES, to_id_str  # noqa: F401
 
 STATS_TO_IDX = {
     "hp": 0,
@@ -18,16 +18,6 @@ STATS_TO_IDX = {
     "satk": 3,
     "sdef": 4,
 }
-
-
-def to_id_str(name: str) -> str:
-    """Converts a full-name to its corresponding id string.
-    :param name: The name to convert.
-    :type name: str
-    :return: The corresponding id string.
-    :rtype: str
-    """
-    return "".join(char for char in name if char.isalnum()).lower()
 
 
 def _raw_stat(base: int, ev: int, iv: int, level: int, nature_multiplier: float) -> int:
