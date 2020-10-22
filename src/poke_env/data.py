@@ -61,15 +61,11 @@ with open(
 
 _missing_dex: Dict[str, Any] = {}
 for key, value in POKEDEX.items():
-    if "otherForms" in value:
-        for other_form in value["otherForms"]:
-            _missing_dex[other_form] = value
+    if "cosmeticFormes" in value:
+        for other_form in value["cosmeticFormes"]:
+            _missing_dex[to_id_str(other_form)] = value
 
 POKEDEX.update(_missing_dex)
-
-_equivalent_forms = {"darmanitangalarzen": "darmanitanzengalar"}
-
-POKEDEX.update({k: POKEDEX[v] for k, v in _equivalent_forms.items()})
 
 MOVES: Dict[str, Any] = {}
 
