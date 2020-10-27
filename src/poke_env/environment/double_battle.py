@@ -106,9 +106,9 @@ class DoubleBattle(AbstractBattle):
         self._can_dynamax = [False, False]
         self._maybe_trapped = [False, False]
         self._trapped = [False, False]
-        self._force_switch = request.get("forceSwitch", False)
+        self._force_switch = request.get("forceSwitch", [False, False])
 
-        if self._force_switch:
+        if any(self._force_switch):
             self._move_on_next_request = True
 
         if request["rqid"]:
@@ -199,7 +199,7 @@ class DoubleBattle(AbstractBattle):
                     self._maybe_trapped[active_pokemon_number] = True
 
         for pokemon_index, trapped in enumerate(self.trapped):
-            if not trapped:
+            if (not trapped) or self.force_switch[pokemon_index]:
                 for pokemon in side["pokemon"]:
                     if pokemon:
                         pokemon = self._team[pokemon["ident"]]
