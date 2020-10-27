@@ -11,8 +11,10 @@ class SideCondition(Enum):
     """Enumeration, represent a in-battle side condition."""
 
     AURORA_VEIL = auto()
+    FIRE_PLEDGE = auto()
     G_MAX_STEELSURGE = auto()
     G_MAX_VOLCALITH = auto()
+    GRASS_PLEDGE = auto()
     LIGHT_SCREEN = auto()
     LUCKY_CHANT = auto()
     MIST = auto()
@@ -23,6 +25,7 @@ class SideCondition(Enum):
     STICKY_WEB = auto()
     TAILWIND = auto()
     TOXIC_SPIKES = auto()
+    WATER_PLEDGE = auto()
 
     def __str__(self) -> str:
         return f"{self.name} (side condition) object"
