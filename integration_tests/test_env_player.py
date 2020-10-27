@@ -59,3 +59,28 @@ def test_random_gym_player_gen8():
         opponent=random_player,
         env_algorithm_kwargs={"n_battles": 5},
     )
+
+
+@pytest.mark.timeout(60)
+def test_two_successive_calls_gen8():
+    env_player = RandomEnvPlayer(
+        player_configuration=PlayerConfiguration("EnvPlayerGen8-2", None),
+        battle_format="gen8randombattle",
+        server_configuration=LocalhostServerConfiguration,
+    )
+    random_player = RandomPlayer(
+        player_configuration=PlayerConfiguration("RandomPlayerGen8-2", None),
+        battle_format="gen8randombattle",
+        server_configuration=LocalhostServerConfiguration,
+    )
+
+    env_player.play_against(
+        env_algorithm=play_function,
+        opponent=random_player,
+        env_algorithm_kwargs={"n_battles": 2},
+    )
+    env_player.play_against(
+        env_algorithm=play_function,
+        opponent=random_player,
+        env_algorithm_kwargs={"n_battles": 2},
+    )
