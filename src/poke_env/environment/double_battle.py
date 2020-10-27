@@ -252,12 +252,10 @@ class DoubleBattle(AbstractBattle):
         if move in SPECIAL_MOVES:
             return [self.EMPTY_TARGET_POSITION]
         pokemon_1, pokemon_2 = self.active_pokemon
-        if pokemon_1 is not None and move in self.available_moves[0]:
-            pokemon = pokemon_1
+        if pokemon == pokemon_1 and move in self.available_moves[0]:
             self_position = self.POKEMON_1_POSITION
             ally_position = self.POKEMON_2_POSITION
-        elif pokemon_2 is not None and move in self.available_moves[1]:
-            pokemon = pokemon_2
+        elif pokemon == pokemon_2 and move in self.available_moves[1]:
             self_position = self.POKEMON_2_POSITION
             ally_position = self.POKEMON_1_POSITION
         else:
