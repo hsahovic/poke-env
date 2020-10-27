@@ -67,6 +67,12 @@ for key, value in POKEDEX.items():
 
 POKEDEX.update(_missing_dex)
 
+for name, value in POKEDEX.items():
+    if "baseSpecies" in value:
+        value["species"] = value["baseSpecies"]
+    else:
+        value["baseSpecies"] = to_id_str(name)
+
 MOVES: Dict[str, Any] = {}
 
 with open(
