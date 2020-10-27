@@ -251,6 +251,15 @@ class Player(PlayerNetwork, ABC):
                     "Pokémon"
                 ):
                     await self._handle_battle_request(battle, maybe_default_order=True)
+                elif split_message[2].startswith(
+                    "[Invalid choice] Can't switch: You can't switch to a fainted "
+                    "Pokémon"
+                ):
+                    await self._handle_battle_request(battle, maybe_default_order=True)
+                elif split_message[2].startswith(
+                    "[Invalid choice] Can't move: Invalid target for"
+                ):
+                    await self._handle_battle_request(battle, maybe_default_order=True)
                 elif split_message[2].startswith("[Invalid choice]"):
                     self._manage_error_in(battle)
                 elif split_message[2].startswith(
