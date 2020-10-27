@@ -274,8 +274,11 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
             indicating wheter the episode is finished, and additional information
         :rtype: tuple
         """
-        self._actions[self._current_battle].put(action)
-        observation = self._observations[self._current_battle].get()
+        if self._current_battle.finished:
+            observation = self.reset()
+        else:
+            self._actions[self._current_battle].put(action)
+            observation = self._observations[self._current_battle].get()
         return (
             observation,
             self.compute_reward(self._current_battle),
