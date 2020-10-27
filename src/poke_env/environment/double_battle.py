@@ -231,6 +231,8 @@ class DoubleBattle(AbstractBattle):
         )
         slot_a = f"{player_identifier}a"
         slot_b = f"{player_identifier}b"
+        if team[slot_a].fainted or team[slot_b].fainted:
+            return
         team[slot_a], team[slot_b] = team[slot_b], team[slot_a]
 
     def get_possible_showdown_targets(
