@@ -11,6 +11,7 @@ class SideCondition(Enum):
     """Enumeration, represent a in-battle side condition."""
 
     AURORA_VEIL = auto()
+    G_MAX_CANNONADE = auto()
     G_MAX_STEELSURGE = auto()
     G_MAX_VOLCALITH = auto()
     LIGHT_SCREEN = auto()
