@@ -92,6 +92,7 @@ class Effect(Enum):
     PERISH2 = auto()
     PERISH3 = auto()
     PHANTOM_FORCE = auto()
+    POLTERGEIST = auto()
     POWDER = auto()
     POWER_CONSTRUCT = auto()
     POWER_SPLIT = auto()
