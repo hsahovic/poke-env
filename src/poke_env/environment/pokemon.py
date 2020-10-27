@@ -280,7 +280,7 @@ class Pokemon:
 
     def _update_from_pokedex(self, species: str) -> None:
         dex_entry = POKEDEX[to_id_str(species)]
-        self._species = dex_entry["species"]
+        self._species = dex_entry.get("baseSpecies", dex_entry["species"])
         self._base_stats = dex_entry["baseStats"]
 
         self._type_1 = PokemonType.from_name(dex_entry["types"][0])
