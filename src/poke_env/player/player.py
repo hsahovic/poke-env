@@ -227,6 +227,9 @@ class Player(PlayerNetwork, ABC):
                 async with self._battle_end_condition:
                     self._battle_end_condition.notify_all()
             elif split_message[1] == "error":
+                self.logger.warning(
+                    "Error message received: %s", "|".join(split_message)
+                )
                 if split_message[2].startswith(
                     "[Invalid choice] Sorry, too late to make a different move"
                 ):
