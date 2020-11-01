@@ -1824,7 +1824,7 @@
 	 "heightm": 1.2,
 	 "weightkg": 36,
 	 "color": "Pink",
-	 "evos": ["Slowbro-Galar"],
+	 "evos": ["Slowbro-Galar", "Slowking-Galar"],
 	 "eggGroups": ["Monster", "Water 1"]
 	},
 	"slowbro": {
@@ -3018,6 +3018,22 @@
 	 "heightm": 1.7,
 	 "weightkg": 55.4,
 	 "color": "Blue",
+	 "eggGroups": ["Undiscovered"],
+	 "otherFormes": ["Articuno-Galar"],
+	 "formeOrder": ["Articuno", "Articuno-Galar"]
+	},
+	"articunogalar": {
+	 "num": 144,
+	 "name": "Articuno-Galar",
+	 "baseSpecies": "Articuno",
+	 "forme": "Galar",
+	 "types": ["Psychic", "Flying"],
+	 "gender": "N",
+	 "baseStats": {"hp": 90, "atk": 85, "def": 85, "spa": 125, "spd": 100, "spe": 95},
+	 "abilities": {"0": "Competitive"},
+	 "heightm": 1.7,
+	 "weightkg": 50.9,
+	 "color": "Purple",
 	 "eggGroups": ["Undiscovered"]
 	},
 	"zapdos": {
@@ -3029,6 +3045,22 @@
 	 "abilities": {"0": "Pressure", "H": "Static"},
 	 "heightm": 1.6,
 	 "weightkg": 52.6,
+	 "color": "Yellow",
+	 "eggGroups": ["Undiscovered"],
+	 "otherFormes": ["Zapdos-Galar"],
+	 "formeOrder": ["Zapdos", "Zapdos-Galar"]
+	},
+	"zapdosgalar": {
+	 "num": 145,
+	 "name": "Zapdos-Galar",
+	 "baseSpecies": "Zapdos",
+	 "forme": "Galar",
+	 "types": ["Fighting", "Flying"],
+	 "gender": "N",
+	 "baseStats": {"hp": 90, "atk": 125, "def": 90, "spa": 85, "spd": 90, "spe": 100},
+	 "abilities": {"0": "Defiant"},
+	 "heightm": 1.6,
+	 "weightkg": 58.2,
 	 "color": "Yellow",
 	 "eggGroups": ["Undiscovered"]
 	},
@@ -3042,6 +3074,22 @@
 	 "heightm": 2,
 	 "weightkg": 60,
 	 "color": "Yellow",
+	 "eggGroups": ["Undiscovered"],
+	 "otherFormes": ["Moltres-Galar"],
+	 "formeOrder": ["Moltres", "Moltres-Galar"]
+	},
+	"moltresgalar": {
+	 "num": 146,
+	 "name": "Moltres-Galar",
+	 "baseSpecies": "Moltres",
+	 "forme": "Galar",
+	 "types": ["Dark", "Flying"],
+	 "gender": "N",
+	 "baseStats": {"hp": 90, "atk": 85, "def": 90, "spa": 100, "spd": 125, "spe": 90},
+	 "abilities": {"0": "Berserk"},
+	 "heightm": 2,
+	 "weightkg": 66,
+	 "color": "Red",
 	 "eggGroups": ["Undiscovered"]
 	},
 	"dratini": {
@@ -3808,6 +3856,24 @@
 	 "prevo": "Slowpoke",
 	 "evoType": "trade",
 	 "evoItem": "King's Rock",
+	 "eggGroups": ["Monster", "Water 1"],
+	 "otherFormes": ["Slowking-Galar"],
+	 "formeOrder": ["Slowking", "Slowking-Galar"]
+	},
+	"slowkinggalar": {
+	 "num": 199,
+	 "name": "Slowking-Galar",
+	 "baseSpecies": "Slowking",
+	 "forme": "Galar",
+	 "types": ["Poison", "Psychic"],
+	 "baseStats": {"hp": 95, "atk": 65, "def": 80, "spa": 110, "spd": 110, "spe": 30},
+	 "abilities": {"0": "Curious Medicine", "1": "Own Tempo", "H": "Regenerator"},
+	 "heightm": 1.8,
+	 "weightkg": 79.5,
+	 "color": "Pink",
+	 "prevo": "Slowpoke-Galar",
+	 "evoType": "useItem",
+	 "evoItem": "Galarica Wreath",
 	 "eggGroups": ["Monster", "Water 1"]
 	},
 	"misdreavus": {
@@ -12024,8 +12090,7 @@
 	 "weightkg": 3.5,
 	 "color": "Brown",
 	 "evos": ["Gourgeist-Small"],
-	 "eggGroups": ["Amorphous"],
-	 "unreleasedHidden": true
+	 "eggGroups": ["Amorphous"]
 	},
 	"pumpkaboolarge": {
 	 "num": 710,
@@ -12039,8 +12104,7 @@
 	 "weightkg": 7.5,
 	 "color": "Brown",
 	 "evos": ["Gourgeist-Large"],
-	 "eggGroups": ["Amorphous"],
-	 "unreleasedHidden": true
+	 "eggGroups": ["Amorphous"]
 	},
 	"pumpkaboosuper": {
 	 "num": 710,
@@ -12085,8 +12149,7 @@
 	 "color": "Brown",
 	 "prevo": "Pumpkaboo-Small",
 	 "evoType": "trade",
-	 "eggGroups": ["Amorphous"],
-	 "unreleasedHidden": true
+	 "eggGroups": ["Amorphous"]
 	},
 	"gourgeistlarge": {
 	 "num": 711,
@@ -12101,8 +12164,7 @@
 	 "color": "Brown",
 	 "prevo": "Pumpkaboo-Large",
 	 "evoType": "trade",
-	 "eggGroups": ["Amorphous"],
-	 "unreleasedHidden": true
+	 "eggGroups": ["Amorphous"]
 	},
 	"gourgeistsuper": {
 	 "num": 711,
@@ -14941,8 +15003,7 @@
 	 "weightkg": 0.2,
 	 "color": "Purple",
 	 "evos": ["Polteageist-Antique"],
-	 "eggGroups": ["Undiscovered"],
-	 "unreleasedHidden": true
+	 "eggGroups": ["Undiscovered"]
 	},
 	"polteageist": {
 	 "num": 855,
@@ -14977,8 +15038,7 @@
 	 "prevo": "Sinistea-Antique",
 	 "evoType": "useItem",
 	 "evoItem": "Chipped Pot",
-	 "eggGroups": ["Undiscovered"],
-	 "unreleasedHidden": true
+	 "eggGroups": ["Undiscovered"]
 	},
 	"hatenna": {
 	 "num": 856,
@@ -15420,8 +15480,7 @@
 	 "heightm": 1.8,
 	 "weightkg": 190,
 	 "color": "Green",
-	 "eggGroups": ["Undiscovered"],
-	 "unreleasedHidden": true
+	 "eggGroups": ["Undiscovered"]
 	},
 	"arctozolt": {
 	 "num": 881,
@@ -15433,8 +15492,7 @@
 	 "heightm": 2.3,
 	 "weightkg": 150,
 	 "color": "Blue",
-	 "eggGroups": ["Undiscovered"],
-	 "unreleasedHidden": true
+	 "eggGroups": ["Undiscovered"]
 	},
 	"dracovish": {
 	 "num": 882,
@@ -15446,8 +15504,7 @@
 	 "heightm": 2.3,
 	 "weightkg": 215,
 	 "color": "Green",
-	 "eggGroups": ["Undiscovered"],
-	 "unreleasedHidden": true
+	 "eggGroups": ["Undiscovered"]
 	},
 	"arctovish": {
 	 "num": 883,
@@ -15459,8 +15516,7 @@
 	 "heightm": 2,
 	 "weightkg": 175,
 	 "color": "Blue",
-	 "eggGroups": ["Undiscovered"],
-	 "unreleasedHidden": true
+	 "eggGroups": ["Undiscovered"]
 	},
 	"duraludon": {
 	 "num": 884,
@@ -15729,6 +15785,98 @@
 	 "weightkg": 70,
 	 "color": "Green",
 	 "eggGroups": ["Undiscovered"]
+	},
+	"regieleki": {
+	 "num": 894,
+	 "name": "Regieleki",
+	 "types": ["Electric"],
+	 "gender": "N",
+	 "baseStats": {"hp": 80, "atk": 100, "def": 50, "spa": 100, "spd": 50, "spe": 200},
+	 "abilities": {"0": "Transistor"},
+	 "heightm": 1.2,
+	 "weightkg": 145,
+	 "color": "Yellow",
+	 "eggGroups": ["Undiscovered"]
+	},
+	"regidrago": {
+	 "num": 895,
+	 "name": "Regidrago",
+	 "types": ["Dragon"],
+	 "gender": "N",
+	 "baseStats": {"hp": 200, "atk": 100, "def": 50, "spa": 100, "spd": 50, "spe": 80},
+	 "abilities": {"0": "Dragon's Maw"},
+	 "heightm": 2.1,
+	 "weightkg": 200,
+	 "color": "Green",
+	 "eggGroups": ["Undiscovered"]
+	},
+	"glastrier": {
+	 "num": 896,
+	 "name": "Glastrier",
+	 "types": ["Ice"],
+	 "gender": "N",
+	 "baseStats": {"hp": 100, "atk": 145, "def": 130, "spa": 65, "spd": 110, "spe": 30},
+	 "abilities": {"0": "Chilling Neigh"},
+	 "heightm": 2.2,
+	 "weightkg": 800,
+	 "color": "White",
+	 "eggGroups": ["Undiscovered"]
+	},
+	"spectrier": {
+	 "num": 897,
+	 "name": "Spectrier",
+	 "types": ["Ghost"],
+	 "gender": "N",
+	 "baseStats": {"hp": 100, "atk": 65, "def": 60, "spa": 145, "spd": 80, "spe": 130},
+	 "abilities": {"0": "Grim Neigh"},
+	 "heightm": 2,
+	 "weightkg": 44.5,
+	 "color": "Black",
+	 "eggGroups": ["Undiscovered"]
+	},
+	"calyrex": {
+	 "num": 898,
+	 "name": "Calyrex",
+	 "types": ["Psychic", "Grass"],
+	 "gender": "N",
+	 "baseStats": {"hp": 100, "atk": 80, "def": 80, "spa": 80, "spd": 80, "spe": 80},
+	 "abilities": {"0": "Unnerve"},
+	 "heightm": 1.1,
+	 "weightkg": 7.7,
+	 "color": "White",
+	 "eggGroups": ["Undiscovered"],
+	 "otherFormes": ["Calyrex-Ice", "Calyrex-Shadow"],
+	 "formeOrder": ["Calyrex", "Calyrex-Ice", "Calyrex-Shadow"]
+	},
+	"calyrexice": {
+	 "num": 898,
+	 "name": "Calyrex-Ice",
+	 "baseSpecies": "Calyrex",
+	 "forme": "Ice",
+	 "types": ["Psychic", "Ice"],
+	 "gender": "N",
+	 "baseStats": {"hp": 100, "atk": 165, "def": 150, "spa": 85, "spd": 130, "spe": 50},
+	 "abilities": {"0": "As One (Glastrier)"},
+	 "heightm": 2.4,
+	 "weightkg": 809.1,
+	 "color": "White",
+	 "eggGroups": ["Undiscovered"],
+	 "changesFrom": "Calyrex"
+	},
+	"calyrexshadow": {
+	 "num": 898,
+	 "name": "Calyrex-Shadow",
+	 "baseSpecies": "Calyrex",
+	 "forme": "Shadow",
+	 "types": ["Psychic", "Ghost"],
+	 "gender": "N",
+	 "baseStats": {"hp": 100, "atk": 85, "def": 80, "spa": 165, "spd": 100, "spe": 150},
+	 "abilities": {"0": "As One (Spectrier)"},
+	 "heightm": 2.4,
+	 "weightkg": 53.6,
+	 "color": "Black",
+	 "eggGroups": ["Undiscovered"],
+	 "changesFrom": "Calyrex"
 	},
 	"missingno": {
 	 "num": 0,
