@@ -41,7 +41,7 @@ class Move:
         "beforeMoveCallback",
     ]
 
-    __slots__ = "_id", "_current_pp", "_is_empty"
+    __slots__ = "_id", "_current_pp", "_is_empty", "_request_target"
 
     def __init__(self, move: str = "", move_id: Optional[str] = None):
         if move_id:
@@ -50,6 +50,8 @@ class Move:
             self._id: str = self.retrieve_id(move)
         self._current_pp = self.max_pp
         self._is_empty: bool = False
+
+        self._request_target = None
 
     def __repr__(self) -> str:
         return f"{self._id} (Move object)"
@@ -151,6 +153,21 @@ class Move:
         :rtype: Union[int, str]
         """
         return self.entry.get("damage", 0)
+
+    @property
+    def deduced_target(self) -> Optional[str]:
+        """
+        :return: Move deduced target, based on Move.target and showdown's request
+            messages.
+        :rtype: str, optional
+        """
+        if self.id in SPECIAL_MOVES:
+            return self.target
+        elif self.request_target:
+            return self.request_target
+        elif self.target == "randomNormal":
+            return self.request_target
+        return self.target
 
     @property
     def defensive_category(self) -> MoveCategory:
@@ -368,6 +385,23 @@ class Move:
         elif "struggleRecoil" in self.entry:
             return 0.25
         return 0.0
+
+    @property
+    def request_target(self) -> Optional[str]:
+        """
+        :return: Target information sent by showdown in a request message, if any.
+        :rtype: str, optional
+        """
+        return self._request_target
+
+    @request_target.setter
+    def request_target(self, request_target: Optional[str]) -> None:
+        """
+        :param request_target: Target information received from showdown in a request
+            message.
+        "type request_target: str, optional
+        """
+        self._request_target = request_target
 
     @staticmethod
     @lru_cache(maxsize=4096)
