@@ -533,8 +533,10 @@ class Player(PlayerNetwork, ABC):
         """
         if isinstance(battle, Battle):
             return self.choose_random_singles_move(battle)
-        else:
+        elif isinstance(battle, DoubleBattle):
             return self.choose_random_doubles_move(battle)
+        else:
+            return self.choose_default_move(battle)
 
     async def ladder(self, n_games):
         """Make the player play games on the ladder.
