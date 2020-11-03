@@ -52,7 +52,7 @@ def test_battle_request_parsing_and_interactions(example_doubles_request):
     assert not any(battle.can_z_move)
     assert not any(battle.can_mega_evolve)
     assert not any(battle.trapped)
-    assert not battle.force_switch
+    assert not any(battle.force_switch)
     assert not any(battle.maybe_trapped)
 
     mr_rime._boosts = {
@@ -113,13 +113,16 @@ def test_get_possible_showdown_targets(example_doubles_request):
     slackoff = mr_rime.moves["slackoff"]
 
     battle._switch("p2b: Tyranitar", "Tyranitar, L50, M", "48/48")
-    assert battle.get_possible_showdown_targets(psychic) == [-2, 2]
+    assert battle.get_possible_showdown_targets(psychic, mr_rime) == [-2, 2]
 
     battle._switch("p2a: Milotic", "Milotic, L50, F", "48/48")
-    assert battle.get_possible_showdown_targets(psychic) == [-2, 1, 2]
-    assert battle.get_possible_showdown_targets(slackoff) == [0]
-    assert battle.get_possible_showdown_targets(psychic, dynamax=True) == [1, 2]
-    assert battle.get_possible_showdown_targets(slackoff, dynamax=True) == [0]
+    assert battle.get_possible_showdown_targets(psychic, mr_rime) == [-2, 1, 2]
+    assert battle.get_possible_showdown_targets(slackoff, mr_rime) == [0]
+    assert battle.get_possible_showdown_targets(psychic, mr_rime, dynamax=True) == [
+        1,
+        2,
+    ]
+    assert battle.get_possible_showdown_targets(slackoff, mr_rime, dynamax=True) == [0]
 
 
 def test_end_illusion():
