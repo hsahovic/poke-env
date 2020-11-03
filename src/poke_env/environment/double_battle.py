@@ -34,7 +34,6 @@ class DoubleBattle(AbstractBattle):
         self._force_switch: List[bool] = [False, False]
         self._maybe_trapped: List[bool] = [False, False]
         self._trapped: List[bool] = [False, False]
-        self._force_swap: List[bool] = [False, False]
 
         # Battle state attributes
         self._active_pokemon: Dict[str, Pokemon] = {}
