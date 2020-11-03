@@ -133,9 +133,12 @@ class DoubleBattle(AbstractBattle):
                     details=pokemon_dict["details"],
                 )
                 if self.player_role is not None:
-                    if active_pokemon_number == 0:
+                    if (
+                        active_pokemon_number == 0
+                        and "{self.player_role}a" not in self._active_pokemon
+                    ):
                         self._active_pokemon[f"{self.player_role}a"] = active_pokemon
-                    else:
+                    elif "{self.player_role}b" not in self._active_pokemon:
                         self._active_pokemon[f"{self.player_role}b"] = active_pokemon
                 if active_request.get("trapped"):
                     self._trapped[active_pokemon_number] = True
@@ -145,6 +148,9 @@ class DoubleBattle(AbstractBattle):
                         if move["id"] in active_pokemon.moves:
                             self._available_moves[active_pokemon_number].append(
                                 active_pokemon.moves[move["id"]]
+                            )
+                            active_pokemon.moves[move["id"]].request_target = move.get(
+                                "target", None
                             )
                         elif move["id"] in SPECIAL_MOVES:
                             self._available_moves[active_pokemon_number].append(
