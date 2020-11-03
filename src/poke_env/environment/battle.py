@@ -25,7 +25,6 @@ class Battle(AbstractBattle):
         self._force_switch: bool = False
         self._maybe_trapped: bool = False
         self._trapped: bool = False
-        self._force_swap: bool = False
 
     def _clear_all_boosts(self):
         self.active_pokemon._clear_boosts()

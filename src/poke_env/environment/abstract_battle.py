@@ -73,7 +73,6 @@ class AbstractBattle(ABC):
         "_dynamax_turn",
         "_fields",
         "_finished",
-        "_force_swap",
         "_force_switch",
         "_format",
         "_in_team_preview",
@@ -117,7 +116,7 @@ class AbstractBattle(ABC):
         self._team_size: Dict[str, int] = {}
         self._teampreview: bool = False
         self._teampreview_opponent_team: Set[Pokemon] = set()
-        self.logger: Logger = logger  # pyre-ignore
+        self.logger: Logger = logger
 
         # Turn choice attributes
         self._in_team_preview: bool = False
