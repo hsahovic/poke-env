@@ -266,8 +266,9 @@ class DoubleBattle(AbstractBattle):
             -1, -2, 1, 2 or self.EMPTY_TARGET_POSITION that indicates "no target"
         :rtype: List[int]
         """
-        if move in SPECIAL_MOVES:
+        if move.id in SPECIAL_MOVES:
             return [self.EMPTY_TARGET_POSITION]
+
         pokemon_1, pokemon_2 = self.active_pokemon
         if pokemon == pokemon_1 and move in self.available_moves[0]:
             self_position = self.POKEMON_1_POSITION
@@ -281,18 +282,15 @@ class DoubleBattle(AbstractBattle):
                 f"that is currently battling"
             )
 
-        move_target = move.target
-
-        if (
-            move.non_ghost_target and PokemonType.GHOST not in pokemon.types
-        ):  # fixing target for Curse
-            move_target = self.EMPTY_TARGET_POSITION
-
         if dynamax or pokemon.is_dynamaxed:
             if move.category == MoveCategory.STATUS:
                 targets = [self.EMPTY_TARGET_POSITION]
             else:
                 targets = [self.OPPONENT_1_POSITION, self.OPPONENT_2_POSITION]
+        elif move.non_ghost_target and (
+            PokemonType.GHOST not in pokemon.types
+        ):  # fixing target for Curse
+            return [self.EMPTY_TARGET_POSITION]
         else:
             targets = {
                 "adjacentAlly": [ally_position],
@@ -318,8 +316,9 @@ class DoubleBattle(AbstractBattle):
                 "randomNormal": [self.EMPTY_TARGET_POSITION],
                 "scripted": [self.EMPTY_TARGET_POSITION],
                 "self": [self.EMPTY_TARGET_POSITION],
-                0: [self.EMPTY_TARGET_POSITION],
-            }[move_target]
+                self.EMPTY_TARGET_POSITION: [self.EMPTY_TARGET_POSITION],
+                None: [self.OPPONENT_1_POSITION, self.OPPONENT_2_POSITION],
+            }[move.deduced_target]
 
         pokemon_ids = set(self._opponent_active_pokemon.keys())
         pokemon_ids.update(self._active_pokemon.keys())
