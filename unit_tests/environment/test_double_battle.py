@@ -13,10 +13,10 @@ def test_battle_request_parsing(example_doubles_request):
     assert len(battle.team) == 6
 
     pokemon_names = set(map(lambda pokemon: pokemon.species, battle.team.values()))
-    assert "Thundurus" in pokemon_names
-    assert "Raichu" in pokemon_names
-    assert "Maractus" in pokemon_names
-    assert "Zamazenta" in pokemon_names
+    assert "thundurus" in pokemon_names
+    assert "raichu" in pokemon_names
+    assert "maractus" in pokemon_names
+    assert "zamazenta" in pokemon_names
 
     zamazenta = battle.get_pokemon("p1: Zamazenta")
     zamazenta_moves = zamazenta.moves
@@ -97,8 +97,8 @@ def test_battle_request_parsing_and_interactions(example_doubles_request):
     battle._switch("p2b: Tyranitar", "Tyranitar, L50, M", "48/48")
 
     milotic, tyranitar = battle.opponent_active_pokemon
-    assert milotic.species == "Milotic"
-    assert tyranitar.species == "Tyranitar"
+    assert milotic.species == "milotic"
+    assert tyranitar.species == "tyranitar"
 
     assert all(battle.opponent_can_dynamax)
 
