@@ -106,7 +106,6 @@ class Pokemon:
             species = details.split(", ")[0]
         if species:
             self._update_from_pokedex(species)
-            self._species = species
         elif request_pokemon:
             self._update_from_request(request_pokemon)
         elif details:
@@ -280,7 +279,7 @@ class Pokemon:
 
     def _update_from_pokedex(self, species: str) -> None:
         dex_entry = POKEDEX[to_id_str(species)]
-        self._species = dex_entry.get("baseSpecies", dex_entry["species"])
+        self._species = to_id_str(dex_entry.get("baseSpecies", species))
         self._base_stats = dex_entry["baseStats"]
 
         self._type_1 = PokemonType.from_name(dex_entry["types"][0])
@@ -313,7 +312,7 @@ class Pokemon:
             else:
                 species, gender = split_details
         else:
-            species = split_details[0]
+            species = to_id_str(split_details[0])
 
         if gender:
             self._gender = PokemonGender.from_request_details(gender)
@@ -369,9 +368,9 @@ class Pokemon:
         ident = request_pokemon["ident"].split(": ")
 
         if len(ident) == 2:
-            self._species = ident[1]
+            self._species = to_id_str(ident[1])
         elif len(ident) == 3:
-            self._species = ": ".join(ident[1:])
+            self._species = to_id_str(": ".join(ident[1:]))
         else:
             raise NotImplementedError("Unmanaged pokemon ident: %s" % ident)
         self._pokeball = request_pokemon["pokeball"]

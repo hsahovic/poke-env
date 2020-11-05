@@ -144,7 +144,7 @@ def test_battle_request_parsing(example_request):
 
     mon = battle.active_pokemon
 
-    assert mon.species == "Venusaur"
+    assert mon.species == "venusaur"
     assert mon.current_hp_fraction == 139 / 265
     assert mon.stats == {"atk": 139, "def": 183, "spa": 211, "spd": 211, "spe": 178}
 
@@ -162,12 +162,12 @@ def test_battle_request_parsing(example_request):
 
     species = {m.species for m in team.values()}
     assert species == {
-        "Venusaur",
-        "Morpeko",
-        "Unfezant",
-        "Giratina",
-        "Necrozma",
-        "Marshadow",
+        "venusaur",
+        "morpeko",
+        "unfezant",
+        "giratina",
+        "necrozma",
+        "marshadow",
     }
 
     assert len(battle.available_switches) == 4
@@ -219,7 +219,7 @@ def test_battle_request_and_interactions(example_request):
     assert mon.boosts["atk"] == 0
     assert mon.level == 82
 
-    assert battle.active_pokemon.species == "Necrozma"
+    assert battle.active_pokemon.species == "necrozma"
     assert battle.active_pokemon.status == Status.TOX
 
     battle._parse_message(["", "-curestatus", "p2: Necrozma", "par"])
@@ -302,7 +302,7 @@ def test_battle_request_and_interactions(example_request):
     battle._parse_message(["", "switch", "p1: Latias", "Latias, L82", "100/100"])
     assert battle.opponent_active_pokemon.base_stats["def"] == 90
     battle._parse_message(["", "-mega", "p1: Latias", "latiasite"])
-    assert battle.opponent_active_pokemon.species == "Latias"
+    assert battle.opponent_active_pokemon.species == "latias"
     assert battle.opponent_active_pokemon.base_stats["def"] == 120
 
     battle._parse_message(["", "-mustrecharge", "p1: Latias"])
@@ -311,11 +311,11 @@ def test_battle_request_and_interactions(example_request):
     battle._parse_message(["", "-prepare", "p1: Latias", "Solar Beam", "p2: Necrozma"])
     move, target = battle.opponent_active_pokemon._preparing
     assert move == "Solar Beam"
-    assert target.species == "Necrozma"
+    assert target.species == "necrozma"
 
     battle._parse_message(["", "switch", "p1: Groudon", "Groudon, L82", "100/100"])
     battle._parse_message(["", "-primal", "p1: Groudon"])
-    assert battle.opponent_active_pokemon.species == "Groudon"
+    assert battle.opponent_active_pokemon.species == "groudon"
 
     battle._parse_message(["", "-setboost", "p1: Groudon", "atk", "6"])
     assert battle.opponent_active_pokemon.boosts["atk"] == 6
@@ -342,7 +342,7 @@ def test_battle_request_and_interactions(example_request):
     assert battle.opponent_active_pokemon.boosts["spe"] == 0
 
     battle._parse_message(["", "-transform", "p1: Groudon", "p2: Necrozma"])
-    assert battle.opponent_active_pokemon.species == "Necrozma"
+    assert battle.opponent_active_pokemon.species == "necrozma"
     assert battle.opponent_active_pokemon.boosts == battle.active_pokemon.boosts
 
     battle._parse_message(["", "switch", "p1: Sunflora", "Sunflora, L82", "100/100"])
@@ -422,11 +422,11 @@ def test_end_illusion():
     battle._switch("p1: Kingdra", "Kingdra, F", "100/100")
     battle.active_pokemon._boosts = non_empty_boosts
 
-    assert battle.active_pokemon.species == "Celebi"
+    assert battle.active_pokemon.species == "celebi"
 
     battle._parse_message(["", "replace", "p2: Zoroark", "Zoroark, M"])
 
-    assert battle.active_pokemon.species == "Zoroark"
-    assert battle.opponent_active_pokemon.species == "Kingdra"
+    assert battle.active_pokemon.species == "zoroark"
+    assert battle.opponent_active_pokemon.species == "kingdra"
     assert battle.get_pokemon("p2: Zoroark").boosts == non_empty_boosts
     assert battle.get_pokemon("p2: Celebi").boosts == empty_boosts
