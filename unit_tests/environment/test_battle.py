@@ -302,7 +302,7 @@ def test_battle_request_and_interactions(example_request):
     battle._parse_message(["", "switch", "p1: Latias", "Latias, L82", "100/100"])
     assert battle.opponent_active_pokemon.base_stats["def"] == 90
     battle._parse_message(["", "-mega", "p1: Latias", "latiasite"])
-    assert battle.opponent_active_pokemon.species == "latias"
+    assert battle.opponent_active_pokemon.species == "latiasmega"
     assert battle.opponent_active_pokemon.base_stats["def"] == 120
 
     battle._parse_message(["", "-mustrecharge", "p1: Latias"])
@@ -315,7 +315,7 @@ def test_battle_request_and_interactions(example_request):
 
     battle._parse_message(["", "switch", "p1: Groudon", "Groudon, L82", "100/100"])
     battle._parse_message(["", "-primal", "p1: Groudon"])
-    assert battle.opponent_active_pokemon.species == "groudon"
+    assert battle.opponent_active_pokemon.species == "groudonprimal"
 
     battle._parse_message(["", "-setboost", "p1: Groudon", "atk", "6"])
     assert battle.opponent_active_pokemon.boosts["atk"] == 6

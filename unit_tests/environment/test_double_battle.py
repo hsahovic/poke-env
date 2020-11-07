@@ -14,9 +14,9 @@ def test_battle_request_parsing(example_doubles_request):
 
     pokemon_names = set(map(lambda pokemon: pokemon.species, battle.team.values()))
     assert "thundurus" in pokemon_names
-    assert "raichu" in pokemon_names
+    assert "raichualola" in pokemon_names
     assert "maractus" in pokemon_names
-    assert "zamazenta" in pokemon_names
+    assert "zamazentacrowned" in pokemon_names
 
     zamazenta = battle.get_pokemon("p1: Zamazenta")
     zamazenta_moves = zamazenta.moves
