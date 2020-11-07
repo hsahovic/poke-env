@@ -165,7 +165,7 @@ class DoubleBattle(AbstractBattle):
                                     "mirrormove",
                                     "assist",
                                 }.intersection(active_pokemon.moves.keys()):
-                                    self.logger.critical(
+                                    self.logger.warning(
                                         "An error occured in battle %s while adding "
                                         "available moves. The move '%s' was either "
                                         "unknown or not available for the active "

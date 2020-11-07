@@ -145,6 +145,7 @@ class Effect(Enum):
     TELEKINESIS = auto()
     TELEPATHY = auto()
     THROAT_CHOP = auto()
+    THUNDER_CAGE = auto()
     TORMENT = auto()
     TRAPPED = auto()
     TRICK = auto()

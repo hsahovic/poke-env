@@ -58,6 +58,7 @@ class AbstractBattle(ABC):
         "rated",
         "resisted",
         "supereffective",
+        "t:",
         "tier",
         "upkeep",
         "zbroken",

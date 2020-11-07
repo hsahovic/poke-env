@@ -387,7 +387,6 @@ class Player(PlayerNetwork, ABC):
         if any(battle.active_pokemon):
             pokemon_1, pokemon_2 = battle.active_pokemon
 
-            self.logger.critical("Active mons: %s and %s", pokemon_1, pokemon_2)
             if pokemon_1 and battle.can_z_move[0]:
                 available_z_moves.update(pokemon_1.available_z_moves)
             if pokemon_2 and battle.can_z_move[1]:
@@ -437,7 +436,6 @@ class Player(PlayerNetwork, ABC):
                 order = self.choose_default_move()
 
             if sum(battle.force_switch) == 1:
-                self.logger.critical("ONE FORCE SWITCH: %s", battle.force_switch)
                 return order
 
             if pokemon_2 is not None or sum(battle.force_switch) == 2:
