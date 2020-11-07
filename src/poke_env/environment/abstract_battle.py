@@ -191,7 +191,10 @@ class AbstractBattle(ABC):
                     "%s's team already has 6 pokemons: cannot add %s to %s"
                     % (identifier[:2], identifier, ", ".join(team.keys()))
                 )
-            team[identifier] = Pokemon(species=species)
+            if details:
+                team[identifier] = Pokemon(details=details)
+            else:
+                team[identifier] = Pokemon(species=species)
 
             return team[identifier]
 
