@@ -59,7 +59,7 @@ class Pokemon:
         self._base_stats: Dict[str, int]
         self._heightm: int
         self._possible_abilities: List[str]
-        self._species: str
+        self._species: str = ""
         self._stats: Dict[str, Optional[int]] = {
             "atk": None,
             "def": None,
@@ -102,14 +102,12 @@ class Pokemon:
         self._preparing = False
         self._status: Optional[Status] = None
 
-        if details and not species:
-            species = details.split(", ")[0]
-        if species:
-            self._update_from_pokedex(species)
-        elif request_pokemon:
+        if request_pokemon:
             self._update_from_request(request_pokemon)
         elif details:
             self._update_from_details(details)
+        elif species:
+            self._update_from_pokedex(species)
 
     def __repr__(self) -> str:
         return self.__str__()
@@ -278,8 +276,9 @@ class Pokemon:
         self._boosts = into.boosts.copy()
 
     def _update_from_pokedex(self, species: str) -> None:
-        dex_entry = POKEDEX[to_id_str(species)]
-        self._species = to_id_str(dex_entry.get("baseSpecies", species))
+        species = to_id_str(species)
+        dex_entry = POKEDEX[species]
+        self._species = species
         self._base_stats = dex_entry["baseStats"]
 
         self._type_1 = PokemonType.from_name(dex_entry["types"][0])
@@ -365,14 +364,6 @@ class Pokemon:
             for move in request_pokemon["moves"]:
                 self._add_move(move)
 
-        ident = request_pokemon["ident"].split(": ")
-
-        if len(ident) == 2:
-            self._species = to_id_str(ident[1])
-        elif len(ident) == 3:
-            self._species = to_id_str(": ".join(ident[1:]))
-        else:
-            raise NotImplementedError("Unmanaged pokemon ident: %s" % ident)
         self._pokeball = request_pokemon["pokeball"]
         self._stats = request_pokemon["stats"]
 
