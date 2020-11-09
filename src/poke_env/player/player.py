@@ -131,39 +131,44 @@ class Player(PlayerNetwork, ABC):
         # We check that the battle has the correct format
         if split_message[1] == self._format and len(split_message) >= 2:
             # Battle initialisation
-            battle_tag = "-".join(split_message[0:3])
+            battle_tag = "-".join(split_message)
             if battle_tag.startswith(">"):
                 battle_tag = battle_tag[1:]
             if battle_tag.endswith("\n"):
                 battle_tag = battle_tag[:-1]
 
-            if split_message[2] in self._battles:
-                return self._battles[split_message[2]]
+            if battle_tag in self._battles:
+                return self._battles[battle_tag]
             else:
                 battle = Battle(
                     battle_tag=battle_tag, username=self.username, logger=self.logger
                 )
                 await self._battle_count_queue.put(None)
-                if split_message[2] in self._battles:
+                if battle_tag in self._battles:
                     self._battle_count_queue.get()
-                    return self._battles[split_message[2]]
+                    return self._battles[battle_tag]
                 async with self._battle_start_condition:
                     self._battle_semaphore.release()
                     self._battle_start_condition.notify_all()
-                    self._battles[split_message[2]] = battle
+                    self._battles[battle_tag] = battle
                 return battle
 
-            return self._battles[split_message[2]]
+            return self._battles[battle_tag]
         else:
             self.logger.critical(
                 "Unmanaged battle initialisation message received: %s", split_message
             )
             raise ShowdownException()
 
-    async def _get_battle(self, battle_number: str) -> Battle:
+    async def _get_battle(self, battle_tag: str) -> Battle:
+        if battle_tag.startswith(">"):
+            battle_tag = battle_tag[1:]
+        if battle_tag.endswith("\n"):
+            battle_tag = battle_tag[:-1]
+
         while True:
-            if battle_number in self._battles:
-                return self._battles[battle_number]
+            if battle_tag in self._battles:
+                return self._battles[battle_tag]
             async with self._battle_start_condition:
                 await self._battle_start_condition.wait()
 
@@ -176,13 +181,14 @@ class Player(PlayerNetwork, ABC):
         # Battle messages can be multiline
         messages = [m.split("|") for m in message.split("\n")]
         split_first_message = messages[0]
-        battle_info = split_first_message[0].split("-")
 
         if len(messages) > 1 and len(messages[1]) > 1 and messages[1][1] == "init":
+            battle_info = split_first_message[0].split("-")
             battle = await self._create_battle(battle_info)
             messages.pop(0)
         else:
-            battle = await self._get_battle(battle_info[2])
+            battle = await self._get_battle(split_first_message[0])
+            # battle = await self._get_battle(battle_info[2])
 
         if battle is None:
             self.logger.critical("No battle found from message %s", message)
