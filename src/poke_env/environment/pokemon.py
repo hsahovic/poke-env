@@ -244,9 +244,12 @@ class Pokemon:
             self._boosts["atk"],
         )
 
-    def _switch_in(self):
+    def _switch_in(self, details=None):
         self._last_request = {}
         self._active = True
+
+        if details:
+            self._update_from_details(details)
 
     def _switch_out(self):
         self._last_request = {}

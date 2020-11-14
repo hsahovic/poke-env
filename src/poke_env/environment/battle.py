@@ -218,7 +218,7 @@ class Battle:
         pokemon = self.get_pokemon(pokemon_name, details=details)
         pokemon._set_hp(f"{active.current_hp}/{active.max_hp}")
         active._was_illusionned()
-        pokemon._switch_in()
+        pokemon._switch_in(details=details)
         pokemon.status = active.status
 
     def _field_end(self, field):
@@ -560,7 +560,7 @@ class Battle:
             if self.opponent_active_pokemon:
                 self.opponent_active_pokemon._switch_out()
         pokemon = self.get_pokemon(pokemon, details=details)
-        pokemon._switch_in()
+        pokemon._switch_in(details=details)
         pokemon._set_hp_status(hp_status)
 
     def _tied(self):
