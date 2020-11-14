@@ -216,6 +216,7 @@ def test_battle_request_and_interactions(example_request):
         ["", "switch", "p2: Necrozma", "Necrozma, L82", "121/293 tox"]
     )
     assert mon.boosts["atk"] == 0
+    assert mon.level == 82
 
     assert battle.active_pokemon.species == "Necrozma"
     assert battle.active_pokemon.status == Status.TOX
@@ -225,3 +226,7 @@ def test_battle_request_and_interactions(example_request):
 
     battle._parse_message(["", "-curestatus", "p2: Necrozma", "tox"])
     assert not battle.active_pokemon.status
+
+    battle._parse_message(["", "switch", "p1: Gabite", "Gabite, L99, F", "311/311"])
+    assert battle.opponent_active_pokemon.species == "Gabite"
+    assert battle.opponent_active_pokemon.level == 99
