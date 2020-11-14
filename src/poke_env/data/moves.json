@@ -2575,13 +2575,13 @@
    "pp": 5,
    "priority": 0,
    "flags": {"protect": 1, "mirror": 1},
-   "secondary": {
+   "self": {
     "chance": 50,
-    "self": {
-     "boosts": {
-      "def": 2
-     }
+    "boosts": {
+     "def": 2
     }
+   },
+   "secondary": {
    },
    "target": "allAdjacentFoes",
    "type": "Rock",
@@ -4693,7 +4693,8 @@
    "volatileStatus": "gastroacid",
    "onTryHit": "onTryHit",
    "condition": {
-    "onStart": "onStart"
+    "onStart": "onStart",
+    "onCopy": "onCopy"
    },
    "secondary": null,
    "target": "normal",
@@ -15057,6 +15058,7 @@
    "pp": 10,
    "priority": 0,
    "flags": {"protect": 1, "reflectable": 1, "mirror": 1, "mystery": 1},
+   "onTryImmunity": "onTryImmunity",
    "onTryHit": "onTryHit",
    "onHit": "onHit",
    "secondary": null,
