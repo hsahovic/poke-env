@@ -27,11 +27,13 @@ def test_random_gym_player_gen7():
         player_configuration=PlayerConfiguration("EnvPlayerGen7", None),
         battle_format="gen7randombattle",
         server_configuration=LocalhostServerConfiguration,
+        log_level=20,
     )
     random_player = RandomPlayer(
         player_configuration=PlayerConfiguration("RandomPlayerGen7", None),
         battle_format="gen7randombattle",
         server_configuration=LocalhostServerConfiguration,
+        log_level=20,
     )
 
     env_player.play_against(
@@ -47,11 +49,13 @@ def test_random_gym_player_gen8():
         player_configuration=PlayerConfiguration("EnvPlayerGen8", None),
         battle_format="gen8randombattle",
         server_configuration=LocalhostServerConfiguration,
+        log_level=20,
     )
     random_player = RandomPlayer(
         player_configuration=PlayerConfiguration("RandomPlayerGen8", None),
         battle_format="gen8randombattle",
         server_configuration=LocalhostServerConfiguration,
+        log_level=20,
     )
 
     env_player.play_against(
@@ -67,11 +71,13 @@ def test_two_successive_calls_gen8():
         player_configuration=PlayerConfiguration("EnvPlayerGen8-2", None),
         battle_format="gen8randombattle",
         server_configuration=LocalhostServerConfiguration,
+        log_level=20,
     )
     random_player = RandomPlayer(
         player_configuration=PlayerConfiguration("RandomPlayerGen8-2", None),
         battle_format="gen8randombattle",
         server_configuration=LocalhostServerConfiguration,
+        log_level=20,
     )
 
     env_player.play_against(
