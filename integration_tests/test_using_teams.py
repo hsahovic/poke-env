@@ -10,7 +10,10 @@ async def cross_evaluation(n_battles, format_, teams):
     if len(teams) > 1:
         players = [
             SimpleHeuristicsPlayer(
-                battle_format=format_, max_concurrent_battles=n_battles, team=team
+                battle_format=format_,
+                max_concurrent_battles=n_battles,
+                team=team,
+                log_level=20,
             )
             for i, team in enumerate(teams)
         ]
@@ -18,7 +21,10 @@ async def cross_evaluation(n_battles, format_, teams):
         assert len(teams) == 1
         players = [
             SimpleHeuristicsPlayer(
-                battle_format=format_, max_concurrent_battles=n_battles, team=teams[0]
+                battle_format=format_,
+                max_concurrent_battles=n_battles,
+                team=teams[0],
+                log_level=20,
             )
             for _ in range(2)
         ]

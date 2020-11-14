@@ -7,8 +7,8 @@ from poke_env.player.random_player import RandomPlayer
 
 async def simple_ladderring(n_battles, max_concurrent_battles):
     players = [
-        RandomPlayer(max_concurrent_battles=max_concurrent_battles),
-        RandomPlayer(max_concurrent_battles=max_concurrent_battles),
+        RandomPlayer(max_concurrent_battles=max_concurrent_battles, log_level=20),
+        RandomPlayer(max_concurrent_battles=max_concurrent_battles, log_level=20),
     ]
 
     await asyncio.gather(players[0].ladder(n_battles), players[1].ladder(n_battles))
