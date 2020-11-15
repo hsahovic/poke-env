@@ -229,7 +229,7 @@ def test_battle_request_and_interactions(example_request):
     assert not battle.active_pokemon.status
 
     battle._parse_message(["", "switch", "p1: Gabite", "Gabite, L99, F", "311/311"])
-    assert battle.opponent_active_pokemon.species == "Gabite"
+    assert battle.opponent_active_pokemon.species == "gabite"
     assert battle.opponent_active_pokemon.level == 99
     assert battle._parse_message(["", "-supereffective"]) is None
 

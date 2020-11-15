@@ -263,6 +263,23 @@ class Player(PlayerNetwork, ABC):
                     "[Invalid choice] Can't move: Invalid target for"
                 ):
                     await self._handle_battle_request(battle, maybe_default_order=True)
+                elif split_message[2].startswith(
+                    "[Invalid choice] Can't move: You can't choose a target for"
+                ):
+                    await self._handle_battle_request(battle, maybe_default_order=True)
+                elif split_message[2].startswith(
+                    "[Invalid choice] Can't move: "
+                ) and split_message[2].endswith("needs a target"):
+                    await self._handle_battle_request(battle, maybe_default_order=True)
+                elif (
+                    split_message[2].startswith("[Invalid choice] Can't move: Your")
+                    and " doesn't have a move matching " in split_message[2]
+                ):
+                    await self._handle_battle_request(battle, maybe_default_order=True)
+                elif split_message[2].startswith(
+                    "[Invalid choice] Incomplete choice: "
+                ):
+                    await self._handle_battle_request(battle, maybe_default_order=True)
                 elif split_message[2].startswith("[Invalid choice]"):
                     self._manage_error_in(battle)
                 elif split_message[2].startswith(
