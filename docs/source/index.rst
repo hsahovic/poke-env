@@ -8,9 +8,7 @@ This project aims at providing a Python environment for interacting in `pokemon 
 
 Poke-env offers a simple and clear API to manipulate Pokemons, Battles, Moves and many other pokemon showdown battle-related objects in Python. It also exposes an `open ai gym <https://gym.openai.com/>`__ interface to train reinforcement learning agents.
 
-.. warning:: This module currently supports most gen 8 and 7 single battle formats. Support for doubles is planned for the future. If you want a specific format to be supported, please `open an issue <https://github.com/hsahovic/poke-env/issues>`__.
-
-.. warning:: Support for gen 8 formats as well as some gen 7 formats is recent, and may contain bugs. If you encounter a problem, please report it by `opening an issue <https://github.com/hsahovic/poke-env/issues>`__. In particular, formats where the same pokemon can be used multiple times in the same team are known to be problematic.
+.. warning:: This module currently supports most gen 8 and 7 single battle formats. Support for doubles is preliminary. If you want a specific format to be supported, please `open an issue <https://github.com/hsahovic/poke-env/issues>`__.
 
 Table of contents
 *****************
