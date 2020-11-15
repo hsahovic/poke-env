@@ -171,7 +171,7 @@ class Player(PlayerNetwork, ABC):
             )
             raise ShowdownException()
 
-    async def _get_battle(self, battle_tag: str) -> Battle:
+    async def _get_battle(self, battle_tag: str) -> AbstractBattle:
         if battle_tag.startswith(">"):
             battle_tag = battle_tag[1:]
         if battle_tag.endswith("\n"):
