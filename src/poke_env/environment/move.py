@@ -66,13 +66,25 @@ class Move:
         return "isZ" in MOVES[id_]
 
     @staticmethod
+    def is_max_move(id_) -> bool:
+        if id_.startswith("max"):
+            return True
+        if MOVES.get("isNonstandard", None) == "Gigantamax":
+            return True
+        return False
+
+    @staticmethod
     @lru_cache(4096)
     def should_be_stored(move_id: str) -> bool:
         if move_id in SPECIAL_MOVES:
             return False
         if move_id not in MOVES:
             return False
-        return not Move.is_id_z(move_id)
+        if Move.is_id_z(move_id):
+            return False
+        if Move.is_max_move(move_id):
+            return False
+        return True
 
     @property
     def accuracy(self) -> float:
