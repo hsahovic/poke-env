@@ -1,6 +1,7 @@
 aiologger
 gym
 numpy
+orjson
 requests
 tabulate
 websockets>=8.0

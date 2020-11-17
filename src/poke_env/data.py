@@ -2,7 +2,7 @@
 """This module contains constant values used in the repository.
 """
 
-import json
+import orjson
 import os
 
 from typing import Any, Union
@@ -19,7 +19,7 @@ def _compute_type_chart(chart_path: str) -> Dict[str, Dict[str, float]]:
     :rtype: Dict[str, Dict[str, float]]
     """
     with open(chart_path) as chart:
-        json_chart = json.load(chart)
+        json_chart = orjson.loads(chart.read())
 
     types = [str(entry["name"]).upper() for entry in json_chart]
 
@@ -57,7 +57,7 @@ POKEDEX: Dict[str, Any] = {}
 with open(
     os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "pokedex.json")
 ) as pokedex:
-    POKEDEX = json.load(pokedex)
+    POKEDEX = orjson.loads(pokedex.read())
 
 _missing_dex: Dict[str, Any] = {}
 for key, value in POKEDEX.items():
@@ -78,7 +78,7 @@ MOVES: Dict[str, Any] = {}
 with open(
     os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "moves.json")
 ) as moves:
-    MOVES = json.load(moves)
+    MOVES = orjson.loads(moves.read())
 
 TYPE_CHART: Dict[str, Dict[str, float]] = _compute_type_chart(_TYPE_CHART_PATH)
 
@@ -87,7 +87,7 @@ NATURES: Dict[str, Dict[str, Union[int, float]]] = {}
 with open(
     os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "natures.json")
 ) as natures:
-    NATURES = json.load(natures)
+    NATURES = orjson.loads(natures.read())
 
 
 """

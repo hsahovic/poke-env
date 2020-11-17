@@ -7,7 +7,7 @@ python diagnostic_tools/anything_goes_gen_7_battles_and_teams.py <n_battle> <log
     <batch_size>
 """
 import asyncio
-import json
+import orjson
 import numpy as np
 import sys
 
@@ -22,7 +22,7 @@ from poke_env.utils import to_id_str
 from tqdm import tqdm
 
 with open("src/poke_env/data/learnset.json") as f:
-    movesets = json.load(f)
+    movesets = orjson.load(f)
 
 print("-" * 20, "\n")
 mons = [mon for mon in POKEDEX]
