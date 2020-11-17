@@ -15,6 +15,7 @@ class SideCondition(Enum):
     G_MAX_CANNONADE = auto()
     G_MAX_STEELSURGE = auto()
     G_MAX_VOLCALITH = auto()
+    G_MAX_WILDFIRE = auto()
     GRASS_PLEDGE = auto()
     LIGHT_SCREEN = auto()
     LUCKY_CHANT = auto()
