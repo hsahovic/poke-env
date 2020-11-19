@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
+from typing import List
+
 from poke_env.environment.battle import Battle
 from poke_env.environment.double_battle import DoubleBattle
 from poke_env.player.player import Player
 from poke_env.player.random_player import RandomPlayer
 
 from unittest.mock import MagicMock
+from unittest.mock import patch
 
 
 class SimplePlayer(Player):
@@ -64,33 +67,71 @@ def test_random_teampreview():
         assert set(order[-2:]) == set([str(n) for n in range(1, 3)])
 
 
-def test_choose_random_move_doubles(example_doubles_request):
+@patch("poke_env.player.player.random.choice")
+def test_choose_random_move_doubles(pseudo_choice, example_doubles_request):
+    possible_choices_memo = (
+        []
+    )  # this needs to be reset at each start of Player.choose_random_move
+
+    def count_substrings(substring: str, in_: List[str]) -> int:
+        return sum(
+            map(
+                lambda el: substring in el,
+                in_,
+            )
+        )
+
+    def choose_non_dynamax(possible_choices: List[str]) -> str:
+        possible_choices_memo.append(possible_choices.copy())
+        for possible_choice in possible_choices:
+            if " dynamax" not in possible_choice:
+                return possible_choice
+        raise ValueError(f"Only max moves are available in {possible_choices}")
+
     logger = MagicMock()
     battle = DoubleBattle("tag", "username", logger)
+    player = RandomPlayer()
     battle._parse_request(example_doubles_request)
     battle._switch("p2a: Tyranitar", "Tyranitar, L50, M", "48/48")
 
-    player = RandomPlayer()
-    active_pokemon_1, active_pokemon_2 = battle.active_pokemon
-    choice_1 = player.choose_random_move(battle)
-    assert (
-        any([move in choice_1 for move in active_pokemon_1.moves])
-        or "/choose switch" in choice_1
-    )
-    assert (
-        any([move in choice_1 for move in active_pokemon_2.moves])
-        or ",switch" in choice_1
+    pseudo_choice.side_effect = choose_non_dynamax
+    player.choose_random_move(battle)
+
+    for pokemon, choices in zip(battle.active_pokemon, possible_choices_memo):
+        for move in pokemon.moves:
+            assert count_substrings(substring=move, in_=choices) in (2, 3)
+            assert count_substrings(substring=" 2", in_=choices) == 0
+            assert count_substrings(substring=" dynamax", in_=choices) == 4
+
+    def choose_dynamax_or_first(possible_choices: List[str]) -> str:
+        possible_choices_memo.append(possible_choices.copy())
+        for possible_choice in possible_choices:
+            if " dynamax" in possible_choice:
+                return possible_choice
+        return possible_choices[0]
+
+    possible_choices_memo = []
+    pseudo_choice.side_effect = choose_dynamax_or_first
+    player.choose_random_move(battle)
+    choices_pokemon_2 = possible_choices_memo[1]
+    assert count_substrings(" dynamax", choices_pokemon_2) == 0, (
+        "After first Pokemon has been selected to dynamax, the second Pokemon should not "
+        "have that choice available"
     )
 
-    choices_100 = [player.choose_random_move(battle) for _ in range(100)]
-    assert not any([" 2" in choice for choice in choices_100])
-    assert any(["1" in choice for choice in choices_100])
-    assert any(["-1" in choice for choice in choices_100])
-    assert any(["-2" in choice for choice in choices_100])
-    assert any(["dynamax" in choice for choice in choices_100])
-    assert not any([choice.count("dynamax") == 2 for choice in choices_100])
-    assert any([choice.count("switch") == 2 for choice in choices_100])
+    battle._switch("p2b: Excadrill", "Excadrill, L50, M", "48/48")
 
-    battle._switch("p2b: Charizard", "Charizard, L50, M", "48/48")
-    choices_100 = [player.choose_random_move(battle) for _ in range(100)]
-    assert any([" 2" in choice for choice in choices_100])
+    possible_choices_memo = []
+    pseudo_choice.side_effect = choose_non_dynamax
+    player.choose_random_move(battle)
+
+    for pokemon, choices in zip(battle.active_pokemon, possible_choices_memo):
+        for move in pokemon.moves:
+            assert count_substrings(substring=move, in_=choices) > 1, (
+                "There should be at least one possible choice of each move, one for "
+                "dynamax and one for non-dynamax"
+            )
+            assert count_substrings(substring=" 2", in_=choices) > 0, (
+                "It should be possible to target the newly switched-in Excadrill with "
+                "some move"
+            )
