@@ -23,7 +23,6 @@ class Pokemon:
         "_ability",
         "_active",
         "_active",
-        "_base_ability",
         "_base_stats",
         "_boosts",
         "_current_hp",
@@ -31,17 +30,16 @@ class Pokemon:
         "_gender",
         "_heightm",
         "_item",
+        "_last_details",
         "_last_request",
         "_level",
         "_max_hp",
         "_moves",
         "_must_recharge",
-        "_pokeball",
         "_possible_abilities",
         "_preparing",
         "_shiny",
         "_species",
-        "_stats",
         "_status",
         "_type_1",
         "_type_2",
@@ -60,13 +58,6 @@ class Pokemon:
         self._heightm: int
         self._possible_abilities: List[str]
         self._species: str = ""
-        self._stats: Dict[str, Optional[int]] = {
-            "atk": None,
-            "def": None,
-            "spa": None,
-            "spd": None,
-            "spe": None,
-        }
         self._type_1: PokemonType
         self._type_2: Optional[PokemonType] = None
         self._weightkg: int
@@ -74,12 +65,10 @@ class Pokemon:
         # Individual related attributes
         self._ability: Optional[str] = None
         self._active: bool
-        self._base_ability: str
         self._gender: Optional[PokemonGender] = None
         self._level: int = 100
         self._max_hp: int = 0
         self._moves: Dict[str, Move] = {}
-        self._pokeball: Optional[str] = None
         self._shiny: Optional[bool] = False
 
         # Battle related attributes
@@ -98,6 +87,7 @@ class Pokemon:
         self._effects: Set[Effect] = set()
         self._item: Optional[str] = None
         self._last_request: dict = {}
+        self._last_details: str = ""
         self._must_recharge = False
         self._preparing = False
         self._status: Optional[Status] = None
@@ -126,7 +116,7 @@ class Pokemon:
             return
 
         if id_ not in self._moves:
-            move = Move(id_)
+            move = Move(move_id=id_)
             self._moves[id_] = move
         if use:
             self._moves[id_].use()
@@ -176,11 +166,10 @@ class Pokemon:
     def _faint(self):
         self._current_hp = 0
         self.status = Status.FNT
-        self._active = False
 
     def _forme_change(self, species):
         species = species.split(",")[0]
-        self._update_from_pokedex(species)
+        self._update_from_pokedex(species, store_species=False)
 
     def _heal(self, hp_status):
         self._set_hp_status(hp_status)
@@ -196,10 +185,10 @@ class Pokemon:
             else species_id_str
         )
         if mega_species in POKEDEX:
-            self._update_from_pokedex(mega_species)
+            self._update_from_pokedex(mega_species, store_species=False)
         elif stone[-1] in "XY":
             mega_species = mega_species + stone[-1].lower()
-            self._update_from_pokedex(mega_species)
+            self._update_from_pokedex(mega_species, store_species=False)
 
     def _moved(self, move):
         self._must_recharge = False
@@ -216,7 +205,7 @@ class Pokemon:
             if not species_id_str.endswith("primal")
             else species_id_str
         )
-        self._update_from_pokedex(primal_species)
+        self._update_from_pokedex(primal_species, store_species=False)
 
     def _set_boost(self, stat, amount):
         assert abs(int(amount)) <= 6
@@ -226,22 +215,18 @@ class Pokemon:
         self._set_hp_status(hp_status)
 
     def _set_hp_status(self, hp_status):
+        if hp_status == "0 fnt":
+            self._faint()
+            return
+
         if " " in hp_status:
             hp, status = hp_status.split(" ")
+            self.status = Status[status.upper()]
         else:
             hp = hp_status
-            status = None
 
-        if status == "fnt":
-            self.status = Status.FNT
-            self._current_hp = 0
-            return
-        elif status:
-            self.status = status
         self._current_hp, self._max_hp = hp.split("/")
         self._current_hp = int(self._current_hp)
-        while self._max_hp[-1].isalpha():
-            self._max_hp = self._max_hp[:-1]
         self._max_hp = int(self._max_hp)
 
     def _start_effect(self, effect):
@@ -255,14 +240,12 @@ class Pokemon:
         )
 
     def _switch_in(self, details=None):
-        self._last_request = {}
         self._active = True
 
         if details:
             self._update_from_details(details)
 
     def _switch_out(self):
-        self._last_request = {}
         self._active = False
         self._clear_boosts()
         self._clear_effects()
@@ -271,14 +254,15 @@ class Pokemon:
 
     def _transform(self, into):
         current_hp = self.current_hp
-        self._update_from_pokedex(into.species)
+        self._update_from_pokedex(into.species, store_species=False)
         self._current_hp = int(current_hp)
         self._boosts = into.boosts.copy()
 
-    def _update_from_pokedex(self, species: str) -> None:
+    def _update_from_pokedex(self, species: str, store_species: bool = True) -> None:
         species = to_id_str(species)
         dex_entry = POKEDEX[species]
-        self._species = species
+        if store_species:
+            self._species = species
         self._base_stats = dex_entry["baseStats"]
 
         self._type_1 = PokemonType.from_name(dex_entry["types"][0])
@@ -292,6 +276,11 @@ class Pokemon:
         self._weightkg = dex_entry["weightkg"]
 
     def _update_from_details(self, details: str) -> None:
+        if details == self._last_details:
+            return
+        else:
+            self._last_details = details
+
         if ", shiny" in details:
             self._shiny = True
             details = details.replace(", shiny", "")
@@ -327,29 +316,16 @@ class Pokemon:
             self._update_from_pokedex(species)
 
     def _update_from_request(self, request_pokemon: Dict[str, Any]) -> None:
+        self._active = request_pokemon["active"]
+
         if request_pokemon == self._last_request:
-            self._active = request_pokemon["active"]
             return
-        self._last_request = request_pokemon
 
         self._ability = request_pokemon["ability"]
-        self._active = request_pokemon["active"]
-        self._base_ability = request_pokemon["baseAbility"]
+        self._last_request = request_pokemon
 
         condition = request_pokemon["condition"]
-        if condition == "0 fnt":
-            self._current_hp = 0
-            self.status = Status.FNT
-        else:
-            if " " in condition:
-                hps, status = condition.split(" ")
-                self.status = status
-            else:
-                hps = condition
-                self.status = None
-            current_hp, max_hp = hps.split("/")
-            self._current_hp = int(current_hp)
-            self._max_hp = int(max_hp)
+        self._set_hp_status(condition)
 
         self._item = request_pokemon["item"]
 
@@ -363,9 +339,6 @@ class Pokemon:
             self._moves = {}
             for move in request_pokemon["moves"]:
                 self._add_move(move)
-
-        self._pokeball = request_pokemon["pokeball"]
-        self._stats = request_pokemon["stats"]
 
     def _used_z_move(self):
         self._item = None
@@ -567,7 +540,7 @@ class Pokemon:
         :return: The pokeball in which is the pokemon.
         :rtype: Optional[str]
         """
-        return self._pokeball
+        return self._last_request.get("pokeball", None)
 
     @property
     def possible_abilities(self) -> List[str]:
@@ -607,7 +580,9 @@ class Pokemon:
         :return: The pokemon's stats, as a dictionary.
         :rtype: Dict[str, Optional[int]]
         """
-        return self._stats
+        return self._last_request.get(
+            "stats", {"atk": None, "def": None, "spa": None, "spd": None, "spe": None}
+        )
 
     @property
     def status(self) -> Optional[Status]:
