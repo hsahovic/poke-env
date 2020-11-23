@@ -132,11 +132,7 @@ class Player(PlayerNetwork, ABC):
         # We check that the battle has the correct format
         if split_message[1] == self._format and len(split_message) >= 2:
             # Battle initialisation
-            battle_tag = "-".join(split_message)
-            if battle_tag.startswith(">"):
-                battle_tag = battle_tag[1:]
-            if battle_tag.endswith("\n"):
-                battle_tag = battle_tag[:-1]
+            battle_tag = "-".join(split_message)[1:]
 
             if battle_tag in self._battles:
                 return self._battles[battle_tag]
@@ -171,11 +167,7 @@ class Player(PlayerNetwork, ABC):
             raise ShowdownException()
 
     async def _get_battle(self, battle_tag: str) -> AbstractBattle:
-        if battle_tag.startswith(">"):
-            battle_tag = battle_tag[1:]
-        if battle_tag.endswith("\n"):
-            battle_tag = battle_tag[:-1]
-
+        battle_tag = battle_tag[1:]
         while True:
             if battle_tag in self._battles:
                 return self._battles[battle_tag]
