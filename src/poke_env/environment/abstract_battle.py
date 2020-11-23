@@ -58,7 +58,6 @@ class AbstractBattle(ABC):
         "rated",
         "resisted",
         "supereffective",
-        "t:",
         "tier",
         "upkeep",
         "zbroken",
@@ -219,16 +218,58 @@ class AbstractBattle(ABC):
     def _parse_message(self, split_message: List[str]) -> None:
         if split_message[1] in self.MESSAGES_TO_IGNORE:
             return
+        elif split_message[1] in ["drag", "switch"]:
+            pokemon, details, hp_status = split_message[2:5]
+            self._switch(pokemon, details, hp_status)
+        elif split_message[1] == "-damage":
+            pokemon, hp_status = split_message[2:4]
+            self.get_pokemon(pokemon)._damage(hp_status)
+        elif split_message[1] == "move":
+            pokemon, move, target = split_message[2:5]
+            self.get_pokemon(pokemon)._moved(move)
+        elif split_message[1] == "-heal":
+            pokemon, hp_status = split_message[2:4]
+            self.get_pokemon(pokemon)._heal(hp_status)
+        elif split_message[1] == "-boost":
+            pokemon, stat, amount = split_message[2:5]
+            self.get_pokemon(pokemon)._boost(stat, int(amount))
+        elif split_message[1] == "-weather":
+            weather = split_message[2]
+            self.weather = weather
+        elif split_message[1] == "faint":
+            pokemon = split_message[2]
+            self.get_pokemon(pokemon)._faint()
+        elif split_message[1] == "-unboost":
+            pokemon, stat, amount = split_message[2:5]
+            self.get_pokemon(pokemon)._boost(stat, -int(amount))
         elif split_message[1] == "-ability":
             pokemon, ability = split_message[2:4]
             self.get_pokemon(pokemon).ability = ability
+        elif split_message[1] == "-start":
+            pokemon, effect = split_message[2:4]
+            pokemon = self.get_pokemon(pokemon)
+            pokemon._start_effect(effect)
+
+            if pokemon.is_dynamaxed:
+                if pokemon in set(self.team.values()) and self._dynamax_turn is None:
+                    self._dynamax_turn = self.turn
+                # self._can_dynamax value is set via _parse_request()
+                elif (
+                    pokemon in set(self.opponent_team.values())
+                    and self._opponent_dynamax_turn is None
+                ):
+                    self._opponent_dynamax_turn = self.turn
+                    self.opponent_can_dynamax = False
         elif split_message[1] == "-activate":
             target, effect = split_message[2:4]
             if target:
                 self.get_pokemon(target)._start_effect(effect)
-        elif split_message[1] == "-boost":
-            pokemon, stat, amount = split_message[2:5]
-            self.get_pokemon(pokemon)._boost(stat, int(amount))
+        elif split_message[1] == "-status":
+            pokemon, status = split_message[2:4]
+            self.get_pokemon(pokemon).status = status
+        elif split_message[1] == "rule":
+            self._rules.append(split_message[2])
+
         elif split_message[1] == "-clearallboost":
             self._clear_all_boosts()
         elif split_message[1] == "-clearboost":
@@ -251,9 +292,6 @@ class AbstractBattle(ABC):
                 "cureteam management not implemented in battle. Message: %s"
                 % split_message
             )
-        elif split_message[1] == "-damage":
-            pokemon, hp_status = split_message[2:4]
-            self.get_pokemon(pokemon)._damage(hp_status)
         elif split_message[1] == "-end":
             pokemon, effect = split_message[2:4]
             self.get_pokemon(pokemon)._end_effect(effect)
@@ -272,9 +310,6 @@ class AbstractBattle(ABC):
         elif split_message[1] in ["-formechange", "detailschange"]:
             pokemon, species = split_message[2:4]
             self.get_pokemon(pokemon)._forme_change(species)
-        elif split_message[1] == "-heal":
-            pokemon, hp_status = split_message[2:4]
-            self.get_pokemon(pokemon)._heal(hp_status)
         elif split_message[1] == "-invertboost":
             pokemon = split_message[2]
             self.get_pokemon(pokemon)._invert_boosts()
@@ -310,24 +345,6 @@ class AbstractBattle(ABC):
         elif split_message[1] == "-sidestart":
             side, condition = split_message[2:4]
             self._side_start(side, condition)
-        elif split_message[1] == "-start":
-            pokemon, effect = split_message[2:4]
-            pokemon = self.get_pokemon(pokemon)
-            pokemon._start_effect(effect)
-
-            if pokemon.is_dynamaxed:
-                if pokemon in set(self.team.values()) and self._dynamax_turn is None:
-                    self._dynamax_turn = self.turn
-                # self._can_dynamax value is set via _parse_request()
-                elif (
-                    pokemon in set(self.opponent_team.values())
-                    and self._opponent_dynamax_turn is None
-                ):
-                    self._opponent_dynamax_turn = self.turn
-                    self.opponent_can_dynamax = False
-        elif split_message[1] == "-status":
-            pokemon, status = split_message[2:4]
-            self.get_pokemon(pokemon).status = status
         elif split_message[1] == "-swapboost":
             source, target, stats = split_message[2:5]
             source = self.get_pokemon(source)
@@ -340,28 +357,14 @@ class AbstractBattle(ABC):
         elif split_message[1] == "-transform":
             pokemon, into = split_message[2:4]
             self.get_pokemon(pokemon)._transform(self.get_pokemon(into))
-        elif split_message[1] == "-unboost":
-            pokemon, stat, amount = split_message[2:5]
-            self.get_pokemon(pokemon)._boost(stat, -int(amount))
-        elif split_message[1] == "-weather":
-            weather = split_message[2]
-            self.weather = weather
+
         elif split_message[1] == "-zpower":
             pokemon = split_message[2]
             self.get_pokemon(pokemon)._used_z_move()
         elif split_message[1] == "clearpoke":
             self._in_team_preview = True
-        elif split_message[1] in ["drag", "switch"]:
-            pokemon, details, hp_status = split_message[2:5]
-            self._switch(pokemon, details, hp_status)
-        elif split_message[1] == "faint":
-            pokemon = split_message[2]
-            self.get_pokemon(pokemon)._faint()
         elif split_message[1] == "gen":
             self._format = split_message[2]
-        elif split_message[1] == "move":
-            pokemon, move, target = split_message[2:5]
-            self.get_pokemon(pokemon)._moved(move)
         elif split_message[1] == "player":
             player, username, avatar, rating = split_message[2:6]
             if username == self._player_username:
@@ -396,8 +399,6 @@ class AbstractBattle(ABC):
             pokemon = split_message[2]
             details = split_message[3]
             self._end_illusion(pokemon, details)
-        elif split_message[1] == "rule":
-            self._rules.append(split_message[2])
         elif split_message[1] == "start":
             self._in_team_preview = False
         elif split_message[1] == "swap":
