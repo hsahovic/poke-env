@@ -145,7 +145,11 @@ class AbstractBattle(ABC):
         self._opponent_team: Dict[str, Pokemon] = {}
 
     def get_pokemon(
-        self, identifier: str, force_self_team: bool = False, details: str = ""
+        self,
+        identifier: str,
+        force_self_team: bool = False,
+        details: str = "",
+        request: Optional[dict] = None,
     ) -> Pokemon:
         """Returns the Pokemon object corresponding to given identifier. Can force to
         return object from the player's team if force_self_team is True. If the Pokemon
@@ -164,39 +168,42 @@ class AbstractBattle(ABC):
         :raises AssertionError: If the team has too many pokemons, as determined by the
             teamsize component of battle initialisation.
         """
-        player_role = identifier[:2]
-        is_mine = player_role == self._player_role
         if identifier[3] != " ":
             identifier = identifier[:2] + identifier[3:]
-            species = identifier[5:]
-        if details:
-            species = details.split(", ")[0]
-        else:
-            species = identifier[4:]
+
+        if identifier in self._team:
+            return self._team[identifier]
+        elif identifier in self._opponent_team:
+            return self._opponent_team[identifier]
+
+        player_role = identifier[:2]
+        is_mine = player_role == self._player_role
 
         if is_mine or force_self_team:
             team: Dict[str, Pokemon] = self._team
         else:
             team: Dict[str, Pokemon] = self._opponent_team
 
-        if identifier in team:
-            return team[identifier]
-        else:
-            try:
-                if self._team_size:
-                    assert len(team) < self._team_size[player_role]
-            except AssertionError:
-                self.logger.critical(team, identifier)
-                raise ValueError(
-                    "%s's team already has 6 pokemons: cannot add %s to %s"
-                    % (identifier[:2], identifier, ", ".join(team.keys()))
+        if self._team_size and len(team) >= self._team_size[player_role]:
+            raise ValueError(
+                "%s's team already has %d pokemons: cannot add %s to %s"
+                % (
+                    player_role,
+                    self._team_size[player_role],
+                    identifier[:2],
+                    ", ".join(team.keys()),
                 )
-            if details:
-                team[identifier] = Pokemon(details=details)
-            else:
-                team[identifier] = Pokemon(species=species)
+            )
 
-            return team[identifier]
+        if request:
+            team[identifier] = Pokemon(request_pokemon=request)
+        elif details:
+            team[identifier] = Pokemon(details=details)
+        else:
+            species = identifier[4:]
+            team[identifier] = Pokemon(species=species)
+
+        return team[identifier]
 
     @abstractmethod
     def _clear_all_boosts(self):
