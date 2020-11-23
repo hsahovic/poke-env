@@ -454,13 +454,13 @@ class AbstractBattle(ABC):
         self._finished = True
 
     def _update_team_from_request(self, side: Dict) -> None:
-        for pokemon in self.team.values():
-            pokemon._active = False
-
         for pokemon in side["pokemon"]:
-            self.get_pokemon(
-                pokemon["ident"], force_self_team=True, details=pokemon["details"]
-            )._update_from_request(pokemon)
+            if pokemon["ident"] in self._team:
+                self._team[pokemon["ident"]]._update_from_request(pokemon)
+            else:
+                self.get_pokemon(
+                    pokemon["ident"], force_self_team=True, request=pokemon
+                )
 
     def _won_by(self, player_name: str):
         if player_name == self._player_username:
