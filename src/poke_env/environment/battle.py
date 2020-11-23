@@ -54,11 +54,11 @@ class Battle(AbstractBattle):
         Args:
             request (dict): parsed json request object
         """
-        self.logger.debug(
-            "Parsing the following request update in battle %s:\n%s",
-            self.battle_tag,
-            request,
-        )
+        # self.logger.debug(
+        #     "Parsing the following request update in battle %s:\n%s",
+        #     self.battle_tag,
+        #     request,
+        # )
 
         if "wait" in request and request["wait"]:
             self._wait = True
@@ -122,7 +122,7 @@ class Battle(AbstractBattle):
                                         active_pokemon.species,
                                     )
                                 else:
-                                    self.logger.warning(
+                                    self.logger.info(
                                         "The move '%s' was received in battle %s for "
                                         "your active pokemon %s. This move could not "
                                         "be added, but it might come from a special "
@@ -161,13 +161,16 @@ class Battle(AbstractBattle):
 
     def _switch(self, pokemon, details, hp_status):
         identifier = pokemon.split(":")[0][:2]
+
         if identifier == self._player_role:
             if self.active_pokemon:
                 self.active_pokemon._switch_out()
         else:
             if self.opponent_active_pokemon:
                 self.opponent_active_pokemon._switch_out()
+
         pokemon = self.get_pokemon(pokemon, details=details)
+
         pokemon._switch_in(details=details)
         pokemon._set_hp_status(hp_status)
 
