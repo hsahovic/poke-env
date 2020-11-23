@@ -121,50 +121,46 @@ class PlayerNetwork(ABC):
         :type message: str
         """
         try:
-            self.logger.debug("Received message to handle: %s", message)
-
             # Showdown websocket messages are pipe-separated sequences
-            split_message = message.split("|")
-            assert len(split_message) > 1
+            split_messages = [m.split("|") for m in message.split("\n")]
             # The type of message is determined by the first entry in the message
             # For battles, this is the zero-th entry
             # Otherwise it is the one-th entry
-            if split_message[1] == "challstr":
+            if split_messages[0][0].startswith(">battle"):
+                # Battle update
+                await self._handle_battle_message(split_messages)
+            elif split_messages[0][1] == "challstr":
                 # Confirms connection to the server: we can login
-                await self._log_in(split_message)
-            elif split_message[1] == "updateuser":
-                if split_message[2] == " " + self._username:
+                await self._log_in(split_messages[0])
+            elif split_messages[0][1] == "updateuser":
+                if split_messages[0][2] == " " + self._username:
                     # Confirms successful login
                     self.logged_in.set()
-                elif not split_message[2].startswith(" Guest "):
+                elif not split_messages[0][2].startswith(" Guest "):
                     self.logger.warning(
                         """Trying to login as %s, showdown returned %s """
                         """- this might prevent future actions from this agent. """
                         """Changing the agent's username might solve this problem.""",
                         self.username,
-                        split_message[2],
+                        split_messages[0][2],
                     )
-            elif "updatechallenges" in split_message[1]:
+            elif "updatechallenges" in split_messages[0][1]:
                 # Contain information about current challenge
-                await self._update_challenges(split_message)
-            elif split_message[0].startswith(">battle"):
-                # Battle update
-                await self._handle_battle_message(message)
-            elif split_message[1] == "updatesearch":
-                self.logger.debug("Ignored message: %s", message)
+                await self._update_challenges(split_messages[0])
+            elif split_messages[0][1] == "updatesearch":
                 pass
-            elif split_message[1] == "popup":
+            elif split_messages[0][1] == "popup":
                 self.logger.warning("Popup message received: %s", message)
-            elif split_message[1] in ["nametaken"]:
+            elif split_messages[0][1] in ["nametaken"]:
                 self.logger.critical("Error message received: %s", message)
                 raise ShowdownException("Error message received: %s", message)
-            elif split_message[1] == "pm":
-                self.logger.info("Received pm: %s", split_message)
+            elif split_messages[0][1] == "pm":
+                self.logger.warning("Received pm: %s", message)
             else:
                 self.logger.critical("Unhandled message: %s", message)
                 raise NotImplementedError("Unhandled message: %s" % message)
         except CancelledError as e:
-            self.logger.critical("CancelledError intercepted. %s", e)
+            self.logger.critical("CancelledError intercepted: %s", e)
         except Exception as exception:
             self.logger.exception(
                 "Unhandled exception raised while handling message:\n%s", message
