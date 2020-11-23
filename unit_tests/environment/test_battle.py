@@ -3,6 +3,7 @@ import pytest
 
 from unittest.mock import MagicMock
 
+from poke_env.data import POKEDEX
 from poke_env.environment.battle import Battle
 from poke_env.environment.effect import Effect
 from poke_env.environment.field import Field
@@ -15,8 +16,6 @@ from poke_env.environment.weather import Weather
 def test_battle_get_pokemon():
     logger = MagicMock()
     battle = Battle("tag", "username", logger)
-
-    #  identifier: str, force_self_team: bool = False, details: str = ""
 
     battle.get_pokemon("p2: azumarill", force_self_team=True)
     assert "p2: azumarill" in battle.team
@@ -50,7 +49,7 @@ def test_battle_get_pokemon():
     assert len(battle.team) == 6
 
     with pytest.raises(ValueError):
-        battle.get_pokemon("p2: pikachu")
+        print(battle.get_pokemon("p2: pikachu"))
 
     assert "p2: pikachu" not in battle.team
 
@@ -302,7 +301,7 @@ def test_battle_request_and_interactions(example_request):
     battle._parse_message(["", "switch", "p1: Latias", "Latias, L82", "100/100"])
     assert battle.opponent_active_pokemon.base_stats["def"] == 90
     battle._parse_message(["", "-mega", "p1: Latias", "latiasite"])
-    assert battle.opponent_active_pokemon.species == "latiasmega"
+    assert battle.opponent_active_pokemon.species == "latias"
     assert battle.opponent_active_pokemon.base_stats["def"] == 120
 
     battle._parse_message(["", "-mustrecharge", "p1: Latias"])
@@ -315,7 +314,7 @@ def test_battle_request_and_interactions(example_request):
 
     battle._parse_message(["", "switch", "p1: Groudon", "Groudon, L82", "100/100"])
     battle._parse_message(["", "-primal", "p1: Groudon"])
-    assert battle.opponent_active_pokemon.species == "groudonprimal"
+    assert battle.opponent_active_pokemon.species == "groudon"
 
     battle._parse_message(["", "-setboost", "p1: Groudon", "atk", "6"])
     assert battle.opponent_active_pokemon.boosts["atk"] == 6
@@ -342,7 +341,8 @@ def test_battle_request_and_interactions(example_request):
     assert battle.opponent_active_pokemon.boosts["spe"] == 0
 
     battle._parse_message(["", "-transform", "p1: Groudon", "p2: Necrozma"])
-    assert battle.opponent_active_pokemon.species == "necrozma"
+    assert battle.opponent_active_pokemon.species == "groudon"
+    assert battle.opponent_active_pokemon.base_stats == POKEDEX["necrozma"]["baseStats"]
     assert battle.opponent_active_pokemon.boosts == battle.active_pokemon.boosts
 
     battle._parse_message(["", "switch", "p1: Sunflora", "Sunflora, L82", "100/100"])
