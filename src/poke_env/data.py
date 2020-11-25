@@ -67,6 +67,11 @@ for key, value in POKEDEX.items():
         for other_form in value["cosmeticFormes"]:
             _missing_dex[to_id_str(other_form)] = value
 
+# Alternative pikachu gmax forms
+for name, value in POKEDEX.items():
+    if name.startswith("pikachu") and name not in {"pikachu", "pikachugmax"}:
+        _missing_dex[name + "gmax"] = POKEDEX["pikachugmax"]
+
 POKEDEX.update(_missing_dex)
 
 for name, value in POKEDEX.items():
