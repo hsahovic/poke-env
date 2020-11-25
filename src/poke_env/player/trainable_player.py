@@ -8,6 +8,7 @@ import numpy as np  # pyre-ignore
 from abc import ABC
 from abc import abstractmethod
 from poke_env.environment.abstract_battle import AbstractBattle
+from poke_env.player.battle_order import BattleOrder
 from poke_env.player.player import Player
 from poke_env.player_configuration import PlayerConfiguration
 from poke_env.server_configuration import ServerConfiguration
@@ -97,7 +98,7 @@ class TrainablePlayer(Player, ABC):
     def replay(self, battle_history: Dict):
         pass
 
-    def choose_move(self, battle: AbstractBattle) -> str:
+    def choose_move(self, battle: AbstractBattle) -> BattleOrder:
         state = self.battle_to_state(battle)
         action = self.state_to_action(state, battle)
         move = self.action_to_move(action, battle)

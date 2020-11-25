@@ -26,19 +26,19 @@ def test_max_base_power_player():
 
     player_pkg.Battle = PseudoBattle
 
-    assert player.choose_move(battle) == "/choose default"
+    assert player.choose_move(battle).message == "/choose default"
 
     battle.available_switches.append(Pokemon(species="ponyta"))
-    assert player.choose_move(battle) == "/choose switch ponyta"
+    assert player.choose_move(battle).message == "/choose switch ponyta"
 
     battle.available_moves.append(Move("protect"))
-    assert player.choose_move(battle) == "/choose move protect"
+    assert player.choose_move(battle).message == "/choose move protect"
 
     battle.available_moves.append(Move("quickattack"))
-    assert player.choose_move(battle) == "/choose move quickattack"
+    assert player.choose_move(battle).message == "/choose move quickattack"
 
     battle.available_moves.append(Move("flamethrower"))
-    assert player.choose_move(battle) == "/choose move flamethrower"
+    assert player.choose_move(battle).message == "/choose move flamethrower"
 
     player_pkg.Battle = (
         Battle  # this is in case a test runner shares memory between tests
@@ -193,19 +193,19 @@ def test_simple_heuristics_player():
     }
 
     battle.available_switches[0]._set_hp("100/100")
-    assert player.choose_move(battle) == "/choose switch togekiss"
+    assert player.choose_move(battle).message == "/choose switch togekiss"
 
     battle.available_moves.append(Move("quickattack"))
-    assert player.choose_move(battle) == "/choose move quickattack"
+    assert player.choose_move(battle).message == "/choose move quickattack"
 
     battle.available_moves.append(Move("flamethrower"))
-    assert player.choose_move(battle) == "/choose move flamethrower"
+    assert player.choose_move(battle).message == "/choose move flamethrower"
 
     battle.available_moves.append(Move("dracometeor"))
-    assert player.choose_move(battle) == "/choose move dracometeor"
+    assert player.choose_move(battle).message == "/choose move dracometeor"
 
     battle.active_pokemon._boost("atk", -3)
     battle.active_pokemon._boost("spa", -3)
     battle.available_switches.append(Pokemon(species="sneasel"))
     battle.available_switches[1]._set_hp("100/100")
-    assert player.choose_move(battle) == "/choose switch sneasel"
+    assert player.choose_move(battle).message == "/choose switch sneasel"

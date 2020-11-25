@@ -265,7 +265,7 @@ class PlayerNetwork(ABC):
         await self._websocket.close()
 
     @abstractmethod
-    async def _handle_battle_message(self, message: str) -> None:
+    async def _handle_battle_message(self, split_messages: List[List[str]]) -> None:
         """Abstract method.
 
         Implementation should redirect messages to corresponding battles.

@@ -48,11 +48,11 @@ def test_choose_move(queue_get_mock):
     battle = Battle("bat1", player.username, player.logger)
     battle._available_moves = {Move("flamethrower")}
 
-    assert player.choose_move(battle) == "/choose move flamethrower"
+    assert player.choose_move(battle).message == "/choose move flamethrower"
 
     battle._available_moves = {Pokemon(species="charizard")}
 
-    assert player.choose_move(battle) == "/choose switch charizard"
+    assert player.choose_move(battle).message == "/choose switch charizard"
 
 
 def test_reward_computing_helper():
