@@ -12,6 +12,7 @@ from typing import Any, Callable, List, Optional, Tuple, Union
 
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.battle import Battle
+from poke_env.player.battle_order import BattleOrder
 from poke_env.player.player import Player
 from poke_env.player_configuration import PlayerConfiguration
 from poke_env.server_configuration import ServerConfiguration
@@ -81,7 +82,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         self._start_new_battle = False
 
     @abstractmethod
-    def _action_to_move(self, action: int, battle: AbstractBattle) -> str:
+    def _action_to_move(self, action: int, battle: AbstractBattle) -> BattleOrder:
         """Abstract method converting elements of the action space to move orders."""
 
     def _battle_finished_callback(self, battle: AbstractBattle) -> None:
@@ -91,7 +92,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         self._observations[battle] = Queue()
         self._actions[battle] = Queue()
 
-    def choose_move(self, battle: AbstractBattle) -> str:
+    def choose_move(self, battle: AbstractBattle) -> BattleOrder:
         if battle not in self._observations or battle not in self._actions:
             self._init_battle(battle)
         self._observations[battle].put(self.embed_battle(battle))
@@ -359,7 +360,9 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
 class Gen7EnvSinglePlayer(EnvPlayer):  # pyre-ignore
     _ACTION_SPACE = list(range(3 * 4 + 6))
 
-    def _action_to_move(self, action: int, battle: Battle) -> str:  # pyre-ignore
+    def _action_to_move(  # pyre-ignore
+        self, action: int, battle: Battle
+    ) -> BattleOrder:
         """Converts actions to move orders.
 
         The conversion is done as follows:
@@ -436,7 +439,9 @@ class Gen7EnvSinglePlayer(EnvPlayer):  # pyre-ignore
 class Gen8EnvSinglePlayer(EnvPlayer):  # pyre-ignore
     _ACTION_SPACE = list(range(4 * 4 + 6))
 
-    def _action_to_move(self, action: int, battle: Battle) -> str:  # pyre-ignore
+    def _action_to_move(  # pyre-ignore
+        self, action: int, battle: Battle
+    ) -> BattleOrder:
         """Converts actions to move orders.
 
         The conversion is done as follows:
