@@ -52,6 +52,7 @@ class Effect(Enum):
     FORESIGHT = auto()
     FOREWARN = auto()
     FUTURE_SIGHT = auto()
+    G_MAX_ONE_BLOW = auto()
     GRAVITY = auto()
     GRUDGE = auto()
     GUARD_SPLIT = auto()
