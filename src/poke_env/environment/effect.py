@@ -13,6 +13,7 @@ class Effect(Enum):
     """Enumeration, represent an effect a Pokemon can be affected by."""
 
     AFTER_YOU = auto()
+    AFTERMATH = auto()
     AQUA_RING = auto()
     AROMATHERAPY = auto()
     AROMA_VEIL = auto()
@@ -53,6 +54,7 @@ class Effect(Enum):
     FOREWARN = auto()
     FUTURE_SIGHT = auto()
     G_MAX_ONE_BLOW = auto()
+    G_MAX_RAPID_FLOWS = auto()
     GRAVITY = auto()
     GRUDGE = auto()
     GUARD_SPLIT = auto()
