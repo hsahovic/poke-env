@@ -157,8 +157,7 @@ class PlayerNetwork(ABC):
             elif split_messages[0][1] == "pm":
                 self.logger.warning("Received pm: %s", message)
             else:
-                self.logger.critical("Unhandled message: %s", message)
-                raise NotImplementedError("Unhandled message: %s" % message)
+                self.logger.warning("Unhandled message: %s", message)
         except CancelledError as e:
             self.logger.critical("CancelledError intercepted: %s", e)
         except Exception as exception:
