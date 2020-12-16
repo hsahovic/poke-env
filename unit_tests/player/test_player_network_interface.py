@@ -9,7 +9,6 @@ from collections import namedtuple
 from asynctest.mock import CoroutineMock
 from asynctest.mock import patch
 from asynctest.mock import PropertyMock
-from poke_env.exceptions import ShowdownException
 from poke_env.player.player_network_interface import PlayerNetwork
 from poke_env.player_configuration import PlayerConfiguration
 from poke_env.server_configuration import ServerConfiguration
@@ -124,13 +123,9 @@ async def test_handle_message():
 
     await player._handle_message("|updatesearch")
 
-    with pytest.raises(ShowdownException):
-        await player._handle_message("|nametaken")
-
-    player._logger.critical = CoroutineMock()
-    with pytest.raises(NotImplementedError):
-        await player._handle_message("that was unexpected!|")
-    player._logger.critical.assert_called_once_with(
+    player._logger.warning = CoroutineMock()
+    await player._handle_message("that was unexpected!|")
+    player._logger.warning.assert_called_once_with(
         "Unhandled message: %s", "that was unexpected!|"
     )
 
