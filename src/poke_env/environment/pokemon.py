@@ -321,7 +321,11 @@ class Pokemon:
         if request_pokemon == self._last_request:
             return
 
-        self._ability = request_pokemon["ability"]
+        if "ability" in request_pokemon:
+            self._ability = request_pokemon["ability"]
+        elif "baseAbility" in request_pokemon:
+            self._ability = request_pokemon["baseAbility"]
+
         self._last_request = request_pokemon
 
         condition = request_pokemon["condition"]
