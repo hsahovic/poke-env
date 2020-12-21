@@ -28,6 +28,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
     """Player exposing the Open AI Gym Env API. Recommended use is with play_against."""
 
     _ACTION_SPACE = None
+    _DEFAULT_BATTLE_FORMAT = "gen8randombattle"
     MAX_BATTLE_SWITCH_RETRY = 10000
     PAUSE_BETWEEN_RETRIES = 0.001
 
@@ -36,7 +37,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         player_configuration: Optional[PlayerConfiguration] = None,
         *,
         avatar: Optional[int] = None,
-        battle_format: str = "gen8randombattle",
+        battle_format: Optional[str] = None,
         log_level: Optional[int] = None,
         server_configuration: Optional[ServerConfiguration] = None,
         start_listening: bool = True,
@@ -51,7 +52,8 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         :type avatar: int, optional
         :param battle_format: Name of the battle format this player plays. Defaults to
             gen8randombattle.
-        :type battle_format: str
+        :type battle_format: Optional, str. Default to randombattles, with specifics
+            varying per class.
         :param log_level: The player's logger level.
         :type log_level: int. Defaults to logging's default level.
         :param server_configuration: Server configuration. Defaults to Localhost Server
@@ -68,7 +70,9 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         super(EnvPlayer, self).__init__(
             player_configuration=player_configuration,
             avatar=avatar,
-            battle_format=battle_format,
+            battle_format=battle_format
+            if battle_format is not None
+            else self._DEFAULT_BATTLE_FORMAT,
             log_level=log_level,
             max_concurrent_battles=1,
             server_configuration=server_configuration,
@@ -359,6 +363,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
 
 class Gen7EnvSinglePlayer(EnvPlayer):  # pyre-ignore
     _ACTION_SPACE = list(range(3 * 4 + 6))
+    _DEFAULT_BATTLE_FORMAT = "gen7randombattle"
 
     def _action_to_move(  # pyre-ignore
         self, action: int, battle: Battle
@@ -438,6 +443,7 @@ class Gen7EnvSinglePlayer(EnvPlayer):  # pyre-ignore
 
 class Gen8EnvSinglePlayer(EnvPlayer):  # pyre-ignore
     _ACTION_SPACE = list(range(4 * 4 + 6))
+    _DEFAULT_BATTLE_FORMAT = "gen8randombattle"
 
     def _action_to_move(  # pyre-ignore
         self, action: int, battle: Battle
