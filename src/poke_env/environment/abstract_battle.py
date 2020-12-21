@@ -232,7 +232,11 @@ class AbstractBattle(ABC):
             pokemon, hp_status = split_message[2:4]
             self.get_pokemon(pokemon)._damage(hp_status)
         elif split_message[1] == "move":
-            pokemon, move, target = split_message[2:5]
+            if len(split_message) == 6:
+                pokemon, move, target = split_message[2:5]
+            else:
+                pokemon, move = split_message[2:4]
+                target = pokemon
             self.get_pokemon(pokemon)._moved(move)
         elif split_message[1] == "-heal":
             pokemon, hp_status = split_message[2:4]
