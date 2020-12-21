@@ -148,8 +148,10 @@ class Pokemon:
     def _copy_boosts(self, mon):
         self._boosts = dict(mon._boosts.items())
 
-    def _cure_status(self, status):
-        if Status[status.upper()] == self._status:
+    def _cure_status(self, status=None):
+        if status and Status[status.upper()] == self._status:
+            self._status = None
+        elif status is None and not self.fainted:
             self._status = None
 
     def _damage(self, hp_status):
