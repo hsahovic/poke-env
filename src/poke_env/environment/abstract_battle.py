@@ -299,10 +299,12 @@ class AbstractBattle(ABC):
             pokemon, status = split_message[2:4]
             self.get_pokemon(pokemon)._cure_status(status)
         elif split_message[1] == "-cureteam":
-            self.logger.warning(
-                "cureteam management not implemented in battle. Message: %s"
-                % split_message
+            pokemon = split_message[2]
+            team = (
+                self.team if pokemon[:2] == self._player_role else self._opponent_team
             )
+            for mon in team.values():
+                mon._cure_status()
         elif split_message[1] == "-end":
             pokemon, effect = split_message[2:4]
             self.get_pokemon(pokemon)._end_effect(effect)
