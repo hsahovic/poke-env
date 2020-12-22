@@ -4,7 +4,13 @@ from poke_env.environment.move import Move
 from poke_env.environment.pokemon import Pokemon
 from poke_env.environment.status import Status
 from poke_env.player.env_player import EnvPlayer
-from poke_env.player.env_player import Gen7EnvSinglePlayer
+from poke_env.player.env_player import (
+    Gen4EnvSinglePlayer,
+    Gen5EnvSinglePlayer,
+    Gen6EnvSinglePlayer,
+    Gen7EnvSinglePlayer,
+    Gen8EnvSinglePlayer,
+)
 
 from poke_env.player_configuration import PlayerConfiguration
 from poke_env.server_configuration import ServerConfiguration
@@ -179,3 +185,29 @@ def test_action_space():
     for i, el in enumerate(player.action_space):
         assert i == el
     assert len(player.action_space) == 18
+
+    for PlayerClass, (has_megas, has_z_moves, has_dynamax) in zip(
+        [
+            Gen4EnvSinglePlayer,
+            Gen5EnvSinglePlayer,
+            Gen6EnvSinglePlayer,
+            Gen7EnvSinglePlayer,
+            Gen8EnvSinglePlayer,
+        ],
+        [
+            (False, False, False),
+            (False, False, False),
+            (True, False, False),
+            (True, True, False),
+            (True, True, True),
+        ],
+    ):
+
+        class CustomEnvClass(PlayerClass):
+            def embed_battle(self, *args, **kwargs):
+                return []
+
+        assert (
+            len(CustomEnvClass().action_space)
+            == 4 * sum([1, has_megas, has_z_moves, has_dynamax]) + 6
+        )
