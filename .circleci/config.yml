@@ -94,7 +94,7 @@ jobs:
           name: Install built package
           command: |
             . venv/bin/activate
-            pip install dist/*.whl
+            pip install --force-reinstall dist/*.whl
       - run:
           name: Package-based tests
           command: |
