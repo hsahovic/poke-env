@@ -2,13 +2,47 @@
 import numpy as np
 import pytest
 
-from poke_env.player.env_player import Gen7EnvSinglePlayer
+from poke_env.player.env_player import (
+    Gen4EnvSinglePlayer,
+    Gen5EnvSinglePlayer,
+    Gen6EnvSinglePlayer,
+    Gen7EnvSinglePlayer,
+    Gen8EnvSinglePlayer,
+)
 from poke_env.player.random_player import RandomPlayer
-from poke_env.player_configuration import PlayerConfiguration
-from poke_env.server_configuration import LocalhostServerConfiguration
 
 
-class RandomEnvPlayer(Gen7EnvSinglePlayer):
+class RandomGen4EnvPlayer(Gen4EnvSinglePlayer):
+    MAX_BATTLE_SWITCH_RETRY = 500
+
+    def embed_battle(self, battle):
+        return np.array([0])
+
+
+class RandomGen5EnvPlayer(Gen5EnvSinglePlayer):
+    MAX_BATTLE_SWITCH_RETRY = 500
+
+    def embed_battle(self, battle):
+        return np.array([0])
+
+
+class RandomGen6EnvPlayer(Gen6EnvSinglePlayer):
+    MAX_BATTLE_SWITCH_RETRY = 500
+
+    def embed_battle(self, battle):
+        return np.array([0])
+
+
+class RandomGen7EnvPlayer(Gen7EnvSinglePlayer):
+    MAX_BATTLE_SWITCH_RETRY = 500
+
+    def embed_battle(self, battle):
+        return np.array([0])
+
+
+class RandomGen8EnvPlayer(Gen8EnvSinglePlayer):
+    MAX_BATTLE_SWITCH_RETRY = 500
+
     def embed_battle(self, battle):
         return np.array([0])
 
@@ -21,64 +55,37 @@ def play_function(player, n_battles):
             _, _, done, _ = player.step(np.random.choice(player.action_space))
 
 
-@pytest.mark.timeout(60)
-def test_random_gym_player_gen7():
-    env_player = RandomEnvPlayer(
-        player_configuration=PlayerConfiguration("EnvPlayerGen7", None),
-        battle_format="gen7randombattle",
-        server_configuration=LocalhostServerConfiguration,
-        log_level=20,
-    )
-    random_player = RandomPlayer(
-        player_configuration=PlayerConfiguration("RandomPlayerGen7", None),
-        battle_format="gen7randombattle",
-        server_configuration=LocalhostServerConfiguration,
-        log_level=20,
-    )
-
-    env_player.play_against(
-        env_algorithm=play_function,
-        opponent=random_player,
-        env_algorithm_kwargs={"n_battles": 5},
-    )
-
-
-@pytest.mark.timeout(60)
-def test_random_gym_player_gen8():
-    env_player = RandomEnvPlayer(
-        player_configuration=PlayerConfiguration("EnvPlayerGen8", None),
-        battle_format="gen8randombattle",
-        server_configuration=LocalhostServerConfiguration,
-        log_level=20,
-    )
-    random_player = RandomPlayer(
-        player_configuration=PlayerConfiguration("RandomPlayerGen8", None),
-        battle_format="gen8randombattle",
-        server_configuration=LocalhostServerConfiguration,
-        log_level=20,
-    )
-
-    env_player.play_against(
-        env_algorithm=play_function,
-        opponent=random_player,
-        env_algorithm_kwargs={"n_battles": 5},
-    )
+@pytest.mark.timeout(120)
+def test_random_gym_players():
+    for battle_format, EnvPlayerClass in zip(
+        [
+            "gen4randombattle",
+            "gen5randombattle",
+            "gen6randombattle",
+            "gen7randombattle",
+            "gen8randombattle",
+        ],
+        [
+            RandomGen4EnvPlayer,
+            RandomGen5EnvPlayer,
+            RandomGen6EnvPlayer,
+            RandomGen7EnvPlayer,
+            RandomGen8EnvPlayer,
+        ],
+    ):
+        env_player = EnvPlayerClass(log_level=20)
+        random_player = RandomPlayer(battle_format=battle_format, log_level=20)
+        env_player.play_against(
+            env_algorithm=play_function,
+            opponent=random_player,
+            env_algorithm_kwargs={"n_battles": 3},
+        )
 
 
 @pytest.mark.timeout(60)
 def test_two_successive_calls_gen8():
-    env_player = RandomEnvPlayer(
-        player_configuration=PlayerConfiguration("EnvPlayerGen8-2", None),
-        battle_format="gen8randombattle",
-        server_configuration=LocalhostServerConfiguration,
-        log_level=20,
-    )
-    random_player = RandomPlayer(
-        player_configuration=PlayerConfiguration("RandomPlayerGen8-2", None),
-        battle_format="gen8randombattle",
-        server_configuration=LocalhostServerConfiguration,
-        log_level=20,
-    )
+    env_player = RandomGen8EnvPlayer(battle_format="gen8randombattle", log_level=20)
+    random_player = RandomPlayer(battle_format="gen8randombattle", log_level=20)
 
     env_player.play_against(
         env_algorithm=play_function,
