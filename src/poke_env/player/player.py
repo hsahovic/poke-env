@@ -60,6 +60,7 @@ class Player(PlayerNetwork, ABC):
         log_level: Optional[int] = None,
         max_concurrent_battles: int = 1,
         server_configuration: Optional[ServerConfiguration] = None,
+        start_timer_on_battle_start: bool = False,
         start_listening: bool = True,
         team: Optional[Union[str, Teambuilder]] = None,
     ) -> None:
@@ -81,9 +82,12 @@ class Player(PlayerNetwork, ABC):
         :param server_configuration: Server configuration. Defaults to Localhost Server
             Configuration.
         :type server_configuration: ServerConfiguration, optional
-        :param start_listening: Wheter to start listening to the server. Defaults to
+        :param start_listening: Whether to start listening to the server. Defaults to
             True.
         :type start_listening: bool
+        :param start_timer_on_battle_start: Whether to automatically start the battle
+            timer on battle start. Defaults to False.
+        :type start_timer_on_battle_start: bool
         :param team: The team to use for formats requiring a team. Can be a showdown
             team string, a showdown packed team string, of a ShowdownTeam object.
             Defaults to None.
@@ -105,6 +109,7 @@ class Player(PlayerNetwork, ABC):
 
         self._format: str = battle_format
         self._max_concurrent_battles: int = max_concurrent_battles
+        self._start_timer_on_battle_start: bool = start_timer_on_battle_start
 
         self._battles: Dict[str, AbstractBattle] = {}
         self._battle_semaphore: Semaphore = Semaphore(0)
@@ -162,6 +167,10 @@ class Player(PlayerNetwork, ABC):
                     self._battle_semaphore.release()
                     self._battle_start_condition.notify_all()
                     self._battles[battle_tag] = battle
+
+                if self._start_timer_on_battle_start:
+                    await self._send_message("/timer on", battle.battle_tag)
+
                 return battle
 
             return self._battles[battle_tag]

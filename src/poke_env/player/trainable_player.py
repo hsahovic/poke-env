@@ -33,6 +33,7 @@ class TrainablePlayer(Player, ABC):
         max_concurrent_battles: int = 1,
         model=None,
         server_configuration: ServerConfiguration,
+        start_timer_on_battle_start: bool = False,
         start_listening: bool = True,
         team: Optional[Union[str, Teambuilder]] = None,
     ) -> None:
@@ -50,9 +51,12 @@ class TrainablePlayer(Player, ABC):
         :type max_concurrent_battles: int
         :param server_configuration: Server configuration.
         :type server_configuration: ServerConfiguration
-        :param start_listening: Wheter to start listening to the server. Defaults to
+        :param start_listening: Whether to start listening to the server. Defaults to
             True.
         :type start_listening: bool
+        :param start_timer_on_battle_start: Whether to automatically start the battle
+            timer on battle start. Defaults to False.
+        :type start_timer_on_battle_start: bool
         :param team: The team to use for formats requiring a team. Can be a showdown
             team string, a showdown packed team string, of a ShowdownTeam object.
             Defaults to None.
@@ -66,6 +70,7 @@ class TrainablePlayer(Player, ABC):
             max_concurrent_battles=max_concurrent_battles,
             server_configuration=server_configuration,
             start_listening=start_listening,
+            start_timer_on_battle_start=start_timer_on_battle_start,
             team=team,
         )
         if not model:
