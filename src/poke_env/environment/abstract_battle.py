@@ -137,8 +137,8 @@ class AbstractBattle(ABC):
         # In game battle state attributes
         self._weather = None
         self._fields = set()
-        self._side_conditions = set()
-        self._opponent_side_conditions = set()
+        self._side_conditions = dict()
+        self._opponent_side_conditions = dict()
 
         # Pokemon attributes
         self._team: Dict[str, Pokemon] = {}
@@ -439,7 +439,7 @@ class AbstractBattle(ABC):
         else:
             conditions = self.opponent_side_conditions
         condition = SideCondition.from_showdown_message(condition)
-        conditions.remove(condition)
+        conditions.pop(condition)
 
     def _side_start(self, side, condition):
         if side[:2] == self._player_role:
@@ -447,7 +447,7 @@ class AbstractBattle(ABC):
         else:
             conditions = self.opponent_side_conditions
         condition = SideCondition.from_showdown_message(condition)
-        conditions.add(condition)
+        conditions[condition] = conditions.get(condition, 0) + 1
 
     def _swap(self, *args, **kwargs):
         self.logger.warning("swap method in Battle is not implemented")
@@ -602,10 +602,11 @@ class AbstractBattle(ABC):
             return "p1"
 
     @property
-    def opponent_side_conditions(self) -> Set[SideCondition]:
+    def opponent_side_conditions(self) -> Dict[SideCondition, int]:
         """
-        :return: The opponent's set of side conditions.
-        :rtype: Set[SideCondition]
+        :return: The opponent's side conditions. Keys are SideCondition objects, values
+            are the number of layers of the side condition.
+        :rtype: Dict[SideCondition, int]
         """
         return self._opponent_side_conditions
 
@@ -702,8 +703,9 @@ class AbstractBattle(ABC):
     @property
     def side_conditions(self) -> Set[SideCondition]:
         """
-        :return: The player's set of side conditions.
-        :rtype: Set[SideCondition]
+        :return: The player's side conditions. Keys are SideCondition objects, values
+            are the number of layers of the side condition.
+        :rtype: Dict[SideCondition, int]
         """
         return self._side_conditions
 
