@@ -64,8 +64,10 @@ def test_battle_side_start_end():
     condition = "safeguard"
     battle._parse_message(["", "-sidestart", "p1", condition])
     battle._parse_message(["", "-sidestart", "p2", condition])
-    assert battle.side_conditions == {SideCondition.SAFEGUARD}
-    assert battle.opponent_side_conditions == {SideCondition.SAFEGUARD}
+    assert battle.side_conditions == {SideCondition.SAFEGUARD: 1}
+    assert battle.opponent_side_conditions == {SideCondition.SAFEGUARD: 1}
+    battle._parse_message(["", "-sidestart", "p1", condition])
+    assert battle.side_conditions == {SideCondition.SAFEGUARD: 2}
 
     battle._parse_message(["", "-sideend", "p1", condition])
     battle._parse_message(["", "-sideend", "p2", condition])
