@@ -54,12 +54,6 @@ class Battle(AbstractBattle):
         Args:
             request (dict): parsed json request object
         """
-        # self.logger.debug(
-        #     "Parsing the following request update in battle %s:\n%s",
-        #     self.battle_tag,
-        #     request,
-        # )
-
         if "wait" in request and request["wait"]:
             self._wait = True
         else:
@@ -268,8 +262,8 @@ class Battle(AbstractBattle):
     @property
     def trapped(self) -> bool:
         """
-        :return: A boolean indicating whether the active pokemon is trapped by the
-            opponent.
+        :return: A boolean indicating whether the active pokemon is trapped, either by
+            the opponent or as a side effect of one your moves.
         :rtype: bool
         """
         return self._trapped
