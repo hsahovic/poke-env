@@ -12,7 +12,7 @@ The goal of this example is to demonstrate how to use the `open ai gym <https://
 
 .. note:: This example necessitates `keras-rl <https://github.com/keras-rl/keras-rl>`__ (compatible with Tensorflow 1.X) or `keras-rl2 <https://github.com/wau/keras-rl2>`__ (Tensorflow 2.X), which implement numerous reinforcement learning algorithms and offer a simple API fully compatible with the Open AI Gym API. You can install them by running ``pip install keras-rl`` or ``pip install keras-rl2``. If you are unsure, ``pip install keras-rl2`` is recommended.
 
-.. warning:: ``keras-rl2`` version 1.0.4 seems to be causing problems with this example. While we are trying to find a workaround, please try using version 1.0.3
+.. warning:: ``keras-rl2`` version 1.0.4 seems to be causing problems with this example. While we are trying to find a workaround, please try using version 1.0.3 with python version 3.6.
 
 
 Implementing rewards and observations
