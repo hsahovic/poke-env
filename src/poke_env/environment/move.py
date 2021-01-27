@@ -15,6 +15,9 @@ from typing import Tuple
 from typing import Union
 
 
+PROTECT_COUNTER_MOVES: Set[str]
+PROTECT_MOVES: Set[str]
+SIDE_PROTECT_MOVES: Set[str]
 SPECIAL_MOVES: Dict
 
 
@@ -667,3 +670,14 @@ class EmptyMove(Move):
 
 
 SPECIAL_MOVES = {"struggle": Move("struggle"), "recharge": EmptyMove("recharge")}
+PROTECT_MOVES = {
+    "protect",
+    "detect",
+    "endure",
+    "spikyshield",
+    "kingsshield",
+    "banefulbunker",
+    "obstruct",
+}
+SIDE_PROTECT_MOVES = {"wideguard", "quickguard", "matblock"}
+PROTECT_COUNTER_MOVES = PROTECT_MOVES | SIDE_PROTECT_MOVES
