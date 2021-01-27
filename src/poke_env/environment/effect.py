@@ -6,6 +6,7 @@
 from poke_env.exceptions import UnexpectedEffectException
 
 from enum import Enum, unique, auto
+from typing import Set
 
 
 @unique
@@ -187,3 +188,36 @@ class Effect(Enum):
             return Effect[message.upper()]
         except KeyError:
             raise UnexpectedEffectException("Unexpected effect '%s' received" % message)
+
+
+PROTECT_BREAKING_EFFECTS: Set[Effect] = {
+    Effect.FEINT,
+    Effect.SHADOW_FORCE,
+    Effect.PHANTOM_FORCE,
+    Effect.HYPERSPACE_FURY,
+    Effect.HYPERSPACE_HOLE,
+}
+
+
+TURN_COUNTER_EFFECTS: Set[Effect] = {
+    Effect.BIND,
+    Effect.CLAMP,
+    Effect.DISABLE,
+    Effect.DYNAMAX,
+    Effect.EMBARGO,
+    Effect.ENCORE,
+    Effect.FIRE_SPIN,
+    Effect.HEAL_BLOCK,
+    Effect.INFESTATION,
+    Effect.MAGMA_STORM,
+    Effect.MAGNET_RISE,
+    Effect.SAND_TOMB,
+    Effect.SKY_DROP,
+    Effect.SLOW_START,
+    Effect.TAUNT,
+    Effect.WHIRLPOOL,
+    Effect.WRAP,
+}
+
+ACTION_COUNTER_EFFECTS: Set[Effect] = {Effect.CONFUSION, Effect.TORMENT}
+COUNTER_EFFECTS: Set[Effect] = TURN_COUNTER_EFFECTS.union(ACTION_COUNTER_EFFECTS)
