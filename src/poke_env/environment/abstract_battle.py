@@ -22,7 +22,6 @@ class AbstractBattle(ABC):
         "-anim",
         "-burst",
         "-block",
-        "-cant",
         "-center",
         "-crit",
         "-combine",
@@ -238,7 +237,10 @@ class AbstractBattle(ABC):
             else:
                 pokemon, move = split_message[2:4]
                 target = pokemon
-            self.get_pokemon(pokemon)._moved(move)
+            self.get_pokemon(pokemon)._moved(move, target)
+        elif split_message[1] == "cant":
+            pokemon, _ = split_message[2:4]
+            self.get_pokemon(pokemon)._cant_move()
         elif split_message[1] == "-heal":
             pokemon, hp_status = split_message[2:4]
             self.get_pokemon(pokemon)._heal(hp_status)

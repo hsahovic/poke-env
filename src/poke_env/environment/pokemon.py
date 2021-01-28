@@ -137,6 +137,13 @@ class Pokemon:
         elif self._boosts[stat] < -6:
             self._boosts[stat] = -6
 
+    def _cant_move(self):
+        self._first_turn = False
+        self._protect_counter = 0
+
+        if self._status == Status.SLP:
+            self._status_counter += 1
+
     def _clear_boosts(self):
         for stat in self._boosts:
             self._boosts[stat] = 0
