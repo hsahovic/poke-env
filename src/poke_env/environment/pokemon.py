@@ -3,7 +3,6 @@ from typing import Any
 from typing import Dict
 from typing import List
 from typing import Optional
-from typing import Set
 from typing import Tuple
 from typing import Union
 
@@ -90,6 +89,7 @@ class Pokemon:
             "spe": 0,
         }
         self._current_hp: int = 0
+        self._effects: Dict[Effect, int] = {}
         self._first_turn: bool = False
         self._item: Optional[str] = None
         self._last_request: dict = {}
@@ -142,7 +142,7 @@ class Pokemon:
             self._boosts[stat] = 0
 
     def _clear_effects(self):
-        self._effects = set()
+        self._effects = {}
 
     def _clear_negative_boosts(self):
         for stat, value in self._boosts.items():
@@ -170,10 +170,13 @@ class Pokemon:
     def _end_effect(self, effect):
         effect = Effect.from_showdown_message(effect)
         if effect in self._effects:
-            self._effects.remove(effect)
+            self._effects.pop(effect)
 
     def _end_item(self, item):
         self._item = None
+
+        if item == "powerherp":
+            self._preparing = False
 
     def _faint(self):
         self._current_hp = 0
@@ -252,6 +255,8 @@ class Pokemon:
 
     def _start_effect(self, effect):
         effect = Effect.from_showdown_message(effect)
+        self._effects[effect] = 0
+
         if effect in PROTECT_BREAKING_EFFECTS:
             self._protect_counter = 0
 
@@ -476,7 +481,7 @@ class Pokemon:
         return 0
 
     @property
-    def effects(self) -> Set[Effect]:
+    def effects(self) -> Dict[Effect, int]:
         """
         :return: The effects currently affecting the pokemon.
         :rtype: Set[Effect]
