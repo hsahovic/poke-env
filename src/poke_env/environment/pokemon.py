@@ -39,6 +39,7 @@ class Pokemon:
         "_possible_abilities",
         "_preparing",
         "_shiny",
+        "_revealed",
         "_species",
         "_status",
         "_type_1",
@@ -90,6 +91,7 @@ class Pokemon:
         self._last_details: str = ""
         self._must_recharge = False
         self._preparing = False
+        self._revealed: bool = False
         self._status: Optional[Status] = None
 
         if request_pokemon:
@@ -247,6 +249,8 @@ class Pokemon:
 
         if details:
             self._update_from_details(details)
+
+        self._revealed = True
 
     def _switch_out(self):
         self._active = False
@@ -564,6 +568,14 @@ class Pokemon:
         :rtype: bool
         """
         return self._preparing
+
+    @property
+    def revealed(self) -> bool:
+        """
+        :return: Whether this pokemon has appeared in the current battle.
+        :rtype: bool
+        """
+        return self._revealed
 
     @property
     def shiny(self) -> bool:
