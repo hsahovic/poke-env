@@ -289,7 +289,7 @@ class Player(PlayerNetwork, ABC):
                 else:
                     self.logger.critical("Unexpected error message: %s", split_message)
             elif split_message[1] == "turn":
-                battle.turn = int(split_message[2])
+                battle.end_turn(int(split_message[2]))
                 await self._handle_battle_request(battle)
             elif split_message[1] == "teampreview":
                 await self._handle_battle_request(battle, from_teampreview_request=True)
