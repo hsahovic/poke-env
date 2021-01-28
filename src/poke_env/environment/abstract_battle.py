@@ -136,10 +136,10 @@ class AbstractBattle(ABC):
         self._won: Optional[bool] = None
 
         # In game battle state attributes
-        self._weather = None
-        self._fields = set()
-        self._side_conditions = dict()
-        self._opponent_side_conditions = dict()
+        self._weather = {}
+        self._fields: Dict[Field, int] = {}  # set()
+        self._side_conditions: Dict[SideCondition, int] = {}  # set()
+        self._opponent_side_conditions: Dict[SideCondition, int] = {}  # set()
 
         # Pokemon attributes
         self._team: Dict[str, Pokemon] = {}
@@ -217,11 +217,11 @@ class AbstractBattle(ABC):
     def _field_end(self, field):
         field = Field.from_showdown_message(field)
         assert field in self.fields
-        self._fields.remove(field)
+        self._fields.pop(field)
 
     def _field_start(self, field):
         field = Field.from_showdown_message(field)
-        self._fields.add(field)
+        self._fields[field] = self.turn
 
     def _parse_message(self, split_message: List[str]) -> None:
         if split_message[1] in self.MESSAGES_TO_IGNORE:
@@ -247,7 +247,11 @@ class AbstractBattle(ABC):
             self.get_pokemon(pokemon)._boost(stat, int(amount))
         elif split_message[1] == "-weather":
             weather = split_message[2]
-            self.weather = weather
+            if weather == "none":
+                self._weather = {}
+                return
+            else:
+                self._weather = {Weather[weather.upper()]: self.turn}
         elif split_message[1] == "faint":
             pokemon = split_message[2]
             self.get_pokemon(pokemon)._faint()
@@ -448,7 +452,8 @@ class AbstractBattle(ABC):
         else:
             conditions = self.opponent_side_conditions
         condition = SideCondition.from_showdown_message(condition)
-        conditions[condition] = conditions.get(condition, 0) + 1
+        if condition not in conditions:
+            conditions[condition] = self.turn
 
     def _swap(self, *args, **kwargs):
         self.logger.warning("swap method in Battle is not implemented")
@@ -525,7 +530,7 @@ class AbstractBattle(ABC):
             return max(3 - (self.turn - self._dynamax_turn), 0)  # pyre-ignore
 
     @property
-    def fields(self) -> Set[Field]:
+    def fields(self) -> Dict[Field, int]:
         """
         :return: The set of active fields.
         :rtype: Set[Field]
@@ -706,7 +711,7 @@ class AbstractBattle(ABC):
         return self._rqid
 
     @property
-    def side_conditions(self) -> Set[SideCondition]:
+    def side_conditions(self) -> Dict[SideCondition, int]:
         """
         :return: The player's side conditions. Keys are SideCondition objects, values
             are the number of layers of the side condition.
