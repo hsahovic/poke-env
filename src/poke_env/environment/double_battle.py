@@ -349,6 +349,10 @@ class DoubleBattle(AbstractBattle):
         )
 
     @property
+    def all_active_pokemons(self) -> List[Optional[Pokemon]]:
+        return [*self.active_pokemon, *self.opponent_active_pokemon]
+
+    @property
     def available_moves(self) -> List[List[Move]]:
         """
         :return: A list of two lists of moves the player can use during the current

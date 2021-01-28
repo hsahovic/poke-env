@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from abc import ABC
 from abc import abstractmethod
+from abc import abstractproperty
 
 from aiologger import Logger  # pyre-ignore
 from typing import Dict
@@ -478,6 +479,10 @@ class AbstractBattle(ABC):
     @property
     @abstractmethod
     def active_pokemon(self):
+        pass
+
+    @abstractproperty
+    def all_active_pokemon(self):
         pass
 
     @property
