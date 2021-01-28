@@ -9,9 +9,11 @@ from typing import Union
 
 from poke_env.data import POKEDEX
 from poke_env.environment.effect import Effect
+from poke_env.environment.effect import PROTECT_BREAKING_EFFECTS
 from poke_env.environment.pokemon_gender import PokemonGender
 from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.move import Move
+from poke_env.environment.move import PROTECT_COUNTER_MOVES
 from poke_env.environment.status import Status
 from poke_env.environment.z_crystal import Z_CRYSTAL
 from poke_env.utils import to_id_str
@@ -39,6 +41,7 @@ class Pokemon:
         "_must_recharge",
         "_possible_abilities",
         "_preparing",
+        "_protect_counter",
         "_shiny",
         "_revealed",
         "_species",
@@ -92,6 +95,7 @@ class Pokemon:
         self._last_details: str = ""
         self._must_recharge = False
         self._preparing = False
+        self._protect_counter: int = 0
         self._revealed: bool = False
         self._status: Optional[Status] = None
 
@@ -195,10 +199,15 @@ class Pokemon:
             mega_species = mega_species + stone[-1].lower()
             self._update_from_pokedex(mega_species, store_species=False)
 
-    def _moved(self, move):
+    def _moved(self, move, target=None):
         self._must_recharge = False
         self._preparing = False
         self._add_move(move, use=True)
+
+        if move in PROTECT_COUNTER_MOVES and target:
+            self._protect_counter += 1
+        else:
+            self._protect_counter = 0
 
     def _prepare(self, move, target):
         self._preparing = (move, target)
@@ -237,7 +246,8 @@ class Pokemon:
 
     def _start_effect(self, effect):
         effect = Effect.from_showdown_message(effect)
-        self._effects.add(effect)
+        if effect in PROTECT_BREAKING_EFFECTS:
+            self._protect_counter = 0
 
     def _swap_boosts(self):
         self._boosts["atk"], self._boosts["spa"] = (
@@ -261,6 +271,7 @@ class Pokemon:
         self._first_turn = False
         self._must_recharge = False
         self._preparing = False
+        self._protect_counter = 0
 
     def _transform(self, into):
         current_hp = self.current_hp
@@ -579,6 +590,14 @@ class Pokemon:
         :rtype: bool
         """
         return self._preparing
+
+    @property
+    def protect_counter(self) -> int:
+        """
+        :return: How many protect-like moves where used in a row by this pokemon.
+        :rtype: int
+        """
+        return self._protect_counter
 
     @property
     def revealed(self) -> bool:
