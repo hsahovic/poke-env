@@ -488,7 +488,7 @@ class AbstractBattle(ABC):
     def end_turn(self, turn: int) -> None:
         self.turn = turn
 
-        for mon in self.all_active_pokemons:  # pyre-ignore
+        for mon in self.all_active_pokemons:
             if mon:
                 mon._end_turn()
 
@@ -498,7 +498,7 @@ class AbstractBattle(ABC):
         pass
 
     @abstractproperty
-    def all_active_pokemon(self):
+    def all_active_pokemons(self):
         pass
 
     @property
