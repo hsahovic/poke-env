@@ -227,7 +227,8 @@ class Pokemon:
         else:
             hp = hp_status
 
-        self._current_hp, self._max_hp = hp.split("/")
+        hp = "".join([c for c in hp if c in "0123456789/"]).split("/")
+        self._current_hp, self._max_hp = hp
         self._current_hp = int(self._current_hp)
         self._max_hp = int(self._max_hp)
 

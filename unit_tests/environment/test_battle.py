@@ -266,6 +266,8 @@ def test_battle_request_and_interactions(example_request):
     assert battle.active_pokemon.current_hp == 121
     battle._parse_message(["", "-damage", "p2: Necrozma", "10/293"])
     assert battle.active_pokemon.current_hp == 10
+    battle._parse_message(["", "-damage", "p2: Necrozma", "10/293g"])
+    assert battle.active_pokemon.current_hp == 10
 
     assert battle.active_pokemon.ability is not None
     battle._parse_message(["", "-endability", "p2: Necrozma"])
