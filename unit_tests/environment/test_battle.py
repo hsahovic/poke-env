@@ -64,10 +64,10 @@ def test_battle_side_start_end():
     condition = "safeguard"
     battle._parse_message(["", "-sidestart", "p1", condition])
     battle._parse_message(["", "-sidestart", "p2", condition])
-    assert battle.side_conditions == {SideCondition.SAFEGUARD: 1}
-    assert battle.opponent_side_conditions == {SideCondition.SAFEGUARD: 1}
+    assert battle.side_conditions == {SideCondition.SAFEGUARD: 0}
+    assert battle.opponent_side_conditions == {SideCondition.SAFEGUARD: 0}
     battle._parse_message(["", "-sidestart", "p1", condition])
-    assert battle.side_conditions == {SideCondition.SAFEGUARD: 2}
+    assert battle.side_conditions == {SideCondition.SAFEGUARD: 0}
 
     battle._parse_message(["", "-sideend", "p1", condition])
     battle._parse_message(["", "-sideend", "p2", condition])
@@ -88,13 +88,13 @@ def test_battle_field_interactions():
     assert not battle.fields
 
     battle._parse_message(["", "-fieldstart", "Electric terrain"])
-    assert battle.fields == {Field.ELECTRIC_TERRAIN}
+    assert battle.fields == {Field.ELECTRIC_TERRAIN: 0}
 
     battle._parse_message(["", "-fieldstart", "Trick room"])
-    assert battle.fields == {Field.ELECTRIC_TERRAIN, Field.TRICK_ROOM}
+    assert battle.fields == {Field.ELECTRIC_TERRAIN: 0, Field.TRICK_ROOM: 0}
 
     battle._parse_message(["", "-fieldend", "Trick room"])
-    assert battle.fields == {Field.ELECTRIC_TERRAIN}
+    assert battle.fields == {Field.ELECTRIC_TERRAIN: 0}
 
     battle._parse_message(["", "-fieldend", "Electric terrain"])
     assert not battle.fields
@@ -110,16 +110,16 @@ def test_battle_weather_interactions():
     logger = MagicMock()
     battle = Battle("tag", "username", logger)
 
-    assert battle.weather is None
+    assert battle.weather == {}
 
     battle._parse_message(["", "-weather", "desolateland"])
-    assert battle.weather == Weather.DESOLATELAND
+    assert battle.weather == {Weather.DESOLATELAND: 0}
 
     battle._parse_message(["", "-weather", "hail"])
-    assert battle.weather == Weather.HAIL
+    assert battle.weather == {Weather.HAIL: 0}
 
     battle._parse_message(["", "-weather", "none"])
-    assert battle.weather is None
+    assert battle.weather == {}
 
 
 def test_battle_player_role_interaction():
