@@ -46,6 +46,7 @@ class Pokemon:
         "_revealed",
         "_species",
         "_status",
+        "_status_counter",
         "_type_1",
         "_type_2",
         "_weightkg",
@@ -98,6 +99,7 @@ class Pokemon:
         self._protect_counter: int = 0
         self._revealed: bool = False
         self._status: Optional[Status] = None
+        self._status_counter: int = 0
 
         if request_pokemon:
             self._update_from_request(request_pokemon)
@@ -158,6 +160,7 @@ class Pokemon:
     def _cure_status(self, status=None):
         if status and Status[status.upper()] == self._status:
             self._status = None
+            self._status_counter = 0
         elif status is None and not self.fainted:
             self._status = None
 
@@ -208,6 +211,9 @@ class Pokemon:
             self._protect_counter += 1
         else:
             self._protect_counter = 0
+
+        if self._status == Status.SLP:
+            self._status_counter += 1
 
     def _prepare(self, move, target):
         self._preparing = (move, target)
@@ -640,6 +646,14 @@ class Pokemon:
         :rtype: Optional[Status]
         """
         return self._status
+
+    @property
+    def status_counter(self) -> int:
+        """
+        :return: The pokemon's status turn count. Only counts TOXIC and SLEEP statuses.
+        :rtype: int
+        """
+        return self._status_counter
 
     @status.setter
     def status(self, status):
