@@ -27,6 +27,7 @@ class Pokemon:
         "_boosts",
         "_current_hp",
         "_effects",
+        "_first_turn",
         "_gender",
         "_heightm",
         "_item",
@@ -85,7 +86,7 @@ class Pokemon:
             "spe": 0,
         }
         self._current_hp: int = 0
-        self._effects: Set[Effect] = set()
+        self._first_turn: bool = False
         self._item: Optional[str] = None
         self._last_request: dict = {}
         self._last_details: str = ""
@@ -250,12 +251,14 @@ class Pokemon:
         if details:
             self._update_from_details(details)
 
+        self._first_turn = True
         self._revealed = True
 
     def _switch_out(self):
         self._active = False
         self._clear_boosts()
         self._clear_effects()
+        self._first_turn = False
         self._must_recharge = False
         self._preparing = False
 
@@ -470,6 +473,14 @@ class Pokemon:
         :rtype: bool
         """
         return Status.FNT == self._status
+
+    @property
+    def first_turn(self) -> bool:
+        """
+        :return: Wheter this is this pokemon's first action since its last switch in.
+        :rtype: bool
+        """
+        return self._first_turn
 
     @property
     def gender(self) -> Optional[PokemonGender]:
