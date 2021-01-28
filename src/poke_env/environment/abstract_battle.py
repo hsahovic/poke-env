@@ -344,6 +344,8 @@ class AbstractBattle(ABC):
             try:
                 attacker, move, defender = split_message[2:5]
                 defender = self.get_pokemon(defender)
+                if to_id_str(move) == "skydrop":
+                    defender._start_effect("Sky Drop")
             except ValueError:
                 attacker, move = split_message[2:4]
                 defender = None
