@@ -483,6 +483,13 @@ class AbstractBattle(ABC):
             self._won = False
         self._finished = True
 
+    def end_turn(self, turn: int) -> None:
+        self.turn = turn
+
+        for mon in self.all_active_pokemons:  # pyre-ignore
+            if mon:
+                mon._end_turn()
+
     @property
     @abstractmethod
     def active_pokemon(self):

@@ -178,6 +178,12 @@ class Pokemon:
         if item == "powerherp":
             self._preparing = False
 
+    def _end_turn(self):
+        if self._status == Status.TOX:
+            self._status_counter += 1
+        for effect in self.effects:
+            self.effects[effect] += 1
+
     def _faint(self):
         self._current_hp = 0
         self.status = Status.FNT
