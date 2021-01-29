@@ -68,3 +68,14 @@ def test_pokemon_damage_multiplier():
 
     mon = Pokemon(species="linoone")
     assert mon.damage_multiplier(SPECIAL_MOVES["recharge"]) == 1
+
+
+def test_powerherb_ends_move_preparation():
+    mon = Pokemon(species="roserade")
+    mon.item = "powerherb"
+
+    mon._prepare("solarbeam", "talonflame")
+    assert mon.preparing
+
+    mon._end_item("powerherb")
+    assert not mon.preparing

@@ -182,7 +182,7 @@ class Pokemon:
     def _end_item(self, item):
         self._item = None
 
-        if item == "powerherp":
+        if item == "powerherb":
             self._preparing = False
 
     def _end_turn(self):
