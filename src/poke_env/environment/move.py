@@ -678,6 +678,7 @@ PROTECT_MOVES = {
     "kingsshield",
     "banefulbunker",
     "obstruct",
+    "maxguard",
 }
 SIDE_PROTECT_MOVES = {"wideguard", "quickguard", "matblock"}
 PROTECT_COUNTER_MOVES = PROTECT_MOVES | SIDE_PROTECT_MOVES
