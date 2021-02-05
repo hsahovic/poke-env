@@ -43,6 +43,8 @@ By default, players play the ``gen8randombattle`` format. You can specify anothe
 .. code-block:: python
 
     ...
+    from poke_env.player.random_player import RandomPlayer
+
     async def main():
         # We create three random players
         players = [
