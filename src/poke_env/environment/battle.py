@@ -194,7 +194,7 @@ class Battle(AbstractBattle):
         return self._force_switch
 
     @staticmethod
-    def from_format(format_: str, battle_tag: str, username: str, logger: Logger) -> Battle:
+    def from_format(format_: str, battle_tag: str, username: str, logger: Logger) -> AbstractBattle:
         """
         :return: A GenXBattle instance, depending on the format received
         :rtype: Battle
