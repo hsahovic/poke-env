@@ -174,6 +174,39 @@ for name, value in GEN7_POKEDEX.items():
         value["species"] = value["baseSpecies"]
     else:
         value["baseSpecies"] = to_id_str(name)
+
+##################################################################
+
+GEN8_POKEDEX: Dict[str, Any] = {}    
+
+with open(
+    os.path.join(os.path.dirname(os.path.realpath(__file__)), "data\\pokedex_by_gen", "gen8_pokedex.json")
+) as pokedex:
+    GEN8_POKEDEX = orjson.loads(pokedex.read())   
+
+_missing_g8_dex: Dict[str, Any] = {}
+for key, value in GEN8_POKEDEX.items():
+    if "cosmeticFormes" in value:
+        for other_form in value["cosmeticFormes"]:
+            _missing_g8_dex[to_id_str(other_form)] = value
+            
+GEN8_POKEDEX.update(_missing_g8_dex)
+
+for name, value in GEN8_POKEDEX.items():
+    if "baseSpecies" in value:
+        value["species"] = value["baseSpecies"]
+    else:
+        value["baseSpecies"] = to_id_str(name)
+
+##################################################################
+
+GEN_TO_POKEDEX: Dict[int, Dict[str, Any]] = {
+    4: GEN4_POKEDEX,
+    5: GEN5_POKEDEX,
+    6: GEN6_POKEDEX,
+    7: GEN7_POKEDEX,
+    8: GEN8_POKEDEX,
+}
         
 ##################################################################
 
@@ -219,6 +252,25 @@ with open(
     os.path.join(os.path.dirname(os.path.realpath(__file__)), "data\\moves_by_gen", "gen7_moves.json")
 ) as moves:
     GEN7_MOVES = orjson.loads(moves.read())
+
+##################################################################
+
+GEN8_MOVES: Dict[str, Any] = {}
+
+with open(
+    os.path.join(os.path.dirname(os.path.realpath(__file__)), "data\\moves_by_gen", "gen8_moves.json")
+) as moves:
+    GEN8_MOVES = orjson.loads(moves.read())
+
+##################################################################
+
+GEN_TO_MOVES: Dict[int, Dict[str, Any]] = {
+    4: GEN4_MOVES,
+    5: GEN5_MOVES,
+    6: GEN6_MOVES,
+    7: GEN7_MOVES,
+    8: GEN8_MOVES,
+}
 
 ##################################################################
     

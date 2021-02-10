@@ -11,13 +11,16 @@ from typing import Set
 from typing import Tuple
 
 from poke_env.environment.field import Field
-from poke_env.environment.pokemon import Pokemon
+from poke_env.environment.pokemon import Pokemon, GEN_TO_POKEMON
 from poke_env.environment.side_condition import SideCondition
 from poke_env.environment.weather import Weather
 from poke_env.utils import to_id_str
 
 
 class AbstractBattle(ABC):
+
+    POKEMON_CLASS = GEN_TO_POKEMON[8]
+
     MESSAGES_TO_IGNORE = {
         "-anim",
         "-burst",
@@ -196,12 +199,12 @@ class AbstractBattle(ABC):
             )
 
         if request:
-            team[identifier] = Pokemon(request_pokemon=request)
+            team[identifier] = POKEMON_CLASS(request_pokemon=request)
         elif details:
-            team[identifier] = Pokemon(details=details)
+            team[identifier] = POKEMON_CLASS(details=details)
         else:
             species = identifier[4:]
-            team[identifier] = Pokemon(species=species)
+            team[identifier] = POKEMON_CLASS(species=species)
 
         return team[identifier]
 
@@ -459,7 +462,7 @@ class AbstractBattle(ABC):
 
     def _register_teampreview_pokemon(self, player: str, details: str):
         if player != self._player_role:
-            mon = Pokemon(details=details)
+            mon = POKEMON_CLASS(details=details)
             self._teampreview_opponent_team.add(mon)
 
     def _side_end(self, side, condition):

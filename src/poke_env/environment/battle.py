@@ -6,7 +6,7 @@ from typing import List
 from typing import Optional
 
 from poke_env.environment.move import Move
-from poke_env.environment.pokemon import Pokemon
+from poke_env.environment.pokemon import Pokemon, GEN_TO_POKEMON
 from poke_env.environment.abstract_battle import AbstractBattle
 
 
@@ -193,6 +193,46 @@ class Battle(AbstractBattle):
         """
         return self._force_switch
 
+    @staticmethod
+    def from_format(format_: str, battle_tag: str, username: str, logger: Logger) -> Battle:
+        """
+        :return: A GenXBattle instance, depending on the format received
+        :rtype: Battle
+        """
+        format_lowercase = format_.lower()
+        gen = str(format_lowercase[3]) #Update when Gen 10 comes
+        if gen==4:
+            return Gen4Battle(
+                        battle_tag=battle_tag,
+                        username=username,
+                        logger=logger,
+                    )
+        if gen==5:
+            return Gen5Battle(
+                        battle_tag=battle_tag,
+                        username=username,
+                        logger=logger,
+                    )
+        if gen==6:
+            return Gen6Battle(
+                        battle_tag=battle_tag,
+                        username=username,
+                        logger=logger,
+                    )
+        if gen==7:
+            return Gen7Battle(
+                        battle_tag=battle_tag,
+                        username=username,
+                        logger=logger,
+                    )
+        if gen==8:
+            return Gen8Battle(
+                        battle_tag=battle_tag,
+                        username=username,
+                        logger=logger,
+                    )
+
+
     @property
     def maybe_trapped(self) -> bool:
         """
@@ -237,3 +277,23 @@ class Battle(AbstractBattle):
     @trapped.setter
     def trapped(self, value):
         self._trapped = value
+
+
+#Gen specific classes
+
+class Gen4Battle(Battle):
+    POKEMON_CLASS = GEN_TO_POKEMON[4]
+
+class Gen5Battle(Battle):
+    POKEMON_CLASS = GEN_TO_POKEMON[5]
+
+class Gen6Battle(Battle):
+    POKEMON_CLASS = GEN_TO_POKEMON[6]
+
+class Gen7Battle(Battle):
+    POKEMON_CLASS = GEN_TO_POKEMON[7]
+
+class Gen8Battle(Battle):
+    POKEMON_CLASS = GEN_TO_POKEMON[8]
+
+

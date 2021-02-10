@@ -4,7 +4,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
 
-from poke_env.data import MOVES
+from poke_env.data import MOVES, GEN_TO_MOVES
 from poke_env.environment.field import Field
 from poke_env.environment.move_category import MoveCategory
 from poke_env.environment.pokemon_type import PokemonType
@@ -59,6 +59,8 @@ class Move:
         "beforeMoveCallback",
     ]
 
+    MOVES_DICT = GEN_TO_MOVES[8]
+
     __slots__ = "_id", "_current_pp", "_dynamaxed_move", "_is_empty", "_request_target"
 
     def __init__(self, move: str = "", move_id: Optional[str] = None):
@@ -80,15 +82,15 @@ class Move:
 
     @staticmethod
     def is_id_z(id_) -> bool:
-        if id_.startswith("z") and id_[1:] in MOVES:
+        if id_.startswith("z") and id_[1:] in self.MOVES_DICT:
             return True
-        return "isZ" in MOVES[id_]
+        return "isZ" in self.MOVES_DICT[id_]
 
     @staticmethod
     def is_max_move(id_) -> bool:
         if id_.startswith("max"):
             return True
-        if MOVES.get("isNonstandard", None) == "Gigantamax":
+        if self.MOVES_DICT.get("isNonstandard", None) == "Gigantamax":
             return True
         return False
 
@@ -97,7 +99,7 @@ class Move:
     def should_be_stored(move_id: str) -> bool:
         if move_id in SPECIAL_MOVES:
             return False
-        if move_id not in MOVES:
+        if move_id not in self.MOVES_DICT:
             return False
         if Move.is_id_z(move_id):
             return False
@@ -240,10 +242,10 @@ class Move:
         :return: The data entry corresponding to the move
         :rtype: dict
         """
-        if self._id in MOVES:
-            return MOVES[self._id]
-        elif self._id.startswith("z") and self._id[1:] in MOVES:
-            return MOVES[self._id[1:]]
+        if self._id in self.MOVES_DICT:
+            return self.MOVES_DICT[self._id]
+        elif self._id.startswith("z") and self._id[1:] in self.MOVES_DICT:
+            return self.MOVES_DICT[self._id[1:]]
         else:
             raise ValueError("Unknown move: %s" % self._id)
 
@@ -723,6 +725,29 @@ class EmptyMove(Move):
         except (AttributeError, TypeError, ValueError):
             return 0
 
+
+class Gen4Move(Move):
+    MOVES_DICT = GEN_TO_MOVES[4]
+
+class Gen5Move(Move):
+    MOVES_DICT = GEN_TO_MOVES[5]
+
+class Gen6Move(Move):
+    MOVES_DICT = GEN_TO_MOVES[6]
+
+class Gen7Move(Move):
+    MOVES_DICT = GEN_TO_MOVES[7]
+
+class Gen8Move(Move):
+    MOVES_DICT = GEN_TO_MOVES[8]
+
+GEN_TO_MOVE_CLASS ={
+    4: Gen4Move,
+    5: Gen5Move,
+    6: Gen6Move,
+    7: Gen7Move,
+    8: Gen8Move,
+}
 
 SPECIAL_MOVES = {"struggle": Move("struggle"), "recharge": EmptyMove("recharge")}
 
