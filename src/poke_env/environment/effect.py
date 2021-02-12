@@ -25,6 +25,7 @@ class Effect(Enum):
     BIDE = auto()
     BIND = auto()
     BURN_UP = auto()
+    CELEBRATE = auto()
     CHARGE = auto()
     CLAMP = auto()
     CONFUSION = auto()
