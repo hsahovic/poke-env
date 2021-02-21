@@ -82,15 +82,15 @@ class Move:
 
     @staticmethod
     def is_id_z(id_) -> bool:
-        if id_.startswith("z") and id_[1:] in self.MOVES_DICT:
+        if id_.startswith("z") and id_[1:] in MOVES:
             return True
-        return "isZ" in self.MOVES_DICT[id_]
+        return "isZ" in MOVES[id_]
 
     @staticmethod
     def is_max_move(id_) -> bool:
         if id_.startswith("max"):
             return True
-        if self.MOVES_DICT.get("isNonstandard", None) == "Gigantamax":
+        if MOVES.get("isNonstandard", None) == "Gigantamax":
             return True
         return False
 
@@ -99,7 +99,7 @@ class Move:
     def should_be_stored(move_id: str) -> bool:
         if move_id in SPECIAL_MOVES:
             return False
-        if move_id not in self.MOVES_DICT:
+        if move_id not in MOVES:
             return False
         if Move.is_id_z(move_id):
             return False

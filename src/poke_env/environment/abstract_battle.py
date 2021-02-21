@@ -199,12 +199,12 @@ class AbstractBattle(ABC):
             )
 
         if request:
-            team[identifier] = POKEMON_CLASS(request_pokemon=request)
+            team[identifier] = self.POKEMON_CLASS(request_pokemon=request)
         elif details:
-            team[identifier] = POKEMON_CLASS(details=details)
+            team[identifier] = self.POKEMON_CLASS(details=details)
         else:
             species = identifier[4:]
-            team[identifier] = POKEMON_CLASS(species=species)
+            team[identifier] = self.POKEMON_CLASS(species=species)
 
         return team[identifier]
 
@@ -462,7 +462,7 @@ class AbstractBattle(ABC):
 
     def _register_teampreview_pokemon(self, player: str, details: str):
         if player != self._player_role:
-            mon = POKEMON_CLASS(details=details)
+            mon = self.POKEMON_CLASS(details=details)
             self._teampreview_opponent_team.add(mon)
 
     def _side_end(self, side, condition):

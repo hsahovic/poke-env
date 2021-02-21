@@ -200,7 +200,7 @@ class Battle(AbstractBattle):
         :rtype: Battle
         """
         format_lowercase = format_.lower()
-        gen = str(format_lowercase[3]) #Update when Gen 10 comes
+        gen = int(format_lowercase[3]) #Update when Gen 10 comes
         if gen==4:
             return Gen4Battle(
                         battle_tag=battle_tag,

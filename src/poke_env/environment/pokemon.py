@@ -216,7 +216,7 @@ class Pokemon:
             if not species_id_str.endswith("mega")
             else species_id_str
         )
-        if mega_species in POKEDEX_DICT:
+        if mega_species in self.POKEDEX_DICT:
             self._update_from_pokedex(mega_species, store_species=False)
         elif stone[-1] in "XY":
             mega_species = mega_species + stone[-1].lower()
@@ -312,7 +312,7 @@ class Pokemon:
 
     def _update_from_pokedex(self, species: str, store_species: bool = True) -> None:
         species = to_id_str(species)
-        dex_entry = POKEDEX_DICT[species]
+        dex_entry = self.POKEDEX_DICT[species]
         if store_species:
             self._species = species
         self._base_stats = dex_entry["baseStats"]
