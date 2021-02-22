@@ -43,6 +43,7 @@ class TeambuilderPokemon:
         level=None,
         happiness=None,
         hiddenpowertype=None,
+        gmax=None,
     ):
         self.nickname = nickname
         self.species = species
@@ -54,6 +55,7 @@ class TeambuilderPokemon:
         self.level = level
         self.happiness = happiness
         self.hiddenpowertype = hiddenpowertype
+        self.gmax = gmax
 
         if evs is not None:
             self.evs = evs
@@ -103,7 +105,7 @@ class TeambuilderPokemon:
     @property
     def formatted(self) -> str:
         self._prepare_for_formatting()
-        return "%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s%s" % (
+        return "%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s%s" % (
             self.nickname or "",
             to_id_str(self.species) if self.species else "",
             to_id_str(self.item) if self.item else "",
@@ -116,6 +118,7 @@ class TeambuilderPokemon:
             "S" if self.shiny else "",
             self.level or "",
             self.happiness or "",
+            "G" if self.gmax else "",
             self.formatted_endstring,
         )
 

@@ -17,9 +17,10 @@ def test_teambuilder_pokemon_formatting():
         level=84,
         happiness=134,
         hiddenpowertype="water",
+        gmax=True,
     )
     assert (
         tp.formatted
         == "testy|dragonair|choiceband|shedskin|tackle,watergun,hiddenpower|Adamant||M|\
-|S|84|134,water,"
+|S|84|134|G,water,"
     )
