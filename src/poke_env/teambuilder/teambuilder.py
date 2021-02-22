@@ -77,6 +77,8 @@ class Teambuilder(ABC):
                 current_mon.moves.append(line)
             elif line.startswith("Shiny"):
                 current_mon.shiny = line.strip().endswith("Yes")
+            elif line.startswith("Gigantamax"):
+                current_mon.gmax = line.strip().endswith("Yes")
             elif line.strip().endswith(" Nature"):
                 nature = line.strip().replace(" Nature", "")
                 current_mon.nature = nature
