@@ -22,5 +22,5 @@ def test_teambuilder_pokemon_formatting():
     assert (
         tp.formatted
         == "testy|dragonair|choiceband|shedskin|tackle,watergun,hiddenpower|Adamant||M|\
-|S|84|134|G,water,"
+|S|84|134,water,,G"
     )

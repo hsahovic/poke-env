@@ -98,14 +98,18 @@ class TeambuilderPokemon:
 
     @property
     def formatted_endstring(self) -> str:
-        if self.hiddenpowertype:
+        if self.hiddenpowertype and self.gmax:
+            return ",%s,,G" % self.hiddenpowertype
+        elif self.hiddenpowertype:
             return ",%s," % self.hiddenpowertype
+        elif self.gmax:
+            return ",,,G"
         return ""
 
     @property
     def formatted(self) -> str:
         self._prepare_for_formatting()
-        return "%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s%s" % (
+        return "%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s%s" % (
             self.nickname or "",
             to_id_str(self.species) if self.species else "",
             to_id_str(self.item) if self.item else "",
@@ -118,7 +122,6 @@ class TeambuilderPokemon:
             "S" if self.shiny else "",
             self.level or "",
             self.happiness or "",
-            "G" if self.gmax else "",
             self.formatted_endstring,
         )
 

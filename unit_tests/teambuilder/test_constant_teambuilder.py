@@ -75,7 +75,7 @@ EVs: 252 HP / 126 Def / 126 SpD / 4 Spe
 - Poison Jab
 """
 
-    packed_team = "Flareon|||flashfire|flareblitz,superpower,doubleedge,irontail|Hardy|252,,126,,126,4||||||]Ninetales|||flashfire|flamethrower,extrasensory,calmmind,darkpulse||252,,126,,126,4||,0,,,,||||]Arcanine|||flashfire|flareblitz,wildcharge,facade,crunch||252,,126,,126,4||||||]Heatmor|||flashfire|flareblitz,bodyslam,nightslash,stompingtantrum||252,,126,,126,4||||||]Typhlosion|||flashfire|flamethrower,extrasensory,flareblitz,earthquake||252,,126,,126,4||||||]Rapidash|||flashfire|flareblitz,wildcharge,drillrun,poisonjab||252,,126,,126,4||||||"  # noqa: E501
+    packed_team = "Flareon|||flashfire|flareblitz,superpower,doubleedge,irontail|Hardy|252,,126,,126,4|||||]Ninetales|||flashfire|flamethrower,extrasensory,calmmind,darkpulse||252,,126,,126,4||,0,,,,|||]Arcanine|||flashfire|flareblitz,wildcharge,facade,crunch||252,,126,,126,4|||||]Heatmor|||flashfire|flareblitz,bodyslam,nightslash,stompingtantrum||252,,126,,126,4|||||]Typhlosion|||flashfire|flamethrower,extrasensory,flareblitz,earthquake||252,,126,,126,4|||||]Rapidash|||flashfire|flareblitz,wildcharge,drillrun,poisonjab||252,,126,,126,4|||||"  # noqa: E501
 
     print(ConstantTeambuilder(team).yield_team())
 
