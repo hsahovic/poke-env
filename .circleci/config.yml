@@ -108,16 +108,16 @@ jobs:
       - run:
           name: Download showdown or update it
           command: |
-            if [ -d "Pokemon-Showdown" ]
+            if [ -d "pokemon-showdown" ]
             then
-                cd Pokemon-Showdown;git pull
+                cd pokemon-showdown;git pull
             else
-                git clone https://github.com/hsahovic/Pokemon-Showdown.git
+                git clone https://github.com/smogon/pokemon-showdown.git
             fi
       - run:
           name: Install showdown dependencies
           command: |
-            npm install Pokemon-Showdown
+            npm install pokemon-showdown
       - run:
           name: Uninstall poke-env before caching
           command: |
@@ -126,13 +126,13 @@ jobs:
       - save_cache:
           paths:
             - ./venv
-            - ./Pokemon-Showdown
+            - ./pokemon-showdown
           key: requirements-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}-{{ checksum "python-version.txt" }}-{{ .Branch }}
 
       - run:
           name: Start showdown server in the background
           command: |
-            cd Pokemon-Showdown;./pokemon-showdown
+            cd pokemon-showdown;node pokemon-showdown start --no-security
           background: true
 
       - run:
