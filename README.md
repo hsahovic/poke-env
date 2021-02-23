@@ -47,15 +47,16 @@ This project requires python >= 3.6 and a [Pokemon Showdown](https://github.com/
 pip install poke-env
 ```
 
-You can use [smogon's server](https://play.pokemonshowdown.com/) to try out your agents against humans, but having a development server is strongly recommended. In particular, [this showdown fork](https://github.com/hsahovic/Pokemon-Showdown) is optimized for performance and can be used locally **without authentication**:
+You can use [smogon's server](https://play.pokemonshowdown.com/) to try out your agents against humans, but having a development server is strongly recommended. In particular, it is recommended to use the `--no-security` flag to run a local server with most rate limiting and throttling turned off. Please refer to [the docs](https://poke-env.readthedocs.io/en/stable/getting_started.html#configuring-a-showdown-server) for detailed setup instructions.
+
 
 ```
-git clone https://github.com/hsahovic/Pokemon-Showdown.git
+git clone https://github.com/smogon/pokemon-showdown.git
 ```
 
 ### Development version
 
-You can also install the latest master version with:
+You can also clone the latest master version with:
 
 ```
 git clone https://github.com/hsahovic/poke-env.git

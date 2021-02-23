@@ -30,20 +30,23 @@ However, this implementation:
 - Has numerous performance limitation (move rate, number of concurrent battles...)
 - Is not meant to be used to train agents
 
-Therefore, it is recommended to host you own server. Fortunately, Pokemon Showdown is `open-source <https://play.pokemonshowdown.com/>`__ and just requires `Node.js v10+ <https://nodejs.org/en/>`__. You can either use the official implementation - in this case, you will need to configure it to remove rate limiting and other performance bottlenecks - or our custom and `ready-to-use fork <https://github.com/hsahovic/Pokemon-Showdown>`__, which is the recommended option that will be covered in this guide.
+Therefore, it is recommended to host you own server. Fortunately, Pokemon Showdown is `open-source <https://play.pokemonshowdown.com/>`__ and just requires `Node.js v10+ <https://nodejs.org/en/>`__. ``poke-env`` used to maintain a `custom and optimized fork <https://github.com/hsahovic/Pokemon-Showdown>`__, but its features have been merged in the official showdown implementation.
 
-First, you will need to `install node v10+ <https://nodejs.org/en/download/>`__. Then, you can clone the optimized showdown repo:
+To get started, you will first need to `install node v10+ <https://nodejs.org/en/download/>`__. Then, you can clone the pokemon showdown repo:
 
 .. code-block:: bash
 
-    git clone https://github.com/hsahovic/Pokemon-Showdown.git
+    git clone https://github.com/smogon/pokemon-showdown.git
 
 Everything is now almost ready to create your first agent: you just have to start the showdown server:
 
 .. code-block:: bash
 
-    cd Pokemon-Showdown
-    node pokemon-showdown
+    cd pokemon-showdown
+    node pokemon-showdown start --no-security
+
+.. warning:: The ``--no-security`` flag deactivates several important security features, so do not run a public server with this flag if you are not sure of what you are doing. This flag also removes most of showdown's rate limiting, authentication and throttling, which allows its usage to train AI agents effectively.
+
 
 You should then get something like this:
 
