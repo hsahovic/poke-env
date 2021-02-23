@@ -14,6 +14,13 @@ _CONFIGURATION_FROM_PLAYER_COUNTER = Counter()
 def _create_player_configuration_from_player(player) -> PlayerConfiguration:
     key = type(player).__name__
     _CONFIGURATION_FROM_PLAYER_COUNTER.update([key])
-    return PlayerConfiguration(
-        "%s %d" % (key, _CONFIGURATION_FROM_PLAYER_COUNTER[key]), None
-    )
+
+    username = "%s %d" % (key, _CONFIGURATION_FROM_PLAYER_COUNTER[key])
+
+    if len(username) > 18:
+        username = "%s %d" % (
+            key[: 18 - len(username)],
+            _CONFIGURATION_FROM_PLAYER_COUNTER[key],
+        )
+
+    return PlayerConfiguration(username, None)
