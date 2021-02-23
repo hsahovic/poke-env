@@ -2,7 +2,7 @@ Coalossal @ Weakness Policy
 Ability: Steam Engine
 Level: 50
 Gigantamax: Yes
-EVs: 252 HP / 252 SpA / 4 SpD
+EVs: 252 HP / 1 Atk / 252 SpA / 4 SpD
 Modest Nature
 IVs: 0 Atk
 - Heat Wave
@@ -13,7 +13,7 @@ IVs: 0 Atk
 Corviknight @ Choice Band
 Ability: Mirror Armor
 Gigantamax: Yes
-EVs: 248 HP / 252 Atk / 8 SpA
+EVs: 248 HP / 252 Atk / 1 Def / 8 SpA
 Brave Nature
 - Air Slash
 - Bulk Up
@@ -23,7 +23,7 @@ Brave Nature
 Venusaur @ Choice Band
 Ability: Chlorophyll
 Gigantamax: Yes
-EVs: 252 HP / 4 Atk / 252 Spe
+EVs: 252 HP / 4 Atk / 1 SpA / 252 Spe
 Hasty Nature
 - Double-Edge
 - Leaf Storm
@@ -32,7 +32,7 @@ Hasty Nature
 
 Snorlax @ Aguav Berry
 Ability: Gluttony
-EVs: 252 HP / 252 Atk / 4 SpA
+EVs: 252 HP / 252 Atk / 1 Def / 4 SpA
 Brave Nature
 - Curse
 - Fire Blast
@@ -42,7 +42,7 @@ Brave Nature
 Butterfree-Gmax @ Figy Berry
 Ability: Tinted Lens
 Gigantamax: Yes
-EVs: 248 HP / 8 Atk / 252 SpD
+EVs: 248 HP / 8 Atk / 1 SpA / 252 SpD
 Gentle Nature
 - Baton Pass
 - Double-Edge
@@ -51,7 +51,7 @@ Gentle Nature
 
 Gengar-Gmax @ Life Orb
 Ability: Cursed Body
-EVs: 252 Atk / 4 SpD / 252 Spe
+EVs: 252 Atk / 1 Def / 4 SpD / 252 Spe
 Jolly Nature
 - Disable
 - Explosion
