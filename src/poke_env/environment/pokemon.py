@@ -11,7 +11,6 @@ from poke_env.environment.effect import Effect
 from poke_env.environment.pokemon_gender import PokemonGender
 from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.move import Move
-from poke_env.environment.move import PROTECT_COUNTER_MOVES
 from poke_env.environment.status import Status
 from poke_env.environment.z_crystal import Z_CRYSTAL
 from poke_env.utils import to_id_str
@@ -129,6 +128,8 @@ class Pokemon:
         if use:
             self._moves[id_].use()
 
+        return self._moves[id_]
+
     def _boost(self, stat, amount):
         self._boosts[stat] += int(amount)
         if self._boosts[stat] > 6:
@@ -221,9 +222,9 @@ class Pokemon:
     def _moved(self, move, target=None):
         self._must_recharge = False
         self._preparing = False
-        self._add_move(move, use=True)
+        move = self._add_move(move, use=True)
 
-        if move in PROTECT_COUNTER_MOVES and target:
+        if move and move.is_protect_counter and target:
             self._protect_counter += 1
         else:
             self._protect_counter = 0
