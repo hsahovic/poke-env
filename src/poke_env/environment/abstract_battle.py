@@ -543,8 +543,8 @@ class AbstractBattle(ABC):
     @property
     def fields(self) -> Dict[Field, int]:
         """
-        :return: The set of active fields.
-        :rtype: Set[Field]
+        :return: A dict mapping fields to the turn they have been activated.
+        :rtype: Dict[Field, int]
         """
         return self._fields
 
