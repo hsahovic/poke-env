@@ -667,7 +667,11 @@ class Player(PlayerNetwork, ABC):
     @property
     def format_is_doubles(self) -> bool:
         format_lowercase = self._format.lower()
-        return "vgc" in format_lowercase or "double" in format_lowercase
+        return (
+            "vgc" in format_lowercase
+            or "double" in format_lowercase
+            or "metronome" in format_lowercase
+        )
 
     @property
     def n_finished_battles(self) -> int:
