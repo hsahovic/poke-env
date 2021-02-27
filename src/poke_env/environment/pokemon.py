@@ -115,7 +115,7 @@ class Pokemon:
             f"[Active: {self._active}, Status: {self._status}]"
         )
 
-    def _add_move(self, move_id: str, use: bool = False) -> None:
+    def _add_move(self, move_id: str, use: bool = False) -> Optional[Move]:
         """Store the move if applicable."""
         id_ = Move.retrieve_id(move_id)
 
