@@ -8,7 +8,6 @@ from typing import Union
 
 from poke_env.data import POKEDEX
 from poke_env.environment.effect import Effect
-from poke_env.environment.effect import PROTECT_BREAKING_EFFECTS
 from poke_env.environment.pokemon_gender import PokemonGender
 from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.move import Move
@@ -189,7 +188,8 @@ class Pokemon:
         if self._status == Status.TOX:
             self._status_counter += 1
         for effect in self.effects:
-            self.effects[effect] += 1
+            if effect.is_turn_countable:
+                self.effects[effect] += 1
 
     def _faint(self):
         self._current_hp = 0
@@ -268,9 +268,12 @@ class Pokemon:
 
     def _start_effect(self, effect):
         effect = Effect.from_showdown_message(effect)
-        self._effects[effect] = 0
+        if effect not in self._effects:
+            self._effects[effect] = 0
+        elif effect.is_action_countable:
+            self._effects[Effect] += 1
 
-        if effect in PROTECT_BREAKING_EFFECTS:
+        if effect.breaks_protect:
             self._protect_counter = 0
 
     def _swap_boosts(self):
@@ -496,8 +499,9 @@ class Pokemon:
     @property
     def effects(self) -> Dict[Effect, int]:
         """
-        :return: The effects currently affecting the pokemon.
-        :rtype: Set[Effect]
+        :return: A dict mapping the effects currently affecting the pokemon and the
+            associated counter.
+        :rtype: Dict[Effect, int]
         """
         return self._effects
 

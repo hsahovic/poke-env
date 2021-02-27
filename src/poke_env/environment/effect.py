@@ -190,8 +190,34 @@ class Effect(Enum):
         except KeyError:
             raise UnexpectedEffectException("Unexpected effect '%s' received" % message)
 
+    @property
+    def breaks_protect(self):
+        """
+        :return: Wheter this effects breaks protect-like states.
+        :rtype: bool
+        """
+        return self in _PROTECT_BREAKING_EFFECTS
 
-PROTECT_BREAKING_EFFECTS: Set[Effect] = {
+    @property
+    def is_turn_countable(self) -> bool:
+        """
+        :return: Wheter it is useful to keep track of the number of turns this effect
+            has been active for.
+        :rtype: bool
+        """
+        return self in _TURN_COUNTER_EFFECTS
+
+    @property
+    def is_action_countable(self) -> bool:
+        """
+        :return: Wheter it is useful to keep track of the number of times this effect
+            has been activated.
+        :rtype: bool
+        """
+        return self in _TURN_COUNTER_EFFECTS
+
+
+_PROTECT_BREAKING_EFFECTS: Set[Effect] = {
     Effect.FEINT,
     Effect.SHADOW_FORCE,
     Effect.PHANTOM_FORCE,
@@ -199,8 +225,7 @@ PROTECT_BREAKING_EFFECTS: Set[Effect] = {
     Effect.HYPERSPACE_HOLE,
 }
 
-
-TURN_COUNTER_EFFECTS: Set[Effect] = {
+_TURN_COUNTER_EFFECTS: Set[Effect] = {
     Effect.BIND,
     Effect.CLAMP,
     Effect.DISABLE,
@@ -220,5 +245,4 @@ TURN_COUNTER_EFFECTS: Set[Effect] = {
     Effect.WRAP,
 }
 
-ACTION_COUNTER_EFFECTS: Set[Effect] = {Effect.CONFUSION, Effect.TORMENT}
-COUNTER_EFFECTS: Set[Effect] = TURN_COUNTER_EFFECTS.union(ACTION_COUNTER_EFFECTS)
+_ACTION_COUNTER_EFFECTS: Set[Effect] = {Effect.CONFUSION, Effect.TORMENT}
