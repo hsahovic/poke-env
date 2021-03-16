@@ -272,7 +272,7 @@ class Pokemon:
         if effect not in self._effects:
             self._effects[effect] = 0
         elif effect.is_action_countable:
-            self._effects[Effect] += 1
+            self._effects[effect] += 1
 
         if effect.breaks_protect:
             self._protect_counter = 0
