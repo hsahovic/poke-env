@@ -13,6 +13,7 @@ from typing import Set
 class Effect(Enum):
     """Enumeration, represent an effect a Pokemon can be affected by."""
 
+    _UNKNOWN = auto()
     AFTER_YOU = auto()
     AFTERMATH = auto()
     AQUA_RING = auto()

@@ -215,8 +215,8 @@ class AbstractBattle(ABC):
 
     def _field_end(self, field):
         field = Field.from_showdown_message(field)
-        assert field in self.fields
-        self._fields.pop(field)
+        if field is not Field._UNKNOWN:
+            self._fields.pop(field)
 
     def _field_start(self, field):
         field = Field.from_showdown_message(field)
@@ -448,7 +448,8 @@ class AbstractBattle(ABC):
         else:
             conditions = self.opponent_side_conditions
         condition = SideCondition.from_showdown_message(condition)
-        conditions.pop(condition)
+        if condition is not SideCondition._UNKNOWN:
+            conditions.pop(condition)
 
     def _side_start(self, side, condition):
         if side[:2] == self._player_role:

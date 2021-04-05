@@ -9,6 +9,7 @@ from enum import Enum, unique, auto
 class Weather(Enum):
     """Enumeration, represent a non null weather in a battle."""
 
+    _UNKNOWN = auto()
     DESOLATELAND = auto()
     DELTASTREAM = auto()
     HAIL = auto()
