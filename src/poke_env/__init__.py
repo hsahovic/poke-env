@@ -10,6 +10,11 @@ import poke_env.server_configuration as server_configuration
 import poke_env.teambuilder as teambuilder
 import poke_env.utils as utils
 
+
+import logging
+
+logging.addLevelName(25, "PS_ERROR")
+
 __all__ = [
     "data",
     "environment",
