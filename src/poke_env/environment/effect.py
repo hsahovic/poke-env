@@ -94,6 +94,7 @@ class Effect(Enum):
     MIST = auto()
     MISTY_TERRAIN = auto()
     MUMMY = auto()
+    NEUTRALIZING_GAS = auto()
     NIGHTMARE = auto()
     NO_RETREAT = auto()
     OBLIVIOUS = auto()
