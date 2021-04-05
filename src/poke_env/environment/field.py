@@ -9,6 +9,7 @@ from enum import Enum, unique, auto
 class Field(Enum):
     """Enumeration, represent a non null field in a battle."""
 
+    _UNKNOWN = auto()
     ELECTRIC_TERRAIN = auto()
     GRASSY_TERRAIN = auto()
     GRAVITY = auto()

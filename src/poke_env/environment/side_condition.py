@@ -10,6 +10,7 @@ from enum import Enum, unique, auto
 class SideCondition(Enum):
     """Enumeration, represent a in-battle side condition."""
 
+    _UNKNOWN = auto()
     AURORA_VEIL = auto()
     FIRE_PLEDGE = auto()
     G_MAX_CANNONADE = auto()
