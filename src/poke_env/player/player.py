@@ -24,7 +24,6 @@ from poke_env.environment.double_battle import DoubleBattle
 from poke_env.environment.move import Move
 from poke_env.environment.pokemon import Pokemon
 from poke_env.exceptions import ShowdownException
-from poke_env.exceptions import UnexpectedEffectException
 from poke_env.player.player_network_interface import PlayerNetwork
 from poke_env.player.battle_order import (
     BattleOrder,
@@ -294,10 +293,7 @@ class Player(PlayerNetwork, ABC):
             elif split_message[1] == "teampreview":
                 await self._handle_battle_request(battle, from_teampreview_request=True)
             else:
-                try:
-                    battle._parse_message(split_message)
-                except UnexpectedEffectException as e:
-                    self.logger.exception(e)
+                battle._parse_message(split_message)
 
     async def _handle_battle_request(
         self,
