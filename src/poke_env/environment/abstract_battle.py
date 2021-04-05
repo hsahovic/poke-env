@@ -253,7 +253,7 @@ class AbstractBattle(ABC):
                 self._weather = {}
                 return
             else:
-                self._weather = {Weather[weather.upper()]: self.turn}
+                self._weather = {Weather.from_showdown_message(weather): self.turn}
         elif split_message[1] == "faint":
             pokemon = split_message[2]
             self.get_pokemon(pokemon)._faint()
