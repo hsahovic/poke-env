@@ -102,9 +102,6 @@ def test_battle_field_interactions():
     with pytest.raises(Exception):
         battle._parse_message(["", "-fieldend", "Electric terrain"])
 
-    with pytest.raises(Exception):
-        battle._parse_message(["", "-fieldend", "non existent field"])
-
 
 def test_battle_weather_interactions():
     logger = MagicMock()

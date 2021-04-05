@@ -3,8 +3,7 @@
 """
 # pyre-ignore-all-errors[45]
 
-from poke_env.exceptions import UnexpectedEffectException
-
+import logging
 from enum import Enum, unique, auto
 from typing import Set
 
@@ -190,7 +189,14 @@ class Effect(Enum):
         try:
             return Effect[message.upper()]
         except KeyError:
-            raise UnexpectedEffectException("Unexpected effect '%s' received" % message)
+            logging.getLogger("poke-env").warning(
+                "Unexpected effect '%s' received. Effect._UNKNOWN will be used instead. "
+                "If this is unexpected, please open an issue at "
+                "https://github.com/hsahovic/poke-env/issues/ along with this error "
+                "message and a description of your program.",
+                message,
+            )
+            return Effect._UNKNOWN
 
     @property
     def breaks_protect(self):
