@@ -154,11 +154,11 @@ class Player(PlayerNetwork, ABC):
                     )
                 else:
                     battle = Battle.from_format(
-                    format_=self._format,
-                    battle_tag=battle_tag,
-                    username=self.username,
-                    logger=self.logger,
-                )
+                        format_=self._format,
+                        battle_tag=battle_tag,
+                        username=self.username,
+                        logger=self.logger,
+                    )
                 await self._battle_count_queue.put(None)
                 if battle_tag in self._battles:
                     self._battle_count_queue.get()

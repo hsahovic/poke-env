@@ -1,8 +1,7 @@
 {
     "abomasnow": {
         "abilities": {
-            "0": "Snow Warning",
-            "H": "Soundproof"
+            "0": "Snow Warning"
         },
         "baseStats": {
             "atk": 92,
@@ -67,8 +66,7 @@
     "abra": {
         "abilities": {
             "0": "Synchronize",
-            "1": "Inner Focus",
-            "H": "Magic Guard"
+            "1": "Inner Focus"
         },
         "baseStats": {
             "atk": 20,
@@ -100,8 +98,7 @@
     "absol": {
         "abilities": {
             "0": "Pressure",
-            "1": "Super Luck",
-            "H": "Justified"
+            "1": "Super Luck"
         },
         "baseStats": {
             "atk": 130,
@@ -160,8 +157,7 @@
     "aerodactyl": {
         "abilities": {
             "0": "Rock Head",
-            "1": "Pressure",
-            "H": "Unnerve"
+            "1": "Pressure"
         },
         "baseStats": {
             "atk": 105,
@@ -230,8 +226,7 @@
     "aggron": {
         "abilities": {
             "0": "Sturdy",
-            "1": "Rock Head",
-            "H": "Heavy Metal"
+            "1": "Rock Head"
         },
         "baseStats": {
             "atk": 110,
@@ -293,8 +288,7 @@
     "aipom": {
         "abilities": {
             "0": "Run Away",
-            "1": "Pickup",
-            "H": "Skill Link"
+            "1": "Pickup"
         },
         "baseStats": {
             "atk": 70,
@@ -322,8 +316,7 @@
     "alakazam": {
         "abilities": {
             "0": "Synchronize",
-            "1": "Inner Focus",
-            "H": "Magic Guard"
+            "1": "Inner Focus"
         },
         "baseStats": {
             "atk": 50,
@@ -391,8 +384,7 @@
     },
     "altaria": {
         "abilities": {
-            "0": "Natural Cure",
-            "H": "Cloud Nine"
+            "0": "Natural Cure"
         },
         "baseStats": {
             "atk": 70,
@@ -457,8 +449,7 @@
     "ambipom": {
         "abilities": {
             "0": "Technician",
-            "1": "Pickup",
-            "H": "Skill Link"
+            "1": "Pickup"
         },
         "baseStats": {
             "atk": 100,
@@ -485,8 +476,7 @@
     },
     "ampharos": {
         "abilities": {
-            "0": "Static",
-            "H": "Plus"
+            "0": "Static"
         },
         "baseStats": {
             "atk": 75,
@@ -549,8 +539,7 @@
     },
     "anorith": {
         "abilities": {
-            "0": "Battle Armor",
-            "H": "Swift Swim"
+            "0": "Battle Armor"
         },
         "baseStats": {
             "atk": 95,
@@ -583,8 +572,7 @@
     "arbok": {
         "abilities": {
             "0": "Intimidate",
-            "1": "Shed Skin",
-            "H": "Unnerve"
+            "1": "Shed Skin"
         },
         "baseStats": {
             "atk": 85,
@@ -612,8 +600,7 @@
     "arcanine": {
         "abilities": {
             "0": "Intimidate",
-            "1": "Flash Fire",
-            "H": "Justified"
+            "1": "Flash Fire"
         },
         "baseStats": {
             "atk": 110,
@@ -1272,8 +1259,7 @@
     "argalis": {
         "abilities": {
             "0": "Shed Skin",
-            "1": "Compound Eyes",
-            "H": "Overcoat"
+            "1": "Compound Eyes"
         },
         "baseStats": {
             "atk": 90,
@@ -1334,8 +1320,7 @@
     "ariados": {
         "abilities": {
             "0": "Swarm",
-            "1": "Insomnia",
-            "H": "Sniper"
+            "1": "Insomnia"
         },
         "baseStats": {
             "atk": 90,
@@ -1362,8 +1347,7 @@
     },
     "armaldo": {
         "abilities": {
-            "0": "Battle Armor",
-            "H": "Swift Swim"
+            "0": "Battle Armor"
         },
         "baseStats": {
             "atk": 125,
@@ -1395,8 +1379,7 @@
     "aron": {
         "abilities": {
             "0": "Sturdy",
-            "1": "Rock Head",
-            "H": "Heavy Metal"
+            "1": "Rock Head"
         },
         "baseStats": {
             "atk": 70,
@@ -1486,8 +1469,7 @@
     "astrolotl": {
         "abilities": {
             "0": "Regenerator",
-            "1": "Vital Spirit",
-            "H": "Magician"
+            "1": "Vital Spirit"
         },
         "baseStats": {
             "atk": 108,
@@ -1517,8 +1499,7 @@
     "aurumoth": {
         "abilities": {
             "0": "Weak Armor",
-            "1": "No Guard",
-            "H": "Illusion"
+            "1": "No Guard"
         },
         "baseStats": {
             "atk": 120,
@@ -1572,8 +1553,7 @@
     "azumarill": {
         "abilities": {
             "0": "Thick Fat",
-            "1": "Huge Power",
-            "H": "Sap Sipper"
+            "1": "Huge Power"
         },
         "baseStats": {
             "atk": 50,
@@ -1601,8 +1581,7 @@
     "azurill": {
         "abilities": {
             "0": "Thick Fat",
-            "1": "Huge Power",
-            "H": "Sap Sipper"
+            "1": "Huge Power"
         },
         "baseStats": {
             "atk": 20,
@@ -1634,8 +1613,7 @@
     },
     "bagon": {
         "abilities": {
-            "0": "Rock Head",
-            "H": "Sheer Force"
+            "0": "Rock Head"
         },
         "baseStats": {
             "atk": 75,
@@ -1692,8 +1670,7 @@
     "banette": {
         "abilities": {
             "0": "Insomnia",
-            "1": "Frisk",
-            "H": "Cursed Body"
+            "1": "Frisk"
         },
         "baseStats": {
             "atk": 115,
@@ -1754,8 +1731,7 @@
     "barboach": {
         "abilities": {
             "0": "Oblivious",
-            "1": "Anticipation",
-            "H": "Hydration"
+            "1": "Anticipation"
         },
         "baseStats": {
             "atk": 48,
@@ -1783,8 +1759,7 @@
     },
     "bastiodon": {
         "abilities": {
-            "0": "Sturdy",
-            "H": "Soundproof"
+            "0": "Sturdy"
         },
         "baseStats": {
             "atk": 52,
@@ -1849,8 +1824,7 @@
     },
     "beautifly": {
         "abilities": {
-            "0": "Swarm",
-            "H": "Rivalry"
+            "0": "Swarm"
         },
         "baseStats": {
             "atk": 70,
@@ -1877,8 +1851,7 @@
     },
     "beedrill": {
         "abilities": {
-            "0": "Swarm",
-            "H": "Sniper"
+            "0": "Swarm"
         },
         "baseStats": {
             "atk": 80,
@@ -1940,8 +1913,7 @@
     },
     "beldum": {
         "abilities": {
-            "0": "Clear Body",
-            "H": "Light Metal"
+            "0": "Clear Body"
         },
         "baseStats": {
             "atk": 55,
@@ -1970,8 +1942,7 @@
     },
     "bellossom": {
         "abilities": {
-            "0": "Chlorophyll",
-            "H": "Healer"
+            "0": "Chlorophyll"
         },
         "baseStats": {
             "atk": 80,
@@ -1998,8 +1969,7 @@
     },
     "bellsprout": {
         "abilities": {
-            "0": "Chlorophyll",
-            "H": "Gluttony"
+            "0": "Chlorophyll"
         },
         "baseStats": {
             "atk": 75,
@@ -2028,8 +1998,7 @@
     "bibarel": {
         "abilities": {
             "0": "Simple",
-            "1": "Unaware",
-            "H": "Moody"
+            "1": "Unaware"
         },
         "baseStats": {
             "atk": 85,
@@ -2058,8 +2027,7 @@
     "bidoof": {
         "abilities": {
             "0": "Simple",
-            "1": "Unaware",
-            "H": "Moody"
+            "1": "Unaware"
         },
         "baseStats": {
             "atk": 45,
@@ -2087,8 +2055,7 @@
     },
     "blastoise": {
         "abilities": {
-            "0": "Torrent",
-            "H": "Rain Dish"
+            "0": "Torrent"
         },
         "baseStats": {
             "atk": 83,
@@ -2128,8 +2095,7 @@
     },
     "blastoisegmax": {
         "abilities": {
-            "0": "Torrent",
-            "H": "Rain Dish"
+            "0": "Torrent"
         },
         "baseSpecies": "Blastoise",
         "baseStats": {
@@ -2193,8 +2159,7 @@
     },
     "blaziken": {
         "abilities": {
-            "0": "Blaze",
-            "H": "Speed Boost"
+            "0": "Blaze"
         },
         "baseStats": {
             "atk": 120,
@@ -2266,8 +2231,7 @@
     "blissey": {
         "abilities": {
             "0": "Natural Cure",
-            "1": "Serene Grace",
-            "H": "Healer"
+            "1": "Serene Grace"
         },
         "baseStats": {
             "atk": 10,
@@ -2295,8 +2259,7 @@
     "bonsly": {
         "abilities": {
             "0": "Sturdy",
-            "1": "Rock Head",
-            "H": "Rattled"
+            "1": "Rock Head"
         },
         "baseStats": {
             "atk": 80,
@@ -2325,8 +2288,7 @@
     "brattler": {
         "abilities": {
             "0": "Harvest",
-            "1": "Infiltrator",
-            "H": "Rattled"
+            "1": "Infiltrator"
         },
         "baseStats": {
             "atk": 70,
@@ -2357,8 +2319,7 @@
     "breezi": {
         "abilities": {
             "0": "Unburden",
-            "1": "Own Tempo",
-            "H": "Frisk"
+            "1": "Own Tempo"
         },
         "baseStats": {
             "atk": 46,
@@ -2388,8 +2349,7 @@
     "breloom": {
         "abilities": {
             "0": "Effect Spore",
-            "1": "Poison Heal",
-            "H": "Technician"
+            "1": "Poison Heal"
         },
         "baseStats": {
             "atk": 130,
@@ -2418,8 +2378,7 @@
     "bronzong": {
         "abilities": {
             "0": "Levitate",
-            "1": "Heatproof",
-            "H": "Heavy Metal"
+            "1": "Heatproof"
         },
         "baseStats": {
             "atk": 89,
@@ -2448,8 +2407,7 @@
     "bronzor": {
         "abilities": {
             "0": "Levitate",
-            "1": "Heatproof",
-            "H": "Heavy Metal"
+            "1": "Heatproof"
         },
         "baseStats": {
             "atk": 24,
@@ -2479,8 +2437,7 @@
     "budew": {
         "abilities": {
             "0": "Natural Cure",
-            "1": "Poison Point",
-            "H": "Leaf Guard"
+            "1": "Poison Point"
         },
         "baseStats": {
             "atk": 30,
@@ -2509,8 +2466,7 @@
     },
     "buizel": {
         "abilities": {
-            "0": "Swift Swim",
-            "H": "Water Veil"
+            "0": "Swift Swim"
         },
         "baseStats": {
             "atk": 65,
@@ -2538,8 +2494,7 @@
     },
     "bulbasaur": {
         "abilities": {
-            "0": "Overgrow",
-            "H": "Chlorophyll"
+            "0": "Overgrow"
         },
         "baseStats": {
             "atk": 49,
@@ -2574,8 +2529,7 @@
     "buneary": {
         "abilities": {
             "0": "Run Away",
-            "1": "Klutz",
-            "H": "Limber"
+            "1": "Klutz"
         },
         "baseStats": {
             "atk": 66,
@@ -2603,8 +2557,7 @@
     },
     "burmy": {
         "abilities": {
-            "0": "Shed Skin",
-            "H": "Overcoat"
+            "0": "Shed Skin"
         },
         "baseForme": "Plant",
         "baseStats": {
@@ -2644,8 +2597,7 @@
     },
     "butterfree": {
         "abilities": {
-            "0": "Compound Eyes",
-            "H": "Tinted Lens"
+            "0": "Compound Eyes"
         },
         "baseStats": {
             "atk": 45,
@@ -2673,8 +2625,7 @@
     },
     "butterfreegmax": {
         "abilities": {
-            "0": "Compound Eyes",
-            "H": "Tinted Lens"
+            "0": "Compound Eyes"
         },
         "baseSpecies": "Butterfree",
         "baseStats": {
@@ -2702,8 +2653,7 @@
     },
     "cacnea": {
         "abilities": {
-            "0": "Sand Veil",
-            "H": "Water Absorb"
+            "0": "Sand Veil"
         },
         "baseStats": {
             "atk": 85,
@@ -2731,8 +2681,7 @@
     },
     "cacturne": {
         "abilities": {
-            "0": "Sand Veil",
-            "H": "Water Absorb"
+            "0": "Sand Veil"
         },
         "baseStats": {
             "atk": 115,
@@ -2761,8 +2710,7 @@
     "caimanoe": {
         "abilities": {
             "0": "Water Veil",
-            "1": "Heatproof",
-            "H": "Light Metal"
+            "1": "Heatproof"
         },
         "baseStats": {
             "atk": 85,
@@ -2795,8 +2743,7 @@
     "camerupt": {
         "abilities": {
             "0": "Magma Armor",
-            "1": "Solid Rock",
-            "H": "Anger Point"
+            "1": "Solid Rock"
         },
         "baseStats": {
             "atk": 100,
@@ -2858,8 +2805,7 @@
     },
     "caribolt": {
         "abilities": {
-            "0": "Overgrow",
-            "H": "Galvanize"
+            "0": "Overgrow"
         },
         "baseStats": {
             "atk": 106,
@@ -2915,8 +2861,7 @@
     },
     "carvanha": {
         "abilities": {
-            "0": "Rough Skin",
-            "H": "Speed Boost"
+            "0": "Rough Skin"
         },
         "baseStats": {
             "atk": 90,
@@ -3096,8 +3041,7 @@
     },
     "caterpie": {
         "abilities": {
-            "0": "Shield Dust",
-            "H": "Run Away"
+            "0": "Shield Dust"
         },
         "baseStats": {
             "atk": 30,
@@ -3125,8 +3069,7 @@
     "cawdet": {
         "abilities": {
             "0": "Keen Eye",
-            "1": "Volt Absorb",
-            "H": "Big Pecks"
+            "1": "Volt Absorb"
         },
         "baseStats": {
             "atk": 72,
@@ -3156,8 +3099,7 @@
     "cawmodore": {
         "abilities": {
             "0": "Intimidate",
-            "1": "Volt Absorb",
-            "H": "Big Pecks"
+            "1": "Volt Absorb"
         },
         "baseStats": {
             "atk": 92,
@@ -3212,8 +3154,7 @@
     "chansey": {
         "abilities": {
             "0": "Natural Cure",
-            "1": "Serene Grace",
-            "H": "Healer"
+            "1": "Serene Grace"
         },
         "baseStats": {
             "atk": 5,
@@ -3246,8 +3187,7 @@
     },
     "charizard": {
         "abilities": {
-            "0": "Blaze",
-            "H": "Solar Power"
+            "0": "Blaze"
         },
         "baseStats": {
             "atk": 84,
@@ -3290,8 +3230,7 @@
     },
     "charizardgmax": {
         "abilities": {
-            "0": "Blaze",
-            "H": "Solar Power"
+            "0": "Blaze"
         },
         "baseSpecies": "Charizard",
         "baseStats": {
@@ -3390,8 +3329,7 @@
     },
     "charmander": {
         "abilities": {
-            "0": "Blaze",
-            "H": "Solar Power"
+            "0": "Blaze"
         },
         "baseStats": {
             "atk": 52,
@@ -3424,8 +3362,7 @@
     },
     "charmeleon": {
         "abilities": {
-            "0": "Blaze",
-            "H": "Solar Power"
+            "0": "Blaze"
         },
         "baseStats": {
             "atk": 64,
@@ -3461,8 +3398,7 @@
     "chatot": {
         "abilities": {
             "0": "Keen Eye",
-            "1": "Tangled Feet",
-            "H": "Big Pecks"
+            "1": "Tangled Feet"
         },
         "baseStats": {
             "atk": 65,
@@ -3611,8 +3547,7 @@
     },
     "chimchar": {
         "abilities": {
-            "0": "Blaze",
-            "H": "Iron Fist"
+            "0": "Blaze"
         },
         "baseStats": {
             "atk": 58,
@@ -3674,8 +3609,7 @@
     "chinchou": {
         "abilities": {
             "0": "Volt Absorb",
-            "1": "Illuminate",
-            "H": "Water Absorb"
+            "1": "Illuminate"
         },
         "baseStats": {
             "atk": 38,
@@ -3731,8 +3665,7 @@
     },
     "clamperl": {
         "abilities": {
-            "0": "Shell Armor",
-            "H": "Rattled"
+            "0": "Shell Armor"
         },
         "baseStats": {
             "atk": 64,
@@ -3789,8 +3722,7 @@
     "clefable": {
         "abilities": {
             "0": "Cute Charm",
-            "1": "Magic Guard",
-            "H": "Unaware"
+            "1": "Magic Guard"
         },
         "baseStats": {
             "atk": 70,
@@ -3822,8 +3754,7 @@
     "clefairy": {
         "abilities": {
             "0": "Cute Charm",
-            "1": "Magic Guard",
-            "H": "Friend Guard"
+            "1": "Magic Guard"
         },
         "baseStats": {
             "atk": 45,
@@ -3857,8 +3788,7 @@
     "cleffa": {
         "abilities": {
             "0": "Cute Charm",
-            "1": "Magic Guard",
-            "H": "Friend Guard"
+            "1": "Magic Guard"
         },
         "baseStats": {
             "atk": 25,
@@ -3891,8 +3821,7 @@
     "cloyster": {
         "abilities": {
             "0": "Shell Armor",
-            "1": "Skill Link",
-            "H": "Overcoat"
+            "1": "Skill Link"
         },
         "baseStats": {
             "atk": 95,
@@ -3948,8 +3877,7 @@
     },
     "combee": {
         "abilities": {
-            "0": "Honey Gather",
-            "H": "Hustle"
+            "0": "Honey Gather"
         },
         "baseStats": {
             "atk": 30,
@@ -3981,8 +3909,7 @@
     },
     "combusken": {
         "abilities": {
-            "0": "Blaze",
-            "H": "Speed Boost"
+            "0": "Blaze"
         },
         "baseStats": {
             "atk": 85,
@@ -4017,8 +3944,7 @@
     },
     "coribalis": {
         "abilities": {
-            "0": "Torrent",
-            "H": "Poison Heal"
+            "0": "Torrent"
         },
         "baseStats": {
             "atk": 69,
@@ -4055,8 +3981,7 @@
     "corphish": {
         "abilities": {
             "0": "Hyper Cutter",
-            "1": "Shell Armor",
-            "H": "Adaptability"
+            "1": "Shell Armor"
         },
         "baseStats": {
             "atk": 80,
@@ -4085,8 +4010,7 @@
     "corsola": {
         "abilities": {
             "0": "Hustle",
-            "1": "Natural Cure",
-            "H": "Regenerator"
+            "1": "Natural Cure"
         },
         "baseStats": {
             "atk": 55,
@@ -4123,8 +4047,7 @@
     },
     "corsolagalar": {
         "abilities": {
-            "0": "Weak Armor",
-            "H": "Cursed Body"
+            "0": "Weak Armor"
         },
         "baseSpecies": "Corsola",
         "baseStats": {
@@ -4158,8 +4081,7 @@
     },
     "cradily": {
         "abilities": {
-            "0": "Suction Cups",
-            "H": "Storm Drain"
+            "0": "Suction Cups"
         },
         "baseStats": {
             "atk": 81,
@@ -4190,8 +4112,7 @@
     },
     "cranidos": {
         "abilities": {
-            "0": "Mold Breaker",
-            "H": "Sheer Force"
+            "0": "Mold Breaker"
         },
         "baseStats": {
             "atk": 125,
@@ -4223,8 +4144,7 @@
     "crawdaunt": {
         "abilities": {
             "0": "Hyper Cutter",
-            "1": "Shell Armor",
-            "H": "Adaptability"
+            "1": "Shell Armor"
         },
         "baseStats": {
             "atk": 120,
@@ -4278,8 +4198,7 @@
     "croagunk": {
         "abilities": {
             "0": "Anticipation",
-            "1": "Dry Skin",
-            "H": "Poison Touch"
+            "1": "Dry Skin"
         },
         "baseStats": {
             "atk": 61,
@@ -4307,8 +4226,7 @@
     },
     "crobat": {
         "abilities": {
-            "0": "Inner Focus",
-            "H": "Infiltrator"
+            "0": "Inner Focus"
         },
         "baseStats": {
             "atk": 90,
@@ -4370,8 +4288,7 @@
     "crucibelle": {
         "abilities": {
             "0": "Regenerator",
-            "1": "Mold Breaker",
-            "H": "Liquid Ooze"
+            "1": "Mold Breaker"
         },
         "baseStats": {
             "atk": 105,
@@ -4444,8 +4361,7 @@
     "cubone": {
         "abilities": {
             "0": "Rock Head",
-            "1": "Lightning Rod",
-            "H": "Battle Armor"
+            "1": "Lightning Rod"
         },
         "baseStats": {
             "atk": 50,
@@ -4474,8 +4390,7 @@
     "cupra": {
         "abilities": {
             "0": "Shield Dust",
-            "1": "Keen Eye",
-            "H": "Magic Guard"
+            "1": "Keen Eye"
         },
         "baseStats": {
             "atk": 60,
@@ -4589,8 +4504,7 @@
     "delcatty": {
         "abilities": {
             "0": "Cute Charm",
-            "1": "Normalize",
-            "H": "Wonder Skin"
+            "1": "Normalize"
         },
         "baseStats": {
             "atk": 65,
@@ -4623,8 +4537,7 @@
     "delibird": {
         "abilities": {
             "0": "Vital Spirit",
-            "1": "Hustle",
-            "H": "Insomnia"
+            "1": "Hustle"
         },
         "baseStats": {
             "atk": 55,
@@ -4772,8 +4685,7 @@
     "dewgong": {
         "abilities": {
             "0": "Thick Fat",
-            "1": "Hydration",
-            "H": "Ice Body"
+            "1": "Hydration"
         },
         "baseStats": {
             "atk": 70,
@@ -4801,8 +4713,7 @@
     },
     "dialga": {
         "abilities": {
-            "0": "Pressure",
-            "H": "Telepathy"
+            "0": "Pressure"
         },
         "baseStats": {
             "atk": 120,
@@ -4829,8 +4740,7 @@
     "diglett": {
         "abilities": {
             "0": "Sand Veil",
-            "1": "Arena Trap",
-            "H": "Sand Force"
+            "1": "Arena Trap"
         },
         "baseStats": {
             "atk": 55,
@@ -4865,8 +4775,7 @@
     "diglettalola": {
         "abilities": {
             "0": "Sand Veil",
-            "1": "Tangling Hair",
-            "H": "Sand Force"
+            "1": "Tangling Hair"
         },
         "baseSpecies": "Diglett",
         "baseStats": {
@@ -4896,8 +4805,7 @@
     },
     "ditto": {
         "abilities": {
-            "0": "Limber",
-            "H": "Imposter"
+            "0": "Limber"
         },
         "baseStats": {
             "atk": 48,
@@ -4923,8 +4831,7 @@
     "dodrio": {
         "abilities": {
             "0": "Run Away",
-            "1": "Early Bird",
-            "H": "Tangled Feet"
+            "1": "Early Bird"
         },
         "baseStats": {
             "atk": 110,
@@ -4952,8 +4859,7 @@
     "doduo": {
         "abilities": {
             "0": "Run Away",
-            "1": "Early Bird",
-            "H": "Tangled Feet"
+            "1": "Early Bird"
         },
         "baseStats": {
             "atk": 85,
@@ -4981,8 +4887,7 @@
     },
     "donphan": {
         "abilities": {
-            "0": "Sturdy",
-            "H": "Sand Veil"
+            "0": "Sturdy"
         },
         "baseStats": {
             "atk": 120,
@@ -5008,8 +4913,7 @@
     },
     "dragonair": {
         "abilities": {
-            "0": "Shed Skin",
-            "H": "Marvel Scale"
+            "0": "Shed Skin"
         },
         "baseStats": {
             "atk": 84,
@@ -5039,8 +4943,7 @@
     },
     "dragonite": {
         "abilities": {
-            "0": "Inner Focus",
-            "H": "Multiscale"
+            "0": "Inner Focus"
         },
         "baseStats": {
             "atk": 134,
@@ -5069,8 +4972,7 @@
     "drapion": {
         "abilities": {
             "0": "Battle Armor",
-            "1": "Sniper",
-            "H": "Keen Eye"
+            "1": "Sniper"
         },
         "baseStats": {
             "atk": 90,
@@ -5098,8 +5000,7 @@
     },
     "dratini": {
         "abilities": {
-            "0": "Shed Skin",
-            "H": "Marvel Scale"
+            "0": "Shed Skin"
         },
         "baseStats": {
             "atk": 64,
@@ -5128,8 +5029,7 @@
     "drifblim": {
         "abilities": {
             "0": "Aftermath",
-            "1": "Unburden",
-            "H": "Flare Boost"
+            "1": "Unburden"
         },
         "baseStats": {
             "atk": 80,
@@ -5157,8 +5057,7 @@
     "drifloon": {
         "abilities": {
             "0": "Aftermath",
-            "1": "Unburden",
-            "H": "Flare Boost"
+            "1": "Unburden"
         },
         "baseStats": {
             "atk": 50,
@@ -5187,8 +5086,7 @@
     "drowzee": {
         "abilities": {
             "0": "Insomnia",
-            "1": "Forewarn",
-            "H": "Inner Focus"
+            "1": "Forewarn"
         },
         "baseStats": {
             "atk": 48,
@@ -5216,8 +5114,7 @@
     "dugtrio": {
         "abilities": {
             "0": "Sand Veil",
-            "1": "Arena Trap",
-            "H": "Sand Force"
+            "1": "Arena Trap"
         },
         "baseStats": {
             "atk": 80,
@@ -5251,8 +5148,7 @@
     "dugtrioalola": {
         "abilities": {
             "0": "Sand Veil",
-            "1": "Tangling Hair",
-            "H": "Sand Force"
+            "1": "Tangling Hair"
         },
         "baseSpecies": "Dugtrio",
         "baseStats": {
@@ -5282,8 +5178,7 @@
     "dunsparce": {
         "abilities": {
             "0": "Serene Grace",
-            "1": "Run Away",
-            "H": "Rattled"
+            "1": "Run Away"
         },
         "baseStats": {
             "atk": 70,
@@ -5390,8 +5285,7 @@
     },
     "dustox": {
         "abilities": {
-            "0": "Shield Dust",
-            "H": "Compound Eyes"
+            "0": "Shield Dust"
         },
         "baseStats": {
             "atk": 50,
@@ -5419,8 +5313,7 @@
     "eevee": {
         "abilities": {
             "0": "Run Away",
-            "1": "Adaptability",
-            "H": "Anticipation"
+            "1": "Adaptability"
         },
         "baseStats": {
             "atk": 55,
@@ -5467,8 +5360,7 @@
     "eeveegmax": {
         "abilities": {
             "0": "Run Away",
-            "1": "Adaptability",
-            "H": "Anticipation"
+            "1": "Adaptability"
         },
         "baseSpecies": "Eevee",
         "baseStats": {
@@ -5500,8 +5392,7 @@
     "eeveestarter": {
         "abilities": {
             "0": "Run Away",
-            "1": "Adaptability",
-            "H": "Anticipation"
+            "1": "Adaptability"
         },
         "baseSpecies": "Eevee",
         "baseStats": {
@@ -5532,8 +5423,7 @@
     "ekans": {
         "abilities": {
             "0": "Intimidate",
-            "1": "Shed Skin",
-            "H": "Unnerve"
+            "1": "Shed Skin"
         },
         "baseStats": {
             "atk": 60,
@@ -5561,8 +5451,7 @@
     },
     "electabuzz": {
         "abilities": {
-            "0": "Static",
-            "H": "Vital Spirit"
+            "0": "Static"
         },
         "baseStats": {
             "atk": 83,
@@ -5595,8 +5484,7 @@
     },
     "electivire": {
         "abilities": {
-            "0": "Motor Drive",
-            "H": "Vital Spirit"
+            "0": "Motor Drive"
         },
         "baseStats": {
             "atk": 123,
@@ -5627,8 +5515,7 @@
     },
     "electrelk": {
         "abilities": {
-            "0": "Overgrow",
-            "H": "Galvanize"
+            "0": "Overgrow"
         },
         "baseStats": {
             "atk": 81,
@@ -5664,8 +5551,7 @@
     "electrike": {
         "abilities": {
             "0": "Static",
-            "1": "Lightning Rod",
-            "H": "Minus"
+            "1": "Lightning Rod"
         },
         "baseStats": {
             "atk": 45,
@@ -5693,8 +5579,7 @@
     "electrode": {
         "abilities": {
             "0": "Soundproof",
-            "1": "Static",
-            "H": "Aftermath"
+            "1": "Static"
         },
         "baseStats": {
             "atk": 50,
@@ -5721,8 +5606,7 @@
     },
     "elekid": {
         "abilities": {
-            "0": "Static",
-            "H": "Vital Spirit"
+            "0": "Static"
         },
         "baseStats": {
             "atk": 63,
@@ -5755,8 +5639,7 @@
     "embirch": {
         "abilities": {
             "0": "Reckless",
-            "1": "Leaf Guard",
-            "H": "Chlorophyll"
+            "1": "Leaf Guard"
         },
         "baseStats": {
             "atk": 40,
@@ -5786,8 +5669,7 @@
     },
     "empoleon": {
         "abilities": {
-            "0": "Torrent",
-            "H": "Defiant"
+            "0": "Torrent"
         },
         "baseStats": {
             "atk": 86,
@@ -5846,8 +5728,7 @@
     "equilibra": {
         "abilities": {
             "0": "Levitate",
-            "1": "Bulletproof",
-            "H": "Justified"
+            "1": "Bulletproof"
         },
         "baseStats": {
             "atk": 50,
@@ -5876,8 +5757,7 @@
     },
     "espeon": {
         "abilities": {
-            "0": "Synchronize",
-            "H": "Magic Bounce"
+            "0": "Synchronize"
         },
         "baseStats": {
             "atk": 65,
@@ -5908,8 +5788,7 @@
     },
     "exeggcute": {
         "abilities": {
-            "0": "Chlorophyll",
-            "H": "Harvest"
+            "0": "Chlorophyll"
         },
         "baseStats": {
             "atk": 40,
@@ -5938,8 +5817,7 @@
     },
     "exeggutor": {
         "abilities": {
-            "0": "Chlorophyll",
-            "H": "Harvest"
+            "0": "Chlorophyll"
         },
         "baseStats": {
             "atk": 95,
@@ -5974,8 +5852,7 @@
     },
     "exeggutoralola": {
         "abilities": {
-            "0": "Frisk",
-            "H": "Harvest"
+            "0": "Frisk"
         },
         "baseSpecies": "Exeggutor",
         "baseStats": {
@@ -6005,8 +5882,7 @@
     },
     "exploud": {
         "abilities": {
-            "0": "Soundproof",
-            "H": "Scrappy"
+            "0": "Soundproof"
         },
         "baseStats": {
             "atk": 91,
@@ -6034,8 +5910,7 @@
     "farfetchd": {
         "abilities": {
             "0": "Keen Eye",
-            "1": "Inner Focus",
-            "H": "Defiant"
+            "1": "Inner Focus"
         },
         "baseStats": {
             "atk": 65,
@@ -6068,8 +5943,7 @@
     },
     "farfetchdgalar": {
         "abilities": {
-            "0": "Steadfast",
-            "H": "Scrappy"
+            "0": "Steadfast"
         },
         "baseSpecies": "Farfetch\u2019d",
         "baseStats": {
@@ -6099,8 +5973,7 @@
     },
     "fawnifer": {
         "abilities": {
-            "0": "Overgrow",
-            "H": "Lightning Rod"
+            "0": "Overgrow"
         },
         "baseStats": {
             "atk": 61,
@@ -6132,8 +6005,7 @@
     },
     "fearow": {
         "abilities": {
-            "0": "Keen Eye",
-            "H": "Sniper"
+            "0": "Keen Eye"
         },
         "baseStats": {
             "atk": 90,
@@ -6160,8 +6032,7 @@
     },
     "feebas": {
         "abilities": {
-            "0": "Swift Swim",
-            "H": "Adaptability"
+            "0": "Swift Swim"
         },
         "baseStats": {
             "atk": 15,
@@ -6250,8 +6121,7 @@
     "finneon": {
         "abilities": {
             "0": "Swift Swim",
-            "1": "Storm Drain",
-            "H": "Water Veil"
+            "1": "Storm Drain"
         },
         "baseStats": {
             "atk": 49,
@@ -6278,8 +6148,7 @@
     },
     "flaaffy": {
         "abilities": {
-            "0": "Static",
-            "H": "Plus"
+            "0": "Static"
         },
         "baseStats": {
             "atk": 55,
@@ -6310,8 +6179,7 @@
     "flarelm": {
         "abilities": {
             "0": "Rock Head",
-            "1": "Battle Armor",
-            "H": "White Smoke"
+            "1": "Battle Armor"
         },
         "baseStats": {
             "atk": 50,
@@ -6343,8 +6211,7 @@
     },
     "flareon": {
         "abilities": {
-            "0": "Flash Fire",
-            "H": "Guts"
+            "0": "Flash Fire"
         },
         "baseStats": {
             "atk": 130,
@@ -6376,8 +6243,7 @@
     "floatoy": {
         "abilities": {
             "0": "Water Veil",
-            "1": "Heatproof",
-            "H": "Swift Swim"
+            "1": "Heatproof"
         },
         "baseStats": {
             "atk": 70,
@@ -6406,8 +6272,7 @@
     },
     "floatzel": {
         "abilities": {
-            "0": "Swift Swim",
-            "H": "Water Veil"
+            "0": "Swift Swim"
         },
         "baseStats": {
             "atk": 105,
@@ -6461,8 +6326,7 @@
     },
     "forretress": {
         "abilities": {
-            "0": "Sturdy",
-            "H": "Overcoat"
+            "0": "Sturdy"
         },
         "baseStats": {
             "atk": 90,
@@ -6489,8 +6353,7 @@
     },
     "froslass": {
         "abilities": {
-            "0": "Snow Cloak",
-            "H": "Cursed Body"
+            "0": "Snow Cloak"
         },
         "baseStats": {
             "atk": 80,
@@ -6521,8 +6384,7 @@
     "furret": {
         "abilities": {
             "0": "Run Away",
-            "1": "Keen Eye",
-            "H": "Frisk"
+            "1": "Keen Eye"
         },
         "baseStats": {
             "atk": 76,
@@ -6548,8 +6410,7 @@
     },
     "gabite": {
         "abilities": {
-            "0": "Sand Veil",
-            "H": "Rough Skin"
+            "0": "Sand Veil"
         },
         "baseStats": {
             "atk": 90,
@@ -6580,8 +6441,7 @@
     },
     "gallade": {
         "abilities": {
-            "0": "Steadfast",
-            "H": "Justified"
+            "0": "Steadfast"
         },
         "baseStats": {
             "atk": 125,
@@ -6646,8 +6506,7 @@
     },
     "garchomp": {
         "abilities": {
-            "0": "Sand Veil",
-            "H": "Rough Skin"
+            "0": "Sand Veil"
         },
         "baseStats": {
             "atk": 130,
@@ -6712,8 +6571,7 @@
     "gardevoir": {
         "abilities": {
             "0": "Synchronize",
-            "1": "Trace",
-            "H": "Telepathy"
+            "1": "Trace"
         },
         "baseStats": {
             "atk": 65,
@@ -6803,8 +6661,7 @@
     "gastrodon": {
         "abilities": {
             "0": "Sticky Hold",
-            "1": "Storm Drain",
-            "H": "Sand Force"
+            "1": "Storm Drain"
         },
         "baseForme": "West",
         "baseStats": {
@@ -6932,8 +6789,7 @@
     "geodude": {
         "abilities": {
             "0": "Rock Head",
-            "1": "Sturdy",
-            "H": "Sand Veil"
+            "1": "Sturdy"
         },
         "baseStats": {
             "atk": 80,
@@ -6969,8 +6825,7 @@
     "geodudealola": {
         "abilities": {
             "0": "Magnet Pull",
-            "1": "Sturdy",
-            "H": "Galvanize"
+            "1": "Sturdy"
         },
         "baseSpecies": "Geodude",
         "baseStats": {
@@ -7000,8 +6855,7 @@
     },
     "gible": {
         "abilities": {
-            "0": "Sand Veil",
-            "H": "Rough Skin"
+            "0": "Sand Veil"
         },
         "baseStats": {
             "atk": 70,
@@ -7031,8 +6885,7 @@
     "girafarig": {
         "abilities": {
             "0": "Inner Focus",
-            "1": "Early Bird",
-            "H": "Sap Sipper"
+            "1": "Early Bird"
         },
         "baseStats": {
             "atk": 80,
@@ -7057,8 +6910,7 @@
     },
     "giratina": {
         "abilities": {
-            "0": "Pressure",
-            "H": "Telepathy"
+            "0": "Pressure"
         },
         "baseForme": "Altered",
         "baseStats": {
@@ -7122,8 +6974,7 @@
     },
     "glaceon": {
         "abilities": {
-            "0": "Snow Cloak",
-            "H": "Ice Body"
+            "0": "Snow Cloak"
         },
         "baseStats": {
             "atk": 60,
@@ -7156,8 +7007,7 @@
     "glalie": {
         "abilities": {
             "0": "Inner Focus",
-            "1": "Ice Body",
-            "H": "Moody"
+            "1": "Ice Body"
         },
         "baseStats": {
             "atk": 80,
@@ -7220,8 +7070,7 @@
     "glameow": {
         "abilities": {
             "0": "Limber",
-            "1": "Own Tempo",
-            "H": "Keen Eye"
+            "1": "Own Tempo"
         },
         "baseStats": {
             "atk": 55,
@@ -7253,8 +7102,7 @@
     "gligar": {
         "abilities": {
             "0": "Hyper Cutter",
-            "1": "Sand Veil",
-            "H": "Immunity"
+            "1": "Sand Veil"
         },
         "baseStats": {
             "atk": 75,
@@ -7283,8 +7131,7 @@
     "gliscor": {
         "abilities": {
             "0": "Hyper Cutter",
-            "1": "Sand Veil",
-            "H": "Poison Heal"
+            "1": "Sand Veil"
         },
         "baseStats": {
             "atk": 95,
@@ -7313,8 +7160,7 @@
     },
     "gloom": {
         "abilities": {
-            "0": "Chlorophyll",
-            "H": "Stench"
+            "0": "Chlorophyll"
         },
         "baseStats": {
             "atk": 65,
@@ -7345,8 +7191,7 @@
     },
     "golbat": {
         "abilities": {
-            "0": "Inner Focus",
-            "H": "Infiltrator"
+            "0": "Inner Focus"
         },
         "baseStats": {
             "atk": 80,
@@ -7377,8 +7222,7 @@
     "goldeen": {
         "abilities": {
             "0": "Swift Swim",
-            "1": "Water Veil",
-            "H": "Lightning Rod"
+            "1": "Water Veil"
         },
         "baseStats": {
             "atk": 67,
@@ -7406,8 +7250,7 @@
     "golduck": {
         "abilities": {
             "0": "Damp",
-            "1": "Cloud Nine",
-            "H": "Swift Swim"
+            "1": "Cloud Nine"
         },
         "baseStats": {
             "atk": 82,
@@ -7435,8 +7278,7 @@
     "golem": {
         "abilities": {
             "0": "Rock Head",
-            "1": "Sturdy",
-            "H": "Sand Veil"
+            "1": "Sturdy"
         },
         "baseStats": {
             "atk": 110,
@@ -7471,8 +7313,7 @@
     "golemalola": {
         "abilities": {
             "0": "Magnet Pull",
-            "1": "Sturdy",
-            "H": "Galvanize"
+            "1": "Sturdy"
         },
         "baseSpecies": "Golem",
         "baseStats": {
@@ -7501,8 +7342,7 @@
     },
     "gorebyss": {
         "abilities": {
-            "0": "Swift Swim",
-            "H": "Hydration"
+            "0": "Swift Swim"
         },
         "baseStats": {
             "atk": 84,
@@ -7530,8 +7370,7 @@
     "granbull": {
         "abilities": {
             "0": "Intimidate",
-            "1": "Quick Feet",
-            "H": "Rattled"
+            "1": "Quick Feet"
         },
         "baseStats": {
             "atk": 120,
@@ -7563,8 +7402,7 @@
     "graveler": {
         "abilities": {
             "0": "Rock Head",
-            "1": "Sturdy",
-            "H": "Sand Veil"
+            "1": "Sturdy"
         },
         "baseStats": {
             "atk": 95,
@@ -7602,8 +7440,7 @@
     "graveleralola": {
         "abilities": {
             "0": "Magnet Pull",
-            "1": "Sturdy",
-            "H": "Galvanize"
+            "1": "Sturdy"
         },
         "baseSpecies": "Graveler",
         "baseStats": {
@@ -7636,8 +7473,7 @@
     "grimer": {
         "abilities": {
             "0": "Stench",
-            "1": "Sticky Hold",
-            "H": "Poison Touch"
+            "1": "Sticky Hold"
         },
         "baseStats": {
             "atk": 80,
@@ -7672,8 +7508,7 @@
     "grimeralola": {
         "abilities": {
             "0": "Poison Touch",
-            "1": "Gluttony",
-            "H": "Power of Alchemy"
+            "1": "Gluttony"
         },
         "baseSpecies": "Grimer",
         "baseStats": {
@@ -7703,8 +7538,7 @@
     },
     "grotle": {
         "abilities": {
-            "0": "Overgrow",
-            "H": "Shell Armor"
+            "0": "Overgrow"
         },
         "baseStats": {
             "atk": 89,
@@ -7800,8 +7634,7 @@
     },
     "grovyle": {
         "abilities": {
-            "0": "Overgrow",
-            "H": "Unburden"
+            "0": "Overgrow"
         },
         "baseStats": {
             "atk": 65,
@@ -7837,8 +7670,7 @@
     "growlithe": {
         "abilities": {
             "0": "Intimidate",
-            "1": "Flash Fire",
-            "H": "Justified"
+            "1": "Flash Fire"
         },
         "baseStats": {
             "atk": 70,
@@ -7870,8 +7702,7 @@
     "grumpig": {
         "abilities": {
             "0": "Thick Fat",
-            "1": "Own Tempo",
-            "H": "Gluttony"
+            "1": "Own Tempo"
         },
         "baseStats": {
             "atk": 45,
@@ -7898,8 +7729,7 @@
     "gulpin": {
         "abilities": {
             "0": "Liquid Ooze",
-            "1": "Sticky Hold",
-            "H": "Gluttony"
+            "1": "Sticky Hold"
         },
         "baseStats": {
             "atk": 43,
@@ -7926,8 +7756,7 @@
     },
     "gyarados": {
         "abilities": {
-            "0": "Intimidate",
-            "H": "Moxie"
+            "0": "Intimidate"
         },
         "baseStats": {
             "atk": 125,
@@ -7992,8 +7821,7 @@
     "happiny": {
         "abilities": {
             "0": "Natural Cure",
-            "1": "Serene Grace",
-            "H": "Friend Guard"
+            "1": "Serene Grace"
         },
         "baseStats": {
             "atk": 5,
@@ -8023,8 +7851,7 @@
     "hariyama": {
         "abilities": {
             "0": "Thick Fat",
-            "1": "Guts",
-            "H": "Sheer Force"
+            "1": "Guts"
         },
         "baseStats": {
             "atk": 120,
@@ -8110,8 +7937,7 @@
     "heracross": {
         "abilities": {
             "0": "Swarm",
-            "1": "Guts",
-            "H": "Moxie"
+            "1": "Guts"
         },
         "baseStats": {
             "atk": 125,
@@ -8171,8 +7997,7 @@
     },
     "hippopotas": {
         "abilities": {
-            "0": "Sand Stream",
-            "H": "Sand Force"
+            "0": "Sand Stream"
         },
         "baseStats": {
             "atk": 72,
@@ -8199,8 +8024,7 @@
     },
     "hippowdon": {
         "abilities": {
-            "0": "Sand Stream",
-            "H": "Sand Force"
+            "0": "Sand Stream"
         },
         "baseStats": {
             "atk": 112,
@@ -8227,8 +8051,7 @@
     "hitmonchan": {
         "abilities": {
             "0": "Keen Eye",
-            "1": "Iron Fist",
-            "H": "Inner Focus"
+            "1": "Iron Fist"
         },
         "baseStats": {
             "atk": 105,
@@ -8258,8 +8081,7 @@
     "hitmonlee": {
         "abilities": {
             "0": "Limber",
-            "1": "Reckless",
-            "H": "Unburden"
+            "1": "Reckless"
         },
         "baseStats": {
             "atk": 120,
@@ -8289,8 +8111,7 @@
     "hitmontop": {
         "abilities": {
             "0": "Intimidate",
-            "1": "Technician",
-            "H": "Steadfast"
+            "1": "Technician"
         },
         "baseStats": {
             "atk": 95,
@@ -8320,8 +8141,7 @@
     "honchkrow": {
         "abilities": {
             "0": "Insomnia",
-            "1": "Super Luck",
-            "H": "Moxie"
+            "1": "Super Luck"
         },
         "baseStats": {
             "atk": 125,
@@ -8349,8 +8169,7 @@
     },
     "hooh": {
         "abilities": {
-            "0": "Pressure",
-            "H": "Regenerator"
+            "0": "Pressure"
         },
         "baseStats": {
             "atk": 130,
@@ -8377,8 +8196,7 @@
     "hoothoot": {
         "abilities": {
             "0": "Insomnia",
-            "1": "Keen Eye",
-            "H": "Tinted Lens"
+            "1": "Keen Eye"
         },
         "baseStats": {
             "atk": 30,
@@ -8407,8 +8225,7 @@
     "hoppip": {
         "abilities": {
             "0": "Chlorophyll",
-            "1": "Leaf Guard",
-            "H": "Infiltrator"
+            "1": "Leaf Guard"
         },
         "baseStats": {
             "atk": 35,
@@ -8438,8 +8255,7 @@
     "horsea": {
         "abilities": {
             "0": "Swift Swim",
-            "1": "Sniper",
-            "H": "Damp"
+            "1": "Sniper"
         },
         "baseStats": {
             "atk": 40,
@@ -8468,8 +8284,7 @@
     "houndoom": {
         "abilities": {
             "0": "Early Bird",
-            "1": "Flash Fire",
-            "H": "Unnerve"
+            "1": "Flash Fire"
         },
         "baseStats": {
             "atk": 90,
@@ -8532,8 +8347,7 @@
     "houndour": {
         "abilities": {
             "0": "Early Bird",
-            "1": "Flash Fire",
-            "H": "Unnerve"
+            "1": "Flash Fire"
         },
         "baseStats": {
             "atk": 60,
@@ -8561,8 +8375,7 @@
     },
     "huntail": {
         "abilities": {
-            "0": "Swift Swim",
-            "H": "Water Veil"
+            "0": "Swift Swim"
         },
         "baseStats": {
             "atk": 104,
@@ -8590,8 +8403,7 @@
     "hypno": {
         "abilities": {
             "0": "Insomnia",
-            "1": "Forewarn",
-            "H": "Inner Focus"
+            "1": "Forewarn"
         },
         "baseStats": {
             "atk": 73,
@@ -8617,8 +8429,7 @@
     },
     "igglybuff": {
         "abilities": {
-            "0": "Cute Charm",
-            "H": "Friend Guard"
+            "0": "Cute Charm"
         },
         "baseStats": {
             "atk": 30,
@@ -8651,8 +8462,7 @@
     "illumise": {
         "abilities": {
             "0": "Oblivious",
-            "1": "Tinted Lens",
-            "H": "Prankster"
+            "1": "Tinted Lens"
         },
         "baseStats": {
             "atk": 47,
@@ -8678,8 +8488,7 @@
     },
     "infernape": {
         "abilities": {
-            "0": "Blaze",
-            "H": "Iron Fist"
+            "0": "Blaze"
         },
         "baseStats": {
             "atk": 104,
@@ -8712,8 +8521,7 @@
     },
     "ivysaur": {
         "abilities": {
-            "0": "Overgrow",
-            "H": "Chlorophyll"
+            "0": "Overgrow"
         },
         "baseStats": {
             "atk": 62,
@@ -8749,8 +8557,7 @@
     },
     "jigglypuff": {
         "abilities": {
-            "0": "Cute Charm",
-            "H": "Friend Guard"
+            "0": "Cute Charm"
         },
         "baseStats": {
             "atk": 45,
@@ -8809,8 +8616,7 @@
     },
     "jolteon": {
         "abilities": {
-            "0": "Volt Absorb",
-            "H": "Quick Feet"
+            "0": "Volt Absorb"
         },
         "baseStats": {
             "atk": 65,
@@ -8842,8 +8648,7 @@
     "jumbao": {
         "abilities": {
             "0": "Drought",
-            "1": "Trace",
-            "H": "Overcoat"
+            "1": "Trace"
         },
         "baseStats": {
             "atk": 63,
@@ -8873,8 +8678,7 @@
     "jumpluff": {
         "abilities": {
             "0": "Chlorophyll",
-            "1": "Leaf Guard",
-            "H": "Infiltrator"
+            "1": "Leaf Guard"
         },
         "baseStats": {
             "atk": 55,
@@ -8903,8 +8707,7 @@
     "justyke": {
         "abilities": {
             "0": "Levitate",
-            "1": "Bulletproof",
-            "H": "Justified"
+            "1": "Bulletproof"
         },
         "baseStats": {
             "atk": 70,
@@ -8935,8 +8738,7 @@
     "jynx": {
         "abilities": {
             "0": "Oblivious",
-            "1": "Forewarn",
-            "H": "Dry Skin"
+            "1": "Forewarn"
         },
         "baseStats": {
             "atk": 50,
@@ -8965,8 +8767,7 @@
     "kabuto": {
         "abilities": {
             "0": "Swift Swim",
-            "1": "Battle Armor",
-            "H": "Weak Armor"
+            "1": "Battle Armor"
         },
         "baseStats": {
             "atk": 80,
@@ -9000,8 +8801,7 @@
     "kabutops": {
         "abilities": {
             "0": "Swift Swim",
-            "1": "Battle Armor",
-            "H": "Weak Armor"
+            "1": "Battle Armor"
         },
         "baseStats": {
             "atk": 115,
@@ -9034,8 +8834,7 @@
     "kadabra": {
         "abilities": {
             "0": "Synchronize",
-            "1": "Inner Focus",
-            "H": "Magic Guard"
+            "1": "Inner Focus"
         },
         "baseStats": {
             "atk": 35,
@@ -9099,8 +8898,7 @@
     "kangaskhan": {
         "abilities": {
             "0": "Early Bird",
-            "1": "Scrappy",
-            "H": "Inner Focus"
+            "1": "Scrappy"
         },
         "baseStats": {
             "atk": 95,
@@ -9185,8 +8983,7 @@
     "kerfluffle": {
         "abilities": {
             "0": "Natural Cure",
-            "1": "Aroma Veil",
-            "H": "Friend Guard"
+            "1": "Aroma Veil"
         },
         "baseStats": {
             "atk": 78,
@@ -9217,8 +9014,7 @@
     "kingdra": {
         "abilities": {
             "0": "Swift Swim",
-            "1": "Sniper",
-            "H": "Damp"
+            "1": "Sniper"
         },
         "baseStats": {
             "atk": 95,
@@ -9248,8 +9044,7 @@
     "kingler": {
         "abilities": {
             "0": "Hyper Cutter",
-            "1": "Shell Armor",
-            "H": "Sheer Force"
+            "1": "Shell Armor"
         },
         "baseStats": {
             "atk": 130,
@@ -9277,8 +9072,7 @@
     "kinglergmax": {
         "abilities": {
             "0": "Hyper Cutter",
-            "1": "Shell Armor",
-            "H": "Sheer Force"
+            "1": "Shell Armor"
         },
         "baseSpecies": "Kingler",
         "baseStats": {
@@ -9306,8 +9100,7 @@
     "kirlia": {
         "abilities": {
             "0": "Synchronize",
-            "1": "Trace",
-            "H": "Telepathy"
+            "1": "Trace"
         },
         "baseStats": {
             "atk": 35,
@@ -9393,8 +9186,7 @@
     "krabby": {
         "abilities": {
             "0": "Hyper Cutter",
-            "1": "Shell Armor",
-            "H": "Sheer Force"
+            "1": "Shell Armor"
         },
         "baseStats": {
             "atk": 105,
@@ -9421,8 +9213,7 @@
     },
     "kricketot": {
         "abilities": {
-            "0": "Shed Skin",
-            "H": "Run Away"
+            "0": "Shed Skin"
         },
         "baseStats": {
             "atk": 25,
@@ -9449,8 +9240,7 @@
     },
     "kricketune": {
         "abilities": {
-            "0": "Swarm",
-            "H": "Technician"
+            "0": "Swarm"
         },
         "baseStats": {
             "atk": 85,
@@ -9565,8 +9355,7 @@
     "lairon": {
         "abilities": {
             "0": "Sturdy",
-            "1": "Rock Head",
-            "H": "Heavy Metal"
+            "1": "Rock Head"
         },
         "baseStats": {
             "atk": 90,
@@ -9597,8 +9386,7 @@
     "lanturn": {
         "abilities": {
             "0": "Volt Absorb",
-            "1": "Illuminate",
-            "H": "Water Absorb"
+            "1": "Illuminate"
         },
         "baseStats": {
             "atk": 58,
@@ -9626,8 +9414,7 @@
     "lapras": {
         "abilities": {
             "0": "Water Absorb",
-            "1": "Shell Armor",
-            "H": "Hydration"
+            "1": "Shell Armor"
         },
         "baseStats": {
             "atk": 85,
@@ -9655,8 +9442,7 @@
     "laprasgmax": {
         "abilities": {
             "0": "Water Absorb",
-            "1": "Shell Armor",
-            "H": "Hydration"
+            "1": "Shell Armor"
         },
         "baseSpecies": "Lapras",
         "baseStats": {
@@ -9685,8 +9471,7 @@
     },
     "larvitar": {
         "abilities": {
-            "0": "Guts",
-            "H": "Sand Veil"
+            "0": "Guts"
         },
         "baseStats": {
             "atk": 64,
@@ -9838,8 +9623,7 @@
     },
     "leafeon": {
         "abilities": {
-            "0": "Leaf Guard",
-            "H": "Chlorophyll"
+            "0": "Leaf Guard"
         },
         "baseStats": {
             "atk": 110,
@@ -9872,8 +9656,7 @@
     "ledian": {
         "abilities": {
             "0": "Swarm",
-            "1": "Early Bird",
-            "H": "Iron Fist"
+            "1": "Early Bird"
         },
         "baseStats": {
             "atk": 35,
@@ -9901,8 +9684,7 @@
     "ledyba": {
         "abilities": {
             "0": "Swarm",
-            "1": "Early Bird",
-            "H": "Rattled"
+            "1": "Early Bird"
         },
         "baseStats": {
             "atk": 20,
@@ -9931,8 +9713,7 @@
     "lickilicky": {
         "abilities": {
             "0": "Own Tempo",
-            "1": "Oblivious",
-            "H": "Cloud Nine"
+            "1": "Oblivious"
         },
         "baseStats": {
             "atk": 85,
@@ -9960,8 +9741,7 @@
     "lickitung": {
         "abilities": {
             "0": "Own Tempo",
-            "1": "Oblivious",
-            "H": "Cloud Nine"
+            "1": "Oblivious"
         },
         "baseStats": {
             "atk": 55,
@@ -9988,8 +9768,7 @@
     },
     "lileep": {
         "abilities": {
-            "0": "Suction Cups",
-            "H": "Storm Drain"
+            "0": "Suction Cups"
         },
         "baseStats": {
             "atk": 41,
@@ -10022,8 +9801,7 @@
     "linoone": {
         "abilities": {
             "0": "Pickup",
-            "1": "Gluttony",
-            "H": "Quick Feet"
+            "1": "Gluttony"
         },
         "baseStats": {
             "atk": 70,
@@ -10057,8 +9835,7 @@
     "linoonegalar": {
         "abilities": {
             "0": "Pickup",
-            "1": "Gluttony",
-            "H": "Quick Feet"
+            "1": "Gluttony"
         },
         "baseSpecies": "Linoone",
         "baseStats": {
@@ -10091,8 +9868,7 @@
     "lombre": {
         "abilities": {
             "0": "Swift Swim",
-            "1": "Rain Dish",
-            "H": "Own Tempo"
+            "1": "Rain Dish"
         },
         "baseStats": {
             "atk": 50,
@@ -10124,8 +9900,7 @@
     "lopunny": {
         "abilities": {
             "0": "Cute Charm",
-            "1": "Klutz",
-            "H": "Limber"
+            "1": "Klutz"
         },
         "baseStats": {
             "atk": 76,
@@ -10189,8 +9964,7 @@
     "lotad": {
         "abilities": {
             "0": "Swift Swim",
-            "1": "Rain Dish",
-            "H": "Own Tempo"
+            "1": "Rain Dish"
         },
         "baseStats": {
             "atk": 30,
@@ -10219,8 +9993,7 @@
     },
     "loudred": {
         "abilities": {
-            "0": "Soundproof",
-            "H": "Scrappy"
+            "0": "Soundproof"
         },
         "baseStats": {
             "atk": 71,
@@ -10251,8 +10024,7 @@
     "lucario": {
         "abilities": {
             "0": "Steadfast",
-            "1": "Inner Focus",
-            "H": "Justified"
+            "1": "Inner Focus"
         },
         "baseStats": {
             "atk": 110,
@@ -10326,8 +10098,7 @@
     "ludicolo": {
         "abilities": {
             "0": "Swift Swim",
-            "1": "Rain Dish",
-            "H": "Own Tempo"
+            "1": "Rain Dish"
         },
         "baseStats": {
             "atk": 70,
@@ -10356,8 +10127,7 @@
     },
     "lugia": {
         "abilities": {
-            "0": "Pressure",
-            "H": "Multiscale"
+            "0": "Pressure"
         },
         "baseStats": {
             "atk": 90,
@@ -10384,8 +10154,7 @@
     "lumineon": {
         "abilities": {
             "0": "Swift Swim",
-            "1": "Storm Drain",
-            "H": "Water Veil"
+            "1": "Storm Drain"
         },
         "baseStats": {
             "atk": 69,
@@ -10437,8 +10206,7 @@
     },
     "luvdisc": {
         "abilities": {
-            "0": "Swift Swim",
-            "H": "Hydration"
+            "0": "Swift Swim"
         },
         "baseStats": {
             "atk": 30,
@@ -10467,8 +10235,7 @@
     "luxio": {
         "abilities": {
             "0": "Rivalry",
-            "1": "Intimidate",
-            "H": "Guts"
+            "1": "Intimidate"
         },
         "baseStats": {
             "atk": 85,
@@ -10498,8 +10265,7 @@
     "luxray": {
         "abilities": {
             "0": "Rivalry",
-            "1": "Intimidate",
-            "H": "Guts"
+            "1": "Intimidate"
         },
         "baseStats": {
             "atk": 120,
@@ -10526,8 +10292,7 @@
     "machamp": {
         "abilities": {
             "0": "Guts",
-            "1": "No Guard",
-            "H": "Steadfast"
+            "1": "No Guard"
         },
         "baseStats": {
             "atk": 130,
@@ -10559,8 +10324,7 @@
     "machampgmax": {
         "abilities": {
             "0": "Guts",
-            "1": "No Guard",
-            "H": "Steadfast"
+            "1": "No Guard"
         },
         "baseSpecies": "Machamp",
         "baseStats": {
@@ -10592,8 +10356,7 @@
     "machoke": {
         "abilities": {
             "0": "Guts",
-            "1": "No Guard",
-            "H": "Steadfast"
+            "1": "No Guard"
         },
         "baseStats": {
             "atk": 100,
@@ -10627,8 +10390,7 @@
     "machop": {
         "abilities": {
             "0": "Guts",
-            "1": "No Guard",
-            "H": "Steadfast"
+            "1": "No Guard"
         },
         "baseStats": {
             "atk": 80,
@@ -10659,8 +10421,7 @@
     },
     "magby": {
         "abilities": {
-            "0": "Flame Body",
-            "H": "Vital Spirit"
+            "0": "Flame Body"
         },
         "baseStats": {
             "atk": 75,
@@ -10693,8 +10454,7 @@
     "magcargo": {
         "abilities": {
             "0": "Magma Armor",
-            "1": "Flame Body",
-            "H": "Weak Armor"
+            "1": "Flame Body"
         },
         "baseStats": {
             "atk": 50,
@@ -10721,8 +10481,7 @@
     },
     "magikarp": {
         "abilities": {
-            "0": "Swift Swim",
-            "H": "Rattled"
+            "0": "Swift Swim"
         },
         "baseStats": {
             "atk": 10,
@@ -10750,8 +10509,7 @@
     },
     "magmar": {
         "abilities": {
-            "0": "Flame Body",
-            "H": "Vital Spirit"
+            "0": "Flame Body"
         },
         "baseStats": {
             "atk": 95,
@@ -10784,8 +10542,7 @@
     },
     "magmortar": {
         "abilities": {
-            "0": "Flame Body",
-            "H": "Vital Spirit"
+            "0": "Flame Body"
         },
         "baseStats": {
             "atk": 95,
@@ -10817,8 +10574,7 @@
     "magnemite": {
         "abilities": {
             "0": "Magnet Pull",
-            "1": "Sturdy",
-            "H": "Analytic"
+            "1": "Sturdy"
         },
         "baseStats": {
             "atk": 35,
@@ -10848,8 +10604,7 @@
     "magneton": {
         "abilities": {
             "0": "Magnet Pull",
-            "1": "Sturdy",
-            "H": "Analytic"
+            "1": "Sturdy"
         },
         "baseStats": {
             "atk": 60,
@@ -10881,8 +10636,7 @@
     "magnezone": {
         "abilities": {
             "0": "Magnet Pull",
-            "1": "Sturdy",
-            "H": "Analytic"
+            "1": "Sturdy"
         },
         "baseStats": {
             "atk": 70,
@@ -10913,8 +10667,7 @@
     "makuhita": {
         "abilities": {
             "0": "Thick Fat",
-            "1": "Guts",
-            "H": "Sheer Force"
+            "1": "Guts"
         },
         "baseStats": {
             "atk": 60,
@@ -10976,8 +10729,7 @@
     "mamoswine": {
         "abilities": {
             "0": "Oblivious",
-            "1": "Snow Cloak",
-            "H": "Thick Fat"
+            "1": "Snow Cloak"
         },
         "baseStats": {
             "atk": 130,
@@ -11032,8 +10784,7 @@
     "manectric": {
         "abilities": {
             "0": "Static",
-            "1": "Lightning Rod",
-            "H": "Minus"
+            "1": "Lightning Rod"
         },
         "baseStats": {
             "atk": 75,
@@ -11094,8 +10845,7 @@
     "mankey": {
         "abilities": {
             "0": "Vital Spirit",
-            "1": "Anger Point",
-            "H": "Defiant"
+            "1": "Anger Point"
         },
         "baseStats": {
             "atk": 80,
@@ -11123,8 +10873,7 @@
     "mantine": {
         "abilities": {
             "0": "Swift Swim",
-            "1": "Water Absorb",
-            "H": "Water Veil"
+            "1": "Water Absorb"
         },
         "baseStats": {
             "atk": 40,
@@ -11154,8 +10903,7 @@
     "mantyke": {
         "abilities": {
             "0": "Swift Swim",
-            "1": "Water Absorb",
-            "H": "Water Veil"
+            "1": "Water Absorb"
         },
         "baseStats": {
             "atk": 20,
@@ -11184,8 +10932,7 @@
     },
     "mareep": {
         "abilities": {
-            "0": "Static",
-            "H": "Plus"
+            "0": "Static"
         },
         "baseStats": {
             "atk": 40,
@@ -11214,8 +10961,7 @@
     "marill": {
         "abilities": {
             "0": "Thick Fat",
-            "1": "Huge Power",
-            "H": "Sap Sipper"
+            "1": "Huge Power"
         },
         "baseStats": {
             "atk": 20,
@@ -11247,8 +10993,7 @@
     "marowak": {
         "abilities": {
             "0": "Rock Head",
-            "1": "Lightning Rod",
-            "H": "Battle Armor"
+            "1": "Lightning Rod"
         },
         "baseStats": {
             "atk": 80,
@@ -11284,8 +11029,7 @@
     "marowakalola": {
         "abilities": {
             "0": "Cursed Body",
-            "1": "Lightning Rod",
-            "H": "Rock Head"
+            "1": "Lightning Rod"
         },
         "baseSpecies": "Marowak",
         "baseStats": {
@@ -11341,8 +11085,7 @@
     },
     "marshtomp": {
         "abilities": {
-            "0": "Torrent",
-            "H": "Damp"
+            "0": "Torrent"
         },
         "baseStats": {
             "atk": 85,
@@ -11378,8 +11121,7 @@
     },
     "masquerain": {
         "abilities": {
-            "0": "Intimidate",
-            "H": "Unnerve"
+            "0": "Intimidate"
         },
         "baseStats": {
             "atk": 60,
@@ -11408,8 +11150,7 @@
     "mawile": {
         "abilities": {
             "0": "Hyper Cutter",
-            "1": "Intimidate",
-            "H": "Sheer Force"
+            "1": "Intimidate"
         },
         "baseStats": {
             "atk": 85,
@@ -11470,8 +11211,7 @@
     },
     "medicham": {
         "abilities": {
-            "0": "Pure Power",
-            "H": "Telepathy"
+            "0": "Pure Power"
         },
         "baseStats": {
             "atk": 60,
@@ -11533,8 +11273,7 @@
     },
     "meditite": {
         "abilities": {
-            "0": "Pure Power",
-            "H": "Telepathy"
+            "0": "Pure Power"
         },
         "baseStats": {
             "atk": 40,
@@ -11594,8 +11333,7 @@
     "meowth": {
         "abilities": {
             "0": "Pickup",
-            "1": "Technician",
-            "H": "Unnerve"
+            "1": "Technician"
         },
         "baseStats": {
             "atk": 45,
@@ -11633,8 +11371,7 @@
     "meowthalola": {
         "abilities": {
             "0": "Pickup",
-            "1": "Technician",
-            "H": "Rattled"
+            "1": "Technician"
         },
         "baseSpecies": "Meowth",
         "baseStats": {
@@ -11664,8 +11401,7 @@
     "meowthgalar": {
         "abilities": {
             "0": "Pickup",
-            "1": "Tough Claws",
-            "H": "Unnerve"
+            "1": "Tough Claws"
         },
         "baseSpecies": "Meowth",
         "baseStats": {
@@ -11695,8 +11431,7 @@
     "meowthgmax": {
         "abilities": {
             "0": "Pickup",
-            "1": "Technician",
-            "H": "Unnerve"
+            "1": "Technician"
         },
         "baseSpecies": "Meowth",
         "baseStats": {
@@ -11748,8 +11483,7 @@
     },
     "metagross": {
         "abilities": {
-            "0": "Clear Body",
-            "H": "Light Metal"
+            "0": "Clear Body"
         },
         "baseStats": {
             "atk": 135,
@@ -11813,8 +11547,7 @@
     },
     "metang": {
         "abilities": {
-            "0": "Clear Body",
-            "H": "Light Metal"
+            "0": "Clear Body"
         },
         "baseStats": {
             "atk": 75,
@@ -11899,8 +11632,7 @@
     },
     "mewtwo": {
         "abilities": {
-            "0": "Pressure",
-            "H": "Unnerve"
+            "0": "Pressure"
         },
         "baseStats": {
             "atk": 110,
@@ -11992,8 +11724,7 @@
     "miasmaw": {
         "abilities": {
             "0": "Neutralizing Gas",
-            "1": "Hyper Cutter",
-            "H": "Compound Eyes"
+            "1": "Hyper Cutter"
         },
         "baseStats": {
             "atk": 135,
@@ -12023,8 +11754,7 @@
     "miasmite": {
         "abilities": {
             "0": "Neutralizing Gas",
-            "1": "Hyper Cutter",
-            "H": "Compound Eyes"
+            "1": "Hyper Cutter"
         },
         "baseStats": {
             "atk": 85,
@@ -12055,8 +11785,7 @@
     "mightyena": {
         "abilities": {
             "0": "Intimidate",
-            "1": "Quick Feet",
-            "H": "Moxie"
+            "1": "Quick Feet"
         },
         "baseStats": {
             "atk": 90,
@@ -12082,8 +11811,7 @@
     },
     "milotic": {
         "abilities": {
-            "0": "Marvel Scale",
-            "H": "Cute Charm"
+            "0": "Marvel Scale"
         },
         "baseStats": {
             "atk": 60,
@@ -12113,8 +11841,7 @@
     "miltank": {
         "abilities": {
             "0": "Thick Fat",
-            "1": "Scrappy",
-            "H": "Sap Sipper"
+            "1": "Scrappy"
         },
         "baseStats": {
             "atk": 80,
@@ -12140,8 +11867,7 @@
     "mimejr": {
         "abilities": {
             "0": "Soundproof",
-            "1": "Filter",
-            "H": "Technician"
+            "1": "Filter"
         },
         "baseStats": {
             "atk": 25,
@@ -12273,8 +11999,7 @@
     },
     "mollux": {
         "abilities": {
-            "0": "Dry Skin",
-            "H": "Illuminate"
+            "0": "Dry Skin"
         },
         "baseStats": {
             "atk": 45,
@@ -12362,8 +12087,7 @@
     },
     "monferno": {
         "abilities": {
-            "0": "Blaze",
-            "H": "Iron Fist"
+            "0": "Blaze"
         },
         "baseStats": {
             "atk": 78,
@@ -12399,8 +12123,7 @@
     },
     "mothim": {
         "abilities": {
-            "0": "Swarm",
-            "H": "Tinted Lens"
+            "0": "Swarm"
         },
         "baseStats": {
             "atk": 94,
@@ -12429,8 +12152,7 @@
     "mrmime": {
         "abilities": {
             "0": "Soundproof",
-            "1": "Filter",
-            "H": "Technician"
+            "1": "Filter"
         },
         "baseStats": {
             "atk": 45,
@@ -12466,8 +12188,7 @@
     "mrmimegalar": {
         "abilities": {
             "0": "Vital Spirit",
-            "1": "Screen Cleaner",
-            "H": "Ice Body"
+            "1": "Screen Cleaner"
         },
         "baseSpecies": "Mr. Mime",
         "baseStats": {
@@ -12501,8 +12222,7 @@
     },
     "mudkip": {
         "abilities": {
-            "0": "Torrent",
-            "H": "Damp"
+            "0": "Torrent"
         },
         "baseStats": {
             "atk": 70,
@@ -12536,8 +12256,7 @@
     "muk": {
         "abilities": {
             "0": "Stench",
-            "1": "Sticky Hold",
-            "H": "Poison Touch"
+            "1": "Sticky Hold"
         },
         "baseStats": {
             "atk": 105,
@@ -12571,8 +12290,7 @@
     "mukalola": {
         "abilities": {
             "0": "Poison Touch",
-            "1": "Gluttony",
-            "H": "Power of Alchemy"
+            "1": "Gluttony"
         },
         "baseSpecies": "Muk",
         "baseStats": {
@@ -12602,8 +12320,7 @@
     "mumbao": {
         "abilities": {
             "0": "Solar Power",
-            "1": "Trace",
-            "H": "Overcoat"
+            "1": "Trace"
         },
         "baseStats": {
             "atk": 30,
@@ -12633,8 +12350,7 @@
     "munchlax": {
         "abilities": {
             "0": "Pickup",
-            "1": "Thick Fat",
-            "H": "Gluttony"
+            "1": "Thick Fat"
         },
         "baseStats": {
             "atk": 85,
@@ -12667,8 +12383,7 @@
     "murkrow": {
         "abilities": {
             "0": "Insomnia",
-            "1": "Super Luck",
-            "H": "Prankster"
+            "1": "Super Luck"
         },
         "baseStats": {
             "atk": 85,
@@ -12697,8 +12412,7 @@
     "natu": {
         "abilities": {
             "0": "Synchronize",
-            "1": "Early Bird",
-            "H": "Magic Bounce"
+            "1": "Early Bird"
         },
         "baseStats": {
             "atk": 50,
@@ -12727,8 +12441,7 @@
     "naviathan": {
         "abilities": {
             "0": "Water Veil",
-            "1": "Heatproof",
-            "H": "Light Metal"
+            "1": "Heatproof"
         },
         "baseStats": {
             "atk": 110,
@@ -12757,8 +12470,7 @@
     },
     "necturine": {
         "abilities": {
-            "0": "Anticipation",
-            "H": "Telepathy"
+            "0": "Anticipation"
         },
         "baseStats": {
             "atk": 55,
@@ -12789,8 +12501,7 @@
     },
     "necturna": {
         "abilities": {
-            "0": "Forewarn",
-            "H": "Telepathy"
+            "0": "Forewarn"
         },
         "baseStats": {
             "atk": 120,
@@ -12821,8 +12532,7 @@
     "nidoking": {
         "abilities": {
             "0": "Poison Point",
-            "1": "Rivalry",
-            "H": "Sheer Force"
+            "1": "Rivalry"
         },
         "baseStats": {
             "atk": 92,
@@ -12853,8 +12563,7 @@
     "nidoqueen": {
         "abilities": {
             "0": "Poison Point",
-            "1": "Rivalry",
-            "H": "Sheer Force"
+            "1": "Rivalry"
         },
         "baseStats": {
             "atk": 82,
@@ -12884,8 +12593,7 @@
     "nidoranf": {
         "abilities": {
             "0": "Poison Point",
-            "1": "Rivalry",
-            "H": "Hustle"
+            "1": "Rivalry"
         },
         "baseStats": {
             "atk": 47,
@@ -12915,8 +12623,7 @@
     "nidoranm": {
         "abilities": {
             "0": "Poison Point",
-            "1": "Rivalry",
-            "H": "Hustle"
+            "1": "Rivalry"
         },
         "baseStats": {
             "atk": 57,
@@ -12946,8 +12653,7 @@
     "nidorina": {
         "abilities": {
             "0": "Poison Point",
-            "1": "Rivalry",
-            "H": "Hustle"
+            "1": "Rivalry"
         },
         "baseStats": {
             "atk": 62,
@@ -12978,8 +12684,7 @@
     "nidorino": {
         "abilities": {
             "0": "Poison Point",
-            "1": "Rivalry",
-            "H": "Hustle"
+            "1": "Rivalry"
         },
         "baseStats": {
             "atk": 72,
@@ -13010,8 +12715,7 @@
     },
     "nincada": {
         "abilities": {
-            "0": "Compound Eyes",
-            "H": "Run Away"
+            "0": "Compound Eyes"
         },
         "baseStats": {
             "atk": 45,
@@ -13040,8 +12744,7 @@
     },
     "ninetales": {
         "abilities": {
-            "0": "Flash Fire",
-            "H": "Drought"
+            "0": "Flash Fire"
         },
         "baseStats": {
             "atk": 76,
@@ -13079,8 +12782,7 @@
     },
     "ninetalesalola": {
         "abilities": {
-            "0": "Snow Cloak",
-            "H": "Snow Warning"
+            "0": "Snow Cloak"
         },
         "baseSpecies": "Ninetales",
         "baseStats": {
@@ -13114,8 +12816,7 @@
     },
     "ninjask": {
         "abilities": {
-            "0": "Speed Boost",
-            "H": "Infiltrator"
+            "0": "Speed Boost"
         },
         "baseStats": {
             "atk": 90,
@@ -13143,8 +12844,7 @@
     "noctowl": {
         "abilities": {
             "0": "Insomnia",
-            "1": "Keen Eye",
-            "H": "Tinted Lens"
+            "1": "Keen Eye"
         },
         "baseStats": {
             "atk": 50,
@@ -13172,8 +12872,7 @@
     "nosepass": {
         "abilities": {
             "0": "Sturdy",
-            "1": "Magnet Pull",
-            "H": "Sand Force"
+            "1": "Magnet Pull"
         },
         "baseStats": {
             "atk": 45,
@@ -13201,8 +12900,7 @@
     "numel": {
         "abilities": {
             "0": "Oblivious",
-            "1": "Simple",
-            "H": "Own Tempo"
+            "1": "Simple"
         },
         "baseStats": {
             "atk": 60,
@@ -13231,8 +12929,7 @@
     "nuzleaf": {
         "abilities": {
             "0": "Chlorophyll",
-            "1": "Early Bird",
-            "H": "Pickpocket"
+            "1": "Early Bird"
         },
         "baseStats": {
             "atk": 70,
@@ -13264,8 +12961,7 @@
     "octillery": {
         "abilities": {
             "0": "Suction Cups",
-            "1": "Sniper",
-            "H": "Moody"
+            "1": "Sniper"
         },
         "baseStats": {
             "atk": 105,
@@ -13292,8 +12988,7 @@
     },
     "oddish": {
         "abilities": {
-            "0": "Chlorophyll",
-            "H": "Run Away"
+            "0": "Chlorophyll"
         },
         "baseStats": {
             "atk": 50,
@@ -13322,8 +13017,7 @@
     "omanyte": {
         "abilities": {
             "0": "Swift Swim",
-            "1": "Shell Armor",
-            "H": "Weak Armor"
+            "1": "Shell Armor"
         },
         "baseStats": {
             "atk": 40,
@@ -13357,8 +13051,7 @@
     "omastar": {
         "abilities": {
             "0": "Swift Swim",
-            "1": "Shell Armor",
-            "H": "Weak Armor"
+            "1": "Shell Armor"
         },
         "baseStats": {
             "atk": 60,
@@ -13391,8 +13084,7 @@
     "onix": {
         "abilities": {
             "0": "Rock Head",
-            "1": "Sturdy",
-            "H": "Weak Armor"
+            "1": "Sturdy"
         },
         "baseStats": {
             "atk": 45,
@@ -13421,8 +13113,7 @@
     "pachirisu": {
         "abilities": {
             "0": "Run Away",
-            "1": "Pickup",
-            "H": "Volt Absorb"
+            "1": "Pickup"
         },
         "baseStats": {
             "atk": 45,
@@ -13474,8 +13165,7 @@
     },
     "palkia": {
         "abilities": {
-            "0": "Pressure",
-            "H": "Telepathy"
+            "0": "Pressure"
         },
         "baseStats": {
             "atk": 120,
@@ -13502,8 +13192,7 @@
     "paras": {
         "abilities": {
             "0": "Effect Spore",
-            "1": "Dry Skin",
-            "H": "Damp"
+            "1": "Dry Skin"
         },
         "baseStats": {
             "atk": 70,
@@ -13533,8 +13222,7 @@
     "parasect": {
         "abilities": {
             "0": "Effect Spore",
-            "1": "Dry Skin",
-            "H": "Damp"
+            "1": "Dry Skin"
         },
         "baseStats": {
             "atk": 95,
@@ -13562,8 +13250,7 @@
     },
     "pelipper": {
         "abilities": {
-            "0": "Keen Eye",
-            "H": "Rain Dish"
+            "0": "Keen Eye"
         },
         "baseStats": {
             "atk": 50,
@@ -13592,8 +13279,7 @@
     "persian": {
         "abilities": {
             "0": "Limber",
-            "1": "Technician",
-            "H": "Unnerve"
+            "1": "Technician"
         },
         "baseStats": {
             "atk": 70,
@@ -13627,8 +13313,7 @@
     "persianalola": {
         "abilities": {
             "0": "Fur Coat",
-            "1": "Technician",
-            "H": "Rattled"
+            "1": "Technician"
         },
         "baseSpecies": "Persian",
         "baseStats": {
@@ -13656,8 +13341,7 @@
     },
     "phanpy": {
         "abilities": {
-            "0": "Pickup",
-            "H": "Sand Veil"
+            "0": "Pickup"
         },
         "baseStats": {
             "atk": 60,
@@ -13710,8 +13394,7 @@
     },
     "pichu": {
         "abilities": {
-            "0": "Static",
-            "H": "Lightning Rod"
+            "0": "Static"
         },
         "baseStats": {
             "atk": 40,
@@ -13774,8 +13457,7 @@
     "pidgeot": {
         "abilities": {
             "0": "Keen Eye",
-            "1": "Tangled Feet",
-            "H": "Big Pecks"
+            "1": "Tangled Feet"
         },
         "baseStats": {
             "atk": 80,
@@ -13838,8 +13520,7 @@
     "pidgeotto": {
         "abilities": {
             "0": "Keen Eye",
-            "1": "Tangled Feet",
-            "H": "Big Pecks"
+            "1": "Tangled Feet"
         },
         "baseStats": {
             "atk": 60,
@@ -13870,8 +13551,7 @@
     "pidgey": {
         "abilities": {
             "0": "Keen Eye",
-            "1": "Tangled Feet",
-            "H": "Big Pecks"
+            "1": "Tangled Feet"
         },
         "baseStats": {
             "atk": 45,
@@ -13899,8 +13579,7 @@
     },
     "pikachu": {
         "abilities": {
-            "0": "Static",
-            "H": "Lightning Rod"
+            "0": "Static"
         },
         "baseStats": {
             "atk": 55,
@@ -14043,8 +13722,7 @@
     },
     "pikachugmax": {
         "abilities": {
-            "0": "Static",
-            "H": "Lightning Rod"
+            "0": "Static"
         },
         "baseSpecies": "Pikachu",
         "baseStats": {
@@ -14328,8 +14006,7 @@
     },
     "pikachustarter": {
         "abilities": {
-            "0": "Static",
-            "H": "Lightning Rod"
+            "0": "Static"
         },
         "baseSpecies": "Pikachu",
         "baseStats": {
@@ -14383,8 +14060,7 @@
     },
     "pikachuworld": {
         "abilities": {
-            "0": "Static",
-            "H": "Lightning Rod"
+            "0": "Static"
         },
         "baseSpecies": "Pikachu",
         "baseStats": {
@@ -14413,8 +14089,7 @@
     "piloswine": {
         "abilities": {
             "0": "Oblivious",
-            "1": "Snow Cloak",
-            "H": "Thick Fat"
+            "1": "Snow Cloak"
         },
         "baseStats": {
             "atk": 100,
@@ -14444,8 +14119,7 @@
     },
     "pineco": {
         "abilities": {
-            "0": "Sturdy",
-            "H": "Overcoat"
+            "0": "Sturdy"
         },
         "baseStats": {
             "atk": 65,
@@ -14473,8 +14147,7 @@
     "pinsir": {
         "abilities": {
             "0": "Hyper Cutter",
-            "1": "Mold Breaker",
-            "H": "Moxie"
+            "1": "Mold Breaker"
         },
         "baseStats": {
             "atk": 125,
@@ -14533,8 +14206,7 @@
     },
     "piplup": {
         "abilities": {
-            "0": "Torrent",
-            "H": "Defiant"
+            "0": "Torrent"
         },
         "baseStats": {
             "atk": 51,
@@ -14568,8 +14240,7 @@
     "plasmanta": {
         "abilities": {
             "0": "Storm Drain",
-            "1": "Vital Spirit",
-            "H": "Telepathy"
+            "1": "Vital Spirit"
         },
         "baseStats": {
             "atk": 57,
@@ -14599,8 +14270,7 @@
     "pluffle": {
         "abilities": {
             "0": "Natural Cure",
-            "1": "Aroma Veil",
-            "H": "Friend Guard"
+            "1": "Aroma Veil"
         },
         "baseStats": {
             "atk": 38,
@@ -14946,8 +14616,7 @@
     "pokestarsmeargle": {
         "abilities": {
             "0": "Own Tempo",
-            "1": "Technician",
-            "H": "Moody"
+            "1": "Technician"
         },
         "baseStats": {
             "atk": 20,
@@ -15152,8 +14821,7 @@
     "politoed": {
         "abilities": {
             "0": "Water Absorb",
-            "1": "Damp",
-            "H": "Drizzle"
+            "1": "Damp"
         },
         "baseStats": {
             "atk": 75,
@@ -15181,8 +14849,7 @@
     "poliwag": {
         "abilities": {
             "0": "Water Absorb",
-            "1": "Damp",
-            "H": "Swift Swim"
+            "1": "Damp"
         },
         "baseStats": {
             "atk": 50,
@@ -15210,8 +14877,7 @@
     "poliwhirl": {
         "abilities": {
             "0": "Water Absorb",
-            "1": "Damp",
-            "H": "Swift Swim"
+            "1": "Damp"
         },
         "baseStats": {
             "atk": 65,
@@ -15242,8 +14908,7 @@
     "poliwrath": {
         "abilities": {
             "0": "Water Absorb",
-            "1": "Damp",
-            "H": "Swift Swim"
+            "1": "Damp"
         },
         "baseStats": {
             "atk": 85,
@@ -15272,8 +14937,7 @@
     "ponyta": {
         "abilities": {
             "0": "Run Away",
-            "1": "Flash Fire",
-            "H": "Flame Body"
+            "1": "Flash Fire"
         },
         "baseStats": {
             "atk": 85,
@@ -15308,8 +14972,7 @@
     "ponytagalar": {
         "abilities": {
             "0": "Run Away",
-            "1": "Pastel Veil",
-            "H": "Anticipation"
+            "1": "Pastel Veil"
         },
         "baseSpecies": "Ponyta",
         "baseStats": {
@@ -15339,8 +15002,7 @@
     "poochyena": {
         "abilities": {
             "0": "Run Away",
-            "1": "Quick Feet",
-            "H": "Rattled"
+            "1": "Quick Feet"
         },
         "baseStats": {
             "atk": 55,
@@ -15368,8 +15030,7 @@
     "porygon": {
         "abilities": {
             "0": "Trace",
-            "1": "Download",
-            "H": "Analytic"
+            "1": "Download"
         },
         "baseStats": {
             "atk": 60,
@@ -15398,8 +15059,7 @@
     "porygon2": {
         "abilities": {
             "0": "Trace",
-            "1": "Download",
-            "H": "Analytic"
+            "1": "Download"
         },
         "baseStats": {
             "atk": 80,
@@ -15431,8 +15091,7 @@
     "porygonz": {
         "abilities": {
             "0": "Adaptability",
-            "1": "Download",
-            "H": "Analytic"
+            "1": "Download"
         },
         "baseStats": {
             "atk": 80,
@@ -15461,8 +15120,7 @@
     "primeape": {
         "abilities": {
             "0": "Vital Spirit",
-            "1": "Anger Point",
-            "H": "Defiant"
+            "1": "Anger Point"
         },
         "baseStats": {
             "atk": 105,
@@ -15488,8 +15146,7 @@
     },
     "prinplup": {
         "abilities": {
-            "0": "Torrent",
-            "H": "Defiant"
+            "0": "Torrent"
         },
         "baseStats": {
             "atk": 66,
@@ -15524,8 +15181,7 @@
     },
     "privatyke": {
         "abilities": {
-            "0": "Unaware",
-            "H": "Technician"
+            "0": "Unaware"
         },
         "baseStats": {
             "atk": 75,
@@ -15556,8 +15212,7 @@
     "probopass": {
         "abilities": {
             "0": "Sturdy",
-            "1": "Magnet Pull",
-            "H": "Sand Force"
+            "1": "Magnet Pull"
         },
         "baseStats": {
             "atk": 55,
@@ -15586,8 +15241,7 @@
     "psyduck": {
         "abilities": {
             "0": "Damp",
-            "1": "Cloud Nine",
-            "H": "Swift Swim"
+            "1": "Cloud Nine"
         },
         "baseStats": {
             "atk": 52,
@@ -15646,8 +15300,7 @@
     "purugly": {
         "abilities": {
             "0": "Thick Fat",
-            "1": "Own Tempo",
-            "H": "Defiant"
+            "1": "Own Tempo"
         },
         "baseStats": {
             "atk": 82,
@@ -15708,8 +15361,7 @@
     "quagsire": {
         "abilities": {
             "0": "Damp",
-            "1": "Water Absorb",
-            "H": "Unaware"
+            "1": "Water Absorb"
         },
         "baseStats": {
             "atk": 85,
@@ -15771,8 +15423,7 @@
     "qwilfish": {
         "abilities": {
             "0": "Poison Point",
-            "1": "Swift Swim",
-            "H": "Intimidate"
+            "1": "Swift Swim"
         },
         "baseStats": {
             "atk": 95,
@@ -15797,8 +15448,7 @@
     },
     "raichu": {
         "abilities": {
-            "0": "Static",
-            "H": "Lightning Rod"
+            "0": "Static"
         },
         "baseStats": {
             "atk": 90,
@@ -15890,8 +15540,7 @@
     "ralts": {
         "abilities": {
             "0": "Synchronize",
-            "1": "Trace",
-            "H": "Telepathy"
+            "1": "Trace"
         },
         "baseStats": {
             "atk": 25,
@@ -15918,8 +15567,7 @@
     },
     "rampardos": {
         "abilities": {
-            "0": "Mold Breaker",
-            "H": "Sheer Force"
+            "0": "Mold Breaker"
         },
         "baseStats": {
             "atk": 165,
@@ -15950,8 +15598,7 @@
     "rapidash": {
         "abilities": {
             "0": "Run Away",
-            "1": "Flash Fire",
-            "H": "Flame Body"
+            "1": "Flash Fire"
         },
         "baseStats": {
             "atk": 100,
@@ -15985,8 +15632,7 @@
     "rapidashgalar": {
         "abilities": {
             "0": "Run Away",
-            "1": "Pastel Veil",
-            "H": "Anticipation"
+            "1": "Pastel Veil"
         },
         "baseSpecies": "Rapidash",
         "baseStats": {
@@ -16016,8 +15662,7 @@
     "raticate": {
         "abilities": {
             "0": "Run Away",
-            "1": "Guts",
-            "H": "Hustle"
+            "1": "Guts"
         },
         "baseStats": {
             "atk": 81,
@@ -16053,8 +15698,7 @@
     "raticatealola": {
         "abilities": {
             "0": "Gluttony",
-            "1": "Hustle",
-            "H": "Thick Fat"
+            "1": "Hustle"
         },
         "baseSpecies": "Raticate",
         "baseStats": {
@@ -16111,8 +15755,7 @@
     "rattata": {
         "abilities": {
             "0": "Run Away",
-            "1": "Guts",
-            "H": "Hustle"
+            "1": "Guts"
         },
         "baseStats": {
             "atk": 56,
@@ -16147,8 +15790,7 @@
     "rattataalola": {
         "abilities": {
             "0": "Gluttony",
-            "1": "Hustle",
-            "H": "Thick Fat"
+            "1": "Hustle"
         },
         "baseSpecies": "Rattata",
         "baseStats": {
@@ -16241,8 +15883,7 @@
     "rebble": {
         "abilities": {
             "0": "Levitate",
-            "1": "Solid Rock",
-            "H": "Sniper"
+            "1": "Solid Rock"
         },
         "baseStats": {
             "atk": 25,
@@ -16372,8 +16013,7 @@
     "relicanth": {
         "abilities": {
             "0": "Swift Swim",
-            "1": "Rock Head",
-            "H": "Sturdy"
+            "1": "Rock Head"
         },
         "baseStats": {
             "atk": 90,
@@ -16404,8 +16044,7 @@
     "remoraid": {
         "abilities": {
             "0": "Hustle",
-            "1": "Sniper",
-            "H": "Moody"
+            "1": "Sniper"
         },
         "baseStats": {
             "atk": 65,
@@ -16462,8 +16101,7 @@
     "rhydon": {
         "abilities": {
             "0": "Lightning Rod",
-            "1": "Rock Head",
-            "H": "Reckless"
+            "1": "Rock Head"
         },
         "baseStats": {
             "atk": 130,
@@ -16495,8 +16133,7 @@
     "rhyhorn": {
         "abilities": {
             "0": "Lightning Rod",
-            "1": "Rock Head",
-            "H": "Reckless"
+            "1": "Rock Head"
         },
         "baseStats": {
             "atk": 85,
@@ -16526,8 +16163,7 @@
     "rhyperior": {
         "abilities": {
             "0": "Lightning Rod",
-            "1": "Solid Rock",
-            "H": "Reckless"
+            "1": "Solid Rock"
         },
         "baseStats": {
             "atk": 140,
@@ -16557,8 +16193,7 @@
     "riolu": {
         "abilities": {
             "0": "Steadfast",
-            "1": "Inner Focus",
-            "H": "Prankster"
+            "1": "Inner Focus"
         },
         "baseStats": {
             "atk": 70,
@@ -16591,8 +16226,7 @@
     "roselia": {
         "abilities": {
             "0": "Natural Cure",
-            "1": "Poison Point",
-            "H": "Leaf Guard"
+            "1": "Poison Point"
         },
         "baseStats": {
             "atk": 60,
@@ -16626,8 +16260,7 @@
     "roserade": {
         "abilities": {
             "0": "Natural Cure",
-            "1": "Poison Point",
-            "H": "Technician"
+            "1": "Poison Point"
         },
         "baseStats": {
             "atk": 70,
@@ -16843,8 +16476,7 @@
     "sableye": {
         "abilities": {
             "0": "Keen Eye",
-            "1": "Stall",
-            "H": "Prankster"
+            "1": "Stall"
         },
         "baseStats": {
             "atk": 75,
@@ -16904,8 +16536,7 @@
     },
     "salamence": {
         "abilities": {
-            "0": "Intimidate",
-            "H": "Moxie"
+            "0": "Intimidate"
         },
         "baseStats": {
             "atk": 135,
@@ -16967,8 +16598,7 @@
     },
     "sandshrew": {
         "abilities": {
-            "0": "Sand Veil",
-            "H": "Sand Rush"
+            "0": "Sand Veil"
         },
         "baseStats": {
             "atk": 75,
@@ -17002,8 +16632,7 @@
     },
     "sandshrewalola": {
         "abilities": {
-            "0": "Snow Cloak",
-            "H": "Slush Rush"
+            "0": "Snow Cloak"
         },
         "baseSpecies": "Sandshrew",
         "baseStats": {
@@ -17033,8 +16662,7 @@
     },
     "sandslash": {
         "abilities": {
-            "0": "Sand Veil",
-            "H": "Sand Rush"
+            "0": "Sand Veil"
         },
         "baseStats": {
             "atk": 100,
@@ -17067,8 +16695,7 @@
     },
     "sandslashalola": {
         "abilities": {
-            "0": "Snow Cloak",
-            "H": "Slush Rush"
+            "0": "Snow Cloak"
         },
         "baseSpecies": "Sandslash",
         "baseStats": {
@@ -17098,8 +16725,7 @@
     },
     "sceptile": {
         "abilities": {
-            "0": "Overgrow",
-            "H": "Unburden"
+            "0": "Overgrow"
         },
         "baseStats": {
             "atk": 85,
@@ -17172,8 +16798,7 @@
     "scizor": {
         "abilities": {
             "0": "Swarm",
-            "1": "Technician",
-            "H": "Light Metal"
+            "1": "Technician"
         },
         "baseStats": {
             "atk": 130,
@@ -17237,8 +16862,7 @@
     "scratchet": {
         "abilities": {
             "0": "Scrappy",
-            "1": "Prankster",
-            "H": "Vital Spirit"
+            "1": "Prankster"
         },
         "baseStats": {
             "atk": 85,
@@ -17269,8 +16893,7 @@
     "scyther": {
         "abilities": {
             "0": "Swarm",
-            "1": "Technician",
-            "H": "Steadfast"
+            "1": "Technician"
         },
         "baseStats": {
             "atk": 110,
@@ -17299,8 +16922,7 @@
     "seadra": {
         "abilities": {
             "0": "Poison Point",
-            "1": "Sniper",
-            "H": "Damp"
+            "1": "Sniper"
         },
         "baseStats": {
             "atk": 65,
@@ -17331,8 +16953,7 @@
     "seaking": {
         "abilities": {
             "0": "Swift Swim",
-            "1": "Water Veil",
-            "H": "Lightning Rod"
+            "1": "Water Veil"
         },
         "baseStats": {
             "atk": 92,
@@ -17359,8 +16980,7 @@
     "sealeo": {
         "abilities": {
             "0": "Thick Fat",
-            "1": "Ice Body",
-            "H": "Oblivious"
+            "1": "Ice Body"
         },
         "baseStats": {
             "atk": 60,
@@ -17392,8 +17012,7 @@
     "seedot": {
         "abilities": {
             "0": "Chlorophyll",
-            "1": "Early Bird",
-            "H": "Pickpocket"
+            "1": "Early Bird"
         },
         "baseStats": {
             "atk": 40,
@@ -17422,8 +17041,7 @@
     "seel": {
         "abilities": {
             "0": "Thick Fat",
-            "1": "Hydration",
-            "H": "Ice Body"
+            "1": "Hydration"
         },
         "baseStats": {
             "atk": 45,
@@ -17452,8 +17070,7 @@
     "sentret": {
         "abilities": {
             "0": "Run Away",
-            "1": "Keen Eye",
-            "H": "Frisk"
+            "1": "Keen Eye"
         },
         "baseStats": {
             "atk": 46,
@@ -17480,8 +17097,7 @@
     },
     "seviper": {
         "abilities": {
-            "0": "Shed Skin",
-            "H": "Infiltrator"
+            "0": "Shed Skin"
         },
         "baseStats": {
             "atk": 100,
@@ -17506,8 +17122,7 @@
     },
     "sharpedo": {
         "abilities": {
-            "0": "Rough Skin",
-            "H": "Speed Boost"
+            "0": "Rough Skin"
         },
         "baseStats": {
             "atk": 120,
@@ -17660,8 +17275,7 @@
     },
     "shelgon": {
         "abilities": {
-            "0": "Rock Head",
-            "H": "Overcoat"
+            "0": "Rock Head"
         },
         "baseStats": {
             "atk": 95,
@@ -17691,8 +17305,7 @@
     "shellder": {
         "abilities": {
             "0": "Shell Armor",
-            "1": "Skill Link",
-            "H": "Overcoat"
+            "1": "Skill Link"
         },
         "baseStats": {
             "atk": 65,
@@ -17720,8 +17333,7 @@
     "shellos": {
         "abilities": {
             "0": "Sticky Hold",
-            "1": "Storm Drain",
-            "H": "Sand Force"
+            "1": "Storm Drain"
         },
         "baseForme": "West",
         "baseStats": {
@@ -17757,8 +17369,7 @@
     },
     "shieldon": {
         "abilities": {
-            "0": "Sturdy",
-            "H": "Soundproof"
+            "0": "Sturdy"
         },
         "baseStats": {
             "atk": 42,
@@ -17791,8 +17402,7 @@
     "shiftry": {
         "abilities": {
             "0": "Chlorophyll",
-            "1": "Early Bird",
-            "H": "Pickpocket"
+            "1": "Early Bird"
         },
         "baseStats": {
             "atk": 100,
@@ -17822,8 +17432,7 @@
     "shinx": {
         "abilities": {
             "0": "Rivalry",
-            "1": "Intimidate",
-            "H": "Guts"
+            "1": "Intimidate"
         },
         "baseStats": {
             "atk": 65,
@@ -17851,8 +17460,7 @@
     "shroomish": {
         "abilities": {
             "0": "Effect Spore",
-            "1": "Poison Heal",
-            "H": "Quick Feet"
+            "1": "Poison Heal"
         },
         "baseStats": {
             "atk": 40,
@@ -17881,8 +17489,7 @@
     "shuckle": {
         "abilities": {
             "0": "Sturdy",
-            "1": "Gluttony",
-            "H": "Contrary"
+            "1": "Gluttony"
         },
         "baseStats": {
             "atk": 10,
@@ -17908,8 +17515,7 @@
     "shuppet": {
         "abilities": {
             "0": "Insomnia",
-            "1": "Frisk",
-            "H": "Cursed Body"
+            "1": "Frisk"
         },
         "baseStats": {
             "atk": 75,
@@ -17966,8 +17572,7 @@
     "skarmory": {
         "abilities": {
             "0": "Keen Eye",
-            "1": "Sturdy",
-            "H": "Weak Armor"
+            "1": "Sturdy"
         },
         "baseStats": {
             "atk": 80,
@@ -17993,8 +17598,7 @@
     "skiploom": {
         "abilities": {
             "0": "Chlorophyll",
-            "1": "Leaf Guard",
-            "H": "Infiltrator"
+            "1": "Leaf Guard"
         },
         "baseStats": {
             "atk": 45,
@@ -18026,8 +17630,7 @@
     "skitty": {
         "abilities": {
             "0": "Cute Charm",
-            "1": "Normalize",
-            "H": "Wonder Skin"
+            "1": "Normalize"
         },
         "baseStats": {
             "atk": 45,
@@ -18060,8 +17663,7 @@
     "skorupi": {
         "abilities": {
             "0": "Battle Armor",
-            "1": "Sniper",
-            "H": "Keen Eye"
+            "1": "Sniper"
         },
         "baseStats": {
             "atk": 50,
@@ -18091,8 +17693,7 @@
     "skuntank": {
         "abilities": {
             "0": "Stench",
-            "1": "Aftermath",
-            "H": "Keen Eye"
+            "1": "Aftermath"
         },
         "baseStats": {
             "atk": 93,
@@ -18173,8 +17774,7 @@
     "slowbro": {
         "abilities": {
             "0": "Oblivious",
-            "1": "Own Tempo",
-            "H": "Regenerator"
+            "1": "Own Tempo"
         },
         "baseStats": {
             "atk": 75,
@@ -18212,8 +17812,7 @@
     "slowbrogalar": {
         "abilities": {
             "0": "Quick Draw",
-            "1": "Own Tempo",
-            "H": "Regenerator"
+            "1": "Own Tempo"
         },
         "baseSpecies": "Slowbro",
         "baseStats": {
@@ -18274,8 +17873,7 @@
     "slowking": {
         "abilities": {
             "0": "Oblivious",
-            "1": "Own Tempo",
-            "H": "Regenerator"
+            "1": "Own Tempo"
         },
         "baseStats": {
             "atk": 75,
@@ -18312,8 +17910,7 @@
     "slowkinggalar": {
         "abilities": {
             "0": "Curious Medicine",
-            "1": "Own Tempo",
-            "H": "Regenerator"
+            "1": "Own Tempo"
         },
         "baseSpecies": "Slowking",
         "baseStats": {
@@ -18345,8 +17942,7 @@
     "slowpoke": {
         "abilities": {
             "0": "Oblivious",
-            "1": "Own Tempo",
-            "H": "Regenerator"
+            "1": "Own Tempo"
         },
         "baseStats": {
             "atk": 65,
@@ -18384,8 +17980,7 @@
     "slowpokegalar": {
         "abilities": {
             "0": "Gluttony",
-            "1": "Own Tempo",
-            "H": "Regenerator"
+            "1": "Own Tempo"
         },
         "baseSpecies": "Slowpoke",
         "baseStats": {
@@ -18417,8 +18012,7 @@
     "slugma": {
         "abilities": {
             "0": "Magma Armor",
-            "1": "Flame Body",
-            "H": "Weak Armor"
+            "1": "Flame Body"
         },
         "baseStats": {
             "atk": 40,
@@ -18446,8 +18040,7 @@
     "smeargle": {
         "abilities": {
             "0": "Own Tempo",
-            "1": "Technician",
-            "H": "Moody"
+            "1": "Technician"
         },
         "baseStats": {
             "atk": 20,
@@ -18471,8 +18064,7 @@
     },
     "smogecko": {
         "abilities": {
-            "0": "Blaze",
-            "H": "Technician"
+            "0": "Blaze"
         },
         "baseStats": {
             "atk": 66,
@@ -18505,8 +18097,7 @@
     },
     "smoguana": {
         "abilities": {
-            "0": "Blaze",
-            "H": "Technician"
+            "0": "Blaze"
         },
         "baseStats": {
             "atk": 86,
@@ -18542,8 +18133,7 @@
     },
     "smokomodo": {
         "abilities": {
-            "0": "Blaze",
-            "H": "Technician"
+            "0": "Blaze"
         },
         "baseStats": {
             "atk": 116,
@@ -18577,8 +18167,7 @@
     "smoochum": {
         "abilities": {
             "0": "Oblivious",
-            "1": "Forewarn",
-            "H": "Hydration"
+            "1": "Forewarn"
         },
         "baseStats": {
             "atk": 30,
@@ -18608,8 +18197,7 @@
     },
     "snaelstrom": {
         "abilities": {
-            "0": "Torrent",
-            "H": "Poison Heal"
+            "0": "Torrent"
         },
         "baseStats": {
             "atk": 94,
@@ -18643,8 +18231,7 @@
     "sneasel": {
         "abilities": {
             "0": "Inner Focus",
-            "1": "Keen Eye",
-            "H": "Pickpocket"
+            "1": "Keen Eye"
         },
         "baseStats": {
             "atk": 95,
@@ -18673,8 +18260,7 @@
     "snorlax": {
         "abilities": {
             "0": "Immunity",
-            "1": "Thick Fat",
-            "H": "Gluttony"
+            "1": "Thick Fat"
         },
         "baseStats": {
             "atk": 110,
@@ -18707,8 +18293,7 @@
     "snorlaxgmax": {
         "abilities": {
             "0": "Immunity",
-            "1": "Thick Fat",
-            "H": "Gluttony"
+            "1": "Thick Fat"
         },
         "baseSpecies": "Snorlax",
         "baseStats": {
@@ -18740,8 +18325,7 @@
     "snorunt": {
         "abilities": {
             "0": "Inner Focus",
-            "1": "Ice Body",
-            "H": "Moody"
+            "1": "Ice Body"
         },
         "baseStats": {
             "atk": 50,
@@ -18770,8 +18354,7 @@
     },
     "snover": {
         "abilities": {
-            "0": "Snow Warning",
-            "H": "Soundproof"
+            "0": "Snow Warning"
         },
         "baseStats": {
             "atk": 62,
@@ -18801,8 +18384,7 @@
     "snubbull": {
         "abilities": {
             "0": "Intimidate",
-            "1": "Run Away",
-            "H": "Rattled"
+            "1": "Run Away"
         },
         "baseStats": {
             "atk": 80,
@@ -18835,8 +18417,7 @@
     "snugglow": {
         "abilities": {
             "0": "Storm Drain",
-            "1": "Vital Spirit",
-            "H": "Telepathy"
+            "1": "Vital Spirit"
         },
         "baseStats": {
             "atk": 37,
@@ -18867,8 +18448,7 @@
     "solotl": {
         "abilities": {
             "0": "Regenerator",
-            "1": "Vital Spirit",
-            "H": "Magician"
+            "1": "Vital Spirit"
         },
         "baseStats": {
             "atk": 48,
@@ -18924,8 +18504,7 @@
     },
     "spearow": {
         "abilities": {
-            "0": "Keen Eye",
-            "H": "Sniper"
+            "0": "Keen Eye"
         },
         "baseStats": {
             "atk": 60,
@@ -18954,8 +18533,7 @@
     "spheal": {
         "abilities": {
             "0": "Thick Fat",
-            "1": "Ice Body",
-            "H": "Oblivious"
+            "1": "Ice Body"
         },
         "baseStats": {
             "atk": 40,
@@ -18985,8 +18563,7 @@
     "spinarak": {
         "abilities": {
             "0": "Swarm",
-            "1": "Insomnia",
-            "H": "Sniper"
+            "1": "Insomnia"
         },
         "baseStats": {
             "atk": 60,
@@ -19015,8 +18592,7 @@
     "spinda": {
         "abilities": {
             "0": "Own Tempo",
-            "1": "Tangled Feet",
-            "H": "Contrary"
+            "1": "Tangled Feet"
         },
         "baseStats": {
             "atk": 60,
@@ -19041,8 +18617,7 @@
     },
     "spiritomb": {
         "abilities": {
-            "0": "Pressure",
-            "H": "Infiltrator"
+            "0": "Pressure"
         },
         "baseStats": {
             "atk": 92,
@@ -19068,8 +18643,7 @@
     "spoink": {
         "abilities": {
             "0": "Thick Fat",
-            "1": "Own Tempo",
-            "H": "Gluttony"
+            "1": "Own Tempo"
         },
         "baseStats": {
             "atk": 25,
@@ -19096,8 +18670,7 @@
     },
     "squirtle": {
         "abilities": {
-            "0": "Torrent",
-            "H": "Rain Dish"
+            "0": "Torrent"
         },
         "baseStats": {
             "atk": 48,
@@ -19131,8 +18704,7 @@
     "stantler": {
         "abilities": {
             "0": "Intimidate",
-            "1": "Frisk",
-            "H": "Sap Sipper"
+            "1": "Frisk"
         },
         "baseStats": {
             "atk": 95,
@@ -19156,8 +18728,7 @@
     },
     "staraptor": {
         "abilities": {
-            "0": "Intimidate",
-            "H": "Reckless"
+            "0": "Intimidate"
         },
         "baseStats": {
             "atk": 120,
@@ -19184,8 +18755,7 @@
     },
     "staravia": {
         "abilities": {
-            "0": "Intimidate",
-            "H": "Reckless"
+            "0": "Intimidate"
         },
         "baseStats": {
             "atk": 75,
@@ -19244,8 +18814,7 @@
     "starmie": {
         "abilities": {
             "0": "Illuminate",
-            "1": "Natural Cure",
-            "H": "Analytic"
+            "1": "Natural Cure"
         },
         "baseStats": {
             "atk": 75,
@@ -19275,8 +18844,7 @@
     "staryu": {
         "abilities": {
             "0": "Illuminate",
-            "1": "Natural Cure",
-            "H": "Analytic"
+            "1": "Natural Cure"
         },
         "baseStats": {
             "atk": 45,
@@ -19305,8 +18873,7 @@
     "steelix": {
         "abilities": {
             "0": "Rock Head",
-            "1": "Sturdy",
-            "H": "Sheer Force"
+            "1": "Sturdy"
         },
         "baseStats": {
             "atk": 85,
@@ -19399,8 +18966,7 @@
     "stunky": {
         "abilities": {
             "0": "Stench",
-            "1": "Aftermath",
-            "H": "Keen Eye"
+            "1": "Aftermath"
         },
         "baseStats": {
             "atk": 63,
@@ -19429,8 +18995,7 @@
     "sudowoodo": {
         "abilities": {
             "0": "Sturdy",
-            "1": "Rock Head",
-            "H": "Rattled"
+            "1": "Rock Head"
         },
         "baseStats": {
             "atk": 100,
@@ -19484,8 +19049,7 @@
     "sunflora": {
         "abilities": {
             "0": "Chlorophyll",
-            "1": "Solar Power",
-            "H": "Early Bird"
+            "1": "Solar Power"
         },
         "baseStats": {
             "atk": 75,
@@ -19513,8 +19077,7 @@
     "sunkern": {
         "abilities": {
             "0": "Chlorophyll",
-            "1": "Solar Power",
-            "H": "Early Bird"
+            "1": "Solar Power"
         },
         "baseStats": {
             "atk": 30,
@@ -19541,8 +19104,7 @@
     },
     "surskit": {
         "abilities": {
-            "0": "Swift Swim",
-            "H": "Rain Dish"
+            "0": "Swift Swim"
         },
         "baseStats": {
             "atk": 30,
@@ -19571,8 +19133,7 @@
     },
     "swablu": {
         "abilities": {
-            "0": "Natural Cure",
-            "H": "Cloud Nine"
+            "0": "Natural Cure"
         },
         "baseStats": {
             "atk": 40,
@@ -19602,8 +19163,7 @@
     "swalot": {
         "abilities": {
             "0": "Liquid Ooze",
-            "1": "Sticky Hold",
-            "H": "Gluttony"
+            "1": "Sticky Hold"
         },
         "baseStats": {
             "atk": 73,
@@ -19629,8 +19189,7 @@
     },
     "swampert": {
         "abilities": {
-            "0": "Torrent",
-            "H": "Damp"
+            "0": "Torrent"
         },
         "baseStats": {
             "atk": 110,
@@ -19703,8 +19262,7 @@
     },
     "swellow": {
         "abilities": {
-            "0": "Guts",
-            "H": "Scrappy"
+            "0": "Guts"
         },
         "baseStats": {
             "atk": 85,
@@ -19732,8 +19290,7 @@
     "swinub": {
         "abilities": {
             "0": "Oblivious",
-            "1": "Snow Cloak",
-            "H": "Thick Fat"
+            "1": "Snow Cloak"
         },
         "baseStats": {
             "atk": 50,
@@ -19761,8 +19318,7 @@
     },
     "swirlpool": {
         "abilities": {
-            "0": "Torrent",
-            "H": "Poison Heal"
+            "0": "Torrent"
         },
         "baseStats": {
             "atk": 49,
@@ -19825,8 +19381,7 @@
     "syclar": {
         "abilities": {
             "0": "Compound Eyes",
-            "1": "Snow Cloak",
-            "H": "Ice Body"
+            "1": "Snow Cloak"
         },
         "baseStats": {
             "atk": 76,
@@ -19856,8 +19411,7 @@
     "tactite": {
         "abilities": {
             "0": "Levitate",
-            "1": "Technician",
-            "H": "Sniper"
+            "1": "Technician"
         },
         "baseStats": {
             "atk": 40,
@@ -19888,8 +19442,7 @@
     },
     "taillow": {
         "abilities": {
-            "0": "Guts",
-            "H": "Scrappy"
+            "0": "Guts"
         },
         "baseStats": {
             "atk": 55,
@@ -19918,8 +19471,7 @@
     "tangela": {
         "abilities": {
             "0": "Chlorophyll",
-            "1": "Leaf Guard",
-            "H": "Regenerator"
+            "1": "Leaf Guard"
         },
         "baseStats": {
             "atk": 55,
@@ -19947,8 +19499,7 @@
     "tangrowth": {
         "abilities": {
             "0": "Chlorophyll",
-            "1": "Leaf Guard",
-            "H": "Regenerator"
+            "1": "Leaf Guard"
         },
         "baseStats": {
             "atk": 100,
@@ -19976,8 +19527,7 @@
     "tauros": {
         "abilities": {
             "0": "Intimidate",
-            "1": "Anger Point",
-            "H": "Sheer Force"
+            "1": "Anger Point"
         },
         "baseStats": {
             "atk": 100,
@@ -20003,8 +19553,7 @@
     "teddiursa": {
         "abilities": {
             "0": "Pickup",
-            "1": "Quick Feet",
-            "H": "Honey Gather"
+            "1": "Quick Feet"
         },
         "baseStats": {
             "atk": 80,
@@ -20032,8 +19581,7 @@
     "tentacool": {
         "abilities": {
             "0": "Clear Body",
-            "1": "Liquid Ooze",
-            "H": "Rain Dish"
+            "1": "Liquid Ooze"
         },
         "baseStats": {
             "atk": 40,
@@ -20062,8 +19610,7 @@
     "tentacruel": {
         "abilities": {
             "0": "Clear Body",
-            "1": "Liquid Ooze",
-            "H": "Rain Dish"
+            "1": "Liquid Ooze"
         },
         "baseStats": {
             "atk": 70,
@@ -20091,8 +19638,7 @@
     "togekiss": {
         "abilities": {
             "0": "Hustle",
-            "1": "Serene Grace",
-            "H": "Super Luck"
+            "1": "Serene Grace"
         },
         "baseStats": {
             "atk": 50,
@@ -20126,8 +19672,7 @@
     "togepi": {
         "abilities": {
             "0": "Hustle",
-            "1": "Serene Grace",
-            "H": "Super Luck"
+            "1": "Serene Grace"
         },
         "baseStats": {
             "atk": 20,
@@ -20160,8 +19705,7 @@
     "togetic": {
         "abilities": {
             "0": "Hustle",
-            "1": "Serene Grace",
-            "H": "Super Luck"
+            "1": "Serene Grace"
         },
         "baseStats": {
             "atk": 40,
@@ -20197,8 +19741,7 @@
     "tomohawk": {
         "abilities": {
             "0": "Intimidate",
-            "1": "Prankster",
-            "H": "Justified"
+            "1": "Prankster"
         },
         "baseStats": {
             "atk": 60,
@@ -20227,8 +19770,7 @@
     },
     "torchic": {
         "abilities": {
-            "0": "Blaze",
-            "H": "Speed Boost"
+            "0": "Blaze"
         },
         "baseStats": {
             "atk": 60,
@@ -20260,8 +19802,7 @@
     },
     "torkoal": {
         "abilities": {
-            "0": "White Smoke",
-            "H": "Shell Armor"
+            "0": "White Smoke"
         },
         "baseStats": {
             "atk": 85,
@@ -20285,8 +19826,7 @@
     },
     "torterra": {
         "abilities": {
-            "0": "Overgrow",
-            "H": "Shell Armor"
+            "0": "Overgrow"
         },
         "baseStats": {
             "atk": 109,
@@ -20352,8 +19892,7 @@
     "toxicroak": {
         "abilities": {
             "0": "Anticipation",
-            "1": "Dry Skin",
-            "H": "Poison Touch"
+            "1": "Dry Skin"
         },
         "baseStats": {
             "atk": 106,
@@ -20381,8 +19920,7 @@
     "trapinch": {
         "abilities": {
             "0": "Hyper Cutter",
-            "1": "Arena Trap",
-            "H": "Sheer Force"
+            "1": "Arena Trap"
         },
         "baseStats": {
             "atk": 100,
@@ -20409,8 +19947,7 @@
     },
     "treecko": {
         "abilities": {
-            "0": "Overgrow",
-            "H": "Unburden"
+            "0": "Overgrow"
         },
         "baseStats": {
             "atk": 45,
@@ -20444,8 +19981,7 @@
     "tropius": {
         "abilities": {
             "0": "Chlorophyll",
-            "1": "Solar Power",
-            "H": "Harvest"
+            "1": "Solar Power"
         },
         "baseStats": {
             "atk": 68,
@@ -20471,8 +20007,7 @@
     },
     "turtwig": {
         "abilities": {
-            "0": "Overgrow",
-            "H": "Shell Armor"
+            "0": "Overgrow"
         },
         "baseStats": {
             "atk": 68,
@@ -20535,8 +20070,7 @@
     },
     "tyranitar": {
         "abilities": {
-            "0": "Sand Stream",
-            "H": "Unnerve"
+            "0": "Sand Stream"
         },
         "baseStats": {
             "atk": 134,
@@ -20599,8 +20133,7 @@
     "tyrogue": {
         "abilities": {
             "0": "Guts",
-            "1": "Steadfast",
-            "H": "Vital Spirit"
+            "1": "Steadfast"
         },
         "baseStats": {
             "atk": 35,
@@ -20632,8 +20165,7 @@
     },
     "umbreon": {
         "abilities": {
-            "0": "Synchronize",
-            "H": "Inner Focus"
+            "0": "Synchronize"
         },
         "baseStats": {
             "atk": 65,
@@ -20750,8 +20282,7 @@
     "ursaring": {
         "abilities": {
             "0": "Guts",
-            "1": "Quick Feet",
-            "H": "Unnerve"
+            "1": "Quick Feet"
         },
         "baseStats": {
             "atk": 130,
@@ -20802,8 +20333,7 @@
     },
     "vaporeon": {
         "abilities": {
-            "0": "Water Absorb",
-            "H": "Hydration"
+            "0": "Water Absorb"
         },
         "baseStats": {
             "atk": 65,
@@ -20835,8 +20365,7 @@
     "venomoth": {
         "abilities": {
             "0": "Shield Dust",
-            "1": "Tinted Lens",
-            "H": "Wonder Skin"
+            "1": "Tinted Lens"
         },
         "baseStats": {
             "atk": 65,
@@ -20864,8 +20393,7 @@
     "venonat": {
         "abilities": {
             "0": "Compound Eyes",
-            "1": "Tinted Lens",
-            "H": "Run Away"
+            "1": "Tinted Lens"
         },
         "baseStats": {
             "atk": 55,
@@ -20893,8 +20421,7 @@
     },
     "venusaur": {
         "abilities": {
-            "0": "Overgrow",
-            "H": "Chlorophyll"
+            "0": "Overgrow"
         },
         "baseStats": {
             "atk": 82,
@@ -20935,8 +20462,7 @@
     },
     "venusaurgmax": {
         "abilities": {
-            "0": "Overgrow",
-            "H": "Chlorophyll"
+            "0": "Overgrow"
         },
         "baseSpecies": "Venusaur",
         "baseStats": {
@@ -21002,8 +20528,7 @@
     },
     "vespiquen": {
         "abilities": {
-            "0": "Pressure",
-            "H": "Unnerve"
+            "0": "Pressure"
         },
         "baseStats": {
             "atk": 80,
@@ -21061,8 +20586,7 @@
     },
     "victreebel": {
         "abilities": {
-            "0": "Chlorophyll",
-            "H": "Gluttony"
+            "0": "Chlorophyll"
         },
         "baseStats": {
             "atk": 105,
@@ -21119,8 +20643,7 @@
     },
     "vileplume": {
         "abilities": {
-            "0": "Chlorophyll",
-            "H": "Effect Spore"
+            "0": "Chlorophyll"
         },
         "baseStats": {
             "atk": 80,
@@ -21149,8 +20672,7 @@
     "volbeat": {
         "abilities": {
             "0": "Illuminate",
-            "1": "Swarm",
-            "H": "Prankster"
+            "1": "Swarm"
         },
         "baseStats": {
             "atk": 73,
@@ -21177,8 +20699,7 @@
     "volkraken": {
         "abilities": {
             "0": "Analytic",
-            "1": "Infiltrator",
-            "H": "Pressure"
+            "1": "Infiltrator"
         },
         "baseStats": {
             "atk": 45,
@@ -21208,8 +20729,7 @@
     "volkritter": {
         "abilities": {
             "0": "Anticipation",
-            "1": "Infiltrator",
-            "H": "Unnerve"
+            "1": "Infiltrator"
         },
         "baseStats": {
             "atk": 30,
@@ -21240,8 +20760,7 @@
     "voltorb": {
         "abilities": {
             "0": "Soundproof",
-            "1": "Static",
-            "H": "Aftermath"
+            "1": "Static"
         },
         "baseStats": {
             "atk": 30,
@@ -21270,8 +20789,7 @@
     "voodoll": {
         "abilities": {
             "0": "Volt Absorb",
-            "1": "Lightning Rod",
-            "H": "Cursed Body"
+            "1": "Lightning Rod"
         },
         "baseStats": {
             "atk": 40,
@@ -21331,8 +20849,7 @@
     },
     "vulpix": {
         "abilities": {
-            "0": "Flash Fire",
-            "H": "Drought"
+            "0": "Flash Fire"
         },
         "baseStats": {
             "atk": 41,
@@ -21370,8 +20887,7 @@
     },
     "vulpixalola": {
         "abilities": {
-            "0": "Snow Cloak",
-            "H": "Snow Warning"
+            "0": "Snow Cloak"
         },
         "baseSpecies": "Vulpix",
         "baseStats": {
@@ -21405,8 +20921,7 @@
     "wailmer": {
         "abilities": {
             "0": "Water Veil",
-            "1": "Oblivious",
-            "H": "Pressure"
+            "1": "Oblivious"
         },
         "baseStats": {
             "atk": 70,
@@ -21435,8 +20950,7 @@
     "wailord": {
         "abilities": {
             "0": "Water Veil",
-            "1": "Oblivious",
-            "H": "Pressure"
+            "1": "Oblivious"
         },
         "baseStats": {
             "atk": 90,
@@ -21464,8 +20978,7 @@
     "walrein": {
         "abilities": {
             "0": "Thick Fat",
-            "1": "Ice Body",
-            "H": "Oblivious"
+            "1": "Ice Body"
         },
         "baseStats": {
             "atk": 80,
@@ -21493,8 +21006,7 @@
     },
     "wartortle": {
         "abilities": {
-            "0": "Torrent",
-            "H": "Rain Dish"
+            "0": "Torrent"
         },
         "baseStats": {
             "atk": 63,
@@ -21529,8 +21041,7 @@
     },
     "weavile": {
         "abilities": {
-            "0": "Pressure",
-            "H": "Pickpocket"
+            "0": "Pressure"
         },
         "baseStats": {
             "atk": 120,
@@ -21558,8 +21069,7 @@
     },
     "weedle": {
         "abilities": {
-            "0": "Shield Dust",
-            "H": "Run Away"
+            "0": "Shield Dust"
         },
         "baseStats": {
             "atk": 35,
@@ -21587,8 +21097,7 @@
     },
     "weepinbell": {
         "abilities": {
-            "0": "Chlorophyll",
-            "H": "Gluttony"
+            "0": "Chlorophyll"
         },
         "baseStats": {
             "atk": 90,
@@ -21652,8 +21161,7 @@
     "weezinggalar": {
         "abilities": {
             "0": "Levitate",
-            "1": "Neutralizing Gas",
-            "H": "Misty Surge"
+            "1": "Neutralizing Gas"
         },
         "baseSpecies": "Weezing",
         "baseStats": {
@@ -21683,8 +21191,7 @@
     "whiscash": {
         "abilities": {
             "0": "Oblivious",
-            "1": "Anticipation",
-            "H": "Hydration"
+            "1": "Anticipation"
         },
         "baseStats": {
             "atk": 78,
@@ -21711,8 +21218,7 @@
     },
     "whismur": {
         "abilities": {
-            "0": "Soundproof",
-            "H": "Rattled"
+            "0": "Soundproof"
         },
         "baseStats": {
             "atk": 51,
@@ -21740,8 +21246,7 @@
     },
     "wigglytuff": {
         "abilities": {
-            "0": "Cute Charm",
-            "H": "Frisk"
+            "0": "Cute Charm"
         },
         "baseStats": {
             "atk": 70,
@@ -21772,8 +21277,7 @@
     },
     "wingull": {
         "abilities": {
-            "0": "Keen Eye",
-            "H": "Rain Dish"
+            "0": "Keen Eye"
         },
         "baseStats": {
             "atk": 30,
@@ -21802,8 +21306,7 @@
     },
     "wobbuffet": {
         "abilities": {
-            "0": "Shadow Tag",
-            "H": "Telepathy"
+            "0": "Shadow Tag"
         },
         "baseStats": {
             "atk": 33,
@@ -21831,8 +21334,7 @@
     "wooper": {
         "abilities": {
             "0": "Damp",
-            "1": "Water Absorb",
-            "H": "Unaware"
+            "1": "Water Absorb"
         },
         "baseStats": {
             "atk": 45,
@@ -21861,8 +21363,7 @@
     },
     "wormadam": {
         "abilities": {
-            "0": "Anticipation",
-            "H": "Overcoat"
+            "0": "Anticipation"
         },
         "baseForme": "Plant",
         "baseStats": {
@@ -21900,8 +21401,7 @@
     },
     "wormadamsandy": {
         "abilities": {
-            "0": "Anticipation",
-            "H": "Overcoat"
+            "0": "Anticipation"
         },
         "baseSpecies": "Wormadam",
         "baseStats": {
@@ -21931,8 +21431,7 @@
     },
     "wormadamtrash": {
         "abilities": {
-            "0": "Anticipation",
-            "H": "Overcoat"
+            "0": "Anticipation"
         },
         "baseSpecies": "Wormadam",
         "baseStats": {
@@ -21962,8 +21461,7 @@
     },
     "wurmple": {
         "abilities": {
-            "0": "Shield Dust",
-            "H": "Run Away"
+            "0": "Shield Dust"
         },
         "baseStats": {
             "atk": 45,
@@ -21991,8 +21489,7 @@
     },
     "wynaut": {
         "abilities": {
-            "0": "Shadow Tag",
-            "H": "Telepathy"
+            "0": "Shadow Tag"
         },
         "baseStats": {
             "atk": 23,
@@ -22021,8 +21518,7 @@
     "xatu": {
         "abilities": {
             "0": "Synchronize",
-            "1": "Early Bird",
-            "H": "Magic Bounce"
+            "1": "Early Bird"
         },
         "baseStats": {
             "atk": 75,
@@ -22050,8 +21546,7 @@
     "yanma": {
         "abilities": {
             "0": "Speed Boost",
-            "1": "Compound Eyes",
-            "H": "Frisk"
+            "1": "Compound Eyes"
         },
         "baseStats": {
             "atk": 65,
@@ -22080,8 +21575,7 @@
     "yanmega": {
         "abilities": {
             "0": "Speed Boost",
-            "1": "Tinted Lens",
-            "H": "Frisk"
+            "1": "Tinted Lens"
         },
         "baseStats": {
             "atk": 76,
@@ -22109,8 +21603,7 @@
     },
     "zangoose": {
         "abilities": {
-            "0": "Immunity",
-            "H": "Toxic Boost"
+            "0": "Immunity"
         },
         "baseStats": {
             "atk": 115,
@@ -22196,8 +21689,7 @@
     "zigzagoon": {
         "abilities": {
             "0": "Pickup",
-            "1": "Gluttony",
-            "H": "Quick Feet"
+            "1": "Gluttony"
         },
         "baseStats": {
             "atk": 30,
@@ -22232,8 +21724,7 @@
     "zigzagoongalar": {
         "abilities": {
             "0": "Pickup",
-            "1": "Gluttony",
-            "H": "Quick Feet"
+            "1": "Gluttony"
         },
         "baseSpecies": "Zigzagoon",
         "baseStats": {
@@ -22263,8 +21754,7 @@
     },
     "zubat": {
         "abilities": {
-            "0": "Inner Focus",
-            "H": "Infiltrator"
+            "0": "Inner Focus"
         },
         "baseStats": {
             "atk": 45,

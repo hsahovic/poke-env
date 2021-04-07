@@ -752,27 +752,36 @@ class Pokemon:
         return self._weightkg
 
 
-#Gen specific classes
+# Gen specific classes
+
 
 class Gen4Pokemon(Pokemon):
     MOVE_CLASS = GEN_TO_MOVE_CLASS[4]
     POKEDEX_DICT = GEN_TO_POKEDEX[4]
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> fix bug with paths and bug in gen4 pokedex, tests and linting
 class Gen5Pokemon(Pokemon):
     MOVE_CLASS = GEN_TO_MOVE_CLASS[5]
     POKEDEX_DICT = GEN_TO_POKEDEX[5]
+
 
 class Gen6Pokemon(Pokemon):
     MOVE_CLASS = GEN_TO_MOVE_CLASS[6]
     POKEDEX_DICT = GEN_TO_POKEDEX[6]
 
+
 class Gen7Pokemon(Pokemon):
     MOVE_CLASS = GEN_TO_MOVE_CLASS[7]
     POKEDEX_DICT = GEN_TO_POKEDEX[7]
 
+
 class Gen8Pokemon(Pokemon):
     MOVE_CLASS = GEN_TO_MOVE_CLASS[8]
     POKEDEX_DICT = GEN_TO_POKEDEX[8]
+
 
 GEN_TO_POKEMON = {
     4: Gen4Pokemon,

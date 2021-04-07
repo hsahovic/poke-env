@@ -729,19 +729,24 @@ class EmptyMove(Move):
 class Gen4Move(Move):
     MOVES_DICT = GEN_TO_MOVES[4]
 
+
 class Gen5Move(Move):
     MOVES_DICT = GEN_TO_MOVES[5]
+
 
 class Gen6Move(Move):
     MOVES_DICT = GEN_TO_MOVES[6]
 
+
 class Gen7Move(Move):
     MOVES_DICT = GEN_TO_MOVES[7]
+
 
 class Gen8Move(Move):
     MOVES_DICT = GEN_TO_MOVES[8]
 
-GEN_TO_MOVE_CLASS ={
+
+GEN_TO_MOVE_CLASS = {
     4: Gen4Move,
     5: Gen5Move,
     6: Gen6Move,
