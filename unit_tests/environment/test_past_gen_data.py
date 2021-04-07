@@ -109,10 +109,10 @@ def test_right_gen_move():
 
 
 def test_right_abilities():
-    # g4_nido=Gen4Pokemon(species="nidoqueen")
-    # assert len(g4_nido.possible_abilities)==2, "{}".format(g4_nido.possible_abilities)
-    # g5_nido=Gen5Pokemon(species="nidoqueen")
-    # assert len(g5_nido.possible_abilities)==3
+    g4_nido = Gen4Pokemon(species="nidoqueen")
+    assert len(g4_nido.possible_abilities) == 2
+    g5_nido = Gen5Pokemon(species="nidoqueen")
+    assert len(g5_nido.possible_abilities) == 3
 
     g5_dusk = Gen5Pokemon(species="dusknoir")
     assert len(g5_dusk.possible_abilities) == 1
