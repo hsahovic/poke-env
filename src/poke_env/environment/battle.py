@@ -8,7 +8,6 @@ from typing import Optional
 from poke_env.environment.move import Move
 from poke_env.environment.pokemon import Pokemon
 from poke_env.environment.abstract_battle import AbstractBattle
-from poke_env.environment.move import SPECIAL_MOVES
 
 
 class Battle(AbstractBattle):
@@ -83,55 +82,16 @@ class Battle(AbstractBattle):
 
         if "active" in request:
             active_request = request["active"][0]
-            active_pokemon = self.active_pokemon
 
             if active_request.get("trapped"):
                 self._trapped = True
 
-            if active_pokemon:
-                for move in active_request["moves"]:
-                    if not move.get("disabled", False):
-                        if move["id"] in active_pokemon.moves:
-                            self._available_moves.append(
-                                active_pokemon.moves[move["id"]]
-                            )
-                        elif move["id"] in SPECIAL_MOVES:
-                            self._available_moves.append(SPECIAL_MOVES[move["id"]])
-                        else:
-                            try:
-                                if not {
-                                    "copycat",
-                                    "metronome",
-                                    "mefirst",
-                                    "mirrormove",
-                                    "assist",
-                                }.intersection(active_pokemon.moves.keys()):
-                                    self.logger.warning(
-                                        "An error occured in battle %s while adding "
-                                        "available moves. The move '%s' was either "
-                                        "unknown or not available for the active "
-                                        "pokemon: %s",
-                                        self.battle_tag,
-                                        move["id"],
-                                        active_pokemon.species,
-                                    )
-                                else:
-                                    self.logger.info(
-                                        "The move '%s' was received in battle %s for "
-                                        "your active pokemon %s. This move could not "
-                                        "be added, but it might come from a special "
-                                        "move such as copycat or me first. If that is "
-                                        "not the case, please make sure there is an "
-                                        "explanation for this behavior or report it if "
-                                        "it is an error.",
-                                        move["id"],
-                                        self.battle_tag,
-                                        active_pokemon.species,
-                                    )
-                                move = Move(move["id"])
-                                self._available_moves.append(move)
-                            except AttributeError:
-                                pass
+            if self.active_pokemon is not None:
+                self._available_moves.extend(
+                    self.active_pokemon.available_moves_from_request(  # pyre-ignore
+                        active_request
+                    )
+                )
             if active_request.get("canMegaEvo", False):
                 self._can_mega_evolve = True
             if active_request.get("canZMove", False):
