@@ -40,6 +40,7 @@ class Effect(Enum):
     DISGUISE = auto()
     DOOM_DESIRE = auto()
     DYNAMAX = auto()
+    EERIE_SPELL = auto()
     ELECTRIC_TERRAIN = auto()
     EMBARGO = auto()
     EMERGENCY_EXIT = auto()
