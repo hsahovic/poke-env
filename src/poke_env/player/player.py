@@ -278,8 +278,6 @@ class Player(PlayerNetwork, ABC):
                     "[Invalid choice] Incomplete choice: "
                 ):
                     await self._handle_battle_request(battle, maybe_default_order=True)
-                elif split_message[2].startswith("[Invalid choice]"):
-                    self._manage_error_in(battle)
                 elif split_message[2].startswith(
                     "[Unavailable choice]"
                 ) and split_message[2].endswith("is disabled"):
@@ -315,9 +313,6 @@ class Player(PlayerNetwork, ABC):
             message = self.choose_move(battle).message
 
         await self._send_message(message, battle.battle_tag)
-
-    def _manage_error_in(self, battle: AbstractBattle):
-        pass
 
     async def _update_challenges(self, split_message: List[str]) -> None:
         """Update internal challenge state.

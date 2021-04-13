@@ -400,6 +400,13 @@ class Pokemon:
         self._current_hp = None
         self._max_hp = None
         self._status = None
+
+        last_request = self._last_request
+        self._last_request = None
+
+        if last_request:
+            self._update_from_request(last_request)
+
         self._switch_out()
 
     def available_moves_from_request(self, request: Dict) -> List[Move]:

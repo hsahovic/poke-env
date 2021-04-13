@@ -57,15 +57,9 @@ class DoubleBattle(AbstractBattle):
             active_dict = self._opponent_active_pokemon
         active = active_dict.get(pokemon_identifier)
 
-        if active is None:
-            raise ValueError("Cannot end illusion without an active pokemon.")
-
-        pokemon = self.get_pokemon(pokemon_name, details=details)
-        pokemon._set_hp(f"{active.current_hp}/{active.max_hp}")
-        active._was_illusionned()
-        pokemon._switch_in()
-        pokemon.status = active.status
-        active_dict[pokemon_identifier] = pokemon
+        active_dict[pokemon_identifier] = self._end_illusion_on(
+            illusioned=active, illusionist=pokemon_name, details=details
+        )
 
     @staticmethod
     def _get_active_pokemon(
@@ -140,6 +134,9 @@ class DoubleBattle(AbstractBattle):
                         self._active_pokemon[f"{self.player_role}a"] = active_pokemon
                     elif f"{self.player_role}b" not in self._active_pokemon:
                         self._active_pokemon[f"{self.player_role}b"] = active_pokemon
+
+                if active_pokemon.fainted:
+                    continue
 
                 if active_request.get("trapped"):
                     self._trapped[active_pokemon_number] = True

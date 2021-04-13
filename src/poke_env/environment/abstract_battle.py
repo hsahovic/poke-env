@@ -213,6 +213,24 @@ class AbstractBattle(ABC):
     def _end_illusion(self, pokemon_name: str, details: str):
         pass
 
+    def _end_illusion_on(
+        self, illusionist: str, illusioned: Optional[Pokemon], details: str
+    ):
+        if illusionist is None:
+            raise ValueError("Cannot end illusion without an active pokemon.")
+        if illusioned is None:
+            raise ValueError("Cannot end illusion without an illusioned pokemon.")
+
+        illusionist_mon = self.get_pokemon(illusionist, details=details)
+
+        illusionist_mon._switch_in(details=details)
+        illusionist_mon.status = illusioned.status
+        illusionist_mon._set_hp(f"{illusioned.current_hp}/{illusioned.max_hp}")
+
+        illusioned._was_illusionned()
+
+        return illusionist_mon
+
     def _field_end(self, field):
         field = Field.from_showdown_message(field)
         if field is not Field._UNKNOWN:
