@@ -4,7 +4,7 @@ import re
 
 # Fetch latest version
 data = requests.get(
-    "https://raw.githubusercontent.com/hsahovic/pokemon-showdown/master/data/learnsets.ts"
+    "https://raw.githubusercontent.com/smogon/pokemon-showdown/master/data/learnsets.ts"
 ).text
 
 # Remove start and end of the file
