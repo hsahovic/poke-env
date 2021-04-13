@@ -283,8 +283,12 @@ class Player(PlayerNetwork, ABC):
                 elif split_message[2].startswith(
                     "[Unavailable choice]"
                 ) and split_message[2].endswith("is disabled"):
-                    self._manage_error_in(battle)
                     battle.move_on_next_request = True
+                elif split_message[2].startswith(
+                    "[Invalid choice] Can't move: You sent more choices than unfainted"
+                    " Pokémon."
+                ):
+                    await self._handle_battle_request(battle, maybe_default_order=True)
                 else:
                     self.logger.critical("Unexpected error message: %s", split_message)
             elif split_message[1] == "turn":
