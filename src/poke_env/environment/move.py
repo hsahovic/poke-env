@@ -14,7 +14,6 @@ from typing import Set
 from typing import Tuple
 from typing import Union
 
-
 SPECIAL_MOVES: Dict
 
 _PROTECT_MOVES = {
