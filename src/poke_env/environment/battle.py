@@ -39,11 +39,9 @@ class Battle(AbstractBattle):
         if active is None:
             raise ValueError("Cannot end illusion without an active pokemon.")
 
-        pokemon = self.get_pokemon(pokemon_name, details=details)
-        pokemon._set_hp(f"{active.current_hp}/{active.max_hp}")
-        active._was_illusionned()
-        pokemon._switch_in(details=details)
-        pokemon.status = active.status
+        self._end_illusion_on(
+            illusioned=active, illusionist=pokemon_name, details=details
+        )
 
     def _parse_request(self, request: Dict) -> None:
         """
