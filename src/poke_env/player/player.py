@@ -294,6 +294,8 @@ class Player(PlayerNetwork, ABC):
                 await self._handle_battle_request(battle)
             elif split_message[1] == "teampreview":
                 await self._handle_battle_request(battle, from_teampreview_request=True)
+            elif split_message[1] == "bigerror":
+                self.logger.warning("Received 'bigerror' message: %s", split_message)
             else:
                 battle._parse_message(split_message)
 
