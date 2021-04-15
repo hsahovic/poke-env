@@ -40,7 +40,7 @@ async def test_max_concurrent_battle_works():
     for max_battles in [1, 3, 5]:
         result = await asyncio.wait_for(
             simple_cross_evaluation(7 * max_battles, max_battles),
-            timeout=5 * max_battles + 5,
+            timeout=5 * max_battles + 15,
         )
 
         times_per_battle = {}
