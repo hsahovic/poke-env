@@ -29,7 +29,7 @@ for gen in range(7, 0, -1):
         if move not in old_gen:
             old_gen[move] = value
             continue
-        if "inherit" in old_gen[move] and old_gen[move]["inherit"] == True:
+        if old_gen[move].get("inherit", False):
             old_gen[move] = {**value, **old_gen[move]}
             old_gen[move].pop("inherit")
 

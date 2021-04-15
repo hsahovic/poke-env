@@ -33,7 +33,7 @@ for gen in range(7, 0, -1):
             continue
         if mon not in old_gen:
             old_gen[mon] = value
-        elif "inherit" in old_gen[mon] and old_gen[mon]["inherit"] == True:
+        elif old_gen[mon].get("inherit", False):
             old_gen[mon] = {**value, **old_gen[mon]}
             old_gen[mon].pop("inherit")
         if gen == 4:

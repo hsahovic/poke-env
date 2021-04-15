@@ -1,4 +1,4 @@
-from poke_env.data import GEN_TO_MOVES, GEN_TO_POKEDEX
+from poke_env.data import GEN_TO_MOVES
 from poke_env.environment.move import (
     Move,
     Gen4Move,
@@ -51,7 +51,7 @@ def test_tackle():
 
 def test_water_shuriken():
     try:
-        g5ws = Gen5Move("watershuriken")
+        Gen5Move("watershuriken")
         assert 1 == 0
     except ValueError:
         assert 1 == 1

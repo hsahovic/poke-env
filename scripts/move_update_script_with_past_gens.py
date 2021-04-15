@@ -69,10 +69,11 @@ for gen in range(1, 9):
         with open("gen" + str(gen) + "_moves.json", "w+") as f:
             f.write(data)
 
-    with open("gen2_move_changes.json", "r") as f:
-        g2changes = json.load(f)
+    if gen == 2:
+        with open("gen2_move_changes.json", "r") as f:
+            g2changes = json.load(f)
 
-    if "block" in g2changes:
-        g2changes.pop("block")
-        with open("gen2_move_changes.json", "w") as f:
-            f.write(json.dumps(g2changes, indent=4, sort_keys=True))
+        if "block" in g2changes:
+            g2changes.pop("block")
+            with open("gen2_move_changes.json", "w") as f:
+                f.write(json.dumps(g2changes, indent=4, sort_keys=True))

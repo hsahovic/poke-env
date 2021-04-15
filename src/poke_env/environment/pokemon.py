@@ -6,7 +6,7 @@ from typing import Optional
 from typing import Tuple
 from typing import Union
 
-from poke_env.data import POKEDEX, GEN_TO_POKEDEX
+from poke_env.data import GEN_TO_POKEDEX
 from poke_env.environment.effect import Effect
 from poke_env.environment.pokemon_gender import PokemonGender
 from poke_env.environment.pokemon_type import PokemonType
