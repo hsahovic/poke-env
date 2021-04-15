@@ -220,8 +220,10 @@ class AbstractBattle(ABC):
             raise ValueError("Cannot end illusion without an active pokemon.")
         if illusioned is None:
             raise ValueError("Cannot end illusion without an illusioned pokemon.")
-
         illusionist_mon = self.get_pokemon(illusionist, details=details)
+
+        if illusionist_mon is illusioned:
+            return illusionist_mon
 
         illusionist_mon._switch_in(details=details)
         illusionist_mon.status = illusioned.status
