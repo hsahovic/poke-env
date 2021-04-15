@@ -601,7 +601,7 @@ class Player(PlayerNetwork, ABC):
         return "/team " + "".join([str(c) for c in members])
 
     def reset_battles(self) -> None:
-        for battle in self._battles.values():
+        for battle in list(self._battles.values()):
             if not battle.finished:
                 raise EnvironmentError(
                     "Can not reset player's battles while they are still running"
