@@ -40,6 +40,9 @@ class Field(Enum):
         message = message.replace("move: ", "")
         message = message.replace(" ", "_")
 
+        if message.endswith("terrain") and not message.endswith("_terrain"):
+            message = message.replace("terrain", "_terrain")
+
         try:
             return Field[message.upper()]
         except KeyError:

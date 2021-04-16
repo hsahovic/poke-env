@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from poke_env.data import MOVES
+from poke_env.environment.field import Field
 from poke_env.environment.move import Move, EmptyMove
 from poke_env.environment.move_category import MoveCategory
 from poke_env.environment.pokemon_type import PokemonType
@@ -442,11 +443,11 @@ def test_terrain():
     flame_thrower = Move("flamethrower")
     electric_terrain = Move("electricterrain")
 
-    assert electric_terrain.terrain == "electricterrain"
+    assert electric_terrain.terrain == Field.ELECTRIC_TERRAIN
     assert flame_thrower.terrain is None
 
     for move in move_generator():
-        assert isinstance(move.terrain, str) or move.terrain is None
+        assert isinstance(move.terrain, Field) or move.terrain is None
 
 
 def test_thaws_target():
