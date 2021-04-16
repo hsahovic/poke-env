@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from poke_env.data import MOVES
+from poke_env.environment.field import Field
 from poke_env.environment.move_category import MoveCategory
 from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.status import Status
@@ -587,12 +588,15 @@ class Move:
         return self.entry["target"]
 
     @property
-    def terrain(self) -> Optional[str]:
+    def terrain(self) -> Optional[Field]:
         """
         :return: Terrain started by the move.
-        :rtype: Optional[str]
+        :rtype: Optional[Field]
         """
-        return self.entry.get("terrain", None)
+        terrain = self.entry.get("terrain", None)
+        if terrain is not None:
+            terrain = Field.from_showdown_message(terrain)
+        return terrain
 
     @property
     def thaws_target(self) -> bool:
