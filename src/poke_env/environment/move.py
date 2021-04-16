@@ -54,7 +54,7 @@ class Move:
         "beforeMoveCallback",
     ]
 
-    __slots__ = "_id", "_current_pp", "_is_empty", "_request_target"
+    __slots__ = "_id", "_current_pp", "_dynamaxed_move", "_is_empty", "_request_target"
 
     def __init__(self, move: str = "", move_id: Optional[str] = None):
         if move_id:
@@ -64,6 +64,7 @@ class Move:
         self._current_pp = self.max_pp
         self._is_empty: bool = False
 
+        self._dynamaxed_move = None
         self._request_target = None
 
     def __repr__(self) -> str:
@@ -213,6 +214,18 @@ class Move:
         if "drain" in self.entry:
             return self.entry["drain"][0] / self.entry["drain"][1]
         return 0.0
+
+    @property
+    def dynamaxed(self):
+        """
+        :return: The dynamaxed version of the move.
+        :rtype: DynamaxMove
+        """
+        if self._dynamaxed_move:
+            return self._dynamaxed_move
+
+        self._dynamaxed_move = DynamaxMove(self)
+        return self._dynamaxed_move
 
     @property
     def entry(self) -> dict:
@@ -707,3 +720,152 @@ class EmptyMove(Move):
 
 
 SPECIAL_MOVES = {"struggle": Move("struggle"), "recharge": EmptyMove("recharge")}
+
+
+class DynamaxMove(Move):
+    BOOSTS_MAP = {
+        PokemonType.BUG: {"spa": -1},
+        PokemonType.DARK: {"spd": -1},
+        PokemonType.DRAGON: {"att": -1},
+        PokemonType.GHOST: {"def": -1},
+        PokemonType.NORMAL: {"spe": -1},
+    }
+    SELF_BOOSTS_MAP = {
+        PokemonType.FIGHTING: {"att": +1},
+        PokemonType.FLYING: {"spe": +1},
+        PokemonType.GROUND: {"spd": +1},
+        PokemonType.POISON: {"spa": +1},
+        PokemonType.STEEL: {"def": +1},
+    }
+    TERRAIN_MAP = {
+        PokemonType.ELECTRIC: Field.ELECTRIC_TERRAIN,
+        PokemonType.FAIRY: Field.MISTY_TERRAIN,
+        PokemonType.GRASS: Field.GRASSY_TERRAIN,
+        PokemonType.PSYCHIC: Field.PSYCHIC_TERRAIN,
+    }
+    WEATHER_MAP = {
+        PokemonType.FIRE: Weather.SUNNYDAY,
+        PokemonType.ICE: Weather.HAIL,
+        PokemonType.ROCK: Weather.SANDSTORM,
+        PokemonType.WATER: Weather.RAINDANCE,
+    }
+
+    def __init__(self, parent: Move):
+        self._parent: Move = parent
+
+    def __getattr__(self, name):
+        return getattr(self._parent, name)
+
+    @property
+    def accuracy(self):
+        return 1
+
+    @property
+    def base_power(self) -> int:
+        if self.category != MoveCategory.STATUS:
+            base_power = self._parent.base_power
+            if self.type in {PokemonType.POISON, PokemonType.FIGHTING}:
+                if base_power < 40:
+                    return 70
+                if base_power < 50:
+                    return 75
+                if base_power < 60:
+                    return 80
+                if base_power < 70:
+                    return 85
+                if base_power < 100:
+                    return 90
+                if base_power < 140:
+                    return 95
+                return 100
+            else:
+                if base_power < 40:
+                    return 90
+                if base_power < 50:
+                    return 100
+                if base_power < 60:
+                    return 110
+                if base_power < 70:
+                    return 120
+                if base_power < 100:
+                    return 130
+                if base_power < 140:
+                    return 140
+                return 150
+        return 0
+
+    @property
+    def boosts(self) -> Optional[Dict[str, float]]:
+        if self.category != MoveCategory.STATUS:
+            return self.BOOSTS_MAP.get(self.type, None)
+        return None
+
+    @property
+    def breaks_protect(self):
+        return False
+
+    @property
+    def crit_ratio(self):
+        return 0
+
+    @property
+    def damage(self):
+        return 0
+
+    @property
+    def defensive_category(self):
+        return self.category
+
+    @property
+    def expected_hits(self):
+        return 1
+
+    @property
+    def force_switch(self):
+        return False
+
+    @property
+    def heal(self):
+        return 0
+
+    @property
+    def is_protect_counter(self):
+        return self.category == MoveCategory.STATUS
+
+    @property
+    def is_protect_move(self):
+        return self.category == MoveCategory.STATUS
+
+    @property
+    def n_hit(self):
+        return 1
+
+    @property
+    def priority(self):
+        return 0
+
+    @property
+    def recoil(self):
+        return 0
+
+    @property
+    def self_boost(self) -> Optional[Dict[str, float]]:
+        if self.category != MoveCategory.STATUS:
+            return self.SELF_BOOSTS_MAP.get(self.type, None)
+        return None
+
+    @property
+    def status(self):
+        return None
+
+    @property
+    def terrain(self) -> Optional[Field]:
+        if self.category != MoveCategory.STATUS:
+            return self.TERRAIN_MAP.get(self.type, None)
+        return None
+
+    @property
+    def weather(self) -> Optional[Weather]:
+        if self.category != MoveCategory.STATUS:
+            return self.WEATHER_MAP.get(self.type, None)
+        return None

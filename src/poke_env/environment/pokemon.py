@@ -417,7 +417,10 @@ class Pokemon:
         ]
         for move in request_moves:
             if move in self.moves:
-                moves.append(self.moves[move])
+                if self.is_dynamaxed:
+                    moves.append(self.moves[move].dynamaxed)
+                else:
+                    moves.append(self.moves[move])
             elif move in SPECIAL_MOVES:
                 moves.append(SPECIAL_MOVES[move])
             else:
