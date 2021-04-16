@@ -539,3 +539,151 @@ def test_z_move_power():
 
     for move in move_generator():
         assert isinstance(move.z_move_power, int)
+
+
+def test_dynamax_move_with_boosts():
+    move = Move("dracometeor")
+    dynamaxed = move.dynamaxed
+
+    assert dynamaxed.boosts == {"att": -1}
+    assert dynamaxed.weather is None
+    assert dynamaxed.terrain is None
+    assert dynamaxed.self_boost is None
+
+    move = Move("tackle")
+    dynamaxed = move.dynamaxed
+
+    assert dynamaxed.boosts == {"spe": -1}
+    assert dynamaxed.weather is None
+    assert dynamaxed.terrain is None
+    assert dynamaxed.self_boost is None
+
+
+def test_dynamax_move_with_self_boosts():
+    move = Move("fly")
+    dynamaxed = move.dynamaxed
+
+    assert dynamaxed.boosts is None
+    assert dynamaxed.weather is None
+    assert dynamaxed.terrain is None
+    assert dynamaxed.self_boost == {"spe": 1}
+
+    move = Move("earthquake")
+    dynamaxed = move.dynamaxed
+
+    assert dynamaxed.boosts is None
+    assert dynamaxed.weather is None
+    assert dynamaxed.terrain is None
+    assert dynamaxed.self_boost == {"spd": 1}
+
+
+def test_dynamax_move_with_terrain():
+    move = Move("psychic")
+    dynamaxed = move.dynamaxed
+
+    assert dynamaxed.boosts is None
+    assert dynamaxed.weather is None
+    assert dynamaxed.terrain == Field.PSYCHIC_TERRAIN
+    assert dynamaxed.self_boost is None
+
+    move = Move("thunder")
+    dynamaxed = move.dynamaxed
+
+    assert dynamaxed.boosts is None
+    assert dynamaxed.weather is None
+    assert dynamaxed.terrain == Field.ELECTRIC_TERRAIN
+    assert dynamaxed.self_boost is None
+
+
+def test_dynamax_move_with_weather():
+    move = Move("flamethrower")
+    dynamaxed = move.dynamaxed
+
+    assert dynamaxed.boosts is None
+    assert dynamaxed.weather == Weather.SUNNYDAY
+    assert dynamaxed.terrain is None
+    assert dynamaxed.self_boost is None
+
+    move = Move("watergun")
+    dynamaxed = move.dynamaxed
+
+    assert dynamaxed.boosts is None
+    assert dynamaxed.weather == Weather.RAINDANCE
+    assert dynamaxed.terrain is None
+    assert dynamaxed.self_boost is None
+
+
+def test_misc_dynamax_move_properties():
+    move = Move("watergun")
+    dynamaxed = move.dynamaxed
+
+    assert dynamaxed.accuracy == 1
+    assert dynamaxed.breaks_protect is False
+    assert dynamaxed.crit_ratio == 0
+    assert dynamaxed.defensive_category is MoveCategory.SPECIAL
+    assert dynamaxed.expected_hits == 1
+    assert dynamaxed.force_switch is False
+    assert dynamaxed.heal == 0
+    assert dynamaxed.is_protect_counter is False
+    assert dynamaxed.is_protect_move is False
+    assert dynamaxed.n_hit == 1
+    assert dynamaxed.priority == 0
+    assert dynamaxed.recoil == 0
+    assert dynamaxed.status is None
+    assert dynamaxed.type == PokemonType.WATER
+
+    move = Move("closecombat")
+    dynamaxed = move.dynamaxed
+    assert dynamaxed.defensive_category is MoveCategory.PHYSICAL
+    assert dynamaxed.type == PokemonType.FIGHTING
+
+
+def test_dynamax_status_move_properties():
+    move = Move("recover")
+    dynamaxed = move.dynamaxed
+
+    assert dynamaxed.accuracy == 1
+    assert dynamaxed.breaks_protect is False
+    assert dynamaxed.crit_ratio == 0
+    assert dynamaxed.defensive_category is MoveCategory.STATUS
+    assert dynamaxed.expected_hits == 1
+    assert dynamaxed.force_switch is False
+    assert dynamaxed.heal == 0
+    assert dynamaxed.is_protect_counter is True
+    assert dynamaxed.is_protect_move is True
+    assert dynamaxed.n_hit == 1
+    assert dynamaxed.priority == 0
+    assert dynamaxed.recoil == 0
+    assert dynamaxed.status is None
+    assert dynamaxed.type == PokemonType.NORMAL
+
+    assert dynamaxed.boosts is None
+    assert dynamaxed.weather is None
+    assert dynamaxed.terrain is None
+    assert dynamaxed.self_boost is None
+
+    assert dynamaxed.base_power == 0
+
+
+def test_dynamax_moves_base_power():
+    move_to_dynamax_power = {
+        "doublekick": 70,
+        "rocksmash": 75,
+        "karatechop": 80,
+        "forcepalm": 85,
+        "vitalthrow": 90,
+        "closecombat": 95,
+        "focuspunch": 100,
+        "firespin": 90,
+        "ember": 100,
+        "flamecharge": 110,
+        "incinerate": 120,
+        "flameburst": 130,
+        "burnup": 140,
+        "eruption": 150,
+    }
+
+    for move_name, bp in move_to_dynamax_power.items():
+        print("Expecting", move_name, "to have", bp, "base power once dynamaxed")
+        move = Move(move_name).dynamaxed
+        assert move.base_power == bp
