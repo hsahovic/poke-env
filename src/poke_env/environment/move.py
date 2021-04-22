@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-import sys
-import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
-
-
 from poke_env.data import MOVES, GEN_TO_MOVES
 from poke_env.environment.field import Field
 from poke_env.environment.move_category import MoveCategory

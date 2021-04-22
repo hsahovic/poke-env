@@ -759,6 +759,7 @@ class Gen4Pokemon(Pokemon):
     MOVE_CLASS = GEN_TO_MOVE_CLASS[4]
     POKEDEX_DICT = GEN_TO_POKEDEX[4]
 
+
 class Gen5Pokemon(Pokemon):
     MOVE_CLASS = GEN_TO_MOVE_CLASS[5]
     POKEDEX_DICT = GEN_TO_POKEDEX[5]
