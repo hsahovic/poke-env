@@ -34,7 +34,6 @@ class AbstractBattle(ABC):
         "-hitcount",
         "-immune",
         "-ohko",
-        "-message",
         "-miss",
         "-notarget",
         "-nothing",
@@ -453,6 +452,8 @@ class AbstractBattle(ABC):
             player, number = split_message[2:4]
             number = int(number)
             self._team_size[player] = number
+        elif split_message[1] in {"message", "-message"}:
+            self.logger.info("Received message: %s", split_message[2])
         else:
             raise NotImplementedError(split_message)
 
