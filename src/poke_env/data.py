@@ -54,7 +54,6 @@ _TYPE_CHART_PATH: str = os.path.join(
 )
 "Path to the json file containing type informations."
 
-##################################################################
 
 POKEDEX: Dict[str, Any] = {}
 
@@ -83,8 +82,6 @@ for name, value in POKEDEX.items():
         value["baseSpecies"] = to_id_str(name)
 
 
-##################################################################
-
 GEN4_POKEDEX: Dict[str, Any] = {}
 
 with open(
@@ -111,7 +108,6 @@ for name, value in GEN4_POKEDEX.items():
     else:
         value["baseSpecies"] = to_id_str(name)
 
-##################################################################
 
 GEN5_POKEDEX: Dict[str, Any] = {}
 
@@ -139,7 +135,6 @@ for name, value in GEN5_POKEDEX.items():
     else:
         value["baseSpecies"] = to_id_str(name)
 
-##################################################################
 
 GEN6_POKEDEX: Dict[str, Any] = {}
 
@@ -167,7 +162,6 @@ for name, value in GEN6_POKEDEX.items():
     else:
         value["baseSpecies"] = to_id_str(name)
 
-##################################################################
 
 GEN7_POKEDEX: Dict[str, Any] = {}
 
@@ -195,7 +189,6 @@ for name, value in GEN7_POKEDEX.items():
     else:
         value["baseSpecies"] = to_id_str(name)
 
-##################################################################
 
 GEN8_POKEDEX: Dict[str, Any] = {}
 
@@ -223,7 +216,6 @@ for name, value in GEN8_POKEDEX.items():
     else:
         value["baseSpecies"] = to_id_str(name)
 
-##################################################################
 
 GEN_TO_POKEDEX: Dict[int, Dict[str, Any]] = {
     4: GEN4_POKEDEX,
@@ -233,7 +225,6 @@ GEN_TO_POKEDEX: Dict[int, Dict[str, Any]] = {
     8: GEN8_POKEDEX,
 }
 
-##################################################################
 
 MOVES: Dict[str, Any] = {}
 
@@ -242,7 +233,6 @@ with open(
 ) as moves:
     MOVES = orjson.loads(moves.read())
 
-##################################################################
 
 GEN4_MOVES: Dict[str, Any] = {}
 
@@ -256,7 +246,6 @@ with open(
 ) as moves:
     GEN4_MOVES = orjson.loads(moves.read())
 
-##################################################################
 
 GEN5_MOVES: Dict[str, Any] = {}
 
@@ -270,7 +259,6 @@ with open(
 ) as moves:
     GEN5_MOVES = orjson.loads(moves.read())
 
-##################################################################
 
 GEN6_MOVES: Dict[str, Any] = {}
 
@@ -284,7 +272,6 @@ with open(
 ) as moves:
     GEN6_MOVES = orjson.loads(moves.read())
 
-##################################################################
 
 GEN7_MOVES: Dict[str, Any] = {}
 
@@ -298,7 +285,6 @@ with open(
 ) as moves:
     GEN7_MOVES = orjson.loads(moves.read())
 
-##################################################################
 
 GEN8_MOVES: Dict[str, Any] = {}
 
@@ -312,7 +298,6 @@ with open(
 ) as moves:
     GEN8_MOVES = orjson.loads(moves.read())
 
-##################################################################
 
 GEN_TO_MOVES: Dict[int, Dict[str, Any]] = {
     4: GEN4_MOVES,
@@ -322,11 +307,9 @@ GEN_TO_MOVES: Dict[int, Dict[str, Any]] = {
     8: GEN8_MOVES,
 }
 
-##################################################################
 
 TYPE_CHART: Dict[str, Dict[str, float]] = _compute_type_chart(_TYPE_CHART_PATH)
 
-##################################################################
 
 NATURES: Dict[str, Dict[str, Union[int, float]]] = {}
 
