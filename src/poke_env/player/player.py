@@ -602,6 +602,7 @@ class Player(PlayerNetwork, ABC):
         return "/team " + "".join([str(c) for c in members])
 
     def reset_battles(self) -> None:
+        """Resets the player's inner battle tracker."""
         for battle in list(self._battles.values()):
             if not battle.finished:
                 raise EnvironmentError(
