@@ -1,2 +1,4 @@
 include README.md
 include src/poke_env/data/*.json
+include src/poke_env/data/moves_by_gen/*.json
+include src/poke_env/data/pokedex_by_gen/*.json

@@ -153,7 +153,8 @@ class Player(PlayerNetwork, ABC):
                         logger=self.logger,
                     )
                 else:
-                    battle = Battle(
+                    battle = Battle.from_format(
+                        format_=self._format,
                         battle_tag=battle_tag,
                         username=self.username,
                         logger=self.logger,

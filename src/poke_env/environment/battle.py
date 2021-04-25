@@ -6,7 +6,7 @@ from typing import List
 from typing import Optional
 
 from poke_env.environment.move import Move
-from poke_env.environment.pokemon import Pokemon
+from poke_env.environment.pokemon import Pokemon, GEN_TO_POKEMON
 from poke_env.environment.abstract_battle import AbstractBattle
 
 
@@ -193,6 +193,20 @@ class Battle(AbstractBattle):
         """
         return self._force_switch
 
+    @staticmethod
+    def from_format(
+        format_: str, battle_tag: str, username: str, logger: Logger
+    ) -> AbstractBattle:
+        """
+        :return: A GenXBattle instance, depending on the format received
+        :rtype: Battle
+        """
+
+        gen = format_[3]  # Update when Gen 10 comes
+        return _GEN_TO_BATTLE_CLASS[gen](
+            battle_tag=battle_tag, username=username, logger=logger
+        )
+
     @property
     def maybe_trapped(self) -> bool:
         """
@@ -237,3 +251,35 @@ class Battle(AbstractBattle):
     @trapped.setter
     def trapped(self, value):
         self._trapped = value
+
+
+# Gen specific classes
+
+
+class Gen4Battle(Battle):
+    POKEMON_CLASS = GEN_TO_POKEMON[4]
+
+
+class Gen5Battle(Battle):
+    POKEMON_CLASS = GEN_TO_POKEMON[5]
+
+
+class Gen6Battle(Battle):
+    POKEMON_CLASS = GEN_TO_POKEMON[6]
+
+
+class Gen7Battle(Battle):
+    POKEMON_CLASS = GEN_TO_POKEMON[7]
+
+
+class Gen8Battle(Battle):
+    POKEMON_CLASS = GEN_TO_POKEMON[8]
+
+
+_GEN_TO_BATTLE_CLASS: Dict = {
+    "4": Gen4Battle,
+    "5": Gen5Battle,
+    "6": Gen6Battle,
+    "7": Gen7Battle,
+    "8": Gen8Battle,
+}
