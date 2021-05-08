@@ -546,6 +546,7 @@ def test_dynamax_move_with_boosts():
     dynamaxed = move.dynamaxed
 
     assert dynamaxed.boosts == {"att": -1}
+    assert dynamaxed.damage == 0
     assert dynamaxed.weather is None
     assert dynamaxed.terrain is None
     assert dynamaxed.self_boost is None
@@ -685,5 +686,37 @@ def test_dynamax_moves_base_power():
 
     for move_name, bp in move_to_dynamax_power.items():
         print("Expecting", move_name, "to have", bp, "base power once dynamaxed")
-        move = Move(move_name).dynamaxed
-        assert move.base_power == bp
+        move = Move(move_name)
+        dynamaxed = move.dynamaxed
+        assert dynamaxed == move.dynamaxed == move._dynamaxed_move  # testing caching
+        assert dynamaxed.base_power == bp
+
+
+def test_should_be_stored():
+    assert Move.should_be_stored("flamethrower")
+    assert not Move.should_be_stored("aciddownpour")
+    assert not Move.should_be_stored("maxooze")
+
+
+def test_is_max_move():
+    assert not Move.is_max_move("flamethrower")
+    assert Move.is_max_move("gmaxwildfire")
+    assert Move.is_max_move("gmaxcannonade")
+    assert Move.is_max_move("maxooze")
+
+
+def test_expected_hits():
+    assert Move("flamethrower").expected_hits == 1
+    assert (
+        Move("triplekick").expected_hits == 5.23
+    )  # TODO: double check interactions here
+    assert Move("bulletseed").expected_hits == 3.166666666666667
+
+
+def test_is_protect_move():
+    assert not Move("flamethrower").is_protect_move
+    assert not Move("flamethrower").is_side_protect_move
+    assert Move("protect").is_protect_move
+    assert not Move("protect").is_side_protect_move
+    assert not Move("wideguard").is_protect_move
+    assert Move("wideguard").is_side_protect_move

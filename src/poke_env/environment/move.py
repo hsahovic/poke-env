@@ -85,7 +85,9 @@ class Move:
     def is_max_move(id_) -> bool:
         if id_.startswith("max"):
             return True
-        if MOVES.get("isNonstandard", None) == "Gigantamax":
+        elif MOVES[id_].get("isNonstandard", None) == "Gigantamax":
+            return True
+        elif MOVES[id_].get("isMax", None) is not None:
             return True
         return False
 
@@ -741,13 +743,7 @@ class Gen8Move(Move):
     MOVES_DICT = GEN_TO_MOVES[8]
 
 
-GEN_TO_MOVE_CLASS = {
-    4: Gen4Move,
-    5: Gen5Move,
-    6: Gen6Move,
-    7: Gen7Move,
-    8: Gen8Move,
-}
+GEN_TO_MOVE_CLASS = {4: Gen4Move, 5: Gen5Move, 6: Gen6Move, 7: Gen7Move, 8: Gen8Move}
 
 SPECIAL_MOVES = {"struggle": Move("struggle"), "recharge": EmptyMove("recharge")}
 
