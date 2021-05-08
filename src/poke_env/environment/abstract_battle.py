@@ -46,7 +46,6 @@ class AbstractBattle(ABC):
         "askreg",
         "debug",
         "c",
-        "cant",
         "crit",
         "deinit",
         "gametype",
