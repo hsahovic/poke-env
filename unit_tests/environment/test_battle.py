@@ -431,3 +431,82 @@ def test_end_illusion():
     assert battle.opponent_active_pokemon.species == "kingdra"
     assert battle.get_pokemon("p2: Zoroark").boosts == non_empty_boosts
     assert battle.get_pokemon("p2: Celebi").boosts == empty_boosts
+
+
+def test_toxic_counter(example_request):
+    logger = MagicMock()
+    battle = Battle("tag", "username", logger)
+
+    battle._parse_request(example_request)
+    battle._parse_message(["", "-status", "p2a: Venusaur", "tox"])
+    assert battle.active_pokemon.status == Status.TOX
+    assert battle.active_pokemon.status_counter == 0
+
+    battle.end_turn(2)
+    assert battle.active_pokemon.status == Status.TOX
+    assert battle.active_pokemon.status_counter == 1
+
+    battle.end_turn(3)
+    assert battle.active_pokemon.status == Status.TOX
+    assert battle.active_pokemon.status_counter == 2
+
+    battle._switch("p2a: Unfezant", "Unfezant, L86, M", "100/100")
+    assert battle.active_pokemon.status is None
+    assert battle.active_pokemon.status_counter == 0
+
+    battle.end_turn(4)
+    assert battle.active_pokemon.status is None
+    assert battle.active_pokemon.status_counter == 0
+
+    battle._switch("p2a: Venusaur", "Venusaur, L82, M", "100/100 tox")
+    assert battle.active_pokemon.status == Status.TOX
+    assert battle.active_pokemon.status_counter == 0
+
+    battle.end_turn(5)
+    assert battle.active_pokemon.status == Status.TOX
+    assert battle.active_pokemon.status_counter == 1
+
+    battle.end_turn(6)
+    assert battle.active_pokemon.status == Status.TOX
+    assert battle.active_pokemon.status_counter == 2
+
+
+def test_sleep_counter(example_request):
+    logger = MagicMock()
+    battle = Battle("tag", "username", logger)
+
+    battle._parse_request(example_request)
+    battle._parse_message(["", "-status", "p2a: Venusaur", "slp"])
+    assert battle.active_pokemon.status == Status.SLP
+    assert battle.active_pokemon.status_counter == 0
+
+    battle.end_turn(2)
+    battle._parse_message(["", "cant", "p2a: Venusaur", ""])
+    assert battle.active_pokemon.status == Status.SLP
+    assert battle.active_pokemon.status_counter == 1
+
+    battle.end_turn(3)
+    assert battle.active_pokemon.status == Status.SLP
+    assert battle.active_pokemon.status_counter == 1
+
+    battle._switch("p2a: Unfezant", "Unfezant, L86, M", "100/100")
+    assert battle.active_pokemon.status is None
+    assert battle.active_pokemon.status_counter == 0
+
+    battle.end_turn(4)
+    assert battle.active_pokemon.status is None
+    assert battle.active_pokemon.status_counter == 0
+
+    battle._switch("p2a: Venusaur", "Venusaur, L82, M", "100/100 slp")
+    assert battle.active_pokemon.status == Status.SLP
+    assert battle.active_pokemon.status_counter == 1
+
+    battle.end_turn(5)
+    battle._parse_message(["", "cant", "p2a: Venusaur", ""])
+    assert battle.active_pokemon.status == Status.SLP
+    assert battle.active_pokemon.status_counter == 2
+
+    battle.end_turn(6)
+    battle._parse_message(["", "cant", "p2a: Venusaur", ""])
+    assert battle.active_pokemon.status == Status.SLP
+    assert battle.active_pokemon.status_counter == 3
