@@ -304,6 +304,9 @@ class Pokemon:
         self._preparing = False
         self._protect_counter = 0
 
+        if self._status == Status.TOX:
+            self._status_counter = 0
+
     def _transform(self, into):
         current_hp = self.current_hp
         self._update_from_pokedex(into.species, store_species=False)
