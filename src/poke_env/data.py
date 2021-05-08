@@ -38,7 +38,7 @@ def _compute_type_chart(chart_path: str) -> Dict[str, Dict[str, float]]:
     return type_chart
 
 
-@lru_cache(2 ** 13)  # pyre-ignore
+@lru_cache(2 ** 13)
 def to_id_str(name: str) -> str:
     """Converts a full-name to its corresponding id string.
     :param name: The name to convert.
