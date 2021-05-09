@@ -264,14 +264,18 @@ class PlayerNetwork(ABC):
         await self._websocket.close()
 
     @abstractmethod
-    async def _handle_battle_message(self, split_messages: List[List[str]]) -> None:
+    async def _handle_battle_message(
+        self, split_messages: List[List[str]]
+    ) -> None:  # pragma: no cover
         """Abstract method.
 
         Implementation should redirect messages to corresponding battles.
         """
 
     @abstractmethod
-    async def _update_challenges(self, split_message: List[str]) -> None:
+    async def _update_challenges(
+        self, split_message: List[str]
+    ) -> None:  # pragma: no cover
         """Abstract method.
 
         Implementation should keep track of current challenges.
