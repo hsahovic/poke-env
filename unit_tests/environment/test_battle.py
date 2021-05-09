@@ -513,3 +513,14 @@ def test_sleep_counter(example_request):
     battle._parse_message(["", "cant", "p2a: Venusaur", ""])
     assert battle.active_pokemon.status == Status.SLP
     assert battle.active_pokemon.status_counter == 3
+
+
+def test_rules_are_tracked():
+    logger = MagicMock()
+    battle = Battle("tag", "username", logger)
+
+    battle._parse_message(["", "rule", "hello"])
+    battle._parse_message(["", "rule", "hi"])
+    battle._parse_message(["", "rule", "this is a rule!"])
+
+    assert battle._rules == ["hello", "hi", "this is a rule!"]
