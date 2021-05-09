@@ -11,7 +11,11 @@ def test_recharge_order():
 
 def test_single_orders():
     move = Move("flamethrower")
-    assert BattleOrder(move).message == "/choose move flamethrower"
+    assert (
+        BattleOrder(move).message
+        == "/choose move flamethrower"
+        == str(BattleOrder(move))
+    )
 
     assert BattleOrder(move, mega=True).message == "/choose move flamethrower mega"
 

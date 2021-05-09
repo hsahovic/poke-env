@@ -2,6 +2,7 @@
 from poke_env.environment.move import Move
 from poke_env.environment.pokemon import Pokemon
 from poke_env.player.baselines import MaxBasePowerPlayer
+from poke_env.player.baselines import RandomPlayer
 from poke_env.player.baselines import SimpleHeuristicsPlayer
 from collections import namedtuple
 
@@ -209,3 +210,61 @@ def test_simple_heuristics_player():
     battle.available_switches.append(Pokemon(species="sneasel"))
     battle.available_switches[1]._set_hp("100/100")
     assert player.choose_move(battle).message == "/choose switch sneasel"
+
+
+def test_random_player():
+    from poke_env.player import player as player_pkg
+    from poke_env.environment.battle import Battle
+
+    player = RandomPlayer(start_listening=False)
+
+    PseudoBattle = namedtuple(
+        "PseudoBattle",
+        (
+            "available_moves",
+            "available_switches",
+            "can_z_move",
+            "can_dynamax",
+            "can_mega_evolve",
+        ),
+    )
+    battle = PseudoBattle([], [], False, False, False)
+
+    player_pkg.Battle = PseudoBattle
+
+    assert player.choose_move(battle).message == "/choose default"
+
+    battle.available_switches.append(Pokemon(species="ponyta"))
+    assert player.choose_move(battle).message == "/choose switch ponyta"
+
+    battle.available_moves.append(Move("protect"))
+    assert player.choose_move(battle).message in {
+        "/choose move protect",
+        "/choose switch ponyta",
+    }
+
+    battle.available_moves.append(Move("quickattack"))
+    assert player.choose_move(battle).message in {
+        "/choose move protect",
+        "/choose switch ponyta",
+        "/choose move quickattack",
+    }
+
+    battle.available_moves.append(Move("flamethrower"))
+    assert player.choose_move(battle).message in {
+        "/choose move protect",
+        "/choose switch ponyta",
+        "/choose move quickattack",
+        "/choose move flamethrower",
+    }
+
+    assert {player.choose_move(battle).message for _ in range(500)} == {
+        "/choose move protect",
+        "/choose switch ponyta",
+        "/choose move quickattack",
+        "/choose move flamethrower",
+    }
+
+    player_pkg.Battle = (
+        Battle  # this is in case a test runner shares memory between tests
+    )
