@@ -113,9 +113,10 @@ class Pokemon:
         return self.__str__()
 
     def __str__(self) -> str:
+        status_repr = self._status.name if self._status else None
         return (
             f"{self._species} (pokemon object) "
-            f"[Active: {self._active}, Status: {self._status}]"
+            f"[Active: {self._active}, Status: {status_repr}]"
         )
 
     def _add_move(self, move_id: str, use: bool = False) -> Optional[Move]:
@@ -218,7 +219,7 @@ class Pokemon:
         )
         if mega_species in self.POKEDEX_DICT:
             self._update_from_pokedex(mega_species, store_species=False)
-        elif stone[-1] in "XY":
+        elif stone[-1] in "XYxy":
             mega_species = mega_species + stone[-1].lower()
             self._update_from_pokedex(mega_species, store_species=False)
 
