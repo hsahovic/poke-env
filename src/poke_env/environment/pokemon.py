@@ -113,7 +113,11 @@ class Pokemon:
         return self.__str__()
 
     def __str__(self) -> str:
-        status_repr = self._status.name if self._status else None
+        if self._status is None:
+            status_repr = None
+        else:
+            status_repr = self._status.name  # pyre-ignore
+
         return (
             f"{self._species} (pokemon object) "
             f"[Active: {self._active}, Status: {status_repr}]"
