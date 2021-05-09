@@ -207,11 +207,11 @@ class AbstractBattle(ABC):
         return team[identifier]
 
     @abstractmethod
-    def _clear_all_boosts(self):
+    def _clear_all_boosts(self):  # pragma: no cover
         pass
 
     @abstractmethod
-    def _end_illusion(self, pokemon_name: str, details: str):
+    def _end_illusion(self, pokemon_name: str, details: str):  # pragma: no cover
         pass
 
     def _end_illusion_on(
@@ -457,7 +457,7 @@ class AbstractBattle(ABC):
             raise NotImplementedError(split_message)
 
     @abstractmethod
-    def _parse_request(self, request: Dict) -> None:
+    def _parse_request(self, request: Dict) -> None:  # pragma: no cover
         pass
 
     def _register_teampreview_pokemon(self, player: str, details: str):
@@ -487,7 +487,7 @@ class AbstractBattle(ABC):
         self.logger.warning("swap method in Battle is not implemented")
 
     @abstractmethod
-    def _switch(self, pokemon, details, hp_status):
+    def _switch(self, pokemon, details, hp_status):  # pragma: no cover
         pass
 
     def _tied(self):
@@ -518,21 +518,21 @@ class AbstractBattle(ABC):
 
     @property
     @abstractmethod
-    def active_pokemon(self):
+    def active_pokemon(self):  # pragma: no cover
         pass
 
     @abstractproperty
-    def all_active_pokemons(self):
+    def all_active_pokemons(self):  # pragma: no cover
         pass
 
     @property
     @abstractmethod
-    def available_moves(self):
+    def available_moves(self):  # pragma: no cover
         pass
 
     @property
     @abstractmethod
-    def available_switches(self) -> List[Pokemon]:
+    def available_switches(self) -> List[Pokemon]:  # pragma: no cover
         pass
 
     @property
@@ -545,12 +545,12 @@ class AbstractBattle(ABC):
 
     @property
     @abstractmethod
-    def can_mega_evolve(self):
+    def can_mega_evolve(self):  # pragma: no cover
         pass
 
     @property
     @abstractmethod
-    def can_z_move(self):
+    def can_z_move(self):  # pragma: no cover
         pass
 
     @property
@@ -582,7 +582,7 @@ class AbstractBattle(ABC):
 
     @property
     @abstractmethod
-    def force_switch(self):
+    def force_switch(self):  # pragma: no cover
         pass
 
     @property
@@ -605,22 +605,22 @@ class AbstractBattle(ABC):
 
     @property
     @abstractmethod
-    def maybe_trapped(self):
+    def maybe_trapped(self):  # pragma: no cover
         pass
 
     @property
     @abstractmethod
-    def opponent_active_pokemon(self):
+    def opponent_active_pokemon(self):  # pragma: no cover
         pass
 
     @property
     @abstractmethod
-    def opponent_can_dynamax(self) -> bool:
+    def opponent_can_dynamax(self) -> bool:  # pragma: no cover
         pass
 
     @opponent_can_dynamax.setter
     @abstractmethod
-    def opponent_can_dynamax(self, value) -> None:
+    def opponent_can_dynamax(self, value) -> None:  # pragma: no cover
         pass
 
     @property
@@ -785,12 +785,12 @@ class AbstractBattle(ABC):
 
     @property
     @abstractmethod
-    def trapped(self):
+    def trapped(self):  # pragma: no cover
         pass
 
     @trapped.setter
     @abstractmethod
-    def trapped(self, value):
+    def trapped(self, value):  # pragma: no cover
         pass
 
     @property

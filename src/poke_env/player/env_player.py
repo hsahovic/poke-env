@@ -91,7 +91,9 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         self._start_new_battle = False
 
     @abstractmethod
-    def _action_to_move(self, action: int, battle: AbstractBattle) -> BattleOrder:
+    def _action_to_move(
+        self, action: int, battle: AbstractBattle
+    ) -> BattleOrder:  # pragma: no cover
         """Abstract method converting elements of the action space to move orders."""
 
     def _battle_finished_callback(self, battle: AbstractBattle) -> None:
@@ -132,7 +134,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         return self.reward_computing_helper(battle)
 
     @abstractmethod
-    def embed_battle(self, battle: AbstractBattle) -> Any:
+    def embed_battle(self, battle: AbstractBattle) -> Any:  # pragma: no cover
         """Abstract method for embedding battles.
 
         :param battle: The battle whose state is being embedded
