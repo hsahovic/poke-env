@@ -43,6 +43,11 @@ def test_pokemon_types():
     assert mon.type_1 == PokemonType.DRAGON
     assert mon.type_2 == PokemonType.FAIRY
 
+    mon = Pokemon(species="charizard")
+    mon._mega_evolve("charizarditex")
+    assert mon.type_1 == PokemonType.FIRE
+    assert mon.type_2 == PokemonType.DRAGON
+
     # primals
     mon = Pokemon(species="groudon")
     assert mon.type_1 == PokemonType.GROUND
@@ -96,3 +101,56 @@ def test_protect_counter_interactions():
 
     mon._moved("geomancy", "self")
     assert mon.protect_counter == 0
+
+
+def test_pokemon_as_strs():
+    mon = Pokemon(species="charizard")
+    assert str(mon) == mon.__str__() == mon.__repr__()
+    assert str(mon) == "charizard (pokemon object) [Active: False, Status: None]"
+
+    mon._active = True
+    assert str(mon) == "charizard (pokemon object) [Active: True, Status: None]"
+
+    mon._set_hp_status("100/100 slp")
+    assert str(mon) == "charizard (pokemon object) [Active: True, Status: SLP]"
+
+    mon._cure_status()
+    assert mon.status is None
+
+    mon._cure_status()
+    assert mon.status is None
+
+
+def test_pokemon_boosts():
+    mon = Pokemon(species="blastoise")
+    assert set(mon.boosts.values()) == {0}
+
+    mon._boost("accuracy", 1)
+    assert set(mon.boosts.values()) == {0, 1}
+    assert mon.boosts["accuracy"] == 1
+
+    mon._boost("accuracy", 2)
+    assert mon.boosts["accuracy"] == 3
+
+    mon._boost("accuracy", 2)
+    assert mon.boosts["accuracy"] == 5
+
+    mon._boost("accuracy", 1)
+    assert mon.boosts["accuracy"] == 6
+
+    mon._boost("accuracy", -1)
+    assert mon.boosts["accuracy"] == 5
+
+    mon._boost("accuracy", 5)
+    assert mon.boosts["accuracy"] == 6
+
+    mon._boost("accuracy", -10)
+    assert mon.boosts["accuracy"] == -4
+
+    mon._boost("accuracy", -10)
+    assert mon.boosts["accuracy"] == -6
+
+    mon._boost("spd", 2)
+    mon._clear_negative_boosts()
+    assert mon.boosts["accuracy"] == 0
+    assert mon.boosts["spd"] == 2
