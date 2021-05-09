@@ -395,6 +395,9 @@ def test_battle_request_and_interactions(example_request):
         battle._parse_message(["", msg_type])
     assert msg_type in str(excinfo.value)
 
+    assert not battle.maybe_trapped
+    assert battle.opponent_can_dynamax
+
 
 def test_end_illusion():
     logger = MagicMock()
