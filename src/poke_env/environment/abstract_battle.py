@@ -241,6 +241,14 @@ class AbstractBattle(ABC):
 
     def _field_start(self, field):
         field = Field.from_showdown_message(field)
+
+        if field.is_terrain:
+            self._fields = {
+                field: turn
+                for field, turn in self._fields.items()
+                if not field.is_terrain
+            }
+
         self._fields[field] = self.turn
 
     def _parse_message(self, split_message: List[str]) -> None:
