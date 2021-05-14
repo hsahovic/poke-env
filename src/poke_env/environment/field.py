@@ -54,3 +54,8 @@ class Field(Enum):
                 message,
             )
             return Field._UNKNOWN
+
+    @property
+    def is_terrain(self) -> bool:
+        """Wheter this field is a terrain."""
+        return self.name.endswith("_TERRAIN")
