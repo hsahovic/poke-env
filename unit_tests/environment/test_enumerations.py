@@ -26,6 +26,18 @@ def test_field_str():
     assert str(Field["ELECTRIC_TERRAIN"])
 
 
+def test_field_is_terrain():
+    terrains = {
+        Field.ELECTRIC_TERRAIN,
+        Field.MISTY_TERRAIN,
+        Field.PSYCHIC_TERRAIN,
+        Field.GRASSY_TERRAIN,
+    }
+
+    for field in Field:
+        assert field.is_terrain == (field in terrains)
+
+
 def test_field_build():
     assert Field["ELECTRIC_TERRAIN"] == Field.from_showdown_message("electric terrain")
     assert Field["ELECTRIC_TERRAIN"] == Field.from_showdown_message(
