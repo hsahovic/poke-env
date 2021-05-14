@@ -524,3 +524,23 @@ def test_rules_are_tracked():
     battle._parse_message(["", "rule", "this is a rule!"])
 
     assert battle._rules == ["hello", "hi", "this is a rule!"]
+
+
+def test_field_terrain_interactions():
+    logger = MagicMock()
+    battle = Battle("tag", "username", logger)
+
+    battle._field_start("electricterrain")
+    assert battle.fields == {Field.ELECTRIC_TERRAIN: 0}
+    battle.turn = battle.turn + 1
+
+    battle._field_start("mistyterrain")
+    assert battle.fields == {Field.MISTY_TERRAIN: 1}
+    battle.turn = battle.turn + 1
+
+    battle._field_start("gravity")
+    assert battle.fields == {Field.MISTY_TERRAIN: 1, Field.GRAVITY: 2}
+    battle.turn = battle.turn + 1
+
+    battle._field_start("psychicterrain")
+    assert battle.fields == {Field.GRAVITY: 2, Field.PSYCHIC_TERRAIN: 3}
