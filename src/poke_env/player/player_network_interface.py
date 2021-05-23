@@ -155,7 +155,13 @@ class PlayerNetwork(ABC):
                 self.logger.critical("Error message received: %s", message)
                 raise ShowdownException("Error message received: %s", message)
             elif split_messages[0][1] == "pm":
-                self.logger.warning("Received pm: %s", message)
+                assert len(split_messages) == 1
+                if split_messages[0][4].startswith("/challenge"):
+                    await self._handle_challenge_request(split_messages[0])
+                elif split_messages[0][4].startswith("/text"):
+                    self.logger.info("Received pm with text: %s", message)
+                else:
+                    self.logger.warning("Received pm: %s", message)
             else:
                 self.logger.warning("Unhandled message: %s", message)
         except CancelledError as e:
