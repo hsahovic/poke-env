@@ -317,6 +317,15 @@ class Player(PlayerNetwork, ABC):
 
         await self._send_message(message, battle.battle_tag)
 
+    async def _handle_challenge_request(self, split_message: List[str]) -> None:
+        """Handles an individual challenge."""
+        challenging_player = split_message[2].strip()
+
+        if challenging_player != self.username:
+            if len(split_message) >= 6:
+                if split_message[5] == self._format:
+                    await self._challenge_queue.put(challenging_player)
+
     async def _update_challenges(self, split_message: List[str]) -> None:
         """Update internal challenge state.
 
