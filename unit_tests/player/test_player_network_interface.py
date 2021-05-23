@@ -26,6 +26,9 @@ class PlayerNetworkChild(PlayerNetwork):
     async def _update_challenges(self):
         pass
 
+    async def _handle_challenge_request(self):
+        pass
+
 
 def test_init_and_properties():
     player = PlayerNetworkChild(
