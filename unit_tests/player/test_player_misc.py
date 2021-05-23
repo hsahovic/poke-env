@@ -121,3 +121,59 @@ async def test_start_timer_on_battle_start():
     await player._create_battle(["", "gen8randombattle", "uuu"])
     with pytest.raises(AttributeError):
         player._sent_messages
+
+
+@pytest.mark.asyncio
+async def test_basic_challenge_handling():
+    player = SimplePlayer(start_listening=False)
+
+    assert player._challenge_queue.empty()
+    await player._handle_challenge_request(
+        [
+            "",
+            "pm",
+            "Opponent",
+            player.username,
+            "/challenge gen8randombattle",
+            "gen8randombattle",
+            "",
+            "",
+        ]
+    )
+    assert player._challenge_queue.qsize() == 1
+
+    assert await player._challenge_queue.get() == "Opponent"
+    assert player._challenge_queue.empty()
+
+    await player._handle_challenge_request(
+        [
+            "",
+            "pm",
+            "Opponent",
+            player.username,
+            "/challenge anotherformat",
+            "anotherformat",
+            "",
+            "",
+        ]
+    )
+    assert player._challenge_queue.empty()
+
+    await player._handle_challenge_request(
+        [
+            "",
+            "pm",
+            player.username,
+            "Opponent",
+            "/challenge gen8randombattle",
+            "gen8randombattle",
+            "",
+            "",
+        ]
+    )
+    assert player._challenge_queue.empty()
+
+    await player._handle_challenge_request(
+        ["", "pm", "Opponent", player.username, "/challenge gen8randombattle"]
+    )
+    assert player._challenge_queue.empty()
