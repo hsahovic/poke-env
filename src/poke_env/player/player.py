@@ -355,7 +355,7 @@ class Player(PlayerNetwork, ABC):
 
         for _ in range(n_challenges):
             while True:
-                username = await self._challenge_queue.get()
+                username = to_id_str(await self._challenge_queue.get())
                 self.logger.debug(
                     "Consumed %s from challenge queue in accept_challenge", username
                 )
