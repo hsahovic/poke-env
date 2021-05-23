@@ -273,6 +273,15 @@ class PlayerNetwork(ABC):
         """
 
     @abstractmethod
+    async def _handle_challenge_request(
+        self, split_message: List[str]
+    ) -> None:  # pragma: no cover
+        """Abstract method.
+
+        Implementation should handle individual challenge.
+        """
+
+    @abstractmethod
     async def _update_challenges(
         self, split_message: List[str]
     ) -> None:  # pragma: no cover
