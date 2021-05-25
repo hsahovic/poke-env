@@ -4,7 +4,14 @@ import pytest
 from unittest.mock import MagicMock
 
 from poke_env.data import POKEDEX
-from poke_env.environment.battle import Battle
+from poke_env.environment.battle import (
+    Battle,
+    Gen4Battle,
+    Gen5Battle,
+    Gen6Battle,
+    Gen7Battle,
+    Gen8Battle,
+)
 from poke_env.environment.effect import Effect
 from poke_env.environment.field import Field
 from poke_env.environment.pokemon_type import PokemonType
@@ -544,3 +551,33 @@ def test_field_terrain_interactions():
 
     battle._field_start("psychicterrain")
     assert battle.fields == {Field.GRAVITY: 2, Field.PSYCHIC_TERRAIN: 3}
+
+
+def test_battle_from_format():
+    assert isinstance(
+        Battle.from_format("gen1ou", "battle", "username", None), Gen4Battle
+    )
+    assert isinstance(
+        Battle.from_format("gen2randombattle", "battle", "username", None), Gen4Battle
+    )
+    assert isinstance(
+        Battle.from_format("gen3uber", "battle", "username", None), Gen4Battle
+    )
+    assert isinstance(
+        Battle.from_format("gen4ou", "battle", "username", None), Gen4Battle
+    )
+    assert isinstance(
+        Battle.from_format("gen5randombattle", "battle", "username", None), Gen5Battle
+    )
+    assert isinstance(
+        Battle.from_format("gen6ou", "battle", "username", None), Gen6Battle
+    )
+    assert isinstance(
+        Battle.from_format("gen7randombattle", "battle", "username", None), Gen7Battle
+    )
+    assert isinstance(
+        Battle.from_format("gen8doubleou", "battle", "username", None), Gen8Battle
+    )
+    assert isinstance(
+        Battle.from_format("gen9doubleou", "battle", "username", None), Gen4Battle
+    )
