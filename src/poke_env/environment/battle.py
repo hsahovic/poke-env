@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 
 from aiologger import Logger  # pyre-ignore
 from typing import Dict
@@ -201,8 +202,19 @@ class Battle(AbstractBattle):
         :return: A GenXBattle instance, depending on the format received
         :rtype: Battle
         """
-
         gen = format_[3]  # Update when Gen 10 comes
+        if gen not in _GEN_TO_BATTLE_CLASS:
+            if gen not in _WARNED_GENS:
+                logging.getLogger("poke-env").warning(
+                    f"A gen {gen} Battle object was initialized. poke-env does not have "
+                    "explicit support for this gen and will instead use objects meant "
+                    f"for gen {_DEFAULT_BATTLE_CLASS_KEY}. Please open an issue at "
+                    "https://github.com/hsahovic/poke-env/issues/ if this behavior "
+                    "creates problems for your use case."
+                )
+                _WARNED_GENS.add(gen)
+            gen = _DEFAULT_BATTLE_CLASS_KEY
+
         return _GEN_TO_BATTLE_CLASS[gen](
             battle_tag=battle_tag, username=username, logger=logger
         )
@@ -283,3 +295,5 @@ _GEN_TO_BATTLE_CLASS: Dict = {
     "7": Gen7Battle,
     "8": Gen8Battle,
 }
+_DEFAULT_BATTLE_CLASS_KEY = "4"
+_WARNED_GENS = set()
