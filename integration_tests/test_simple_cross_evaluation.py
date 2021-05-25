@@ -40,3 +40,12 @@ async def test_small_cross_evaluation():
     await asyncio.wait_for(
         simple_cross_evaluation(5, format_="gen4randombattle"), timeout=10
     )
+    await asyncio.wait_for(
+        simple_cross_evaluation(5, format_="gen3randombattle"), timeout=10
+    )
+    await asyncio.wait_for(
+        simple_cross_evaluation(5, format_="gen2randombattle"), timeout=10
+    )
+    await asyncio.wait_for(
+        simple_cross_evaluation(5, format_="gen1randombattle"), timeout=10
+    )
