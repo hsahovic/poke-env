@@ -18,7 +18,7 @@ from time import perf_counter
 from typing import List
 from typing import Optional
 
-from aiologger import Logger  # pyre-ignore
+from logging import Logger
 from poke_env.exceptions import ShowdownException
 from poke_env.player_configuration import PlayerConfiguration
 from poke_env.server_configuration import ServerConfiguration
@@ -65,7 +65,7 @@ class PlayerNetwork(ABC):
         self._sending_lock = Lock()
 
         self._websocket: websockets.client.WebSocketClientProtocol  # pyre-ignore
-        self._logger: Logger = self._create_player_logger(log_level)  # pyre-ignore
+        self._logger: Logger = self._create_player_logger(log_level)
 
         if start_listening:
             self._listening_coroutine = ensure_future(self.listen())

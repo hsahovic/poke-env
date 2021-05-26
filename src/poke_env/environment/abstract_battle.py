@@ -3,7 +3,7 @@ from abc import ABC
 from abc import abstractmethod
 from abc import abstractproperty
 
-from aiologger import Logger  # pyre-ignore
+from logging import Logger
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -105,7 +105,7 @@ class AbstractBattle(ABC):
         "logger",
     )
 
-    def __init__(self, battle_tag: str, username: str, logger: Logger):  # pyre-ignore
+    def __init__(self, battle_tag: str, username: str, logger: Logger):
         # Utils attributes
         self._battle_tag: str = battle_tag
         self._format: Optional[str] = None
