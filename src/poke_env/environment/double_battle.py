@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from aiologger import Logger  # pyre-ignore
+from logging import Logger
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -21,7 +21,7 @@ class DoubleBattle(AbstractBattle):
     OPPONENT_2_POSITION = 2
     EMPTY_TARGET_POSITION = 0  # symbolic, not used by showdown
 
-    def __init__(self, battle_tag: str, username: str, logger: Logger):  # pyre-ignore
+    def __init__(self, battle_tag: str, username: str, logger: Logger):
         super(DoubleBattle, self).__init__(battle_tag, username, logger)
 
         # Turn choice attributes

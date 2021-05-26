@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 
-from aiologger import Logger  # pyre-ignore
+from logging import Logger
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -12,7 +12,7 @@ from poke_env.environment.abstract_battle import AbstractBattle
 
 
 class Battle(AbstractBattle):
-    def __init__(self, battle_tag: str, username: str, logger: Logger):  # pyre-ignore
+    def __init__(self, battle_tag: str, username: str, logger: Logger):
         super(Battle, self).__init__(battle_tag, username, logger)
 
         # Turn choice attributes
