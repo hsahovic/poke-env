@@ -210,6 +210,7 @@ class DoubleBattle(AbstractBattle):
         Given move of an ALLY Pokemon, returns a list of possible Pokemon Showdown
         targets for it. This is smart enough so that it figures whether the Pokemon
         is already dynamaxed.
+
         :param move: Move instance for which possible targets should be returned
         :type move: Move
         :param dynamax: whether given move also STARTS dynamax for its user
