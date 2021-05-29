@@ -1,4 +1,4 @@
-.. _index
+.. _index:
 
 #############################################################################
 Poke-env: A python interface for training Reinforcement Learning pokemon bots
