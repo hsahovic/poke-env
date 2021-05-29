@@ -84,6 +84,7 @@ class Effect(Enum):
     LEECH_SEED = auto()
     LIGHTNING_ROD = auto()
     LIMBER = auto()
+    LIQUID_OOZE = auto()
     LOCK_ON = auto()
     MAGMA_STORM = auto()
     MAGNET_RISE = auto()
