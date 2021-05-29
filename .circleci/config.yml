@@ -136,6 +136,14 @@ jobs:
           background: true
 
       - run:
+          name: Build docs
+          command: |
+            . venv/bin/activate
+            cd docs
+            make html
+          background: true
+
+      - run:
           name: Wait for server availability
           command: |
             until $(curl --output /dev/null --silent --head --fail http://localhost:8000); do
