@@ -54,7 +54,7 @@ class Move:
         "beforeMoveCallback",
     ]
 
-    MOVES_DICT = GEN_TO_MOVES[8]
+    _MOVES_DICT = GEN_TO_MOVES[8]
 
     __slots__ = "_id", "_current_pp", "_dynamaxed_move", "_is_empty", "_request_target"
 
@@ -239,10 +239,10 @@ class Move:
         :return: The data entry corresponding to the move
         :rtype: dict
         """
-        if self._id in self.MOVES_DICT:
-            return self.MOVES_DICT[self._id]
-        elif self._id.startswith("z") and self._id[1:] in self.MOVES_DICT:
-            return self.MOVES_DICT[self._id[1:]]
+        if self._id in self._MOVES_DICT:
+            return self._MOVES_DICT[self._id]
+        elif self._id.startswith("z") and self._id[1:] in self._MOVES_DICT:
+            return self._MOVES_DICT[self._id[1:]]
         else:
             raise ValueError("Unknown move: %s" % self._id)
 
@@ -583,11 +583,12 @@ class Move:
     def target(self) -> str:
         """
         :return: Move target. Possible targets (copied from PS codebase):
+
             * adjacentAlly - Only relevant to Doubles or Triples, the move only
-                targets an ally of the user.
+              targets an ally of the user.
             * adjacentAllyOrSelf - The move can target the user or its ally.
             * adjacentFoe - The move can target a foe, but not (in Triples)
-                a distant foe.
+              a distant foe.
             * all - The move targets the field or all Pokémon at once.
             * allAdjacent - The move is a spread move that also hits the user's ally.
             * allAdjacentFoes - The move is a spread move.
@@ -724,23 +725,23 @@ class EmptyMove(Move):
 
 
 class Gen4Move(Move):
-    MOVES_DICT = GEN_TO_MOVES[4]
+    _MOVES_DICT = GEN_TO_MOVES[4]
 
 
 class Gen5Move(Move):
-    MOVES_DICT = GEN_TO_MOVES[5]
+    _MOVES_DICT = GEN_TO_MOVES[5]
 
 
 class Gen6Move(Move):
-    MOVES_DICT = GEN_TO_MOVES[6]
+    _MOVES_DICT = GEN_TO_MOVES[6]
 
 
 class Gen7Move(Move):
-    MOVES_DICT = GEN_TO_MOVES[7]
+    _MOVES_DICT = GEN_TO_MOVES[7]
 
 
 class Gen8Move(Move):
-    MOVES_DICT = GEN_TO_MOVES[8]
+    _MOVES_DICT = GEN_TO_MOVES[8]
 
 
 GEN_TO_MOVE_CLASS = {4: Gen4Move, 5: Gen5Move, 6: Gen6Move, 7: Gen7Move, 8: Gen8Move}
