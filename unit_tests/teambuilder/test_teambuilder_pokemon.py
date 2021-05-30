@@ -24,3 +24,14 @@ def test_teambuilder_pokemon_formatting():
         == "testy|dragonair|choiceband|shedskin|tackle,watergun,hiddenpower|Adamant||M|\
 |S|84|134,water,,G"
     )
+
+    assert (
+        str(tp)
+        == "testy|dragonair|choiceband|shedskin|tackle,watergun,hiddenpower|Adamant"
+        "||M||S|84|134,water,,G"
+    )
+    assert (
+        repr(tp)
+        == "testy|dragonair|choiceband|shedskin|tackle,watergun,hiddenpower|Adamant||M"
+        "||S|84|134,water,,G"
+    )
