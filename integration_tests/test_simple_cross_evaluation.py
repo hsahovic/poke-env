@@ -2,14 +2,22 @@
 import asyncio
 import pytest
 
+from poke_env.player.battle_order import ForfeitBattleOrder
 from poke_env.player.random_player import RandomPlayer
 from poke_env.player.utils import cross_evaluate
 from poke_env.server_configuration import LocalhostServerConfiguration
 
 
+class RandomPlayerThatForfeitsAfter100Turns(RandomPlayer):
+    def choose_move(self, battle):
+        if battle.turn > 100:
+            return ForfeitBattleOrder()
+        return super().choose_move(battle)
+
+
 async def simple_cross_evaluation(n_battles, format_):
     players = [
-        RandomPlayer(
+        RandomPlayerThatForfeitsAfter100Turns(
             battle_format=format_,
             server_configuration=LocalhostServerConfiguration,
             max_concurrent_battles=n_battles,
