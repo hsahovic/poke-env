@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
-from poke_env.player.battle_order import BattleOrder, DoubleBattleOrder
+from poke_env.player.battle_order import (
+    BattleOrder,
+    DoubleBattleOrder,
+    ForfeitBattleOrder,
+)
 from poke_env.environment.move import Move, SPECIAL_MOVES
 from poke_env.environment.pokemon import Pokemon
 
@@ -63,3 +67,9 @@ def test_double_orders():
         "/choose switch lugia, default",
     }
     assert none == {"/choose default"}
+
+
+def test_forfeit_order():
+    fo = ForfeitBattleOrder()
+    assert isinstance(fo, BattleOrder)
+    assert fo.message == "/forfeit"
