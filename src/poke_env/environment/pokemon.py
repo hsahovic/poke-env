@@ -50,7 +50,7 @@ class Pokemon:
     )
 
     MOVE_CLASS = GEN_TO_MOVE_CLASS[8]
-    POKEDEX_DICT = GEN_TO_POKEDEX[8]
+    _POKEDEX_DICT = GEN_TO_POKEDEX[8]
 
     def __init__(
         self,
@@ -221,7 +221,7 @@ class Pokemon:
             if not species_id_str.endswith("mega")
             else species_id_str
         )
-        if mega_species in self.POKEDEX_DICT:
+        if mega_species in self._POKEDEX_DICT:
             self._update_from_pokedex(mega_species, store_species=False)
         elif stone[-1] in "XYxy":
             mega_species = mega_species + stone[-1].lower()
@@ -320,7 +320,7 @@ class Pokemon:
 
     def _update_from_pokedex(self, species: str, store_species: bool = True) -> None:
         species = to_id_str(species)
-        dex_entry = self.POKEDEX_DICT[species]
+        dex_entry = self._POKEDEX_DICT[species]
         if store_species:
             self._species = species
         self._base_stats = dex_entry["baseStats"]
@@ -765,27 +765,27 @@ class Pokemon:
 
 class Gen4Pokemon(Pokemon):
     MOVE_CLASS = GEN_TO_MOVE_CLASS[4]
-    POKEDEX_DICT = GEN_TO_POKEDEX[4]
+    _POKEDEX_DICT = GEN_TO_POKEDEX[4]
 
 
 class Gen5Pokemon(Pokemon):
     MOVE_CLASS = GEN_TO_MOVE_CLASS[5]
-    POKEDEX_DICT = GEN_TO_POKEDEX[5]
+    _POKEDEX_DICT = GEN_TO_POKEDEX[5]
 
 
 class Gen6Pokemon(Pokemon):
     MOVE_CLASS = GEN_TO_MOVE_CLASS[6]
-    POKEDEX_DICT = GEN_TO_POKEDEX[6]
+    _POKEDEX_DICT = GEN_TO_POKEDEX[6]
 
 
 class Gen7Pokemon(Pokemon):
     MOVE_CLASS = GEN_TO_MOVE_CLASS[7]
-    POKEDEX_DICT = GEN_TO_POKEDEX[7]
+    _POKEDEX_DICT = GEN_TO_POKEDEX[7]
 
 
 class Gen8Pokemon(Pokemon):
     MOVE_CLASS = GEN_TO_MOVE_CLASS[8]
-    POKEDEX_DICT = GEN_TO_POKEDEX[8]
+    _POKEDEX_DICT = GEN_TO_POKEDEX[8]
 
 
 GEN_TO_POKEMON = {
