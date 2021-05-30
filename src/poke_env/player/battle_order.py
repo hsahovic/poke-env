@@ -93,3 +93,12 @@ class DoubleBattleOrder(BattleOrder):
         elif second_orders:
             return [DoubleBattleOrder(first_order=order) for order in second_orders]
         return [DefaultBattleOrder()]
+
+
+class ForfeitBattleOrder(BattleOrder):
+    def __init__(self, *args, **kwargs):
+        pass
+
+    @property
+    def message(self) -> str:
+        return "/forfeit"
