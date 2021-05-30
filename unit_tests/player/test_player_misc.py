@@ -5,6 +5,7 @@ from poke_env.environment.battle import Battle
 from poke_env.environment.double_battle import DoubleBattle
 from poke_env.player.player import Player
 from poke_env.player.random_player import RandomPlayer
+from poke_env.player.utils import cross_evaluate
 
 from unittest.mock import MagicMock
 from unittest.mock import patch
@@ -16,6 +17,25 @@ class SimplePlayer(Player):
 
     async def _send_message(self, message, room):
         self._sent_messages = [message, room]
+
+
+class FixedWinRatePlayer:
+    async def accept_challenges(self, *args, **kwargs):
+        pass
+
+    async def send_challenges(self, *args, **kwargs):
+        pass
+
+    def reset_battles(self):
+        pass
+
+    @property
+    def win_rate(self):
+        return 0.5
+
+    @property
+    def logged_in(self):
+        return None
 
 
 def test_player_default_order():
@@ -177,3 +197,17 @@ async def test_basic_challenge_handling():
         ["", "pm", "Opponent", player.username, "/challenge gen8randombattle"]
     )
     assert player._challenge_queue.empty()
+
+
+@pytest.mark.asyncio
+async def test_cross_evaluate():
+    p1 = FixedWinRatePlayer()
+    p2 = FixedWinRatePlayer()
+
+    p1.username = "p1"
+    p2.username = "p2"
+    cross_evaluation = await cross_evaluate([p1, p2], 10)
+    assert cross_evaluation == {
+        "p1": {"p1": None, "p2": 0.5},
+        "p2": {"p1": 0.5, "p2": None},
+    }
