@@ -884,6 +884,9 @@
             "Arceus-Steel",
             "Arceus-Water"
         ],
+        "tags": [
+            "Mythical"
+        ],
         "types": [
             "Normal"
         ],
@@ -1725,6 +1728,9 @@
         "otherFormes": [
             "Articuno-Galar"
         ],
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Ice",
             "Flying"
@@ -1991,6 +1997,9 @@
         "heightm": 0.3,
         "name": "Azelf",
         "num": 482,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Psychic"
         ],
@@ -4104,6 +4113,9 @@
         "heightm": 0.6,
         "name": "Celebi",
         "num": 251,
+        "tags": [
+            "Mythical"
+        ],
         "types": [
             "Psychic",
             "Grass"
@@ -4721,6 +4733,33 @@
         ],
         "weightkg": 0.6
     },
+    "chromera": {
+        "abilities": {
+            "0": "Color Change"
+        },
+        "baseStats": {
+            "atk": 85,
+            "def": 115,
+            "hp": 85,
+            "spa": 115,
+            "spd": 100,
+            "spe": 100
+        },
+        "color": "Purple",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "gen": 8,
+        "gender": "N",
+        "heightm": 2.5,
+        "name": "Chromera",
+        "num": -60,
+        "types": [
+            "Dark",
+            "Poison"
+        ],
+        "weightkg": 215
+    },
     "cinccino": {
         "abilities": {
             "0": "Cute Charm",
@@ -5018,6 +5057,9 @@
         "heightm": 2.1,
         "name": "Cobalion",
         "num": 638,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Steel",
             "Fighting"
@@ -5465,6 +5507,9 @@
         "heightm": 1.5,
         "name": "Cresselia",
         "num": 488,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Psychic"
         ],
@@ -5861,6 +5906,9 @@
         "heightm": 1.5,
         "name": "Darkrai",
         "num": 491,
+        "tags": [
+            "Mythical"
+        ],
         "types": [
             "Dark"
         ],
@@ -6282,6 +6330,9 @@
             "Deoxys-Defense",
             "Deoxys-Speed"
         ],
+        "tags": [
+            "Mythical"
+        ],
         "types": [
             "Psychic"
         ],
@@ -6456,6 +6507,9 @@
         "heightm": 5.4,
         "name": "Dialga",
         "num": 483,
+        "tags": [
+            "Restricted Legendary"
+        ],
         "types": [
             "Steel",
             "Dragon"
@@ -6488,6 +6542,9 @@
         "num": 719,
         "otherFormes": [
             "Diancie-Mega"
+        ],
+        "tags": [
+            "Mythical"
         ],
         "types": [
             "Rock",
@@ -7928,7 +7985,8 @@
     },
     "entei": {
         "abilities": {
-            "0": "Pressure"
+            "0": "Pressure",
+            "H": "Flash Fire"
         },
         "baseStats": {
             "atk": 115,
@@ -7946,9 +8004,13 @@
         "heightm": 2.1,
         "name": "Entei",
         "num": 244,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Fire"
         ],
+        "unreleasedHidden": true,
         "weightkg": 198
     },
     "equilibra": {
@@ -9675,6 +9737,9 @@
             "Genesect-Burn",
             "Genesect-Chill"
         ],
+        "tags": [
+            "Mythical"
+        ],
         "types": [
             "Bug",
             "Steel"
@@ -10073,6 +10138,9 @@
         "num": 487,
         "otherFormes": [
             "Giratina-Origin"
+        ],
+        "tags": [
+            "Restricted Legendary"
         ],
         "types": [
             "Ghost",
@@ -11201,6 +11269,9 @@
         "otherFormes": [
             "Groudon-Primal"
         ],
+        "tags": [
+            "Restricted Legendary"
+        ],
         "types": [
             "Ground"
         ],
@@ -11637,7 +11708,8 @@
     },
     "heatran": {
         "abilities": {
-            "0": "Flash Fire"
+            "0": "Flash Fire",
+            "H": "Flame Body"
         },
         "baseStats": {
             "atk": 90,
@@ -11654,10 +11726,14 @@
         "heightm": 1.7,
         "name": "Heatran",
         "num": 485,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Fire",
             "Steel"
         ],
+        "unreleasedHidden": true,
         "weightkg": 430
     },
     "heliolisk": {
@@ -12039,6 +12115,9 @@
         "heightm": 3.8,
         "name": "Ho-Oh",
         "num": 250,
+        "tags": [
+            "Restricted Legendary"
+        ],
         "types": [
             "Fire",
             "Flying"
@@ -12072,6 +12151,9 @@
         "num": 720,
         "otherFormes": [
             "Hoopa-Unbound"
+        ],
+        "tags": [
+            "Mythical"
         ],
         "types": [
             "Psychic",
@@ -12624,6 +12706,9 @@
         "heightm": 0.3,
         "name": "Jirachi",
         "num": 385,
+        "tags": [
+            "Mythical"
+        ],
         "types": [
             "Steel",
             "Psychic"
@@ -13092,6 +13177,9 @@
         "num": 647,
         "otherFormes": [
             "Keldeo-Resolute"
+        ],
+        "tags": [
+            "Mythical"
         ],
         "types": [
             "Water",
@@ -13655,6 +13743,9 @@
         "otherFormes": [
             "Kyogre-Primal"
         ],
+        "tags": [
+            "Restricted Legendary"
+        ],
         "types": [
             "Water"
         ],
@@ -13716,6 +13807,9 @@
         "otherFormes": [
             "Kyurem-Black",
             "Kyurem-White"
+        ],
+        "tags": [
+            "Restricted Legendary"
         ],
         "types": [
             "Dragon",
@@ -13873,6 +13967,9 @@
         "num": 645,
         "otherFormes": [
             "Landorus-Therian"
+        ],
+        "tags": [
+            "Sub-Legendary"
         ],
         "types": [
             "Ground",
@@ -14083,6 +14180,9 @@
         "otherFormes": [
             "Latias-Mega"
         ],
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Dragon",
             "Psychic"
@@ -14144,6 +14244,9 @@
         "num": 381,
         "otherFormes": [
             "Latios-Mega"
+        ],
+        "tags": [
+            "Sub-Legendary"
         ],
         "types": [
             "Dragon",
@@ -14899,6 +15002,9 @@
         "heightm": 5.2,
         "name": "Lugia",
         "num": 249,
+        "tags": [
+            "Restricted Legendary"
+        ],
         "types": [
             "Psychic",
             "Flying"
@@ -15579,6 +15685,9 @@
         "heightm": 0.3,
         "name": "Manaphy",
         "num": 490,
+        "tags": [
+            "Mythical"
+        ],
         "types": [
             "Water"
         ],
@@ -16232,6 +16341,9 @@
         "otherFormes": [
             "Meloetta-Pirouette"
         ],
+        "tags": [
+            "Mythical"
+        ],
         "types": [
             "Normal",
             "Psychic"
@@ -16486,6 +16598,9 @@
         "heightm": 0.3,
         "name": "Mesprit",
         "num": 481,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Psychic"
         ],
@@ -16637,6 +16752,9 @@
         "heightm": 0.4,
         "name": "Mew",
         "num": 151,
+        "tags": [
+            "Mythical"
+        ],
         "types": [
             "Psychic"
         ],
@@ -16671,6 +16789,9 @@
         "otherFormes": [
             "Mewtwo-Mega-X",
             "Mewtwo-Mega-Y"
+        ],
+        "tags": [
+            "Restricted Legendary"
         ],
         "types": [
             "Psychic"
@@ -17165,6 +17286,9 @@
         "num": 146,
         "otherFormes": [
             "Moltres-Galar"
+        ],
+        "tags": [
+            "Sub-Legendary"
         ],
         "types": [
             "Fire",
@@ -18481,6 +18605,9 @@
         "heightm": 4.2,
         "name": "Palkia",
         "num": 484,
+        "tags": [
+            "Restricted Legendary"
+        ],
         "types": [
             "Water",
             "Dragon"
@@ -19000,6 +19127,9 @@
         "heightm": 0.4,
         "name": "Phione",
         "num": 489,
+        "tags": [
+            "Mythical"
+        ],
         "types": [
             "Water"
         ],
@@ -21458,7 +21588,8 @@
     },
     "raikou": {
         "abilities": {
-            "0": "Pressure"
+            "0": "Pressure",
+            "H": "Volt Absorb"
         },
         "baseStats": {
             "atk": 85,
@@ -21476,9 +21607,13 @@
         "heightm": 1.9,
         "name": "Raikou",
         "num": 243,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Electric"
         ],
+        "unreleasedHidden": true,
         "weightkg": 178
     },
     "ralts": {
@@ -21798,6 +21933,9 @@
         "otherFormes": [
             "Rayquaza-Mega"
         ],
+        "tags": [
+            "Restricted Legendary"
+        ],
         "types": [
             "Dragon",
             "Flying"
@@ -21885,6 +22023,9 @@
         "heightm": 1.8,
         "name": "Regice",
         "num": 378,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Ice"
         ],
@@ -21910,6 +22051,9 @@
         "heightm": 3.7,
         "name": "Regigigas",
         "num": 486,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Normal"
         ],
@@ -21936,6 +22080,9 @@
         "heightm": 1.7,
         "name": "Regirock",
         "num": 377,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Rock"
         ],
@@ -21962,6 +22109,9 @@
         "heightm": 1.9,
         "name": "Registeel",
         "num": 379,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Steel"
         ],
@@ -22049,6 +22199,9 @@
         "heightm": 3.2,
         "name": "Reshiram",
         "num": 643,
+        "tags": [
+            "Restricted Legendary"
+        ],
         "types": [
             "Dragon",
             "Fire"
@@ -23678,6 +23831,9 @@
         "num": 492,
         "otherFormes": [
             "Shaymin-Sky"
+        ],
+        "tags": [
+            "Mythical"
         ],
         "types": [
             "Grass"
@@ -26023,7 +26179,8 @@
     },
     "suicune": {
         "abilities": {
-            "0": "Pressure"
+            "0": "Pressure",
+            "H": "Water Absorb"
         },
         "baseStats": {
             "atk": 75,
@@ -26041,9 +26198,13 @@
         "heightm": 2,
         "name": "Suicune",
         "num": 245,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Water"
         ],
+        "unreleasedHidden": true,
         "weightkg": 187
     },
     "sunflora": {
@@ -26884,6 +27045,9 @@
         "heightm": 1.9,
         "name": "Terrakion",
         "num": 639,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Rock",
             "Fighting"
@@ -26945,6 +27109,9 @@
         "num": 642,
         "otherFormes": [
             "Thundurus-Therian"
+        ],
+        "tags": [
+            "Sub-Legendary"
         ],
         "types": [
             "Electric",
@@ -27271,6 +27438,9 @@
         "num": 641,
         "otherFormes": [
             "Tornadus-Therian"
+        ],
+        "tags": [
+            "Sub-Legendary"
         ],
         "types": [
             "Flying"
@@ -28058,6 +28228,9 @@
         "heightm": 0.3,
         "name": "Uxie",
         "num": 480,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Psychic"
         ],
@@ -28456,6 +28629,9 @@
         "heightm": 0.4,
         "name": "Victini",
         "num": 494,
+        "tags": [
+            "Mythical"
+        ],
         "types": [
             "Psychic",
             "Fire"
@@ -28569,6 +28745,9 @@
         "heightm": 2,
         "name": "Virizion",
         "num": 640,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Grass",
             "Fighting"
@@ -28754,6 +28933,9 @@
         "heightm": 1.7,
         "name": "Volcanion",
         "num": 721,
+        "tags": [
+            "Mythical"
+        ],
         "types": [
             "Fire",
             "Water"
@@ -29843,6 +30025,9 @@
         "otherFormes": [
             "Xerneas-Neutral"
         ],
+        "tags": [
+            "Restricted Legendary"
+        ],
         "types": [
             "Fairy"
         ],
@@ -30021,6 +30206,9 @@
         "heightm": 5.8,
         "name": "Yveltal",
         "num": 717,
+        "tags": [
+            "Restricted Legendary"
+        ],
         "types": [
             "Dark",
             "Flying"
@@ -30079,6 +30267,9 @@
         "num": 145,
         "otherFormes": [
             "Zapdos-Galar"
+        ],
+        "tags": [
+            "Sub-Legendary"
         ],
         "types": [
             "Electric",
@@ -30162,6 +30353,9 @@
         "heightm": 2.9,
         "name": "Zekrom",
         "num": 644,
+        "tags": [
+            "Restricted Legendary"
+        ],
         "types": [
             "Dragon",
             "Electric"
@@ -30387,6 +30581,9 @@
         "otherFormes": [
             "Zygarde-10%",
             "Zygarde-Complete"
+        ],
+        "tags": [
+            "Restricted Legendary"
         ],
         "types": [
             "Dragon",
