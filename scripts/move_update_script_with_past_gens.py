@@ -8,13 +8,13 @@ for gen in range(1, 9):
     if gen != 8:
         # Fetch latest version
         data = requests.get(
-            "https://raw.githubusercontent.com/smogon/pokemon-showdown/master/data/mods/gen"
+            "https://raw.githubusercontent.com/smogon/pokemon-showdown/master/data/mods/gen"  # noqa
             + str(gen)
             + "/moves.ts"
         ).text
     else:
         data = requests.get(
-            "https://raw.githubusercontent.com/smogon/pokemon-showdown/master/data/moves.ts"
+            "https://raw.githubusercontent.com/smogon/pokemon-showdown/master/data/moves.ts"  # noqa
         ).text
 
     # Remove start and end of the file
@@ -35,6 +35,8 @@ for gen in range(1, 9):
     # Remove empty lines
     for _ in range(3):
         data = re.sub(r"\n\n", "\n", data)
+
+    data = data.replace(": undefined", ": null")
 
     # Callback and handlers
     for function_title_match in (r"(on\w+)", r"(\w+Callback)"):
