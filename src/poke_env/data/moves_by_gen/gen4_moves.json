@@ -257,7 +257,8 @@
         "category": "Status",
         "condition": {
             "onResidual": "onResidual",
-            "onResidualOrder": 6,
+            "onResidualOrder": 10,
+            "onResidualSubOrder": 2,
             "onStart": "onStart"
         },
         "contestType": "Beautiful",
@@ -1741,6 +1742,7 @@
         "condition": {
             "onResidual": "onResidual",
             "onResidualOrder": 10,
+            "onResidualSubOrder": 8,
             "onStart": "onStart"
         },
         "contestType": "Tough",
@@ -1997,6 +1999,8 @@
             "onBeforeMovePriority": 7,
             "onDisableMove": "onDisableMove",
             "onEnd": "onEnd",
+            "onResidualOrder": 10,
+            "onResidualSubOrder": 13,
             "onStart": "onStart"
         },
         "contestType": "Clever",
@@ -2514,7 +2518,8 @@
         "condition": {
             "duration": 5,
             "onEnd": "onEnd",
-            "onResidualOrder": 18,
+            "onResidualOrder": 10,
+            "onResidualSubOrder": 18,
             "onStart": "onStart"
         },
         "contestType": "Clever",
@@ -2568,7 +2573,8 @@
             "onEnd": "onEnd",
             "onOverrideAction": "onOverrideAction",
             "onResidual": "onResidual",
-            "onResidualOrder": 13,
+            "onResidualOrder": 10,
+            "onResidualSubOrder": 14,
             "onStart": "onStart"
         },
         "contestType": "Cute",
@@ -3283,7 +3289,8 @@
         "condition": {
             "duration": 1,
             "onHit": "onHit",
-            "onStart": "onStart"
+            "onStart": "onStart",
+            "onTryAddVolatile": "onTryAddVolatile"
         },
         "contestType": "Tough",
         "flags": {
@@ -3672,11 +3679,11 @@
             "onBeforeMove": "onBeforeMove",
             "onBeforeMovePriority": 6,
             "onDisableMove": "onDisableMove",
-            "onEnd": "onEnd",
+            "onFieldEnd": "onFieldEnd",
+            "onFieldResidualOrder": 9,
+            "onFieldStart": "onFieldStart",
             "onModifyAccuracy": "onModifyAccuracy",
-            "onModifyMove": "onModifyMove",
-            "onResidualOrder": 22,
-            "onStart": "onStart"
+            "onModifyMove": "onModifyMove"
         },
         "contestType": "Clever",
         "flags": {
@@ -4050,7 +4057,8 @@
             "onBeforeMovePriority": 6,
             "onDisableMove": "onDisableMove",
             "onEnd": "onEnd",
-            "onResidualOrder": 17,
+            "onResidualOrder": 10,
+            "onResidualSubOrder": 17,
             "onStart": "onStart",
             "onTryHeal": "onTryHeal"
         },
@@ -4934,7 +4942,8 @@
         "condition": {
             "onDragOut": "onDragOut",
             "onResidual": "onResidual",
-            "onResidualOrder": 7,
+            "onResidualOrder": 10,
+            "onResidualSubOrder": 1,
             "onStart": "onStart",
             "onTrapPokemon": "onTrapPokemon"
         },
@@ -5238,7 +5247,8 @@
         "category": "Status",
         "condition": {
             "onResidual": "onResidual",
-            "onResidualOrder": 8,
+            "onResidualOrder": 10,
+            "onResidualSubOrder": 5,
             "onStart": "onStart"
         },
         "contestType": "Clever",
@@ -5315,9 +5325,9 @@
             "duration": 5,
             "durationCallback": "durationCallback",
             "onAnyModifyDamagePhase1": "onAnyModifyDamagePhase1",
-            "onEnd": "onEnd",
-            "onResidualOrder": 21,
-            "onStart": "onStart"
+            "onSideEnd": "onSideEnd",
+            "onSideResidualOrder": 2,
+            "onSideStart": "onSideStart"
         },
         "contestType": "Beautiful",
         "flags": {
@@ -5421,10 +5431,9 @@
         "condition": {
             "duration": 5,
             "onCriticalHit": false,
-            "onEnd": "onEnd",
-            "onResidualOrder": 21,
-            "onResidualSubOrder": 5,
-            "onStart": "onStart"
+            "onSideEnd": "onSideEnd",
+            "onSideResidualOrder": 6,
+            "onSideStart": "onSideStart"
         },
         "contestType": "Cute",
         "flags": {},
@@ -5449,7 +5458,7 @@
         "category": "Status",
         "condition": {
             "duration": 1,
-            "onStart": "onStart",
+            "onSideStart": "onSideStart",
             "onSwitchIn": "onSwitchIn",
             "onSwitchInPriority": -1
         },
@@ -5597,8 +5606,8 @@
             "duration": 5,
             "onEnd": "onEnd",
             "onImmunity": "onImmunity",
-            "onResidualOrder": 6,
-            "onResidualSubOrder": 9,
+            "onResidualOrder": 10,
+            "onResidualSubOrder": 16,
             "onStart": "onStart"
         },
         "contestType": "Clever",
@@ -6178,10 +6187,9 @@
         "condition": {
             "duration": 5,
             "onBoost": "onBoost",
-            "onEnd": "onEnd",
-            "onResidualOrder": 21,
-            "onResidualSubOrder": 3,
-            "onStart": "onStart"
+            "onSideEnd": "onSideEnd",
+            "onSideResidualOrder": 3,
+            "onSideStart": "onSideStart"
         },
         "contestType": "Beautiful",
         "flags": {
@@ -6469,7 +6477,8 @@
         "condition": {
             "noCopy": true,
             "onResidual": "onResidual",
-            "onResidualOrder": 9,
+            "onResidualOrder": 10,
+            "onResidualSubOrder": 7,
             "onStart": "onStart"
         },
         "contestType": "Clever",
@@ -6762,7 +6771,7 @@
             "duration": 4,
             "onEnd": "onEnd",
             "onResidual": "onResidual",
-            "onResidualOrder": 20
+            "onResidualOrder": 12
         },
         "contestType": "Beautiful",
         "flags": {
@@ -7537,9 +7546,9 @@
             "duration": 5,
             "durationCallback": "durationCallback",
             "onAnyModifyDamagePhase1": "onAnyModifyDamagePhase1",
-            "onEnd": "onEnd",
-            "onResidualOrder": 21,
-            "onStart": "onStart"
+            "onSideEnd": "onSideEnd",
+            "onSideResidualOrder": 1,
+            "onSideStart": "onSideStart"
         },
         "contestType": "Clever",
         "flags": {
@@ -7968,7 +7977,7 @@
         "category": "Status",
         "condition": {
             "duration": 1,
-            "onResidualOrder": 20,
+            "onResidualOrder": 25,
             "onStart": "onStart",
             "onType": "onType",
             "onTypePriority": -1
@@ -8024,11 +8033,10 @@
         "condition": {
             "duration": 5,
             "durationCallback": "durationCallback",
-            "onEnd": "onEnd",
-            "onResidualOrder": 21,
-            "onResidualSubOrder": 2,
             "onSetStatus": "onSetStatus",
-            "onStart": "onStart",
+            "onSideEnd": "onSideEnd",
+            "onSideResidualOrder": 4,
+            "onSideStart": "onSideStart",
             "onTryAddVolatile": "onTryAddVolatile"
         },
         "contestType": "Beautiful",
@@ -8772,7 +8780,6 @@
     "sleeptalk": {
         "accuracy": true,
         "basePower": 0,
-        "beforeMoveCallback": "beforeMoveCallback",
         "category": "Status",
         "contestType": "Cute",
         "flags": {},
@@ -8780,6 +8787,7 @@
         "num": 214,
         "onHit": "onHit",
         "onTry": "onTry",
+        "onTryHit": "onTryHit",
         "pp": 10,
         "priority": 0,
         "secondary": null,
@@ -9108,8 +9116,8 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "onRestart": "onRestart",
-            "onStart": "onStart",
+            "onSideRestart": "onSideRestart",
+            "onSideStart": "onSideStart",
             "onSwitchIn": "onSwitchIn"
         },
         "contestType": "Clever",
@@ -9221,7 +9229,7 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "onStart": "onStart",
+            "onSideStart": "onSideStart",
             "onSwitchIn": "onSwitchIn"
         },
         "contestType": "Cool",
@@ -9727,6 +9735,7 @@
         "name": "Switcheroo",
         "num": 415,
         "onHit": "onHit",
+        "onTryHit": "onTryHit",
         "onTryImmunity": "onTryImmunity",
         "pp": 10,
         "priority": 0,
@@ -9857,11 +9866,10 @@
         "condition": {
             "duration": 3,
             "durationCallback": "durationCallback",
-            "onEnd": "onEnd",
             "onModifySpe": "onModifySpe",
-            "onResidualOrder": 21,
-            "onResidualSubOrder": 4,
-            "onStart": "onStart"
+            "onSideEnd": "onSideEnd",
+            "onSideResidualOrder": 5,
+            "onSideStart": "onSideStart"
         },
         "contestType": "Cool",
         "flags": {
@@ -9911,7 +9919,8 @@
             "onBeforeMovePriority": 5,
             "onDisableMove": "onDisableMove",
             "onEnd": "onEnd",
-            "onResidualOrder": 12,
+            "onResidualOrder": 10,
+            "onResidualSubOrder": 15,
             "onStart": "onStart"
         },
         "contestType": "Clever",
@@ -10250,8 +10259,8 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "onRestart": "onRestart",
-            "onStart": "onStart",
+            "onSideRestart": "onSideRestart",
+            "onSideStart": "onSideStart",
             "onSwitchIn": "onSwitchIn"
         },
         "contestType": "Clever",
@@ -10323,6 +10332,7 @@
         "name": "Trick",
         "num": 271,
         "onHit": "onHit",
+        "onTryHit": "onTryHit",
         "onTryImmunity": "onTryImmunity",
         "pp": 10,
         "priority": 0,
@@ -10342,10 +10352,10 @@
         "condition": {
             "duration": 5,
             "durationCallback": "durationCallback",
-            "onEnd": "onEnd",
-            "onResidualOrder": 23,
-            "onRestart": "onRestart",
-            "onStart": "onStart"
+            "onFieldEnd": "onFieldEnd",
+            "onFieldResidualOrder": 13,
+            "onFieldRestart": "onFieldRestart",
+            "onFieldStart": "onFieldStart"
         },
         "contestType": "Clever",
         "flags": {
@@ -10474,6 +10484,8 @@
             "onEnd": "onEnd",
             "onLockMove": "uproar",
             "onResidual": "onResidual",
+            "onResidualOrder": 10,
+            "onResidualSubOrder": 11,
             "onStart": "onStart"
         },
         "contestType": "Cute",
@@ -10847,7 +10859,7 @@
         "condition": {
             "duration": 2,
             "onEnd": "onEnd",
-            "onResidualOrder": 0.5
+            "onResidualOrder": 7
         },
         "contestType": "Cute",
         "flags": {
@@ -11011,7 +11023,8 @@
             "duration": 2,
             "noCopy": true,
             "onEnd": "onEnd",
-            "onResidualOrder": 19,
+            "onResidualOrder": 10,
+            "onResidualSubOrder": 19,
             "onStart": "onStart"
         },
         "contestType": "Cute",

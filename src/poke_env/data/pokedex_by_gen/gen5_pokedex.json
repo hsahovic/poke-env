@@ -786,6 +786,9 @@
             "Arceus-Steel",
             "Arceus-Water"
         ],
+        "tags": [
+            "Mythical"
+        ],
         "types": [
             "Normal"
         ],
@@ -1573,7 +1576,8 @@
     },
     "articuno": {
         "abilities": {
-            "0": "Pressure"
+            "0": "Pressure",
+            "H": "Snow Cloak"
         },
         "baseStats": {
             "atk": 85,
@@ -1598,10 +1602,14 @@
         "otherFormes": [
             "Articuno-Galar"
         ],
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Ice",
             "Flying"
         ],
+        "unreleasedHidden": true,
         "weightkg": 55.4
     },
     "articunogalar": {
@@ -1804,6 +1812,9 @@
         "heightm": 0.3,
         "name": "Azelf",
         "num": 482,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Psychic"
         ],
@@ -2059,7 +2070,8 @@
         "abilities": {
             "0": "Rock Head",
             "1": "Adaptability",
-            "H": "Mold Breaker"
+            "H": "Mold Breaker",
+            "S": "Reckless"
         },
         "baseSpecies": "Basculin",
         "baseStats": {
@@ -2117,7 +2129,8 @@
     },
     "bayleef": {
         "abilities": {
-            "0": "Overgrow"
+            "0": "Overgrow",
+            "H": "Leaf Guard"
         },
         "baseStats": {
             "atk": 62,
@@ -2147,6 +2160,7 @@
         "types": [
             "Grass"
         ],
+        "unreleasedHidden": true,
         "weightkg": 15.8
     },
     "beartic": {
@@ -3738,6 +3752,9 @@
         "heightm": 0.6,
         "name": "Celebi",
         "num": 251,
+        "tags": [
+            "Mythical"
+        ],
         "types": [
             "Psychic",
             "Grass"
@@ -3747,7 +3764,8 @@
     "chandelure": {
         "abilities": {
             "0": "Flash Fire",
-            "1": "Flame Body"
+            "1": "Flame Body",
+            "H": "Shadow Tag"
         },
         "baseStats": {
             "atk": 55,
@@ -3771,6 +3789,7 @@
             "Ghost",
             "Fire"
         ],
+        "unreleasedHidden": true,
         "weightkg": 34.3
     },
     "chansey": {
@@ -4143,7 +4162,8 @@
     },
     "chikorita": {
         "abilities": {
-            "0": "Overgrow"
+            "0": "Overgrow",
+            "H": "Leaf Guard"
         },
         "baseStats": {
             "atk": 49,
@@ -4171,6 +4191,7 @@
         "types": [
             "Grass"
         ],
+        "unreleasedHidden": true,
         "weightkg": 6.4
     },
     "chimchar": {
@@ -4292,6 +4313,33 @@
             "Psychic"
         ],
         "weightkg": 0.6
+    },
+    "chromera": {
+        "abilities": {
+            "0": "Color Change"
+        },
+        "baseStats": {
+            "atk": 85,
+            "def": 115,
+            "hp": 85,
+            "spa": 115,
+            "spd": 100,
+            "spe": 100
+        },
+        "color": "Purple",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "gen": 8,
+        "gender": "N",
+        "heightm": 2.5,
+        "name": "Chromera",
+        "num": -60,
+        "types": [
+            "Dark",
+            "Poison"
+        ],
+        "weightkg": 215
     },
     "cinccino": {
         "abilities": {
@@ -4535,6 +4583,9 @@
         "heightm": 2.1,
         "name": "Cobalion",
         "num": 638,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Steel",
             "Fighting"
@@ -4982,6 +5033,9 @@
         "heightm": 1.5,
         "name": "Cresselia",
         "num": 488,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Psychic"
         ],
@@ -5047,7 +5101,8 @@
     },
     "croconaw": {
         "abilities": {
-            "0": "Torrent"
+            "0": "Torrent",
+            "H": "Sheer Force"
         },
         "baseStats": {
             "atk": 80,
@@ -5077,6 +5132,7 @@
         "types": [
             "Water"
         ],
+        "unreleasedHidden": true,
         "weightkg": 25
     },
     "crucibelle": {
@@ -5327,7 +5383,8 @@
     },
     "cyndaquil": {
         "abilities": {
-            "0": "Blaze"
+            "0": "Blaze",
+            "H": "Flash Fire"
         },
         "baseStats": {
             "atk": 52,
@@ -5354,6 +5411,7 @@
         "types": [
             "Fire"
         ],
+        "unreleasedHidden": true,
         "weightkg": 7.9
     },
     "darkrai": {
@@ -5376,6 +5434,9 @@
         "heightm": 1.5,
         "name": "Darkrai",
         "num": 491,
+        "tags": [
+            "Mythical"
+        ],
         "types": [
             "Dark"
         ],
@@ -5737,6 +5798,9 @@
             "Deoxys-Defense",
             "Deoxys-Speed"
         ],
+        "tags": [
+            "Mythical"
+        ],
         "types": [
             "Psychic"
         ],
@@ -5858,7 +5922,8 @@
     },
     "dewott": {
         "abilities": {
-            "0": "Torrent"
+            "0": "Torrent",
+            "H": "Shell Armor"
         },
         "baseStats": {
             "atk": 75,
@@ -5887,6 +5952,7 @@
         "types": [
             "Water"
         ],
+        "unreleasedHidden": true,
         "weightkg": 24.5
     },
     "dialga": {
@@ -5910,6 +5976,9 @@
         "heightm": 5.4,
         "name": "Dialga",
         "num": 483,
+        "tags": [
+            "Restricted Legendary"
+        ],
         "types": [
             "Steel",
             "Dragon"
@@ -7137,7 +7206,8 @@
     },
     "emboar": {
         "abilities": {
-            "0": "Blaze"
+            "0": "Blaze",
+            "H": "Reckless"
         },
         "baseStats": {
             "atk": 123,
@@ -7164,6 +7234,7 @@
             "Fire",
             "Fighting"
         ],
+        "unreleasedHidden": true,
         "weightkg": 150
     },
     "emolga": {
@@ -7228,7 +7299,8 @@
     },
     "entei": {
         "abilities": {
-            "0": "Pressure"
+            "0": "Pressure",
+            "H": "Flash Fire"
         },
         "baseStats": {
             "atk": 115,
@@ -7246,9 +7318,13 @@
         "heightm": 2.1,
         "name": "Entei",
         "num": 244,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Fire"
         ],
+        "unreleasedHidden": true,
         "weightkg": 198
     },
     "equilibra": {
@@ -7656,7 +7732,8 @@
     },
     "feraligatr": {
         "abilities": {
-            "0": "Torrent"
+            "0": "Torrent",
+            "H": "Sheer Force"
         },
         "baseStats": {
             "atk": 105,
@@ -7683,6 +7760,7 @@
         "types": [
             "Water"
         ],
+        "unreleasedHidden": true,
         "weightkg": 88.8
     },
     "ferroseed": {
@@ -8573,6 +8651,9 @@
             "Genesect-Burn",
             "Genesect-Chill"
         ],
+        "tags": [
+            "Mythical"
+        ],
         "types": [
             "Bug",
             "Steel"
@@ -8971,6 +9052,9 @@
         "num": 487,
         "otherFormes": [
             "Giratina-Origin"
+        ],
+        "tags": [
+            "Restricted Legendary"
         ],
         "types": [
             "Ghost",
@@ -9478,7 +9562,9 @@
     },
     "gothita": {
         "abilities": {
-            "0": "Frisk"
+            "0": "Frisk",
+            "1": "Competitive",
+            "H": "Shadow Tag"
         },
         "baseStats": {
             "atk": 30,
@@ -9505,6 +9591,7 @@
         "types": [
             "Psychic"
         ],
+        "unreleasedHidden": true,
         "weightkg": 5.8
     },
     "gothitelle": {
@@ -9810,6 +9897,9 @@
         "num": 383,
         "otherFormes": [
             "Groudon-Primal"
+        ],
+        "tags": [
+            "Restricted Legendary"
         ],
         "types": [
             "Ground"
@@ -10221,7 +10311,8 @@
     },
     "heatran": {
         "abilities": {
-            "0": "Flash Fire"
+            "0": "Flash Fire",
+            "H": "Flame Body"
         },
         "baseStats": {
             "atk": 90,
@@ -10238,10 +10329,14 @@
         "heightm": 1.7,
         "name": "Heatran",
         "num": 485,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Fire",
             "Steel"
         ],
+        "unreleasedHidden": true,
         "weightkg": 430
     },
     "heracross": {
@@ -10536,6 +10631,9 @@
         "heightm": 3.8,
         "name": "Ho-Oh",
         "num": 250,
+        "tags": [
+            "Restricted Legendary"
+        ],
         "types": [
             "Fire",
             "Flying"
@@ -11025,6 +11123,9 @@
         "heightm": 0.3,
         "name": "Jirachi",
         "num": 385,
+        "tags": [
+            "Mythical"
+        ],
         "types": [
             "Steel",
             "Psychic"
@@ -11493,6 +11594,9 @@
         "otherFormes": [
             "Keldeo-Resolute"
         ],
+        "tags": [
+            "Mythical"
+        ],
         "types": [
             "Water",
             "Fighting"
@@ -11744,7 +11848,8 @@
     "klink": {
         "abilities": {
             "0": "Plus",
-            "1": "Minus"
+            "1": "Minus",
+            "H": "Clear Body"
         },
         "baseStats": {
             "atk": 55,
@@ -11768,6 +11873,7 @@
         "types": [
             "Steel"
         ],
+        "unreleasedHidden": true,
         "weightkg": 21
     },
     "klinklang": {
@@ -12027,6 +12133,9 @@
         "otherFormes": [
             "Kyogre-Primal"
         ],
+        "tags": [
+            "Restricted Legendary"
+        ],
         "types": [
             "Water"
         ],
@@ -12088,6 +12197,9 @@
         "otherFormes": [
             "Kyurem-Black",
             "Kyurem-White"
+        ],
+        "tags": [
+            "Restricted Legendary"
         ],
         "types": [
             "Dragon",
@@ -12188,7 +12300,8 @@
     "lampent": {
         "abilities": {
             "0": "Flash Fire",
-            "1": "Flame Body"
+            "1": "Flame Body",
+            "H": "Shadow Tag"
         },
         "baseStats": {
             "atk": 40,
@@ -12214,6 +12327,7 @@
             "Ghost",
             "Fire"
         ],
+        "unreleasedHidden": true,
         "weightkg": 13
     },
     "landorus": {
@@ -12244,6 +12358,9 @@
         "num": 645,
         "otherFormes": [
             "Landorus-Therian"
+        ],
+        "tags": [
+            "Sub-Legendary"
         ],
         "types": [
             "Ground",
@@ -12371,7 +12488,8 @@
     },
     "larvesta": {
         "abilities": {
-            "0": "Flame Body"
+            "0": "Flame Body",
+            "H": "Swarm"
         },
         "baseStats": {
             "atk": 85,
@@ -12395,6 +12513,7 @@
             "Bug",
             "Fire"
         ],
+        "unreleasedHidden": true,
         "weightkg": 28.8
     },
     "larvitar": {
@@ -12452,6 +12571,9 @@
         "num": 380,
         "otherFormes": [
             "Latias-Mega"
+        ],
+        "tags": [
+            "Sub-Legendary"
         ],
         "types": [
             "Dragon",
@@ -12514,6 +12636,9 @@
         "num": 381,
         "otherFormes": [
             "Latios-Mega"
+        ],
+        "tags": [
+            "Sub-Legendary"
         ],
         "types": [
             "Dragon",
@@ -12921,7 +13046,8 @@
     "litwick": {
         "abilities": {
             "0": "Flash Fire",
-            "1": "Flame Body"
+            "1": "Flame Body",
+            "H": "Shadow Tag"
         },
         "baseStats": {
             "atk": 30,
@@ -12945,6 +13071,7 @@
             "Ghost",
             "Fire"
         ],
+        "unreleasedHidden": true,
         "weightkg": 3.1
     },
     "lombre": {
@@ -13234,6 +13361,9 @@
         "heightm": 5.2,
         "name": "Lugia",
         "num": 249,
+        "tags": [
+            "Restricted Legendary"
+        ],
         "types": [
             "Psychic",
             "Flying"
@@ -13883,6 +14013,9 @@
         "heightm": 0.3,
         "name": "Manaphy",
         "num": 490,
+        "tags": [
+            "Mythical"
+        ],
         "types": [
             "Water"
         ],
@@ -14477,7 +14610,8 @@
     },
     "meganium": {
         "abilities": {
-            "0": "Overgrow"
+            "0": "Overgrow",
+            "H": "Leaf Guard"
         },
         "baseStats": {
             "atk": 82,
@@ -14504,6 +14638,7 @@
         "types": [
             "Grass"
         ],
+        "unreleasedHidden": true,
         "weightkg": 100.5
     },
     "meloetta": {
@@ -14533,6 +14668,9 @@
         "num": 648,
         "otherFormes": [
             "Meloetta-Pirouette"
+        ],
+        "tags": [
+            "Mythical"
         ],
         "types": [
             "Normal",
@@ -14720,6 +14858,9 @@
         "heightm": 0.3,
         "name": "Mesprit",
         "num": 481,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Psychic"
         ],
@@ -14871,6 +15012,9 @@
         "heightm": 0.4,
         "name": "Mew",
         "num": 151,
+        "tags": [
+            "Mythical"
+        ],
         "types": [
             "Psychic"
         ],
@@ -14905,6 +15049,9 @@
         "otherFormes": [
             "Mewtwo-Mega-X",
             "Mewtwo-Mega-Y"
+        ],
+        "tags": [
+            "Restricted Legendary"
         ],
         "types": [
             "Psychic"
@@ -15371,7 +15518,8 @@
     },
     "moltres": {
         "abilities": {
-            "0": "Pressure"
+            "0": "Pressure",
+            "H": "Flame Body"
         },
         "baseStats": {
             "atk": 100,
@@ -15396,10 +15544,14 @@
         "otherFormes": [
             "Moltres-Galar"
         ],
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Fire",
             "Flying"
         ],
+        "unreleasedHidden": true,
         "weightkg": 60
     },
     "moltresgalar": {
@@ -16548,7 +16700,8 @@
     },
     "oshawott": {
         "abilities": {
-            "0": "Torrent"
+            "0": "Torrent",
+            "H": "Shell Armor"
         },
         "baseStats": {
             "atk": 55,
@@ -16575,6 +16728,7 @@
         "types": [
             "Water"
         ],
+        "unreleasedHidden": true,
         "weightkg": 5.9
     },
     "pachirisu": {
@@ -16652,6 +16806,9 @@
         "heightm": 4.2,
         "name": "Palkia",
         "num": 484,
+        "tags": [
+            "Restricted Legendary"
+        ],
         "types": [
             "Water",
             "Dragon"
@@ -17079,6 +17236,9 @@
         "heightm": 0.4,
         "name": "Phione",
         "num": 489,
+        "tags": [
+            "Mythical"
+        ],
         "types": [
             "Water"
         ],
@@ -17305,7 +17465,8 @@
     },
     "pignite": {
         "abilities": {
-            "0": "Blaze"
+            "0": "Blaze",
+            "H": "Thick Fat"
         },
         "baseStats": {
             "atk": 93,
@@ -17335,6 +17496,7 @@
             "Fire",
             "Fighting"
         ],
+        "unreleasedHidden": true,
         "weightkg": 55.5
     },
     "pikachu": {
@@ -19206,7 +19368,8 @@
     },
     "quilava": {
         "abilities": {
-            "0": "Blaze"
+            "0": "Blaze",
+            "H": "Flash Fire"
         },
         "baseStats": {
             "atk": 64,
@@ -19235,6 +19398,7 @@
         "types": [
             "Fire"
         ],
+        "unreleasedHidden": true,
         "weightkg": 19
     },
     "qwilfish": {
@@ -19333,7 +19497,8 @@
     },
     "raikou": {
         "abilities": {
-            "0": "Pressure"
+            "0": "Pressure",
+            "H": "Volt Absorb"
         },
         "baseStats": {
             "atk": 85,
@@ -19351,9 +19516,13 @@
         "heightm": 1.9,
         "name": "Raikou",
         "num": 243,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Electric"
         ],
+        "unreleasedHidden": true,
         "weightkg": 178
     },
     "ralts": {
@@ -19672,6 +19841,9 @@
         "otherFormes": [
             "Rayquaza-Mega"
         ],
+        "tags": [
+            "Restricted Legendary"
+        ],
         "types": [
             "Dragon",
             "Flying"
@@ -19740,7 +19912,8 @@
     },
     "regice": {
         "abilities": {
-            "0": "Clear Body"
+            "0": "Clear Body",
+            "H": "Ice Body"
         },
         "baseStats": {
             "atk": 50,
@@ -19758,9 +19931,13 @@
         "heightm": 1.8,
         "name": "Regice",
         "num": 378,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Ice"
         ],
+        "unreleasedHidden": true,
         "weightkg": 175
     },
     "regigigas": {
@@ -19783,6 +19960,9 @@
         "heightm": 3.7,
         "name": "Regigigas",
         "num": 486,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Normal"
         ],
@@ -19790,7 +19970,8 @@
     },
     "regirock": {
         "abilities": {
-            "0": "Clear Body"
+            "0": "Clear Body",
+            "H": "Sturdy"
         },
         "baseStats": {
             "atk": 100,
@@ -19808,14 +19989,19 @@
         "heightm": 1.7,
         "name": "Regirock",
         "num": 377,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Rock"
         ],
+        "unreleasedHidden": true,
         "weightkg": 230
     },
     "registeel": {
         "abilities": {
-            "0": "Clear Body"
+            "0": "Clear Body",
+            "H": "Light Metal"
         },
         "baseStats": {
             "atk": 75,
@@ -19833,9 +20019,13 @@
         "heightm": 1.9,
         "name": "Registeel",
         "num": 379,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Steel"
         ],
+        "unreleasedHidden": true,
         "weightkg": 205
     },
     "relicanth": {
@@ -19920,6 +20110,9 @@
         "heightm": 3.2,
         "name": "Reshiram",
         "num": 643,
+        "tags": [
+            "Restricted Legendary"
+        ],
         "types": [
             "Dragon",
             "Fire"
@@ -20394,7 +20587,8 @@
     "rufflet": {
         "abilities": {
             "0": "Keen Eye",
-            "1": "Sheer Force"
+            "1": "Sheer Force",
+            "H": "Hustle"
         },
         "baseStats": {
             "atk": 83,
@@ -20419,6 +20613,7 @@
             "Normal",
             "Flying"
         ],
+        "unreleasedHidden": true,
         "weightkg": 10.5
     },
     "sableye": {
@@ -20548,7 +20743,8 @@
     },
     "samurott": {
         "abilities": {
-            "0": "Torrent"
+            "0": "Torrent",
+            "H": "Shell Armor"
         },
         "baseStats": {
             "atk": 100,
@@ -20574,6 +20770,7 @@
         "types": [
             "Water"
         ],
+        "unreleasedHidden": true,
         "weightkg": 94.6
     },
     "sandile": {
@@ -21308,7 +21505,8 @@
     },
     "serperior": {
         "abilities": {
-            "0": "Overgrow"
+            "0": "Overgrow",
+            "H": "Contrary"
         },
         "baseStats": {
             "atk": 75,
@@ -21335,11 +21533,13 @@
         "types": [
             "Grass"
         ],
+        "unreleasedHidden": true,
         "weightkg": 63
     },
     "servine": {
         "abilities": {
-            "0": "Overgrow"
+            "0": "Overgrow",
+            "H": "Contrary"
         },
         "baseStats": {
             "atk": 60,
@@ -21369,6 +21569,7 @@
         "types": [
             "Grass"
         ],
+        "unreleasedHidden": true,
         "weightkg": 16
     },
     "seviper": {
@@ -21517,6 +21718,9 @@
         "num": 492,
         "otherFormes": [
             "Shaymin-Sky"
+        ],
+        "tags": [
+            "Mythical"
         ],
         "types": [
             "Grass"
@@ -22747,7 +22951,8 @@
     },
     "snivy": {
         "abilities": {
-            "0": "Overgrow"
+            "0": "Overgrow",
+            "H": "Contrary"
         },
         "baseStats": {
             "atk": 45,
@@ -22775,6 +22980,7 @@
         "types": [
             "Grass"
         ],
+        "unreleasedHidden": true,
         "weightkg": 8.1
     },
     "snorlax": {
@@ -23685,7 +23891,8 @@
     },
     "suicune": {
         "abilities": {
-            "0": "Pressure"
+            "0": "Pressure",
+            "H": "Water Absorb"
         },
         "baseStats": {
             "atk": 75,
@@ -23703,9 +23910,13 @@
         "heightm": 2,
         "name": "Suicune",
         "num": 245,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Water"
         ],
+        "unreleasedHidden": true,
         "weightkg": 187
     },
     "sunflora": {
@@ -24409,7 +24620,8 @@
     },
     "tepig": {
         "abilities": {
-            "0": "Blaze"
+            "0": "Blaze",
+            "H": "Thick Fat"
         },
         "baseStats": {
             "atk": 63,
@@ -24436,6 +24648,7 @@
         "types": [
             "Fire"
         ],
+        "unreleasedHidden": true,
         "weightkg": 9.9
     },
     "terrakion": {
@@ -24458,6 +24671,9 @@
         "heightm": 1.9,
         "name": "Terrakion",
         "num": 639,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Rock",
             "Fighting"
@@ -24519,6 +24735,9 @@
         "num": 642,
         "otherFormes": [
             "Thundurus-Therian"
+        ],
+        "tags": [
+            "Sub-Legendary"
         ],
         "types": [
             "Electric",
@@ -24847,6 +25066,9 @@
         "otherFormes": [
             "Tornadus-Therian"
         ],
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Flying"
         ],
@@ -24916,7 +25138,8 @@
     },
     "totodile": {
         "abilities": {
-            "0": "Torrent"
+            "0": "Torrent",
+            "H": "Sheer Force"
         },
         "baseStats": {
             "atk": 65,
@@ -24944,6 +25167,7 @@
         "types": [
             "Water"
         ],
+        "unreleasedHidden": true,
         "weightkg": 9.5
     },
     "toxicroak": {
@@ -25219,7 +25443,8 @@
     },
     "typhlosion": {
         "abilities": {
-            "0": "Blaze"
+            "0": "Blaze",
+            "H": "Flash Fire"
         },
         "baseStats": {
             "atk": 84,
@@ -25245,6 +25470,7 @@
         "types": [
             "Fire"
         ],
+        "unreleasedHidden": true,
         "weightkg": 79.5
     },
     "tyranitar": {
@@ -25538,6 +25764,9 @@
         "heightm": 0.3,
         "name": "Uxie",
         "num": 480,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Psychic"
         ],
@@ -25937,6 +26166,9 @@
         "heightm": 0.4,
         "name": "Victini",
         "num": 494,
+        "tags": [
+            "Mythical"
+        ],
         "types": [
             "Psychic",
             "Fire"
@@ -26050,6 +26282,9 @@
         "heightm": 2,
         "name": "Virizion",
         "num": 640,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Grass",
             "Fighting"
@@ -26086,7 +26321,8 @@
     },
     "volcarona": {
         "abilities": {
-            "0": "Flame Body"
+            "0": "Flame Body",
+            "H": "Swarm"
         },
         "baseStats": {
             "atk": 60,
@@ -26109,6 +26345,7 @@
             "Bug",
             "Fire"
         ],
+        "unreleasedHidden": true,
         "weightkg": 46
     },
     "volkraken": {
@@ -27289,7 +27526,8 @@
     },
     "zapdos": {
         "abilities": {
-            "0": "Pressure"
+            "0": "Pressure",
+            "H": "Lightning Rod"
         },
         "baseStats": {
             "atk": 90,
@@ -27314,10 +27552,14 @@
         "otherFormes": [
             "Zapdos-Galar"
         ],
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Electric",
             "Flying"
         ],
+        "unreleasedHidden": true,
         "weightkg": 52.6
     },
     "zapdosgalar": {
@@ -27396,6 +27638,9 @@
         "heightm": 2.9,
         "name": "Zekrom",
         "num": 644,
+        "tags": [
+            "Restricted Legendary"
+        ],
         "types": [
             "Dragon",
             "Electric"
