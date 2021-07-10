@@ -55,38 +55,65 @@ def play_function(player, n_battles):
             _, _, done, _ = player.step(np.random.choice(player.action_space))
 
 
-@pytest.mark.timeout(120)
-def test_random_gym_players():
-    for battle_format, EnvPlayerClass in zip(
-        [
-            "gen4randombattle",
-            "gen5randombattle",
-            "gen6randombattle",
-            "gen7randombattle",
-            "gen8randombattle",
-        ],
-        [
-            RandomGen4EnvPlayer,
-            RandomGen5EnvPlayer,
-            RandomGen6EnvPlayer,
-            RandomGen7EnvPlayer,
-            RandomGen8EnvPlayer,
-        ],
-    ):
-        env_player = EnvPlayerClass(log_level=20)
-        random_player = RandomPlayer(battle_format=battle_format, log_level=20)
-        env_player.play_against(
-            env_algorithm=play_function,
-            opponent=random_player,
-            env_algorithm_kwargs={"n_battles": 3},
-        )
+@pytest.mark.timeout(30)
+def test_random_gym_players_gen4():
+    env_player = RandomGen4EnvPlayer(log_level=20)
+    random_player = RandomPlayer(battle_format="gen4randombattle", log_level=20)
+    env_player.play_against(
+        env_algorithm=play_function,
+        opponent=random_player,
+        env_algorithm_kwargs={"n_battles": 3},
+    )
+
+
+@pytest.mark.timeout(30)
+def test_random_gym_players_gen5():
+    env_player = RandomGen5EnvPlayer(log_level=20)
+    random_player = RandomPlayer(battle_format="gen5randombattle", log_level=20)
+    env_player.play_against(
+        env_algorithm=play_function,
+        opponent=random_player,
+        env_algorithm_kwargs={"n_battles": 3},
+    )
+
+
+@pytest.mark.timeout(30)
+def test_random_gym_players_gen6():
+    env_player = RandomGen6EnvPlayer(log_level=20)
+    random_player = RandomPlayer(battle_format="gen6randombattle", log_level=20)
+    env_player.play_against(
+        env_algorithm=play_function,
+        opponent=random_player,
+        env_algorithm_kwargs={"n_battles": 3},
+    )
+
+
+@pytest.mark.timeout(30)
+def test_random_gym_players_gen7():
+    env_player = RandomGen7EnvPlayer(log_level=20)
+    random_player = RandomPlayer(battle_format="gen7randombattle", log_level=20)
+    env_player.play_against(
+        env_algorithm=play_function,
+        opponent=random_player,
+        env_algorithm_kwargs={"n_battles": 3},
+    )
+
+
+@pytest.mark.timeout(30)
+def test_random_gym_players_gen8():
+    env_player = RandomGen8EnvPlayer(log_level=20)
+    random_player = RandomPlayer(battle_format="gen8randombattle", log_level=20)
+    env_player.play_against(
+        env_algorithm=play_function,
+        opponent=random_player,
+        env_algorithm_kwargs={"n_battles": 3},
+    )
 
 
 @pytest.mark.timeout(60)
 def test_two_successive_calls_gen8():
     env_player = RandomGen8EnvPlayer(battle_format="gen8randombattle", log_level=20)
     random_player = RandomPlayer(battle_format="gen8randombattle", log_level=20)
-
     env_player.play_against(
         env_algorithm=play_function,
         opponent=random_player,
