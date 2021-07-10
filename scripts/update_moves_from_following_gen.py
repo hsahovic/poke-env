@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Move indexes to gen:
     Gen 1: 001 - 165
@@ -23,7 +24,7 @@ for gen in range(7, 0, -1):
     file.close()
 
     for move, value in new_gen.items():
-        print("{}, gen {}".format(move, gen))
+        # print("{}, gen {}".format(move, gen))
         if value["num"] > max_move_index[gen]:
             continue
         if move not in old_gen:

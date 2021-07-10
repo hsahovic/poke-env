@@ -8,40 +8,43 @@ for gen in range(1, 9):
     if gen == 8:
         # Fetch latest version
         data = requests.get(
-            "https://raw.githubusercontent.com/smogon/pokemon-showdown/master/data/pokedex.ts"
+            "https://raw.githubusercontent.com/smogon/pokemon-showdown/master/data/pokedex.ts"  # noqa
         ).text
     else:
         data = requests.get(
-            "https://raw.githubusercontent.com/smogon/pokemon-showdown/master/data/mods/gen"
+            "https://raw.githubusercontent.com/smogon/pokemon-showdown/master/data/mods/gen"  # noqa
             + str(gen)
             + "/pokedex.ts"
         ).text
 
-    # Remove start and end of the file
-    data = "{" + "= {".join(data.split("= {")[1:])[:-2]
+    if data == "404: Not Found":
+        data = "{}"
+    else:
+        # Remove start and end of the file
+        data = "{" + "= {".join(data.split("= {")[1:])[:-2]
 
-    # Transform tabs into spaces
-    data = data.replace("\t", " ")
+        # Transform tabs into spaces
+        data = data.replace("\t", " ")
 
-    # Transform keys into correct json strings
-    data = re.sub(r"([\w\d]+): ", r'"\1": ', data)
+        # Transform keys into correct json strings
+        data = re.sub(r"([\w\d]+): ", r'"\1": ', data)
 
-    # Transform single quoted text into double quoted text
-    data = re.sub(r"'([\w\d]+)'", r'"\1"', data)
+        # Transform single quoted text into double quoted text
+        data = re.sub(r"'([\w\d ]+)'", r'"\1"', data)
 
-    # Remove comments
-    data = re.sub(r" +//.+", "", data)
+        # Remove comments
+        data = re.sub(r" +//.+", "", data)
 
-    # Remove empty lines
-    for _ in range(3):
-        data = re.sub(r"\n\n", "\n", data)
+        # Remove empty lines
+        for _ in range(3):
+            data = re.sub(r"\n\n", "\n", data)
 
-    # Remove incorrect commas
-    data = re.sub(r",\n( *)\}", r"\n\1}", data)
-    data = re.sub(r",\n( +)\]", r"\n\1]", data)
+        # Remove incorrect commas
+        data = re.sub(r",\n( *)\}", r"\n\1}", data)
+        data = re.sub(r",\n( +)\]", r"\n\1]", data)
 
-    # Correct double-quoted text inside double-quoted text
-    data = re.sub(r': ""(.*)":(.*)",', r': "\1:\2",', data)
+        # Correct double-quoted text inside double-quoted text
+        data = re.sub(r': ""(.*)":(.*)",', r': "\1:\2",', data)
 
     if gen != 8:
         with open("gen" + str(gen) + "_pokedex_changes.json", "w+") as f:
