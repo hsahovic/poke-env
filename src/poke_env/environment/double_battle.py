@@ -109,7 +109,8 @@ class DoubleBattle(AbstractBattle):
 
         if request.get("teamPreview", False):
             self._teampreview = True
-            self._max_team_size = request["maxTeamSize"]
+            number_of_mons = len(request["side"]["pokemon"])
+            self._max_team_size = request.get("maxTeamSize", number_of_mons)
         else:
             self._teampreview = False
 
