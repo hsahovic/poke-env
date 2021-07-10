@@ -3,6 +3,10 @@
         {
             "showdown-file": "gmax.showdown",
             "packed-format": "Coalossal||weaknesspolicy|steamengine|heatwave,meteorbeam,protect,solarbeam|Modest|252,1,,252,4,||,0,,,,||50|,,,G]Corviknight||choiceband|mirrorarmor|airslash,bulkup,flashcannon,ironhead|Brave|248,252,1,8,,|||||,,,G]Venusaur||choiceband|chlorophyll|doubleedge,leafstorm,protect,sleeppowder|Hasty|252,4,,1,,252|||||,,,G]Snorlax||aguavberry|gluttony|curse,fireblast,gunkshot,heavyslam|Brave|252,252,1,4,,|||||]Butterfree-Gmax||figyberry|tintedlens|batonpass,doubleedge,gigadrain,protect|Gentle|248,8,,1,252,|||||,,,G]Gengar-Gmax||lifeorb|cursedbody|disable,explosion,focuspunch,haze|Jolly|,252,1,,4,252|||||"
+        },
+        {
+            "showdown-file": "the forgotten hero of many battles.showdown",
+            "packed-format": "Eternatus||blacksludge|pressure|flamethrower,dragontail,toxic,recover|Timid|252,,240,,,16|||||]Zacian||choicescarf|intrepidsword|playrough,closecombat,psychicfangs,wildcharge|Jolly|,252,,,4,252|||||]Corviknight||leftovers|pressure|defog,roost,taunt,uturn|Impish|252,,252,,4,|||||]Tyranitar||leftovers|sandstream|stealthrock,earthquake,crunch,fireblast|Brave|252,52,,12,64,128|||||]Quagsire||shedshell|unaware|earthquake,scald,recover,toxic|Impish|252,4,252,,,|||||]Ferrothorn||shedshell|ironbarbs|spikes,leechseed,protect,powerwhip|Impish|252,4,252,,,|||||"
         }
     ],
     "gen8ubers": [
@@ -13,10 +17,6 @@
         {
             "showdown-file": "lo clefable bulky offense.showdown",
             "packed-format": "Clefable||lifeorb|magicguard|moonblast,thunderbolt,flamethrower,moonlight|Modest|120,,,252,,136|||||]Corviknight||leftovers|pressure|bravebird,bodypress,defog,roost|Impish|252,,176,,,80|||||]Seismitoad||leftovers|waterabsorb|stealthrock,scald,toxic,protect|Bold|252,,252,,,4|||||]Snorlax||leftovers|thickfat|bodyslam,darkestlariat,curse,rest|Careful|252,,4,,252,|||||]Aegislash||leftovers|stancechange|swordsdance,shadowsneak,ironhead,closecombat|Jolly|40,252,,,,216|||||]Haxorus||choicescarf|moldbreaker|dualchop,closecombat,irontail,earthquake|Jolly|,252,4,,,252|||||"
-        },
-        {
-            "showdown-file": "the forgotten hero of many battles.showdown",
-            "packed-format": "Eternatus||blacksludge|pressure|flamethrower,dragontail,toxic,recover|Timid|252,,240,,,16|||||]Zacian||choicescarf|intrepidsword|playrough,closecombat,psychicfangs,wildcharge|Jolly|,252,,,4,252|||||]Corviknight||leftovers|pressure|defog,roost,taunt,uturn|Impish|252,,252,,4,|||||]Tyranitar||leftovers|sandstream|stealthrock,earthquake,crunch,fireblast|Brave|252,52,,12,64,128|||||]Quagsire||shedshell|unaware|earthquake,scald,recover,toxic|Impish|252,4,252,,,|||||]Ferrothorn||shedshell|ironbarbs|spikes,leechseed,protect,powerwhip|Impish|252,4,252,,,|||||"
         },
         {
             "showdown-file": "scarlet rags.showdown",
