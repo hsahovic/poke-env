@@ -210,6 +210,54 @@ class AbstractBattle(ABC):
     def _clear_all_boosts(self):  # pragma: no cover
         pass
 
+    def _check_damage_message_for_item(self, split_message: List[str]):
+        # Catches when a side takes damage from the opponent's item
+        # The item belongs to the side not taking damage
+        # Example:
+        #   |-damage|p2a: Archeops|88/100|[from] item: Rocky Helmet|[of] p1a: Ferrothorn
+        if (
+            len(split_message) == 6
+            and split_message[4].startswith("[from] item:")
+            and split_message[5].startswith("[of]")
+        ):
+            item = split_message[4].split("item:")[-1]
+            pkmn = split_message[5].split("[of]")[-1].strip()
+            self.get_pokemon(pkmn).item = to_id_str(item)
+
+        # Catches when a side takes damage from it's own item
+        # The item belongs to the same side taking damage
+        # Example:
+        #   |-damage|p2a: Pikachu|90/100|[from] item: Life Orb
+        elif len(split_message) == 5 and split_message[4].startswith("[from] item:"):
+            item = split_message[4].split("item:")[-1]
+            pkmn = split_message[2]
+            self.get_pokemon(pkmn).item = to_id_str(item)
+
+    def _check_damage_message_for_ability(self, split_message: List[str]):
+        # Catches when a side takes damage from the opponent's ability
+        # the item is from the side not taking damage
+        # Example:
+        #   |-damage|p2a: Archeops|88/100|[from] ability: Iron Barbs|[of] p1a: Ferrothorn
+        if (
+            len(split_message) == 6
+            and split_message[4].startswith("[from] ability:")
+            and split_message[5].startswith("[of]")
+        ):
+            ability = split_message[4].split("ability:")[-1]
+            pkmn = split_message[5].split("[of]")[-1].strip()
+            self.get_pokemon(pkmn).ability = to_id_str(ability)
+
+    def _check_heal_message_for_ability(self, split_message: List[str]):
+        # Catches when a side heals from it's own ability
+        # the "of" component sent by the PS server is a bit misleading
+        #   it implies the ability is from the opposite side
+        # Example:
+        #   |-heal|p2a: Quagsire|100/100|[from] ability: Water Absorb|[of] p1a: Genesect
+        if len(split_message) == 6 and split_message[4].startswith("[from] ability:"):
+            ability = split_message[4].split("ability:")[-1]
+            pkmn = split_message[2]
+            self.get_pokemon(pkmn).ability = to_id_str(ability)
+
     @abstractmethod
     def _end_illusion(self, pokemon_name: str, details: str):  # pragma: no cover
         pass
@@ -260,6 +308,8 @@ class AbstractBattle(ABC):
         elif split_message[1] == "-damage":
             pokemon, hp_status = split_message[2:4]
             self.get_pokemon(pokemon)._damage(hp_status)
+            self._check_damage_message_for_item(split_message)
+            self._check_damage_message_for_ability(split_message)
         elif split_message[1] == "move":
             if len(split_message) == 6:
                 pokemon, move, target = split_message[2:5]
@@ -273,6 +323,7 @@ class AbstractBattle(ABC):
         elif split_message[1] == "-heal":
             pokemon, hp_status = split_message[2:4]
             self.get_pokemon(pokemon)._heal(hp_status)
+            self._check_heal_message_for_ability(split_message)
         elif split_message[1] == "-boost":
             pokemon, stat, amount = split_message[2:5]
             self.get_pokemon(pokemon)._boost(stat, int(amount))

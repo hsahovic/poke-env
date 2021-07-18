@@ -405,6 +405,98 @@ def test_battle_request_and_interactions(example_request):
     assert not battle.maybe_trapped
     assert battle.opponent_can_dynamax
 
+    # Items
+    battle._parse_message(
+        [
+            "",
+            "-damage",
+            "p2a: Necrozma",
+            "167/319",
+            "[from] item: Rocky Helmet",
+            "[of] p1a: Groudon",
+        ]
+    )
+    assert battle.opponent_active_pokemon.item == "rockyhelmet"
+    battle.opponent_active_pokemon._item = None
+
+    battle._parse_message(
+        [
+            "",
+            "-damage",
+            "p1a: Groudon",
+            "100/265",
+            "[from] item: Rocky Helmet",
+            "[of] p2a: Necrozma",
+        ]
+    )
+    assert battle.active_pokemon.item == "rockyhelmet"
+    battle.active_pokemon._item = None
+
+    battle._parse_message(
+        ["", "-damage", "p2a: Necrozma", "100/265", "[from] item: Life Orb"]
+    )
+    assert battle.active_pokemon.item == "lifeorb"
+    battle.active_pokemon._item = None
+
+    battle._parse_message(
+        ["", "-damage", "p1a: Groudon", "100/265", "[from] item: Life Orb"]
+    )
+    assert battle.opponent_active_pokemon.item == "lifeorb"
+    battle.opponent_active_pokemon._item = None
+
+    # Abilities
+    battle._parse_message(
+        [
+            "",
+            "-damage",
+            "p2a: Necrozma",
+            "167/319",
+            "[from] ability: Iron Barbs",
+            "[of] p1a: Groudon",
+        ]
+    )
+    assert battle.opponent_active_pokemon.ability == "ironbarbs"
+    battle.opponent_active_pokemon._ability = None
+
+    battle._parse_message(
+        [
+            "",
+            "-damage",
+            "p2a: Necrozma",
+            "100/265",
+            "[from] ability: Iron Barbs",
+            "[of] p1a: Groudon",
+        ]
+    )
+    assert battle.opponent_active_pokemon.ability == "ironbarbs"
+    battle.opponent_active_pokemon._ability = None
+
+    battle._parse_message(
+        [
+            "",
+            "-heal",
+            "p1a: Groudon",
+            "200/265",
+            "[from] ability: Water Absorb",
+            "[of] p2a: Necrozma",
+        ]
+    )
+    assert battle.opponent_active_pokemon.ability == "waterabsorb"
+    battle.opponent_active_pokemon._ability = None
+
+    battle._parse_message(
+        [
+            "",
+            "-heal",
+            "p2a: Necrozma",
+            "200/265",
+            "[from] ability: Water Absorb",
+            "[of] p1a: Groudon",
+        ]
+    )
+    assert battle.active_pokemon.ability == "waterabsorb"
+    battle.active_pokemon._ability = None
+
 
 def test_end_illusion():
     logger = MagicMock()
