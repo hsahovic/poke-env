@@ -117,7 +117,9 @@ jobs:
       - run:
           name: Install showdown dependencies
           command: |
-            npm install pokemon-showdown
+            cd pokemon-showdown
+            npm install
+            cp config/config-example.js config/config.js
       - run:
           name: Uninstall poke-env before caching
           command: |
