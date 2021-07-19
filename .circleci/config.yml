@@ -103,8 +103,8 @@ jobs:
       - run:
           name: Install node
           command: |
-            curl -sSL "https://nodejs.org/dist/v12.13.0/node-v12.13.0-linux-x64.tar.xz" | sudo tar --strip-components=2 -xJ -C /usr/local/bin/ node-v12.13.0-linux-x64/bin/node
-            curl https://www.npmjs.com/install.sh | sudo bash
+            curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+            sudo apt-get install -y nodejs
       - run:
           name: Download showdown or update it
           command: |
