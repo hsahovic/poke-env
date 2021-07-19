@@ -166,6 +166,7 @@ class Effect(Enum):
     TYPECHANGE = auto()
     TYPE_CHANGE = auto()
     UPROAR = auto()
+    VITAL_SPIRIT = auto()
     WANDERING_SPIRIT = auto()
     WATER_BUBBLE = auto()
     WATER_VEIL = auto()
