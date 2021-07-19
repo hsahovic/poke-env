@@ -58,6 +58,7 @@ class AbstractBattle(ABC):
         "n",
         "rated",
         "resisted",
+        "split",
         "supereffective",
         "tier",
         "upkeep",
