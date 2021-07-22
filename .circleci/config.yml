@@ -118,7 +118,8 @@ jobs:
           name: Install showdown dependencies
           command: |
             cd pokemon-showdown
-            npm install
+            NODE_ENV=production npm update
+            sudo npm link typescript
             cp config/config-example.js config/config.js
       - run:
           name: Uninstall poke-env before caching
