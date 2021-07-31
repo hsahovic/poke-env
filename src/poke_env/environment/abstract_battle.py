@@ -248,6 +248,20 @@ class AbstractBattle(ABC):
             pkmn = split_message[5].split("[of]")[-1].strip()
             self.get_pokemon(pkmn).ability = to_id_str(ability)
 
+    def _check_heal_message_for_item(self, split_message: List[str]):
+        # Catches when a side heals from it's own item
+        # the check for item is not None is necessary because the PS simulator will
+        #  show the heal message AFTER a berry has already been consumed
+        # Examples:
+        #  |-heal|p2a: Quagsire|100/100|[from] item: Leftovers
+        #  |-heal|p2a: Quagsire|100/100|[from] item: Sitrus Berry
+        if len(split_message) == 5 and split_message[4].startswith("[from] item:"):
+            pkmn = split_message[2]
+            item = split_message[4].split("item:")[-1]
+            pkmn_object = self.get_pokemon(pkmn)
+            if pkmn_object.item is not None:
+                pkmn_object.item = to_id_str(item)
+
     def _check_heal_message_for_ability(self, split_message: List[str]):
         # Catches when a side heals from it's own ability
         # the "of" component sent by the PS server is a bit misleading
@@ -325,6 +339,7 @@ class AbstractBattle(ABC):
             pokemon, hp_status = split_message[2:4]
             self.get_pokemon(pokemon)._heal(hp_status)
             self._check_heal_message_for_ability(split_message)
+            self._check_heal_message_for_item(split_message)
         elif split_message[1] == "-boost":
             pokemon, stat, amount = split_message[2:5]
             self.get_pokemon(pokemon)._boost(stat, int(amount))

@@ -10,6 +10,9 @@ from typing import Any, Union
 from typing import Dict
 
 
+UNKNOWN_ITEM = "unknown_item"
+
+
 def _compute_type_chart(chart_path: str) -> Dict[str, Dict[str, float]]:
     """Returns the pokemon type_chart.
 
