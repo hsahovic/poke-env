@@ -18,6 +18,7 @@ from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.side_condition import SideCondition
 from poke_env.environment.status import Status
 from poke_env.environment.weather import Weather
+from poke_env.data import UNKNOWN_ITEM
 
 
 def test_battle_get_pokemon():
@@ -496,6 +497,26 @@ def test_battle_request_and_interactions(example_request):
     )
     assert battle.active_pokemon.ability == "waterabsorb"
     battle.active_pokemon._ability = None
+
+    battle.active_pokemon.item = UNKNOWN_ITEM
+    battle._parse_message(
+        ["", "-heal", "p2a: Necrozma", "200/265", "[from] item: Leftovers"]
+    )
+    assert battle.active_pokemon.item == "leftovers"
+    battle.active_pokemon.item = None
+
+    battle.opponent_active_pokemon.item = UNKNOWN_ITEM
+    battle._parse_message(
+        ["", "-heal", "p1a: Groudon", "200/265", "[from] item: Leftovers"]
+    )
+    assert battle.opponent_active_pokemon.item == "leftovers"
+    battle.opponent_active_pokemon.item = None
+
+    battle.opponent_active_pokemon.item = None
+    battle._parse_message(
+        ["", "-heal", "p1a: Groudon", "200/265", "[from] item: Sitrus Berry"]
+    )
+    assert battle.opponent_active_pokemon.item is None
 
 
 def test_end_illusion():

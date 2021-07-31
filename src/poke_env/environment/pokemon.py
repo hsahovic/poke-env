@@ -6,7 +6,7 @@ from typing import Optional
 from typing import Tuple
 from typing import Union
 
-from poke_env.data import GEN_TO_POKEDEX
+from poke_env.data import GEN_TO_POKEDEX, UNKNOWN_ITEM
 from poke_env.environment.effect import Effect
 from poke_env.environment.pokemon_gender import PokemonGender
 from poke_env.environment.pokemon_type import PokemonType
@@ -92,7 +92,7 @@ class Pokemon:
         self._current_hp: int = 0
         self._effects: Dict[Effect, int] = {}
         self._first_turn: bool = False
-        self._item: Optional[str] = None
+        self._item: Optional[str] = UNKNOWN_ITEM
         self._last_request: dict = {}
         self._last_details: str = ""
         self._must_recharge = False
