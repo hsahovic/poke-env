@@ -160,6 +160,8 @@ class PlayerNetwork(ABC):
                     await self._handle_challenge_request(split_messages[0])
                 elif split_messages[0][4].startswith("/text"):
                     self.logger.info("Received pm with text: %s", message)
+                elif split_messages[0][4].startswith("/nonotify"):
+                    self.logger.info("Received pm: %s", message)
                 else:
                     self.logger.warning("Received pm: %s", message)
             else:
