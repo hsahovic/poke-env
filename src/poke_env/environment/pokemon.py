@@ -332,6 +332,10 @@ class Pokemon:
             self._type_2 = PokemonType.from_name(dex_entry["types"][1])
 
         self._possible_abilities = dex_entry["abilities"]
+
+        if len(self._possible_abilities) == 1:
+            self._ability = self._possible_abilities["0"]  # pyre-ignore
+
         self._heightm = dex_entry["heightm"]
         self._weightkg = dex_entry["weightkg"]
 
