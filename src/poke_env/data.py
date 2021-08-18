@@ -310,10 +310,6 @@ GEN_TO_MOVES: Dict[int, Dict[str, Any]] = {
     8: GEN8_MOVES,
 }
 
-
-TYPE_CHART: Dict[str, Dict[str, float]] = _compute_type_chart(_TYPE_CHART_PATH)
-
-
 NATURES: Dict[str, Dict[str, Union[int, float]]] = {}
 
 with open(
@@ -322,6 +318,7 @@ with open(
     NATURES = orjson.loads(natures.read())
 
 
+TYPE_CHART: Dict[str, Dict[str, float]] = _compute_type_chart(_TYPE_CHART_PATH)
 """
 A dictionnary representing the Pokemon type chart.
 
