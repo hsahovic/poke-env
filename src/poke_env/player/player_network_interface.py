@@ -245,7 +245,6 @@ class PlayerNetwork(ABC):
     async def listen(self) -> None:
         """Listen to a showdown websocket and dispatch messages to be handled."""
         self.logger.info("Starting listening to showdown websocket")
-        coroutines = []
         try:
             async with websockets.connect(
                 self.websocket_url, max_queue=None
@@ -253,7 +252,7 @@ class PlayerNetwork(ABC):
                 self._websocket = websocket
                 async for message in websocket:
                     self.logger.info("\033[92m\033[1m<<<\033[0m %s", message)
-                    coroutines.append(ensure_future(self._handle_message(message)))
+                    ensure_future(self._handle_message(message))
         except websockets.exceptions.ConnectionClosedOK:
             self.logger.warning(
                 "Websocket connection with %s closed", self.websocket_url
@@ -262,9 +261,6 @@ class PlayerNetwork(ABC):
             self.logger.critical("Listen interrupted by %s", e)
         except Exception as e:
             self.logger.exception(e)
-        finally:
-            for coroutine in coroutines:
-                coroutine.cancel()
 
     async def stop_listening(self) -> None:
         if self._listening_coroutine is not None:
