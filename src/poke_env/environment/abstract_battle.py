@@ -32,7 +32,6 @@ class AbstractBattle(ABC):
         "-fieldactivate",
         "-hint",
         "-hitcount",
-        "-immune",
         "-ohko",
         "-miss",
         "-notarget",
@@ -528,6 +527,13 @@ class AbstractBattle(ABC):
             self._team_size[player] = number
         elif split_message[1] in {"message", "-message"}:
             self.logger.info("Received message: %s", split_message[2])
+        elif split_message[1] == "-immune":
+            if len(split_message) == 4:
+                mon, cause = split_message[2:]
+
+                if cause.startswith("[from] ability:"):
+                    ability = cause.replace("[from] ability:", "")
+                    self.get_pokemon(mon).ability = to_id_str(ability)
         else:
             raise NotImplementedError(split_message)
 
