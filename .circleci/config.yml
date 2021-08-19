@@ -118,7 +118,7 @@ jobs:
           name: Install showdown dependencies
           command: |
             cd pokemon-showdown
-            NODE_ENV=production npm update
+            NODE_ENV=production npm install
             sudo npm link typescript
             cp config/config-example.js config/config.js
       - run:
