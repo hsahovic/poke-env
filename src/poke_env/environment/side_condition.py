@@ -59,3 +59,7 @@ class SideCondition(Enum):
                 message,
             )
             return SideCondition._UNKNOWN
+
+
+# SideCondition -> Max useful stack level
+STACKABLE_CONDITIONS = {SideCondition.SPIKES: 3, SideCondition.TOXIC_SPIKES: 2}
