@@ -12,7 +12,7 @@ from typing import Tuple
 
 from poke_env.environment.field import Field
 from poke_env.environment.pokemon import Pokemon, GEN_TO_POKEMON
-from poke_env.environment.side_condition import SideCondition
+from poke_env.environment.side_condition import STACKABLE_CONDITIONS, SideCondition
 from poke_env.environment.weather import Weather
 from poke_env.utils import to_id_str
 
@@ -561,7 +561,9 @@ class AbstractBattle(ABC):
         else:
             conditions = self.opponent_side_conditions
         condition = SideCondition.from_showdown_message(condition)
-        if condition not in conditions:
+        if condition in STACKABLE_CONDITIONS:
+            conditions[condition] = conditions.get(condition, 0) + 1
+        elif condition not in conditions:
             conditions[condition] = self.turn
 
     def _swap(self, *args, **kwargs):
@@ -731,7 +733,10 @@ class AbstractBattle(ABC):
     def opponent_side_conditions(self) -> Dict[SideCondition, int]:
         """
         :return: The opponent's side conditions. Keys are SideCondition objects, values
-            are the number of layers of the side condition.
+            are:
+            - the number of layers of the side condition is the side condition is
+                stackable
+            - the turn where the SideCondition was setup otherwise
         :rtype: Dict[SideCondition, int]
         """
         return self._opponent_side_conditions
@@ -830,7 +835,10 @@ class AbstractBattle(ABC):
     def side_conditions(self) -> Dict[SideCondition, int]:
         """
         :return: The player's side conditions. Keys are SideCondition objects, values
-            are the number of layers of the side condition.
+            are:
+            - the number of layers of the side condition is the side condition is
+                stackable
+            - the turn where the SideCondition was setup otherwise
         :rtype: Dict[SideCondition, int]
         """
         return self._side_conditions
