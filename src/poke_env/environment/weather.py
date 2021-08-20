@@ -29,7 +29,7 @@ class Weather(Enum):
         :param message: The message to convert.
         :type message: str
         :return: The corresponding Weather object.
-        :rtype: SideCondition
+        :rtype: Weather
         """
         message = message.replace("move: ", "")
         message = message.replace(" ", "_")
