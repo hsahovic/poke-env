@@ -37,12 +37,14 @@ To get started, you will first need to `install node v10+ <https://nodejs.org/en
 .. code-block:: bash
 
     git clone https://github.com/smogon/pokemon-showdown.git
+    cd pokemon-showdown
+    npm install
+    cp config/config-example.js config/config.js
 
 Everything is now almost ready to create your first agent: you just have to start the showdown server:
 
 .. code-block:: bash
 
-    cd pokemon-showdown
     node pokemon-showdown start --no-security
 
 .. warning:: The ``--no-security`` flag deactivates several important security features, so do not run a public server with this flag if you are not sure of what you are doing. This flag also removes most of showdown's rate limiting, authentication and throttling, which allows its usage to train AI agents effectively.
