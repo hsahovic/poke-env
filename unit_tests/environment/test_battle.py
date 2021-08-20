@@ -135,6 +135,28 @@ def test_battle_player_role_interaction():
     assert battle._player_role == "p4"
 
 
+def test_stackable_side_start():
+    logger = MagicMock()
+    battle = Battle("tag", "username", logger)
+
+    battle._parse_message(["", "player", "p1", "username", "", ""])
+    battle._parse_message(["", "-sidestart", "p1: username", "move: Stealth Rock"])
+
+    assert battle.side_conditions == {SideCondition.STEALTH_ROCK: 0}
+
+    battle._parse_message(["", "-sidestart", "p1: username", "move: spikes"])
+
+    assert battle.side_conditions == {
+        SideCondition.STEALTH_ROCK: 0,
+        SideCondition.SPIKES: 1,
+    }
+    battle._parse_message(["", "-sidestart", "p1: username", "move: spikes"])
+    assert battle.side_conditions == {
+        SideCondition.STEALTH_ROCK: 0,
+        SideCondition.SPIKES: 2,
+    }
+
+
 def test_battle_tag():
     logger = MagicMock()
     battle = Battle("tag", "username", logger)
