@@ -753,12 +753,12 @@ class DynamaxMove(Move):
     BOOSTS_MAP = {
         PokemonType.BUG: {"spa": -1},
         PokemonType.DARK: {"spd": -1},
-        PokemonType.DRAGON: {"att": -1},
+        PokemonType.DRAGON: {"atk": -1},
         PokemonType.GHOST: {"def": -1},
         PokemonType.NORMAL: {"spe": -1},
     }
     SELF_BOOSTS_MAP = {
-        PokemonType.FIGHTING: {"att": +1},
+        PokemonType.FIGHTING: {"atk": +1},
         PokemonType.FLYING: {"spe": +1},
         PokemonType.GROUND: {"spd": +1},
         PokemonType.POISON: {"spa": +1},

@@ -545,7 +545,7 @@ def test_dynamax_move_with_boosts():
     move = Move("dracometeor")
     dynamaxed = move.dynamaxed
 
-    assert dynamaxed.boosts == {"att": -1}
+    assert dynamaxed.boosts == {"atk": -1}
     assert dynamaxed.damage == 0
     assert dynamaxed.weather is None
     assert dynamaxed.terrain is None
