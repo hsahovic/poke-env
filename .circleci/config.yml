@@ -30,6 +30,11 @@ jobs:
       - checkout
 
       - run:
+          name: Display file structure
+          command: |
+            ls /
+
+      - run:
           name: Store python version into a file
           command: |
             python3 --version > python-version.txt
