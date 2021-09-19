@@ -17,7 +17,7 @@ jobs:
     docker:
       # specify the version you desire here
       # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
-      - image: circleci/python:3.6
+      - image: circleci/python:3.6.14-node
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -101,11 +101,6 @@ jobs:
             . venv/bin/activate
             pytest -x unit_tests/
       - run:
-          name: Install node
-          command: |
-            curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash -
-            sudo apt-get install -y nodejs
-      - run:
           name: Download showdown or update it
           command: |
             if [ -d "pokemon-showdown" ]
@@ -159,9 +154,8 @@ jobs:
   test-3-7:
     <<: *test-template
     docker:
-      - image: circleci/python:3.7
+      - image: circleci/python:3.7.11-node
   test-3-8:
     <<: *test-template
     docker:
-      - image: circleci/python:3.8
-
+      - image: circleci/python:3.8.12-node
