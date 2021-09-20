@@ -313,7 +313,7 @@ class AbstractBattle(ABC):
 
         self._fields[field] = self.turn
 
-    def _parse_message(self, split_message: List[str]) -> None:
+    def _parse_message(self, split_message: List[str]) -> None:  # pyre-ignore
         if split_message[1] in self.MESSAGES_TO_IGNORE:
             return
         elif split_message[1] in ["drag", "switch"]:
@@ -645,7 +645,7 @@ class AbstractBattle(ABC):
         if self._dynamax_turn is not None and any(
             map(lambda pokemon: pokemon.is_dynamaxed, self._team.values())
         ):
-            return max(3 - (self.turn - self._dynamax_turn), 0)  # pyre-ignore
+            return max(3 - (self.turn - self._dynamax_turn), 0)
 
     @property
     def fields(self) -> Dict[Field, int]:
@@ -716,7 +716,7 @@ class AbstractBattle(ABC):
         if self._opponent_dynamax_turn is not None and any(
             map(lambda pokemon: pokemon.is_dynamaxed, self._opponent_team.values())
         ):
-            return max(3 - (self.turn - self._opponent_dynamax_turn), 0)  # pyre-ignore
+            return max(3 - (self.turn - self._opponent_dynamax_turn), 0)
 
     @property
     def opponent_role(self) -> Optional[str]:

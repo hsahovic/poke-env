@@ -116,7 +116,7 @@ class Pokemon:
         if self._status is None:
             status_repr = None
         else:
-            status_repr = self._status.name  # pyre-ignore
+            status_repr = self._status.name
 
         return (
             f"{self._species} (pokemon object) "
@@ -496,8 +496,8 @@ class Pokemon:
         :return: The set of moves that pokemon can use as z-moves.
         :rtype: List[Move]
         """
-        if isinstance(self.item, str) and self.item.endswith("iumz"):  # pyre-ignore
-            type_, move = Z_CRYSTAL[self.item]  # pyre-ignore
+        if isinstance(self.item, str) and self.item.endswith("iumz"):
+            type_, move = Z_CRYSTAL[self.item]
             if type_:
                 return [
                     move

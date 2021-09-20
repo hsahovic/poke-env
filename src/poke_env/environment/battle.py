@@ -88,9 +88,7 @@ class Battle(AbstractBattle):
 
             if self.active_pokemon is not None:
                 self._available_moves.extend(
-                    self.active_pokemon.available_moves_from_request(  # pyre-ignore
-                        active_request
-                    )
+                    self.active_pokemon.available_moves_from_request(active_request)
                 )
             if active_request.get("canMegaEvo", False):
                 self._can_mega_evolve = True

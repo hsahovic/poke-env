@@ -26,7 +26,7 @@ class Teambuilder(ABC):
         """Returns a packed-format team."""
 
     @staticmethod
-    def parse_showdown_team(team: str) -> List[TeambuilderPokemon]:
+    def parse_showdown_team(team: str) -> List[TeambuilderPokemon]:  # pyre-ignore
         """Converts a showdown-formatted team string into a list of TeambuilderPokemon
         objects.
 
