@@ -162,6 +162,8 @@ class PlayerNetwork(ABC):
                     self.logger.info("Received pm with text: %s", message)
                 elif split_messages[0][4].startswith("/nonotify"):
                     self.logger.info("Received pm: %s", message)
+                elif split_messages[0][4].startswith("/log"):
+                    self.logger.info("Received pm: %s", message)
                 else:
                     self.logger.warning("Received pm: %s", message)
             else:
