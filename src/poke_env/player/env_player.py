@@ -149,6 +149,12 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         :rtype: Any
         :raies: EnvironmentError
         """
+        try:
+            if self._current_battle.finished is False:
+                self.complete_current_battle()
+        except AttributeError:
+            pass
+
         for _ in range(self.MAX_BATTLE_SWITCH_RETRY):
             battles = dict(self._actions.items())
             battles = [b for b in battles if not b.finished]
