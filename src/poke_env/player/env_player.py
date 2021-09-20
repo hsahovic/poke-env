@@ -115,10 +115,8 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         """Unimplemented. Has no effect."""
 
     def complete_current_battle(self) -> None:
-        """Completes the current battle by performing random moves."""
-        done = self._current_battle.finished
-        while not done:
-            _, _, done, _ = self.step(np.random.choice(self._ACTION_SPACE))
+        """Completes the current battle by forfeiting."""
+        self._actions[self._current_battle].put(-1)
 
     def compute_reward(self, battle: AbstractBattle) -> float:
         """Returns a reward for the given battle.
