@@ -12,7 +12,7 @@ from typing import Any, Callable, List, Optional, Tuple, Union
 
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.battle import Battle
-from poke_env.player.battle_order import BattleOrder
+from poke_env.player.battle_order import BattleOrder, ForfeitBattleOrder
 from poke_env.player.player import Player
 from poke_env.player_configuration import PlayerConfiguration
 from poke_env.server_configuration import ServerConfiguration
@@ -378,7 +378,8 @@ class Gen4EnvSinglePlayer(EnvPlayer):  # pyre-ignore
         """Converts actions to move orders.
 
         The conversion is done as follows:
-
+        action = -1:
+            The battle will be forfeited.
         0 <= action < 4:
             The actionth available move in battle.available_moves is executed.
         4 <= action < 10
@@ -393,7 +394,9 @@ class Gen4EnvSinglePlayer(EnvPlayer):  # pyre-ignore
         :return: the order to send to the server.
         :rtype: str
         """
-        if (
+        if action == -1:
+            return ForfeitBattleOrder()
+        elif (
             action < 4
             and action < len(battle.available_moves)
             and not battle.force_switch
@@ -433,6 +436,8 @@ class Gen6EnvSinglePlayer(EnvPlayer):  # pyre-ignore
 
         The conversion is done as follows:
 
+        action = -1:
+            The battle will be forfeited.
         0 <= action < 4:
             The actionth available move in battle.available_moves is executed.
         4 <= action < 8:
@@ -450,7 +455,9 @@ class Gen6EnvSinglePlayer(EnvPlayer):  # pyre-ignore
         :return: the order to send to the server.
         :rtype: str
         """
-        if (
+        if action == -1:
+            return ForfeitBattleOrder()
+        elif (
             action < 4
             and action < len(battle.available_moves)
             and not battle.force_switch
@@ -495,6 +502,8 @@ class Gen7EnvSinglePlayer(EnvPlayer):  # pyre-ignore
 
         The conversion is done as follows:
 
+        action = -1:
+            The battle will be forfeited.
         0 <= action < 4:
             The actionth available move in battle.available_moves is executed.
         4 <= action < 8:
@@ -515,7 +524,9 @@ class Gen7EnvSinglePlayer(EnvPlayer):  # pyre-ignore
         :return: the order to send to the server.
         :rtype: str
         """
-        if (
+        if action == -1:
+            return ForfeitBattleOrder()
+        elif (
             action < 4
             and action < len(battle.available_moves)
             and not battle.force_switch
@@ -575,6 +586,8 @@ class Gen8EnvSinglePlayer(EnvPlayer):  # pyre-ignore
 
         The conversion is done as follows:
 
+        action = -1:
+            The battle will be forfeited.
         0 <= action < 4:
             The actionth available move in battle.available_moves is executed.
         4 <= action < 8:
@@ -601,7 +614,9 @@ class Gen8EnvSinglePlayer(EnvPlayer):  # pyre-ignore
         :return: the order to send to the server.
         :rtype: str
         """
-        if (
+        if action == -1:
+            return ForfeitBattleOrder()
+        elif (
             action < 4
             and action < len(battle.available_moves)
             and not battle.force_switch
