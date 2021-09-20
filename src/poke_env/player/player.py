@@ -485,9 +485,7 @@ class Player(PlayerNetwork, ABC):
             )
 
         if battle.can_z_move and battle.active_pokemon:
-            available_z_moves = set(
-                battle.active_pokemon.available_z_moves  # pyre-ignore
-            )
+            available_z_moves = set(battle.active_pokemon.available_z_moves)
             available_orders.extend(
                 [
                     BattleOrder(move, z_move=True)

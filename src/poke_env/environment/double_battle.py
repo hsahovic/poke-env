@@ -297,9 +297,7 @@ class DoubleBattle(AbstractBattle):
         """
         if self.player_role is None:
             raise ValueError("Unable to get active_pokemon, player_role is None")
-        return self._get_active_pokemon(
-            self._active_pokemon, self.player_role  # pyre-ignore
-        )
+        return self._get_active_pokemon(self._active_pokemon, self.player_role)
 
     @property
     def all_active_pokemons(self) -> List[Optional[Pokemon]]:
@@ -380,7 +378,7 @@ class DoubleBattle(AbstractBattle):
                 "Unable to get opponent_active_pokemon, opponent_role is None"
             )
         return self._get_active_pokemon(
-            self._opponent_active_pokemon, self.opponent_role  # pyre-ignore
+            self._opponent_active_pokemon, self.opponent_role
         )
 
     @property

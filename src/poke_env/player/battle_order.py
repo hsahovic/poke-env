@@ -22,10 +22,10 @@ class BattleOrder:
     @property
     def message(self) -> str:
         if isinstance(self.order, Move):
-            if self.order.id == "recharge":  # pyre-ignore
+            if self.order.id == "recharge":
                 return "/choose move 1"
 
-            message = f"/choose move {self.order.id}"
+            message = f"/choose move {self.order.id}"  # pyre-ignore
             if self.mega:
                 message += " mega"
             elif self.z_move:
@@ -63,7 +63,7 @@ class DoubleBattleOrder(BattleOrder):
     def message(self) -> str:
         if self.first_order and self.second_order:
             return (
-                self.first_order.message  # pyre-ignore
+                self.first_order.message
                 + ", "
                 + self.second_order.message.replace("/choose ", "")
             )
