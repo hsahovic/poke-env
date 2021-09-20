@@ -480,8 +480,6 @@ class Move:
         :rtype: str
         """
         move_name = to_id_str(move_name)
-        if move_name.startswith("hiddenpower"):
-            return "hiddenpower"
         if move_name.startswith("return"):
             return "return"
         if move_name.startswith("frustration"):

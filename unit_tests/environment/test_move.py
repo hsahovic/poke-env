@@ -720,3 +720,13 @@ def test_is_protect_move():
     assert not Move("protect").is_side_protect_move
     assert not Move("wideguard").is_protect_move
     assert Move("wideguard").is_side_protect_move
+
+
+def test_hiddenpower_types():
+    hidden_power_bug = Move("hiddenpowerbug")
+    hidden_power_fire = Move("hiddenpowerfire")
+    hidden_power_water = Move("hiddenpowerwater")
+
+    assert hidden_power_bug.type == PokemonType.BUG
+    assert hidden_power_fire.type == PokemonType.FIRE
+    assert hidden_power_water.type == PokemonType.WATER
