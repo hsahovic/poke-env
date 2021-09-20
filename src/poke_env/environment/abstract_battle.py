@@ -534,6 +534,11 @@ class AbstractBattle(ABC):
                 if cause.startswith("[from] ability:"):
                     ability = cause.replace("[from] ability:", "")
                     self.get_pokemon(mon).ability = to_id_str(ability)
+        elif split_message[1] == "-swapsideconditions":
+            self._side_conditions, self._opponent_side_conditions = (
+                self._opponent_side_conditions,
+                self._side_conditions,
+            )
         else:
             raise NotImplementedError(split_message)
 
