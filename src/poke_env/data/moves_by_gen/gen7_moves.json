@@ -221,8 +221,8 @@
         "category": "Status",
         "contestType": "Cute",
         "flags": {
-            "authentic": 1,
-            "mystery": 1
+            "allyanim": 1,
+            "bypasssub": 1
         },
         "name": "After You",
         "num": 495,
@@ -521,7 +521,7 @@
         "category": "Status",
         "contestType": "Beautiful",
         "flags": {
-            "authentic": 1
+            "bypasssub": 1
         },
         "name": "Aromatic Mist",
         "num": 597,
@@ -624,7 +624,7 @@
         },
         "contestType": "Cute",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "reflectable": 1
@@ -767,8 +767,8 @@
         "category": "Status",
         "contestType": "Cute",
         "flags": {
+            "allyanim": 1,
             "mirror": 1,
-            "mystery": 1,
             "protect": 1,
             "reflectable": 1
         },
@@ -934,8 +934,8 @@
         "category": "Physical",
         "contestType": "Clever",
         "flags": {
+            "allyanim": 1,
             "mirror": 1,
-            "mystery": 1,
             "protect": 1
         },
         "name": "Beat Up",
@@ -989,9 +989,9 @@
         "category": "Status",
         "contestType": "Cute",
         "flags": {
-            "authentic": 1,
-            "mirror": 1,
-            "mystery": 1
+            "allyanim": 1,
+            "bypasssub": 1,
+            "mirror": 1
         },
         "isNonstandard": null,
         "name": "Bestow",
@@ -1337,7 +1337,7 @@
         "category": "Special",
         "contestType": "Tough",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "sound": 1
@@ -1566,7 +1566,7 @@
         "category": "Special",
         "contestType": "Beautiful",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "sound": 1
@@ -1902,8 +1902,8 @@
         "category": "Status",
         "contestType": "Cute",
         "flags": {
+            "allyanim": 1,
             "mirror": 1,
-            "mystery": 1,
             "protect": 1,
             "reflectable": 1
         },
@@ -1926,7 +1926,7 @@
         "category": "Special",
         "contestType": "Cute",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "distance": 1,
             "mirror": 1,
             "protect": 1,
@@ -2010,7 +2010,7 @@
         "category": "Special",
         "contestType": "Tough",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "sound": 1
@@ -2034,7 +2034,7 @@
         "category": "Special",
         "contestType": "Cool",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "sound": 1
         },
         "isNonstandard": null,
@@ -2158,7 +2158,7 @@
         "category": "Status",
         "contestType": "Cute",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "reflectable": 1,
             "sound": 1
@@ -2292,7 +2292,7 @@
         "category": "Status",
         "contestType": "Beautiful",
         "flags": {
-            "authentic": 1
+            "bypasssub": 1
         },
         "name": "Conversion 2",
         "num": 176,
@@ -2656,7 +2656,7 @@
         },
         "contestType": "Tough",
         "flags": {
-            "authentic": 1
+            "bypasssub": 1
         },
         "name": "Curse",
         "nonGhostTarget": "self",
@@ -2834,7 +2834,7 @@
         "category": "Status",
         "contestType": "Cool",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "reflectable": 1
@@ -2866,7 +2866,7 @@
         },
         "contestType": "Clever",
         "flags": {
-            "authentic": 1
+            "bypasssub": 1
         },
         "name": "Destiny Bond",
         "num": 194,
@@ -2986,7 +2986,7 @@
         },
         "contestType": "Clever",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "reflectable": 1
@@ -3010,7 +3010,7 @@
         "category": "Special",
         "contestType": "Cute",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "sound": 1
@@ -3661,7 +3661,7 @@
         },
         "contestType": "Beautiful",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "sound": 1
@@ -3765,8 +3765,8 @@
         },
         "contestType": "Clever",
         "flags": {
+            "allyanim": 1,
             "mirror": 1,
-            "mystery": 1,
             "protect": 1
         },
         "name": "Electrify",
@@ -3898,7 +3898,7 @@
         },
         "contestType": "Cute",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "reflectable": 1
@@ -3999,8 +3999,8 @@
         "category": "Status",
         "contestType": "Cute",
         "flags": {
+            "allyanim": 1,
             "mirror": 1,
-            "mystery": 1,
             "protect": 1,
             "reflectable": 1
         },
@@ -4146,7 +4146,7 @@
         },
         "contestType": "Clever",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1
         },
         "name": "Fairy Lock",
@@ -4211,8 +4211,8 @@
         "category": "Status",
         "contestType": "Cute",
         "flags": {
+            "allyanim": 1,
             "mirror": 1,
-            "mystery": 1,
             "protect": 1,
             "reflectable": 1
         },
@@ -4258,9 +4258,9 @@
         "category": "Status",
         "contestType": "Beautiful",
         "flags": {
+            "allyanim": 1,
             "dance": 1,
             "mirror": 1,
-            "mystery": 1,
             "protect": 1,
             "reflectable": 1
         },
@@ -4760,8 +4760,8 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
+            "allyanim": 1,
             "mirror": 1,
-            "mystery": 1,
             "protect": 1,
             "reflectable": 1
         },
@@ -4810,8 +4810,8 @@
         },
         "contestType": "Cute",
         "flags": {
+            "allyanim": 1,
             "mirror": 1,
-            "mystery": 1,
             "protect": 1
         },
         "name": "Fling",
@@ -4851,8 +4851,8 @@
         "category": "Status",
         "contestType": "Beautiful",
         "flags": {
+            "allyanim": 1,
             "heal": 1,
-            "mystery": 1,
             "protect": 1,
             "reflectable": 1
         },
@@ -5075,7 +5075,7 @@
         },
         "contestType": "Clever",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "reflectable": 1
@@ -5100,8 +5100,8 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
+            "allyanim": 1,
             "mirror": 1,
-            "mystery": 1,
             "protect": 1,
             "reflectable": 1
         },
@@ -5404,8 +5404,8 @@
         },
         "contestType": "Tough",
         "flags": {
+            "allyanim": 1,
             "mirror": 1,
-            "mystery": 1,
             "protect": 1,
             "reflectable": 1
         },
@@ -5455,7 +5455,7 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "snatch": 1
         },
         "name": "Gear Up",
@@ -5713,7 +5713,7 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "reflectable": 1,
@@ -5812,7 +5812,7 @@
         "category": "Status",
         "contestType": "Cute",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "reflectable": 1,
@@ -5869,7 +5869,7 @@
         },
         "contestType": "Tough",
         "flags": {
-            "authentic": 1
+            "bypasssub": 1
         },
         "name": "Grudge",
         "num": 288,
@@ -5906,7 +5906,7 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
-            "mystery": 1,
+            "allyanim": 1,
             "protect": 1
         },
         "name": "Guard Split",
@@ -5929,9 +5929,9 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
-            "authentic": 1,
+            "allyanim": 1,
+            "bypasssub": 1,
             "mirror": 1,
-            "mystery": 1,
             "protect": 1
         },
         "name": "Guard Swap",
@@ -6135,7 +6135,7 @@
         "category": "Status",
         "contestType": "Beautiful",
         "flags": {
-            "authentic": 1
+            "bypasssub": 1
         },
         "name": "Haze",
         "num": 114,
@@ -6220,7 +6220,7 @@
         "category": "Status",
         "contestType": "Beautiful",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "distance": 1,
             "snatch": 1,
             "sound": 1
@@ -6330,9 +6330,9 @@
         "category": "Status",
         "contestType": "Beautiful",
         "flags": {
+            "allyanim": 1,
             "distance": 1,
             "heal": 1,
-            "mystery": 1,
             "protect": 1,
             "pulse": 1,
             "reflectable": 1
@@ -6377,9 +6377,9 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
-            "authentic": 1,
+            "allyanim": 1,
+            "bypasssub": 1,
             "mirror": 1,
-            "mystery": 1,
             "protect": 1
         },
         "isNonstandard": null,
@@ -6482,7 +6482,7 @@
         },
         "contestType": "Clever",
         "flags": {
-            "authentic": 1
+            "bypasssub": 1
         },
         "name": "Helping Hand",
         "num": 270,
@@ -6906,7 +6906,7 @@
         "category": "Status",
         "contestType": "Cute",
         "flags": {
-            "authentic": 1
+            "bypasssub": 1
         },
         "name": "Hold Hands",
         "num": 607,
@@ -7167,7 +7167,7 @@
         "category": "Physical",
         "contestType": "Tough",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1
         },
         "isNonstandard": null,
@@ -7192,7 +7192,7 @@
         "category": "Special",
         "contestType": "Clever",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1
         },
         "isNonstandard": null,
@@ -7210,7 +7210,7 @@
         "category": "Special",
         "contestType": "Cool",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "sound": 1
@@ -7491,7 +7491,7 @@
         },
         "contestType": "Clever",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "snatch": 1
         },
         "name": "Imprison",
@@ -7618,8 +7618,8 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
-            "authentic": 1,
-            "mystery": 1,
+            "allyanim": 1,
+            "bypasssub": 1,
             "protect": 1
         },
         "name": "Instruct",
@@ -8583,7 +8583,7 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "distance": 1,
             "snatch": 1
         },
@@ -8767,7 +8767,7 @@
         },
         "contestType": "Clever",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "protect": 1
         },
         "isNonstandard": null,
@@ -8961,9 +8961,9 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
-            "authentic": 1,
+            "allyanim": 1,
+            "bypasssub": 1,
             "mirror": 1,
-            "mystery": 1,
             "protect": 1,
             "reflectable": 1,
             "sound": 1
@@ -9122,8 +9122,8 @@
         "category": "Status",
         "contestType": "Cute",
         "flags": {
-            "authentic": 1,
-            "mystery": 1,
+            "allyanim": 1,
+            "bypasssub": 1,
             "protect": 1
         },
         "name": "Mimic",
@@ -9223,7 +9223,7 @@
         },
         "contestType": "Clever",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "reflectable": 1
@@ -9870,7 +9870,7 @@
         "category": "Status",
         "contestType": "Tough",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "reflectable": 1,
@@ -9978,9 +9978,9 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
-            "authentic": 1,
+            "allyanim": 1,
+            "bypasssub": 1,
             "mirror": 1,
-            "mystery": 1,
             "protect": 1,
             "reflectable": 1
         },
@@ -10096,8 +10096,8 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
+            "allyanim": 1,
             "mirror": 1,
-            "mystery": 1,
             "protect": 1
         },
         "name": "Pain Split",
@@ -10165,7 +10165,7 @@
         "category": "Status",
         "contestType": "Cool",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "reflectable": 1,
@@ -10252,7 +10252,7 @@
         },
         "contestType": "Beautiful",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "distance": 1,
             "sound": 1
         },
@@ -10425,7 +10425,7 @@
         "category": "Status",
         "contestType": "Cute",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "reflectable": 1
         },
@@ -10669,7 +10669,7 @@
         },
         "contestType": "Clever",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "powder": 1,
             "protect": 1,
@@ -10733,7 +10733,7 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
-            "mystery": 1,
+            "allyanim": 1,
             "protect": 1
         },
         "name": "Power Split",
@@ -10756,9 +10756,9 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
-            "authentic": 1,
+            "allyanim": 1,
+            "bypasssub": 1,
             "mirror": 1,
-            "mystery": 1,
             "protect": 1
         },
         "name": "Power Swap",
@@ -11124,8 +11124,8 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
-            "authentic": 1,
-            "mystery": 1
+            "allyanim": 1,
+            "bypasssub": 1
         },
         "name": "Psych Up",
         "num": 244,
@@ -11629,8 +11629,8 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
-            "authentic": 1,
-            "mystery": 1,
+            "allyanim": 1,
+            "bypasssub": 1,
             "protect": 1
         },
         "name": "Reflect Type",
@@ -11674,7 +11674,7 @@
         "category": "Special",
         "contestType": "Beautiful",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "sound": 1
@@ -11827,9 +11827,9 @@
         "category": "Status",
         "contestType": "Cool",
         "flags": {
-            "authentic": 1,
+            "allyanim": 1,
+            "bypasssub": 1,
             "mirror": 1,
-            "mystery": 1,
             "reflectable": 1,
             "sound": 1
         },
@@ -12050,8 +12050,8 @@
         "category": "Status",
         "contestType": "Cute",
         "flags": {
-            "authentic": 1,
-            "mystery": 1
+            "allyanim": 1,
+            "bypasssub": 1
         },
         "name": "Role Play",
         "num": 272,
@@ -12181,7 +12181,7 @@
         "category": "Special",
         "contestType": "Beautiful",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "sound": 1
@@ -12398,8 +12398,8 @@
         "category": "Status",
         "contestType": "Tough",
         "flags": {
+            "allyanim": 1,
             "mirror": 1,
-            "mystery": 1,
             "protect": 1,
             "reflectable": 1
         },
@@ -12443,9 +12443,9 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
-            "authentic": 1,
+            "allyanim": 1,
+            "bypasssub": 1,
             "mirror": 1,
-            "mystery": 1,
             "protect": 1,
             "reflectable": 1,
             "sound": 1
@@ -13005,8 +13005,8 @@
         "category": "Status",
         "contestType": "Cute",
         "flags": {
+            "allyanim": 1,
             "mirror": 1,
-            "mystery": 1,
             "protect": 1,
             "reflectable": 1
         },
@@ -13031,7 +13031,7 @@
         "category": "Status",
         "contestType": "Cute",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "reflectable": 1,
@@ -13095,8 +13095,8 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
-            "authentic": 1,
-            "mystery": 1
+            "allyanim": 1,
+            "bypasssub": 1
         },
         "isNonstandard": null,
         "name": "Sketch",
@@ -13125,9 +13125,9 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
-            "authentic": 1,
+            "allyanim": 1,
+            "bypasssub": 1,
             "mirror": 1,
-            "mystery": 1,
             "protect": 1
         },
         "name": "Skill Swap",
@@ -13532,7 +13532,7 @@
         "category": "Special",
         "contestType": "Tough",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "sound": 1
@@ -13562,7 +13562,7 @@
         },
         "contestType": "Clever",
         "flags": {
-            "authentic": 1
+            "bypasssub": 1
         },
         "isNonstandard": null,
         "name": "Snatch",
@@ -13586,7 +13586,7 @@
         "category": "Special",
         "contestType": "Cute",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "sound": 1
@@ -13610,8 +13610,8 @@
         "category": "Status",
         "contestType": "Cute",
         "flags": {
+            "allyanim": 1,
             "mirror": 1,
-            "mystery": 1,
             "protect": 1,
             "reflectable": 1
         },
@@ -13776,19 +13776,20 @@
         "category": "Special",
         "contestType": "Tough",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "sound": 1
         },
         "name": "Sparkling Aria",
         "num": 664,
+        "onAfterMove": "onAfterMove",
         "pp": 10,
         "priority": 0,
         "secondary": {
             "chance": 100,
             "dustproof": true,
-            "onHit": "onHit"
+            "volatileStatus": "sparklingaria"
         },
         "target": "allAdjacent",
         "type": "Water"
@@ -13819,7 +13820,7 @@
         "category": "Physical",
         "contestType": "Cool",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "contact": 1,
             "mirror": 1,
             "protect": 1
@@ -13839,9 +13840,9 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
-            "authentic": 1,
+            "allyanim": 1,
+            "bypasssub": 1,
             "mirror": 1,
-            "mystery": 1,
             "protect": 1
         },
         "name": "Speed Swap",
@@ -13992,7 +13993,7 @@
         "category": "Status",
         "contestType": "Tough",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "reflectable": 1
@@ -14061,6 +14062,7 @@
         "isZ": "lycaniumz",
         "name": "Splintered Stormshards",
         "num": 727,
+        "onAfterSubDamage": "onAfterSubDamage",
         "onHit": "onHit",
         "pp": 1,
         "priority": 0,
@@ -14123,7 +14125,7 @@
         },
         "contestType": "Cute",
         "flags": {
-            "mystery": 1,
+            "allyanim": 1,
             "protect": 1,
             "reflectable": 1
         },
@@ -14724,7 +14726,7 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "reflectable": 1,
@@ -14787,8 +14789,8 @@
         "category": "Status",
         "contestType": "Cute",
         "flags": {
+            "allyanim": 1,
             "mirror": 1,
-            "mystery": 1,
             "protect": 1,
             "reflectable": 1
         },
@@ -14899,8 +14901,8 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
+            "allyanim": 1,
             "mirror": 1,
-            "mystery": 1,
             "protect": 1
         },
         "name": "Switcheroo",
@@ -15142,7 +15144,7 @@
         },
         "contestType": "Clever",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "reflectable": 1
@@ -15261,9 +15263,9 @@
         },
         "contestType": "Clever",
         "flags": {
+            "allyanim": 1,
             "gravity": 1,
             "mirror": 1,
-            "mystery": 1,
             "protect": 1,
             "reflectable": 1
         },
@@ -15566,8 +15568,8 @@
         "category": "Status",
         "contestType": "Cute",
         "flags": {
+            "allyanim": 1,
             "mirror": 1,
-            "mystery": 1,
             "protect": 1,
             "reflectable": 1
         },
@@ -15590,8 +15592,8 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
+            "allyanim": 1,
             "mirror": 1,
-            "mystery": 1,
             "protect": 1,
             "reflectable": 1
         },
@@ -15621,7 +15623,7 @@
         },
         "contestType": "Tough",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "reflectable": 1
@@ -15734,7 +15736,7 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
-            "mystery": 1
+            "allyanim": 1
         },
         "name": "Transform",
         "num": 144,
@@ -15774,8 +15776,8 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
+            "allyanim": 1,
             "mirror": 1,
-            "mystery": 1,
             "protect": 1
         },
         "name": "Trick",
@@ -15799,8 +15801,8 @@
         "category": "Status",
         "contestType": "Cute",
         "flags": {
+            "allyanim": 1,
             "mirror": 1,
-            "mystery": 1,
             "protect": 1,
             "reflectable": 1
         },
@@ -16007,7 +16009,7 @@
         },
         "contestType": "Cute",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "sound": 1
@@ -16478,9 +16480,9 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
-            "authentic": 1,
+            "allyanim": 1,
+            "bypasssub": 1,
             "mirror": 1,
-            "mystery": 1,
             "reflectable": 1
         },
         "forceSwitch": true,
@@ -16729,8 +16731,8 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
+            "allyanim": 1,
             "mirror": 1,
-            "mystery": 1,
             "protect": 1,
             "reflectable": 1
         },

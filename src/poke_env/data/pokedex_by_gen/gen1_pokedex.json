@@ -1294,13 +1294,15 @@
             "Water 2",
             "Field"
         ],
+        "evoLevel": 39,
         "gen": 4,
         "heightm": 2.6,
         "name": "Colossoil",
         "num": -16,
+        "prevo": "Dorsoil",
         "types": [
-            "Dark",
-            "Ground"
+            "Ground",
+            "Dark"
         ],
         "weightkg": 683.6
     },
@@ -1490,10 +1492,12 @@
             "Dragon",
             "Monster"
         ],
+        "evoLevel": 43,
         "gen": 4,
         "heightm": 1.6,
         "name": "Cyclohm",
         "num": -15,
+        "prevo": "Duohm",
         "types": [
             "Electric",
             "Dragon"
@@ -1677,6 +1681,36 @@
         ],
         "weightkg": 39.2
     },
+    "dorsoil": {
+        "abilities": {
+            "0": "Oblivious",
+            "1": "Guts"
+        },
+        "baseStats": {
+            "atk": 72,
+            "def": 52,
+            "hp": 103,
+            "spa": 61,
+            "spd": 52,
+            "spe": 65
+        },
+        "color": "White",
+        "eggGroups": [
+            "Water 2",
+            "Field"
+        ],
+        "evos": [
+            "Colossoil"
+        ],
+        "gen": 4,
+        "heightm": 1.3,
+        "name": "Dorsoil",
+        "num": -64,
+        "types": [
+            "Ground"
+        ],
+        "weightkg": 145
+    },
     "dragonair": {
         "abilities": {
             "0": "Shed Skin"
@@ -1854,6 +1888,39 @@
             "Steel"
         ],
         "weightkg": 66.6
+    },
+    "duohm": {
+        "abilities": {
+            "0": "Shield Dust",
+            "1": "Static"
+        },
+        "baseStats": {
+            "atk": 40,
+            "def": 103,
+            "hp": 88,
+            "spa": 77,
+            "spd": 60,
+            "spe": 60
+        },
+        "color": "Yellow",
+        "eggGroups": [
+            "Dragon",
+            "Monster"
+        ],
+        "evoLevel": 32,
+        "evos": [
+            "Cyclohm"
+        ],
+        "gen": 4,
+        "heightm": 1.1,
+        "name": "Duohm",
+        "num": -63,
+        "prevo": "Monohm",
+        "types": [
+            "Electric",
+            "Dragon"
+        ],
+        "weightkg": 19.2
     },
     "eevee": {
         "abilities": {
@@ -3724,10 +3791,13 @@
         "eggGroups": [
             "Field"
         ],
+        "evoItem": "Metal Coat",
+        "evoType": "trade",
         "gen": 4,
         "heightm": 1.1,
         "name": "Kitsunoh",
         "num": -14,
+        "prevo": "Nohface",
         "types": [
             "Ghost",
             "Steel"
@@ -3808,10 +3878,12 @@
             "Water 1",
             "Fairy"
         ],
+        "evoLevel": 15,
         "gen": 4,
         "heightm": 0.7,
         "name": "Krilowatt",
         "num": -17,
+        "prevo": "Protowatt",
         "types": [
             "Electric",
             "Water"
@@ -4761,6 +4833,36 @@
         ],
         "weightkg": 66
     },
+    "monohm": {
+        "abilities": {
+            "0": "Shield Dust",
+            "1": "Static"
+        },
+        "baseStats": {
+            "atk": 40,
+            "def": 58,
+            "hp": 53,
+            "spa": 67,
+            "spd": 55,
+            "spe": 55
+        },
+        "color": "Yellow",
+        "eggGroups": [
+            "Dragon",
+            "Monster"
+        ],
+        "evos": [
+            "Duohm"
+        ],
+        "gen": 4,
+        "heightm": 0.6,
+        "name": "Monohm",
+        "num": -62,
+        "types": [
+            "Electric"
+        ],
+        "weightkg": 4.1
+    },
     "mrmime": {
         "abilities": {
             "0": "Soundproof",
@@ -5272,6 +5374,35 @@
             "Fairy"
         ],
         "weightkg": 19.9
+    },
+    "nohface": {
+        "abilities": {
+            "0": "Frisk",
+            "1": "Limber"
+        },
+        "baseStats": {
+            "atk": 73,
+            "def": 50,
+            "hp": 50,
+            "spa": 30,
+            "spd": 50,
+            "spe": 80
+        },
+        "color": "Blue",
+        "eggGroups": [
+            "Field"
+        ],
+        "evos": [
+            "Kitsunoh"
+        ],
+        "gen": 4,
+        "heightm": 0.5,
+        "name": "Nohface",
+        "num": -61,
+        "types": [
+            "Ghost"
+        ],
+        "weightkg": 5.9
     },
     "oddish": {
         "abilities": {
@@ -7033,6 +7164,37 @@
             "Fighting"
         ],
         "weightkg": 35
+    },
+    "protowatt": {
+        "abilities": {
+            "0": "Trace",
+            "1": "Magic Guard"
+        },
+        "baseStats": {
+            "atk": 44,
+            "def": 33,
+            "hp": 51,
+            "spa": 43,
+            "spd": 34,
+            "spe": 65
+        },
+        "color": "Red",
+        "eggGroups": [
+            "Water 1",
+            "Fairy"
+        ],
+        "evos": [
+            "Krilowatt"
+        ],
+        "gen": 4,
+        "heightm": 0.1,
+        "name": "Protowatt",
+        "num": -65,
+        "types": [
+            "Electric",
+            "Water"
+        ],
+        "weightkg": 0.1
     },
     "psyduck": {
         "abilities": {

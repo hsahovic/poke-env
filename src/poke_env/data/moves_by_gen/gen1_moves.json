@@ -663,7 +663,7 @@
         },
         "contestType": "Clever",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "protect": 1
         },
@@ -1314,7 +1314,7 @@
         "category": "Status",
         "contestType": "Beautiful",
         "flags": {
-            "authentic": 1
+            "bypasssub": 1
         },
         "name": "Haze",
         "num": 114,
@@ -1886,8 +1886,8 @@
         "category": "Status",
         "contestType": "Cute",
         "flags": {
-            "authentic": 1,
-            "mystery": 1,
+            "allyanim": 1,
+            "bypasssub": 1,
             "protect": 1
         },
         "ignoreAccuracy": false,
@@ -1961,27 +1961,18 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "duration": 5,
             "onBoost": "onBoost",
-            "onSideEnd": "onSideEnd",
-            "onSideResidualOrder": 3,
-            "onSideStart": "onSideStart"
+            "onStart": "onStart"
         },
-        "contestType": "Beautiful",
-        "flags": {
-            "snatch": 1
-        },
+        "flags": {},
         "name": "Mist",
         "num": 54,
         "pp": 30,
         "priority": 0,
         "secondary": null,
-        "sideCondition": "mist",
-        "target": "allySide",
+        "target": "self",
         "type": "Ice",
-        "zMove": {
-            "effect": "heal"
-        }
+        "volatileStatus": "mist"
     },
     "nightshade": {
         "accuracy": 100,
@@ -2420,7 +2411,7 @@
         "category": "Status",
         "contestType": "Cool",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "sound": 1
@@ -3513,7 +3504,7 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
-            "authentic": 1
+            "bypasssub": 1
         },
         "name": "Transform",
         "noSketch": true,
@@ -3648,7 +3639,7 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
-            "authentic": 1,
+            "bypasssub": 1,
             "mirror": 1,
             "protect": 1
         },
