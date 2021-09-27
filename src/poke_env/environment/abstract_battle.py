@@ -345,7 +345,7 @@ class AbstractBattle(ABC):
         elif split_message[1] == "-weather":
             weather = split_message[2]
             if weather == "none":
-                self._weather = {}
+                self._weather = None
                 return
             else:
                 self._weather = {Weather.from_showdown_message(weather): self.turn}
