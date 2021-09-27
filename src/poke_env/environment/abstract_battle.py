@@ -136,7 +136,7 @@ class AbstractBattle(ABC):
         self._won: Optional[bool] = None
 
         # In game battle state attributes
-        self._weather = {}
+        self._weather: Weather = None
         self._fields: Dict[Field, int] = {}  # set()
         self._side_conditions: Dict[SideCondition, int] = {}  # set()
         self._opponent_side_conditions: Dict[SideCondition, int] = {}  # set()
