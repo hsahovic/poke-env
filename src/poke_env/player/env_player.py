@@ -24,6 +24,23 @@ import numpy as np  # pyre-ignore
 import time
 
 
+class DummyPlayer(Player):
+    def __init__(
+        self, 
+        *args, 
+        policy: Optional[Callable[[Battle], BattleOrder]] = None, 
+        **kwargs
+    ):
+        super().__init__(*args, **kwargs)
+        self._policy = policy
+
+    def choose_move(self, battle: Battle) -> BattleOrder:
+        if self.policy is None:
+            return self.choose_random_move(battle)
+
+        return self._policy(battle)
+
+
 class EnvPlayer(Player, Env, ABC):  # pyre-ignore
     """Player exposing the Open AI Gym Env API. Recommended use is with play_against."""
 
@@ -36,6 +53,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         self,
         player_configuration: Optional[PlayerConfiguration] = None,
         *,
+        opponent: Optional[DummyPlayer] = None,
         avatar: Optional[int] = None,
         battle_format: Optional[str] = None,
         log_level: Optional[int] = None,
@@ -90,6 +108,17 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         self._reward_buffer = {}
         self._start_new_battle = False
 
+        self._opponent = opponent if opponent is not None else DummyPlayer()
+        battles_coroutine = asyncio.gather(
+                self.send_challenges(
+                    opponent=to_id_str(self._opponent.username),
+                    n_challenges=0,
+                    to_wait=self._opponent.logged_in,
+                ),
+                self._opponent.accept_challenges(
+                    opponent=to_id_str(self.username), n_challenges=0
+                ),
+            )
     @abstractmethod
     def _action_to_move(
         self, action: int, battle: AbstractBattle
@@ -102,6 +131,20 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
     def _init_battle(self, battle: AbstractBattle) -> None:
         self._observations[battle] = Queue()
         self._actions[battle] = Queue()
+
+    # TODO since there's a wrapper, maybe use functools stuff for documentation help
+    def set_opponent_policy(self, policy: Callable[[Any], int]) -> None:
+        """Sets the policy of the opponent.
+
+        :param policy: The policy to use.
+        :type policy: Callable
+        """
+        def policy_wrapper(battle: AbstractBattle) -> BattleOrder:
+            battle_encoding = self.embed_battle(battle)
+            action = policy(battle_encoding)
+            return self._action_to_move(action, battle)
+
+        self._opponent.set_policy(policy_wrapper)
 
     def choose_move(self, battle: AbstractBattle) -> BattleOrder:
         if battle not in self._observations or battle not in self._actions:
