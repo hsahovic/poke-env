@@ -36,6 +36,9 @@ class DummyPlayer(Player):
         super().__init__(*args, **kwargs)
         self._policy = policy
 
+    def set_policy(self, policy: Callable[[Battle], BattleOrder]):
+        self._policy = policy
+
     def choose_move(self, battle: Battle) -> BattleOrder:
         if self._policy is None:
             return self.choose_random_move(battle)
