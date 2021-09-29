@@ -22,6 +22,8 @@ from poke_env.utils import to_id_str
 import asyncio
 import numpy as np  # pyre-ignore
 import time
+LOOP = asyncio.new_event_loop()
+asyncio.set_event_loop(LOOP)
 
 
 class DummyPlayer(Player):
@@ -35,7 +37,7 @@ class DummyPlayer(Player):
         self._policy = policy
 
     def choose_move(self, battle: Battle) -> BattleOrder:
-        if self.policy is None:
+        if self._policy is None:
             return self.choose_random_move(battle)
 
         return self._policy(battle)
@@ -108,17 +110,33 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         self._reward_buffer = {}
         self._start_new_battle = False
 
-        self._opponent = opponent if opponent is not None else DummyPlayer()
+        self._opponent = opponent if opponent is not None else DummyPlayer(battle_format=battle_format)
+
+        async def launch_battles(player: EnvPlayer, opponent: Player):
+            # TODO why can't I just pass n_challenges=0?
+            while True:
         battles_coroutine = asyncio.gather(
-                self.send_challenges(
-                    opponent=to_id_str(self._opponent.username),
-                    n_challenges=0,
-                    to_wait=self._opponent.logged_in,
+                    player.send_challenges(
+                        opponent=to_id_str(opponent.username),
+                        n_challenges=1,
+                        to_wait=opponent.logged_in,
                 ),
-                self._opponent.accept_challenges(
-                    opponent=to_id_str(self.username), n_challenges=0
+                    opponent.accept_challenges(
+                        opponent=to_id_str(player.username), n_challenges=1
                 ),
             )
+                await battles_coroutine
+
+        def background_loop(loop, *args, **kwargs):
+            asyncio.set_event_loop(loop)
+            loop.run_forever()
+
+        self.battle_thread = Thread(
+            target=background_loop, args=(LOOP,), daemon=True
+        )
+        self.battle_thread.start()
+        asyncio.run_coroutine_threadsafe(launch_battles(self, self._opponent), LOOP)
+
     @abstractmethod
     def _action_to_move(
         self, action: int, battle: AbstractBattle
