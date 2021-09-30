@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 """This module defines a player class exposing the Open AI Gym API.
 """
+#register with gyn
 
 from abc import ABC, abstractmethod, abstractproperty
 from gym.core import Env  # pyre-ignore
+import gym
 
 from queue import Queue
 from threading import Thread
@@ -24,6 +26,14 @@ import numpy as np  # pyre-ignore
 import time
 LOOP = asyncio.new_event_loop()
 asyncio.set_event_loop(LOOP)
+
+
+gym.register(
+    id='Pokemon-v0',
+    entry_point='poke_env.player.env_player:Gen8EnvSinglePlayer',
+    max_episode_steps=1000,
+    nondeterministic=True,
+)
 
 
 class DummyPlayer(Player):
@@ -47,7 +57,7 @@ class DummyPlayer(Player):
 
 
 class EnvPlayer(Player, Env, ABC):  # pyre-ignore
-    """Player exposing the Open AI Gym Env API. Recommended use is with play_against."""
+    """Player exposing the Open AI Gym Env API."""
 
     _ACTION_SPACE = None
     _DEFAULT_BATTLE_FORMAT = "gen8randombattle"
@@ -118,16 +128,16 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         async def launch_battles(player: EnvPlayer, opponent: Player):
             # TODO why can't I just pass n_challenges=0?
             while True:
-        battles_coroutine = asyncio.gather(
+                battles_coroutine = asyncio.gather(
                     player.send_challenges(
                         opponent=to_id_str(opponent.username),
                         n_challenges=1,
                         to_wait=opponent.logged_in,
-                ),
+                    ),
                     opponent.accept_challenges(
                         opponent=to_id_str(player.username), n_challenges=1
-                ),
-            )
+                    ),
+                )
                 await battles_coroutine
 
         def background_loop(loop, *args, **kwargs):
@@ -153,6 +163,8 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         self._observations[battle] = Queue()
         self._actions[battle] = Queue()
 
+
+    # TODO take policy or opponent as argument
     # TODO since there's a wrapper, maybe use functools stuff for documentation help
     def set_opponent_policy(self, policy: Callable[[Any], int]) -> None:
         """Sets the policy of the opponent.
@@ -195,7 +207,6 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         """
         return self.reward_computing_helper(battle)
 
-    @abstractmethod
     def embed_battle(self, battle: AbstractBattle) -> Any:  # pragma: no cover
         """Abstract method for embedding battles.
 
@@ -204,6 +215,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         :return: The computed embedding
         :rtype: Any
         """
+        return battle
 
     def reset(self) -> Any:
         """Resets the internal environment state. The current battle will be set to an
