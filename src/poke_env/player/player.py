@@ -8,15 +8,19 @@ import random
 
 from abc import ABC
 from abc import abstractmethod
-from asyncio import Condition
-from asyncio import Event
-from asyncio import Queue
-from asyncio import Semaphore
+from asyncio import (
+    Condition,
+    Event,
+    Queue,
+    Semaphore,
+)
 from time import perf_counter
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Union
+from typing import (
+    Dict,
+    List,
+    Optional, 
+    Union,
+)
 
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.battle import Battle
@@ -172,8 +176,6 @@ class Player(PlayerNetwork, ABC):
                     await self._send_message("/timer on", battle.battle_tag)
 
                 return battle
-
-            return self._battles[battle_tag]
         else:
             self.logger.critical(
                 "Unmanaged battle initialisation message received: %s", split_message

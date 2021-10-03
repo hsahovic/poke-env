@@ -9,6 +9,7 @@ import gym
 
 from queue import Queue
 from threading import Thread
+from multiprocessing import Process
 
 from typing import Any, Callable, List, Optional, Tuple, Union
 
@@ -24,17 +25,20 @@ from poke_env.utils import to_id_str
 import asyncio
 import numpy as np  # pyre-ignore
 import time
+
 LOOP = asyncio.new_event_loop()
+LOOP.set_debug(True)
 asyncio.set_event_loop(LOOP)
 
+def background_loop(loop):
+    print("Starting background loop")
+    #asyncio.set_event_loop(loop)
+    loop.run_forever()
 
-gym.register(
-    id='Pokemon-v0',
-    entry_point='poke_env.player.env_player:Gen8EnvSinglePlayer',
-    max_episode_steps=1000,
-    nondeterministic=True,
-)
-
+#battle_thread = Thread(
+    #target=background_loop, args=(LOOP,), daemon=True
+#)
+#battle_thread.start()
 
 class DummyPlayer(Player):
     def __init__(
@@ -44,15 +48,12 @@ class DummyPlayer(Player):
         **kwargs
     ):
         super().__init__(*args, **kwargs)
-        self._policy = policy
+        self._policy = policy if policy is not None else self.choose_random_move
 
     def set_policy(self, policy: Callable[[Battle], BattleOrder]):
         self._policy = policy
 
     def choose_move(self, battle: Battle) -> BattleOrder:
-        if self._policy is None:
-            return self.choose_random_move(battle)
-
         return self._policy(battle)
 
 
@@ -124,7 +125,10 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         self._start_new_battle = False
 
         self._opponent = opponent if opponent is not None else DummyPlayer(battle_format=battle_format)
+        #asyncio.run_coroutine_threadsafe(self._opponent.accept_challenges(None, n_challenges=0), LOOP)
+        #asyncio.run_coroutine_threadsafe(self.accept_challenges(None, n_challenges=0), LOOP)
 
+        #async def launch_battles(player: EnvPlayer, opponent: Player):
         async def launch_battles(player: EnvPlayer, opponent: Player):
             # TODO why can't I just pass n_challenges=0?
             while True:
@@ -134,21 +138,36 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
                         n_challenges=1,
                         to_wait=opponent.logged_in,
                     ),
+                    #asyncio.sleep(0.1),
                     opponent.accept_challenges(
-                        opponent=to_id_str(player.username), n_challenges=1
+                        opponent=to_id_str(player.username), 
+                        n_challenges=1
                     ),
                 )
+                #results = asyncio.run_coroutine_threadsafe(battles_coroutine, LOOP)
+                #await results
                 await battles_coroutine
 
-        def background_loop(loop, *args, **kwargs):
-            asyncio.set_event_loop(loop)
-            loop.run_forever()
-
-        self.battle_thread = Thread(
-            target=background_loop, args=(LOOP,), daemon=True
-        )
-        self.battle_thread.start()
-        asyncio.run_coroutine_threadsafe(launch_battles(self, self._opponent), LOOP)
+        #self.loop = asyncio.new_event_loop()
+        #self.loop = LOOP
+        #asyncio.set_event_loop(self.loop)
+        #asyncio.run_coroutine_threadsafe(launch_battles(self, self._opponent), self.loop)
+        #asyncio.get_event_loop().create_task(launch_battles(self, self._opponent))
+        # NOTE have to run gather to make both run together, other wise, they hang each other
+        # NOTE this causes 
+        #loop = asyncio.new_event_loop()
+        #loo
+        #loop.c(launch_battles(self, self._opponent))
+        #battle_thread = Thread(
+            #target=background_loop, args=(loop,), daemon=True
+        #)
+        #Process(target=lambda: self._opponent.accept_challenges(None, n_challenges=0)).start()
+        #battle_thread.start()
+        LOOP.create_task(launch_battles(self, self._opponent))
+        #asyncio.run_coroutine_threadsafe
+        #asyncio.create_subprocess_exec(launch_battles(self, self._opponent))
+        #LOOP.create_task(launch_battles(self, self._opponent))
+        ic(self._actions)
 
     @abstractmethod
     def _action_to_move(
@@ -162,7 +181,6 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
     def _init_battle(self, battle: AbstractBattle) -> None:
         self._observations[battle] = Queue()
         self._actions[battle] = Queue()
-
 
     # TODO take policy or opponent as argument
     # TODO since there's a wrapper, maybe use functools stuff for documentation help
@@ -178,6 +196,9 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
             return self._action_to_move(action, battle)
 
         self._opponent.set_policy(policy_wrapper)
+    
+    def set_opponent(self, opponent: Player) -> None:
+        self._opponent = opponent
 
     def choose_move(self, battle: AbstractBattle) -> BattleOrder:
         if battle not in self._observations or battle not in self._actions:
@@ -192,6 +213,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
 
     def complete_current_battle(self) -> None:
         """Completes the current battle by forfeiting."""
+        print('-------------------------------')
         self._actions[self._current_battle].put(-1)
 
     def compute_reward(self, battle: AbstractBattle) -> float:
@@ -225,16 +247,22 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         :rtype: Any
         :raies: EnvironmentError
         """
+        print('reset')
+        ic(self._actions)
         try:
+            ic(self._current_battle)
             if self._current_battle.finished is False:
+                print('tis false')
                 self.complete_current_battle()
         except AttributeError:
+            print('didnt finish')
             pass
 
         for _ in range(self.MAX_BATTLE_SWITCH_RETRY):
             battles = dict(self._actions.items())
             battles = [b for b in battles if not b.finished]
             if battles:
+                ic(battles)
                 self._current_battle = battles[0]
                 observation = self._observations[self._current_battle].get()
                 return observation
@@ -402,6 +430,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         :param env_algorithm_kwargs: Optional arguments to pass to the env_algorithm.
             Defaults to None.
         """
+        # TODO why is this a member of object?
         self._start_new_battle = True
 
         async def launch_battles(player: EnvPlayer, opponent: Player):
@@ -412,7 +441,8 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
                     to_wait=opponent.logged_in,
                 ),
                 opponent.accept_challenges(
-                    opponent=to_id_str(player.username), n_challenges=1
+                    opponent=to_id_str(player.username), 
+                    n_challenges=1
                 ),
             )
             await battles_coroutine
@@ -494,7 +524,7 @@ class Gen4EnvSinglePlayer(EnvPlayer):  # pyre-ignore
         The conversion to moves is done as follows:
 
         0 <= action < 4:
-            The actionth available move in battle.available_moves is executed.
+            The action - 0th available move in battle.available_moves is executed.
         4 <= action < 10
             The action - 4th available switch in battle.available_switches is executed.
         """
@@ -665,11 +695,11 @@ class Gen8EnvSinglePlayer(EnvPlayer):  # pyre-ignore
         """Converts actions to move orders.
 
         The conversion is done as follows:
-
+        # TODO reduce action space. Hint: how are volt switches handled?
         action = -1:
             The battle will be forfeited.
         0 <= action < 4:
-            The actionth available move in battle.available_moves is executed.
+            The action - 0th available move in battle.available_moves is executed.
         4 <= action < 8:
             The action - 4th available move in battle.available_moves is executed, with
             z-move.

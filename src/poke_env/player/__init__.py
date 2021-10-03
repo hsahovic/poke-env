@@ -16,3 +16,18 @@ __all__ = [
     "trainable_player",
     "utils",
 ]
+
+import gym
+names = [
+    "SinglePlayer-v7",
+    "SinglePlayer-v8",
+]
+for name in names:
+    gym.register(
+        id=f"Pokemon{name}",
+        entry_point='poke_env.player.env_player:Gen8EnvSinglePlayer',
+        max_episode_steps=None,
+        nondeterministic=True,
+    )
+import icecream
+icecream.install()

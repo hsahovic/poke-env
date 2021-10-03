@@ -9,11 +9,13 @@ import websockets  # pyre-ignore
 
 from abc import ABC
 from abc import abstractmethod
-from asyncio import CancelledError
-from asyncio import ensure_future
-from asyncio import Event
-from asyncio import Lock
-from asyncio import sleep
+from asyncio import (
+    CancelledError,
+    ensure_future,
+    Event,
+    Lock,
+    sleep,
+)
 from time import perf_counter
 from typing import List
 from typing import Optional
