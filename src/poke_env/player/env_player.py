@@ -129,7 +129,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         #asyncio.run_coroutine_threadsafe(self.accept_challenges(None, n_challenges=0), LOOP)
 
         #async def launch_battles(player: EnvPlayer, opponent: Player):
-        async def launch_battles(player: EnvPlayer, opponent: Player):
+        async def battle_launcher(player: EnvPlayer, opponent: Player):
             # TODO why can't I just pass n_challenges=0?
             while True:
                 battles_coroutine = asyncio.gather(
@@ -163,11 +163,18 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         #)
         #Process(target=lambda: self._opponent.accept_challenges(None, n_challenges=0)).start()
         #battle_thread.start()
-        LOOP.create_task(launch_battles(self, self._opponent))
+
+        LOOP.create_task(battle_launcher(self, self._opponent))
+        #asyncio.run_coroutine_threadsafe(battle_launcher(self, self._opponent), LOOP)
+        # TODO cancel future in del
+
         #asyncio.run_coroutine_threadsafe
         #asyncio.create_subprocess_exec(launch_battles(self, self._opponent))
         #LOOP.create_task(launch_battles(self, self._opponent))
-        ic(self._actions)
+        #ic(self._actions)
+        #ic('init reset')
+        #self.reset()
+        #ic('init reset done')
 
     @abstractmethod
     def _action_to_move(
@@ -255,7 +262,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
                 print('tis false')
                 self.complete_current_battle()
         except AttributeError:
-            print('didnt finish')
+            ic('no current battle')
             pass
 
         for _ in range(self.MAX_BATTLE_SWITCH_RETRY):
@@ -264,7 +271,9 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
             if battles:
                 ic(battles)
                 self._current_battle = battles[0]
+                ic('waiting on get')
                 observation = self._observations[self._current_battle].get()
+                ic('get done')
                 return observation
             time.sleep(self.PAUSE_BETWEEN_RETRIES)
         else:

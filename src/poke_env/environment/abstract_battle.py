@@ -136,7 +136,7 @@ class AbstractBattle(ABC):
         self._won: Optional[bool] = None
 
         # In game battle state attributes
-        self._weather = {}
+        self._weather = None
         self._fields: Dict[Field, int] = {}  # set()
         self._side_conditions: Dict[SideCondition, int] = {}  # set()
         self._opponent_side_conditions: Dict[SideCondition, int] = {}  # set()
@@ -345,10 +345,10 @@ class AbstractBattle(ABC):
         elif split_message[1] == "-weather":
             weather = split_message[2]
             if weather == "none":
-                self._weather = {}
+                self._weather = None
                 return
             else:
-                self._weather = {Weather.from_showdown_message(weather): self.turn}
+                self._weather = Weather.from_showdown_message(weather)
         elif split_message[1] == "faint":
             pokemon = split_message[2]
             self.get_pokemon(pokemon)._faint()
