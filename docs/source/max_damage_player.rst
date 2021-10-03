@@ -75,9 +75,9 @@ We also have to return an order corresponding to a random switch if the player c
                 best_move = max(battle.available_moves, key=lambda move: move.base_power)
                 return self.create_order(best_move)
 
-        # If no attack is available, a random switch will be made
-        else:
-            return self.choose_random_move(battle)
+            # If no attack is available, a random switch will be made
+            else:
+                return self.choose_random_move(battle)
 
 Running and testing our agent
 *****************************
