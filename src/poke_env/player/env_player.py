@@ -291,7 +291,9 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         :rtype: tuple
         """
         if self._current_battle.finished:
-            observation = self.reset()
+            raise ValueError(
+                "The previous episode is finished. To start a new one, please call reset."
+            )
         else:
             self._actions[self._current_battle].put(action)
             observation = self._observations[self._current_battle].get()
