@@ -136,7 +136,7 @@ class AbstractBattle(ABC):
         self._won: Optional[bool] = None
 
         # In game battle state attributes
-        self._weather = {}
+        self._weather: Dict[Weather, int] = {}
         self._fields: Dict[Field, int] = {}  # set()
         self._side_conditions: Dict[SideCondition, int] = {}  # set()
         self._opponent_side_conditions: Dict[SideCondition, int] = {}  # set()
@@ -990,22 +990,12 @@ class AbstractBattle(ABC):
         self._turn = turn
 
     @property
-    def weather(self) -> Optional[Weather]:
+    def weather(self) -> Dict[Weather, int]:
         """
-        :return: The battle's weather or None if no weather is active.
-        :rtype: Optional[Weather]
+        :return: A dict mapping the battle's weather (if any) to its starting turn
+        :rtype: Dict[Weather, int]
         """
         return self._weather
-
-    @weather.setter
-    def weather(self, weather):
-        if weather == "none":
-            self._weather = None
-        else:
-            try:
-                self._weather = Weather[weather.upper()]
-            except Exception as e:
-                self.logger.warning("Weather %s unknown (%s)", weather, e)
 
     @property
     def won(self) -> Optional[bool]:
