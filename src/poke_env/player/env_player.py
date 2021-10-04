@@ -26,9 +26,9 @@ import asyncio
 import numpy as np  # pyre-ignore
 import time
 
-LOOP = asyncio.new_event_loop()
-LOOP.set_debug(True)
-asyncio.set_event_loop(LOOP)
+#LOOP = asyncio.new_event_loop()
+#LOOP.set_debug(True)
+#asyncio.set_event_loop(LOOP)
 
 def background_loop(loop):
     print("Starting background loop")
@@ -128,10 +128,25 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         #asyncio.run_coroutine_threadsafe(self._opponent.accept_challenges(None, n_challenges=0), LOOP)
         #asyncio.run_coroutine_threadsafe(self.accept_challenges(None, n_challenges=0), LOOP)
 
+        self.stop_battling = False
         #async def launch_battles(player: EnvPlayer, opponent: Player):
+        def wrapper(player: EnvPlayer, opponent: Player, loop):
+            while not player.stop_battling:
+                #asyncio.get_event_loop().run_until_complete(battle_launcher(player, opponent))
+
+
+                loop.run_until_complete(battle_launcher(player, opponent))
+
+
+                #task = loop.create_task(battle_launcher(player, opponent))
+                #await task
+                #loop.wait_for(task, timeout=None)
+                #ic('looping')
         async def battle_launcher(player: EnvPlayer, opponent: Player):
             # TODO why can't I just pass n_challenges=0?
-            while True:
+                idx = 0
+                #while not self.stop_battling:
+                #ic(f'launching battle {idx}')
                 battles_coroutine = asyncio.gather(
                     player.send_challenges(
                         opponent=to_id_str(opponent.username),
@@ -146,7 +161,10 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
                 )
                 #results = asyncio.run_coroutine_threadsafe(battles_coroutine, LOOP)
                 #await results
+                #ic('wait sleep')
+                #ic('wait battles_co')
                 await battles_coroutine
+                #ic('wait battles_co done')
 
         #self.loop = asyncio.new_event_loop()
         #self.loop = LOOP
@@ -164,8 +182,16 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         #Process(target=lambda: self._opponent.accept_challenges(None, n_challenges=0)).start()
         #battle_thread.start()
 
-        LOOP.create_task(battle_launcher(self, self._opponent))
+        #LOOP.create_task(battle_launcher(self, self._opponent))
+        #asyncio.get_event_loop().create_task(battle_launcher(self, self._opponent))
         #asyncio.run_coroutine_threadsafe(battle_launcher(self, self._opponent), LOOP)
+
+
+        Thread(target=wrapper, args=(self, self._opponent, asyncio.get_event_loop())).start()
+        #Thread(target=wrapper, args=(self, self._opponent, asyncio.new_event_loop())).start()
+
+
+
         # TODO cancel future in del
 
         #asyncio.run_coroutine_threadsafe
@@ -220,7 +246,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
 
     def complete_current_battle(self) -> None:
         """Completes the current battle by forfeiting."""
-        print('-------------------------------')
+        #ic('-------------------------------')
         self._actions[self._current_battle].put(-1)
 
     def compute_reward(self, battle: AbstractBattle) -> float:
@@ -254,26 +280,26 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         :rtype: Any
         :raies: EnvironmentError
         """
-        print('reset')
-        ic(self._actions)
+        #ic(self._actions)
         try:
-            ic(self._current_battle)
+            #ic(self._current_battle)
             if self._current_battle.finished is False:
-                print('tis false')
+                #ic("forfeting")
                 self.complete_current_battle()
+                #ic('forfeted')
         except AttributeError:
-            ic('no current battle')
+            #ic('no current battle')
             pass
 
         for _ in range(self.MAX_BATTLE_SWITCH_RETRY):
             battles = dict(self._actions.items())
             battles = [b for b in battles if not b.finished]
             if battles:
-                ic(battles)
+                #ic(battles)
                 self._current_battle = battles[0]
-                ic('waiting on get')
+                #ic('waiting on get')
                 observation = self._observations[self._current_battle].get()
-                ic('get done')
+                #ic('get done')
                 return observation
             time.sleep(self.PAUSE_BETWEEN_RETRIES)
         else:
