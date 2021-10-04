@@ -88,18 +88,18 @@ def test_powerherb_ends_move_preparation():
 
 def test_protect_counter_interactions():
     mon = Pokemon(species="xerneas")
-    mon._moved("protect", "self")
+    mon._moved("protect", failed=False)
 
     assert mon.protect_counter == 1
 
     mon._start_effect("feint")
     assert mon.protect_counter == 0
 
-    mon._moved("protect", "self")
-    mon._moved("protect", "self")
+    mon._moved("protect", failed=False)
+    mon._moved("protect", failed=False)
     assert mon.protect_counter == 2
 
-    mon._moved("geomancy", "self")
+    mon._moved("geomancy", failed=False)
     assert mon.protect_counter == 0
 
 
