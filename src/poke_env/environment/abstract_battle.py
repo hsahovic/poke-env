@@ -325,12 +325,97 @@ class AbstractBattle(ABC):
             self._check_damage_message_for_item(split_message)
             self._check_damage_message_for_ability(split_message)
         elif split_message[1] == "move":
-            if len(split_message) == 6:
-                pokemon, move, target = split_message[2:5]
-            else:
+            failed = False
+            override_move = None
+            reveal_other_move = False
+
+            for move_failed_suffix in ["[miss]", "[still]", "[notarget]"]:
+                if split_message[-1] == move_failed_suffix:
+                    split_message = split_message[:-1]
+                    failed = True
+
+            if split_message[-1] == "[from]lockedmove":
+                split_message = split_message[:-1]
+
+            if split_message[-1].startswith("[anim]"):
+                split_message = split_message[:-1]
+
+            if split_message[-1].startswith("[from]move: "):
+                override_move = split_message.pop()[12:]
+
+                if override_move == "Sleep Talk":
+                    # Sleep talk was used, but also reveals another move
+                    reveal_other_move = True
+                elif override_move == "Copycat":
+                    pass
+                else:
+                    self.logger.warning(
+                        "Unmanaged [from]move message received - move %s in cleaned up "
+                        "message %s in battle %s turn %d",
+                        override_move,
+                        split_message,
+                        self.battle_tag,
+                        self.turn,
+                    )
+
+            if split_message[-1].startswith("[from]ability: "):
+                revealed_ability = split_message.pop()[15:]
+                pokemon = split_message[2]
+                self.get_pokemon(pokemon).ability = revealed_ability
+
+                if revealed_ability == "Magic Bounce":
+                    return
+                else:
+                    self.logger.warning(
+                        "Unmanaged [from]ability: message received - ability %s in "
+                        "cleaned up message %s in battle %s turn %d",
+                        revealed_ability,
+                        split_message,
+                        self.battle_tag,
+                        self.turn,
+                    )
+
+            if split_message[-1] == "":
+                split_message = split_message[:-1]
+
+            if len(split_message) == 4:
                 pokemon, move = split_message[2:4]
-                target = pokemon
-            self.get_pokemon(pokemon)._moved(move, target)
+            elif len(split_message) == 5:
+                pokemon, move, presumed_target = split_message[2:5]
+
+                if len(presumed_target) > 4 and presumed_target[:4] in {
+                    "p1: ",
+                    "p2: ",
+                    "p1a:",
+                    "p1b:",
+                    "p2a:",
+                    "p2b:",
+                }:
+                    pass
+                else:
+                    self.logger.warning(
+                        "Unmanaged move message format received - cleaned up message %s"
+                        " in battle %s turn %d",
+                        split_message,
+                        self.battle_tag,
+                        self.turn,
+                    )
+            else:
+                pokemon, move, presumed_target = split_message[2:5]
+                self.logger.warning(
+                    "Unmanaged move message format received - cleaned up message %s in "
+                    "battle %s turn %d",
+                    split_message,
+                    self.battle_tag,
+                    self.turn,
+                )
+
+            if override_move:
+                self.get_pokemon(pokemon)._moved(override_move, failed=failed)
+            if override_move is None or reveal_other_move:
+                self.get_pokemon(pokemon)._moved(
+                    move, failed=failed, use=not reveal_other_move
+                )
         elif split_message[1] == "cant":
             pokemon, _ = split_message[2:4]
             self.get_pokemon(pokemon)._cant_move()
