@@ -240,6 +240,23 @@ class Pokemon:
         if self._status == Status.SLP:
             self._status_counter += 1
 
+        if len(self._moves) > 4:
+            new_moves = {}
+
+            # Keep the current move
+            if move and move in self._moves.values():
+                new_moves = {
+                    move_id: m for move_id, m in self._moves.items() if m is move
+                }
+
+            for move in self._moves:
+                if len(new_moves) == 4:
+                    break
+                elif move not in new_moves:
+                    new_moves[move] = self._moves[move]
+
+            self._moves = new_moves
+
     def _prepare(self, move, target):
         self._preparing = (move, target)
 
@@ -404,9 +421,15 @@ class Pokemon:
             self._add_move(move)
 
         if len(self._moves) > 4:
-            self._moves = {}
-            for move in request_pokemon["moves"]:
-                self._add_move(move)
+            moves_to_keep = {
+                self.MOVE_CLASS.retrieve_id(move_id)
+                for move_id in request_pokemon["moves"]
+            }
+            self._moves = {
+                move_id: move
+                for move_id, move in self._moves.items()
+                if move_id in moves_to_keep
+            }
 
     def _used_z_move(self):
         self._item = None
