@@ -4,6 +4,8 @@
 
 from abc import ABC, abstractmethod, abstractproperty
 from gym.core import Env  # pyre-ignore
+import gym
+from poke_env.player.baselines import RandomPlayer
 
 from queue import Queue
 from threading import Thread
@@ -23,6 +25,8 @@ import asyncio
 import numpy as np  # pyre-ignore
 import time
 
+ENV_LOOP = asyncio.new_event_loop()
+asyncio.set_event_loop(ENV_LOOP)
 
 class EnvPlayer(Player, Env, ABC):  # pyre-ignore
     """Player exposing the Open AI Gym Env API. Recommended use is with play_against."""
@@ -37,8 +41,11 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         player_configuration: Optional[PlayerConfiguration] = None,
         *,
         avatar: Optional[int] = None,
+        battle_embedder: Callable[[Battle], Any]= lambda x: x, 
+        reward_computer: Callable[[Battle], float] = None,
         battle_format: Optional[str] = None,
         log_level: Optional[int] = None,
+        opponent: Optional[Union[str, Player]] = None,
         server_configuration: Optional[ServerConfiguration] = None,
         start_listening: bool = True,
         start_timer_on_battle_start: bool = False,
@@ -71,6 +78,11 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
             Defaults to None.
         :type team: str or Teambuilder, optional
         """
+
+        # This allows for multiprocessing support of environments
+        self.loop = asyncio.get_event_loop() if asyncio.get_event_loop() is not None else asyncio.new_event_loop()
+        asyncio.set_event_loop(self.loop)
+
         super(EnvPlayer, self).__init__(
             player_configuration=player_configuration,
             avatar=avatar,
@@ -89,6 +101,25 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         self._observations = {}
         self._reward_buffer = {}
         self._start_new_battle = False
+
+        self._opponent = RandomPlayer(battle_format=battle_format) # TODO
+
+        #self.embed_battle = battle_embedder
+        #asyncio.get_event_loop().call_soon_threadsafe(self.launch_battles(self._opponent))
+        def run(loop):
+            loop.run_until_complete(self.launch_battles(self._opponent))
+        t = Thread(target=run, args=(asyncio.get_event_loop(),))
+        t.start()
+
+    def set_opponent(self, opponent: Union[str, Player]) -> None:
+        """Sets the opponent.
+
+        :param opponent: The opponent.
+        :type opponent: str or Player
+        """
+        # TODO add locks here for race conditions
+        # TODO by swapping out after games, maybe opponents can be put in different positions?
+        self._opponent = opponent
 
     @abstractmethod
     def _action_to_move(
@@ -130,16 +161,6 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         :rtype: float
         """
         return self.reward_computing_helper(battle)
-
-    @abstractmethod
-    def embed_battle(self, battle: AbstractBattle) -> Any:  # pragma: no cover
-        """Abstract method for embedding battles.
-
-        :param battle: The battle whose state is being embedded
-        :type battle: AbstractBattle
-        :return: The computed embedding
-        :rtype: Any
-        """
 
     def reset(self) -> Any:
         """Resets the internal environment state. The current battle will be set to an
@@ -304,6 +325,23 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
             {},
         )
 
+    async def launch_battles(self, opponent: Player):
+        self._start_new_battle = True
+        while self._start_new_battle:
+            battles_coroutine = asyncio.gather(
+                self.send_challenges(
+                    opponent=to_id_str(opponent.username),
+                    n_challenges=1,
+                    to_wait=opponent.logged_in,
+                ),
+                opponent.accept_challenges(
+                    opponent=to_id_str(self.username), n_challenges=1
+                ),
+            )
+            #yield battles_coroutine
+            await battles_coroutine
+
+
     def play_against(
         self, env_algorithm: Callable, opponent: Player, env_algorithm_kwargs=None
     ):
@@ -329,20 +367,6 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
             Defaults to None.
         """
         self._start_new_battle = True
-
-        async def launch_battles(player: EnvPlayer, opponent: Player):
-            battles_coroutine = asyncio.gather(
-                player.send_challenges(
-                    opponent=to_id_str(opponent.username),
-                    n_challenges=1,
-                    to_wait=opponent.logged_in,
-                ),
-                opponent.accept_challenges(
-                    opponent=to_id_str(player.username), n_challenges=1
-                ),
-            )
-            await battles_coroutine
-
         def env_algorithm_wrapper(player, kwargs):
             env_algorithm(player, **kwargs)
 
@@ -579,7 +603,14 @@ class Gen7EnvSinglePlayer(EnvPlayer):  # pyre-ignore
                 executed.
         """
         return self._ACTION_SPACE
+        #return gym.spaces.self._ACTION_SPACE
 
+gym.register(
+    id="gen8randombattle-v0",
+    entry_point="poke_env.players.env_player:Gen8EnvSinglePlayer",
+    max_episode_steps=100,
+    reward_threshold=1.0,
+)
 
 class Gen8EnvSinglePlayer(EnvPlayer):  # pyre-ignore
     _ACTION_SPACE = list(range(4 * 4 + 6))
@@ -678,3 +709,4 @@ class Gen8EnvSinglePlayer(EnvPlayer):  # pyre-ignore
                 executed.
         """
         return self._ACTION_SPACE
+        return gym.spaces.Discrete(len(self._ACTION_SPACE))

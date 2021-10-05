@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import gym
+
 from poke_env.environment.battle import Battle
 from poke_env.environment.move import Move
 from poke_env.environment.pokemon import Pokemon
@@ -211,3 +213,6 @@ def test_action_space():
             len(CustomEnvClass().action_space)
             == 4 * sum([1, has_megas, has_z_moves, has_dynamax]) + 6
         )
+
+#def test_gym_registry():
+    #gym.make("RandomBattle-v8")
