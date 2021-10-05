@@ -26,6 +26,7 @@ import asyncio
 import numpy as np  # pyre-ignore
 import time
 
+LOOP = asyncio.get_event_loop()
 #LOOP = asyncio.new_event_loop()
 #LOOP.set_debug(True)
 #asyncio.set_event_loop(LOOP)
@@ -125,25 +126,53 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         self._start_new_battle = False
 
         self._opponent = opponent if opponent is not None else DummyPlayer(battle_format=battle_format)
+
+
         #asyncio.run_coroutine_threadsafe(self._opponent.accept_challenges(None, n_challenges=0), LOOP)
         #asyncio.run_coroutine_threadsafe(self.accept_challenges(None, n_challenges=0), LOOP)
 
+
+
+
+        #asyncio.create_task(self._opponent.accept_challenges(None, n_challenges=0))
+
+
+        from time import sleep
+
+
         self.stop_battling = False
+        self.is_battling = False
         #async def launch_battles(player: EnvPlayer, opponent: Player):
-        def wrapper(player: EnvPlayer, opponent: Player, loop):
+        def wrapper(player: EnvPlayer, opponent: Player, loop: asyncio.BaseEventLoop):
+
+            #asyncio.set_event_loop(loop)
             while not player.stop_battling:
+                asyncio.run(battle_launcher(player, opponent))
+                pass
                 #asyncio.get_event_loop().run_until_complete(battle_launcher(player, opponent))
+                #asyncio.run(battle_launcher(player, opponent))
 
 
-                loop.run_until_complete(battle_launcher(player, opponent))
+                #yield loop.create_task(battle_launcher(player, opponent))
+                #asyncio.wait_for(task, timeout=None)
+                #asyncio.run(battle_launcher(player, opponent)=loop)
+                #if loop.is_running():
+                    #asyncio.run(battle_launcher(player, opponent))
+                    #task = loop.create_task(battle_launcher(player, opponent))
+                    #asyncio.wait_for(task, timeout=None)
+                #else:
+                    #loop.run_until_complete(battle_launcher(player, opponent))
+                    #sleep(0.1)
 
 
                 #task = loop.create_task(battle_launcher(player, opponent))
                 #await task
                 #loop.wait_for(task, timeout=None)
                 #ic('looping')
+
         async def battle_launcher(player: EnvPlayer, opponent: Player):
             # TODO why can't I just pass n_challenges=0?
+            while True:
                 idx = 0
                 #while not self.stop_battling:
                 #ic(f'launching battle {idx}')
@@ -156,7 +185,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
                     #asyncio.sleep(0.1),
                     opponent.accept_challenges(
                         opponent=to_id_str(player.username), 
-                        n_challenges=1
+                        n_challenges=1,
                     ),
                 )
                 #results = asyncio.run_coroutine_threadsafe(battles_coroutine, LOOP)
@@ -164,6 +193,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
                 #ic('wait sleep')
                 #ic('wait battles_co')
                 await battles_coroutine
+                #yield battles_coroutine
                 #ic('wait battles_co done')
 
         #self.loop = asyncio.new_event_loop()
@@ -187,6 +217,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         #asyncio.run_coroutine_threadsafe(battle_launcher(self, self._opponent), LOOP)
 
 
+        #Thread(target=wrapper, args=(self, self._opponent, asyncio.get_event_loop())).start()
         Thread(target=wrapper, args=(self, self._opponent, asyncio.get_event_loop())).start()
         #Thread(target=wrapper, args=(self, self._opponent, asyncio.new_event_loop())).start()
 
