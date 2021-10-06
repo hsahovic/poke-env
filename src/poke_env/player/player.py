@@ -389,7 +389,8 @@ class Player(PlayerNetwork, ABC):
         """
         pass
 
-    def choose_default_move(self, *args, **kwargs) -> DefaultBattleOrder:
+    @staticmethod
+    def choose_default_move(*args, **kwargs) -> DefaultBattleOrder:
         """Returns showdown's default move order.
 
         This order will result in the first legal order - according to showdown's
@@ -468,6 +469,7 @@ class Player(PlayerNetwork, ABC):
         else:
             return DefaultBattleOrder()
 
+    @staticmethod
     def choose_random_singles_move(self, battle: Battle) -> BattleOrder:
         available_orders = [BattleOrder(move) for move in battle.available_moves]
         available_orders.extend(
@@ -497,9 +499,10 @@ class Player(PlayerNetwork, ABC):
         if available_orders:
             return available_orders[int(random.random() * len(available_orders))]
         else:
-            return self.choose_default_move(battle)
+            return Player.choose_default_move(battle)
 
-    def choose_random_move(self, battle: AbstractBattle) -> BattleOrder:
+    @staticmethod
+    def choose_random_move(battle: AbstractBattle) -> BattleOrder:
         """Returns a random legal move from battle.
 
         :param battle: The battle in which to move.
@@ -508,9 +511,9 @@ class Player(PlayerNetwork, ABC):
         :rtype: str
         """
         if isinstance(battle, Battle):
-            return self.choose_random_singles_move(battle)
+            return Player.choose_random_singles_move(battle)
         elif isinstance(battle, DoubleBattle):
-            return self.choose_random_doubles_move(battle)
+            return Player.choose_random_doubles_move(battle)
         else:
             raise ValueError(
                 "battle should be Battle or DoubleBattle. Received %d" % (type(battle))
