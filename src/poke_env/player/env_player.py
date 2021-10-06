@@ -25,9 +25,6 @@ import asyncio
 import numpy as np  # pyre-ignore
 import time
 
-ENV_LOOP = asyncio.new_event_loop()
-asyncio.set_event_loop(ENV_LOOP)
-
 class EnvPlayer(Player, Env, ABC):  # pyre-ignore
     """Player exposing the Open AI Gym Env API. Recommended use is with play_against."""
 
@@ -80,7 +77,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         """
 
         # This allows for multiprocessing support of environments
-        self.loop = asyncio.get_event_loop() if asyncio.get_event_loop() is not None else asyncio.new_event_loop()
+        self.loop = asyncio.new_event_loop()
         asyncio.set_event_loop(self.loop)
 
         super(EnvPlayer, self).__init__(
@@ -105,9 +102,11 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         self._opponent = RandomPlayer(battle_format=battle_format) # TODO
 
         #self.embed_battle = battle_embedder
-        #asyncio.get_event_loop().call_soon_threadsafe(self.launch_battles(self._opponent))
-        def run(loop):
-            loop.run_until_complete(self.launch_battles(self._opponent))
+        def run(loop: asyncio.BaseEventLoop):
+            if loop.is_running():
+                loop.create_task(self.launch_battles(self._opponent))
+            else:
+                loop.run_until_complete(self.launch_battles(self._opponent))
         t = Thread(target=run, args=(asyncio.get_event_loop(),))
         t.start()
 
@@ -214,6 +213,10 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
             end="\n" if self._current_battle.finished else "\r",
         )
 
+    @abstractmethod
+    def embed_battle(self, battle: AbstractBattle) -> Any:
+        """A one line rendering of the current state of the battle."""
+
     def reward_computing_helper(
         self,
         battle: AbstractBattle,
@@ -312,6 +315,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         :rtype: tuple
         """
         if self._current_battle.finished:
+            #observation = self.reset()
             raise ValueError(
                 "The previous episode is finished. To start a new one, please call reset."
             )
@@ -605,12 +609,14 @@ class Gen7EnvSinglePlayer(EnvPlayer):  # pyre-ignore
         return self._ACTION_SPACE
         #return gym.spaces.self._ACTION_SPACE
 
+'''
 gym.register(
     id="gen8randombattle-v0",
     entry_point="poke_env.players.env_player:Gen8EnvSinglePlayer",
     max_episode_steps=100,
     reward_threshold=1.0,
 )
+'''
 
 class Gen8EnvSinglePlayer(EnvPlayer):  # pyre-ignore
     _ACTION_SPACE = list(range(4 * 4 + 6))
