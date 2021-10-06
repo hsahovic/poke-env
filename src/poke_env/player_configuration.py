@@ -2,25 +2,28 @@
 """This module contains objects related to player configuration.
 """
 from collections import namedtuple
-from collections import Counter
+import uuid
 
 PlayerConfiguration = namedtuple("PlayerConfiguration", ["username", "password"])
 """Player configuration object. Represented with a tuple with two entries: username and
 password."""
 
-_CONFIGURATION_FROM_PLAYER_COUNTER = Counter()
+MAX_USERNAME_LENGTH = 18
+MAX_PLAYER_NAME_LENGTH = 14
 
 
 def _create_player_configuration_from_player(player) -> PlayerConfiguration:
-    key = type(player).__name__
-    _CONFIGURATION_FROM_PLAYER_COUNTER.update([key])
 
-    username = "%s %d" % (key, _CONFIGURATION_FROM_PLAYER_COUNTER[key])
+    player_name = type(player).__name__
 
-    if len(username) > 18:
-        username = "%s %d" % (
-            key[: 18 - len(username)],
-            _CONFIGURATION_FROM_PLAYER_COUNTER[key],
-        )
+    # Leave some space for unique identifiers
+    player_name = player_name[:MAX_USERNAME_LENGTH]
+
+    # Make sure the total is equal to max player name length
+    id = str(uuid.uuid4())
+    id_length = MAX_USERNAME_LENGTH - len(player_name)
+    id = id[:id_length].strip("-")
+
+    username = f"{player_name}{id}"
 
     return PlayerConfiguration(username, None)
