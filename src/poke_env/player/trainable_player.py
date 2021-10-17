@@ -32,6 +32,7 @@ class TrainablePlayer(Player, ABC):
         log_level: Optional[int] = None,
         max_concurrent_battles: int = 1,
         model=None,
+        save_replays: Union[bool, str] = False,
         server_configuration: ServerConfiguration,
         start_timer_on_battle_start: bool = False,
         start_listening: bool = True,
@@ -49,6 +50,10 @@ class TrainablePlayer(Player, ABC):
         :param max_concurrent_battles: Maximum number of battles this player will play
             concurrently. If 0, no limit will be applied. Defaults to 1.
         :type max_concurrent_battles: int
+        :param save_replays: Whether to save battle replays. Can be a boolean, where
+            True will lead to replays being saved in a potentially new /replay folder,
+            or a string representing a folder where replays will be saved.
+        :type save_replays: bool or str
         :param server_configuration: Server configuration.
         :type server_configuration: ServerConfiguration
         :param start_listening: Whether to start listening to the server. Defaults to
