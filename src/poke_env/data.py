@@ -330,3 +330,10 @@ TYPE_CHART[type_1][type_2] corresponds to the damage multiplier of an attack of 
 on a Pokemon of type_2. This dictionnary isncomputed using the `compute_type_chart`
 function.
 """
+
+with open(
+    os.path.join(
+        os.path.dirname(os.path.realpath(__file__)), "data", "replay_template.html"
+    )
+) as f:
+    REPLAY_TEMPLATE = f.read()
