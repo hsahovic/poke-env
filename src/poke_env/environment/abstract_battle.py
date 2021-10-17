@@ -9,12 +9,16 @@ from typing import List
 from typing import Optional
 from typing import Set
 from typing import Tuple
+from typing import Union
 
+from poke_env.data import REPLAY_TEMPLATE
 from poke_env.environment.field import Field
 from poke_env.environment.pokemon import Pokemon, GEN_TO_POKEMON
 from poke_env.environment.side_condition import STACKABLE_CONDITIONS, SideCondition
 from poke_env.environment.weather import Weather
 from poke_env.utils import to_id_str
+
+import os
 
 
 class AbstractBattle(ABC):
@@ -107,7 +111,13 @@ class AbstractBattle(ABC):
         "logger",
     )
 
-    def __init__(self, battle_tag: str, username: str, logger: Logger):
+    def __init__(
+        self,
+        battle_tag: str,
+        username: str,
+        logger: Logger,
+        save_replays: Union[str, bool],
+    ):
         # Utils attributes
         self._battle_tag: str = battle_tag
         self._format: Optional[str] = None
@@ -116,6 +126,8 @@ class AbstractBattle(ABC):
         self._player_role: Optional[str] = None
         self._player_username: str = username
         self._players = []
+        self._replay_data: List[List[str]] = []
+        self._save_replays: Union[bool, str] = save_replays
         self._team_size: Dict[str, int] = {}
         self._teampreview: bool = False
         self._teampreview_opponent_team: Set[Pokemon] = set()
@@ -315,7 +327,46 @@ class AbstractBattle(ABC):
 
         self._fields[field] = self.turn
 
+    def _finish_battle(self) -> None:
+        if self._save_replays:
+            if self._save_replays is True:
+                folder = "replays"
+            else:
+                folder = self._save_replays
+
+            if not os.path.exists(folder):
+                os.mkdir(folder)  # pyre-ignore
+
+            with open(
+                os.path.join(
+                    folder, f"{self._player_username} - {self.battle_tag}.html"
+                ),
+                "w+",
+            ) as f:
+                formatted_replay = REPLAY_TEMPLATE
+
+                formatted_replay = formatted_replay.replace(
+                    "{BATTLE_TAG}", f"{self.battle_tag}"
+                )
+                formatted_replay = formatted_replay.replace(
+                    "{PLAYER_USERNAME}", f"{self._player_username}"
+                )
+                formatted_replay = formatted_replay.replace(
+                    "{OPPONENT_USERNAME}", f"{self._opponent_username}"
+                )
+                replay_log = f">{self.battle_tag}" + "\n".join(
+                    ["|".join(split_message) for split_message in self._replay_data]
+                )
+                formatted_replay = formatted_replay.replace("{REPLAY_LOG}", replay_log)
+
+                f.write(formatted_replay)
+
+        self._finished = True
+
     def _parse_message(self, split_message: List[str]) -> None:  # pyre-ignore
+        if self._save_replays:
+            self._replay_data.append(split_message)
+
         if split_message[1] in self.MESSAGES_TO_IGNORE:
             return
         elif split_message[1] in ["drag", "switch"]:
@@ -671,7 +722,7 @@ class AbstractBattle(ABC):
         pass
 
     def _tied(self):
-        self._finished = True
+        self._finish_battle()
 
     def _update_team_from_request(self, side: Dict) -> None:
         for pokemon in side["pokemon"]:
@@ -687,7 +738,7 @@ class AbstractBattle(ABC):
             self._won = True
         else:
             self._won = False
-        self._finished = True
+        self._finish_battle()
 
     def end_turn(self, turn: int) -> None:
         self.turn = turn
