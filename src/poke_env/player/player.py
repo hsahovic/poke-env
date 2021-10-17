@@ -202,7 +202,6 @@ class Player(PlayerNetwork, ABC):
         ):
             battle_info = split_messages[0][0].split("-")
             battle = await self._create_battle(battle_info)
-            split_messages.pop(0)
         else:
             battle = await self._get_battle(split_messages[0][0])
 
@@ -218,9 +217,6 @@ class Player(PlayerNetwork, ABC):
                     if battle.move_on_next_request:
                         await self._handle_battle_request(battle)
                         battle.move_on_next_request = False
-            elif split_message[1] == "title":
-                player_1, player_2 = split_message[2].split(" vs. ")
-                battle.players = player_1, player_2
             elif split_message[1] == "win" or split_message[1] == "tie":
                 if split_message[1] == "win":
                     battle._won_by(split_message[2])
@@ -291,9 +287,10 @@ class Player(PlayerNetwork, ABC):
                 else:
                     self.logger.critical("Unexpected error message: %s", split_message)
             elif split_message[1] == "turn":
-                battle.end_turn(int(split_message[2]))
+                battle._parse_message(split_message)
                 await self._handle_battle_request(battle)
             elif split_message[1] == "teampreview":
+                battle._parse_message(split_message)
                 await self._handle_battle_request(battle, from_teampreview_request=True)
             elif split_message[1] == "bigerror":
                 self.logger.warning("Received 'bigerror' message: %s", split_message)

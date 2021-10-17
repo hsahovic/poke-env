@@ -51,6 +51,7 @@ class AbstractBattle(ABC):
         "gen",
         "html",
         "inactive",
+        "init",
         "immune",
         "j",
         "l",
@@ -59,6 +60,7 @@ class AbstractBattle(ABC):
         "resisted",
         "split",
         "supereffective",
+        "teampreview",
         "tier",
         "upkeep",
         "zbroken",
@@ -419,6 +421,8 @@ class AbstractBattle(ABC):
         elif split_message[1] == "cant":
             pokemon, _ = split_message[2:4]
             self.get_pokemon(pokemon)._cant_move()
+        elif split_message[1] == "turn":
+            self.end_turn(int(split_message[2]))
         elif split_message[1] == "-heal":
             pokemon, hp_status = split_message[2:4]
             self.get_pokemon(pokemon)._heal(hp_status)
@@ -624,6 +628,9 @@ class AbstractBattle(ABC):
                 self._opponent_side_conditions,
                 self._side_conditions,
             )
+        elif split_message[1] == "title":
+            player_1, player_2 = split_message[2].split(" vs. ")
+            self.players = player_1, player_2
         else:
             raise NotImplementedError(split_message)
 
