@@ -130,7 +130,7 @@ jobs:
       - run:
           name: Start showdown server in the background
           command: |
-            cd pokemon-showdown;mkdir logs;mkdir logs/repl;node pokemon-showdown start --no-security
+            cd pokemon-showdown;node pokemon-showdown start --no-security
           background: true
 
       - run:
