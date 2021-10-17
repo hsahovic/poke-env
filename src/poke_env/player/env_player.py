@@ -39,6 +39,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
         avatar: Optional[int] = None,
         battle_format: Optional[str] = None,
         log_level: Optional[int] = None,
+        save_replays: Union[bool, str] = False,
         server_configuration: Optional[ServerConfiguration] = None,
         start_listening: bool = True,
         start_timer_on_battle_start: bool = False,
@@ -57,6 +58,10 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
             varying per class.
         :param log_level: The player's logger level.
         :type log_level: int. Defaults to logging's default level.
+        :param save_replays: Whether to save battle replays. Can be a boolean, where
+            True will lead to replays being saved in a potentially new /replay folder,
+            or a string representing a folder where replays will be saved.
+        :type save_replays: bool or str
         :param server_configuration: Server configuration. Defaults to Localhost Server
             Configuration.
         :type server_configuration: ServerConfiguration, optional

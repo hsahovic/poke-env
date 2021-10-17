@@ -58,6 +58,7 @@ class Player(PlayerNetwork, ABC):
         battle_format: str = "gen8randombattle",
         log_level: Optional[int] = None,
         max_concurrent_battles: int = 1,
+        save_replays: Union[bool, str] = False,
         server_configuration: Optional[ServerConfiguration] = None,
         start_timer_on_battle_start: bool = False,
         start_listening: bool = True,
@@ -78,6 +79,10 @@ class Player(PlayerNetwork, ABC):
         :param max_concurrent_battles: Maximum number of battles this player will play
             concurrently. If 0, no limit will be applied. Defaults to 1.
         :type max_concurrent_battles: int
+        :param save_replays: Whether to save battle replays. Can be a boolean, where
+            True will lead to replays being saved in a potentially new /replay folder,
+            or a string representing a folder where replays will be saved.
+        :type save_replays: bool or str
         :param server_configuration: Server configuration. Defaults to Localhost Server
             Configuration.
         :type server_configuration: ServerConfiguration, optional
@@ -108,6 +113,7 @@ class Player(PlayerNetwork, ABC):
 
         self._format: str = battle_format
         self._max_concurrent_battles: int = max_concurrent_battles
+        self._save_replays = save_replays
         self._start_timer_on_battle_start: bool = start_timer_on_battle_start
 
         self._battles: Dict[str, AbstractBattle] = {}
@@ -151,6 +157,7 @@ class Player(PlayerNetwork, ABC):
                         battle_tag=battle_tag,
                         username=self.username,
                         logger=self.logger,
+                        save_replays=self._save_replays,
                     )
                 else:
                     battle = Battle.from_format(
@@ -158,6 +165,7 @@ class Player(PlayerNetwork, ABC):
                         battle_tag=battle_tag,
                         username=self.username,
                         logger=self.logger,
+                        save_replays=self._save_replays,
                     )
                 await self._battle_count_queue.put(None)
                 if battle_tag in self._battles:
