@@ -234,7 +234,7 @@
     <div class="battle-log"></div>
     <div class="replay-controls"></div>
     <div class="replay-controls-2"></div>
-    <h1 style="font-weight:normal;text-align:center"><strong>poke-env battle replay</strong><br/>{BATTLE_TAG}<br /><a
+    <h1 style="font-weight:normal;text-align:center"><strong>poke-env battle replay</strong><br />{BATTLE_TAG}<br /><a
             href="http://pokemonshowdown.com/users/randomplayer1" class="subtle" target="_blank">{PLAYER_USERNAME}</a>
         vs. <a href="http://pokemonshowdown.com/users/randomplayer2" class="subtle"
             target="_blank">{OPPONENT_USERNAME}</a></h1>
@@ -248,3 +248,7 @@
 <script>
     let daily = Math.floor(Date.now() / 1000 / 60 / 60 / 24); document.write('<script src="https://play.pokemonshowdown.com/js/replay-embed.js?version' + daily + '"></' + 'script>');
 </script>
+
+<p style="text-align:center"> Replay created by <a href="https://github.com/hsahovic/poke-env">poke-env</a>, with code from <a
+        href="https://github.com/smogon/pokemon-showdown"> pokemon-showdown</a>. If something goes wrong, don't hesitate
+    to open an <a href="https://github.com/hsahovic/poke-env/issues">issue!</a></p>
