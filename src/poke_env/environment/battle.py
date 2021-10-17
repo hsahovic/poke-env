@@ -5,6 +5,7 @@ from logging import Logger
 from typing import Dict
 from typing import List
 from typing import Optional
+from typing import Union
 
 from poke_env.environment.move import Move
 from poke_env.environment.pokemon import Pokemon, GEN_TO_POKEMON
@@ -12,8 +13,14 @@ from poke_env.environment.abstract_battle import AbstractBattle
 
 
 class Battle(AbstractBattle):
-    def __init__(self, battle_tag: str, username: str, logger: Logger):
-        super(Battle, self).__init__(battle_tag, username, logger)
+    def __init__(
+        self,
+        battle_tag: str,
+        username: str,
+        logger: Logger,
+        save_replays: Union[str, bool] = False,
+    ):
+        super(Battle, self).__init__(battle_tag, username, logger, save_replays)
 
         # Turn choice attributes
         self._available_moves: List[Move] = []
@@ -195,7 +202,11 @@ class Battle(AbstractBattle):
 
     @staticmethod
     def from_format(
-        format_: str, battle_tag: str, username: str, logger: Logger
+        format_: str,
+        battle_tag: str,
+        username: str,
+        logger: Logger,
+        save_replays: Union[bool, str] = False,
     ) -> AbstractBattle:
         """
         :return: A GenXBattle instance, depending on the format received
@@ -215,7 +226,10 @@ class Battle(AbstractBattle):
             gen = _DEFAULT_BATTLE_CLASS_KEY
 
         return _GEN_TO_BATTLE_CLASS[gen](
-            battle_tag=battle_tag, username=username, logger=logger
+            battle_tag=battle_tag,
+            username=username,
+            logger=logger,
+            save_replays=save_replays,
         )
 
     @property

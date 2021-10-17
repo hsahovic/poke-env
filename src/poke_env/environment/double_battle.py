@@ -21,8 +21,14 @@ class DoubleBattle(AbstractBattle):
     OPPONENT_2_POSITION = 2
     EMPTY_TARGET_POSITION = 0  # symbolic, not used by showdown
 
-    def __init__(self, battle_tag: str, username: str, logger: Logger):
-        super(DoubleBattle, self).__init__(battle_tag, username, logger)
+    def __init__(
+        self,
+        battle_tag: str,
+        username: str,
+        logger: Logger,
+        save_replays: Union[str, bool] = False,
+    ):
+        super(DoubleBattle, self).__init__(battle_tag, username, logger, save_replays)
 
         # Turn choice attributes
         self._available_moves: List[List[Move]] = [[], []]
