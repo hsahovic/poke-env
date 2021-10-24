@@ -882,7 +882,8 @@ class AbstractBattle(ABC):
         """
         :return: The opponent's side conditions. Keys are SideCondition objects, values
             are:
-            - the number of layers of the side condition is the side condition is
+
+            - the number of layers of the SideCondition if the side condition is
                 stackable
             - the turn where the SideCondition was setup otherwise
         :rtype: Dict[SideCondition, int]
@@ -984,7 +985,8 @@ class AbstractBattle(ABC):
         """
         :return: The player's side conditions. Keys are SideCondition objects, values
             are:
-            - the number of layers of the side condition is the side condition is
+            
+            - the number of layers of the side condition if the side condition is
                 stackable
             - the turn where the SideCondition was setup otherwise
         :rtype: Dict[SideCondition, int]
