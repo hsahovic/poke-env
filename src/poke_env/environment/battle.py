@@ -170,7 +170,7 @@ class Battle(AbstractBattle):
     @property
     def can_dynamax(self) -> bool:
         """
-        :return: Wheter of not the current active pokemon can dynamax
+        :return: Whether or not the current active pokemon can dynamax
         :rtype: bool
         """
         return self._can_dynamax
@@ -178,7 +178,7 @@ class Battle(AbstractBattle):
     @property
     def can_mega_evolve(self) -> bool:
         """
-        :return: Wheter of not the current active pokemon can mega evolve.
+        :return: Whether or not the current active pokemon can mega evolve.
         :rtype: bool
         """
         return self._can_mega_evolve
@@ -186,7 +186,7 @@ class Battle(AbstractBattle):
     @property
     def can_z_move(self) -> bool:
         """
-        :return: Wheter of not the current active pokemon can z-move.
+        :return: Whether or not the current active pokemon can z-move.
         :rtype: bool
         """
         return self._can_z_move
@@ -255,7 +255,7 @@ class Battle(AbstractBattle):
     @property
     def opponent_can_dynamax(self) -> bool:
         """
-        :return: Wheter of not opponent's current active pokemon can dynamax
+        :return: Whether or not opponent's current active pokemon can dynamax
         :rtype: bool
         """
         return self._opponent_can_dynamax

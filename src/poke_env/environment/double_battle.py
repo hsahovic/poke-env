@@ -334,7 +334,7 @@ class DoubleBattle(AbstractBattle):
     @property
     def can_dynamax(self) -> List[bool]:
         """
-        :return: Wheter of not the current active pokemon can dynamax
+        :return: Whether or not the current active pokemon can dynamax
         :rtype: List[bool]
         """
         return self._can_dynamax
@@ -342,7 +342,7 @@ class DoubleBattle(AbstractBattle):
     @property
     def can_mega_evolve(self) -> List[bool]:
         """
-        :return: Whether of not either current active pokemon can mega evolve.
+        :return: Whether or not either current active pokemon can mega evolve.
         :rtype: List[bool]
         """
         return self._can_mega_evolve
@@ -350,7 +350,7 @@ class DoubleBattle(AbstractBattle):
     @property
     def can_z_move(self) -> List[bool]:
         """
-        :return: Wheter of not the current active pokemon can z-move.
+        :return: Whether or not the current active pokemon can z-move.
         :rtype: List[bool]
         """
         return self._can_z_move
@@ -390,7 +390,7 @@ class DoubleBattle(AbstractBattle):
     @property
     def opponent_can_dynamax(self) -> List[bool]:
         """
-        :return: Wheter of not opponent's current active pokemon can dynamax
+        :return: Whether or not opponent's current active pokemon can dynamax
         :rtype: List[bool]
         """
         return self._opponent_can_dynamax
