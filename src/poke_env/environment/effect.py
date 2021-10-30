@@ -77,7 +77,7 @@ class Effect(Enum):
     IMPRISON = auto()
     INFESTATION = auto()
     INGRAIN = auto()
-    INNARDS_OUT = auto
+    INNARDS_OUT = auto()
     INSOMNIA = auto()
     IRON_BARBS = auto()
     LASER_FOCUS = auto()
@@ -208,7 +208,7 @@ class Effect(Enum):
     @property
     def breaks_protect(self):
         """
-        :return: Wheter this effects breaks protect-like states.
+        :return: Whether this effect breaks protect-like states.
         :rtype: bool
         """
         return self in _PROTECT_BREAKING_EFFECTS
@@ -216,7 +216,7 @@ class Effect(Enum):
     @property
     def is_turn_countable(self) -> bool:
         """
-        :return: Wheter it is useful to keep track of the number of turns this effect
+        :return: Whether it is useful to keep track of the number of turns this effect
             has been active for.
         :rtype: bool
         """
@@ -225,7 +225,7 @@ class Effect(Enum):
     @property
     def is_action_countable(self) -> bool:
         """
-        :return: Wheter it is useful to keep track of the number of times this effect
+        :return: Whether it is useful to keep track of the number of times this effect
             has been activated.
         :rtype: bool
         """
