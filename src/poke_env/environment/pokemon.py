@@ -348,10 +348,12 @@ class Pokemon:
         else:
             self._type_2 = PokemonType.from_name(dex_entry["types"][1])
 
-        self._possible_abilities = dex_entry["abilities"]
+        self._possible_abilities = [
+            to_id_str(ability) for ability in dex_entry["abilities"].values()
+        ]
 
         if len(self._possible_abilities) == 1:
-            self._ability = self._possible_abilities["0"]  # pyre-ignore
+            self.ability = self._possible_abilities[0]
 
         self._heightm = dex_entry["heightm"]
         self._weightkg = dex_entry["weightkg"]
@@ -403,9 +405,9 @@ class Pokemon:
             return
 
         if "ability" in request_pokemon:
-            self._ability = request_pokemon["ability"]
+            self.ability = request_pokemon["ability"]
         elif "baseAbility" in request_pokemon:
-            self._ability = request_pokemon["baseAbility"]
+            self.ability = request_pokemon["baseAbility"]
 
         self._last_request = request_pokemon
 
@@ -501,7 +503,10 @@ class Pokemon:
 
     @ability.setter
     def ability(self, ability: Optional[str]):
-        self._ability = ability
+        if ability is None:
+            self._ability = None
+        else:
+            self._ability = to_id_str(ability)
 
     @property
     def active(self) -> Optional[bool]:
