@@ -985,7 +985,7 @@ class AbstractBattle(ABC):
         """
         :return: The player's side conditions. Keys are SideCondition objects, values
             are:
-            
+
             - the number of layers of the side condition if the side condition is
                 stackable
             - the turn where the SideCondition was setup otherwise
