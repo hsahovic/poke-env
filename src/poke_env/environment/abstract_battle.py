@@ -776,6 +776,11 @@ class AbstractBattle(ABC):
 
     @property
     @abstractmethod
+    def can_dynamax(self) -> bool:  # pragma: no cover
+        pass
+
+    @property
+    @abstractmethod
     def can_mega_evolve(self):  # pragma: no cover
         pass
 
