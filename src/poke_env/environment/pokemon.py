@@ -131,7 +131,7 @@ class Pokemon:
             return
 
         if id_ not in self._moves:
-            move = self.MOVE_CLASS(move_id=id_)
+            move = self.MOVE_CLASS(move_id=id_, raw_id=move_id)
             self._moves[id_] = move
         if use:
             self._moves[id_].use()
@@ -463,6 +463,13 @@ class Pokemon:
                     moves.append(self.moves[move])
             elif move in SPECIAL_MOVES:
                 moves.append(SPECIAL_MOVES[move])
+            elif (
+                move == "hiddenpower"
+                and len([m for m in self.moves if m.startswith("hiddenpower")]) == 1
+            ):
+                moves.append(
+                    [v for m, v in self.moves.items() if m.startswith("hiddenpower")][0]
+                )
             else:
                 assert {
                     "copycat",

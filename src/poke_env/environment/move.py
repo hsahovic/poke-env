@@ -15,6 +15,7 @@ from typing import Set
 from typing import Tuple
 from typing import Union
 
+STR_DIGITS = "0123456789"
 SPECIAL_MOVES: Dict
 
 _PROTECT_MOVES = {
@@ -56,13 +57,30 @@ class Move:
 
     _MOVES_DICT = GEN_TO_MOVES[8]
 
-    __slots__ = "_id", "_current_pp", "_dynamaxed_move", "_is_empty", "_request_target"
+    __slots__ = (
+        "_id",
+        "_base_power_override",
+        "_current_pp",
+        "_dynamaxed_move",
+        "_is_empty",
+        "_request_target",
+    )
 
-    def __init__(self, move: str = "", move_id: Optional[str] = None):
-        if move_id:
-            self._id = move_id
-        else:
-            self._id: str = self.retrieve_id(move)
+    def __init__(self, move_id: str, raw_id: Optional[str] = None):
+        self._id = move_id
+        self._base_power_override = None
+
+        if move_id.startswith("hiddenpower") and raw_id is not None:
+            base_power = "".join([c for c in raw_id if c in STR_DIGITS])
+            self._id = "".join([c for c in to_id_str(raw_id) if c not in STR_DIGITS])
+
+            if base_power:
+                try:
+                    base_power = int(base_power)
+                    self._base_power_override = base_power
+                except ValueError:
+                    pass
+
         self._current_pp = self.max_pp
         self._is_empty: bool = False
 
@@ -121,6 +139,8 @@ class Move:
         :return: The move's base power.
         :rtype: int
         """
+        if self._base_power_override is not None:
+            return self._base_power_override
         return self.entry.get("basePower", 0)
 
     @property
@@ -484,6 +504,8 @@ class Move:
             return "return"
         if move_name.startswith("frustration"):
             return "frustration"
+        if move_name.startswith("hiddenpower"):
+            return "hiddenpower"
         return move_name
 
     @property
