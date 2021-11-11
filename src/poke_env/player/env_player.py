@@ -84,6 +84,7 @@ class EnvPlayer(Player, Env, ABC):  # pyre-ignore
             else self._DEFAULT_BATTLE_FORMAT,
             log_level=log_level,
             max_concurrent_battles=1,
+            save_replays=save_replays,
             server_configuration=server_configuration,
             start_listening=start_listening,
             start_timer_on_battle_start=start_timer_on_battle_start,
