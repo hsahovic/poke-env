@@ -25,10 +25,12 @@ class Battle(AbstractBattle):
         # Turn choice attributes
         self._available_moves: List[Move] = []
         self._available_switches: List[Pokemon] = []
+        self._can_dynamax: bool = False
         self._can_mega_evolve: bool = False
         self._can_z_move: bool = False
-        self._can_dynamax: bool = False
         self._opponent_can_dynamax = True
+        self._opponent_can_mega_evolve = True
+        self._opponent_can_z_move = True
         self._force_switch: bool = False
         self._maybe_trapped: bool = False
         self._trapped: bool = False
@@ -263,6 +265,30 @@ class Battle(AbstractBattle):
     @opponent_can_dynamax.setter
     def opponent_can_dynamax(self, value: bool) -> None:
         self._opponent_can_dynamax = value
+
+    @property
+    def opponent_can_mega_evolve(self) -> bool:
+        """
+        :return: Whether or not opponent's current active pokemon can mega-evolve
+        :rtype: bool
+        """
+        return self._opponent_can_mega_evolve
+
+    @opponent_can_mega_evolve.setter
+    def opponent_can_mega_evolve(self, value: bool) -> None:
+        self._opponent_can_mega_evolve = value
+
+    @property
+    def opponent_can_z_move(self) -> bool:
+        """
+        :return: Whether or not opponent's current active pokemon can z-move
+        :rtype: bool
+        """
+        return self._opponent_can_z_move
+
+    @opponent_can_z_move.setter
+    def opponent_can_z_move(self, value: bool) -> None:
+        self._opponentcan_z_move = value
 
     @property
     def trapped(self) -> bool:
