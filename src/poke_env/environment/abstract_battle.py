@@ -389,10 +389,16 @@ class AbstractBattle(ABC):
                     split_message = split_message[:-1]
                     failed = True
 
-            if split_message[-1] == "[from]lockedmove":
+            if split_message[-1] == "[notarget]":
+                split_message = split_message[:-1]
+
+            if split_message[-1] in {"[from]lockedmove", "[from]Pursuit", "[zeffect]"}:
                 split_message = split_message[:-1]
 
             if split_message[-1].startswith("[anim]"):
+                split_message = split_message[:-1]
+
+            if split_message[-1] == "null":
                 split_message = split_message[:-1]
 
             if split_message[-1].startswith("[from]move: "):
@@ -420,6 +426,8 @@ class AbstractBattle(ABC):
 
                 if revealed_ability == "Magic Bounce":
                     return
+                elif revealed_ability == "Dancer":
+                    return
                 else:
                     self.logger.warning(
                         "Unmanaged [from]ability: message received - ability %s in "
@@ -429,6 +437,8 @@ class AbstractBattle(ABC):
                         self.battle_tag,
                         self.turn,
                     )
+            if split_message[-1] == "[from]Magic Coat":
+                return
 
             if split_message[-1] == "":
                 split_message = split_message[:-1]
