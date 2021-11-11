@@ -87,9 +87,11 @@ class AbstractBattle(ABC):
         "_maybe_trapped",
         "_move_on_next_request",
         "_opponent_can_dynamax",
+        "_opponent_can_mega_evolve",
+        "_opponent_can_z_move",
         "_opponent_dynamax_turn",
-        "_opponent_side_conditions",
         "_opponent_rating",
+        "_opponent_side_conditions",
         "_opponent_team",
         "_opponent_username",
         "_player_role",
@@ -99,10 +101,10 @@ class AbstractBattle(ABC):
         "_rqid",
         "_rules",
         "_side_conditions",
-        "_team",
         "_team_size",
-        "_teampreview",
+        "_team",
         "_teampreview_opponent_team",
+        "_teampreview",
         "_trapped",
         "_turn",
         "_wait",
@@ -572,6 +574,8 @@ class AbstractBattle(ABC):
             pokemon, item = split_message[2:4]
             self.get_pokemon(pokemon).item = to_id_str(item)
         elif split_message[1] == "-mega":
+            if not split_message[2].startswith(self._player_role):
+                self._opponent_can_mega_evolve = False
             pokemon, megastone = split_message[2:4]
             self.get_pokemon(pokemon)._mega_evolve(megastone)
         elif split_message[1] == "-mustrecharge":
@@ -614,8 +618,10 @@ class AbstractBattle(ABC):
         elif split_message[1] == "-transform":
             pokemon, into = split_message[2:4]
             self.get_pokemon(pokemon)._transform(self.get_pokemon(into))
-
         elif split_message[1] == "-zpower":
+            if not split_message[2].startswith(self._player_role):
+                self._opponent_can_mega_z_move = False
+
             pokemon = split_message[2]
             self.get_pokemon(pokemon)._used_z_move()
         elif split_message[1] == "clearpoke":

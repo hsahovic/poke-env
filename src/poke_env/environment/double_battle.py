@@ -37,6 +37,8 @@ class DoubleBattle(AbstractBattle):
         self._can_z_move: List[bool] = [False, False]
         self._can_dynamax: List[bool] = [False, False]
         self._opponent_can_dynamax: List[bool] = [True, True]
+        self._opponent_can_mega_evolve: List[bool] = [True, True]
+        self._opponent_can_z_move: List[bool] = [True, True]
         self._force_switch: List[bool] = [False, False]
         self._maybe_trapped: List[bool] = [False, False]
         self._trapped: List[bool] = [False, False]
@@ -390,7 +392,7 @@ class DoubleBattle(AbstractBattle):
     @property
     def opponent_can_dynamax(self) -> List[bool]:
         """
-        :return: Whether or not opponent's current active pokemon can dynamax
+        :return: Whether or not opponent's current active pokemons can dynamax
         :rtype: List[bool]
         """
         return self._opponent_can_dynamax
@@ -401,6 +403,36 @@ class DoubleBattle(AbstractBattle):
             self._opponent_can_dynamax = [value, value]
         else:
             self._opponent_can_dynamax = value
+
+    @property
+    def opponent_can_mega_evolve(self) -> List[bool]:
+        """
+        :return: Whether or not opponent's current active pokemons can mega evolve
+        :rtype: List[bool]
+        """
+        return self._opponent_can_mega_evolve
+
+    @opponent_can_mega_evolve.setter
+    def opponent_can_mega_evolve(self, value: Union[bool, List[bool]]) -> None:
+        if isinstance(value, bool):
+            self._opponent_can_mega_evolve = [value, value]
+        else:
+            self._opponent_can_mega_evolve = value
+
+    @property
+    def opponent_can_z_move(self) -> List[bool]:
+        """
+        :return: Whether or not opponent's current active pokemons can z-move
+        :rtype: List[bool]
+        """
+        return self._opponent_can_z_move
+
+    @opponent_can_z_move.setter
+    def opponent_can_z_move(self, value: Union[bool, List[bool]]) -> None:
+        if isinstance(value, bool):
+            self._opponent_can_z_move = [value, value]
+        else:
+            self._opponent_can_z_move = value
 
     @property
     def trapped(self) -> List[bool]:
