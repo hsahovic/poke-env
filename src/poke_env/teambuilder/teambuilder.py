@@ -26,7 +26,7 @@ class Teambuilder(ABC):
         """Returns a packed-format team."""
 
     @staticmethod
-    def parse_showdown_team(team: str) -> List[TeambuilderPokemon]:  # pyre-ignore
+    def parse_showdown_team(team: str) -> List[TeambuilderPokemon]:
         """Converts a showdown-formatted team string into a list of TeambuilderPokemon
         objects.
 
@@ -37,14 +37,15 @@ class Teambuilder(ABC):
         :return: The formatted team.
         :rtype: list of TeambuilderPokemon
         """
-        current_mon = None
+        current_mon = TeambuilderPokemon()
+        current_mon_has_been_added = True
         mons = []
 
         for line in team.split("\n"):
             if line == "":
-                if current_mon is not None:
+                if not current_mon_has_been_added:
                     mons.append(current_mon)
-                current_mon = None
+                current_mon_has_been_added = True
             elif line.startswith("Ability"):
                 ability = line.replace("Ability: ", "")
                 current_mon.ability = ability.strip()
@@ -87,6 +88,7 @@ class Teambuilder(ABC):
                 current_mon.hiddenpowertype = hp_type
             else:
                 current_mon = TeambuilderPokemon()
+                current_mon_has_been_added = False
                 if "@" in line:
                     mon_info, item = line.split(" @ ")
                     current_mon.item = item.strip()
@@ -108,7 +110,7 @@ class Teambuilder(ABC):
                             break
                     current_mon.nickname = " ".join(split_mon_info)
                 current_mon.nickname = " ".join(split_mon_info)
-        if current_mon is not None:
+        if not current_mon_has_been_added:
             mons.append(current_mon)
         return mons
 

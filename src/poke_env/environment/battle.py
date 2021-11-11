@@ -288,7 +288,7 @@ class Battle(AbstractBattle):
 
     @opponent_can_z_move.setter
     def opponent_can_z_move(self, value: bool) -> None:
-        self._opponentcan_z_move = value
+        self._opponent_can_z_move = value
 
     @property
     def trapped(self) -> bool:

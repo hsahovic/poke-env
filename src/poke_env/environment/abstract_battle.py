@@ -365,7 +365,7 @@ class AbstractBattle(ABC):
 
         self._finished = True
 
-    def _parse_message(self, split_message: List[str]) -> None:  # pyre-ignore
+    def _parse_message(self, split_message: List[str]) -> None:
         if self._save_replays:
             self._replay_data.append(split_message)
 
@@ -584,8 +584,8 @@ class AbstractBattle(ABC):
             pokemon, item = split_message[2:4]
             self.get_pokemon(pokemon).item = to_id_str(item)
         elif split_message[1] == "-mega":
-            if not split_message[2].startswith(self._player_role):
-                self._opponent_can_mega_evolve = False
+            if not split_message[2].startswith(self._player_role):  # pyre-ignore
+                self._opponent_can_mega_evolve = False  # pyre-ignore
             pokemon, megastone = split_message[2:4]
             self.get_pokemon(pokemon)._mega_evolve(megastone)
         elif split_message[1] == "-mustrecharge":
@@ -629,8 +629,8 @@ class AbstractBattle(ABC):
             pokemon, into = split_message[2:4]
             self.get_pokemon(pokemon)._transform(self.get_pokemon(into))
         elif split_message[1] == "-zpower":
-            if not split_message[2].startswith(self._player_role):
-                self._opponent_can_mega_z_move = False
+            if not split_message[2].startswith(self._player_role):  # pyre-ignore
+                self._opponent_can_mega_z_move = False  # pyre-ignore
 
             pokemon = split_message[2]
             self.get_pokemon(pokemon)._used_z_move()
