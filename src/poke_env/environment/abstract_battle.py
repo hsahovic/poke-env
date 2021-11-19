@@ -7,7 +7,6 @@ from logging import Logger
 from typing import Dict
 from typing import List
 from typing import Optional
-from typing import Set
 from typing import Tuple
 from typing import Union
 
@@ -132,7 +131,7 @@ class AbstractBattle(ABC):
         self._save_replays: Union[bool, str] = save_replays
         self._team_size: Dict[str, int] = {}
         self._teampreview: bool = False
-        self._teampreview_opponent_team: Set[Pokemon] = set()
+        self._teampreview_opponent_team: Dict[str, Pokemon] = dict()
         self.logger: Logger = logger
 
         # Turn choice attributes
@@ -192,6 +191,11 @@ class AbstractBattle(ABC):
             return self._team[identifier]
         elif identifier in self._opponent_team:
             return self._opponent_team[identifier]
+        elif identifier in self._teampreview_opponent_team:
+            self._opponent_team[identifier] = self._teampreview_opponent_team[
+                identifier
+            ]
+            return self._opponent_team[identifier]
 
         player_role = identifier[:2]
         is_mine = player_role == self._player_role
@@ -202,15 +206,21 @@ class AbstractBattle(ABC):
             team: Dict[str, Pokemon] = self._opponent_team
 
         if self._team_size and len(team) >= self._team_size[player_role]:
-            raise ValueError(
-                "%s's team already has %d pokemons: cannot add %s to %s"
-                % (
-                    player_role,
-                    self._team_size[player_role],
-                    identifier,
-                    ", ".join(team.keys()),
+            for key in team:
+                # Can match alternate forms from team preview
+                if key.startswith(identifier + "-"):
+                    team[identifier] = team.pop(key)
+                    break
+            else:
+                raise ValueError(
+                    "%s's team already has %d pokemons: cannot add %s to %s"
+                    % (
+                        player_role,
+                        self._team_size[player_role],
+                        identifier,
+                        ", ".join(team.keys()),
+                    )
                 )
-            )
 
         if request:
             team[identifier] = self.POKEMON_CLASS(request_pokemon=request)
@@ -521,6 +531,11 @@ class AbstractBattle(ABC):
         elif split_message[1] == "faint":
             pokemon = split_message[2]
             self.get_pokemon(pokemon)._faint()
+        elif split_message[1] == "teampreview":
+            if len(split_message) >= 3:
+                self._max_team_size = int(split_message[2])
+            elif len(split_message) == 2:
+                self._max_team_size = None
         elif split_message[1] == "-unboost":
             pokemon, stat, amount = split_message[2:5]
             self.get_pokemon(pokemon)._boost(stat, -int(amount))
@@ -733,7 +748,8 @@ class AbstractBattle(ABC):
     def _register_teampreview_pokemon(self, player: str, details: str):
         if player != self._player_role:
             mon = self.POKEMON_CLASS(details=details)
-            self._teampreview_opponent_team.add(mon)
+            mon_id = details.split(",")[0]
+            self._teampreview_opponent_team[f"{player}: {mon_id}"] = mon
 
     def _side_end(self, side, condition):
         if side[:2] == self._player_role:
