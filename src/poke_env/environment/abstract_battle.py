@@ -207,7 +207,7 @@ class AbstractBattle(ABC):
                 % (
                     player_role,
                     self._team_size[player_role],
-                    identifier[:2],
+                    identifier,
                     ", ".join(team.keys()),
                 )
             )
