@@ -147,6 +147,7 @@ jobs:
             until $(curl --output /dev/null --silent --head --fail http://localhost:8000); do
               sleep .01
             done
+            sleep 1
       - run:
           name: Run integration tests
           command: |
