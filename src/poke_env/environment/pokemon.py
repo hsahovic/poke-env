@@ -488,6 +488,8 @@ class Pokemon:
                     "mefirst",
                     "mirrormove",
                     "assist",
+                    "transform",
+                    "mimic",
                 }.intersection(self.moves)
                 moves.append(self.MOVE_CLASS(move))
         return moves

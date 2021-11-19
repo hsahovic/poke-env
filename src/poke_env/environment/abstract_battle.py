@@ -399,6 +399,9 @@ class AbstractBattle(ABC):
             if split_message[-1].startswith("[anim]"):
                 split_message = split_message[:-1]
 
+            if split_message[-1].startswith("[spread]"):
+                split_message = split_message[:-1]
+
             if split_message[-1] == "null":
                 split_message = split_message[:-1]
 
@@ -408,7 +411,14 @@ class AbstractBattle(ABC):
                 if override_move == "Sleep Talk":
                     # Sleep talk was used, but also reveals another move
                     reveal_other_move = True
-                elif override_move == "Copycat":
+                elif override_move in {
+                    "Copycat",
+                    "Metronome",
+                    "Nature Power",
+                    "Mirror Move",
+                    "Assist",
+                    "Me First",
+                }:
                     pass
                 else:
                     self.logger.warning(
@@ -440,6 +450,12 @@ class AbstractBattle(ABC):
                     )
             if split_message[-1] == "[from]Magic Coat":
                 return
+
+            if split_message[-1] == "[from]Snatch":
+                return
+
+            if split_message[-1] == "[still]":
+                split_message = split_message[:-1]
 
             if split_message[-1] == "":
                 split_message = split_message[:-1]
@@ -621,11 +637,19 @@ class AbstractBattle(ABC):
             source, target, stats = split_message[2:5]
             source = self.get_pokemon(source)
             target = self.get_pokemon(target)
-            for stat in stats.split(", "):
-                source._boosts[stat], target._boosts[stat] = (
-                    target._boosts[stat],
-                    source._boosts[stat],
-                )
+
+            if stats == "[from] move: Heart Swap":
+                for stat in set(source._boosts):
+                    source._boosts[stat], target._boosts[stat] = (
+                        target._boosts[stat],
+                        source._boosts[stat],
+                    )
+            else:
+                for stat in stats.split(", "):
+                    source._boosts[stat], target._boosts[stat] = (
+                        target._boosts[stat],
+                        source._boosts[stat],
+                    )
         elif split_message[1] == "-transform":
             pokemon, into = split_message[2:4]
             self.get_pokemon(pokemon)._transform(self.get_pokemon(into))
