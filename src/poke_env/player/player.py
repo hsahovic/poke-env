@@ -212,7 +212,6 @@ class Player(PlayerNetwork, ABC):
             battle = await self._create_battle(battle_info)
         else:
             battle = await self._get_battle(split_messages[0][0])
-
         for split_message in split_messages[1:]:
             if len(split_message) <= 1:
                 continue
@@ -547,14 +546,14 @@ class Player(PlayerNetwork, ABC):
             perf_counter() - start_time,
         )
 
-    async def battle_against(self, opponent: "Player", n_battles: int) -> None:
+    async def battle_against(self, opponent: "Player", n_battles: int = 1) -> None:
         """Make the player play n_battles against opponent.
 
         This function is a wrapper around send_challenges and accept challenges.
 
         :param opponent: The opponent to play against.
         :type opponent: Player
-        :param n_battles: The number of games to play.
+        :param n_battles: The number of games to play. Defaults to 1.
         :type n_battles: int
         """
         await asyncio.gather(
