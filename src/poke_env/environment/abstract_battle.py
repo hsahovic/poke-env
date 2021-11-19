@@ -63,7 +63,6 @@ class AbstractBattle(ABC):
         "resisted",
         "split",
         "supereffective",
-        "teampreview",
         "tier",
         "upkeep",
         "zbroken",
@@ -964,15 +963,27 @@ class AbstractBattle(ABC):
     @property
     def opponent_team(self) -> Dict[str, Pokemon]:
         """
-        During teampreview, keys are not definitive: please rely on values.
+        Note: values (Pokemon objects) match those in opponent_teampreview_team
+
+        This will fill progressively, as the opponent's brought pokemon are revealed.
+        If in this format, all pokemons are brought and the team composition is public,
+        this  property will be filled at teampreview.
 
         :return: The opponent's team. Keys are identifiers, values are pokemon objects.
         :rtype: Dict[str, Pokemon]
         """
-        if self._opponent_team:
-            return self._opponent_team
-        else:
-            return {mon.species: mon for mon in self._teampreview_opponent_team}
+        return self._opponent_team
+
+    @property
+    def opponent_teampreview_team(self) -> Dict[str, Pokemon]:
+        """
+        Note: values (Pokemon objects) are a superset of those in teampreview_team
+
+        :return: The opponent's team in teampreview. Keys are identifiers, values are
+            pokemon objects.
+        :rtype: Dict[str, Pokemon]
+        """
+        return self._teampreview_opponent_team
 
     @property
     def opponent_username(self) -> Optional[str]:
