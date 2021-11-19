@@ -714,6 +714,15 @@ class AbstractBattle(ABC):
             self._end_illusion(pokemon, details)
         elif split_message[1] == "start":
             self._in_team_preview = False
+
+            # If the opponent's teampreview team is as long as its battle team, we can
+            # make them match
+            if self._max_team_size is None or (
+                len(self._teampreview_opponent_team) == self._max_team_size
+            ):
+                for mon_id, mon in self._teampreview_opponent_team.items():
+                    if mon_id not in self._opponent_team:
+                        self._opponent_team[mon_id] = mon
         elif split_message[1] == "swap":
             pokemon, position = split_message[2:4]
             self._swap(pokemon, position)
