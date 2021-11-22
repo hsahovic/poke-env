@@ -209,7 +209,7 @@ class AbstractBattle(ABC):
                 # Can match alternate forms from team preview
                 if key.startswith(identifier + "-"):
                     team[identifier] = team.pop(key)
-                    break
+                    return team[identifier]
             else:
                 raise ValueError(
                     "%s's team already has %d pokemons: cannot add %s to %s"
