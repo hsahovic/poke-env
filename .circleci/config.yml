@@ -116,6 +116,8 @@ jobs:
             cd pokemon-showdown
             npm install
             cp config/config-example.js config/config.js
+            sed  -i 's/backdoor = true/backdoor = false/g' config/config.js
+            sed  -i 's/simulatorprocesses = 1/simulatorprocesses = 2/g' config/config.js
       - run:
           name: Uninstall poke-env before caching
           command: |
