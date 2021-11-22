@@ -22,7 +22,7 @@ from poke_env.utils import to_id_str
 from tqdm import tqdm
 
 with open("src/poke_env/data/learnset.json") as f:
-    movesets = orjson.load(f)
+    movesets = orjson.loads(f.read())
 
 print("-" * 20, "\n")
 mons = [mon for mon in POKEDEX]
@@ -135,4 +135,7 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.get_event_loop().run_until_complete(main())
+    if len(sys.argv) != 4:
+        print("Usage: python *.py N_BATTLES LOG_LEVEL BATTLE_PER_ROUND")
+    else:
+        asyncio.get_event_loop().run_until_complete(main())
