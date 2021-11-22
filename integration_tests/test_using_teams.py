@@ -34,6 +34,7 @@ async def cross_evaluation(n_battles, format_, teams):
         await player.stop_listening()
 
 
+@pytest.mark.flaky(reruns=3, reruns_delay=1)
 @pytest.mark.asyncio
 async def test_all_formats_cross_evaluation(showdown_format_teams):
     coroutines = [
