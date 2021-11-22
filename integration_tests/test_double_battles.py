@@ -31,6 +31,7 @@ async def simple_cross_evaluation(n_battles, format_, i=0):
         await player.stop_listening()
 
 
+@pytest.mark.flaky(reruns=3, reruns_delay=1)
 @pytest.mark.asyncio
 async def test_small_cross_evaluation_gen7():
     await asyncio.wait_for(
@@ -38,6 +39,7 @@ async def test_small_cross_evaluation_gen7():
     )
 
 
+@pytest.mark.flaky(reruns=3, reruns_delay=1)
 @pytest.mark.asyncio
 async def test_small_cross_evaluation_gen8():
     await asyncio.wait_for(

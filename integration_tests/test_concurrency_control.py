@@ -59,16 +59,19 @@ async def check_max_concurrent_battle_works(n_battles, n_concurrent_battles):
     assert max_concurrent_battles == n_concurrent_battles
 
 
+@pytest.mark.flaky(reruns=3, reruns_delay=1)
 @pytest.mark.asyncio
 async def test_max_concurrent_battle_works_no_concurrency():
     await check_max_concurrent_battle_works(7, 1)
 
 
+@pytest.mark.flaky(reruns=3, reruns_delay=1)
 @pytest.mark.asyncio
 async def test_max_concurrent_battle_works_3_concurrent():
     await check_max_concurrent_battle_works(20, 3)
 
 
+@pytest.mark.flaky(reruns=3, reruns_delay=1)
 @pytest.mark.asyncio
 async def test_max_concurrent_battle_works_5_concurrent():
     await check_max_concurrent_battle_works(30, 5)

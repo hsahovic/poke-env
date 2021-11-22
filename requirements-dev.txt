@@ -6,6 +6,7 @@ pyre-check==0.9.8
 pytest
 pytest-asyncio
 pytest-cov
+pytest-rerunfailures
 pytest-timeout
 sphinx
 sphinx_rtd_theme

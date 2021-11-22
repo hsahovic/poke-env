@@ -55,6 +55,7 @@ def play_function(player, n_battles):
             _, _, done, _ = player.step(np.random.choice(player.action_space))
 
 
+@pytest.mark.flaky(reruns=3, reruns_delay=1)
 @pytest.mark.timeout(30)
 def test_random_gym_players_gen4():
     env_player = RandomGen4EnvPlayer(log_level=20)
@@ -66,6 +67,7 @@ def test_random_gym_players_gen4():
     )
 
 
+@pytest.mark.flaky(reruns=3, reruns_delay=1)
 @pytest.mark.timeout(30)
 def test_random_gym_players_gen5():
     env_player = RandomGen5EnvPlayer(log_level=20)
@@ -77,6 +79,7 @@ def test_random_gym_players_gen5():
     )
 
 
+@pytest.mark.flaky(reruns=3, reruns_delay=1)
 @pytest.mark.timeout(30)
 def test_random_gym_players_gen6():
     env_player = RandomGen6EnvPlayer(log_level=20)
@@ -88,6 +91,7 @@ def test_random_gym_players_gen6():
     )
 
 
+@pytest.mark.flaky(reruns=3, reruns_delay=1)
 @pytest.mark.timeout(30)
 def test_random_gym_players_gen7():
     env_player = RandomGen7EnvPlayer(log_level=20)
@@ -99,6 +103,7 @@ def test_random_gym_players_gen7():
     )
 
 
+@pytest.mark.flaky(reruns=3, reruns_delay=1)
 @pytest.mark.timeout(30)
 def test_random_gym_players_gen8():
     env_player = RandomGen8EnvPlayer(log_level=20)
@@ -110,6 +115,7 @@ def test_random_gym_players_gen8():
     )
 
 
+@pytest.mark.flaky(reruns=3, reruns_delay=1)
 @pytest.mark.timeout(60)
 def test_two_successive_calls_gen8():
     env_player = RandomGen8EnvPlayer(battle_format="gen8randombattle", log_level=20)

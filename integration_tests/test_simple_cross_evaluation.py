@@ -31,6 +31,7 @@ async def simple_cross_evaluation(n_battles, format_):
         await player.stop_listening()
 
 
+@pytest.mark.flaky(reruns=3, reruns_delay=1)
 @pytest.mark.asyncio
 async def test_small_cross_evaluation_gen8():
     await asyncio.wait_for(
@@ -38,6 +39,7 @@ async def test_small_cross_evaluation_gen8():
     )
 
 
+@pytest.mark.flaky(reruns=3, reruns_delay=1)
 @pytest.mark.asyncio
 async def test_small_cross_evaluation_gen7():
     await asyncio.wait_for(
@@ -45,6 +47,7 @@ async def test_small_cross_evaluation_gen7():
     )
 
 
+@pytest.mark.flaky(reruns=3, reruns_delay=1)
 @pytest.mark.asyncio
 async def test_small_cross_evaluation_gen6():
     await asyncio.wait_for(
@@ -52,6 +55,7 @@ async def test_small_cross_evaluation_gen6():
     )
 
 
+@pytest.mark.flaky(reruns=3, reruns_delay=1)
 @pytest.mark.asyncio
 async def test_small_cross_evaluation_gen5():
     await asyncio.wait_for(
@@ -59,6 +63,7 @@ async def test_small_cross_evaluation_gen5():
     )
 
 
+@pytest.mark.flaky(reruns=3, reruns_delay=1)
 @pytest.mark.asyncio
 async def test_small_cross_evaluation_gen4():
     await asyncio.wait_for(
@@ -66,6 +71,7 @@ async def test_small_cross_evaluation_gen4():
     )
 
 
+@pytest.mark.flaky(reruns=3, reruns_delay=1)
 @pytest.mark.asyncio
 async def test_small_cross_evaluation_gen3():
     await asyncio.wait_for(
@@ -73,6 +79,7 @@ async def test_small_cross_evaluation_gen3():
     )
 
 
+@pytest.mark.flaky(reruns=3, reruns_delay=1)
 @pytest.mark.asyncio
 async def test_small_cross_evaluation_gen2():
     await asyncio.wait_for(
@@ -80,6 +87,7 @@ async def test_small_cross_evaluation_gen2():
     )
 
 
+@pytest.mark.flaky(reruns=3, reruns_delay=1)
 @pytest.mark.asyncio
 async def test_small_cross_evaluation_gen1():
     await asyncio.wait_for(

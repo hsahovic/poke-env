@@ -17,6 +17,7 @@ async def simple_ladderring(n_battles, max_concurrent_battles):
         await player.stop_listening()
 
 
+@pytest.mark.flaky(reruns=3, reruns_delay=1)
 @pytest.mark.asyncio
 async def test_laddering():
     for n_battles in [1, 5]:
