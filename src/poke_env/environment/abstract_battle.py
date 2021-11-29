@@ -344,6 +344,7 @@ class AbstractBattle(ABC):
                     folder, f"{self._player_username} - {self.battle_tag}.html"
                 ),
                 "w+",
+                encoding="utf-8",
             ) as f:
                 formatted_replay = REPLAY_TEMPLATE
 
