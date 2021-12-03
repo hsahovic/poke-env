@@ -37,7 +37,8 @@ class Pokemon:
         "_moves",
         "_must_recharge",
         "_possible_abilities",
-        "_preparing",
+        "_preparing_move",
+        "_preparing_target",
         "_protect_counter",
         "_shiny",
         "_revealed",
@@ -96,7 +97,8 @@ class Pokemon:
         self._last_request: dict = {}
         self._last_details: str = ""
         self._must_recharge = False
-        self._preparing = False
+        self._preparing_move: Optional[Move] = None
+        self._preparing_target = None
         self._protect_counter: int = 0
         self._revealed: bool = False
         self._status: Optional[Status] = None
@@ -191,7 +193,8 @@ class Pokemon:
         self._item = None
 
         if item == "powerherb":
-            self._preparing = False
+            self._preparing_move = False
+            self._preparing_target = False
 
     def _end_turn(self):
         if self._status == Status.TOX:
@@ -229,7 +232,8 @@ class Pokemon:
 
     def _moved(self, move, failed=False, use=True):
         self._must_recharge = False
-        self._preparing = False
+        self._preparing_move = None
+        self._preparing_target = None
         move = self._add_move(move, use=use)
 
         if move and move.is_protect_counter and not failed:
@@ -258,7 +262,13 @@ class Pokemon:
             self._moves = new_moves
 
     def _prepare(self, move, target):
-        self._preparing = (move, target)
+        self._moved(move, use=False)
+
+        move_id = self.MOVE_CLASS.retrieve_id(move)
+        move = self.moves[move_id]
+
+        self._preparing_move = move
+        self._preparing_target = target
 
     def _primal(self):
         species_id_str = to_id_str(self._species)
@@ -323,7 +333,8 @@ class Pokemon:
         self._clear_effects()
         self._first_turn = False
         self._must_recharge = False
-        self._preparing = False
+        self._preparing_move = None
+        self._preparing_target = None
         self._protect_counter = 0
 
         if self._status == Status.TOX:
@@ -700,7 +711,23 @@ class Pokemon:
         :return: Whether this pokemon is preparing a multi-turn move.
         :rtype: bool
         """
-        return self._preparing
+        return bool(self._preparing_target) or bool(self._preparing_move)
+
+    @property
+    def preparing_target(self) -> Any:
+        """
+        :return: The moves target - optional.
+        :rtype: Any
+        """
+        return self._preparing_target
+
+    @property
+    def preparing_move(self) -> Optional[Move]:
+        """
+        :return: The move being prepared - optional.
+        :rtype: Move, optional
+        """
+        return self._preparing_move
 
     @property
     def protect_counter(self) -> int:
