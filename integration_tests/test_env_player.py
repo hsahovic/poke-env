@@ -13,36 +13,26 @@ from poke_env.player.random_player import RandomPlayer
 
 
 class RandomGen4EnvPlayer(Gen4EnvSinglePlayer):
-    MAX_BATTLE_SWITCH_RETRY = 500
-
     def embed_battle(self, battle):
         return np.array([0])
 
 
 class RandomGen5EnvPlayer(Gen5EnvSinglePlayer):
-    MAX_BATTLE_SWITCH_RETRY = 500
-
     def embed_battle(self, battle):
         return np.array([0])
 
 
 class RandomGen6EnvPlayer(Gen6EnvSinglePlayer):
-    MAX_BATTLE_SWITCH_RETRY = 500
-
     def embed_battle(self, battle):
         return np.array([0])
 
 
 class RandomGen7EnvPlayer(Gen7EnvSinglePlayer):
-    MAX_BATTLE_SWITCH_RETRY = 500
-
     def embed_battle(self, battle):
         return np.array([0])
 
 
 class RandomGen8EnvPlayer(Gen8EnvSinglePlayer):
-    MAX_BATTLE_SWITCH_RETRY = 500
-
     def embed_battle(self, battle):
         return np.array([0])
 
