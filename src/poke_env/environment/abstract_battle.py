@@ -57,6 +57,7 @@ class AbstractBattle(ABC):
         "init",
         "immune",
         "j",
+        "J",
         "l",
         "n",
         "rated",
