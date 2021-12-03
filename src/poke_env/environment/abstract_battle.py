@@ -205,11 +205,26 @@ class AbstractBattle(ABC):
             team: Dict[str, Pokemon] = self._opponent_team
 
         if self._team_size and len(team) >= self._team_size[player_role]:
+            if request and not details:
+                details = request["details"]
+
+            # Normalize species and check for injection from teampreview
+            if details:
+                species = to_id_str(details.split(", ")[0])
+            else:
+                species = to_id_str(identifier.split(": ")[1])
+
             for key in team:
                 # Can match alternate forms from team preview
                 if key.startswith(identifier + "-"):
                     team[identifier] = team.pop(key)
                     return team[identifier]
+
+            for key, mon in team.items():
+                if mon.species == species:
+                    team[identifier] = team.pop(key)
+                    return team[identifier]
+
             else:
                 raise ValueError(
                     "%s's team already has %d pokemons: cannot add %s to %s"
