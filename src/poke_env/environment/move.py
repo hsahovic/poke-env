@@ -801,6 +801,8 @@ class DynamaxMove(Move):
         self._parent: Move = parent
 
     def __getattr__(self, name):
+        if name[:2] == '__':
+            raise AttributeError(name)
         return getattr(self._parent, name)
 
     @property
