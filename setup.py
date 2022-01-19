@@ -14,8 +14,7 @@ from setuptools import find_packages, setup, Command
 
 # Package meta-data.
 NAME = "poke_env"
-DESCRIPTION = """A python interface for training Reinforcement Learning bots to battle
- on pokemon showdown."""
+DESCRIPTION = """A python interface for training Reinforcement Learning bots to battle on pokemon showdown."""
 URL = "https://github.com/hsahovic/poke-env"
 EMAIL = "contact@sahovic.fr"
 AUTHOR = "Haris Sahovic"
