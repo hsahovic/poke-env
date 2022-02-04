@@ -133,7 +133,7 @@ class AbstractBattle(ABC):
         self._teampreview: bool = False
         self._teampreview_opponent_team: Set[Pokemon] = set()
         self._anybody_inactive: bool = False
-        self._reconnected = True
+        self._reconnected: bool = True
         self.logger: Logger = logger
 
         # Turn choice attributes
