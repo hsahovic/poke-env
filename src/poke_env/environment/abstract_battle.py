@@ -54,7 +54,6 @@ class AbstractBattle(ABC):
         "gametype",
         "gen",
         "html",
-        "inactive",
         "init",
         "immune",
         "j",
@@ -133,6 +132,8 @@ class AbstractBattle(ABC):
         self._team_size: Dict[str, int] = {}
         self._teampreview: bool = False
         self._teampreview_opponent_team: Set[Pokemon] = set()
+        self._anybody_inactive: bool = False
+        self._reconnected = True
         self.logger: Logger = logger
 
         # Turn choice attributes
@@ -639,8 +640,22 @@ class AbstractBattle(ABC):
             self._in_team_preview = True
         elif split_message[1] == "gen":
             self._format = split_message[2]
+        elif split_message[1] == 'inactive':
+            if 'disconnected' in split_message[2]:
+                self._anybody_inactive = True
+            elif 'reconnected' in split_message[2]:
+                self._anybody_inactive = False
+                self._reconnected = True
         elif split_message[1] == "player":
-            player, username, avatar, rating = split_message[2:6]
+            try:
+                player, username, avatar, rating = split_message[2:6]
+            except ValueError as e:
+                if not self._anybody_inactive:
+                    if self._reconnected:
+                        self._reconnected = False
+                    else:
+                        raise e
+                return
             if username == self._player_username:
                 self._player_role = player
             return self._players.append(
