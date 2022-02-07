@@ -640,10 +640,10 @@ class AbstractBattle(ABC):
             self._in_team_preview = True
         elif split_message[1] == "gen":
             self._format = split_message[2]
-        elif split_message[1] == 'inactive':
-            if 'disconnected' in split_message[2]:
+        elif split_message[1] == "inactive":
+            if "disconnected" in split_message[2]:
                 self._anybody_inactive = True
-            elif 'reconnected' in split_message[2]:
+            elif "reconnected" in split_message[2]:
                 self._anybody_inactive = False
                 self._reconnected = True
         elif split_message[1] == "player":
