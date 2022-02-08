@@ -654,7 +654,7 @@ class AbstractBattle(ABC):
                     if self._reconnected:
                         self._reconnected = False
                     else:
-                        raise RuntimeError("Invalid player message")
+                        raise RuntimeError(f"Invalid player message: {split_message}")
                 return
             if username == self._player_username:
                 self._player_role = player
