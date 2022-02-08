@@ -12,7 +12,9 @@ from asyncio import Condition
 from asyncio import Event
 from asyncio import Queue
 from asyncio import Semaphore
+from inspect import isawaitable
 from time import perf_counter
+from typing import Awaitable
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -318,7 +320,10 @@ class Player(PlayerNetwork, ABC):
                 return
             message = self.teampreview(battle)
         else:
-            message = self.choose_move(battle).message
+            message = self.choose_move(battle)
+            if isawaitable(message):
+                message = await message
+            message = message.message
 
         await self._send_message(message, battle.battle_tag)
 
@@ -384,7 +389,7 @@ class Player(PlayerNetwork, ABC):
         await self._battle_count_queue.join()
 
     @abstractmethod
-    def choose_move(self, battle: AbstractBattle) -> BattleOrder:  # pragma: no cover
+    def choose_move(self, battle: AbstractBattle) -> Union[BattleOrder, Awaitable[BattleOrder]]:  # pragma: no cover
         """Abstract method to choose a move in a battle.
 
         :param battle: The battle.
