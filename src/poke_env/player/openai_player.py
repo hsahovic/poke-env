@@ -4,13 +4,13 @@
 import asyncio
 import copy
 import time
-import numpy as np
+import numpy as np  # pyre-ignore
 
 from abc import ABC, abstractmethod
 from threading import Thread
 from typing import Union, Awaitable, Optional, Tuple, TypeVar
-from gym.core import Env
-from gym.spaces import Space, Discrete
+from gym.core import Env  # pyre-ignore
+from gym.spaces import Space, Discrete  # pyre-ignore
 
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.player.battle_order import BattleOrder, ForfeitBattleOrder
@@ -97,7 +97,7 @@ class _AsyncPlayer(Player):
         if not self.current_battle or self.current_battle.finished:
             self.current_battle = battle
         if not self.current_battle == battle:
-            raise RuntimeError(f"Using different battles for queues")
+            raise RuntimeError("Using different battles for queues")
         battle_to_send = self.user_funcs.embed_battle(battle)
         await self.observations.async_put(battle_to_send)
         action = await self.actions.async_get()
@@ -112,7 +112,7 @@ class _AsyncPlayer(Player):
         )
 
 
-class OpenAIPlayer(Env, ABC):
+class OpenAIPlayer(Env, ABC):  # pyre-ignore
 
     _INIT_RETRIES = 100
     _TIME_BETWEEN_RETRIES = 0.5
@@ -169,11 +169,11 @@ class OpenAIPlayer(Env, ABC):
         pass
 
     @abstractmethod
-    def embed_battle(self, battle: AbstractBattle) -> ObservationType:
+    def embed_battle(self, battle: AbstractBattle) -> ObservationType:  # pyre-ignore
         pass
 
     @abstractmethod
-    def describe_embedding(self) -> Space:
+    def describe_embedding(self) -> Space:  # pyre-ignore
         pass
 
     @abstractmethod
@@ -184,7 +184,7 @@ class OpenAIPlayer(Env, ABC):
     def get_opponent(self) -> Union[Player, str]:
         pass
 
-    def reset(self) -> ObservationType:
+    def reset(self) -> ObservationType:  # pyre-ignore
         if not self.agent.current_battle:
             count = self._INIT_RETRIES
             while not self.agent.current_battle:
@@ -204,10 +204,12 @@ class OpenAIPlayer(Env, ABC):
             time.sleep(0.01)
         self.current_battle = self.agent.current_battle
         self.last_battle = copy.deepcopy(self.current_battle)
-        return self.embed_battle(self.current_battle)
+        return self.embed_battle(self.current_battle)  # pyre-ignore
 
-    def step(self, action: ActionType) -> Tuple[ObservationType, float, bool, dict]:
-        if self.current_battle.finished:
+    def step(
+        self, action: ActionType
+    ) -> Tuple[ObservationType, float, bool, dict]:  # pyre-ignore
+        if self.current_battle.finished:  # pyre-ignore
             raise RuntimeError("Battle is already finished, call reset")
         self.last_battle = copy.deepcopy(self.current_battle)
         self.actions.put(action)
@@ -268,7 +270,8 @@ class OpenAIPlayer(Env, ABC):
                 await self.agent.send_challenges(opponent, 1)
             else:
                 raise ValueError(
-                    f"Expected opponent of type List[Player] or string. Got {type(opponent)}"
+                    f"Expected opponent of type List[Player] or string. "
+                    f"Got {type(opponent)}"
                 )
 
     def start_challenging(self):
@@ -285,13 +288,14 @@ class OpenAIPlayer(Env, ABC):
         self._keep_challenging = False
 
         if force:
-            if not self.current_battle.finished:
+            if not self.current_battle.finished:  # pyre-ignore
                 if not self.actions.empty():
                     await asyncio.sleep(2)
                     if not self.actions.empty():
                         raise RuntimeError(
-                            "The agent is still sending actions. Use this method only when training or "
-                            "evaluation is over."
+                            "The agent is still sending actions. "
+                            "Use this method only when training or "
+                            "evaluation are over."
                         )
                 if not self.observations.empty():
                     await self.observations.async_get()
