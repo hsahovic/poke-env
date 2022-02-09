@@ -78,7 +78,7 @@ class EnvPlayer(OpenAIGymEnv, ABC):
             start_listening=start_listening,
             start_timer_on_battle_start=start_timer_on_battle_start,
             team=team,
-            start_challenging=start_challenging
+            start_challenging=start_challenging,
         )
 
     def reward_computing_helper(
