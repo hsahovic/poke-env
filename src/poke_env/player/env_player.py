@@ -23,7 +23,7 @@ class EnvPlayer(OpenAIGymEnv, ABC):
 
     def __init__(
         self,
-        opponent: Optional[Union[Player, str]],
+        opponent: Optional[Union[Player, str]] = None,
         player_configuration: Optional[PlayerConfiguration] = None,
         *,
         avatar: Optional[int] = None,
