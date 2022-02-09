@@ -86,7 +86,7 @@ def openai_api():
 
 
 def env_player():
-    gym_env, player = Gen8(
+    gym_env = Gen8(
         battle_format="gen8randombattle",
         server_configuration=LocalhostServerConfiguration,
     )
