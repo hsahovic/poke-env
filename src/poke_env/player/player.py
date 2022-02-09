@@ -389,7 +389,9 @@ class Player(PlayerNetwork, ABC):
         await self._battle_count_queue.join()
 
     @abstractmethod
-    def choose_move(self, battle: AbstractBattle) -> Union[BattleOrder, Awaitable[BattleOrder]]:  # pragma: no cover
+    def choose_move(
+        self, battle: AbstractBattle
+    ) -> Union[BattleOrder, Awaitable[BattleOrder]]:  # pragma: no cover
         """Abstract method to choose a move in a battle.
 
         :param battle: The battle.
