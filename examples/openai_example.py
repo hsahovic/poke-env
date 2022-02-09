@@ -3,7 +3,7 @@ import numpy as np
 from gym.spaces import Box
 from gym.utils.env_checker import check_env
 
-from poke_env.player.openai_player import OpenAIPlayer, stop_loop
+from poke_env.player.openai_player import OpenAIPlayer
 from poke_env.player.random_player import RandomPlayer
 from poke_env.server_configuration import LocalhostServerConfiguration
 
@@ -38,4 +38,3 @@ if __name__ == '__main__':
     env = TestEnv(battle_format='gen8randombattle', server_configuration=LocalhostServerConfiguration)
     check_env(env)
     env.close()
-    stop_loop()

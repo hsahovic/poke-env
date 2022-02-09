@@ -2,6 +2,7 @@
 """This module defines a player class exposing the Open AI Gym API on the main thread.
 """
 import asyncio
+import atexit
 import copy
 import time
 import numpy as np  # pyre-ignore
@@ -43,8 +44,9 @@ def stop_loop():
 
 THREAD_LOOP = asyncio.new_event_loop()
 asyncio.set_event_loop(THREAD_LOOP)
-_t = Thread(target=__run_loop, args=(THREAD_LOOP,))
+_t = Thread(target=__run_loop, args=(THREAD_LOOP,), daemon=True)
 _t.start()
+atexit.register(stop_loop)
 
 
 class _AsyncQueue:
