@@ -34,8 +34,8 @@ def __run_loop(loop: asyncio.AbstractEventLoop):
 
 def __stop_loop(loop: asyncio.AbstractEventLoop, thread: Thread):
     loop.call_soon_threadsafe(loop.stop)
-    loop.call_soon_threadsafe(loop.close)
     thread.join()
+    loop.call_soon_threadsafe(loop.close)
 
 
 def stop_loop():
