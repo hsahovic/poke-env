@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""This module defines a player class exposing the Open AI Gym API.
+"""This module defines a player class exposing the Open AI Gym API on the main thread.
 """
 import asyncio
 import copy
@@ -16,7 +16,10 @@ from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.player.battle_order import BattleOrder, ForfeitBattleOrder
 from poke_env.player.player import Player
 from poke_env.player_configuration import PlayerConfiguration
-from poke_env.server_configuration import ServerConfiguration, LocalhostServerConfiguration
+from poke_env.server_configuration import (
+    ServerConfiguration,
+    LocalhostServerConfiguration,
+)
 from poke_env.teambuilder.teambuilder import Teambuilder
 
 ObservationType = TypeVar("ObservationType")
@@ -28,10 +31,14 @@ def __run_loop(loop: asyncio.AbstractEventLoop):
     loop.run_forever()
 
 
-def stop_loop(loop: asyncio.AbstractEventLoop, thread: Thread):
+def __stop_loop(loop: asyncio.AbstractEventLoop, thread: Thread):
     loop.call_soon_threadsafe(loop.stop)
     loop.call_soon_threadsafe(loop.close)
     thread.join()
+
+
+def stop_loop():
+    __stop_loop(THREAD_LOOP, _t)
 
 
 THREAD_LOOP = asyncio.new_event_loop()
@@ -41,10 +48,9 @@ _t.start()
 
 
 class _AsyncQueue:
-
     def __init__(self, queue: asyncio.Queue):
         if not isinstance(queue, asyncio.Queue):
-            raise RuntimeError(f'Expected asyncio.Queue, got {type(queue)}')
+            raise RuntimeError(f"Expected asyncio.Queue, got {type(queue)}")
         self.queue = queue
 
     async def async_get(self):
@@ -73,24 +79,25 @@ class _AsyncQueue:
 
 
 class _AsyncPlayer(Player):
-
     def __init__(self, user_funcs, username, **kwargs):
         self.__class__.__name__ = username
         super().__init__(**kwargs)
-        self.__class__.__name__ = '_AsyncPlayer'
+        self.__class__.__name__ = "_AsyncPlayer"
         self.observations = _AsyncQueue(asyncio.Queue(1))
         self.actions = _AsyncQueue(asyncio.Queue(1))
         self.current_battle: Optional[AbstractBattle] = None
         self.user_funcs: OpenAIPlayer = user_funcs
 
-    def choose_move(self, battle: AbstractBattle) -> Union[BattleOrder, Awaitable[BattleOrder]]:
+    def choose_move(
+        self, battle: AbstractBattle
+    ) -> Union[BattleOrder, Awaitable[BattleOrder]]:
         return self.env_move(battle)
 
     async def env_move(self, battle: AbstractBattle):
         if not self.current_battle or self.current_battle.finished:
             self.current_battle = battle
         if not self.current_battle == battle:
-            raise RuntimeError(f'Using different battles for queues')
+            raise RuntimeError(f"Using different battles for queues")
         battle_to_send = self.user_funcs.embed_battle(battle)
         await self.observations.async_put(battle_to_send)
         action = await self.actions.async_get()
@@ -100,7 +107,9 @@ class _AsyncPlayer(Player):
 
     def _battle_finished_callback(self, battle: AbstractBattle) -> None:
         to_put = self.user_funcs.embed_battle(battle)
-        asyncio.run_coroutine_threadsafe(self.observations.async_put(to_put), asyncio.get_event_loop())
+        asyncio.run_coroutine_threadsafe(
+            self.observations.async_put(to_put), asyncio.get_event_loop()
+        )
 
 
 class OpenAIPlayer(Env, ABC):
@@ -117,7 +126,7 @@ class OpenAIPlayer(Env, ABC):
         battle_format: str = "gen8randombattle",
         log_level: Optional[int] = None,
         save_replays: Union[bool, str] = False,
-        server_configuration: Optional[ServerConfiguration] = LocalhostServerConfiguration,
+        server_configuration: ServerConfiguration = LocalhostServerConfiguration,
         start_timer_on_battle_start: bool = False,
         start_listening: bool = True,
         team: Optional[Union[str, Teambuilder]] = None,
@@ -134,7 +143,7 @@ class OpenAIPlayer(Env, ABC):
             server_configuration=server_configuration,
             start_timer_on_battle_start=start_timer_on_battle_start,
             start_listening=start_listening,
-            team=team
+            team=team,
         )
         self.battle_format = battle_format
         self.actions = self.agent.actions
@@ -146,7 +155,9 @@ class OpenAIPlayer(Env, ABC):
         self._keep_challenging: bool = True
         self.challenge_task = None
         if start_challenging:
-            self.challenge_task = asyncio.run_coroutine_threadsafe(self.challenge_loop(), THREAD_LOOP)
+            self.challenge_task = asyncio.run_coroutine_threadsafe(
+                self.challenge_loop(), THREAD_LOOP
+            )
             self.reset()
 
     @abstractmethod
@@ -178,7 +189,7 @@ class OpenAIPlayer(Env, ABC):
             count = self._INIT_RETRIES
             while not self.agent.current_battle:
                 if count == 0:
-                    raise RuntimeError('Agent is not challenging')
+                    raise RuntimeError("Agent is not challenging")
                 count -= 1
                 time.sleep(self._TIME_BETWEEN_RETRIES)
         if self.current_battle and not self.current_battle.finished:
@@ -186,7 +197,9 @@ class OpenAIPlayer(Env, ABC):
                 self.actions.put(-1)
                 self.observations.get()
             else:
-                raise RuntimeError("Environment and agent aren't synchronized. Try to restart")
+                raise RuntimeError(
+                    "Environment and agent aren't synchronized. Try to restart"
+                )
         while self.current_battle == self.agent.current_battle:
             time.sleep(0.01)
         self.current_battle = self.agent.current_battle
@@ -195,7 +208,7 @@ class OpenAIPlayer(Env, ABC):
 
     def step(self, action: ActionType) -> Tuple[ObservationType, float, bool, dict]:
         if self.current_battle.finished:
-            raise RuntimeError('Battle is already finished, call reset')
+            raise RuntimeError("Battle is already finished, call reset")
         self.last_battle = copy.deepcopy(self.current_battle)
         self.actions.put(action)
         observation = self.observations.get()
@@ -229,18 +242,21 @@ class OpenAIPlayer(Env, ABC):
         )
 
     def close(self):
-        closing_task = asyncio.run_coroutine_threadsafe(self.stop_challenge_loop(), THREAD_LOOP)
+        closing_task = asyncio.run_coroutine_threadsafe(
+            self.stop_challenge_loop(), THREAD_LOOP
+        )
         closing_task.result()
 
     def seed(self, seed=None):
         np.random.seed(seed)
-        super().seed(seed)
 
     async def challenge(self, username: str):
         if self.challenge_task:
-            raise RuntimeError("Agent is already challenging opponents with the challenging loop. "
-                               "Try to specify 'start_challenging=True' during instantiation or call "
-                               "'await agent.stop_challenge_loop()' to clear the task.")
+            raise RuntimeError(
+                "Agent is already challenging opponents with the challenging loop. "
+                "Try to specify 'start_challenging=True' during instantiation or call "
+                "'await agent.stop_challenge_loop()' to clear the task."
+            )
         await self.agent.send_challenges(username, 1)
 
     async def challenge_loop(self):
@@ -251,15 +267,21 @@ class OpenAIPlayer(Env, ABC):
             elif isinstance(opponent, str):
                 await self.agent.send_challenges(opponent, 1)
             else:
-                raise ValueError(f'Expected opponent of type List[Player] or string. Got {type(opponent)}')
+                raise ValueError(
+                    f"Expected opponent of type List[Player] or string. Got {type(opponent)}"
+                )
 
     def start_challenging(self):
         if self.challenge_task:
-            raise RuntimeError(f'Agent is already challenging')
-        self.challenge_task = asyncio.run_coroutine_threadsafe(self.challenge_loop(), THREAD_LOOP)
+            raise RuntimeError("Agent is already challenging")
+        self.challenge_task = asyncio.run_coroutine_threadsafe(
+            self.challenge_loop(), THREAD_LOOP
+        )
         self.reset()
 
-    async def stop_challenge_loop(self, force: bool = True, wait: bool = True, purge: bool = True):
+    async def stop_challenge_loop(
+        self, force: bool = True, wait: bool = True, purge: bool = True
+    ):
         self._keep_challenging = False
 
         if force:
@@ -267,8 +289,10 @@ class OpenAIPlayer(Env, ABC):
                 if not self.actions.empty():
                     await asyncio.sleep(2)
                     if not self.actions.empty():
-                        raise RuntimeError(f'The agent is still sending actions. Use this method only when training or '
-                                           f'evaluation is over.')
+                        raise RuntimeError(
+                            "The agent is still sending actions. Use this method only when training or "
+                            "evaluation is over."
+                        )
                 if not self.observations.empty():
                     await self.observations.async_get()
                 await self.actions.async_put(-1)
