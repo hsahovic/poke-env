@@ -5,6 +5,7 @@ import asyncio
 import atexit
 from contextlib import AbstractContextManager
 import copy
+import logging
 import time
 import numpy as np  # pyre-ignore
 
@@ -34,6 +35,19 @@ def __run_loop(loop: asyncio.AbstractEventLoop):
 
 
 def __stop_loop(loop: asyncio.AbstractEventLoop, thread: Thread):
+    logging.disable(logging.CRITICAL)
+    tasks = []
+    for task in asyncio.all_tasks(loop):
+        task.cancel()
+        tasks.append(task)
+    cancelled = False
+    shutdown = asyncio.run_coroutine_threadsafe(loop.shutdown_asyncgens(), loop)
+    shutdown.result()
+    while not cancelled:
+        cancelled = True
+        for task in tasks:
+            if not task.done():
+                cancelled = False
     loop.call_soon_threadsafe(loop.stop)
     thread.join()
     loop.call_soon_threadsafe(loop.close)
@@ -43,6 +57,13 @@ def __clear_loop():
     __stop_loop(THREAD_LOOP, _t)
 
 
+try:
+    MAIN_LOOP = asyncio.get_running_loop()
+except RuntimeError as e:
+    if "no running event loop" in str(e):
+        MAIN_LOOP = None
+    else:
+        raise e
 THREAD_LOOP = asyncio.new_event_loop()
 _t = Thread(target=__run_loop, args=(THREAD_LOOP,), daemon=True)
 _t.start()
@@ -54,7 +75,7 @@ class EnvLoop(AbstractContextManager):
         asyncio.set_event_loop(THREAD_LOOP)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        return None
+        asyncio.set_event_loop(MAIN_LOOP)
 
 
 class _AsyncQueue:
@@ -136,7 +157,6 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
     def __init__(
         self,
         player_configuration: Optional[PlayerConfiguration] = None,
-        start_challenging: bool = True,
         *,
         avatar: Optional[int] = None,
         battle_format: str = "gen8randombattle",
@@ -146,6 +166,7 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         start_timer_on_battle_start: bool = False,
         start_listening: bool = True,
         team: Optional[Union[str, Teambuilder]] = None,
+        start_challenging: bool = True,
     ):
         if not asyncio.get_event_loop() == THREAD_LOOP:
             raise RuntimeError(
