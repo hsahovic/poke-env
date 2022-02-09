@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from typing import Union
-
 import numpy as np
 import pytest
 from gym import Space
@@ -17,7 +15,6 @@ from poke_env.player.random_player import RandomPlayer
 
 
 class RandomGen4EnvPlayer(Gen4EnvSinglePlayer):
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -32,7 +29,6 @@ class RandomGen4EnvPlayer(Gen4EnvSinglePlayer):
 
 
 class RandomGen5EnvPlayer(Gen5EnvSinglePlayer):
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -47,7 +43,6 @@ class RandomGen5EnvPlayer(Gen5EnvSinglePlayer):
 
 
 class RandomGen6EnvPlayer(Gen6EnvSinglePlayer):
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -62,7 +57,6 @@ class RandomGen6EnvPlayer(Gen6EnvSinglePlayer):
 
 
 class RandomGen7EnvPlayer(Gen7EnvSinglePlayer):
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -77,7 +71,6 @@ class RandomGen7EnvPlayer(Gen7EnvSinglePlayer):
 
 
 class RandomGen8EnvPlayer(Gen8EnvSinglePlayer):
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -103,7 +96,9 @@ def play_function(player, n_battles):
 def test_random_gym_players_gen4():
     with EnvLoop():
         random_player = RandomPlayer(battle_format="gen4randombattle", log_level=20)
-        env_player = RandomGen4EnvPlayer(log_level=20, opponent=random_player, start_challenging=False)
+        env_player = RandomGen4EnvPlayer(
+            log_level=20, opponent=random_player, start_challenging=False
+        )
         env_player.start_challenging(3)
         play_function(env_player, 3)
 
@@ -112,7 +107,9 @@ def test_random_gym_players_gen4():
 def test_random_gym_players_gen5():
     with EnvLoop():
         random_player = RandomPlayer(battle_format="gen5randombattle", log_level=20)
-        env_player = RandomGen5EnvPlayer(log_level=20, opponent=random_player, start_challenging=False)
+        env_player = RandomGen5EnvPlayer(
+            log_level=20, opponent=random_player, start_challenging=False
+        )
         env_player.start_challenging(3)
         play_function(env_player, 3)
 
@@ -121,7 +118,9 @@ def test_random_gym_players_gen5():
 def test_random_gym_players_gen6():
     with EnvLoop():
         random_player = RandomPlayer(battle_format="gen5randombattle", log_level=20)
-        env_player = RandomGen5EnvPlayer(log_level=20, opponent=random_player, start_challenging=False)
+        env_player = RandomGen5EnvPlayer(
+            log_level=20, opponent=random_player, start_challenging=False
+        )
         env_player.start_challenging(3)
         play_function(env_player, 3)
 
@@ -130,7 +129,9 @@ def test_random_gym_players_gen6():
 def test_random_gym_players_gen7():
     with EnvLoop():
         random_player = RandomPlayer(battle_format="gen6randombattle", log_level=20)
-        env_player = RandomGen6EnvPlayer(log_level=20, opponent=random_player, start_challenging=False)
+        env_player = RandomGen6EnvPlayer(
+            log_level=20, opponent=random_player, start_challenging=False
+        )
         env_player.start_challenging(3)
         play_function(env_player, 3)
 
@@ -139,7 +140,9 @@ def test_random_gym_players_gen7():
 def test_random_gym_players_gen8():
     with EnvLoop():
         random_player = RandomPlayer(battle_format="gen8randombattle", log_level=20)
-        env_player = RandomGen8EnvPlayer(log_level=20, opponent=random_player, start_challenging=False)
+        env_player = RandomGen8EnvPlayer(
+            log_level=20, opponent=random_player, start_challenging=False
+        )
         env_player.start_challenging(3)
         play_function(env_player, 3)
 
@@ -148,7 +151,9 @@ def test_random_gym_players_gen8():
 def test_two_successive_calls_gen8():
     with EnvLoop():
         random_player = RandomPlayer(battle_format="gen4randombattle", log_level=20)
-        env_player = RandomGen4EnvPlayer(log_level=20, opponent=random_player, start_challenging=False)
+        env_player = RandomGen4EnvPlayer(
+            log_level=20, opponent=random_player, start_challenging=False
+        )
         env_player.start_challenging(2)
         play_function(env_player, 2)
         env_player.start_challenging(2)
