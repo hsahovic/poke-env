@@ -8,7 +8,7 @@ from typing import Optional, Union
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.battle import Battle
 from poke_env.player.battle_order import BattleOrder, ForfeitBattleOrder
-from poke_env.player.openai_api import OpenAIGymEnv, EnvLoop
+from poke_env.player.openai_api import OpenAIGymEnv
 from poke_env.player.player import Player
 from poke_env.player_configuration import PlayerConfiguration
 from poke_env.server_configuration import ServerConfiguration
@@ -176,7 +176,10 @@ class EnvPlayer(OpenAIGymEnv, ABC):
     def get_opponent(self) -> Union[Player, str]:
         with self.opponent_lock:
             if not self.opponent:
-                raise RuntimeError("Unspecified opponent. Specify it in the constructor or use set_opponent")
+                raise RuntimeError(
+                    "Unspecified opponent. "
+                    "Specify it in the constructor or use set_opponent"
+                )
             return self.opponent
 
     def set_opponent(self, opponent: Union[Player, str]):
@@ -186,7 +189,7 @@ class EnvPlayer(OpenAIGymEnv, ABC):
             self.opponent = opponent
 
 
-class Gen4EnvSinglePlayer(EnvPlayer, ABC):  # pyre-ignore
+class Gen4EnvSinglePlayer(EnvPlayer, ABC):
     _ACTION_SPACE = list(range(4 + 6))
     _DEFAULT_BATTLE_FORMAT = "gen4randombattle"
 
@@ -224,11 +227,11 @@ class Gen4EnvSinglePlayer(EnvPlayer, ABC):  # pyre-ignore
             return self.agent.choose_random_move(battle)
 
 
-class Gen5EnvSinglePlayer(Gen4EnvSinglePlayer, ABC):  # pyre-ignore
+class Gen5EnvSinglePlayer(Gen4EnvSinglePlayer, ABC):
     _DEFAULT_BATTLE_FORMAT = "gen5randombattle"
 
 
-class Gen6EnvSinglePlayer(EnvPlayer, ABC):  # pyre-ignore
+class Gen6EnvSinglePlayer(EnvPlayer, ABC):
     _ACTION_SPACE = list(range(2 * 4 + 6))
     _DEFAULT_BATTLE_FORMAT = "gen6randombattle"
 
@@ -278,7 +281,7 @@ class Gen6EnvSinglePlayer(EnvPlayer, ABC):  # pyre-ignore
             return self.agent.choose_random_move(battle)
 
 
-class Gen7EnvSinglePlayer(EnvPlayer, ABC):  # pyre-ignore
+class Gen7EnvSinglePlayer(EnvPlayer, ABC):
     _ACTION_SPACE = list(range(3 * 4 + 6))
     _DEFAULT_BATTLE_FORMAT = "gen7randombattle"
 
@@ -342,7 +345,7 @@ class Gen7EnvSinglePlayer(EnvPlayer, ABC):  # pyre-ignore
             return self.agent.choose_random_move(battle)
 
 
-class Gen8EnvSinglePlayer(EnvPlayer, ABC):  # pyre-ignore
+class Gen8EnvSinglePlayer(EnvPlayer, ABC):
     _ACTION_SPACE = list(range(4 * 4 + 6))
     _DEFAULT_BATTLE_FORMAT = "gen8randombattle"
 

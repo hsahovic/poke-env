@@ -12,7 +12,7 @@ from poke_env.environment.move import Move
 from poke_env.environment.pokemon import Pokemon
 from poke_env.environment.status import Status
 from poke_env.player.battle_order import BattleOrder
-from poke_env.player.env_player import EnvPlayer, EnvLoop
+from poke_env.player.env_player import EnvPlayer
 from poke_env.player.env_player import (
     Gen4EnvSinglePlayer,
     Gen5EnvSinglePlayer,
@@ -20,7 +20,7 @@ from poke_env.player.env_player import (
     Gen7EnvSinglePlayer,
     Gen8EnvSinglePlayer,
 )
-from poke_env.player.openai_api import _AsyncPlayer
+from poke_env.player.openai_api import _AsyncPlayer, EnvLoop
 from poke_env.player.player import Player
 
 from poke_env.player_configuration import PlayerConfiguration
@@ -33,7 +33,6 @@ server_configuration = ServerConfiguration("server.url", "auth.url")
 
 
 class CustomEnvPlayer(EnvPlayer):
-
     def calc_reward(self, last_battle, current_battle) -> float:
         pass
 
@@ -89,7 +88,9 @@ def test_choose_move(queue_get_mock, queue_put_mock):
 
         assert isawaitable(message)
 
-        future_message = asyncio.run_coroutine_threadsafe(message, asyncio.get_event_loop())
+        future_message = asyncio.run_coroutine_threadsafe(
+            message, asyncio.get_event_loop()
+        )
 
         assert future_message.result().message == "/choose move flamethrower"
 
@@ -99,7 +100,9 @@ def test_choose_move(queue_get_mock, queue_put_mock):
 
         assert isawaitable(message)
 
-        future_message = asyncio.run_coroutine_threadsafe(message, asyncio.get_event_loop())
+        future_message = asyncio.run_coroutine_threadsafe(
+            message, asyncio.get_event_loop()
+        )
 
         assert future_message.result().message == "/choose switch charizard"
 
@@ -209,7 +212,10 @@ def test_reward_computing_helper():
             == 100
         )
 
-        battle_4._team, battle_4._opponent_team = battle_3._opponent_team, battle_3._team
+        battle_4._team, battle_4._opponent_team = (
+            battle_3._opponent_team,
+            battle_3._team,
+        )
         assert (
             player.reward_computing_helper(
                 battle_4,
@@ -261,4 +267,6 @@ def test_action_space():
 
             p = CustomEnvClass(start_listening=False, start_challenging=False)
 
-            assert p.action_space == Discrete(4 * sum([1, has_megas, has_z_moves, has_dynamax]) + 6)
+            assert p.action_space == Discrete(
+                4 * sum([1, has_megas, has_z_moves, has_dynamax]) + 6
+            )

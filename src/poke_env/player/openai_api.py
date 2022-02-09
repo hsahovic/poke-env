@@ -170,7 +170,9 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         battle_format: str = "gen8randombattle",
         log_level: Optional[int] = None,
         save_replays: Union[bool, str] = False,
-        server_configuration: ServerConfiguration = LocalhostServerConfiguration,
+        server_configuration: Optional[
+            ServerConfiguration
+        ] = LocalhostServerConfiguration,
         start_timer_on_battle_start: bool = False,
         start_listening: bool = True,
         team: Optional[Union[str, Teambuilder]] = None,
@@ -281,13 +283,13 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
     ) -> Tuple[ObservationType, float, bool, dict]:  # pyre-ignore
         if not self.current_battle:
             return self.reset(), 0.0, False, {}
-        if self.current_battle.finished:  # pyre-ignore
+        if self.current_battle.finished:
             raise RuntimeError("Battle is already finished, call reset")
         self.last_battle = copy.deepcopy(self.current_battle)
         self.actions.put(action)
         observation = self.observations.get()
         reward = self.calc_reward(self.last_battle, self.current_battle)
-        return observation, reward, self.current_battle.finished, {}
+        return observation, reward, self.current_battle.finished, {}  # pyre-ignore
 
     def render(self, mode="human"):
         print(
@@ -333,7 +335,11 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
             )
         await self.agent.send_challenges(username, 1)
 
-    async def challenge_loop(self, n_challenges: int = None, callback: Callable[[AbstractBattle], None] = None):
+    async def challenge_loop(
+        self,
+        n_challenges: Optional[int] = None,
+        callback: Optional[Callable[[AbstractBattle], None]] = None,
+    ):
         if not n_challenges:
             while self._keep_challenging:
                 opponent = self._get_opponent()
@@ -347,7 +353,7 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
                         f"Got {type(opponent)}"
                     )
                 if callback:
-                    callback(copy.deepcopy(self.current_battle))
+                    callback(copy.deepcopy(self.current_battle))  # pyre-ignore
         elif n_challenges > 0:
             for _ in range(n_challenges):
                 opponent = self._get_opponent()
@@ -361,11 +367,15 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
                         f"Got {type(opponent)}"
                     )
                 if callback:
-                    callback(copy.deepcopy(self.current_battle))
+                    callback(copy.deepcopy(self.current_battle))  # pyre-ignore
         else:
             raise ValueError(f"Number of challenges must be > 0. Got {n_challenges}")
 
-    def start_challenging(self,n_challenges: int = None, callback: Callable[[AbstractBattle], None] = None):
+    def start_challenging(
+        self,
+        n_challenges: Optional[int] = None,
+        callback: Optional[Callable[[AbstractBattle], None]] = None,
+    ):
         if self.challenge_task and not self.challenge_task.done():
             raise RuntimeError("Agent is already challenging")
         if not n_challenges:
@@ -376,26 +386,28 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
 
     async def ladder_loop(
         self,
-        n_challenges: int = None,
-        callback: Callable[[AbstractBattle], None] = None,
+        n_challenges: Optional[int] = None,
+        callback: Optional[Callable[[AbstractBattle], None]] = None,
     ):
         if n_challenges:
             if n_challenges <= 0:
-                raise ValueError(f"Number of challenges must be > 0. Got {n_challenges}")
+                raise ValueError(
+                    f"Number of challenges must be > 0. Got {n_challenges}"
+                )
             for _ in range(n_challenges):
                 await self.agent.ladder(1)
                 if callback:
-                    callback(copy.deepcopy(self.current_battle))
+                    callback(copy.deepcopy(self.current_battle))  # pyre-ignore
         else:
             while self._keep_challenging:
                 await self.agent.ladder(1)
                 if callback:
-                    callback(copy.deepcopy(self.current_battle))
+                    callback(copy.deepcopy(self.current_battle))  # pyre-ignore
 
     def start_laddering(
         self,
-        n_challenges: int = None,
-        callback: Callable[[AbstractBattle], None] = None,
+        n_challenges: Optional[int] = None,
+        callback: Optional[Callable[[AbstractBattle], None]] = None,
     ):
         if self.challenge_task and not self.challenge_task.done():
             raise RuntimeError("Agent is already challenging")
