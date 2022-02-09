@@ -7,7 +7,7 @@ from typing import Optional, Union
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.battle import Battle
 from poke_env.player.battle_order import BattleOrder, ForfeitBattleOrder
-from poke_env.player.openai_api import OpenAIGymEnv
+from poke_env.player.openai_api import OpenAIGymEnv, EnvLoop
 from poke_env.player_configuration import PlayerConfiguration
 from poke_env.server_configuration import ServerConfiguration
 from poke_env.teambuilder.teambuilder import Teambuilder
@@ -31,6 +31,7 @@ class EnvPlayer(OpenAIGymEnv, ABC):
         start_listening: bool = True,
         start_timer_on_battle_start: bool = False,
         team: Optional[Union[str, Teambuilder]] = None,
+        start_challenging: bool = True,
     ):
         """
         :param player_configuration: Player configuration. If empty, defaults to an
@@ -77,13 +78,8 @@ class EnvPlayer(OpenAIGymEnv, ABC):
             start_listening=start_listening,
             start_timer_on_battle_start=start_timer_on_battle_start,
             team=team,
+            start_challenging=start_challenging
         )
-
-    def __new__(cls, *args, **kwargs):
-        to_return = super(EnvPlayer, cls).__new__(cls, *args, **kwargs)
-        if hasattr(to_return, "__init__"):
-            to_return.__init__(*args, **kwargs)
-        return to_return, to_return.agent
 
     def reward_computing_helper(
         self,
