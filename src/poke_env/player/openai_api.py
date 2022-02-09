@@ -11,7 +11,7 @@ import numpy as np  # pyre-ignore
 
 from abc import ABC, abstractmethod
 from threading import Thread
-from typing import Union, Awaitable, Optional, Tuple, TypeVar, Callable
+from typing import Union, Awaitable, Optional, Tuple, TypeVar, Callable, Dict
 from gym.core import Env  # pyre-ignore
 from gym.spaces import Space, Discrete  # pyre-ignore
 
@@ -409,3 +409,37 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
 
         if purge:
             self.agent.reset_battles()
+
+    # Expose important properties of Player class
+
+    @property
+    def battles(self) -> Dict[str, AbstractBattle]:
+        return self.agent.battles
+
+    @property
+    def format(self) -> str:
+        return self.agent.format
+
+    @property
+    def format_is_doubles(self) -> bool:
+        return self.agent.format_is_doubles
+
+    @property
+    def n_finished_battles(self) -> int:
+        return self.agent.n_finished_battles
+
+    @property
+    def n_lost_battles(self) -> int:
+        return self.agent.n_lost_battles
+
+    @property
+    def n_tied_battles(self) -> int:
+        return self.agent.n_tied_battles
+
+    @property
+    def n_won_battles(self) -> int:
+        return self.agent.n_won_battles
+
+    @property
+    def win_rate(self) -> float:
+        return self.agent.win_rate
