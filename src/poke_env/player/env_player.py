@@ -2,12 +2,14 @@
 """This module defines a player class exposing the Open AI Gym API with utility functions.
 """
 from abc import ABC
+from threading import Lock
 from typing import Optional, Union
 
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.battle import Battle
 from poke_env.player.battle_order import BattleOrder, ForfeitBattleOrder
 from poke_env.player.openai_api import OpenAIGymEnv, EnvLoop
+from poke_env.player.player import Player
 from poke_env.player_configuration import PlayerConfiguration
 from poke_env.server_configuration import ServerConfiguration
 from poke_env.teambuilder.teambuilder import Teambuilder
@@ -21,6 +23,7 @@ class EnvPlayer(OpenAIGymEnv, ABC):
 
     def __init__(
         self,
+        opponent: Optional[Union[Player, str]],
         player_configuration: Optional[PlayerConfiguration] = None,
         *,
         avatar: Optional[int] = None,
@@ -65,6 +68,8 @@ class EnvPlayer(OpenAIGymEnv, ABC):
         :type team: str or Teambuilder, optional
         """
         self._reward_buffer = {}
+        self.opponent_lock = Lock()
+        self.opponent: Optional[Union[Player, str]] = opponent
         b_format = self._DEFAULT_BATTLE_FORMAT
         if battle_format:
             b_format = battle_format
@@ -167,6 +172,18 @@ class EnvPlayer(OpenAIGymEnv, ABC):
 
     def action_space_size(self) -> int:
         return len(self._ACTION_SPACE)
+
+    def get_opponent(self) -> Union[Player, str]:
+        with self.opponent_lock:
+            if not self.opponent:
+                raise RuntimeError("Unspecified opponent. Specify it in the constructor or use set_opponent")
+            return self.opponent
+
+    def set_opponent(self, opponent: Union[Player, str]):
+        if not isinstance(opponent, Player) or not isinstance(opponent, str):
+            raise RuntimeError(f"Expected type Player or str. Got {type(opponent)}")
+        with self.opponent_lock:
+            self.opponent = opponent
 
 
 class Gen4EnvSinglePlayer(EnvPlayer, ABC):  # pyre-ignore
