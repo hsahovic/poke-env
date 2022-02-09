@@ -325,7 +325,7 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         np.random.seed(seed)
 
     async def challenge(self, username: str):
-        if self.challenge_task:
+        if self.challenge_task and not self.challenge_task.done():
             raise RuntimeError(
                 "Agent is already challenging opponents with the challenging loop. "
                 "Try to specify 'start_challenging=True' during instantiation or call "
@@ -366,7 +366,7 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
             raise ValueError(f"Number of challenges must be > 0. Got {n_challenges}")
 
     def start_challenging(self,n_challenges: int = None, callback: Callable[[AbstractBattle], None] = None):
-        if self.challenge_task:
+        if self.challenge_task and not self.challenge_task.done():
             raise RuntimeError("Agent is already challenging")
         if not n_challenges:
             self._keep_challenging = True
@@ -397,7 +397,7 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         n_challenges: int = None,
         callback: Callable[[AbstractBattle], None] = None,
     ):
-        if self.challenge_task:
+        if self.challenge_task and not self.challenge_task.done():
             raise RuntimeError("Agent is already challenging")
         if not n_challenges:
             self._keep_challenging = True
