@@ -3,13 +3,14 @@
 """
 import asyncio
 import atexit
+from contextlib import AbstractContextManager
 import copy
 import time
 import numpy as np  # pyre-ignore
 
 from abc import ABC, abstractmethod
 from threading import Thread
-from typing import Union, Awaitable, Optional, Tuple, TypeVar
+from typing import Union, Awaitable, Optional, Tuple, TypeVar, Callable
 from gym.core import Env  # pyre-ignore
 from gym.spaces import Space, Discrete  # pyre-ignore
 
@@ -38,15 +39,22 @@ def __stop_loop(loop: asyncio.AbstractEventLoop, thread: Thread):
     loop.call_soon_threadsafe(loop.close)
 
 
-def stop_loop():
+def __clear_loop():
     __stop_loop(THREAD_LOOP, _t)
 
 
 THREAD_LOOP = asyncio.new_event_loop()
-asyncio.set_event_loop(THREAD_LOOP)
 _t = Thread(target=__run_loop, args=(THREAD_LOOP,), daemon=True)
 _t.start()
-atexit.register(stop_loop)
+atexit.register(__clear_loop)
+
+
+class EnvLoop(AbstractContextManager):
+    def __enter__(self):
+        asyncio.set_event_loop(THREAD_LOOP)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        return None
 
 
 class _AsyncQueue:
@@ -59,21 +67,27 @@ class _AsyncQueue:
         return await self.queue.get()
 
     def get(self):
-        res = asyncio.run_coroutine_threadsafe(self.queue.get(), THREAD_LOOP)
+        res = asyncio.run_coroutine_threadsafe(
+            self.queue.get(), asyncio.get_event_loop()
+        )
         return res.result()
 
     async def async_put(self, item):
         await self.queue.put(item)
 
     def put(self, item):
-        task = asyncio.run_coroutine_threadsafe(self.queue.put(item), THREAD_LOOP)
+        task = asyncio.run_coroutine_threadsafe(
+            self.queue.put(item), asyncio.get_event_loop()
+        )
         task.result()
 
     def empty(self):
         return self.queue.empty()
 
     def join(self):
-        task = asyncio.run_coroutine_threadsafe(self.queue.join(), THREAD_LOOP)
+        task = asyncio.run_coroutine_threadsafe(
+            self.queue.join(), asyncio.get_event_loop()
+        )
         task.result()
 
     async def async_join(self):
@@ -88,7 +102,7 @@ class _AsyncPlayer(Player):
         self.observations = _AsyncQueue(asyncio.Queue(1))
         self.actions = _AsyncQueue(asyncio.Queue(1))
         self.current_battle: Optional[AbstractBattle] = None
-        self.user_funcs: OpenAIPlayer = user_funcs
+        self.user_funcs: OpenAIGymEnv = user_funcs
 
     def choose_move(
         self, battle: AbstractBattle
@@ -114,7 +128,7 @@ class _AsyncPlayer(Player):
         )
 
 
-class OpenAIPlayer(Env, ABC):  # pyre-ignore
+class OpenAIGymEnv(Env, ABC):  # pyre-ignore
 
     _INIT_RETRIES = 100
     _TIME_BETWEEN_RETRIES = 0.5
@@ -133,6 +147,17 @@ class OpenAIPlayer(Env, ABC):  # pyre-ignore
         start_listening: bool = True,
         team: Optional[Union[str, Teambuilder]] = None,
     ):
+        if not asyncio.get_event_loop() == THREAD_LOOP:
+            raise RuntimeError(
+                "You are attempting to create an OpenAI agent without "
+                "the required context. "
+                "Remember to create all the players you will use "
+                "with the OpenAI API inside the context "
+                "EnvLoop. If unsure, use the following:\n"
+                "if __name__ == '__main__':\n"
+                "\twith EnvLoop():\n"
+                "\t\tmain()"
+            )
         self.agent = _AsyncPlayer(
             self,
             username=self.__class__.__name__,
@@ -158,9 +183,8 @@ class OpenAIPlayer(Env, ABC):  # pyre-ignore
         self.challenge_task = None
         if start_challenging:
             self.challenge_task = asyncio.run_coroutine_threadsafe(
-                self.challenge_loop(), THREAD_LOOP
+                self.challenge_loop(), asyncio.get_event_loop()
             )
-            self.reset()
 
     @abstractmethod
     def calc_reward(self, last_battle, current_battle) -> float:
@@ -185,6 +209,21 @@ class OpenAIPlayer(Env, ABC):  # pyre-ignore
     @abstractmethod
     def get_opponent(self) -> Union[Player, str]:
         pass
+
+    def _get_opponent(self) -> Union[Player, str]:
+        opponent = self.get_opponent()
+        if isinstance(opponent, Player):
+            if not opponent._listening_coroutine.get_loop() == THREAD_LOOP:
+                raise RuntimeError(
+                    "The opponent is listening on a wrong event loop. "
+                    "Remember to create all the players you will use "
+                    "with the OpenAI API inside the context "
+                    "EnvLoop. If unsure, use the following:\n"
+                    "if __name__ == '__main__':\n"
+                    "\twith EnvLoop():\n"
+                    "\t\tmain()"
+                )
+        return opponent
 
     def reset(self) -> ObservationType:  # pyre-ignore
         if not self.agent.current_battle:
@@ -211,6 +250,8 @@ class OpenAIPlayer(Env, ABC):  # pyre-ignore
     def step(
         self, action: ActionType
     ) -> Tuple[ObservationType, float, bool, dict]:  # pyre-ignore
+        if not self.current_battle:
+            return self.reset(), 0.0, False, {}
         if self.current_battle.finished:  # pyre-ignore
             raise RuntimeError("Battle is already finished, call reset")
         self.last_battle = copy.deepcopy(self.current_battle)
@@ -247,7 +288,7 @@ class OpenAIPlayer(Env, ABC):  # pyre-ignore
 
     def close(self):
         closing_task = asyncio.run_coroutine_threadsafe(
-            self.stop_challenge_loop(), THREAD_LOOP
+            self.stop_challenge_loop(), asyncio.get_event_loop()
         )
         closing_task.result()
 
@@ -263,9 +304,9 @@ class OpenAIPlayer(Env, ABC):  # pyre-ignore
             )
         await self.agent.send_challenges(username, 1)
 
-    async def challenge_loop(self):
+    async def challenge_loop(self, callback: Callable[[AbstractBattle], None] = None):
         while self._keep_challenging:
-            opponent = self.get_opponent()
+            opponent = self._get_opponent()
             if isinstance(opponent, Player):
                 await self.agent.battle_against(opponent, 1)
             elif isinstance(opponent, str):
@@ -275,17 +316,46 @@ class OpenAIPlayer(Env, ABC):  # pyre-ignore
                     f"Expected opponent of type List[Player] or string. "
                     f"Got {type(opponent)}"
                 )
+            if callback:
+                callback(copy.deepcopy(self.current_battle))
 
-    def start_challenging(self):
+    def start_challenging(self, callback: Callable[[AbstractBattle], None] = None):
         if self.challenge_task:
             raise RuntimeError("Agent is already challenging")
         self.challenge_task = asyncio.run_coroutine_threadsafe(
-            self.challenge_loop(), THREAD_LOOP
+            self.challenge_loop(callback), asyncio.get_event_loop()
         )
         self.reset()
 
+    async def ladder_loop(
+        self,
+        n_challenges: int = None,
+        callback: Callable[[AbstractBattle], None] = None,
+    ):
+        if n_challenges:
+            for _ in range(n_challenges):
+                await self.agent.ladder(1)
+                if callback:
+                    callback(copy.deepcopy(self.current_battle))
+        else:
+            while self._keep_challenging:
+                await self.agent.ladder(1)
+                if callback:
+                    callback(copy.deepcopy(self.current_battle))
+
+    def start_laddering(
+        self,
+        n_challenges: int = None,
+        callback: Callable[[AbstractBattle], None] = None,
+    ):
+        if self.challenge_task:
+            raise RuntimeError("Agent is already challenging")
+        self.challenge_task = asyncio.run_coroutine_threadsafe(
+            self.ladder_loop(n_challenges, callback), asyncio.get_event_loop()
+        )
+
     async def stop_challenge_loop(
-        self, force: bool = True, wait: bool = True, purge: bool = True
+        self, force: bool = True, wait: bool = True, purge: bool = False
     ):
         self._keep_challenging = False
 
