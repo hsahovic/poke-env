@@ -72,6 +72,14 @@ atexit.register(__clear_loop)
 
 class EnvLoop(AbstractContextManager):
     def __enter__(self):
+        global MAIN_LOOP
+        try:
+            MAIN_LOOP = asyncio.get_running_loop()
+        except RuntimeError as e:
+            if "no running event loop" in str(e):
+                MAIN_LOOP = None
+            else:
+                raise e
         asyncio.set_event_loop(THREAD_LOOP)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
