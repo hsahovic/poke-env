@@ -208,7 +208,7 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         self.observation_space = self.describe_embedding()
         self.current_battle: Optional[AbstractBattle] = None
         self.last_battle: Optional[AbstractBattle] = None
-        self._keep_challenging: bool = True
+        self._keep_challenging: bool = False
         self.challenge_task = None
         if start_challenging:
             self.challenge_task = asyncio.run_coroutine_threadsafe(
@@ -333,28 +333,46 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
             )
         await self.agent.send_challenges(username, 1)
 
-    async def challenge_loop(self, callback: Callable[[AbstractBattle], None] = None):
-        while self._keep_challenging:
-            opponent = self._get_opponent()
-            if isinstance(opponent, Player):
-                await self.agent.battle_against(opponent, 1)
-            elif isinstance(opponent, str):
-                await self.agent.send_challenges(opponent, 1)
-            else:
-                raise ValueError(
-                    f"Expected opponent of type List[Player] or string. "
-                    f"Got {type(opponent)}"
-                )
-            if callback:
-                callback(copy.deepcopy(self.current_battle))
+    async def challenge_loop(self, n_challenges: int = None, callback: Callable[[AbstractBattle], None] = None):
+        if not n_challenges:
+            while self._keep_challenging:
+                opponent = self._get_opponent()
+                if isinstance(opponent, Player):
+                    await self.agent.battle_against(opponent, 1)
+                elif isinstance(opponent, str):
+                    await self.agent.send_challenges(opponent, 1)
+                else:
+                    raise ValueError(
+                        f"Expected opponent of type List[Player] or string. "
+                        f"Got {type(opponent)}"
+                    )
+                if callback:
+                    callback(copy.deepcopy(self.current_battle))
+        elif n_challenges > 0:
+            for _ in range(n_challenges):
+                opponent = self._get_opponent()
+                if isinstance(opponent, Player):
+                    await self.agent.battle_against(opponent, 1)
+                elif isinstance(opponent, str):
+                    await self.agent.send_challenges(opponent, 1)
+                else:
+                    raise ValueError(
+                        f"Expected opponent of type List[Player] or string. "
+                        f"Got {type(opponent)}"
+                    )
+                if callback:
+                    callback(copy.deepcopy(self.current_battle))
+        else:
+            raise ValueError(f"Number of challenges must be > 0. Got {n_challenges}")
 
-    def start_challenging(self, callback: Callable[[AbstractBattle], None] = None):
+    def start_challenging(self,n_challenges: int = None, callback: Callable[[AbstractBattle], None] = None):
         if self.challenge_task:
             raise RuntimeError("Agent is already challenging")
+        if not n_challenges:
+            self._keep_challenging = True
         self.challenge_task = asyncio.run_coroutine_threadsafe(
-            self.challenge_loop(callback), asyncio.get_event_loop()
+            self.challenge_loop(n_challenges, callback), asyncio.get_event_loop()
         )
-        self.reset()
 
     async def ladder_loop(
         self,
@@ -362,6 +380,8 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         callback: Callable[[AbstractBattle], None] = None,
     ):
         if n_challenges:
+            if n_challenges <= 0:
+                raise ValueError(f"Number of challenges must be > 0. Got {n_challenges}")
             for _ in range(n_challenges):
                 await self.agent.ladder(1)
                 if callback:
@@ -379,6 +399,8 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
     ):
         if self.challenge_task:
             raise RuntimeError("Agent is already challenging")
+        if not n_challenges:
+            self._keep_challenging = True
         self.challenge_task = asyncio.run_coroutine_threadsafe(
             self.ladder_loop(n_challenges, callback), asyncio.get_event_loop()
         )
