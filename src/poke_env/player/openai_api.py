@@ -3,13 +3,13 @@
 """
 import asyncio
 import atexit
-from contextlib import AbstractContextManager
 import copy
-import logging
-import time
 import numpy as np  # pyre-ignore
+import time
 
 from abc import ABC, abstractmethod
+from contextlib import AbstractContextManager
+from logging import disable, Logger, CRITICAL
 from threading import Thread
 from typing import Union, Awaitable, Optional, Tuple, TypeVar, Callable, Dict
 from gym.core import Env  # pyre-ignore
@@ -35,7 +35,7 @@ def __run_loop(loop: asyncio.AbstractEventLoop):
 
 
 def __stop_loop(loop: asyncio.AbstractEventLoop, thread: Thread):
-    logging.disable(logging.CRITICAL)
+    disable(CRITICAL)
     tasks = []
     for task in asyncio.all_tasks(loop):
         task.cancel()
@@ -418,7 +418,7 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         if purge:
             self.agent.reset_battles()
 
-    # Expose important properties of Player class
+    # Expose properties of Player class
 
     @property
     def battles(self) -> Dict[str, AbstractBattle]:
@@ -451,3 +451,21 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
     @property
     def win_rate(self) -> float:
         return self.agent.win_rate
+
+    # Expose properties of Player Network Interface Class
+
+    @property
+    def logged_in(self) -> asyncio.Event:
+        return self.agent.logged_in
+
+    @property
+    def logger(self) -> Logger:
+        return self.agent.logger
+
+    @property
+    def username(self) -> str:
+        return self.agent.username
+
+    @property
+    def websocket_url(self) -> str:
+        return self.agent.websocket_url
