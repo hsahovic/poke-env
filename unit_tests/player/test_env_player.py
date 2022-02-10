@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import asyncio
+import unittest
 import pytest
 
 from gym.spaces import Space, Discrete
@@ -71,9 +72,18 @@ def test_init():
     assert isinstance(player, _AsyncPlayer)
 
 
-@patch("poke_env.player.openai_api._AsyncQueue.async_get", return_value=2)
-@patch("poke_env.player.openai_api._AsyncQueue.async_put")
-def test_choose_move(queue_get_mock, queue_put_mock):
+class AsyncMock(unittest.mock.MagicMock):
+    async def __call__(self, *args, **kwargs):
+        return super(AsyncMock, self).__call__(*args, **kwargs)
+
+
+@patch(
+    "poke_env.player.openai_api._AsyncQueue.async_get",
+    return_value=2,
+    new_callable=AsyncMock,
+)
+@patch("poke_env.player.openai_api._AsyncQueue.async_put", new_callable=AsyncMock)
+def test_choose_move(queue_put_mock, queue_get_mock):
     with EnvLoop():
         player = CustomEnvPlayer(
             player_configuration=player_configuration,
