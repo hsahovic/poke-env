@@ -38,7 +38,6 @@ def __run_loop(loop: asyncio.AbstractEventLoop):
 def __stop_loop(loop: asyncio.AbstractEventLoop, thread: Thread):
     disable(CRITICAL)
     tasks = []
-    py_ver = sys.version_info
     if py_ver.major == 3 and py_ver.minor >= 7:
         caller = asyncio
     else:
@@ -65,6 +64,7 @@ def __clear_loop():
 
 MAIN_LOOP = asyncio.get_event_loop()
 THREAD_LOOP = asyncio.new_event_loop()
+py_ver = sys.version_info
 _t = Thread(target=__run_loop, args=(THREAD_LOOP,), daemon=True)
 _t.start()
 atexit.register(__clear_loop)
@@ -155,6 +155,8 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
 
     _INIT_RETRIES = 100
     _TIME_BETWEEN_RETRIES = 0.5
+    _SWITCH_CHALLENGE_TASK_RETRIES = 30
+    _TIME_BETWEEN_SWITCH_RETIRES = 1
 
     def __init__(
         self,
@@ -238,9 +240,23 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
     def _get_opponent(self) -> Union[Player, str]:
         opponent = self.get_opponent()
         if isinstance(opponent, Player):
-            if not opponent._listening_coroutine.get_loop() == THREAD_LOOP:
-                raise RuntimeError(
-                    "The opponent is listening on a wrong event loop. "
+            if py_ver.major == 3 and py_ver.minor >= 7:
+                if not opponent._listening_coroutine.get_loop() == THREAD_LOOP:
+                    raise RuntimeError(
+                        "The opponent is listening on a wrong event loop. "
+                        "Remember to create all the players you will use "
+                        "with the OpenAI API inside the context "
+                        "EnvLoop. If unsure, use the following:\n"
+                        "if __name__ == '__main__':\n"
+                        "\twith EnvLoop():\n"
+                        "\t\tmain()"
+                    )
+            else:
+                self.agent.logger.warning(
+                    "Impossible to check on which event loop the opponent is "
+                    "listening to. If it is listening on the wrong loop it will "
+                    "probably throw an exception saying the Future is attached "
+                    "to a different loop. "
                     "Remember to create all the players you will use "
                     "with the OpenAI API inside the context "
                     "EnvLoop. If unsure, use the following:\n"
@@ -248,6 +264,7 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
                     "\twith EnvLoop():\n"
                     "\t\tmain()"
                 )
+
         return opponent
 
     def reset(self) -> ObservationType:  # pyre-ignore
@@ -269,7 +286,9 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         while self.current_battle == self.agent.current_battle:
             time.sleep(0.01)
         self.current_battle = self.agent.current_battle
-        self.last_battle = copy.deepcopy(self.current_battle)
+        battle = copy.copy(self.current_battle)
+        battle.logger = None  # pyre-ignore
+        self.last_battle = copy.deepcopy(battle)
         return self.observations.get()
 
     def step(
@@ -279,7 +298,9 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
             return self.reset(), 0.0, False, {}
         if self.current_battle.finished:
             raise RuntimeError("Battle is already finished, call reset")
-        self.last_battle = copy.deepcopy(self.current_battle)
+        battle = copy.copy(self.current_battle)
+        battle.logger = None  # pyre-ignore
+        self.last_battle = copy.deepcopy(battle)
         self.actions.put(action)
         observation = self.observations.get()
         reward = self.calc_reward(self.last_battle, self.current_battle)
@@ -371,7 +392,12 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         callback: Optional[Callable[[AbstractBattle], None]] = None,
     ):
         if self.challenge_task and not self.challenge_task.done():
-            raise RuntimeError("Agent is already challenging")
+            count = self._SWITCH_CHALLENGE_TASK_RETRIES
+            while not self.challenge_task.done():
+                if count == 0:
+                    raise RuntimeError("Agent is already challenging")
+                count -= 1
+                time.sleep(self._TIME_BETWEEN_SWITCH_RETIRES)
         if not n_challenges:
             self._keep_challenging = True
         self.challenge_task = asyncio.run_coroutine_threadsafe(
@@ -404,7 +430,12 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         callback: Optional[Callable[[AbstractBattle], None]] = None,
     ):
         if self.challenge_task and not self.challenge_task.done():
-            raise RuntimeError("Agent is already challenging")
+            count = self._SWITCH_CHALLENGE_TASK_RETRIES
+            while not self.challenge_task.done():
+                if count == 0:
+                    raise RuntimeError("Agent is already challenging")
+                count -= 1
+                time.sleep(self._TIME_BETWEEN_SWITCH_RETIRES)
         if not n_challenges:
             self._keep_challenging = True
         self.challenge_task = asyncio.run_coroutine_threadsafe(
