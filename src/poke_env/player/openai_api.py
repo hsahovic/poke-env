@@ -40,10 +40,10 @@ def __stop_loop(loop: asyncio.AbstractEventLoop, thread: Thread):
     tasks = []
     py_ver = sys.version_info
     if py_ver.major == 3 and py_ver.minor >= 7:
-        all_tasks = asyncio.all_tasks
+        caller = asyncio
     else:
-        all_tasks = asyncio.Task.all_tasks
-    for task in all_tasks(loop):
+        caller = asyncio.Task
+    for task in caller.all_tasks(loop):
         task.cancel()
         tasks.append(task)
     cancelled = False
