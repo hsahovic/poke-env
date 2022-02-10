@@ -183,7 +183,7 @@ class EnvPlayer(OpenAIGymEnv, ABC):
             return self.opponent
 
     def set_opponent(self, opponent: Union[Player, str]):
-        if not isinstance(opponent, Player) or not isinstance(opponent, str):
+        if not isinstance(opponent, Player) and not isinstance(opponent, str):
             raise RuntimeError(f"Expected type Player or str. Got {type(opponent)}")
         with self.opponent_lock:
             self.opponent = opponent

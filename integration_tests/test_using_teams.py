@@ -31,16 +31,14 @@ async def cross_evaluation(n_battles, format_, teams):
     await cross_evaluate(players, n_challenges=n_battles)
 
     for player in players:
+        player.reset_battles()
         await player.stop_listening()
 
 
 @pytest.mark.asyncio
 async def test_all_formats_cross_evaluation(showdown_format_teams):
-    coroutines = [
-        asyncio.wait_for(
-            cross_evaluation(n_battles=5, format_=format_, teams=teams),
-            timeout=3 * (len(teams) ** 2) + 3,
+    for format_, teams in showdown_format_teams.items():
+        await asyncio.wait_for(
+            cross_evaluation(n_battles=3, format_=format_, teams=teams),
+            timeout=30,
         )
-        for format_, teams in showdown_format_teams.items()
-    ]
-    await asyncio.gather(*coroutines)

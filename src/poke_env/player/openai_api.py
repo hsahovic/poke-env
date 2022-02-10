@@ -172,7 +172,7 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         start_timer_on_battle_start: bool = False,
         start_listening: bool = True,
         team: Optional[Union[str, Teambuilder]] = None,
-        start_challenging: bool = True,
+        start_challenging: bool = False,
     ):
         if not asyncio.get_event_loop() == THREAD_LOOP:
             raise RuntimeError(
