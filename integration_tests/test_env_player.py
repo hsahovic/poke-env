@@ -99,8 +99,8 @@ def test_random_gym_players_gen4():
         env_player = RandomGen4EnvPlayer(
             log_level=20, opponent=random_player, start_challenging=False
         )
-        env_player.start_challenging(3)
-        play_function(env_player, 3)
+        env_player.start_challenging(15)
+        play_function(env_player, 15)
 
 
 @pytest.mark.timeout(30)
@@ -110,8 +110,8 @@ def test_random_gym_players_gen5():
         env_player = RandomGen5EnvPlayer(
             log_level=20, opponent=random_player, start_challenging=False
         )
-        env_player.start_challenging(3)
-        play_function(env_player, 3)
+        env_player.start_challenging(15)
+        play_function(env_player, 15)
 
 
 @pytest.mark.timeout(30)
@@ -121,8 +121,8 @@ def test_random_gym_players_gen6():
         env_player = RandomGen6EnvPlayer(
             log_level=20, opponent=random_player, start_challenging=False
         )
-        env_player.start_challenging(3)
-        play_function(env_player, 3)
+        env_player.start_challenging(15)
+        play_function(env_player, 15)
 
 
 @pytest.mark.timeout(30)
@@ -132,8 +132,8 @@ def test_random_gym_players_gen7():
         env_player = RandomGen7EnvPlayer(
             log_level=20, opponent=random_player, start_challenging=False
         )
-        env_player.start_challenging(3)
-        play_function(env_player, 3)
+        env_player.start_challenging(15)
+        play_function(env_player, 15)
 
 
 @pytest.mark.timeout(30)
@@ -143,8 +143,8 @@ def test_random_gym_players_gen8():
         env_player = RandomGen8EnvPlayer(
             log_level=20, opponent=random_player, start_challenging=False
         )
-        env_player.start_challenging(3)
-        play_function(env_player, 3)
+        env_player.start_challenging(15)
+        play_function(env_player, 15)
 
 
 @pytest.mark.timeout(60)
@@ -154,7 +154,18 @@ def test_two_successive_calls_gen8():
         env_player = RandomGen8EnvPlayer(
             log_level=20, opponent=random_player, start_challenging=False
         )
-        env_player.start_challenging(2)
-        play_function(env_player, 2)
-        env_player.start_challenging(2)
-        play_function(env_player, 2)
+        env_player.start_challenging(10)
+        play_function(env_player, 10)
+        env_player.start_challenging(10)
+        play_function(env_player, 10)
+
+
+@pytest.mark.timeout(60)
+def test_random_gym_players_gen8_multiple_battles():
+    with EnvLoop():
+        random_player = RandomPlayer(battle_format="gen8randombattle", log_level=20)
+        env_player = RandomGen8EnvPlayer(
+            log_level=20, opponent=random_player, start_challenging=False
+        )
+        env_player.start_challenging(50)
+        play_function(env_player, 50)
