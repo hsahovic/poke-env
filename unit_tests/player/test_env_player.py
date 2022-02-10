@@ -71,8 +71,8 @@ def test_init():
     assert isinstance(player, _AsyncPlayer)
 
 
-@patch("asyncio.Queue.get", return_value=2)
-@patch("asyncio.Queue.put")
+@patch("poke_env.player.openai_api._AsyncQueue.async_get", return_value=2)
+@patch("poke_env.player.openai_api._AsyncQueue.async_put")
 def test_choose_move(queue_get_mock, queue_put_mock):
     with EnvLoop():
         player = CustomEnvPlayer(
