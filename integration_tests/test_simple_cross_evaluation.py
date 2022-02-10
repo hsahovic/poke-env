@@ -28,60 +28,61 @@ async def simple_cross_evaluation(n_battles, format_):
     await cross_evaluate(players, n_challenges=n_battles)
 
     for player in players:
+        player.reset_battles()
         await player.stop_listening()
 
 
 @pytest.mark.asyncio
 async def test_small_cross_evaluation_gen8():
     await asyncio.wait_for(
-        simple_cross_evaluation(5, format_="gen8randombattle"), timeout=10
+        simple_cross_evaluation(3, format_="gen8randombattle"), timeout=20
     )
 
 
 @pytest.mark.asyncio
 async def test_small_cross_evaluation_gen7():
     await asyncio.wait_for(
-        simple_cross_evaluation(5, format_="gen7randombattle"), timeout=10
+        simple_cross_evaluation(3, format_="gen7randombattle"), timeout=20
     )
 
 
 @pytest.mark.asyncio
 async def test_small_cross_evaluation_gen6():
     await asyncio.wait_for(
-        simple_cross_evaluation(5, format_="gen6randombattle"), timeout=10
+        simple_cross_evaluation(3, format_="gen6randombattle"), timeout=20
     )
 
 
 @pytest.mark.asyncio
 async def test_small_cross_evaluation_gen5():
     await asyncio.wait_for(
-        simple_cross_evaluation(5, format_="gen5randombattle"), timeout=10
+        simple_cross_evaluation(3, format_="gen5randombattle"), timeout=20
     )
 
 
 @pytest.mark.asyncio
 async def test_small_cross_evaluation_gen4():
     await asyncio.wait_for(
-        simple_cross_evaluation(5, format_="gen4randombattle"), timeout=10
+        simple_cross_evaluation(3, format_="gen4randombattle"), timeout=20
     )
 
 
 @pytest.mark.asyncio
 async def test_small_cross_evaluation_gen3():
     await asyncio.wait_for(
-        simple_cross_evaluation(5, format_="gen3randombattle"), timeout=10
+        simple_cross_evaluation(3, format_="gen3randombattle"), timeout=20
     )
 
 
 @pytest.mark.asyncio
 async def test_small_cross_evaluation_gen2():
     await asyncio.wait_for(
-        simple_cross_evaluation(5, format_="gen2randombattle"), timeout=10
+        simple_cross_evaluation(3, format_="gen2randombattle"), timeout=20
     )
 
 
 @pytest.mark.asyncio
 async def test_small_cross_evaluation_gen1():
     await asyncio.wait_for(
-        simple_cross_evaluation(5, format_="gen1randombattle"), timeout=10
+        simple_cross_evaluation(3, format_="gen1randombattle"), timeout=20
     )

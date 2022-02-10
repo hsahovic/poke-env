@@ -28,18 +28,19 @@ async def simple_cross_evaluation(n_battles, format_, i=0):
     await cross_evaluate(players, n_challenges=n_battles)
 
     for player in players:
+        player.reset_battles()
         await player.stop_listening()
 
 
 @pytest.mark.asyncio
 async def test_small_cross_evaluation_gen7():
     await asyncio.wait_for(
-        simple_cross_evaluation(5, format_="gen7randomdoublesbattle"), timeout=10
+        simple_cross_evaluation(5, format_="gen7randomdoublesbattle"), timeout=20
     )
 
 
 @pytest.mark.asyncio
 async def test_small_cross_evaluation_gen8():
     await asyncio.wait_for(
-        simple_cross_evaluation(5, format_="gen8randomdoublesbattle", i=3), timeout=10
+        simple_cross_evaluation(5, format_="gen8randomdoublesbattle", i=3), timeout=20
     )
