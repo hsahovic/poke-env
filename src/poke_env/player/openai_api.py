@@ -5,6 +5,7 @@ import asyncio
 import atexit
 import copy
 import numpy as np  # pyre-ignore
+import sys
 import time
 
 from abc import ABC, abstractmethod
@@ -37,7 +38,12 @@ def __run_loop(loop: asyncio.AbstractEventLoop):
 def __stop_loop(loop: asyncio.AbstractEventLoop, thread: Thread):
     disable(CRITICAL)
     tasks = []
-    for task in asyncio.all_tasks(loop):
+    py_ver = sys.version_info
+    if py_ver.major == 3 and py_ver.minor >= 7:
+        all_tasks = asyncio.all_tasks
+    else:
+        all_tasks = asyncio.Task.all_tasks
+    for task in all_tasks(loop):
         task.cancel()
         tasks.append(task)
     cancelled = False
@@ -57,13 +63,7 @@ def __clear_loop():
     __stop_loop(THREAD_LOOP, _t)
 
 
-try:
-    MAIN_LOOP = asyncio.get_running_loop()
-except RuntimeError as e:
-    if "no running event loop" in str(e):
-        MAIN_LOOP = None
-    else:
-        raise e
+MAIN_LOOP = asyncio.get_event_loop()
 THREAD_LOOP = asyncio.new_event_loop()
 _t = Thread(target=__run_loop, args=(THREAD_LOOP,), daemon=True)
 _t.start()
@@ -73,13 +73,7 @@ atexit.register(__clear_loop)
 class EnvLoop(AbstractContextManager):
     def __enter__(self):
         global MAIN_LOOP
-        try:
-            MAIN_LOOP = asyncio.get_running_loop()
-        except RuntimeError as e:
-            if "no running event loop" in str(e):
-                MAIN_LOOP = None
-            else:
-                raise e
+        MAIN_LOOP = asyncio.get_event_loop()
         asyncio.set_event_loop(THREAD_LOOP)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
