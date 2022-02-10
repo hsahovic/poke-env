@@ -94,6 +94,7 @@ class Effect(Enum):
     MIMIC = auto()
     MIMICRY = auto()
     MIND_READER = auto()
+    MINIMIZE = auto()
     MIRACLE_EYE = auto()
     MIST = auto()
     MISTY_TERRAIN = auto()
