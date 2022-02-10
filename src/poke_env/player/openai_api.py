@@ -270,7 +270,7 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
             time.sleep(0.01)
         self.current_battle = self.agent.current_battle
         self.last_battle = copy.deepcopy(self.current_battle)
-        return self.embed_battle(self.current_battle)  # pyre-ignore
+        return self.observations.get()
 
     def step(
         self, action: ActionType
