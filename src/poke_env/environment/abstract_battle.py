@@ -477,10 +477,11 @@ class AbstractBattle(ABC):
                     self.turn,
                 )
 
-            #Check if a silent-effect move has occurred (Minimize) and add the effect
-            if move.upper() == "MINIMIZE":
-                pokemon = self.get_pokemon(pokemon)
-                pokemon._start_effect("MINIMIZE")
+            # Check if a silent-effect move has occurred (Minimize) and add the effect
+
+            if move.upper().strip() == "MINIMIZE":
+                temp_pokemon = self.get_pokemon(pokemon)
+                temp_pokemon._start_effect("MINIMIZE")
 
             if override_move:
                 self.get_pokemon(pokemon)._moved(override_move, failed=failed)
