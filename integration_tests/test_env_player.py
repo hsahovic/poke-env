@@ -89,7 +89,7 @@ def play_function(player, n_battles):
         done = False
         player.reset()
         while not done:
-            _, _, done, _ = player.step(np.random.choice(player.action_space.sample()))
+            _, _, done, _ = player.step(player.action_space.sample())
 
 
 @pytest.mark.timeout(30)
