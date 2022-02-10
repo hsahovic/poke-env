@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import copy
+
 from poke_env.data import MOVES, GEN_TO_MOVES
 from poke_env.environment.field import Field
 from poke_env.environment.move_category import MoveCategory
@@ -742,6 +744,9 @@ class EmptyMove(Move):
             return super(Move, self).__getattribute__(name)
         except (AttributeError, TypeError, ValueError):
             return 0
+
+    def __deepcopy__(self, memodict={}):
+        return EmptyMove(copy.deepcopy(self._id, memodict))
 
 
 class Gen4Move(Move):
