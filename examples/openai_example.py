@@ -1,13 +1,11 @@
 import numpy as np
 
-from typing import Union
 from gym import Space
 from gym.spaces import Box
 from gym.utils.env_checker import check_env
 
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.player.openai_api import OpenAIGymEnv, EnvLoop, ObservationType
-from poke_env.player.player import Player
 from poke_env.player.random_player import RandomPlayer
 from poke_env.server_configuration import LocalhostServerConfiguration
 from poke_env.player.env_player import Gen8EnvSinglePlayer
@@ -45,13 +43,6 @@ class TestEnv(OpenAIGymEnv):
 
 
 class Gen8(Gen8EnvSinglePlayer):
-    def __init__(self, **kwargs):
-        self.opponent = RandomPlayer(
-            battle_format="gen8randombattle",
-            server_configuration=LocalhostServerConfiguration,
-        )
-        super().__init__(**kwargs)
-
     def calc_reward(self, last_battle, current_battle) -> float:
         return self.reward_computing_helper(current_battle)
 
@@ -72,9 +63,6 @@ class Gen8(Gen8EnvSinglePlayer):
     def describe_embedding(self) -> Space:
         return Box(np.array([0, 0]), np.array([6, 6]), dtype=int)
 
-    def get_opponent(self) -> Union[Player, str]:
-        return self.opponent
-
 
 def openai_api():
     gym_env = TestEnv(
@@ -87,10 +75,15 @@ def openai_api():
 
 
 def env_player():
+    opponent = RandomPlayer(
+        battle_format="gen8randombattle",
+        server_configuration=LocalhostServerConfiguration,
+    )
     gym_env = Gen8(
         battle_format="gen8randombattle",
         server_configuration=LocalhostServerConfiguration,
         start_challenging=True,
+        opponent=opponent,
     )
     check_env(gym_env)
     gym_env.close()
