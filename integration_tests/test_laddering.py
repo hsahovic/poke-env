@@ -22,8 +22,8 @@ async def simple_laddering(n_battles, max_concurrent_battles):
 async def test_laddering():
     for n_battles in [1, 5]:
         await asyncio.wait_for(
-            simple_laddering(n_battles, 1), timeout=2 * n_battles + 5
+            simple_laddering(n_battles, 1), timeout=5 * n_battles + 5
         )
         await asyncio.wait_for(
-            simple_laddering(n_battles, n_battles), timeout=2 * n_battles
+            simple_laddering(n_battles, n_battles), timeout=5 * n_battles
         )
