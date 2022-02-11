@@ -209,10 +209,10 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         self._keep_challenging: bool = False
         self.challenge_task = None
         if start_challenging:
+            self._keep_challenging = True
             self.challenge_task = asyncio.run_coroutine_threadsafe(
                 self.challenge_loop(), asyncio.get_event_loop()
             )
-            self._keep_challenging = True
 
     @abstractmethod
     def calc_reward(self, last_battle, current_battle) -> float:
