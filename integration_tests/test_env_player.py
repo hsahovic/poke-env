@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import pytest
-from gym import Space
+
+from gym.spaces import Space, Box
+from gym.utils.env_checker import check_env
 
 from poke_env.player.env_player import (
     Gen4EnvSinglePlayer,
@@ -15,70 +17,55 @@ from poke_env.player.random_player import RandomPlayer
 
 
 class RandomGen4EnvPlayer(Gen4EnvSinglePlayer):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
     def calc_reward(self, last_battle, current_battle) -> float:
         return 0.0
 
     def describe_embedding(self) -> Space:
-        return None
+        return Box(np.array([0]), np.array([1]), dtype=int)
 
     def embed_battle(self, battle):
         return np.array([0])
 
 
 class RandomGen5EnvPlayer(Gen5EnvSinglePlayer):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
     def calc_reward(self, last_battle, current_battle) -> float:
         return 0.0
 
     def describe_embedding(self) -> Space:
-        return None
+        return Box(np.array([0]), np.array([1]), dtype=int)
 
     def embed_battle(self, battle):
         return np.array([0])
 
 
 class RandomGen6EnvPlayer(Gen6EnvSinglePlayer):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
     def calc_reward(self, last_battle, current_battle) -> float:
         return 0.0
 
     def describe_embedding(self) -> Space:
-        return None
+        return Box(np.array([0]), np.array([1]), dtype=int)
 
     def embed_battle(self, battle):
         return np.array([0])
 
 
 class RandomGen7EnvPlayer(Gen7EnvSinglePlayer):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
     def calc_reward(self, last_battle, current_battle) -> float:
         return 0.0
 
     def describe_embedding(self) -> Space:
-        return None
+        return Box(np.array([0]), np.array([1]), dtype=int)
 
     def embed_battle(self, battle):
         return np.array([0])
 
 
 class RandomGen8EnvPlayer(Gen8EnvSinglePlayer):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
     def calc_reward(self, last_battle, current_battle) -> float:
         return 0.0
 
     def describe_embedding(self) -> Space:
-        return None
+        return Box(np.array([0]), np.array([1]), dtype=int)
 
     def embed_battle(self, battle):
         return np.array([0])
@@ -158,3 +145,34 @@ def test_two_successive_calls_gen8():
         play_function(env_player, 2)
         env_player.start_challenging(2)
         play_function(env_player, 2)
+
+
+@pytest.mark.timeout(60)
+def check_envs():
+    with EnvLoop():
+        random_player = RandomPlayer(battle_format="gen8randombattle", log_level=20)
+        env_player_gen4 = RandomGen4EnvPlayer(
+            log_level=20, opponent=random_player, start_challenging=True
+        )
+        check_env(env_player_gen4)
+        env_player_gen4.close()
+        env_player_gen5 = RandomGen5EnvPlayer(
+            log_level=20, opponent=random_player, start_challenging=True
+        )
+        check_env(env_player_gen5)
+        env_player_gen5.close()
+        env_player_gen6 = RandomGen6EnvPlayer(
+            log_level=20, opponent=random_player, start_challenging=True
+        )
+        check_env(env_player_gen6)
+        env_player_gen6.close()
+        env_player_gen7 = RandomGen7EnvPlayer(
+            log_level=20, opponent=random_player, start_challenging=True
+        )
+        check_env(env_player_gen7)
+        env_player_gen7.close()
+        env_player_gen8 = RandomGen8EnvPlayer(
+            log_level=20, opponent=random_player, start_challenging=True
+        )
+        check_env(env_player_gen8)
+        env_player_gen8.close()
