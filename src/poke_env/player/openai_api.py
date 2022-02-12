@@ -35,7 +35,7 @@ def __run_loop(loop: asyncio.AbstractEventLoop):
     loop.run_forever()
 
 
-def __stop_loop(loop: asyncio.AbstractEventLoop, thread: Thread):
+def __stop_loop(loop: asyncio.AbstractEventLoop, thread: Thread):  # pragma: no cover
     disable(CRITICAL)
     tasks = []
     if py_ver.major == 3 and py_ver.minor >= 7:
@@ -58,7 +58,7 @@ def __stop_loop(loop: asyncio.AbstractEventLoop, thread: Thread):
     loop.call_soon_threadsafe(loop.close)
 
 
-def __clear_loop():
+def __clear_loop():  # pragma: no cover
     __stop_loop(THREAD_LOOP, _t)
 
 
@@ -135,7 +135,7 @@ class _AsyncPlayer(Player):
     async def env_move(self, battle: AbstractBattle):
         if not self.current_battle or self.current_battle.finished:
             self.current_battle = battle
-        if not self.current_battle == battle:
+        if not self.current_battle == battle:  # pragma: no cover
             raise RuntimeError("Using different battles for queues")
         battle_to_send = self.user_funcs.embed_battle(battle)
         await self.observations.async_put(battle_to_send)
@@ -144,7 +144,9 @@ class _AsyncPlayer(Player):
             return ForfeitBattleOrder()
         return self.user_funcs.action_to_move(action, battle)
 
-    def _battle_finished_callback(self, battle: AbstractBattle) -> None:
+    def _battle_finished_callback(
+        self, battle: AbstractBattle
+    ) -> None:  # pragma: no cover
         to_put = self.user_funcs.embed_battle(battle)
         asyncio.run_coroutine_threadsafe(
             self.observations.async_put(to_put), asyncio.get_event_loop()
@@ -215,33 +217,37 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
             )
 
     @abstractmethod
-    def calc_reward(self, last_battle, current_battle) -> float:
+    def calc_reward(self, last_battle, current_battle) -> float:  # pragma: no cover
         pass
 
     @abstractmethod
-    def action_to_move(self, action: int, battle: AbstractBattle) -> BattleOrder:
+    def action_to_move(
+        self, action: int, battle: AbstractBattle
+    ) -> BattleOrder:  # pragma: no cover
         pass
 
     @abstractmethod
-    def embed_battle(self, battle: AbstractBattle) -> ObservationType:  # pyre-ignore
+    def embed_battle(
+        self, battle: AbstractBattle
+    ) -> ObservationType:  # pyre-ignore  # pragma: no cover
         pass
 
     @abstractmethod
-    def describe_embedding(self) -> Space:  # pyre-ignore
+    def describe_embedding(self) -> Space:  # pyre-ignore  # pragma: no cover
         pass
 
     @abstractmethod
-    def action_space_size(self) -> int:
+    def action_space_size(self) -> int:  # pragma: no cover
         pass
 
     @abstractmethod
-    def get_opponent(self) -> Union[Player, str]:
+    def get_opponent(self) -> Union[Player, str]:  # pragma: no cover
         pass
 
     def _get_opponent(self) -> Union[Player, str]:
         opponent = self.get_opponent()
         if isinstance(opponent, Player):
-            if py_ver.major == 3 and py_ver.minor >= 7:
+            if py_ver.major == 3 and py_ver.minor >= 7:  # pragma: no cover
                 if not opponent._listening_coroutine.get_loop() == THREAD_LOOP:
                     raise RuntimeError(
                         "The opponent is listening on a wrong event loop. "
@@ -268,7 +274,7 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
 
         return opponent
 
-    def reset(self) -> ObservationType:  # pyre-ignore
+    def reset(self) -> ObservationType:  # pyre-ignore  # pragma: no cover
         if not self.agent.current_battle:
             count = self._INIT_RETRIES
             while not self.agent.current_battle:
@@ -294,7 +300,7 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
 
     def step(
         self, action: ActionType
-    ) -> Tuple[ObservationType, float, bool, dict]:  # pyre-ignore
+    ) -> Tuple[ObservationType, float, bool, dict]:  # pyre-ignore  # pragma: no cover
         if not self.current_battle:
             return self.reset(), 0.0, False, {}
         if self.current_battle.finished:
@@ -333,16 +339,16 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
             end="\n" if self.current_battle.finished else "\r",
         )
 
-    def close(self):
+    def close(self):  # pragma: no cover
         closing_task = asyncio.run_coroutine_threadsafe(
             self.stop_challenge_loop(), asyncio.get_event_loop()
         )
         closing_task.result()
 
-    def seed(self, seed=None):
+    def seed(self, seed=None):  # pragma: no cover
         np.random.seed(seed)
 
-    async def challenge(self, username: str):
+    async def challenge(self, username: str):  # pragma: no cover
         if self.challenge_task and not self.challenge_task.done():
             raise RuntimeError(
                 "Agent is already challenging opponents with the challenging loop. "
@@ -355,7 +361,7 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         self,
         n_challenges: Optional[int] = None,
         callback: Optional[Callable[[AbstractBattle], None]] = None,
-    ):
+    ):  # pragma: no cover
         if not n_challenges:
             while self._keep_challenging:
                 opponent = self._get_opponent()
@@ -391,7 +397,7 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         self,
         n_challenges: Optional[int] = None,
         callback: Optional[Callable[[AbstractBattle], None]] = None,
-    ):
+    ):  # pragma: no cover
         if self.challenge_task and not self.challenge_task.done():
             count = self._SWITCH_CHALLENGE_TASK_RETRIES
             while not self.challenge_task.done():
@@ -409,7 +415,7 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         self,
         n_challenges: Optional[int] = None,
         callback: Optional[Callable[[AbstractBattle], None]] = None,
-    ):
+    ):  # pragma: no cover
         if n_challenges:
             if n_challenges <= 0:
                 raise ValueError(
@@ -429,7 +435,7 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         self,
         n_challenges: Optional[int] = None,
         callback: Optional[Callable[[AbstractBattle], None]] = None,
-    ):
+    ):  # pragma: no cover
         if self.challenge_task and not self.challenge_task.done():
             count = self._SWITCH_CHALLENGE_TASK_RETRIES
             while not self.challenge_task.done():
@@ -445,7 +451,7 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
 
     async def stop_challenge_loop(
         self, force: bool = True, wait: bool = True, purge: bool = False
-    ):
+    ):  # pragma: no cover
         self._keep_challenging = False
 
         if force:
@@ -481,51 +487,51 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
     # Expose properties of Player class
 
     @property
-    def battles(self) -> Dict[str, AbstractBattle]:
+    def battles(self) -> Dict[str, AbstractBattle]:  # pragma: no cover
         return self.agent.battles
 
     @property
-    def format(self) -> str:
+    def format(self) -> str:  # pragma: no cover
         return self.agent.format
 
     @property
-    def format_is_doubles(self) -> bool:
+    def format_is_doubles(self) -> bool:  # pragma: no cover
         return self.agent.format_is_doubles
 
     @property
-    def n_finished_battles(self) -> int:
+    def n_finished_battles(self) -> int:  # pragma: no cover
         return self.agent.n_finished_battles
 
     @property
-    def n_lost_battles(self) -> int:
+    def n_lost_battles(self) -> int:  # pragma: no cover
         return self.agent.n_lost_battles
 
     @property
-    def n_tied_battles(self) -> int:
+    def n_tied_battles(self) -> int:  # pragma: no cover
         return self.agent.n_tied_battles
 
     @property
-    def n_won_battles(self) -> int:
+    def n_won_battles(self) -> int:  # pragma: no cover
         return self.agent.n_won_battles
 
     @property
-    def win_rate(self) -> float:
+    def win_rate(self) -> float:  # pragma: no cover
         return self.agent.win_rate
 
     # Expose properties of Player Network Interface Class
 
     @property
-    def logged_in(self) -> asyncio.Event:
+    def logged_in(self) -> asyncio.Event:  # pragma: no cover
         return self.agent.logged_in
 
     @property
-    def logger(self) -> Logger:
+    def logger(self) -> Logger:  # pragma: no cover
         return self.agent.logger
 
     @property
-    def username(self) -> str:
+    def username(self) -> str:  # pragma: no cover
         return self.agent.username
 
     @property
-    def websocket_url(self) -> str:
+    def websocket_url(self) -> str:  # pragma: no cover
         return self.agent.websocket_url
