@@ -264,7 +264,10 @@ class PlayerNetwork(ABC):
         except Exception as e:
             self.logger.exception(e)
 
-    async def stop_listening(self) -> None:
+    async def stop_listening(self) -> None:  # pragma: no cover
+        await self._handle_threaded_coroutines(self._stop_listening())
+
+    async def _stop_listening(self) -> None:
         if self._listening_coroutine is not None:
             self._listening_coroutine.cancel()
         await self._websocket.close()
