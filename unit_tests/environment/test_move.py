@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import copy
+
 from poke_env.data import MOVES
 from poke_env.environment.field import Field
 from poke_env.environment.move import Move, EmptyMove
@@ -730,3 +732,19 @@ def test_hiddenpower_types():
     assert hidden_power_bug.type == PokemonType.BUG
     assert hidden_power_fire.type == PokemonType.FIRE
     assert hidden_power_water.type == PokemonType.WATER
+
+
+def test_deepcopy_move():
+    move = Move("flamethrower")
+    copy_move = copy.deepcopy(move)
+    assert copy_move != move
+    assert copy_move.id == move.id
+
+
+def test_deepcopy_empty_move():
+    move = EmptyMove("recharge")
+    copy_move = copy.deepcopy(move)
+    assert copy_move != move
+    assert copy_move.id == move.id
+    assert copy_move.base_power == 0
+    assert copy_move.is_empty

@@ -3,6 +3,8 @@ import pytest
 
 from poke_env.environment.battle import Battle
 from poke_env.environment.double_battle import DoubleBattle
+from poke_env.environment.move import Move
+from poke_env.player.battle_order import BattleOrder
 from poke_env.player.player import Player
 from poke_env.player.random_player import RandomPlayer
 from poke_env.player.utils import cross_evaluate
@@ -211,3 +213,30 @@ async def test_cross_evaluate():
         "p1": {"p1": None, "p2": 0.5},
         "p2": {"p1": 0.5, "p2": None},
     }
+
+
+class AsyncMock(MagicMock):
+    async def __call__(self, *args, **kwargs):
+        return super(AsyncMock, self).__call__(*args, **kwargs)
+
+
+async def return_move():
+    return BattleOrder(Move("bite"))
+
+
+@pytest.mark.asyncio
+async def test_awaitable_move():
+    player = SimplePlayer(start_listening=False)
+    battle = Battle("bat1", player.username, player.logger)
+    battle._teampreview = False
+    with patch.object(
+        player, "_send_message", new_callable=AsyncMock
+    ) as send_message_mock:
+        with patch.object(
+            player, "choose_move", return_value=BattleOrder(Move("tackle"))
+        ):
+            await player._handle_battle_request(battle)
+            send_message_mock.assert_called_with("/choose move tackle", "bat1")
+        with patch.object(player, "choose_move", return_value=return_move()):
+            await player._handle_battle_request(battle)
+            send_message_mock.assert_called_with("/choose move bite", "bat1")
