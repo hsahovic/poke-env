@@ -335,6 +335,7 @@ def test_action_to_move(z_moves_mock):
 
             p = CustomEnvClass(start_listening=False, start_challenging=False)
             battle = Battle("bat1", p.username, p.logger)
+            assert p.action_to_move(-1, battle).message == "/forfeit"
             battle._available_moves = [Move("flamethrower")]
             assert p.action_to_move(0, battle).message == "/choose move flamethrower"
             battle._available_switches = [Pokemon(species="charizard")]
