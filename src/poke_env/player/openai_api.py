@@ -340,6 +340,10 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         )
 
     def close(self):  # pragma: no cover
+        if self.current_battle.finished:
+            time.sleep(1)
+            if self.current_battle != self.agent.current_battle:
+                self.current_battle = self.agent.current_battle
         closing_task = asyncio.run_coroutine_threadsafe(
             self._stop_challenge_loop(), asyncio.get_event_loop()
         )
@@ -470,7 +474,7 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
                     await self.observations.async_get()
                 await self.actions.async_put(-1)
 
-        if wait:
+        if wait and self.challenge_task:
             while not self.challenge_task.done():
                 await asyncio.sleep(1)
             self.challenge_task.result()
