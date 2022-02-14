@@ -213,7 +213,7 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         if start_challenging:
             self._keep_challenging = True
             self.challenge_task = asyncio.run_coroutine_threadsafe(
-                self.challenge_loop(), asyncio.get_event_loop()
+                self._challenge_loop(), asyncio.get_event_loop()
             )
 
     @abstractmethod
@@ -341,23 +341,25 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
 
     def close(self):  # pragma: no cover
         closing_task = asyncio.run_coroutine_threadsafe(
-            self.stop_challenge_loop(), asyncio.get_event_loop()
+            self._stop_challenge_loop(), asyncio.get_event_loop()
         )
         closing_task.result()
 
     def seed(self, seed=None):  # pragma: no cover
         np.random.seed(seed)
 
-    async def challenge(self, username: str):  # pragma: no cover
+    def play_against(self, username: str):  # pragma: no cover
         if self.challenge_task and not self.challenge_task.done():
             raise RuntimeError(
                 "Agent is already challenging opponents with the challenging loop. "
                 "Try to specify 'start_challenging=True' during instantiation or call "
                 "'await agent.stop_challenge_loop()' to clear the task."
             )
-        await self.agent.send_challenges(username, 1)
+        self.challenge_task = asyncio.run_coroutine_threadsafe(
+            self.agent.send_challenges(username, 1), asyncio.get_event_loop()
+        )
 
-    async def challenge_loop(
+    async def _challenge_loop(
         self,
         n_challenges: Optional[int] = None,
         callback: Optional[Callable[[AbstractBattle], None]] = None,
@@ -408,10 +410,10 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         if not n_challenges:
             self._keep_challenging = True
         self.challenge_task = asyncio.run_coroutine_threadsafe(
-            self.challenge_loop(n_challenges, callback), asyncio.get_event_loop()
+            self._challenge_loop(n_challenges, callback), asyncio.get_event_loop()
         )
 
-    async def ladder_loop(
+    async def _ladder_loop(
         self,
         n_challenges: Optional[int] = None,
         callback: Optional[Callable[[AbstractBattle], None]] = None,
@@ -446,10 +448,10 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         if not n_challenges:
             self._keep_challenging = True
         self.challenge_task = asyncio.run_coroutine_threadsafe(
-            self.ladder_loop(n_challenges, callback), asyncio.get_event_loop()
+            self._ladder_loop(n_challenges, callback), asyncio.get_event_loop()
         )
 
-    async def stop_challenge_loop(
+    async def _stop_challenge_loop(
         self, force: bool = True, wait: bool = True, purge: bool = False
     ):  # pragma: no cover
         self._keep_challenging = False
@@ -483,6 +485,18 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
 
         if purge:
             self.agent.reset_battles()
+
+    def reset_battles(self):  # pragma: no cover
+        self.agent.reset_battles()
+
+    def done(self, timeout: Optional[int] = None) -> bool:  # pragma: no cover
+        if not timeout:
+            self.challenge_task.result()
+            return True
+        if self.challenge_task.done():
+            return True
+        time.sleep(timeout)
+        return self.challenge_task.done()
 
     # Expose properties of Player class
 
