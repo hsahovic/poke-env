@@ -191,6 +191,16 @@ class EnvPlayer(OpenAIGymEnv, ABC):
         with self.opponent_lock:
             self.opponent = opponent
 
+    def reset_env(
+        self, opponent: Optional[Union[Player, str]] = None, restart: bool = True
+    ):  # pragma: no cover
+        self.close()
+        self.reset_battles()
+        if opponent:
+            self.set_opponent(opponent)
+        if restart:
+            self.start_challenging()
+
 
 class Gen4EnvSinglePlayer(EnvPlayer, ABC):
     _ACTION_SPACE = list(range(4 + 6))
