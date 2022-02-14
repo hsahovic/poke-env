@@ -289,7 +289,7 @@ def test_get_opponent():
 def test_set_opponent():
     with EnvLoop():
         player = CustomEnvPlayer(start_listening=False)
-        assert player.opponent is None
+        assert isinstance(player.opponent, RandomPlayer)
         with pytest.raises(RuntimeError):
             player.set_opponent(0)
         dummy_player = RandomPlayer()

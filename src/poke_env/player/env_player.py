@@ -10,6 +10,7 @@ from poke_env.environment.battle import Battle
 from poke_env.player.battle_order import BattleOrder, ForfeitBattleOrder
 from poke_env.player.openai_api import OpenAIGymEnv
 from poke_env.player.player import Player
+from poke_env.player.random_player import RandomPlayer
 from poke_env.player_configuration import PlayerConfiguration
 from poke_env.server_configuration import ServerConfiguration
 from poke_env.teambuilder.teambuilder import Teambuilder
@@ -73,6 +74,8 @@ class EnvPlayer(OpenAIGymEnv, ABC):
         b_format = self._DEFAULT_BATTLE_FORMAT
         if battle_format:
             b_format = battle_format
+        if not self.opponent:
+            self.opponent = RandomPlayer(battle_format=b_format)
         super().__init__(
             player_configuration=player_configuration,
             avatar=avatar,
