@@ -26,6 +26,7 @@ from poke_env.environment.double_battle import DoubleBattle
 from poke_env.environment.move import Move
 from poke_env.environment.pokemon import Pokemon
 from poke_env.exceptions import ShowdownException
+from poke_env.player.internals import POKE_LOOP
 from poke_env.player.player_network_interface import PlayerNetwork
 from poke_env.player.battle_order import (
     BattleOrder,
@@ -119,12 +120,12 @@ class Player(PlayerNetwork, ABC):
         self._start_timer_on_battle_start: bool = start_timer_on_battle_start
 
         self._battles: Dict[str, AbstractBattle] = {}
-        self._battle_semaphore: Semaphore = Semaphore(0)
+        self._battle_semaphore: Semaphore = asyncio.run_coroutine_threadsafe(self._create_class(Semaphore, 0), POKE_LOOP).result()
 
-        self._battle_start_condition: Condition = Condition()
-        self._battle_count_queue: Queue = Queue(max_concurrent_battles)
-        self._battle_end_condition: Condition = Condition()
-        self._challenge_queue: Queue = Queue()
+        self._battle_start_condition: Condition = asyncio.run_coroutine_threadsafe(self._create_class(Condition), POKE_LOOP).result()
+        self._battle_count_queue: Queue = asyncio.run_coroutine_threadsafe(self._create_class(Queue, max_concurrent_battles), POKE_LOOP).result()
+        self._battle_end_condition: Condition = asyncio.run_coroutine_threadsafe(self._create_class(Condition), POKE_LOOP).result()
+        self._challenge_queue: Queue = asyncio.run_coroutine_threadsafe(self._create_class(Queue), POKE_LOOP).result()
 
         if isinstance(team, Teambuilder):
             self._team = team
@@ -352,6 +353,11 @@ class Player(PlayerNetwork, ABC):
                 await self._challenge_queue.put(user)
 
     async def accept_challenges(
+            self, opponent: Optional[Union[str, List[str]]], n_challenges: int
+    ) -> None:
+        await self._handle_threaded_coroutines(self._accept_challenges(opponent, n_challenges))
+
+    async def _accept_challenges(
         self, opponent: Optional[Union[str, List[str]]], n_challenges: int
     ) -> None:
         """Let the player wait for challenges from opponent, and accept them.
@@ -529,6 +535,9 @@ class Player(PlayerNetwork, ABC):
             )
 
     async def ladder(self, n_games):
+        await self._handle_threaded_coroutines(self._ladder(n_games))
+
+    async def _ladder(self, n_games):
         """Make the player play games on the ladder.
 
         n_games defines how many battles will be played.
@@ -555,6 +564,9 @@ class Player(PlayerNetwork, ABC):
         )
 
     async def battle_against(self, opponent: "Player", n_battles: int) -> None:
+        await self._handle_threaded_coroutines(self._battle_against(opponent, n_battles))
+
+    async def _battle_against(self, opponent: "Player", n_battles: int) -> None:
         """Make the player play n_battles against opponent.
 
         This function is a wrapper around send_challenges and accept challenges.
@@ -572,6 +584,11 @@ class Player(PlayerNetwork, ABC):
         )
 
     async def send_challenges(
+            self, opponent: str, n_challenges: int, to_wait: Optional[Event] = None
+    ) -> None:
+        await self._handle_threaded_coroutines(self._send_challenges(opponent, n_challenges, to_wait))
+
+    async def _send_challenges(
         self, opponent: str, n_challenges: int, to_wait: Optional[Event] = None
     ) -> None:
         """Make the player send challenges to opponent.

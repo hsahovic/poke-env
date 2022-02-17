@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """This module defines a base class for communicating with showdown servers.
 """
-
+import asyncio
 import json
 import logging
 import requests
@@ -20,6 +20,7 @@ from typing import Optional
 
 from logging import Logger
 from poke_env.exceptions import ShowdownException
+from poke_env.player.internals import POKE_LOOP
 from poke_env.player_configuration import PlayerConfiguration
 from poke_env.server_configuration import ServerConfiguration
 
@@ -61,14 +62,23 @@ class PlayerNetwork(ABC):
         self._username = player_configuration.username
         self._server_url = server_configuration.server_url
 
-        self._logged_in: Event = Event()
-        self._sending_lock = Lock()
+        self._logged_in: Event = asyncio.run_coroutine_threadsafe(self._create_class(Event), POKE_LOOP).result()
+        self._sending_lock = asyncio.run_coroutine_threadsafe(self._create_class(Lock), POKE_LOOP).result()
 
         self._websocket: websockets.client.WebSocketClientProtocol  # pyre-ignore
         self._logger: Logger = self._create_player_logger(log_level)
 
         if start_listening:
-            self._listening_coroutine = ensure_future(self.listen())
+            self._listening_coroutine = asyncio.run_coroutine_threadsafe(self.listen(), POKE_LOOP)
+
+    @staticmethod
+    async def _create_class(cls, *args, **kwargs):
+        return cls(*args, **kwargs)
+
+    @staticmethod
+    async def _handle_threaded_coroutines(coro):
+        task = asyncio.run_coroutine_threadsafe(coro, POKE_LOOP)
+        await asyncio.wrap_future(task)
 
     async def _accept_challenge(self, username: str) -> None:
         assert self.logged_in.is_set()
