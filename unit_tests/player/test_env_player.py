@@ -85,7 +85,7 @@ def test_choose_move(queue_put_mock, queue_get_mock):
 
     assert isawaitable(message)
 
-    message = asyncio.run(message)
+    message = asyncio.get_event_loop().run_until_complete(message)
 
     assert message.message == "/choose move flamethrower"
 
@@ -95,7 +95,7 @@ def test_choose_move(queue_put_mock, queue_get_mock):
 
     assert isawaitable(message)
 
-    message = asyncio.run(message)
+    message = asyncio.get_event_loop().run_until_complete(message)
 
     assert message.message == "/choose switch charizard"
 
