@@ -37,27 +37,21 @@ class _AsyncQueue:
         return await self.queue.get()
 
     def get(self):
-        res = asyncio.run_coroutine_threadsafe(
-            self.queue.get(), POKE_LOOP
-        )
+        res = asyncio.run_coroutine_threadsafe(self.queue.get(), POKE_LOOP)
         return res.result()
 
     async def async_put(self, item):
         await self.queue.put(item)
 
     def put(self, item):
-        task = asyncio.run_coroutine_threadsafe(
-            self.queue.put(item), POKE_LOOP
-        )
+        task = asyncio.run_coroutine_threadsafe(self.queue.put(item), POKE_LOOP)
         task.result()
 
     def empty(self):
         return self.queue.empty()
 
     def join(self):
-        task = asyncio.run_coroutine_threadsafe(
-            self.queue.join(), POKE_LOOP
-        )
+        task = asyncio.run_coroutine_threadsafe(self.queue.join(), POKE_LOOP)
         task.result()
 
     async def async_join(self):
@@ -69,8 +63,16 @@ class _AsyncPlayer(Player):
         self.__class__.__name__ = username
         super().__init__(**kwargs)
         self.__class__.__name__ = "_AsyncPlayer"
-        self.observations = _AsyncQueue(asyncio.run_coroutine_threadsafe(self._create_class(asyncio.Queue, 1), POKE_LOOP).result())
-        self.actions = _AsyncQueue(asyncio.run_coroutine_threadsafe(self._create_class(asyncio.Queue, 1), POKE_LOOP).result())
+        self.observations = _AsyncQueue(
+            asyncio.run_coroutine_threadsafe(
+                self._create_class(asyncio.Queue, 1), POKE_LOOP
+            ).result()
+        )
+        self.actions = _AsyncQueue(
+            asyncio.run_coroutine_threadsafe(
+                self._create_class(asyncio.Queue, 1), POKE_LOOP
+            ).result()
+        )
         self.current_battle: Optional[AbstractBattle] = None
         self.user_funcs: OpenAIGymEnv = user_funcs
 
@@ -95,9 +97,7 @@ class _AsyncPlayer(Player):
         self, battle: AbstractBattle
     ) -> None:  # pragma: no cover
         to_put = self.user_funcs.embed_battle(battle)
-        asyncio.run_coroutine_threadsafe(
-            self.observations.async_put(to_put), POKE_LOOP
-        )
+        asyncio.run_coroutine_threadsafe(self.observations.async_put(to_put), POKE_LOOP)
 
 
 class OpenAIGymEnv(Env, ABC):  # pyre-ignore

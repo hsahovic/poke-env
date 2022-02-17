@@ -71,7 +71,7 @@ class AsyncMock(unittest.mock.MagicMock):
 )
 @patch("poke_env.player.openai_api._AsyncQueue.async_put", new_callable=AsyncMock)
 def test_choose_move(queue_put_mock, queue_get_mock):
-    print('ciao')
+    print("ciao")
     player = CustomEnvPlayer(
         player_configuration=player_configuration,
         server_configuration=server_configuration,
@@ -347,8 +347,7 @@ def test_action_to_move(z_moves_mock):
             battle._team = {"charizard": active_pokemon}
             z_moves_mock.return_value = [Move("flamethrower")]
             assert (
-                p.action_to_move(4, battle).message
-                == "/choose move flamethrower zmove"
+                p.action_to_move(4, battle).message == "/choose move flamethrower zmove"
             )
             battle._team = {}
         if has_dynamax:

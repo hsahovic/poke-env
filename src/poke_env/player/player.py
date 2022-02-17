@@ -120,12 +120,22 @@ class Player(PlayerNetwork, ABC):
         self._start_timer_on_battle_start: bool = start_timer_on_battle_start
 
         self._battles: Dict[str, AbstractBattle] = {}
-        self._battle_semaphore: Semaphore = asyncio.run_coroutine_threadsafe(self._create_class(Semaphore, 0), POKE_LOOP).result()
+        self._battle_semaphore: Semaphore = asyncio.run_coroutine_threadsafe(
+            self._create_class(Semaphore, 0), POKE_LOOP
+        ).result()
 
-        self._battle_start_condition: Condition = asyncio.run_coroutine_threadsafe(self._create_class(Condition), POKE_LOOP).result()
-        self._battle_count_queue: Queue = asyncio.run_coroutine_threadsafe(self._create_class(Queue, max_concurrent_battles), POKE_LOOP).result()
-        self._battle_end_condition: Condition = asyncio.run_coroutine_threadsafe(self._create_class(Condition), POKE_LOOP).result()
-        self._challenge_queue: Queue = asyncio.run_coroutine_threadsafe(self._create_class(Queue), POKE_LOOP).result()
+        self._battle_start_condition: Condition = asyncio.run_coroutine_threadsafe(
+            self._create_class(Condition), POKE_LOOP
+        ).result()
+        self._battle_count_queue: Queue = asyncio.run_coroutine_threadsafe(
+            self._create_class(Queue, max_concurrent_battles), POKE_LOOP
+        ).result()
+        self._battle_end_condition: Condition = asyncio.run_coroutine_threadsafe(
+            self._create_class(Condition), POKE_LOOP
+        ).result()
+        self._challenge_queue: Queue = asyncio.run_coroutine_threadsafe(
+            self._create_class(Queue), POKE_LOOP
+        ).result()
 
         if isinstance(team, Teambuilder):
             self._team = team
@@ -353,9 +363,11 @@ class Player(PlayerNetwork, ABC):
                 await self._challenge_queue.put(user)
 
     async def accept_challenges(
-            self, opponent: Optional[Union[str, List[str]]], n_challenges: int
+        self, opponent: Optional[Union[str, List[str]]], n_challenges: int
     ) -> None:
-        await self._handle_threaded_coroutines(self._accept_challenges(opponent, n_challenges))
+        await self._handle_threaded_coroutines(
+            self._accept_challenges(opponent, n_challenges)
+        )
 
     async def _accept_challenges(
         self, opponent: Optional[Union[str, List[str]]], n_challenges: int
@@ -564,7 +576,9 @@ class Player(PlayerNetwork, ABC):
         )
 
     async def battle_against(self, opponent: "Player", n_battles: int) -> None:
-        await self._handle_threaded_coroutines(self._battle_against(opponent, n_battles))
+        await self._handle_threaded_coroutines(
+            self._battle_against(opponent, n_battles)
+        )
 
     async def _battle_against(self, opponent: "Player", n_battles: int) -> None:
         """Make the player play n_battles against opponent.
@@ -584,9 +598,11 @@ class Player(PlayerNetwork, ABC):
         )
 
     async def send_challenges(
-            self, opponent: str, n_challenges: int, to_wait: Optional[Event] = None
+        self, opponent: str, n_challenges: int, to_wait: Optional[Event] = None
     ) -> None:
-        await self._handle_threaded_coroutines(self._send_challenges(opponent, n_challenges, to_wait))
+        await self._handle_threaded_coroutines(
+            self._send_challenges(opponent, n_challenges, to_wait)
+        )
 
     async def _send_challenges(
         self, opponent: str, n_challenges: int, to_wait: Optional[Event] = None
