@@ -62,14 +62,20 @@ class PlayerNetwork(ABC):
         self._username = player_configuration.username
         self._server_url = server_configuration.server_url
 
-        self._logged_in: Event = asyncio.run_coroutine_threadsafe(self._create_class(Event), POKE_LOOP).result()
-        self._sending_lock = asyncio.run_coroutine_threadsafe(self._create_class(Lock), POKE_LOOP).result()
+        self._logged_in: Event = asyncio.run_coroutine_threadsafe(
+            self._create_class(Event), POKE_LOOP
+        ).result()
+        self._sending_lock = asyncio.run_coroutine_threadsafe(
+            self._create_class(Lock), POKE_LOOP
+        ).result()
 
         self._websocket: websockets.client.WebSocketClientProtocol  # pyre-ignore
         self._logger: Logger = self._create_player_logger(log_level)
 
         if start_listening:
-            self._listening_coroutine = asyncio.run_coroutine_threadsafe(self.listen(), POKE_LOOP)
+            self._listening_coroutine = asyncio.run_coroutine_threadsafe(
+                self.listen(), POKE_LOOP
+            )
 
     @staticmethod
     async def _create_class(cls, *args, **kwargs):
