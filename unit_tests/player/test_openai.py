@@ -14,7 +14,6 @@ from poke_env.environment.pokemon import Pokemon
 from poke_env.player.battle_order import ForfeitBattleOrder, BattleOrder
 from poke_env.player.openai_api import (
     _AsyncQueue,
-    EnvLoop,
     _AsyncPlayer,
     OpenAIGymEnv,
     ObservationType,
@@ -57,54 +56,41 @@ def test_init_queue():
 
 
 def test_queue():
-    with EnvLoop():
-        q = _AsyncQueue(asyncio.Queue())
-        assert q.empty()
-        q.put(1)
-        assert q.queue.qsize() == 1
-        task = asyncio.run_coroutine_threadsafe(
-            q.async_put(2), asyncio.get_event_loop()
-        )
-        task.result()
-        assert q.queue.qsize() == 2
-        item = q.get()
-        q.queue.task_done()
-        assert q.queue.qsize() == 1
-        assert item == 1
-        task = asyncio.run_coroutine_threadsafe(q.async_get(), asyncio.get_event_loop())
-        item = task.result()
-        q.queue.task_done()
-        assert q.empty()
-        assert item == 2
-        task = asyncio.run_coroutine_threadsafe(
-            q.async_join(), asyncio.get_event_loop()
-        )
-        task.result()
-        q.join()
+    q = _AsyncQueue(asyncio.Queue())
+    assert q.empty()
+    q.put(1)
+    assert q.queue.qsize() == 1
+    asyncio.run(q.async_put(2))
+    assert q.queue.qsize() == 2
+    item = q.get()
+    q.queue.task_done()
+    assert q.queue.qsize() == 1
+    assert item == 1
+    item = asyncio.run(q.async_get())
+    q.queue.task_done()
+    assert q.empty()
+    assert item == 2
+    asyncio.run(q.async_join())
+    q.join()
 
 
 def test_async_player():
-    with EnvLoop():
-        player = _AsyncPlayer(UserFuncs(), start_listening=False, username="usr")
-        battle = Battle("bat1", player.username, player.logger)
-        player.actions.put(-1)
-        task = asyncio.run_coroutine_threadsafe(
-            player.env_move(battle), asyncio.get_event_loop()
-        )
-        order = task.result()
-        assert isinstance(order, ForfeitBattleOrder)
-        assert player.observations.get() == "battle"
+    player = _AsyncPlayer(UserFuncs(), start_listening=False, username="usr")
+    battle = Battle("bat1", player.username, player.logger)
+    player.actions.put(-1)
+    order = asyncio.run(player.env_move(battle))
+    assert isinstance(order, ForfeitBattleOrder)
+    assert player.observations.get() == "battle"
 
 
 def render(battle):
-    with EnvLoop():
-        player = DummyEnv(start_listening=False)
-        captured_output = StringIO()
-        sys.stdout = captured_output
-        player.current_battle = battle
-        player.render()
-        sys.stdout = sys.__stdout__
-        return captured_output.getvalue()
+    player = DummyEnv(start_listening=False)
+    captured_output = StringIO()
+    sys.stdout = captured_output
+    player.current_battle = battle
+    player.render()
+    sys.stdout = sys.__stdout__
+    return captured_output.getvalue()
 
 
 def test_render():
