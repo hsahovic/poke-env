@@ -2,21 +2,18 @@
 """This module defines a player class exposing the Open AI Gym API on the main thread.
 """
 import asyncio
-import atexit
 import copy
 import numpy as np  # pyre-ignore
-import sys
 import time
 
 from abc import ABC, abstractmethod
-from contextlib import AbstractContextManager
-from logging import disable, Logger, CRITICAL
-from threading import Thread
+from logging import Logger
 from typing import Union, Awaitable, Optional, Tuple, TypeVar, Callable, Dict
 from gym.core import Env  # pyre-ignore
 from gym.spaces import Space, Discrete  # pyre-ignore
 
 from poke_env.environment.abstract_battle import AbstractBattle
+from poke_env.player.internals import POKE_LOOP
 from poke_env.player.battle_order import BattleOrder, ForfeitBattleOrder
 from poke_env.player.player import Player
 from poke_env.player_configuration import PlayerConfiguration
@@ -30,56 +27,6 @@ ObservationType = TypeVar("ObservationType")
 ActionType = TypeVar("ActionType")
 
 
-def __run_loop(loop: asyncio.AbstractEventLoop):
-    asyncio.set_event_loop(loop)
-    loop.run_forever()
-
-
-def __stop_loop(loop: asyncio.AbstractEventLoop, thread: Thread):  # pragma: no cover
-    disable(CRITICAL)
-    tasks = []
-    if py_ver.major == 3 and py_ver.minor >= 7:
-        caller = asyncio
-    else:
-        caller = asyncio.Task
-    for task in caller.all_tasks(loop):
-        task.cancel()
-        tasks.append(task)
-    cancelled = False
-    shutdown = asyncio.run_coroutine_threadsafe(loop.shutdown_asyncgens(), loop)
-    shutdown.result()
-    while not cancelled:
-        cancelled = True
-        for task in tasks:
-            if not task.done():
-                cancelled = False
-    loop.call_soon_threadsafe(loop.stop)
-    thread.join()
-    loop.call_soon_threadsafe(loop.close)
-
-
-def __clear_loop():  # pragma: no cover
-    __stop_loop(THREAD_LOOP, _t)
-
-
-MAIN_LOOP = asyncio.get_event_loop()
-THREAD_LOOP = asyncio.new_event_loop()
-py_ver = sys.version_info
-_t = Thread(target=__run_loop, args=(THREAD_LOOP,), daemon=True)
-_t.start()
-atexit.register(__clear_loop)
-
-
-class EnvLoop(AbstractContextManager):
-    def __enter__(self):
-        global MAIN_LOOP
-        MAIN_LOOP = asyncio.get_event_loop()
-        asyncio.set_event_loop(THREAD_LOOP)
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        asyncio.set_event_loop(MAIN_LOOP)
-
-
 class _AsyncQueue:
     def __init__(self, queue: asyncio.Queue):
         if not isinstance(queue, asyncio.Queue):
@@ -91,7 +38,7 @@ class _AsyncQueue:
 
     def get(self):
         res = asyncio.run_coroutine_threadsafe(
-            self.queue.get(), asyncio.get_event_loop()
+            self.queue.get(), POKE_LOOP
         )
         return res.result()
 
@@ -100,7 +47,7 @@ class _AsyncQueue:
 
     def put(self, item):
         task = asyncio.run_coroutine_threadsafe(
-            self.queue.put(item), asyncio.get_event_loop()
+            self.queue.put(item), POKE_LOOP
         )
         task.result()
 
@@ -109,7 +56,7 @@ class _AsyncQueue:
 
     def join(self):
         task = asyncio.run_coroutine_threadsafe(
-            self.queue.join(), asyncio.get_event_loop()
+            self.queue.join(), POKE_LOOP
         )
         task.result()
 
@@ -122,8 +69,8 @@ class _AsyncPlayer(Player):
         self.__class__.__name__ = username
         super().__init__(**kwargs)
         self.__class__.__name__ = "_AsyncPlayer"
-        self.observations = _AsyncQueue(asyncio.Queue(1))
-        self.actions = _AsyncQueue(asyncio.Queue(1))
+        self.observations = _AsyncQueue(asyncio.run_coroutine_threadsafe(self._create_class(asyncio.Queue, 1), POKE_LOOP).result())
+        self.actions = _AsyncQueue(asyncio.run_coroutine_threadsafe(self._create_class(asyncio.Queue, 1), POKE_LOOP).result())
         self.current_battle: Optional[AbstractBattle] = None
         self.user_funcs: OpenAIGymEnv = user_funcs
 
@@ -149,7 +96,7 @@ class _AsyncPlayer(Player):
     ) -> None:  # pragma: no cover
         to_put = self.user_funcs.embed_battle(battle)
         asyncio.run_coroutine_threadsafe(
-            self.observations.async_put(to_put), asyncio.get_event_loop()
+            self.observations.async_put(to_put), POKE_LOOP
         )
 
 
@@ -176,17 +123,6 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         team: Optional[Union[str, Teambuilder]] = None,
         start_challenging: bool = False,
     ):
-        if not asyncio.get_event_loop() == THREAD_LOOP:
-            raise RuntimeError(
-                "You are attempting to create an OpenAI agent without "
-                "the required context. "
-                "Remember to create all the players you will use "
-                "with the OpenAI API inside the context "
-                "EnvLoop. If unsure, use the following:\n"
-                "if __name__ == '__main__':\n"
-                "\twith EnvLoop():\n"
-                "\t\tmain()"
-            )
         self.agent = _AsyncPlayer(
             self,
             username=self.__class__.__name__,
@@ -213,7 +149,7 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         if start_challenging:
             self._keep_challenging = True
             self.challenge_task = asyncio.run_coroutine_threadsafe(
-                self._challenge_loop(), asyncio.get_event_loop()
+                self._challenge_loop(), POKE_LOOP
             )
 
     @abstractmethod
@@ -246,32 +182,6 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
 
     def _get_opponent(self) -> Union[Player, str]:
         opponent = self.get_opponent()
-        if isinstance(opponent, Player):
-            if py_ver.major == 3 and py_ver.minor >= 7:  # pragma: no cover
-                if not opponent._listening_coroutine.get_loop() == THREAD_LOOP:
-                    raise RuntimeError(
-                        "The opponent is listening on a wrong event loop. "
-                        "Remember to create all the players you will use "
-                        "with the OpenAI API inside the context "
-                        "EnvLoop. If unsure, use the following:\n"
-                        "if __name__ == '__main__':\n"
-                        "\twith EnvLoop():\n"
-                        "\t\tmain()"
-                    )
-            else:
-                self.agent.logger.warning(
-                    "Impossible to check on which event loop the opponent is "
-                    "listening to. If it is listening on the wrong loop it will "
-                    "probably throw an exception saying the Future is attached "
-                    "to a different loop. "
-                    "Remember to create all the players you will use "
-                    "with the OpenAI API inside the context "
-                    "EnvLoop. If unsure, use the following:\n"
-                    "if __name__ == '__main__':\n"
-                    "\twith EnvLoop():\n"
-                    "\t\tmain()"
-                )
-
         return opponent
 
     def reset(self) -> ObservationType:  # pyre-ignore  # pragma: no cover
@@ -345,7 +255,7 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
             if self.current_battle != self.agent.current_battle:
                 self.current_battle = self.agent.current_battle
         closing_task = asyncio.run_coroutine_threadsafe(
-            self._stop_challenge_loop(), asyncio.get_event_loop()
+            self._stop_challenge_loop(), POKE_LOOP
         )
         closing_task.result()
 
@@ -360,7 +270,7 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
                 "'await agent.stop_challenge_loop()' to clear the task."
             )
         self.challenge_task = asyncio.run_coroutine_threadsafe(
-            self.agent.send_challenges(username, 1), asyncio.get_event_loop()
+            self.agent.send_challenges(username, 1), POKE_LOOP
         )
 
     async def _challenge_loop(
@@ -414,7 +324,7 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         if not n_challenges:
             self._keep_challenging = True
         self.challenge_task = asyncio.run_coroutine_threadsafe(
-            self._challenge_loop(n_challenges, callback), asyncio.get_event_loop()
+            self._challenge_loop(n_challenges, callback), POKE_LOOP
         )
 
     async def _ladder_loop(
@@ -452,7 +362,7 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         if not n_challenges:
             self._keep_challenging = True
         self.challenge_task = asyncio.run_coroutine_threadsafe(
-            self._ladder_loop(n_challenges, callback), asyncio.get_event_loop()
+            self._ladder_loop(n_challenges, callback), POKE_LOOP
         )
 
     async def _stop_challenge_loop(
