@@ -20,6 +20,9 @@ jobs:
       # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
       - image: cimg/python:3.6.14-node
 
+    #Using medium+ to avoid RAM shortage during integration tests
+    resource_class: medium+
+
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
