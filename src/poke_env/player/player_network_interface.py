@@ -74,7 +74,7 @@ class PlayerNetwork(ABC):
             )
 
     @staticmethod
-    def _create_class(cls, *args, **kwargs):
+    def _create_class(cls, *args, **kwargs):  # pragma: no cover
         if asyncio.get_event_loop() == POKE_LOOP:
             return cls(*args, **kwargs)
         else:

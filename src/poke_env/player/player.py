@@ -26,7 +26,6 @@ from poke_env.environment.double_battle import DoubleBattle
 from poke_env.environment.move import Move
 from poke_env.environment.pokemon import Pokemon
 from poke_env.exceptions import ShowdownException
-from poke_env.player.internals import POKE_LOOP
 from poke_env.player.player_network_interface import PlayerNetwork
 from poke_env.player.battle_order import (
     BattleOrder,
@@ -363,7 +362,7 @@ class Player(PlayerNetwork, ABC):
 
     async def _accept_challenges(
         self, opponent: Optional[Union[str, List[str]]], n_challenges: int
-    ) -> None:
+    ) -> None:  # pragma: no cover
         """Let the player wait for challenges from opponent, and accept them.
 
         If opponent is None, every challenge will be accepted. If opponent if a string,
