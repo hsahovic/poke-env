@@ -62,12 +62,8 @@ class PlayerNetwork(ABC):
         self._username = player_configuration.username
         self._server_url = server_configuration.server_url
 
-        self._logged_in: Event = asyncio.run_coroutine_threadsafe(
-            self._create_class(Event), POKE_LOOP
-        ).result()
-        self._sending_lock = asyncio.run_coroutine_threadsafe(
-            self._create_class(Lock), POKE_LOOP
-        ).result()
+        self._logged_in: Event = self._create_class(Event)
+        self._sending_lock = self._create_class(Lock)
 
         self._websocket: websockets.client.WebSocketClientProtocol  # pyre-ignore
         self._logger: Logger = self._create_player_logger(log_level)
@@ -78,13 +74,23 @@ class PlayerNetwork(ABC):
             )
 
     @staticmethod
-    async def _create_class(cls, *args, **kwargs):
+    def _create_class(cls, *args, **kwargs):
+        if asyncio.get_event_loop() == POKE_LOOP:
+            return cls(*args, **kwargs)
+        else:
+            return asyncio.run_coroutine_threadsafe(
+                PlayerNetwork._create_class_async(cls, *args, **kwargs), POKE_LOOP
+            ).result()
+
+    @staticmethod
+    async def _create_class_async(cls, *args, **kwargs):
         return cls(*args, **kwargs)
 
     @staticmethod
     async def _handle_threaded_coroutines(coro):
         task = asyncio.run_coroutine_threadsafe(coro, POKE_LOOP)
         await asyncio.wrap_future(task)
+        return task.result()
 
     async def _accept_challenge(self, username: str) -> None:
         assert self.logged_in.is_set()

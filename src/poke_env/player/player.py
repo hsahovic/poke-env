@@ -120,22 +120,14 @@ class Player(PlayerNetwork, ABC):
         self._start_timer_on_battle_start: bool = start_timer_on_battle_start
 
         self._battles: Dict[str, AbstractBattle] = {}
-        self._battle_semaphore: Semaphore = asyncio.run_coroutine_threadsafe(
-            self._create_class(Semaphore, 0), POKE_LOOP
-        ).result()
+        self._battle_semaphore: Semaphore = self._create_class(Semaphore, 0)
 
-        self._battle_start_condition: Condition = asyncio.run_coroutine_threadsafe(
-            self._create_class(Condition), POKE_LOOP
-        ).result()
-        self._battle_count_queue: Queue = asyncio.run_coroutine_threadsafe(
-            self._create_class(Queue, max_concurrent_battles), POKE_LOOP
-        ).result()
-        self._battle_end_condition: Condition = asyncio.run_coroutine_threadsafe(
-            self._create_class(Condition), POKE_LOOP
-        ).result()
-        self._challenge_queue: Queue = asyncio.run_coroutine_threadsafe(
-            self._create_class(Queue), POKE_LOOP
-        ).result()
+        self._battle_start_condition: Condition = self._create_class(Condition)
+        self._battle_count_queue: Queue = self._create_class(
+            Queue, max_concurrent_battles
+        )
+        self._battle_end_condition: Condition = self._create_class(Condition)
+        self._challenge_queue: Queue = self._create_class(Queue)
 
         if isinstance(team, Teambuilder):
             self._team = team
@@ -387,6 +379,11 @@ class Player(PlayerNetwork, ABC):
         :param n_challenges: Number of challenges that will be accepted
         :type n_challenges: int
         """
+        if opponent:
+            if isinstance(opponent, list):
+                opponent = [to_id_str(o) for o in opponent]
+            else:
+                opponent = to_id_str(opponent)
         await self._logged_in.wait()
         self.logger.debug("Event logged in received in accept_challenge")
 

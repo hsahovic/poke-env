@@ -63,16 +63,8 @@ class _AsyncPlayer(Player):
         self.__class__.__name__ = username
         super().__init__(**kwargs)
         self.__class__.__name__ = "_AsyncPlayer"
-        self.observations = _AsyncQueue(
-            asyncio.run_coroutine_threadsafe(
-                self._create_class(asyncio.Queue, 1), POKE_LOOP
-            ).result()
-        )
-        self.actions = _AsyncQueue(
-            asyncio.run_coroutine_threadsafe(
-                self._create_class(asyncio.Queue, 1), POKE_LOOP
-            ).result()
-        )
+        self.observations = _AsyncQueue(self._create_class(asyncio.Queue, 1))
+        self.actions = _AsyncQueue(self._create_class(asyncio.Queue, 1))
         self.current_battle: Optional[AbstractBattle] = None
         self.user_funcs: OpenAIGymEnv = user_funcs
 
@@ -255,7 +247,7 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
             if self.current_battle != self.agent.current_battle:
                 self.current_battle = self.agent.current_battle
         closing_task = asyncio.run_coroutine_threadsafe(
-            self._stop_challenge_loop(), POKE_LOOP
+            self._stop_challenge_loop(purge=True), POKE_LOOP
         )
         closing_task.result()
 
