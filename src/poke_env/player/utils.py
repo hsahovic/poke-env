@@ -4,12 +4,14 @@
 
 from poke_env.player.player import Player
 from poke_env.player.random_player import RandomPlayer
+from poke_env.player.internals import POKE_LOOP
 from poke_env.player.baselines import MaxBasePowerPlayer, SimpleHeuristicsPlayer
 from poke_env.utils import to_id_str
 from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Tuple
+from concurrent.futures import Future
 
 import asyncio
 import math
@@ -19,6 +21,14 @@ _EVALUATION_RATINGS = {
     MaxBasePowerPlayer: 7.665994,
     SimpleHeuristicsPlayer: 128.757145,
 }
+
+
+def background_cross_evaluate(
+    players: List[Player], n_challenges: int
+) -> Future[Dict[str, Dict[str, Optional[float]]]]:
+    return asyncio.run_coroutine_threadsafe(
+        cross_evaluate(players, n_challenges), POKE_LOOP
+    )
 
 
 async def cross_evaluate(
@@ -54,8 +64,8 @@ def _estimate_strength_from_results(
 
     :param number_of_games: Number of performance games for evaluation.
     :type number_of_games: int
-    :param number_of_win: Number of won evaluation games.
-    :type number_of_win: int
+    :param number_of_wins: Number of won evaluation games.
+    :type number_of_wins: int
     :param opponent_rating: The opponent's rating.
     :type opponent_rating: float
     :raises: ValueError if the results are too extreme to be interpreted.
@@ -69,7 +79,7 @@ def _estimate_strength_from_results(
     if n * p * q < 9:  # Cannot apply normal approximation of binomial distribution
         raise ValueError(
             "The results obtained in evaluate_player are too extreme to obtain an "
-            "accuracte player evaluation. You can try to solve this issue by increasing"
+            "accurate player evaluation. You can try to solve this issue by increasing"
             " the total number of battles. Obtained results: %d victories out of %d"
             " games." % (p * n, n)
         )
@@ -92,6 +102,14 @@ def _estimate_strength_from_results(
     return estimate, (lower_bound, higher_bound)
 
 
+def background_evaluate_player(
+    player, n_battles: int = 1000, n_placement_battles: int = 30
+) -> Future[Tuple[float, Tuple[float, float]]]:
+    return asyncio.run_coroutine_threadsafe(
+        evaluate_player(player, n_battles, n_placement_battles), POKE_LOOP
+    )
+
+
 async def evaluate_player(
     player, n_battles: int = 1000, n_placement_battles: int = 30
 ) -> Tuple[float, Tuple[float, float]]:
@@ -100,10 +118,10 @@ async def evaluate_player(
     This functions calculates an estimate of a player's strength, measured as its
     expected performance against a random opponent in a gen 8 random battle. The
     returned number can be interpreted as follows: a strength of k means that the
-    probability of the player winning a gen 8 random battl against a random player is k
+    probability of the player winning a gen 8 random battle against a random player is k
     times higher than the probability of the random player winning.
 
-    The function returns a tuple containing a best guess based on the the played games "
+    The function returns a tuple containing the best guess based on the played games
     as well as a tuple describing a 95% confidence interval for that estimated strength.
 
     The actual evaluation can be performed against any baseline player for which an
@@ -135,7 +153,7 @@ async def evaluate_player(
     if n_placement_battles * len(_EVALUATION_RATINGS) > n_battles // 2:
         player.logger.warning(
             "Number of placement battles reduced from %d to %d due to limited number of"
-            " battles (%d). A more accuracte evaluation can be performed by increasing "
+            " battles (%d). A more accurate evaluation can be performed by increasing "
             "the total number of players.",
             n_placement_battles,
             n_battles // len(_EVALUATION_RATINGS) // 2,
