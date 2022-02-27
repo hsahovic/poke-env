@@ -22,6 +22,10 @@ from poke_env.player.player import Player
 
 
 class DummyEnv(OpenAIGymEnv):
+    def __init__(self, *args, **kwargs):
+        self.opponent = None
+        super().__init__(*args, **kwargs)
+
     def calc_reward(self, last_battle, current_battle) -> float:
         pass
 
@@ -38,7 +42,7 @@ class DummyEnv(OpenAIGymEnv):
         return 1
 
     def get_opponent(self) -> Union[Player, str]:
-        pass
+        return self.opponent
 
 
 class UserFuncs:
@@ -115,3 +119,19 @@ def test_render():
     battle._team["2"] = other_mon
     expected = "  Turn    3. | [●●][ 60/120hp]  charizard -    pikachu [ 20%hp][●]\r"
     assert render(battle) == expected
+
+
+def test_get_opponent():
+    player = DummyEnv(start_listening=False)
+    assert player._get_opponent() is None
+    player.opponent = "test"
+    assert player._get_opponent() == "test"
+    player.opponent = ["test"]
+    assert player._get_opponent() == "test"
+    opponents = ["test1", "test2", "test3", "test4", "test5"]
+    player.opponent = opponents
+    for _ in range(100):
+        assert player._get_opponent() in opponents
+    player.opponent = [0]
+    with pytest.raises(RuntimeError):
+        player._get_opponent()

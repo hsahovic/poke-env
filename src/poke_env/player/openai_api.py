@@ -8,7 +8,7 @@ import time
 
 from abc import ABC, abstractmethod
 from logging import Logger
-from typing import Union, Awaitable, Optional, Tuple, TypeVar, Callable, Dict
+from typing import Union, Awaitable, Optional, Tuple, TypeVar, Callable, Dict, List
 from gym.core import Env  # pyre-ignore
 from gym.spaces import Space, Discrete  # pyre-ignore
 
@@ -169,14 +169,28 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         pass
 
     @abstractmethod
-    def get_opponent(self) -> Union[Player, str]:  # pragma: no cover
+    def get_opponent(
+        self,
+    ) -> Union[Player, str, List[Player], List[str]]:  # pragma: no cover
         pass
 
     def _get_opponent(self) -> Union[Player, str]:
         opponent = self.get_opponent()
+        if isinstance(opponent, list):
+            opponent = np.random.choice(opponent)
+            if not isinstance(opponent, Player) and not isinstance(opponent, str):
+                raise RuntimeError(
+                    f"Expected List[Player] or List[str]. Got List[{type(opponent)}]"
+                )
         return opponent
 
-    def reset(self) -> ObservationType:  # pyre-ignore  # pragma: no cover
+    def reset(
+        self,
+        *,
+        seed: Optional[int] = None,
+    ) -> ObservationType:  # pyre-ignore  # pragma: no cover
+        if seed:
+            self.seed(seed)
         if not self.agent.current_battle:
             count = self._INIT_RETRIES
             while not self.agent.current_battle:
