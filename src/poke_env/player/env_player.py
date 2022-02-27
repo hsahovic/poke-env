@@ -38,6 +38,8 @@ class EnvPlayer(OpenAIGymEnv, ABC):
         start_challenging: bool = True,
     ):
         """
+        :param opponent: Opponent to challenge. If empty, defaults to a RandomPlayer
+        :type opponent: Player or str, optional
         :param player_configuration: Player configuration. If empty, defaults to an
             automatically generated username with no password. This option must be set
             if the server configuration requires authentication.
@@ -67,6 +69,9 @@ class EnvPlayer(OpenAIGymEnv, ABC):
             team string, a showdown packed team string, of a ShowdownTeam object.
             Defaults to None.
         :type team: str or Teambuilder, optional
+        :param start_challenging: Whether to automatically start the challenge loop
+            or leave it inactive.
+        :type start_challenging: bool
         """
         self._reward_buffer = {}
         self.opponent_lock = Lock()
@@ -186,6 +191,12 @@ class EnvPlayer(OpenAIGymEnv, ABC):
             return self.opponent
 
     def set_opponent(self, opponent: Union[Player, str]):
+        """
+        Sets the next opponent to the specified opponent.
+
+        :param opponent: The next opponent to challenge
+        :type opponent: Player or str
+        """
         if not isinstance(opponent, Player) and not isinstance(opponent, str):
             raise RuntimeError(f"Expected type Player or str. Got {type(opponent)}")
         with self.opponent_lock:
@@ -194,7 +205,20 @@ class EnvPlayer(OpenAIGymEnv, ABC):
     def reset_env(
         self, opponent: Optional[Union[Player, str]] = None, restart: bool = True
     ):  # pragma: no cover
-        self.close()
+        """
+        Resets the environment to an inactive state: it will forfeit all unfinished
+        battles, reset the internal battle tracker and optionally change the next
+        opponent and restart the challenge loop.
+
+        :param opponent: The opponent to use for the next battles. If empty it
+            will not change opponent.
+        :type opponent: Player or str, optional
+        :param restart: If True the challenge loop will be restarted before returning,
+            otherwise the challenge loop will be left inactive and can be
+            started manually.
+        :type restart: bool
+        """
+        self.close(purge=False)
         self.reset_battles()
         if opponent:
             self.set_opponent(opponent)
