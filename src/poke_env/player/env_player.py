@@ -3,7 +3,7 @@
 """
 from abc import ABC
 from threading import Lock
-from typing import Optional, Union
+from typing import Optional, Union, List
 
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.battle import Battle
@@ -176,9 +176,9 @@ class EnvPlayer(OpenAIGymEnv, ABC):
     def action_space_size(self) -> int:
         return len(self._ACTION_SPACE)
 
-    def get_opponent(self) -> Union[Player, str]:
+    def get_opponent(self) -> Union[Player, str, List[Player], List[str]]:
         with self.opponent_lock:
-            if not self.opponent:
+            if self.opponent is None:
                 raise RuntimeError(
                     "Unspecified opponent. "
                     "Specify it in the constructor or use set_opponent"
