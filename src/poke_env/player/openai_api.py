@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-"""This module defines a player class exposing the Open AI Gym API on the main thread.
+"""This module defines a player class with the OpenAI API on the main thread.
+For a black-box implementation consider using the module env_player
 """
 import asyncio
 import copy
@@ -115,6 +116,40 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         team: Optional[Union[str, Teambuilder]] = None,
         start_challenging: bool = False,
     ):
+        """
+        :param player_configuration: Player configuration. If empty, defaults to an
+            automatically generated username with no password. This option must be set
+            if the server configuration requires authentication.
+        :type player_configuration: PlayerConfiguration, optional
+        :param avatar: Player avatar id. Optional.
+        :type avatar: int, optional
+        :param battle_format: Name of the battle format this player plays. Defaults to
+            gen8randombattle.
+        :type battle_format: Optional, str. Default to randombattles, with specifics
+            varying per class.
+        :param log_level: The player's logger level.
+        :type log_level: int. Defaults to logging's default level.
+        :param save_replays: Whether to save battle replays. Can be a boolean, where
+            True will lead to replays being saved in a potentially new /replay folder,
+            or a string representing a folder where replays will be saved.
+        :type save_replays: bool or str
+        :param server_configuration: Server configuration. Defaults to Localhost Server
+            Configuration.
+        :type server_configuration: ServerConfiguration, optional
+        :param start_listening: Whether to start listening to the server. Defaults to
+            True.
+        :type start_listening: bool
+        :param start_timer_on_battle_start: Whether to automatically start the battle
+            timer on battle start. Defaults to False.
+        :type start_timer_on_battle_start: bool
+        :param team: The team to use for formats requiring a team. Can be a showdown
+            team string, a showdown packed team string, of a ShowdownTeam object.
+            Defaults to None.
+        :type team: str or Teambuilder, optional
+        :param start_challenging: Whether to automatically start the challenge loop or
+            leave it inactive.
+        :type start_challenging: bool
+        """
         self.agent = _AsyncPlayer(
             self,
             username=self.__class__.__name__,
@@ -145,33 +180,86 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
             )
 
     @abstractmethod
-    def calc_reward(self, last_battle, current_battle) -> float:  # pragma: no cover
+    def calc_reward(
+        self, last_battle: AbstractBattle, current_battle: AbstractBattle
+    ) -> float:  # pragma: no cover
+        """
+        Returns the reward for the current battle state. The battle state in the previous
+        turn is given as well and can be used for comparisons.
+
+        :param last_battle: The battle state in the previous turn.
+        :type last_battle: AbstractBattle
+        :param current_battle: The current battle state.
+        :type current_battle: AbstractBattle
+        :return: The reward for current_battle.
+        :rtype: float
+        """
         pass
 
     @abstractmethod
     def action_to_move(
         self, action: int, battle: AbstractBattle
     ) -> BattleOrder:  # pragma: no cover
+        """
+        Returns the BattleOrder relative to the given action.
+
+        :param action: The action to take.
+        :type action: int
+        :param battle: The current battle state
+        :type battle: AbstractBattle
+        :return: The battle order for the given action in context of the current battle.
+        :rtype: BattleOrder
+        """
         pass
 
     @abstractmethod
     def embed_battle(
         self, battle: AbstractBattle
     ) -> ObservationType:  # pyre-ignore  # pragma: no cover
+        """
+        Returns the embedding of the current battle state in a format compatible with
+        the OpenAI gym API.
+
+        :param battle: The current battle state.
+        :type battle: AbstractBattle
+        :return: The embedding of the current battle state.
+        """
         pass
 
     @abstractmethod
     def describe_embedding(self) -> Space:  # pyre-ignore  # pragma: no cover
+        """
+        Returns the description of the embedding. It must return a Space specifying
+        low bounds and high bounds.
+
+        :return: The description of the embedding.
+        :rtype: Space
+        """
         pass
 
     @abstractmethod
     def action_space_size(self) -> int:  # pragma: no cover
+        """
+        Returns the size of the action space. Given size x, the action space goes
+        from 0 to x - 1.
+
+        :return: The action space size.
+        :rtype: int
+        """
         pass
 
     @abstractmethod
     def get_opponent(
         self,
     ) -> Union[Player, str, List[Player], List[str]]:  # pragma: no cover
+        """
+        Returns the opponent (or list of opponents) that will be challenged
+        on the next iteration of the challenge loop. If a list is returned,
+        a random element will be chosen at random during the challenge loop.
+
+        :return: The opponent (or list of opponents).
+        :rtype: Player or str or list(Player) or list(str)
+        """
         pass
 
     def _get_opponent(self) -> Union[Player, str]:
@@ -226,7 +314,7 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         self.last_battle = copy.deepcopy(battle)
         self.actions.put(action)
         observation = self.observations.get()
-        reward = self.calc_reward(self.last_battle, self.current_battle)
+        reward = self.calc_reward(self.last_battle, self.current_battle)  # pyre-ignore
         return observation, reward, self.current_battle.finished, {}  # pyre-ignore
 
     def render(self, mode="human"):
@@ -255,13 +343,13 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
             end="\n" if self.current_battle.finished else "\r",
         )
 
-    def close(self):  # pragma: no cover
-        if self.current_battle.finished:
+    def close(self, purge: bool = True):  # pragma: no cover
+        if self.current_battle is None or self.current_battle.finished:
             time.sleep(1)
             if self.current_battle != self.agent.current_battle:
                 self.current_battle = self.agent.current_battle
         closing_task = asyncio.run_coroutine_threadsafe(
-            self._stop_challenge_loop(purge=True), POKE_LOOP
+            self._stop_challenge_loop(purge=purge), POKE_LOOP
         )
         closing_task.result()
 
@@ -269,6 +357,13 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         np.random.seed(seed)
 
     def play_against(self, username: str):  # pragma: no cover
+        """
+        Starts a match against the specified player. The function immediately returns
+        to allow use of the OpenAI gym API.
+
+        :param username: The username of the player to challenge.
+        :type username: str
+        """
         if self.challenge_task and not self.challenge_task.done():
             raise RuntimeError(
                 "Agent is already challenging opponents with the challenging loop. "
@@ -320,6 +415,16 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         n_challenges: Optional[int] = None,
         callback: Optional[Callable[[AbstractBattle], None]] = None,
     ):  # pragma: no cover
+        """
+        Starts the challenge loop.
+
+        :param n_challenges: The number of challenges to send. If empty it will run until
+            stopped.
+        :type n_challenges: int, optional
+        :param callback: The function to callback after each challenge with a copy of
+            the final battle state.
+        :type callback: Callable[[AbstractBattle], None], optional
+        """
         if self.challenge_task and not self.challenge_task.done():
             count = self._SWITCH_CHALLENGE_TASK_RETRIES
             while not self.challenge_task.done():
@@ -358,6 +463,16 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         n_challenges: Optional[int] = None,
         callback: Optional[Callable[[AbstractBattle], None]] = None,
     ):  # pragma: no cover
+        """
+        Starts the laddering loop.
+
+        :param n_challenges: The number of ladder games to play. If empty it
+            will run until stopped.
+        :type n_challenges: int, optional
+        :param callback: The function to callback after each challenge with a
+            copy of the final battle state.
+        :type callback: Callable[[AbstractBattle], None], optional
+        """
         if self.challenge_task and not self.challenge_task.done():
             count = self._SWITCH_CHALLENGE_TASK_RETRIES
             while not self.challenge_task.done():
@@ -407,10 +522,21 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
             self.agent.reset_battles()
 
     def reset_battles(self):  # pragma: no cover
+        """Resets the player's inner battle tracker."""
         self.agent.reset_battles()
 
     def done(self, timeout: Optional[int] = None) -> bool:  # pragma: no cover
-        if not timeout:
+        """
+        Returns True if the task is done or is done after the timeout, false otherwise.
+
+        :param timeout: The amount of time to wait for if the task is not already done.
+            If empty it will wait until the task is done.
+        :type timeout: int, optional
+        :return: True if the task is done or if the task gets completed after the
+            timeout.
+        :rtype: bool
+        """
+        if timeout is None:
             self.challenge_task.result()
             return True
         if self.challenge_task.done():
@@ -456,16 +582,38 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
 
     @property
     def logged_in(self) -> asyncio.Event:  # pragma: no cover
+        """Event object associated with user login.
+
+        :return: The logged-in event
+        :rtype: Event
+        """
         return self.agent.logged_in
 
     @property
     def logger(self) -> Logger:  # pragma: no cover
+        """Logger associated with the player.
+
+        :return: The logger.
+        :rtype: Logger
+        """
         return self.agent.logger
 
     @property
     def username(self) -> str:  # pragma: no cover
+        """The player's username.
+
+        :return: The player's username.
+        :rtype: str
+        """
         return self.agent.username
 
     @property
     def websocket_url(self) -> str:  # pragma: no cover
+        """The websocket url.
+
+        It is derived from the server url.
+
+        :return: The websocket url.
+        :rtype: str
+        """
         return self.agent.websocket_url
