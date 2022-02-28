@@ -3,17 +3,11 @@
 Reinforcement learning with the OpenAI Gym wrapper
 ==================================================
 
-The corresponding complete source code can be found `here <https://github.com/hsahovic/poke-env/blob/master/examples/rl_with_open_ai_gym_wrapper.py>`__.
-
-.. note::
-    A similar example using gen 7 mechanics is available `here <https://github.com/hsahovic/poke-env/blob/master/examples/gen7/rl_with_open_ai_gym_wrapper.py>`__.
+The corresponding complete source code can be found `here <https://github.com/hsahovic/poke-env/blob/master/examples/rl_with_new_open_ai_gym_wrapper.py>`__.
 
 The goal of this example is to demonstrate how to use the `open ai gym <https://gym.openai.com/>`__ interface proposed by ``EnvPlayer``, and to train a simple deep reinforcement learning agent comparable in performance to the ``MaxDamagePlayer`` we created in :ref:`max_damage_player`.
 
 .. note:: This example necessitates `keras-rl <https://github.com/keras-rl/keras-rl>`__ (compatible with Tensorflow 1.X) or `keras-rl2 <https://github.com/wau/keras-rl2>`__ (Tensorflow 2.X), which implement numerous reinforcement learning algorithms and offer a simple API fully compatible with the Open AI Gym API. You can install them by running ``pip install keras-rl`` or ``pip install keras-rl2``. If you are unsure, ``pip install keras-rl2`` is recommended.
-
-.. warning:: ``keras-rl2`` version 1.0.4 seems to be causing problems with this example. While we are trying to find a workaround, please try using version 1.0.3 with python version 3.6.
-
 
 Implementing rewards and observations
 *************************************
@@ -32,6 +26,10 @@ Observations are embeddings of the current state of the battle. They can be an a
 
 To define our observations, we will create a custom ``embed_battle`` method. It takes one argument, a ``Battle`` object, and returns our embedding.
 
+In addition to this, we also need to describe the embedding to the gym interface.
+To achieve this, we need to implement the ``describe_embedding`` method where we specify the low bound and the high bound
+for each component of the embedding vector and return them as a ``gym.Space`` object.
+
 Defining rewards
 ^^^^^^^^^^^^^^^^
 
@@ -44,66 +42,111 @@ We will use this method to define the following reward:
 - Making an opponent lose % hp corresponds to a positive reward of %
 - Other status conditions are ignored
 
-Conversly, negative actions lead to symettrically negative rewards: losing is a reward of -30 points, etc.
+Conversely, negative actions lead to symmetrically negative rewards: losing is a reward of -30 points, etc.
 
 To define our rewards, we will create a custom ``compute_reward`` method. It takes one argument, a ``Battle`` object, and returns the reward.
 
 Defining our custom class
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Our player will play the ``gen8randombattle`` format. We can therefore inheritate from ``Gen8EnvSinglePlayer``.
+Our player will play the ``gen8randombattle`` format. We can therefore inherit from ``Gen8EnvSinglePlayer``.
 
 .. code-block:: python
 
     # -*- coding: utf-8 -*-
+    import numpy as np
+    from gym.spaces import Space, Box
     from poke_env.player.env_player import Gen8EnvSinglePlayer
 
     class SimpleRLPlayer(Gen8EnvSinglePlayer):
-        def embed_battle(self, battle):
+        def calc_reward(self, last_battle, current_battle) -> float:
+            return self.reward_computing_helper(
+                current_battle, fainted_value=2.0, hp_value=1.0, victory_value=30.0
+            )
+
+        def embed_battle(self, battle: AbstractBattle) -> ObservationType:
             # -1 indicates that the move does not have a base power
             # or is not available
             moves_base_power = -np.ones(4)
             moves_dmg_multiplier = np.ones(4)
             for i, move in enumerate(battle.available_moves):
-                moves_base_power[i] = move.base_power / 100 # Simple rescaling to facilitate learning
+                moves_base_power[i] = (
+                    move.base_power / 100
+                )  # Simple rescaling to facilitate learning
                 if move.type:
                     moves_dmg_multiplier[i] = move.type.damage_multiplier(
                         battle.opponent_active_pokemon.type_1,
                         battle.opponent_active_pokemon.type_2,
                     )
 
-            # We count how many pokemons have not fainted in each team
-            remaining_mon_team = len([mon for mon in battle.team.values() if mon.fainted]) / 6
-            remaining_mon_opponent = (
+            # We count how many pokemons have fainted in each team
+            fainted_mon_team = len([mon for mon in battle.team.values() if mon.fainted]) / 6
+            fainted_mon_opponent = (
                 len([mon for mon in battle.opponent_team.values() if mon.fainted]) / 6
             )
 
             # Final vector with 10 components
-            return np.concatenate(
-                [moves_base_power, moves_dmg_multiplier, [remaining_mon_team, remaining_mon_opponent]]
+            final_vector = np.concatenate(
+                [
+                    moves_base_power,
+                    moves_dmg_multiplier,
+                    [fainted_mon_team, fainted_mon_opponent],
+                ]
             )
+            return np.float32(final_vector)
 
-        def compute_reward(self, battle) -> float:
-            return self.reward_computing_helper(
-                battle,
-                fainted_value=2,
-                hp_value=1,
-                victory_value=30,
+        def describe_embedding(self) -> Space:
+            low = [-1, -1, -1, -1, 0, 0, 0, 0, 0, 0]
+            high = [3, 3, 3, 3, 4, 4, 4, 4, 1, 1]
+            return Box(
+                np.array(low, dtype=np.float32),
+                np.array(high, dtype=np.float32),
+                dtype=np.float32,
             )
 
     ...
 
-Instanciating a player
-^^^^^^^^^^^^^^^^^^^^^^^
+Instantiating and testing a player
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Now that our custom class is defined, we can instantiate our RL player.
+Now that our custom class is defined, we can instantiate our RL player and test if it's compliant with the OpenAI gym API.
 
 .. code-block:: python
 
     ...
-    env_player = SimpleRLPlayer(battle_format="gen8randombattle")
+    from gym.utils.env_checker import check_env
+
+    test_env = SimpleRLPlayer(battle_format="gen8randombattle", start_challenging=True)
+    check_env(test_env)
+    test_env.close()
     ...
 
+The ``close`` method of ``test_env`` closes all underlying processes and clears from memory all objects related to the environment.
+After an environment is closed, no further actions should be taken on that environment.
+
+Instantiating train environment and evaluation environment
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Normally, to ensure isolation between training and testing, two different environments are created.
+The base class ``EnvPlayer`` allows you to choose the opponent either when you instantiate it or replace it during training
+with the ``set_opponent`` method.
+If you don't want the player to start challenging the opponent you can set ``start_challenging=False`` when creating it.
+In this case, we want them to start challenging right away:
+
+.. code-block:: python
+
+    ...
+    from poke_env.player.random_player import RandomPlayer
+
+    opponent = RandomPlayer(battle_format="gen8randombattle")
+    train_env = SimpleRLPlayer(
+        battle_format="gen8randombattle", opponent=opponent, start_challenging=True
+    )
+    opponent = RandomPlayer(battle_format="gen8randombattle")
+    eval_env = SimpleRLPlayer(
+        battle_format="gen8randombattle", opponent=opponent, start_challenging=True
+    )
+    ...
 
 Creating a DQN with keras-rl
 ****************************
@@ -123,14 +166,13 @@ The output of the model must map to the environment's action space. The action s
     from tensorflow.keras.layers import Dense, Flatten
     from tensorflow.keras.models import Sequential
 
-    # Output dimension
-    n_action = len(env_player.action_space)
+    # Compute dimensions
+    n_action = train_env.action_space.n
+    input_shape = (1,) + train_env.observation_space.shape # (1,) is the batch size that the model expects in input.
 
+    # Create model
     model = Sequential()
-    model.add(Dense(128, activation="elu", input_shape=(1, 10,)))
-
-    # Our embedding have shape (1, 10), which affects our hidden layer dimension and output dimension
-    # Flattening resolve potential issues that would arise otherwise
+    model.add(Dense(128, activation="elu", input_shape=input_shape))
     model.add(Flatten())
     model.add(Dense(64, activation="elu"))
     model.add(Dense(n_action, activation="linear"))
@@ -153,22 +195,21 @@ For more information regarding keras-rl, please refer to their `documentation <h
     from rl.policy import LinearAnnealedPolicy, EpsGreedyQPolicy
     from tensorflow.keras.optimizers import Adam
 
+    # Defining the DQN
     memory = SequentialMemory(limit=10000, window_length=1)
 
-    # Simple epsilon greedy
     policy = LinearAnnealedPolicy(
         EpsGreedyQPolicy(),
         attr="eps",
         value_max=1.0,
         value_min=0.05,
-        value_test=0,
+        value_test=0.0,
         nb_steps=10000,
     )
 
-    # Defining our DQN
     dqn = DQNAgent(
         model=model,
-        nb_actions=18,
+        nb_actions=n_action,
         policy=policy,
         memory=memory,
         nb_steps_warmup=1000,
@@ -177,95 +218,145 @@ For more information regarding keras-rl, please refer to their `documentation <h
         delta_clip=0.01,
         enable_double_dqn=True,
     )
-
-    dqn.compile(Adam(lr=0.00025), metrics=["mae"])
+    dqn.compile(Adam(learning_rate=0.00025), metrics=["mae"])
     ...
 
 
 Training the model
 ******************
 
-Accessing the open AI Gym environment interface requires interacting with env players in the main thread without preventing other asynchronous operations from happening. The easiest way to do that is to use the ``play_against`` method of ``EnvPlayer`` instances.
-
-This method accepts three arguments:
-
-- ``env_algorithm``: the function that will control the player. It must accept a first ``player`` argument, and can optionally take other arguments
-- ``opponent``: another ``Player`` that will be faced by the ``env_player``
-- ``env_algorithm_kwargs``: a dictionary containing other objects that will be passed to ``env_algorithm``
-
-To train our agent, we will create a custom ``dqn_training`` function. In addition to the player, it will accept two additional arguments: ``dqn`` and ``nb_steps``. We can pass it in a call to ``play_against`` as the ``env_algorithm`` argument.
+Training the model is as simple as
 
 .. code-block:: python
 
     ...
-    from poke_env.player.random_player import RandomPlayer
-
-    def dqn_training(player, dqn, nb_steps):
-        dqn.fit(player, nb_steps=nb_steps)
-
-        # This call will finished eventual unfinshed battles before returning
-        player.complete_current_battle()
-
-    opponent = RandomPlayer(battle_format="gen8randombattle")
-
-    # Training
-    env_player.play_against(
-        env_algorithm=dqn_training,
-        opponent=opponent,
-        env_algorithm_kwargs={"dqn": dqn, "nb_steps": 100000},
-    )
+    dqn.fit(train_env, nb_steps=10000)
+    train_env.close()
     ...
 
 
 Evaluating the model
 ********************
 
-Similarly to the training function above, we can define an evaluation function.
+We have trained our agent. Now we can use different strategies to evaluate the result.
+
+Simple win rate evaluation
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A first way to evaluate the result is having it play against different agents and printing the won battles.
+This can be done with the following code:
 
 .. code-block:: python
 
     ...
-    def dqn_evaluation(player, dqn, nb_episodes):
-        # Reset battle statistics
-        player.reset_battles()
-        dqn.test(player, nb_episodes=nb_episodes, visualize=False, verbose=False)
-
-        print(
-            "DQN Evaluation: %d victories out of %d episodes"
-            % (player.n_won_battles, nb_episodes)
-        )
-
-    # Ths code of MaxDamagePlayer is not reproduced for brevity and legibility
-    # It can be found in the complete code linked above, or in the max damage example
-    second_opponent = MaxDamagePlayer(battle_format="gen8randombattle")
-
-    # Evaluation
     print("Results against random player:")
-    env_player.play_against(
-        env_algorithm=dqn_evaluation,
-        opponent=opponent,
-        env_algorithm_kwargs={"dqn": dqn, "nb_episodes": 100},
+    dqn.test(eval_env, nb_episodes=100, verbose=False, visualize=False)
+    print(
+        f"DQN Evaluation: {eval_env.n_won_battles} victories out of {eval_env.n_finished_battles} episodes"
     )
-
-    print("\nResults against max player:")
-    env_player.play_against(
-        env_algorithm=dqn_evaluation,
-        opponent=second_opponent,
-        env_algorithm_kwargs={"dqn": dqn, "nb_episodes": 100},
+    second_opponent = MaxBasePowerPlayer(battle_format="gen8randombattle")
+    eval_env.reset_env(restart=True, opponent=second_opponent)
+    print("Results against max base power player:")
+    dqn.test(eval_env, nb_episodes=100, verbose=False, visualize=False)
+    print(
+        f"DQN Evaluation: {eval_env.n_won_battles} victories out of {eval_env.n_finished_battles} episodes"
     )
     ...
 
+The ``reset_env`` method of the ``EnvPlayer`` class allows you to reset the environment
+to a clean state, including internal counters for victories, battles, etc.
 
-Running the `whole file <https://github.com/hsahovic/poke-env/blob/master/examples/rl_with_open_ai_gym_wrapper.py>`__ should take a couple of minutes and print something similar to this:
+It takes two optional parameters:
+
+- ``restart``: a boolean that will tell the environment if the challenge loop is to be restarted after the reset;
+- ``opponent``: the new opponent to use after the reset in the challenge loop. If empty it will keep old opponent.
+
+Use provided ``evaluate_player`` method
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In order to evaluate the player with the provided method, we need to use a background version.
+``background_evaluate_player`` has the same interface as the foreground counterpart, but it will return a
+``Future`` object.
 
 .. code-block:: python
+
+    ...
+    from poke_env.player.utils import background_evaluate_player
+
+    n_challenges = 250
+    placement_battles = 40
+    eval_task = background_evaluate_player(
+        eval_env.agent, n_challenges, placement_battles
+    )
+    dqn.test(eval_env, nb_episodes=n_challenges, verbose=False, visualize=False)
+    print("Evaluation with included method:", eval_task.result())
+    ...
+
+The ``result`` method of the ``Future`` object will block until the task is done and will return the result.
+
+.. warning:: ``background_evaluate_player`` requires the challenge loop to be stopped. To ensure this use method ``reset_env(restart=False)`` of ``EnvPlayer``.
+
+.. warning:: If you call ``result`` before the task is finished, the main thread will be blocked. Only do that if the agent is operating on a different thread than the one asking for the result.
+
+Use provided ``cross_evaluate`` method
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+To use the ``cross_evaluate`` method, the strategy is the same to the one used for the ``evaluate_player`` method:
+
+.. code-block:: python
+
+    ...
+    from poke_env.player.utils import background_cross_evaluate
+
+    n_challenges = 50
+    players = [
+        eval_env.agent,
+        RandomPlayer(battle_format="gen8randombattle"),
+        MaxBasePowerPlayer(battle_format="gen8randombattle"),
+        SimpleHeuristicsPlayer(battle_format="gen8randombattle"),
+    ]
+    cross_eval_task = background_cross_evaluate(players, n_challenges)
+    dqn.test(
+        eval_env,
+        nb_episodes=n_challenges * (len(players) - 1),
+        verbose=False,
+        visualize=False,
+    )
+    cross_evaluation = cross_eval_task.result()
+    table = [["-"] + [p.username for p in players]]
+    for p_1, results in cross_evaluation.items():
+        table.append([p_1] + [cross_evaluation[p_1][p_2] for p_2 in results])
+    print("Cross evaluation of DQN with baselines:")
+    print(tabulate(table))
+    ...
+
+.. warning:: ``background_cross_evaluate`` requires the challenge loop to be stopped. To ensure this use method ``reset_env(restart=False)`` of ``EnvPlayer``.
+
+.. warning:: If you call ``result`` before the task is finished, the main thread will be blocked. Only do that if the agent is operating on a different thread than the one asking for the result.
+
+Final result
+************
+
+Running the `whole file <https://github.com/hsahovic/poke-env/blob/master/examples/rl_with_new_open_ai_gym_wrapper.py>`__ should take a couple of minutes and print something similar to this:
+
+.. code-block::
 
     Training for 10000 steps ...
     Interval 1 (0 steps performed)
-    10000/10000 [==============================] - 96s 10ms/step - reward: 0.6307
-    done, took 96.233 seconds
+    10000/10000 [==============================] - 194s 19ms/step - reward: 0.6015
+    done, took 195.208 seconds
     Results against random player:
-    DQN Evaluation: 97 victories out of 100 episodes
-
-    Results against max player:
+    DQN Evaluation: 94 victories out of 100 episodes
+    Results against max base power player:
     DQN Evaluation: 65 victories out of 100 episodes
+    Evaluation with included method: (16.028896545454547, (11.79801006617441, 22.609978288238203))
+    Cross evaluation of DQN with baselines:
+    ------------------  ----------------  --------------  ------------------  ------------------
+    -                   SimpleRLPlayer 3  RandomPlayer 5  MaxBasePowerPlay 3  SimpleHeuristics 2
+    SimpleRLPlayer 3                      0.96            0.76                0.16
+    RandomPlayer 5      0.04                              0.12                0.0
+    MaxBasePowerPlay 3  0.24              0.88                                0.1
+    SimpleHeuristics 2  0.84              1.0             0.9
+    ------------------  ----------------  --------------  ------------------  ------------------
+
+.. warning:: Remember to use ``reset_env`` between different evaluations on the same environment or use different environments to avoid interferences between evaluations.
