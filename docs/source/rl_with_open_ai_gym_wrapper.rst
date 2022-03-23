@@ -339,7 +339,7 @@ Final result
 
 Running the `whole file <https://github.com/hsahovic/poke-env/blob/master/examples/rl_with_new_open_ai_gym_wrapper.py>`__ should take a couple of minutes and print something similar to this:
 
-.. code-block::
+.. code-block:: console
 
     Training for 10000 steps ...
     Interval 1 (0 steps performed)
