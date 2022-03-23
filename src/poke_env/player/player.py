@@ -356,13 +356,6 @@ class Player(PlayerNetwork, ABC):
     async def accept_challenges(
         self, opponent: Optional[Union[str, List[str]]], n_challenges: int
     ) -> None:
-        await self._handle_threaded_coroutines(
-            self._accept_challenges(opponent, n_challenges)
-        )
-
-    async def _accept_challenges(
-        self, opponent: Optional[Union[str, List[str]]], n_challenges: int
-    ) -> None:  # pragma: no cover
         """Let the player wait for challenges from opponent, and accept them.
 
         If opponent is None, every challenge will be accepted. If opponent if a string,
@@ -378,6 +371,13 @@ class Player(PlayerNetwork, ABC):
         :param n_challenges: Number of challenges that will be accepted
         :type n_challenges: int
         """
+        await self._handle_threaded_coroutines(
+            self._accept_challenges(opponent, n_challenges)
+        )
+
+    async def _accept_challenges(
+        self, opponent: Optional[Union[str, List[str]]], n_challenges: int
+    ) -> None:  # pragma: no cover
         if opponent:
             if isinstance(opponent, list):
                 opponent = [to_id_str(o) for o in opponent]
@@ -543,9 +543,6 @@ class Player(PlayerNetwork, ABC):
             )
 
     async def ladder(self, n_games):
-        await self._handle_threaded_coroutines(self._ladder(n_games))
-
-    async def _ladder(self, n_games):
         """Make the player play games on the ladder.
 
         n_games defines how many battles will be played.
@@ -553,6 +550,9 @@ class Player(PlayerNetwork, ABC):
         :param n_games: Number of battles that will be played
         :type n_games: int
         """
+        await self._handle_threaded_coroutines(self._ladder(n_games))
+
+    async def _ladder(self, n_games):
         await self._logged_in.wait()
         start_time = perf_counter()
 
@@ -572,11 +572,6 @@ class Player(PlayerNetwork, ABC):
         )
 
     async def battle_against(self, opponent: "Player", n_battles: int) -> None:
-        await self._handle_threaded_coroutines(
-            self._battle_against(opponent, n_battles)
-        )
-
-    async def _battle_against(self, opponent: "Player", n_battles: int) -> None:
         """Make the player play n_battles against opponent.
 
         This function is a wrapper around send_challenges and accept challenges.
@@ -586,6 +581,11 @@ class Player(PlayerNetwork, ABC):
         :param n_battles: The number of games to play.
         :type n_battles: int
         """
+        await self._handle_threaded_coroutines(
+            self._battle_against(opponent, n_battles)
+        )
+
+    async def _battle_against(self, opponent: "Player", n_battles: int) -> None:
         await asyncio.gather(
             self.send_challenges(
                 to_id_str(opponent.username), n_battles, to_wait=opponent.logged_in
@@ -594,13 +594,6 @@ class Player(PlayerNetwork, ABC):
         )
 
     async def send_challenges(
-        self, opponent: str, n_challenges: int, to_wait: Optional[Event] = None
-    ) -> None:
-        await self._handle_threaded_coroutines(
-            self._send_challenges(opponent, n_challenges, to_wait)
-        )
-
-    async def _send_challenges(
         self, opponent: str, n_challenges: int, to_wait: Optional[Event] = None
     ) -> None:
         """Make the player send challenges to opponent.
@@ -619,6 +612,13 @@ class Player(PlayerNetwork, ABC):
         :param to_wait: Optional event to wait before launching challenges.
         :type to_wait: Event, optional.
         """
+        await self._handle_threaded_coroutines(
+            self._send_challenges(opponent, n_challenges, to_wait)
+        )
+
+    async def _send_challenges(
+        self, opponent: str, n_challenges: int, to_wait: Optional[Event] = None
+    ) -> None:
         await self._logged_in.wait()
         self.logger.info("Event logged in received in send challenge")
 
