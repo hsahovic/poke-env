@@ -234,6 +234,7 @@ class Gen4EnvSinglePlayer(EnvPlayer, ABC):
         """Converts actions to move orders.
 
         The conversion is done as follows:
+
         action = -1:
             The battle will be forfeited.
         0 <= action < 4:
