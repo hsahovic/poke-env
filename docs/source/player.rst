@@ -21,6 +21,14 @@ Player
    :undoc-members:
    :show-inheritance:
 
+OpenAIGymEnv
+************
+
+.. automodule:: poke_env.player.openai_api
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Random Player
 *************
 
