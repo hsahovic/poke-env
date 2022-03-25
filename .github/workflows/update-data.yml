@@ -1,0 +1,30 @@
+name: Update data files from smogon database
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: 0 0 * * *
+jobs:
+  Update-data-files:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: master
+      - name: Run update script
+        run: |
+          chmod +x ./scripts/update_all_data.sh
+          ./scripts/update_all_data.sh
+          chmod -x ./scripts/update_all_data.sh
+      - name: Create or update pull request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          commit-message: JSON data update from smogon
+          branch: create-pull-request/update-data
+          delete-branch: true
+          title: Automatic data update from smogon
+          body: |
+            Automated data update by [update-data.yml](https://github.com/hsahovic/poke-env/tree/master/.github/workflows/update-data.yml)
+          assignees: hsahovic
+          reviewers: hsahovic
+          author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
