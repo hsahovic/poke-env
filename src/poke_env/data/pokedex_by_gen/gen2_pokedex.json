@@ -307,6 +307,10 @@
         ],
         "evoItem": "Fire Stone",
         "evoType": "useItem",
+        "formeOrder": [
+            "Arcanine",
+            "Arcanine-Hisui"
+        ],
         "genderRatio": {
             "F": 0.25,
             "M": 0.75
@@ -314,11 +318,49 @@
         "heightm": 1.9,
         "name": "Arcanine",
         "num": 59,
+        "otherFormes": [
+            "Arcanine-Hisui"
+        ],
         "prevo": "Growlithe",
         "types": [
             "Fire"
         ],
         "weightkg": 155
+    },
+    "arcaninehisui": {
+        "abilities": {
+            "0": "Intimidate",
+            "1": "Flash Fire"
+        },
+        "baseSpecies": "Arcanine",
+        "baseStats": {
+            "atk": 115,
+            "def": 80,
+            "hp": 95,
+            "spa": 95,
+            "spd": 80,
+            "spe": 90
+        },
+        "color": "Brown",
+        "eggGroups": [
+            "Field"
+        ],
+        "evoItem": "Fire Stone",
+        "evoType": "useItem",
+        "forme": "Hisui",
+        "genderRatio": {
+            "F": 0.25,
+            "M": 0.75
+        },
+        "heightm": 2,
+        "name": "Arcanine-Hisui",
+        "num": 59,
+        "prevo": "Growlithe-Hisui",
+        "types": [
+            "Fire",
+            "Rock"
+        ],
+        "weightkg": 168
     },
     "argalis": {
         "abilities": {
@@ -2752,15 +2794,54 @@
             "Mineral"
         ],
         "evoLevel": 30,
+        "formeOrder": [
+            "Electrode",
+            "Electrode-Hisui"
+        ],
         "gender": "N",
         "heightm": 1.2,
         "name": "Electrode",
         "num": 101,
+        "otherFormes": [
+            "Electrode-Hisui"
+        ],
         "prevo": "Voltorb",
         "types": [
             "Electric"
         ],
         "weightkg": 66.6
+    },
+    "electrodehisui": {
+        "abilities": {
+            "0": "Soundproof",
+            "1": "Static"
+        },
+        "baseSpecies": "Electrode",
+        "baseStats": {
+            "atk": 50,
+            "def": 70,
+            "hp": 60,
+            "spa": 80,
+            "spd": 80,
+            "spe": 150
+        },
+        "color": "Red",
+        "eggGroups": [
+            "Mineral"
+        ],
+        "evoItem": "Leaf Stone",
+        "evoType": "useItem",
+        "forme": "Hisui",
+        "gender": "N",
+        "heightm": 1.2,
+        "name": "Electrode-Hisui",
+        "num": 101,
+        "prevo": "Voltorb-Hisui",
+        "types": [
+            "Electric",
+            "Grass"
+        ],
+        "weightkg": 71
     },
     "elekid": {
         "abilities": {
@@ -3983,6 +4064,10 @@
         "evos": [
             "Arcanine"
         ],
+        "formeOrder": [
+            "Growlithe",
+            "Growlithe-Hisui"
+        ],
         "genderRatio": {
             "F": 0.25,
             "M": 0.75
@@ -3990,10 +4075,48 @@
         "heightm": 0.7,
         "name": "Growlithe",
         "num": 58,
+        "otherFormes": [
+            "Growlithe-Hisui"
+        ],
         "types": [
             "Fire"
         ],
         "weightkg": 19
+    },
+    "growlithehisui": {
+        "abilities": {
+            "0": "Intimidate",
+            "1": "Flash Fire"
+        },
+        "baseSpecies": "Growlithe",
+        "baseStats": {
+            "atk": 75,
+            "def": 45,
+            "hp": 60,
+            "spa": 65,
+            "spd": 50,
+            "spe": 55
+        },
+        "color": "Brown",
+        "eggGroups": [
+            "Field"
+        ],
+        "evos": [
+            "Arcanine-Hisui"
+        ],
+        "forme": "Hisui",
+        "genderRatio": {
+            "F": 0.25,
+            "M": 0.75
+        },
+        "heightm": 0.8,
+        "name": "Growlithe-Hisui",
+        "num": 58,
+        "types": [
+            "Fire",
+            "Rock"
+        ],
+        "weightkg": 22.7
     },
     "gyarados": {
         "abilities": {
@@ -9294,7 +9417,8 @@
         ],
         "evoLevel": 14,
         "evos": [
-            "Typhlosion"
+            "Typhlosion",
+            "Typhlosion-Hisui"
         ],
         "genderRatio": {
             "F": 0.125,
@@ -9327,11 +9451,49 @@
         "eggGroups": [
             "Water 2"
         ],
+        "formeOrder": [
+            "Qwilfish",
+            "Qwilfish-Hisui"
+        ],
         "heightm": 0.5,
         "name": "Qwilfish",
         "num": 211,
+        "otherFormes": [
+            "Qwilfish-Hisui"
+        ],
         "types": [
             "Water",
+            "Poison"
+        ],
+        "weightkg": 3.9
+    },
+    "qwilfishhisui": {
+        "abilities": {
+            "0": "Poison Point",
+            "1": "Swift Swim"
+        },
+        "baseSpecies": "Qwilfish",
+        "baseStats": {
+            "atk": 95,
+            "def": 85,
+            "hp": 65,
+            "spa": 55,
+            "spd": 55,
+            "spe": 85
+        },
+        "color": "Gray",
+        "eggGroups": [
+            "Water 2"
+        ],
+        "evos": [
+            "Overqwil"
+        ],
+        "forme": "Hisui",
+        "heightm": 0.5,
+        "name": "Qwilfish-Hisui",
+        "num": 211,
+        "types": [
+            "Dark",
             "Poison"
         ],
         "weightkg": 3.9
@@ -10043,7 +10205,8 @@
             "Bug"
         ],
         "evos": [
-            "Scizor"
+            "Scizor",
+            "Kleavor"
         ],
         "heightm": 1.5,
         "name": "Scyther",
@@ -10758,14 +10921,52 @@
         "evos": [
             "Weavile"
         ],
+        "formeOrder": [
+            "Sneasel",
+            "Sneasel-Hisui"
+        ],
         "heightm": 0.9,
         "name": "Sneasel",
         "num": 215,
+        "otherFormes": [
+            "Sneasel-Hisui"
+        ],
         "types": [
             "Dark",
             "Ice"
         ],
         "weightkg": 28
+    },
+    "sneaselhisui": {
+        "abilities": {
+            "0": "Inner Focus",
+            "1": "Keen Eye"
+        },
+        "baseSpecies": "Sneasel",
+        "baseStats": {
+            "atk": 95,
+            "def": 55,
+            "hp": 55,
+            "spa": 35,
+            "spd": 75,
+            "spe": 115
+        },
+        "color": "Black",
+        "eggGroups": [
+            "Field"
+        ],
+        "evos": [
+            "Sneasler"
+        ],
+        "forme": "Hisui",
+        "heightm": 0.9,
+        "name": "Sneasel-Hisui",
+        "num": 215,
+        "types": [
+            "Fighting",
+            "Poison"
+        ],
+        "weightkg": 27
     },
     "snorlax": {
         "abilities": {
@@ -11033,6 +11234,9 @@
         "color": "Brown",
         "eggGroups": [
             "Field"
+        ],
+        "evos": [
+            "Wyrdeer"
         ],
         "heightm": 1.4,
         "name": "Stantler",
@@ -11749,6 +11953,10 @@
             "Field"
         ],
         "evoLevel": 36,
+        "formeOrder": [
+            "Typhlosion",
+            "Typhlosion-Hisui"
+        ],
         "genderRatio": {
             "F": 0.125,
             "M": 0.875
@@ -11756,12 +11964,48 @@
         "heightm": 1.7,
         "name": "Typhlosion",
         "num": 157,
+        "otherFormes": [
+            "Typhlosion-Hisui"
+        ],
         "prevo": "Quilava",
         "types": [
             "Fire"
         ],
         "unreleasedHidden": true,
         "weightkg": 79.5
+    },
+    "typhlosionhisui": {
+        "abilities": {
+            "0": "Blaze"
+        },
+        "baseSpecies": "Typhlosion",
+        "baseStats": {
+            "atk": 84,
+            "def": 78,
+            "hp": 73,
+            "spa": 119,
+            "spd": 85,
+            "spe": 95
+        },
+        "color": "Yellow",
+        "eggGroups": [
+            "Field"
+        ],
+        "evoLevel": 36,
+        "forme": "Hisui",
+        "genderRatio": {
+            "F": 0.125,
+            "M": 0.875
+        },
+        "heightm": 1.6,
+        "name": "Typhlosion-Hisui",
+        "num": 157,
+        "prevo": "Quilava",
+        "types": [
+            "Fire",
+            "Ghost"
+        ],
+        "weightkg": 69.8
     },
     "tyranitar": {
         "abilities": {
@@ -11988,6 +12232,9 @@
             "Field"
         ],
         "evoLevel": 30,
+        "evos": [
+            "Ursaluna"
+        ],
         "heightm": 1.8,
         "name": "Ursaring",
         "num": 217,
@@ -12027,6 +12274,72 @@
             "Water"
         ],
         "weightkg": 29
+    },
+    "venomicon": {
+        "abilities": {
+            "0": "Stamina"
+        },
+        "baseForme": "Prologue",
+        "baseStats": {
+            "atk": 70,
+            "def": 113,
+            "hp": 85,
+            "spa": 118,
+            "spd": 90,
+            "spe": 64
+        },
+        "color": "Purple",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "formeOrder": [
+            "Venomicon",
+            "Venomicon-Epilogue"
+        ],
+        "gen": 8,
+        "gender": "N",
+        "heightm": 0.8,
+        "name": "Venomicon",
+        "num": -66,
+        "otherFormes": [
+            "Venomicon-Epilogue"
+        ],
+        "types": [
+            "Poison",
+            "Flying"
+        ],
+        "weightkg": 11.5
+    },
+    "venomiconepilogue": {
+        "abilities": {
+            "0": "Tinted Lens"
+        },
+        "baseSpecies": "Venomicon",
+        "baseStats": {
+            "atk": 102,
+            "def": 85,
+            "hp": 85,
+            "spa": 63,
+            "spd": 85,
+            "spe": 120
+        },
+        "changesFrom": "Venomicon",
+        "color": "Purple",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "forme": "Epilogue",
+        "gen": 8,
+        "gender": "N",
+        "heightm": 0.8,
+        "name": "Venomicon-Epilogue",
+        "num": -66,
+        "requiredItem": "Vile Vial",
+        "types": [
+            "Poison",
+            "Flying"
+        ],
+        "weightkg": 12.4
     },
     "venomoth": {
         "abilities": {
@@ -12329,14 +12642,53 @@
         "evos": [
             "Electrode"
         ],
+        "formeOrder": [
+            "Voltorb",
+            "Voltorb-Hisui"
+        ],
         "gender": "N",
         "heightm": 0.5,
         "name": "Voltorb",
         "num": 100,
+        "otherFormes": [
+            "Voltorb-Hisui"
+        ],
         "types": [
             "Electric"
         ],
         "weightkg": 10.4
+    },
+    "voltorbhisui": {
+        "abilities": {
+            "0": "Soundproof",
+            "1": "Static"
+        },
+        "baseSpecies": "Voltorb",
+        "baseStats": {
+            "atk": 30,
+            "def": 50,
+            "hp": 40,
+            "spa": 55,
+            "spd": 55,
+            "spe": 100
+        },
+        "color": "Red",
+        "eggGroups": [
+            "Mineral"
+        ],
+        "evos": [
+            "Electrode-Hisui"
+        ],
+        "forme": "Hisui",
+        "gender": "N",
+        "heightm": 0.5,
+        "name": "Voltorb-Hisui",
+        "num": 100,
+        "types": [
+            "Electric",
+            "Grass"
+        ],
+        "weightkg": 13
     },
     "voodoll": {
         "abilities": {
