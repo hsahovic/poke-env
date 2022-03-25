@@ -3964,12 +3964,12 @@
         },
         "name": "Foul Play",
         "num": 492,
+        "overrideOffensivePokemon": "target",
         "pp": 15,
         "priority": 0,
         "secondary": null,
         "target": "normal",
-        "type": "Dark",
-        "useTargetOffensive": true
+        "type": "Dark"
     },
     "freezeshock": {
         "accuracy": 90,
@@ -8538,13 +8538,13 @@
         "basePower": 80,
         "category": "Special",
         "contestType": "Beautiful",
-        "defensiveCategory": "Physical",
         "flags": {
             "mirror": 1,
             "protect": 1
         },
         "name": "Psyshock",
         "num": 473,
+        "overrideDefensiveStat": "def",
         "pp": 10,
         "priority": 0,
         "secondary": null,
@@ -8556,13 +8556,13 @@
         "basePower": 100,
         "category": "Special",
         "contestType": "Cool",
-        "defensiveCategory": "Physical",
         "flags": {
             "mirror": 1,
             "protect": 1
         },
         "name": "Psystrike",
         "num": 540,
+        "overrideDefensiveStat": "def",
         "pp": 10,
         "priority": 0,
         "secondary": null,
@@ -9778,13 +9778,13 @@
         "basePower": 85,
         "category": "Special",
         "contestType": "Beautiful",
-        "defensiveCategory": "Physical",
         "flags": {
             "mirror": 1,
             "protect": 1
         },
         "name": "Secret Sword",
         "num": 548,
+        "overrideDefensiveStat": "def",
         "pp": 10,
         "priority": 0,
         "secondary": null,
@@ -13041,7 +13041,8 @@
             "onFieldResidualOrder": 27,
             "onFieldResidualSubOrder": 5,
             "onFieldRestart": "onFieldRestart",
-            "onFieldStart": "onFieldStart"
+            "onFieldStart": "onFieldStart",
+            "onModifyMove": "onModifyMove"
         },
         "contestType": "Clever",
         "flags": {
