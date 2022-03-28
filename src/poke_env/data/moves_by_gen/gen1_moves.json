@@ -518,7 +518,6 @@
         "secondary": null,
         "target": "normal",
         "type": "Normal",
-        "volatileStatus": "conversion",
         "zMove": {
             "boost": {
                 "atk": 1,
