@@ -25,6 +25,6 @@ jobs:
           title: Automatic data update from smogon
           body: |
             Automated data update by [update-data.yml](https://github.com/hsahovic/poke-env/tree/master/.github/workflows/update-data.yml)
-          assignees: hsahovic
-          reviewers: hsahovic
+          assignees: ${{ github.repository_owner }}
+          reviewers: ${{ github.repository_owner }}
           author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
