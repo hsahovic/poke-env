@@ -276,7 +276,9 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         self,
         *,
         seed: Optional[int] = None,
-    ) -> ObservationType:  # pyre-ignore  # pragma: no cover
+        return_info: bool = False,
+        options: Optional[dict] = None,
+    ) -> Union[ObservationType, Tuple[ObservationType, dict]]:  # pyre-ignore
         if seed:
             self.seed(seed)
         if not self.agent.current_battle:
@@ -300,13 +302,24 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         battle = copy.copy(self.current_battle)
         battle.logger = None  # pyre-ignore
         self.last_battle = copy.deepcopy(battle)
+        if return_info:
+            return self.observations.get(), self.get_additional_info()
         return self.observations.get()
+
+    def get_additional_info(self) -> dict:
+        """
+        Returns additional info for the reset method.
+        Override only if you really need it.
+        :return: Additional information as a dict
+        :rtype: dict
+        """
+        return {}
 
     def step(
         self, action: ActionType
     ) -> Tuple[ObservationType, float, bool, dict]:  # pyre-ignore  # pragma: no cover
         if not self.current_battle:
-            return self.reset(), 0.0, False, {}
+            return self.reset(), 0.0, False, {}  # pyre-ignore
         if self.current_battle.finished:
             raise RuntimeError("Battle is already finished, call reset")
         battle = copy.copy(self.current_battle)
