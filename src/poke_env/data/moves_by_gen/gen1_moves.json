@@ -3321,7 +3321,6 @@
         "name": "Teleport",
         "num": 100,
         "onTry": false,
-        "onTryHit": true,
         "pp": 20,
         "priority": 0,
         "secondary": null,
