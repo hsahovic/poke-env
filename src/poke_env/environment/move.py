@@ -892,7 +892,7 @@ class DynamaxMove(Move):
 
     @property
     def n_hit(self):
-        return 1
+        return 1, 1
 
     @property
     def priority(self):

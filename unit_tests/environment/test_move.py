@@ -629,7 +629,7 @@ def test_misc_dynamax_move_properties():
     assert dynamaxed.heal == 0
     assert dynamaxed.is_protect_counter is False
     assert dynamaxed.is_protect_move is False
-    assert dynamaxed.n_hit == 1
+    assert dynamaxed.n_hit == (1, 1)
     assert dynamaxed.priority == 0
     assert dynamaxed.recoil == 0
     assert dynamaxed.status is None
@@ -654,7 +654,7 @@ def test_dynamax_status_move_properties():
     assert dynamaxed.heal == 0
     assert dynamaxed.is_protect_counter is True
     assert dynamaxed.is_protect_move is True
-    assert dynamaxed.n_hit == 1
+    assert dynamaxed.n_hit == (1, 1)
     assert dynamaxed.priority == 0
     assert dynamaxed.recoil == 0
     assert dynamaxed.status is None
