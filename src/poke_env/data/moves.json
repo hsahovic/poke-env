@@ -773,6 +773,7 @@
   "pp": 40,
   "priority": 0,
   "flags": {},
+  "onHit": "onHit",
   "self": {
    "onHit": "onHit"
   },
@@ -6075,7 +6076,7 @@
   "pp": 10,
   "priority": 0,
   "flags": {"snatch": 1, "heal": 1},
-  "onTryHit": "onTryHit",
+  "onHit": "onHit",
   "selfdestruct": "ifHit",
   "slotCondition": "healingwish",
   "condition": {
@@ -7796,7 +7797,7 @@
   "pp": 10,
   "priority": 0,
   "flags": {"snatch": 1, "heal": 1, "dance": 1},
-  "onTryHit": "onTryHit",
+  "onHit": "onHit",
   "selfdestruct": "ifHit",
   "slotCondition": "lunardance",
   "condition": {
@@ -13918,8 +13919,8 @@
   "pp": 20,
   "priority": -6,
   "flags": {},
+  "onTry": "onTry",
   "selfSwitch": true,
-  "onTryHit": true,
   "secondary": null,
   "target": "self",
   "type": "Psychic",
