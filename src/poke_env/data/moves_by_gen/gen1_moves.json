@@ -546,7 +546,7 @@
         },
         "name": "Counter",
         "num": 68,
-        "onTryHit": "onTryHit",
+        "onTry": "onTry",
         "pp": 20,
         "priority": -1,
         "secondary": null,
