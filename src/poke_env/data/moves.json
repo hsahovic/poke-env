@@ -2164,7 +2164,7 @@
   "priority": -5,
   "flags": {"contact": 1, "protect": 1},
   "beforeTurnCallback": "beforeTurnCallback",
-  "onTryHit": "onTryHit",
+  "onTry": "onTry",
   "condition": {
    "duration": 1,
    "noCopy": true,
@@ -8558,7 +8558,7 @@
   "pp": 10,
   "priority": 0,
   "flags": {"protect": 1, "mirror": 1},
-  "onTryHit": "onTryHit",
+  "onTry": "onTry",
   "onModifyTarget": "onModifyTarget",
   "secondary": null,
   "target": "scripted",
@@ -8797,7 +8797,7 @@
   "priority": -5,
   "flags": {"protect": 1},
   "beforeTurnCallback": "beforeTurnCallback",
-  "onTryHit": "onTryHit",
+  "onTry": "onTry",
   "condition": {
    "duration": 1,
    "noCopy": true,
