@@ -155,7 +155,10 @@ class PlayerNetwork(ABC):
                 # Confirms connection to the server: we can login
                 await self._log_in(split_messages[0])
             elif split_messages[0][1] == "updateuser":
-                if split_messages[0][2] == " " + self._username:
+                if split_messages[0][2] in [
+                    " " + self._username,
+                    " " + self._username + "@!",
+                ]:
                     # Confirms successful login
                     self.logged_in.set()
                 elif not split_messages[0][2].startswith(" Guest "):
