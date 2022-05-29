@@ -794,7 +794,7 @@
   "pp": 15,
   "priority": -3,
   "flags": {"bullet": 1, "protect": 1},
-  "beforeTurnCallback": "beforeTurnCallback",
+  "priorityChargeCallback": "priorityChargeCallback",
   "condition": {
    "duration": 1,
    "onStart": "onStart",
@@ -2488,7 +2488,8 @@
   },
   "volatileStatus": "defensecurl",
   "condition": {
-   "noCopy": true
+   "noCopy": true,
+   "onRestart": () => null
   },
   "secondary": null,
   "target": "self",
@@ -3850,7 +3851,6 @@
   "pp": 5,
   "priority": 0,
   "flags": {"protect": 1},
-  "selfdestruct": "ifHit",
   "secondary": null,
   "target": "normal",
   "type": "Fighting",
@@ -4369,7 +4369,7 @@
   "pp": 20,
   "priority": -3,
   "flags": {"contact": 1, "protect": 1, "punch": 1},
-  "beforeTurnCallback": "beforeTurnCallback",
+  "priorityChargeCallback": "priorityChargeCallback",
   "beforeMoveCallback": "beforeMoveCallback",
   "condition": {
    "duration": 1,
@@ -5337,7 +5337,7 @@
   },
   "condition": {
    "onSideStart": "onSideStart",
-   "onSwitchIn": "onSwitchIn"
+   "onEntryHazard": "onEntryHazard"
   },
   "secondary": null,
   "target": "adjacentFoe",
@@ -6076,7 +6076,7 @@
   "pp": 10,
   "priority": 0,
   "flags": {"snatch": 1, "heal": 1},
-  "onHit": "onHit",
+  "onTryHit": "onTryHit",
   "selfdestruct": "ifHit",
   "slotCondition": "healingwish",
   "condition": {
@@ -7797,7 +7797,7 @@
   "pp": 10,
   "priority": 0,
   "flags": {"snatch": 1, "heal": 1, "dance": 1},
-  "onHit": "onHit",
+  "onTryHit": "onTryHit",
   "selfdestruct": "ifHit",
   "slotCondition": "lunardance",
   "condition": {
@@ -8665,7 +8665,7 @@
   "priority": 0,
   "flags": {},
   "noMetronome": [
-   "After You", "Apple Acid", "Assist", "Astral Barrage", "Aura Wheel", "Baneful Bunker", "Beak Blast", "Behemoth Bash", "Behemoth Blade", "Belch", "Bestow", "Body Press", "Branch Poke", "Breaking Swipe", "Celebrate", "Chatter", "Clangorous Soul", "Copycat", "Counter", "Covet", "Crafty Shield", "Decorate", "Destiny Bond", "Detect", "Diamond Storm", "Double Iron Bash", "Dragon Ascent", "Dragon Energy", "Drum Beating", "Dynamax Cannon", "Endure", "Eternabeam", "False Surrender", "Feint", "Fiery Wrath", "Fleur Cannon", "Focus Punch", "Follow Me", "Freeze Shock", "Freezing Glare", "Glacial Lance", "Grav Apple", "Helping Hand", "Hold Hands", "Hyperspace Fury", "Hyperspace Hole", "Ice Burn", "Instruct", "Jungle Healing", "King's Shield", "Life Dew", "Light of Ruin", "Mat Block", "Me First", "Meteor Assault", "Metronome", "Mimic", "Mind Blown", "Mirror Coat", "Mirror Move", "Moongeist Beam", "Nature Power", "Nature's Madness", "Obstruct", "Origin Pulse", "Overdrive", "Photon Geyser", "Plasma Fists", "Precipice Blades", "Protect", "Pyro Ball", "Quash", "Quick Guard", "Rage Powder", "Relic Song", "Secret Sword", "Shell Trap", "Sketch", "Sleep Talk", "Snap Trap", "Snarl", "Snatch", "Snore", "Spectral Thief", "Spiky Shield", "Spirit Break", "Spotlight", "Steam Eruption", "Steel Beam", "Strange Steam", "Struggle", "Sunsteel Strike", "Surging Strikes", "Switcheroo", "Techno Blast", "Thief", "Thousand Arrows", "Thousand Waves", "Thunder Cage", "Thunderous Kick", "Transform", "Trick", "V-create", "Wicked Blow", "Wide Guard"
+   "After You", "Apple Acid", "Assist", "Astral Barrage", "Aura Wheel", "Baneful Bunker", "Beak Blast", "Behemoth Bash", "Behemoth Blade", "Belch", "Bestow", "Body Press", "Branch Poke", "Breaking Swipe", "Celebrate", "Chatter", "Clangorous Soul", "Copycat", "Counter", "Covet", "Crafty Shield", "Decorate", "Destiny Bond", "Detect", "Diamond Storm", "Double Iron Bash", "Dragon Ascent", "Dragon Energy", "Dragon Hammer", "Drum Beating", "Dynamax Cannon", "Endure", "Eternabeam", "False Surrender", "Feint", "Fiery Wrath", "Fleur Cannon", "Focus Punch", "Follow Me", "Freeze Shock", "Freezing Glare", "Glacial Lance", "Grav Apple", "Helping Hand", "Hold Hands", "Hyperspace Fury", "Hyperspace Hole", "Ice Burn", "Instruct", "Jungle Healing", "King's Shield", "Life Dew", "Light of Ruin", "Mat Block", "Me First", "Meteor Assault", "Metronome", "Mimic", "Mind Blown", "Mirror Coat", "Mirror Move", "Moongeist Beam", "Nature Power", "Nature's Madness", "Obstruct", "Origin Pulse", "Overdrive", "Photon Geyser", "Plasma Fists", "Precipice Blades", "Protect", "Pyro Ball", "Quash", "Quick Guard", "Rage Powder", "Relic Song", "Secret Sword", "Shell Trap", "Sketch", "Sleep Talk", "Snap Trap", "Snarl", "Snatch", "Snore", "Spectral Thief", "Spiky Shield", "Spirit Break", "Spotlight", "Steam Eruption", "Steel Beam", "Strange Steam", "Struggle", "Sunsteel Strike", "Surging Strikes", "Switcheroo", "Techno Blast", "Thief", "Thousand Arrows", "Thousand Waves", "Thunder Cage", "Thunderous Kick", "Transform", "Trick", "V-create", "Wicked Blow", "Wide Guard"
   ],
   "onHit": "onHit",
   "secondary": null,
@@ -8750,6 +8750,7 @@
   "volatileStatus": "minimize",
   "condition": {
    "noCopy": true,
+   "onRestart": () => null,
    "onSourceModifyDamage": "onSourceModifyDamage",
    "onAccuracy": "onAccuracy"
   },
@@ -11863,7 +11864,7 @@
   "pp": 5,
   "priority": -3,
   "flags": {"protect": 1},
-  "beforeTurnCallback": "beforeTurnCallback",
+  "priorityChargeCallback": "priorityChargeCallback",
   "onTryMove": "onTryMove",
   "condition": {
    "duration": 1,
@@ -12721,7 +12722,7 @@
   "condition": {
    "onSideStart": "onSideStart",
    "onSideRestart": "onSideRestart",
-   "onSwitchIn": "onSwitchIn"
+   "onEntryHazard": "onEntryHazard"
   },
   "secondary": null,
   "target": "foeSide",
@@ -12928,7 +12929,7 @@
   "sideCondition": "stealthrock",
   "condition": {
    "onSideStart": "onSideStart",
-   "onSwitchIn": "onSwitchIn"
+   "onEntryHazard": "onEntryHazard"
   },
   "secondary": null,
   "target": "foeSide",
@@ -13036,7 +13037,7 @@
   "sideCondition": "stickyweb",
   "condition": {
    "onSideStart": "onSideStart",
-   "onSwitchIn": "onSwitchIn"
+   "onEntryHazard": "onEntryHazard"
   },
   "secondary": null,
   "pressureTarget": "self",
@@ -14263,7 +14264,7 @@
   "condition": {
    "onSideStart": "onSideStart",
    "onSideRestart": "onSideRestart",
-   "onSwitchIn": "onSwitchIn"
+   "onEntryHazard": "onEntryHazard"
   },
   "secondary": null,
   "target": "foeSide",

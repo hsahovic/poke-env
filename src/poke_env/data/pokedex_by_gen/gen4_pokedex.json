@@ -11333,6 +11333,7 @@
         "eggGroups": [
             "Monster"
         ],
+        "evoCondition": "at night",
         "evoLevel": 28,
         "forme": "Alola",
         "heightm": 1,
@@ -16192,6 +16193,7 @@
         "eggGroups": [
             "Field"
         ],
+        "evoCondition": "at night",
         "evoLevel": 20,
         "forme": "Alola",
         "heightm": 0.7,
@@ -21754,6 +21756,7 @@
         "eggGroups": [
             "Field"
         ],
+        "evoCondition": "at night",
         "evoItem": "Razor Claw",
         "evoType": "levelHold",
         "heightm": 1.1,
