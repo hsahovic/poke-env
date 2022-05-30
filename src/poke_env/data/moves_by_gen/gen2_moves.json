@@ -904,7 +904,8 @@
         },
         "category": "Status",
         "condition": {
-            "noCopy": true
+            "noCopy": true,
+            "onRestart": null
         },
         "contestType": "Cute",
         "flags": {
@@ -4696,7 +4697,6 @@
     "sleeptalk": {
         "accuracy": true,
         "basePower": 0,
-        "beforeMoveCallback": "beforeMoveCallback",
         "category": "Status",
         "contestType": "Cute",
         "flags": {},

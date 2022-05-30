@@ -1861,7 +1861,8 @@
         },
         "category": "Status",
         "condition": {
-            "noCopy": true
+            "noCopy": true,
+            "onRestart": null
         },
         "contestType": "Cute",
         "flags": {
@@ -3304,6 +3305,7 @@
         "onTry": "onTry",
         "pp": 20,
         "priority": -3,
+        "priorityChargeCallback": "priorityChargeCallback",
         "secondary": null,
         "target": "normal",
         "type": "Fighting"
@@ -4099,7 +4101,7 @@
         "name": "Healing Wish",
         "num": 361,
         "onAfterMove": "onAfterMove",
-        "onHit": "onHit",
+        "onTryHit": "onTryHit",
         "pp": 10,
         "priority": 0,
         "secondary": null,
@@ -5470,7 +5472,7 @@
         "name": "Lunar Dance",
         "num": 461,
         "onAfterMove": "onAfterMove",
-        "onHit": "onHit",
+        "onTryHit": "onTryHit",
         "pp": 10,
         "priority": 0,
         "secondary": null,
@@ -9117,9 +9119,9 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
+            "onEntryHazard": "onEntryHazard",
             "onSideRestart": "onSideRestart",
-            "onSideStart": "onSideStart",
-            "onSwitchIn": "onSwitchIn"
+            "onSideStart": "onSideStart"
         },
         "contestType": "Clever",
         "flags": {},
@@ -9230,8 +9232,8 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "onSideStart": "onSideStart",
-            "onSwitchIn": "onSwitchIn"
+            "onEntryHazard": "onEntryHazard",
+            "onSideStart": "onSideStart"
         },
         "contestType": "Cool",
         "flags": {},
@@ -10259,9 +10261,9 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
+            "onEntryHazard": "onEntryHazard",
             "onSideRestart": "onSideRestart",
-            "onSideStart": "onSideStart",
-            "onSwitchIn": "onSwitchIn"
+            "onSideStart": "onSideStart"
         },
         "contestType": "Clever",
         "flags": {},

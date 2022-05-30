@@ -906,7 +906,6 @@
     "beakblast": {
         "accuracy": 100,
         "basePower": 100,
-        "beforeTurnCallback": "beforeTurnCallback",
         "category": "Physical",
         "condition": {
             "duration": 1,
@@ -924,6 +923,7 @@
         "onAfterMove": "onAfterMove",
         "pp": 15,
         "priority": -3,
+        "priorityChargeCallback": "priorityChargeCallback",
         "secondary": null,
         "target": "normal",
         "type": "Flying"
@@ -2809,7 +2809,8 @@
         },
         "category": "Status",
         "condition": {
-            "noCopy": true
+            "noCopy": true,
+            "onRestart": null
         },
         "contestType": "Cute",
         "flags": {
@@ -4372,7 +4373,6 @@
         "pp": 5,
         "priority": 0,
         "secondary": null,
-        "selfdestruct": "ifHit",
         "target": "normal",
         "type": "Fighting",
         "zMove": {
@@ -4996,7 +4996,6 @@
         "accuracy": 100,
         "basePower": 150,
         "beforeMoveCallback": "beforeMoveCallback",
-        "beforeTurnCallback": "beforeTurnCallback",
         "category": "Physical",
         "condition": {
             "duration": 1,
@@ -5014,6 +5013,7 @@
         "num": 264,
         "pp": 20,
         "priority": -3,
+        "priorityChargeCallback": "priorityChargeCallback",
         "secondary": null,
         "target": "normal",
         "type": "Fighting"
@@ -6291,7 +6291,7 @@
         },
         "name": "Healing Wish",
         "num": 361,
-        "onHit": "onHit",
+        "onTryHit": "onTryHit",
         "pp": 10,
         "priority": 0,
         "secondary": null,
@@ -8393,7 +8393,7 @@
         },
         "name": "Lunar Dance",
         "num": 461,
-        "onHit": "onHit",
+        "onTryHit": "onTryHit",
         "pp": 10,
         "priority": 0,
         "secondary": null,
@@ -9194,6 +9194,7 @@
         "condition": {
             "noCopy": true,
             "onAccuracy": "onAccuracy",
+            "onRestart": null,
             "onSourceModifyDamage": "onSourceModifyDamage"
         },
         "contestType": "Cute",
@@ -12869,7 +12870,6 @@
     "shelltrap": {
         "accuracy": 100,
         "basePower": 150,
-        "beforeTurnCallback": "beforeTurnCallback",
         "category": "Special",
         "condition": {
             "duration": 1,
@@ -12885,6 +12885,7 @@
         "onTryMove": "onTryMove",
         "pp": 5,
         "priority": -3,
+        "priorityChargeCallback": "priorityChargeCallback",
         "secondary": null,
         "target": "allAdjacentFoes",
         "type": "Fire"
@@ -13915,9 +13916,9 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
+            "onEntryHazard": "onEntryHazard",
             "onSideRestart": "onSideRestart",
-            "onSideStart": "onSideStart",
-            "onSwitchIn": "onSwitchIn"
+            "onSideStart": "onSideStart"
         },
         "contestType": "Clever",
         "flags": {
@@ -14151,8 +14152,8 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "onSideStart": "onSideStart",
-            "onSwitchIn": "onSwitchIn"
+            "onEntryHazard": "onEntryHazard",
+            "onSideStart": "onSideStart"
         },
         "contestType": "Cool",
         "flags": {
@@ -14246,8 +14247,8 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "onSideStart": "onSideStart",
-            "onSwitchIn": "onSwitchIn"
+            "onEntryHazard": "onEntryHazard",
+            "onSideStart": "onSideStart"
         },
         "contestType": "Tough",
         "flags": {
@@ -15679,9 +15680,9 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
+            "onEntryHazard": "onEntryHazard",
             "onSideRestart": "onSideRestart",
-            "onSideStart": "onSideStart",
-            "onSwitchIn": "onSwitchIn"
+            "onSideStart": "onSideStart"
         },
         "contestType": "Clever",
         "flags": {

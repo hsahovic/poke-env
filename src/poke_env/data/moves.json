@@ -2489,7 +2489,7 @@
   "volatileStatus": "defensecurl",
   "condition": {
    "noCopy": true,
-   "onRestart": () => null
+   "onRestart": null
   },
   "secondary": null,
   "target": "self",
@@ -8750,7 +8750,7 @@
   "volatileStatus": "minimize",
   "condition": {
    "noCopy": true,
-   "onRestart": () => null,
+   "onRestart": null,
    "onSourceModifyDamage": "onSourceModifyDamage",
    "onAccuracy": "onAccuracy"
   },
