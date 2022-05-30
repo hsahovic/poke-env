@@ -2,7 +2,7 @@
 """This module contains constant values used in the repository.
 """
 
-import orjson
+import orjson  # pyre-ignore
 import os
 
 from functools import lru_cache

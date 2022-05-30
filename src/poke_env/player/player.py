@@ -3,7 +3,7 @@
 """
 
 import asyncio
-import orjson
+import orjson  # pyre-ignore
 import random
 
 from abc import ABC

@@ -65,7 +65,7 @@ class DoubleBattleOrder(BattleOrder):
             return (
                 self.first_order.message
                 + ", "
-                + self.second_order.message.replace("/choose ", "")
+                + self.second_order.message.replace("/choose ", "")  # pyre-ignore
             )
         elif self.first_order:
             return self.first_order.message + ", default"
