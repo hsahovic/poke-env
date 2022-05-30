@@ -38,7 +38,7 @@ def test_estimate_strength_from_results():
 
     eis = []
     cis = []
-    for n_games in [10 ** i for i in range(2, 10)]:
+    for n_games in [10**i for i in range(2, 10)]:
         ei, ci = _estimate_strength_from_results(n_games, n_games // 2 + 2, 1)
         eis.append(ei)
         cis.append(ci)
@@ -69,7 +69,7 @@ def test_estimate_strength_from_results():
         (0.5444919968130197, 1.2357621837082962),
     )
 
-    assert _estimate_strength_from_results(10 ** 17, 10 ** 17 - 10, 1)[1][1] == math.inf
+    assert _estimate_strength_from_results(10**17, 10**17 - 10, 1)[1][1] == math.inf
 
 
 @pytest.mark.asyncio
