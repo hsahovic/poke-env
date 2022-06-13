@@ -872,7 +872,7 @@ class AbstractBattle(ABC):
             lost. Otherwise None.
         :rtype: Optional[bool]
         """
-        return self._won is False
+        return None if self._won is None else not self._won
 
     @property
     def max_team_size(self) -> Optional[int]:
