@@ -113,6 +113,8 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         ] = LocalhostServerConfiguration,
         start_timer_on_battle_start: bool = False,
         start_listening: bool = True,
+        ping_interval: Optional[float] = 20.0,
+        ping_timeout: Optional[float] = 20.0,
         team: Optional[Union[str, Teambuilder]] = None,
         start_challenging: bool = False,
     ):
@@ -142,6 +144,14 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         :param start_timer_on_battle_start: Whether to automatically start the battle
             timer on battle start. Defaults to False.
         :type start_timer_on_battle_start: bool
+        :param ping_interval: How long between keepalive pings (Important for backend
+            websockets). If None, disables keepalive entirely.
+        :type ping_interval: float, optional
+        :param ping_timeout: How long to wait for a timeout of a specific ping
+            (important for backend websockets.
+            Increase only if timeouts occur during runtime).
+            If None pings will never time out.
+        :type ping_timeout: float, optional
         :param team: The team to use for formats requiring a team. Can be a showdown
             team string, a showdown packed team string, of a ShowdownTeam object.
             Defaults to None.
@@ -162,6 +172,8 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
             server_configuration=server_configuration,
             start_timer_on_battle_start=start_timer_on_battle_start,
             start_listening=start_listening,
+            ping_interval=ping_interval,
+            ping_timeout=ping_timeout,
             team=team,
         )
         self.battle_format = battle_format

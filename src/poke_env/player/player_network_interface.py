@@ -42,6 +42,8 @@ class PlayerNetwork(ABC):
         log_level: Optional[int] = None,
         server_configuration: ServerConfiguration,
         start_listening: bool = True,
+        ping_interval: Optional[float] = 20.0,
+        ping_timeout: Optional[float] = 20.0,
     ) -> None:
         """
         :param player_configuration: Player configuration.
@@ -52,10 +54,20 @@ class PlayerNetwork(ABC):
         :type log_level: int. Defaults to logging's default level.
         :param server_configuration: Server configuration.
         :type server_configuration: ServerConfiguration
-        :param start_listening: Wheter to start listening to the server. Defaults to
+        :param start_listening: Whether to start listening to the server. Defaults to
             True.
         :type start_listening: bool
+        :param ping_interval: How long between keepalive pings (Important for backend
+            websockets). If None, disables keepalive entirely.
+        :type ping_interval: float, optional
+        :param ping_timeout: How long to wait for a timeout of a specific ping
+            (important for backend websockets.
+            Increase only if timeouts occur during runtime).
+            If None pings will never time out.
+        :type ping_timeout: float, optional
         """
+        self._ping_interval = ping_interval
+        self._ping_timeout = ping_timeout
         self._authentication_url = server_configuration.authentication_url
         self._avatar = avatar
         self._password = player_configuration.password
@@ -280,7 +292,10 @@ class PlayerNetwork(ABC):
         self.logger.info("Starting listening to showdown websocket")
         try:
             async with websockets.connect(
-                self.websocket_url, max_queue=None
+                self.websocket_url,
+                max_queue=None,
+                ping_interval=self._ping_interval,
+                ping_timeout=self._ping_timeout,
             ) as websocket:
                 self._websocket = websocket
                 async for message in websocket:
