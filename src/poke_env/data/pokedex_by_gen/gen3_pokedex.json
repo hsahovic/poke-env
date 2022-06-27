@@ -13458,6 +13458,32 @@
         ],
         "weightkg": 161
     },
+    "saharaja": {
+        "abilities": {
+            "0": "Water Absorb",
+            "1": "Serene Grace"
+        },
+        "baseStats": {
+            "atk": 120,
+            "def": 105,
+            "hp": 70,
+            "spa": 65,
+            "spd": 130,
+            "spe": 90
+        },
+        "color": "White",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "gen": 8,
+        "heightm": 2.3,
+        "name": "Saharaja",
+        "num": -68,
+        "types": [
+            "Ground"
+        ],
+        "weightkg": 303.9
+    },
     "salamence": {
         "abilities": {
             "0": "Intimidate"
