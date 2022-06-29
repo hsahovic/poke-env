@@ -285,7 +285,9 @@ class Move:
             return min_hits
         else:
             # It hits 2-5 times
-            assert min_hits == 2 and max_hits == 5
+            assert (
+                min_hits == 2 and max_hits == 5
+            ), f"Move {self._id} expected to hit 2-5 times. Got {min_hits}-{max_hits}"
             return (2 + 3) / 3 + (4 + 5) / 6
 
     @property

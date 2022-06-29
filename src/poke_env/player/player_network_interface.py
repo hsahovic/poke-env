@@ -93,12 +93,16 @@ class PlayerNetwork(ABC):
         return task.result()
 
     async def _accept_challenge(self, username: str) -> None:
-        assert self.logged_in.is_set()
+        assert (
+            self.logged_in.is_set()
+        ), f"Expected player {self._username} to be logged in."
         await self._set_team()
         await self._send_message("/accept %s" % username)
 
     async def _challenge(self, username: str, format_: str):
-        assert self.logged_in.is_set()
+        assert (
+            self.logged_in.is_set()
+        ), f"Expected player {self._username} to be logged in."
         await self._set_team()
         await self._send_message(f"/challenge {username}, {format_}")
 
@@ -180,7 +184,9 @@ class PlayerNetwork(ABC):
                 self.logger.critical("Error message received: %s", message)
                 raise ShowdownException("Error message received: %s", message)
             elif split_messages[0][1] == "pm":
-                assert len(split_messages) == 1
+                assert (
+                    len(split_messages) == 1
+                ), f"Expected len({split_messages}) to be 1, got {len(split_messages)}"
                 if split_messages[0][4].startswith("/challenge"):
                     await self._handle_challenge_request(split_messages[0])
                 elif split_messages[0][4].startswith("/text"):
@@ -267,7 +273,7 @@ class PlayerNetwork(ABC):
             await sleep(checking_interval)
             if self.logged_in:
                 return
-        assert self.logged_in
+        assert self.logged_in, f"Expected player {self._username} to be logged in."
 
     async def listen(self) -> None:
         """Listen to a showdown websocket and dispatch messages to be handled."""

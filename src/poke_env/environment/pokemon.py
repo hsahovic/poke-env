@@ -280,7 +280,9 @@ class Pokemon:
         self._update_from_pokedex(primal_species, store_species=False)
 
     def _set_boost(self, stat, amount):
-        assert abs(int(amount)) <= 6
+        assert (
+            abs(int(amount)) <= 6
+        ), f"{stat} of mon {self._species} is not <= 6. Got {amount}"
         self._boosts[stat] = int(amount)
 
     def _set_hp(self, hp_status):
@@ -488,7 +490,10 @@ class Pokemon:
                     "mefirst",
                     "mirrormove",
                     "assist",
-                }.intersection(self.moves)
+                }.intersection(self.moves), (
+                    f"Error with move {move}. Expected self.moves to contain copycat, "
+                    f"metronome, mefirst, mirrormove or assist. Got {self.moves}"
+                )
                 moves.append(self.MOVE_CLASS(move))
         return moves
 
