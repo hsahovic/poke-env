@@ -189,7 +189,7 @@ class AbstractBattle(ABC):
         :type force_self_team: bool, optional, defaults to False
         :return: The corresponding pokemon object.
         :rtype: Pokemon
-        :raises AssertionError: If the team has too many pokemons, as determined by the
+        :raises ValueError: If the team has too many pokemons, as determined by the
             teamsize component of battle initialisation.
         """
         if identifier[3] != " ":
