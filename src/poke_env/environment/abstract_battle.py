@@ -341,10 +341,10 @@ class AbstractBattle(ABC):
             if self._save_replays is True:
                 folder = "replays"
             else:
-                folder = self._save_replays
+                folder = str(self._save_replays)
 
             if not os.path.exists(folder):
-                os.mkdir(folder)  # pyre-ignore
+                os.mkdir(folder)
 
             with open(
                 os.path.join(
