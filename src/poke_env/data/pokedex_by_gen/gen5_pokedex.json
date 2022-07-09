@@ -17289,6 +17289,7 @@
             "M": 0.875
         },
         "heightm": 0.6,
+        "maleOnlyHidden": true,
         "name": "Panpour",
         "num": 515,
         "types": [
@@ -17321,6 +17322,7 @@
             "M": 0.875
         },
         "heightm": 0.6,
+        "maleOnlyHidden": true,
         "name": "Pansage",
         "num": 511,
         "types": [
@@ -17353,6 +17355,7 @@
             "M": 0.875
         },
         "heightm": 0.6,
+        "maleOnlyHidden": true,
         "name": "Pansear",
         "num": 513,
         "types": [
@@ -22730,6 +22733,7 @@
             "M": 0.875
         },
         "heightm": 1,
+        "maleOnlyHidden": true,
         "name": "Simipour",
         "num": 516,
         "prevo": "Panpour",
@@ -22762,6 +22766,7 @@
             "M": 0.875
         },
         "heightm": 1.1,
+        "maleOnlyHidden": true,
         "name": "Simisage",
         "num": 512,
         "prevo": "Pansage",
@@ -22794,6 +22799,7 @@
             "M": 0.875
         },
         "heightm": 1,
+        "maleOnlyHidden": true,
         "name": "Simisear",
         "num": 514,
         "prevo": "Pansear",
