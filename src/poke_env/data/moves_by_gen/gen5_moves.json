@@ -9752,10 +9752,6 @@
         "accuracy": 100,
         "basePower": 70,
         "category": "Physical",
-        "condition": {
-            "duration": 1,
-            "onAfterMoveSecondarySelf": "onAfterMoveSecondarySelf"
-        },
         "contestType": "Clever",
         "flags": {
             "mirror": 1,
@@ -9768,8 +9764,10 @@
         "pp": 20,
         "priority": 0,
         "secondary": {
-            "chance": 30,
-            "status": "par"
+            "boosts": {
+                "accuracy": -1
+            },
+            "chance": 30
         },
         "target": "normal",
         "type": "Normal"
