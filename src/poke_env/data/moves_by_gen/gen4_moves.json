@@ -8200,10 +8200,6 @@
         "accuracy": 100,
         "basePower": 70,
         "category": "Physical",
-        "condition": {
-            "duration": 1,
-            "onAfterMoveSecondarySelf": "onAfterMoveSecondarySelf"
-        },
         "contestType": "Clever",
         "flags": {
             "mirror": 1,
