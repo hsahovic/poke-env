@@ -131,6 +131,7 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         ping_timeout: Optional[float] = 20.0,
         team: Optional[Union[str, Teambuilder]] = None,
         start_challenging: bool = False,
+        use_old_gym_api: bool = True,  # False when new API is implemented in most ML libs
     ):
         """
         :param player_configuration: Player configuration. If empty, defaults to an
@@ -173,6 +174,10 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         :param start_challenging: Whether to automatically start the challenge loop or
             leave it inactive.
         :type start_challenging: bool
+        :param use_old_gym_api: Whether to use old gym api (where step returns
+            (observation, reward, done, info)) or the new one (where step returns
+            (observation, reward, terminated, truncated, info))
+        :type use_old_gym_api: bool
         """
         self.agent = _AsyncPlayer(
             self,
@@ -197,6 +202,7 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         self.current_battle: Optional[AbstractBattle] = None
         self.last_battle: Optional[AbstractBattle] = None
         self._keep_challenging: bool = False
+        self._old_step_api: bool = use_old_gym_api
         self._challenge_task = None
         if start_challenging:
             self._keep_challenging = True
@@ -343,7 +349,10 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
 
     def step(
         self, action: ActionType
-    ) -> Tuple[ObservationType, float, bool, dict]:  # pyre-ignore  # pragma: no cover
+    ) -> Union[  # pyre-ignore
+        Tuple[ObservationType, float, bool, bool, dict],
+        Tuple[ObservationType, float, bool, dict],
+    ]:  # pragma: no cover
         if not self.current_battle:
             return self.reset(), 0.0, False, {}  # pyre-ignore
         if self.current_battle.finished:
@@ -354,7 +363,32 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         self._actions.put(action)
         observation = self._observations.get()
         reward = self.calc_reward(self.last_battle, self.current_battle)  # pyre-ignore
-        return observation, reward, self.current_battle.finished, {}  # pyre-ignore
+        terminated = False
+        truncated = False
+        if self.current_battle.finished:  # pyre-ignore
+            size = self.current_battle.team_size  # pyre-ignore
+            remaining_mons = size - len(
+                [
+                    mon
+                    for mon in self.current_battle.team.values()  # pyre-ignore
+                    if mon.fainted
+                ]
+            )
+            remaining_opponent_mons = size - len(
+                [
+                    mon
+                    for mon in self.current_battle.opponent_team.values()  # pyre-ignore
+                    if mon.fainted
+                ]
+            )
+            if (remaining_mons == 0) != (remaining_opponent_mons == 0):
+                terminated = True
+            else:
+                truncated = True
+        if self._old_step_api:
+            return observation, reward, terminated or truncated, {}
+        else:
+            return observation, reward, terminated, truncated, {}
 
     def render(self, mode="human"):
         print(
