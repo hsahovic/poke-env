@@ -1,4 +1,4 @@
-gym==0.24.1
+gym
 numpy
 orjson
 requests
