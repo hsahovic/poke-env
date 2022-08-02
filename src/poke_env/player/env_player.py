@@ -40,7 +40,7 @@ class EnvPlayer(OpenAIGymEnv, ABC):
         start_challenging: bool = True,
     ):
         """
-        :param opponent: Opponent to challenge. If empty, defaults to a RandomPlayer
+        :param opponent: Opponent to challenge.
         :type opponent: Player or str, optional
         :param player_configuration: Player configuration. If empty, defaults to an
             automatically generated username with no password. This option must be set
@@ -89,8 +89,6 @@ class EnvPlayer(OpenAIGymEnv, ABC):
         b_format = self._DEFAULT_BATTLE_FORMAT
         if battle_format:
             b_format = battle_format
-        if not self._opponent:
-            self._opponent = RandomPlayer(battle_format=b_format)
         super().__init__(
             player_configuration=player_configuration,
             avatar=avatar,

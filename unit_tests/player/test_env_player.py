@@ -273,7 +273,7 @@ def test_get_opponent():
 
 def test_set_opponent():
     player = CustomEnvPlayer(start_listening=False)
-    assert isinstance(player._opponent, RandomPlayer)
+    assert player._opponent is None
     with pytest.raises(RuntimeError):
         player.set_opponent(0)
     dummy_player = RandomPlayer()
