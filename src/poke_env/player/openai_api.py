@@ -95,7 +95,19 @@ class _AsyncPlayer(Player):
         )
 
 
-class OpenAIGymEnv(Env, ABC):  # pyre-ignore
+class _ABCMetaclass(type(ABC)):  # pyre-ignore
+    pass
+
+
+class _EnvMetaclass(type(Env)):  # pyre-ignore
+    pass
+
+
+class _OpenAIGymEnvMetaclass(_EnvMetaclass, _ABCMetaclass):
+    pass
+
+
+class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
 
     _INIT_RETRIES = 100
     _TIME_BETWEEN_RETRIES = 0.5
@@ -164,7 +176,7 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         """
         self.agent = _AsyncPlayer(
             self,
-            username=self.__class__.__name__,
+            username=self.__class__.__name__,  # pyre-ignore
             player_configuration=player_configuration,
             avatar=avatar,
             battle_format=battle_format,
