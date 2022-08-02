@@ -64,33 +64,35 @@ class _AsyncPlayer(Player):
         self.__class__.__name__ = username
         super().__init__(**kwargs)
         self.__class__.__name__ = "_AsyncPlayer"
-        self.observations = _AsyncQueue(self._create_class(asyncio.Queue, 1))
-        self.actions = _AsyncQueue(self._create_class(asyncio.Queue, 1))
+        self._observations = _AsyncQueue(self._create_class(asyncio.Queue, 1))
+        self._actions = _AsyncQueue(self._create_class(asyncio.Queue, 1))
         self.current_battle: Optional[AbstractBattle] = None
-        self.user_funcs: OpenAIGymEnv = user_funcs
+        self._user_funcs: OpenAIGymEnv = user_funcs
 
     def choose_move(
         self, battle: AbstractBattle
     ) -> Union[BattleOrder, Awaitable[BattleOrder]]:
-        return self.env_move(battle)
+        return self._env_move(battle)
 
-    async def env_move(self, battle: AbstractBattle):
+    async def _env_move(self, battle: AbstractBattle):
         if not self.current_battle or self.current_battle.finished:
             self.current_battle = battle
         if not self.current_battle == battle:  # pragma: no cover
             raise RuntimeError("Using different battles for queues")
-        battle_to_send = self.user_funcs.embed_battle(battle)
-        await self.observations.async_put(battle_to_send)
-        action = await self.actions.async_get()
+        battle_to_send = self._user_funcs.embed_battle(battle)
+        await self._observations.async_put(battle_to_send)
+        action = await self._actions.async_get()
         if action == -1:
             return ForfeitBattleOrder()
-        return self.user_funcs.action_to_move(action, battle)
+        return self._user_funcs.action_to_move(action, battle)
 
     def _battle_finished_callback(
         self, battle: AbstractBattle
     ) -> None:  # pragma: no cover
-        to_put = self.user_funcs.embed_battle(battle)
-        asyncio.run_coroutine_threadsafe(self.observations.async_put(to_put), POKE_LOOP)
+        to_put = self._user_funcs.embed_battle(battle)
+        asyncio.run_coroutine_threadsafe(
+            self._observations.async_put(to_put), POKE_LOOP
+        )
 
 
 class OpenAIGymEnv(Env, ABC):  # pyre-ignore
@@ -176,18 +178,17 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
             ping_timeout=ping_timeout,
             team=team,
         )
-        self.battle_format = battle_format
-        self.actions = self.agent.actions
-        self.observations = self.agent.observations
+        self._actions = self.agent._actions
+        self._observations = self.agent._observations
         self.action_space = Discrete(self.action_space_size())
         self.observation_space = self.describe_embedding()
         self.current_battle: Optional[AbstractBattle] = None
         self.last_battle: Optional[AbstractBattle] = None
         self._keep_challenging: bool = False
-        self.challenge_task = None
+        self._challenge_task = None
         if start_challenging:
             self._keep_challenging = True
-            self.challenge_task = asyncio.run_coroutine_threadsafe(
+            self._challenge_task = asyncio.run_coroutine_threadsafe(
                 self._challenge_loop(), POKE_LOOP
             )
 
@@ -302,8 +303,8 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
                 time.sleep(self._TIME_BETWEEN_RETRIES)
         if self.current_battle and not self.current_battle.finished:
             if self.current_battle == self.agent.current_battle:
-                self.actions.put(-1)
-                self.observations.get()
+                self._actions.put(-1)
+                self._observations.get()
             else:
                 raise RuntimeError(
                     "Environment and agent aren't synchronized. Try to restart"
@@ -315,8 +316,8 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         battle.logger = None  # pyre-ignore
         self.last_battle = copy.deepcopy(battle)
         if return_info:
-            return self.observations.get(), self.get_additional_info()
-        return self.observations.get()
+            return self._observations.get(), self.get_additional_info()
+        return self._observations.get()
 
     def get_additional_info(self) -> dict:
         """
@@ -337,8 +338,8 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         battle = copy.copy(self.current_battle)
         battle.logger = None  # pyre-ignore
         self.last_battle = copy.deepcopy(battle)
-        self.actions.put(action)
-        observation = self.observations.get()
+        self._actions.put(action)
+        observation = self._observations.get()
         reward = self.calc_reward(self.last_battle, self.current_battle)  # pyre-ignore
         return observation, reward, self.current_battle.finished, {}  # pyre-ignore
 
@@ -389,13 +390,13 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         :param username: The username of the player to challenge.
         :type username: str
         """
-        if self.challenge_task and not self.challenge_task.done():
+        if self._challenge_task and not self._challenge_task.done():
             raise RuntimeError(
                 "Agent is already challenging opponents with the challenging loop. "
                 "Try to specify 'start_challenging=True' during instantiation or call "
                 "'await agent.stop_challenge_loop()' to clear the task."
             )
-        self.challenge_task = asyncio.run_coroutine_threadsafe(
+        self._challenge_task = asyncio.run_coroutine_threadsafe(
             self.agent.send_challenges(username, 1), POKE_LOOP
         )
 
@@ -450,16 +451,16 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
             the final battle state.
         :type callback: Callable[[AbstractBattle], None], optional
         """
-        if self.challenge_task and not self.challenge_task.done():
+        if self._challenge_task and not self._challenge_task.done():
             count = self._SWITCH_CHALLENGE_TASK_RETRIES
-            while not self.challenge_task.done():
+            while not self._challenge_task.done():
                 if count == 0:
                     raise RuntimeError("Agent is already challenging")
                 count -= 1
                 time.sleep(self._TIME_BETWEEN_SWITCH_RETIRES)
         if not n_challenges:
             self._keep_challenging = True
-        self.challenge_task = asyncio.run_coroutine_threadsafe(
+        self._challenge_task = asyncio.run_coroutine_threadsafe(
             self._challenge_loop(n_challenges, callback), POKE_LOOP
         )
 
@@ -498,16 +499,16 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
             copy of the final battle state.
         :type callback: Callable[[AbstractBattle], None], optional
         """
-        if self.challenge_task and not self.challenge_task.done():
+        if self._challenge_task and not self._challenge_task.done():
             count = self._SWITCH_CHALLENGE_TASK_RETRIES
-            while not self.challenge_task.done():
+            while not self._challenge_task.done():
                 if count == 0:
                     raise RuntimeError("Agent is already challenging")
                 count -= 1
                 time.sleep(self._TIME_BETWEEN_SWITCH_RETIRES)
         if not n_challenges:
             self._keep_challenging = True
-        self.challenge_task = asyncio.run_coroutine_threadsafe(
+        self._challenge_task = asyncio.run_coroutine_threadsafe(
             self._ladder_loop(n_challenges, callback), POKE_LOOP
         )
 
@@ -518,30 +519,30 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
 
         if force:
             if self.current_battle and not self.current_battle.finished:
-                if not self.actions.empty():
+                if not self._actions.empty():
                     await asyncio.sleep(2)
-                    if not self.actions.empty():
+                    if not self._actions.empty():
                         raise RuntimeError(
                             "The agent is still sending actions. "
                             "Use this method only when training or "
                             "evaluation are over."
                         )
-                if not self.observations.empty():
-                    await self.observations.async_get()
-                await self.actions.async_put(-1)
+                if not self._observations.empty():
+                    await self._observations.async_get()
+                await self._actions.async_put(-1)
 
-        if wait and self.challenge_task:
-            while not self.challenge_task.done():
+        if wait and self._challenge_task:
+            while not self._challenge_task.done():
                 await asyncio.sleep(1)
-            self.challenge_task.result()
+            self._challenge_task.result()
 
-        self.challenge_task = None
+        self._challenge_task = None
         self.current_battle = None
         self.agent.current_battle = None
-        while not self.actions.empty():
-            await self.actions.async_get()
-        while not self.observations.empty():
-            await self.observations.async_get()
+        while not self._actions.empty():
+            await self._actions.async_get()
+        while not self._observations.empty():
+            await self._observations.async_get()
 
         if purge:
             self.agent.reset_battles()
@@ -562,12 +563,12 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         :rtype: bool
         """
         if timeout is None:
-            self.challenge_task.result()
+            self._challenge_task.result()
             return True
-        if self.challenge_task.done():
+        if self._challenge_task.done():
             return True
         time.sleep(timeout)
-        return self.challenge_task.done()
+        return self._challenge_task.done()
 
     # Expose properties of Player class
 

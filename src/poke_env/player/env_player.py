@@ -84,13 +84,13 @@ class EnvPlayer(OpenAIGymEnv, ABC):
         :type start_challenging: bool
         """
         self._reward_buffer = {}
-        self.opponent_lock = Lock()
-        self.opponent: Optional[Union[Player, str]] = opponent
+        self._opponent_lock = Lock()
+        self._opponent: Optional[Union[Player, str]] = opponent
         b_format = self._DEFAULT_BATTLE_FORMAT
         if battle_format:
             b_format = battle_format
-        if not self.opponent:
-            self.opponent = RandomPlayer(battle_format=b_format)
+        if not self._opponent:
+            self._opponent = RandomPlayer(battle_format=b_format)
         super().__init__(
             player_configuration=player_configuration,
             avatar=avatar,
@@ -194,13 +194,13 @@ class EnvPlayer(OpenAIGymEnv, ABC):
         return len(self._ACTION_SPACE)
 
     def get_opponent(self) -> Union[Player, str, List[Player], List[str]]:
-        with self.opponent_lock:
-            if self.opponent is None:
+        with self._opponent_lock:
+            if self._opponent is None:
                 raise RuntimeError(
                     "Unspecified opponent. "
                     "Specify it in the constructor or use set_opponent"
                 )
-            return self.opponent
+            return self._opponent
 
     def set_opponent(self, opponent: Union[Player, str]):
         """
@@ -211,8 +211,8 @@ class EnvPlayer(OpenAIGymEnv, ABC):
         """
         if not isinstance(opponent, Player) and not isinstance(opponent, str):
             raise RuntimeError(f"Expected type Player or str. Got {type(opponent)}")
-        with self.opponent_lock:
-            self.opponent = opponent
+        with self._opponent_lock:
+            self._opponent = opponent
 
     def reset_env(
         self, opponent: Optional[Union[Player, str]] = None, restart: bool = True

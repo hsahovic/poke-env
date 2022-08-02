@@ -266,19 +266,19 @@ def test_action_space():
 def test_get_opponent():
     player = CustomEnvPlayer(start_listening=False, opponent="test")
     assert player.get_opponent() == "test"
-    player.opponent = None
+    player._opponent = None
     with pytest.raises(RuntimeError):
         player.get_opponent()
 
 
 def test_set_opponent():
     player = CustomEnvPlayer(start_listening=False)
-    assert isinstance(player.opponent, RandomPlayer)
+    assert isinstance(player._opponent, RandomPlayer)
     with pytest.raises(RuntimeError):
         player.set_opponent(0)
     dummy_player = RandomPlayer()
     player.set_opponent(dummy_player)
-    assert player.opponent == dummy_player
+    assert player._opponent == dummy_player
 
 
 @patch(
