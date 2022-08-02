@@ -335,6 +335,7 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         """
         Returns additional info for the reset method.
         Override only if you really need it.
+
         :return: Additional information as a dict
         :rtype: dict
         """
