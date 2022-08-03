@@ -517,7 +517,7 @@ class OpenAIGymEnv(Env, ABC):  # pyre-ignore
         self._keep_challenging = False
 
         if force:
-            if not self.current_battle.finished:  # pyre-ignore
+            if self.current_battle and not self.current_battle.finished:  # pyre-ignore
                 if not self.actions.empty():
                     await asyncio.sleep(2)
                     if not self.actions.empty():
