@@ -429,9 +429,9 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
     def seed(self, seed=None):  # pragma: no cover
         np.random.seed(seed)
 
-    def play_against(self, username: str):  # pragma: no cover
+    def background_send_challenge(self, username: str):  # pragma: no cover
         """
-        Starts a match against the specified player. The function immediately returns
+        Sends a single challenge specified player. The function immediately returns
         to allow use of the OpenAI gym API.
 
         :param username: The username of the player to challenge.
@@ -445,6 +445,24 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
             )
         self._challenge_task = asyncio.run_coroutine_threadsafe(
             self.agent.send_challenges(username, 1), POKE_LOOP
+        )
+
+    def background_accept_challenge(self, username: str):  # pragma: no cover
+        """
+        Accepts a single challenge specified player. The function immediately returns
+        to allow use of the OpenAI gym API.
+
+        :param username: The username of the player to challenge.
+        :type username: str
+        """
+        if self._challenge_task and not self._challenge_task.done():
+            raise RuntimeError(
+                "Agent is already challenging opponents with the challenging loop. "
+                "Try to specify 'start_challenging=True' during instantiation or call "
+                "'await agent.stop_challenge_loop()' to clear the task."
+            )
+        self._challenge_task = asyncio.run_coroutine_threadsafe(
+            self.agent.accept_challenges(username, 1), POKE_LOOP
         )
 
     async def _challenge_loop(
