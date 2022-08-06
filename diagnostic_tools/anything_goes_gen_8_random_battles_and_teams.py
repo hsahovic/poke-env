@@ -22,7 +22,7 @@ from poke_env.utils import to_id_str
 from tqdm import tqdm
 
 with open("src/poke_env/data/learnset.json") as f:
-    movesets = orjson.load(f)
+    movesets = orjson.loads(f.read())
 
 print("-" * 20, "\n")
 mons = [mon for mon in POKEDEX]
