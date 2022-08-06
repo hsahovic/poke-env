@@ -583,14 +583,14 @@ class Player(PlayerNetwork, ABC):
             perf_counter() - start_time,
         )
 
-    async def battle_against(self, opponent: "Player", n_battles: int) -> None:
+    async def battle_against(self, opponent: "Player", n_battles: int = 1) -> None:
         """Make the player play n_battles against opponent.
 
         This function is a wrapper around send_challenges and accept challenges.
 
         :param opponent: The opponent to play against.
         :type opponent: Player
-        :param n_battles: The number of games to play.
+        :param n_battles: The number of games to play. Defaults to 1.
         :type n_battles: int
         """
         await self._handle_threaded_coroutines(
