@@ -490,9 +490,12 @@ class Pokemon:
                     "mefirst",
                     "mirrormove",
                     "assist",
+                    "transform",
+                    "mimic",
                 }.intersection(self.moves), (
                     f"Error with move {move}. Expected self.moves to contain copycat, "
-                    f"metronome, mefirst, mirrormove or assist. Got {self.moves}"
+                    "metronome, mefirst, mirrormove, assist, transform or mimic. Got"
+                    f" {self.moves}"
                 )
                 moves.append(self.MOVE_CLASS(move))
         return moves
