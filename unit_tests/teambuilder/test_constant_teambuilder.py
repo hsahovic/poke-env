@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from poke_env.teambuilder.constant_teambuilder import ConstantTeambuilder
+from poke_env.teambuilder import ConstantTeambuilder
 
 
 def test_constant_teambuilder_yields_packed(packed_format_teams):

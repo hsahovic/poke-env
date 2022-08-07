@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from poke_env.teambuilder.teambuilder_pokemon import TeambuilderPokemon
+from poke_env.teambuilder import TeambuilderPokemon
 
 
 def test_teambuilder_pokemon_formatting():

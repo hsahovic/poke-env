@@ -33,7 +33,7 @@ All in all, we get the following ``Teambuilder``:
 
     import numpy as np
 
-    from poke_env.teambuilder.teambuilder import Teambuilder
+    from poke_env.teambuilder import Teambuilder
 
 
     class RandomTeamFromPool(Teambuilder):
@@ -203,7 +203,7 @@ The complete example looks like that:
     import numpy as np
 
     from poke_env.player.random_player import RandomPlayer
-    from poke_env.teambuilder.teambuilder import Teambuilder
+    from poke_env.teambuilder import Teambuilder
 
 
     class RandomTeamFromPool(Teambuilder):

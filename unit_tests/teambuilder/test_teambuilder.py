@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from poke_env.teambuilder.teambuilder import Teambuilder
+from poke_env.teambuilder import Teambuilder
 
 
 def test_join_team(showdown_format_teams, packed_format_teams):
