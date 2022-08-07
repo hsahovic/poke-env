@@ -18,7 +18,7 @@ DESCRIPTION = """A python interface for training Reinforcement Learning bots to 
 URL = "https://github.com/hsahovic/poke-env"
 EMAIL = "contact@sahovic.fr"
 AUTHOR = "Haris Sahovic"
-REQUIRES_PYTHON = ">=3.6.0"
+REQUIRES_PYTHON = ">=3.7.0"
 VERSION = "0.4.21"
 
 # What packages are required for this module to be executed?
@@ -121,10 +121,10 @@ setup(
         "Intended Audience :: Science/Research",
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3 :: Only",
         "Topic :: Games/Entertainment :: Simulation",
         "Topic :: Games/Entertainment :: Turn Based Strategy",
