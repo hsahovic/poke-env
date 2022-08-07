@@ -128,7 +128,7 @@ jobs:
       - run:
           name: Start showdown server in the background
           command: |
-            cd pokemon-showdown;node pokemon-showdown start --no-security
+            cd pokemon-showdown;node pokemon-showdown start --no-security --max-old-space-size=3000
           background: true
 
       - run:
