@@ -1,4 +1,4 @@
-from poke_env.data import GEN_TO_MOVES
+from poke_env import GEN_TO_MOVES
 from poke_env.environment.move import (
     Move,
     Gen4Move,

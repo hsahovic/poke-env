@@ -3,7 +3,7 @@ import pytest
 
 from unittest.mock import MagicMock
 
-from poke_env.data import POKEDEX
+from poke_env import POKEDEX, UNKNOWN_ITEM
 from poke_env.environment.battle import (
     Battle,
     Gen4Battle,
@@ -18,7 +18,6 @@ from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.side_condition import SideCondition
 from poke_env.environment.status import Status
 from poke_env.environment.weather import Weather
-from poke_env.data import UNKNOWN_ITEM
 
 
 def test_battle_get_pokemon():

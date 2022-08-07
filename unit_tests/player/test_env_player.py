@@ -22,8 +22,7 @@ from poke_env.player.env_player import (
     Gen8EnvSinglePlayer,
 )
 from poke_env.player.openai_api import _AsyncPlayer
-from poke_env.player_configuration import PlayerConfiguration
-from poke_env.server_configuration import ServerConfiguration
+from poke_env import PlayerConfiguration, ServerConfiguration
 from unittest.mock import patch
 
 

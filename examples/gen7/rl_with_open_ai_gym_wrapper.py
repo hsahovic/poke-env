@@ -2,10 +2,9 @@
 import numpy as np
 import tensorflow as tf
 
-from poke_env.player_configuration import PlayerConfiguration
 from poke_env.player.env_player import Gen7EnvSinglePlayer
 from poke_env.player.random_player import RandomPlayer
-from poke_env.server_configuration import LocalhostServerConfiguration
+from poke_env import LocalhostServerConfiguration, PlayerConfiguration
 
 from rl.agents.dqn import DQNAgent
 from rl.policy import LinearAnnealedPolicy, EpsGreedyQPolicy

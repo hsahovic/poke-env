@@ -4,8 +4,7 @@ import pytest
 
 from poke_env.player.random_player import RandomPlayer
 from poke_env.player.utils import cross_evaluate
-from poke_env.player_configuration import PlayerConfiguration
-from poke_env.server_configuration import LocalhostServerConfiguration
+from poke_env import LocalhostServerConfiguration, PlayerConfiguration
 
 
 async def simple_cross_evaluation(n_battles, format_, i=0):

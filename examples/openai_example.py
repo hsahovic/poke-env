@@ -7,7 +7,7 @@ from gym.utils.env_checker import check_env
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.player.openai_api import OpenAIGymEnv, ObservationType
 from poke_env.player.random_player import RandomPlayer
-from poke_env.server_configuration import LocalhostServerConfiguration
+from poke_env import LocalhostServerConfiguration
 from poke_env.player.env_player import Gen8EnvSinglePlayer
 
 

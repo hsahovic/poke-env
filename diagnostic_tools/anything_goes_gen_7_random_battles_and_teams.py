@@ -11,13 +11,12 @@ import orjson
 import numpy as np
 import sys
 
-from poke_env.data import POKEDEX
+from poke_env import POKEDEX
 from poke_env.player.random_player import RandomPlayer
-from poke_env.player_configuration import PlayerConfiguration
-from poke_env.server_configuration import LocalhostServerConfiguration
+from poke_env import LocalhostServerConfiguration, PlayerConfiguration
 from poke_env.teambuilder.teambuilder import Teambuilder
 from poke_env.teambuilder.teambuilder_pokemon import TeambuilderPokemon
-from poke_env.utils import to_id_str
+from poke_env import to_id_str
 
 from tqdm import tqdm
 

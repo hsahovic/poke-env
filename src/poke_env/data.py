@@ -336,4 +336,4 @@ with open(
         os.path.dirname(os.path.realpath(__file__)), "data", "replay_template.html"
     )
 ) as f:
-    REPLAY_TEMPLATE = f.read()
+    _REPLAY_TEMPLATE = f.read()

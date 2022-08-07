@@ -10,8 +10,7 @@ from asynctest.mock import CoroutineMock
 from asynctest.mock import patch
 from asynctest.mock import PropertyMock
 from poke_env.player.player_network_interface import PlayerNetwork
-from poke_env.player_configuration import PlayerConfiguration
-from poke_env.server_configuration import ServerConfiguration
+from poke_env import PlayerConfiguration, ServerConfiguration
 
 
 player_configuration = PlayerConfiguration("username", "password")

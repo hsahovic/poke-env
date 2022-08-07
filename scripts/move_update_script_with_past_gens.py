@@ -54,7 +54,7 @@ for gen in range(1, 9):
         pattern = function_title_match + r"\(\) \{\s*\}"
         sub = r'"\1": "\1"'
         data = re.sub(pattern, sub, data, flags=re.MULTILINE)
-    
+
     # Null arrow functions
     data = re.sub(r"\(\) => null", r"null", data)
 

@@ -2,8 +2,7 @@
 import asyncio
 
 from poke_env.player.random_player import RandomPlayer
-from poke_env.player_configuration import PlayerConfiguration
-from poke_env.server_configuration import ShowdownServerConfiguration
+from poke_env import ShowdownServerConfiguration, PlayerConfiguration
 
 
 async def main():
