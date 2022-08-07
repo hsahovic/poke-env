@@ -9,7 +9,7 @@ This sections will guide you in installing ``poke-env`` and configuring a suited
 Installing ``poke-env``
 =======================
 
-``poke-env`` requires python >= 3.6 to be installed. It has a number of dependencies that are listed `here <https://github.com/hsahovic/poke-env/blob/master/requirements.txt>`__ and that will be installed automatically.
+``poke-env`` requires python >= 3.7 to be installed. It has a number of dependencies that are listed `here <https://github.com/hsahovic/poke-env/blob/master/requirements.txt>`__ and that will be installed automatically.
 
 Installation can be performed via pip:
 
