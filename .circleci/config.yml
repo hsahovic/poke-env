@@ -107,7 +107,7 @@ jobs:
                 git clone https://github.com/smogon/pokemon-showdown.git
             fi
       - run:
-          name: Install showdown dependencies
+          name: Install showdown dependencies and setup config
           command: |
             cd pokemon-showdown
             npm install
