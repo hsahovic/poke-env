@@ -5,7 +5,7 @@ import numpy as np
 from poke_env.player.random_player import RandomPlayer
 from poke_env.player.utils import cross_evaluate
 from poke_env import LocalhostServerConfiguration, PlayerConfiguration
-from poke_env.teambuilder.teambuilder import Teambuilder
+from poke_env.teambuilder import Teambuilder
 
 
 class RandomTeamFromPool(Teambuilder):
