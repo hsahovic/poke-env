@@ -6,7 +6,7 @@ from poke_env.environment.pokemon_gender import PokemonGender
 from poke_env.environment.side_condition import SideCondition
 from poke_env.environment.status import Status
 from poke_env.environment.weather import Weather
-from poke_env.exceptions import ShowdownException
+from poke_env import ShowdownException
 
 import pytest
 

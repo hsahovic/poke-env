@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import copy
 
-from poke_env.data import MOVES
+from poke_env import MOVES
 from poke_env.environment.field import Field
 from poke_env.environment.move import Move, EmptyMove
 from poke_env.environment.move_category import MoveCategory

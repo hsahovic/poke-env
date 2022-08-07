@@ -19,8 +19,7 @@ To connect to `play.pokemonshowdown.com <https://play.pokemonshowdown.com/>`__, 
 .. code-block:: python
 
     from poke_env.player.random_player import RandomPlayer
-    from poke_env.player_configuration import PlayerConfiguration
-    from poke_env.server_configuration import ShowdownServerConfiguration
+    from poke_env import PlayerConfiguration, ShowdownServerConfiguration
 
     # We create a random player
     player = RandomPlayer(
@@ -80,8 +79,7 @@ A complete example source code is:
     import asyncio
 
     from poke_env.player.random_player import RandomPlayer
-    from poke_env.player_configuration import PlayerConfiguration
-    from poke_env.server_configuration import ShowdownServerConfiguration
+    from poke_env import PlayerConfiguration, ShowdownServerConfiguration
 
 
     async def main():

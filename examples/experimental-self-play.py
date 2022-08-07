@@ -10,7 +10,7 @@ from poke_env.player.random_player import RandomPlayer
 from tabulate import tabulate
 from threading import Thread
 
-from poke_env.utils import to_id_str
+from poke_env import to_id_str
 from poke_env.player.env_player import (
     Gen8EnvSinglePlayer,
 )

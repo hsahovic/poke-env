@@ -91,7 +91,7 @@ If your showdown configuration does not require authentication, you can use any 
 
 .. code-block:: python
 
-    from poke_env.player_configuration import PlayerConfiguration
+    from poke_env import PlayerConfiguration
 
     # This will work on servers that do not require authentication, which is the
     # case of the server launched in our 'Getting Started' section
@@ -104,7 +104,7 @@ If your showdown configuration uses authentication, the values of each ``player_
 
 .. code-block:: python
 
-    from poke_env.player_configuration import PlayerConfiguration
+    from poke_env import PlayerConfiguration
 
     # This object can be used with a player connecting to a server using authentication
     # The user 'my_username' must exist and have 'super-secret-password' as his password
@@ -130,7 +130,7 @@ You can create your own server configuration if you want to connect your player 
 
 .. code-block:: python
 
-    from poke_env.server_configuration import ServerConfiguration
+    from poke_env import ServerConfiguration
 
     # If your server is accessible at my.custom.host:5432, and your authentication
     # endpoint is authentication-endpoint.com/action.php?

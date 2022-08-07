@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from poke_env.utils import to_id_str, compute_raw_stats
+from poke_env import to_id_str, compute_raw_stats
 from poke_env.player_configuration import _create_player_configuration_from_player
 
 
