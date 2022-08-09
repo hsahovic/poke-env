@@ -23,7 +23,7 @@ class EnvPlayer(OpenAIGymEnv, ABC):
 
     def __init__(
         self,
-        opponent: Optional[Union[Player, str]] = None,
+        opponent: Optional[Union[Player, str]],
         player_configuration: Optional[PlayerConfiguration] = None,
         *,
         avatar: Optional[int] = None,
@@ -93,6 +93,8 @@ class EnvPlayer(OpenAIGymEnv, ABC):
         b_format = self._DEFAULT_BATTLE_FORMAT
         if battle_format:
             b_format = battle_format
+        if opponent is None:
+            start_challenging = False
         super().__init__(
             player_configuration=player_configuration,
             avatar=avatar,
