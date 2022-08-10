@@ -49,6 +49,7 @@ class CustomEnvPlayer(EnvPlayer):
 
 def test_init():
     gym_env = CustomEnvPlayer(
+        None,
         player_configuration=player_configuration,
         server_configuration=server_configuration,
         start_listening=False,
@@ -73,6 +74,7 @@ class AsyncMock(unittest.mock.MagicMock):
 def test_choose_move(queue_put_mock, queue_get_mock):
     print("ciao")
     player = CustomEnvPlayer(
+        None,
         player_configuration=player_configuration,
         server_configuration=server_configuration,
         start_listening=False,
@@ -102,6 +104,7 @@ def test_choose_move(queue_put_mock, queue_get_mock):
 
 def test_reward_computing_helper():
     player = CustomEnvPlayer(
+        None,
         player_configuration=player_configuration,
         server_configuration=server_configuration,
         start_listening=False,
@@ -223,7 +226,7 @@ def test_reward_computing_helper():
 
 
 def test_action_space():
-    player = CustomEnvPlayer(start_listening=False)
+    player = CustomEnvPlayer(None, start_listening=False)
     assert player.action_space == Discrete(len(Gen7EnvSinglePlayer._ACTION_SPACE))
 
     for PlayerClass, (has_megas, has_z_moves, has_dynamax) in zip(
@@ -256,7 +259,7 @@ def test_action_space():
             def get_opponent(self):
                 return None
 
-        p = CustomEnvClass(start_listening=False, start_challenging=False)
+        p = CustomEnvClass(None, start_listening=False, start_challenging=False)
 
         assert p.action_space == Discrete(
             4 * sum([1, has_megas, has_z_moves, has_dynamax]) + 6
@@ -266,19 +269,19 @@ def test_action_space():
 def test_get_opponent():
     player = CustomEnvPlayer(start_listening=False, opponent="test")
     assert player.get_opponent() == "test"
-    player.opponent = None
+    player._opponent = None
     with pytest.raises(RuntimeError):
         player.get_opponent()
 
 
 def test_set_opponent():
-    player = CustomEnvPlayer(start_listening=False)
-    assert isinstance(player.opponent, RandomPlayer)
+    player = CustomEnvPlayer(None, start_listening=False)
+    assert player._opponent is None
     with pytest.raises(RuntimeError):
         player.set_opponent(0)
     dummy_player = RandomPlayer()
     player.set_opponent(dummy_player)
-    assert player.opponent == dummy_player
+    assert player._opponent == dummy_player
 
 
 @patch(
@@ -316,7 +319,7 @@ def test_action_to_move(z_moves_mock):
             def get_opponent(self):
                 return None
 
-        p = CustomEnvClass(start_listening=False, start_challenging=False)
+        p = CustomEnvClass(None, start_listening=False, start_challenging=False)
         battle = Battle("bat1", p.username, p.logger)
         assert p.action_to_move(-1, battle).message == "/forfeit"
         battle._available_moves = [Move("flamethrower")]
