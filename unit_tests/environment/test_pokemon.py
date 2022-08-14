@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-from poke_env.environment.move import Move
-from poke_env.environment.move import SPECIAL_MOVES
-from poke_env.environment.pokemon import Pokemon
-from poke_env.environment.pokemon_type import PokemonType
+from poke_env.environment import Move, SPECIAL_MOVES, Pokemon, PokemonType
 
 
 def test_pokemon_moves():

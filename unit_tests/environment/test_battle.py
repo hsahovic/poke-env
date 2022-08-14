@@ -4,20 +4,20 @@ import pytest
 from unittest.mock import MagicMock
 
 from poke_env import POKEDEX, UNKNOWN_ITEM
-from poke_env.environment.battle import (
+from poke_env.environment import (
     Battle,
+    Effect,
+    Field,
     Gen4Battle,
     Gen5Battle,
     Gen6Battle,
     Gen7Battle,
     Gen8Battle,
+    PokemonType,
+    SideCondition,
+    Status,
+    Weather,
 )
-from poke_env.environment.effect import Effect
-from poke_env.environment.field import Field
-from poke_env.environment.pokemon_type import PokemonType
-from poke_env.environment.side_condition import SideCondition
-from poke_env.environment.status import Status
-from poke_env.environment.weather import Weather
 
 
 def test_battle_get_pokemon():

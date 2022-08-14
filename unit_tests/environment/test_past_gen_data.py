@@ -1,28 +1,24 @@
 from poke_env import GEN_TO_MOVES
-from poke_env.environment.move import (
-    Move,
-    Gen4Move,
-    Gen5Move,
-    Gen6Move,
-    Gen7Move,
-    Gen8Move,
+from poke_env.environment import (
     GEN_TO_MOVE_CLASS,
-)
-from poke_env.environment.move_category import MoveCategory
-from poke_env.environment.pokemon import (
-    Gen4Pokemon,
-    Gen5Pokemon,
-    Gen6Pokemon,
-    Gen7Pokemon,
-    Gen8Pokemon,
     GEN_TO_POKEMON,
-)
-from poke_env.environment.battle import (
     Gen4Battle,
+    Gen4Move,
+    Gen4Pokemon,
     Gen5Battle,
+    Gen5Move,
+    Gen5Pokemon,
     Gen6Battle,
+    Gen6Move,
+    Gen6Pokemon,
     Gen7Battle,
+    Gen7Move,
+    Gen7Pokemon,
     Gen8Battle,
+    Gen8Move,
+    Gen8Pokemon,
+    Move,
+    MoveCategory,
 )
 from unittest.mock import MagicMock
 

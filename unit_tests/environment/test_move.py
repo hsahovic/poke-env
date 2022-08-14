@@ -2,12 +2,15 @@
 import copy
 
 from poke_env import MOVES
-from poke_env.environment.field import Field
-from poke_env.environment.move import Move, EmptyMove
-from poke_env.environment.move_category import MoveCategory
-from poke_env.environment.pokemon_type import PokemonType
-from poke_env.environment.weather import Weather
-from poke_env.environment.status import Status
+from poke_env.environment import (
+    EmptyMove,
+    Field,
+    Move,
+    MoveCategory,
+    PokemonType,
+    Status,
+    Weather,
+)
 
 
 def move_generator():

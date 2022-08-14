@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 from unittest.mock import MagicMock
 
-from poke_env.environment.battle import Battle
-from poke_env.environment.pokemon import Pokemon
+from poke_env.environment import Battle, Pokemon
 
 
 def test_dynamax():

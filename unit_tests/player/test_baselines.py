@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from poke_env.environment.move import Move
-from poke_env.environment.pokemon import Pokemon
+from poke_env.environment import Move, Pokemon
 from poke_env.player.baselines import MaxBasePowerPlayer
 from poke_env.player.baselines import RandomPlayer
 from poke_env.player.baselines import SimpleHeuristicsPlayer
@@ -9,7 +8,7 @@ from collections import namedtuple
 
 def test_max_base_power_player():
     from poke_env.player import player as player_pkg
-    from poke_env.environment.battle import Battle
+    from poke_env.environment import Battle
 
     player = MaxBasePowerPlayer(start_listening=False)
 
@@ -214,7 +213,7 @@ def test_simple_heuristics_player():
 
 def test_random_player():
     from poke_env.player import player as player_pkg
-    from poke_env.environment.battle import Battle
+    from poke_env.environment import Battle
 
     player = RandomPlayer(start_listening=False)
 

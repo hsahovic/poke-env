@@ -6,11 +6,13 @@ import pytest
 from gym.spaces import Space, Discrete
 from inspect import isawaitable
 
-from poke_env.environment.abstract_battle import AbstractBattle
-from poke_env.environment.battle import Battle
-from poke_env.environment.move import Move
-from poke_env.environment.pokemon import Pokemon
-from poke_env.environment.status import Status
+from poke_env.environment import (
+    AbstractBattle,
+    Battle,
+    Move,
+    Pokemon,
+    Status,
+)
 from poke_env.player.battle_order import BattleOrder
 from poke_env.player.baselines import RandomPlayer
 from poke_env.player.env_player import EnvPlayer
@@ -284,7 +286,7 @@ def test_set_opponent():
 
 
 @patch(
-    "poke_env.environment.pokemon.Pokemon.available_z_moves",
+    "poke_env.environment.Pokemon.available_z_moves",
     new_callable=unittest.mock.PropertyMock,
 )
 def test_action_to_move(z_moves_mock):
