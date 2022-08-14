@@ -56,7 +56,7 @@ Our player will play the ``gen8randombattle`` format. We can therefore inherit f
     # -*- coding: utf-8 -*-
     import numpy as np
     from gym.spaces import Space, Box
-    from poke_env.player.env_player import Gen8EnvSinglePlayer
+    from poke_env.player import Gen8EnvSinglePlayer
 
     class SimpleRLPlayer(Gen8EnvSinglePlayer):
         def calc_reward(self, last_battle, current_battle) -> float:
@@ -136,7 +136,7 @@ In this case, we want them to start challenging right away:
 .. code-block:: python
 
     ...
-    from poke_env.player.random_player import RandomPlayer
+    from poke_env.player import RandomPlayer
 
     opponent = RandomPlayer(battle_format="gen8randombattle")
     train_env = SimpleRLPlayer(
@@ -281,7 +281,7 @@ In order to evaluate the player with the provided method, we need to use a backg
 .. code-block:: python
 
     ...
-    from poke_env.player.utils import background_evaluate_player
+    from poke_env.player import background_evaluate_player
 
     n_challenges = 250
     placement_battles = 40
@@ -306,7 +306,7 @@ To use the ``cross_evaluate`` method, the strategy is the same to the one used f
 .. code-block:: python
 
     ...
-    from poke_env.player.utils import background_cross_evaluate
+    from poke_env.player import background_cross_evaluate
 
     n_challenges = 50
     players = [

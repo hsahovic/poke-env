@@ -2,7 +2,7 @@
 import asyncio
 import numpy as np
 
-from poke_env.player.random_player import RandomPlayer
+from poke_env.player import RandomPlayer
 from poke_env.teambuilder import Teambuilder
 
 

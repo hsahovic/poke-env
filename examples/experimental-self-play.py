@@ -6,15 +6,11 @@
 
 import asyncio
 import numpy as np
-from poke_env.player.random_player import RandomPlayer
+from poke_env.player import cross_evaluate, Gen8EnvSinglePlayer, RandomPlayer
 from tabulate import tabulate
 from threading import Thread
 
 from poke_env import to_id_str
-from poke_env.player.env_player import (
-    Gen8EnvSinglePlayer,
-)
-from poke_env.player.utils import cross_evaluate
 
 
 class RandomGen8EnvPlayer(Gen8EnvSinglePlayer):

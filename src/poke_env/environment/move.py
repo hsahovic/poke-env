@@ -17,7 +17,6 @@ from typing import Set
 from typing import Tuple
 from typing import Union
 
-STR_DIGITS = "0123456789"
 SPECIAL_MOVES: Dict
 
 _PROTECT_MOVES = {
@@ -73,8 +72,8 @@ class Move:
         self._base_power_override = None
 
         if move_id.startswith("hiddenpower") and raw_id is not None:
-            base_power = "".join([c for c in raw_id if c in STR_DIGITS])
-            self._id = "".join([c for c in to_id_str(raw_id) if c not in STR_DIGITS])
+            base_power = "".join([c for c in raw_id if c.isdigit()])
+            self._id = "".join([c for c in to_id_str(raw_id) if c.isdigit()])
 
             if base_power:
                 try:

@@ -5,14 +5,14 @@ import pytest
 from gym.spaces import Space, Box
 from gym.utils.env_checker import check_env
 
-from poke_env.player.env_player import (
+from poke_env.player import (
     Gen4EnvSinglePlayer,
     Gen5EnvSinglePlayer,
     Gen6EnvSinglePlayer,
     Gen7EnvSinglePlayer,
     Gen8EnvSinglePlayer,
+    RandomPlayer,
 )
-from poke_env.player.random_player import RandomPlayer
 
 
 class RandomGen4EnvPlayer(Gen4EnvSinglePlayer):

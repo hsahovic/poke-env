@@ -3,7 +3,7 @@
 import asyncio
 import pytest
 
-from poke_env.player.random_player import RandomPlayer
+from poke_env.player import RandomPlayer
 
 
 @pytest.mark.asyncio

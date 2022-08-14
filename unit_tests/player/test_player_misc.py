@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 import pytest
 
-from poke_env.environment.battle import Battle, DoubleBattle, Move
-from poke_env.player.battle_order import BattleOrder
-from poke_env.player.player import Player
-from poke_env.player.random_player import RandomPlayer
-from poke_env.player.utils import cross_evaluate
+from poke_env.environment import Battle, DoubleBattle, Move
+from poke_env.player import BattleOrder, cross_evaluate, Player, RandomPlayer
 
 from unittest.mock import MagicMock
 from unittest.mock import patch

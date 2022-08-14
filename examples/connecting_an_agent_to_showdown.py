@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import asyncio
 
-from poke_env.player.random_player import RandomPlayer
+from poke_env.player import RandomPlayer
 from poke_env import ShowdownServerConfiguration, PlayerConfiguration
 
 

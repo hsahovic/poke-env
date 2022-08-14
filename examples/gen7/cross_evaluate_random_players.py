@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 import asyncio
 
-from poke_env.player.random_player import RandomPlayer
-from poke_env.player.utils import cross_evaluate
+from poke_env.player import cross_evaluate, RandomPlayer
 from poke_env import LocalhostServerConfiguration, PlayerConfiguration
 from tabulate import tabulate
 

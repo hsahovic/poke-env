@@ -2,8 +2,7 @@
 import numpy as np
 import tensorflow as tf
 
-from poke_env.player.env_player import Gen7EnvSinglePlayer
-from poke_env.player.random_player import RandomPlayer
+from poke_env.player import Gen7EnvSinglePlayer, RandomPlayer
 from poke_env import LocalhostServerConfiguration, PlayerConfiguration
 
 from rl.agents.dqn import DQNAgent

@@ -13,15 +13,15 @@ from poke_env.environment import (
     Pokemon,
     Status,
 )
-from poke_env.player.battle_order import BattleOrder
-from poke_env.player.baselines import RandomPlayer
-from poke_env.player.env_player import EnvPlayer
-from poke_env.player.env_player import (
+from poke_env.player import (
+    BattleOrder,
+    EnvPlayer,
     Gen4EnvSinglePlayer,
     Gen5EnvSinglePlayer,
     Gen6EnvSinglePlayer,
     Gen7EnvSinglePlayer,
     Gen8EnvSinglePlayer,
+    RandomPlayer,
 )
 from poke_env.player.openai_api import _AsyncPlayer
 from poke_env import PlayerConfiguration, ServerConfiguration

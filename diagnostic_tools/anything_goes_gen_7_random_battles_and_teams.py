@@ -12,7 +12,7 @@ import numpy as np
 import sys
 
 from poke_env import POKEDEX
-from poke_env.player.random_player import RandomPlayer
+from poke_env.player import RandomPlayer
 from poke_env import LocalhostServerConfiguration, PlayerConfiguration
 from poke_env.teambuilder import Teambuilder, TeambuilderPokemon
 from poke_env import to_id_str

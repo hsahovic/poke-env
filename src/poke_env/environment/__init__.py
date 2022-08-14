@@ -48,7 +48,7 @@ from poke_env.environment.pokemon import (
     Gen6Pokemon,
     Gen7Pokemon,
     Gen8Pokemon,
-    GEN_TO_POKEMON
+    GEN_TO_POKEMON,
 )
 from poke_env.environment.side_condition import SideCondition, STACKABLE_CONDITIONS
 from poke_env.environment.status import Status

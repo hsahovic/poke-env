@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from poke_env.player.random_player import RandomPlayer
-from poke_env.player.player import Player
+from poke_env.player import Player, RandomPlayer
 from poke_env.player_configuration import _CONFIGURATION_FROM_PLAYER_COUNTER
 
 

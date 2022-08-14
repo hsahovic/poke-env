@@ -9,7 +9,7 @@ from collections import namedtuple
 from asynctest.mock import CoroutineMock
 from asynctest.mock import patch
 from asynctest.mock import PropertyMock
-from poke_env.player.player_network_interface import PlayerNetwork
+from poke_env.player import PlayerNetwork
 from poke_env import PlayerConfiguration, ServerConfiguration
 
 

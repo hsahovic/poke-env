@@ -23,7 +23,7 @@ Let's create the base class:
 .. code-block:: python
 
     # -*- coding: utf-8 -*-
-    from poke_env.player.player import Player
+    from poke_env.player import Player
 
     class MaxDamagePlayer(Player):
         pass
@@ -90,8 +90,7 @@ We can now test our agent by making it battle a random agent. The complete code 
     import asyncio
     import time
 
-    from poke_env.player.player import Player
-    from poke_env.player.random_player import RandomPlayer
+    from poke_env.player import Player, RandomPlayer
 
 
     class MaxDamagePlayer(Player):

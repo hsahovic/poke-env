@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from poke_env.environment import Move, Pokemon
-from poke_env.player.baselines import MaxBasePowerPlayer
-from poke_env.player.baselines import RandomPlayer
-from poke_env.player.baselines import SimpleHeuristicsPlayer
+from poke_env.player import MaxBasePowerPlayer, RandomPlayer, SimpleHeuristicsPlayer
 from collections import namedtuple
 
 

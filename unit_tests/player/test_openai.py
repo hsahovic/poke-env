@@ -9,14 +9,14 @@ from typing import Union
 from gym import Space
 
 from poke_env.environment import AbstractBattle, Battle, Pokemon
-from poke_env.player.battle_order import ForfeitBattleOrder, BattleOrder
-from poke_env.player.openai_api import (
-    _AsyncQueue,
-    _AsyncPlayer,
+from poke_env.player import (
+    ForfeitBattleOrder,
+    BattleOrder,
     OpenAIGymEnv,
     ObservationType,
+    Player,
 )
-from poke_env.player.player import Player
+from poke_env.player.openai_api import _AsyncQueue, _AsyncPlayer
 
 
 class DummyEnv(OpenAIGymEnv):
