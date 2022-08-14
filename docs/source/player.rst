@@ -37,16 +37,6 @@ Random Player
    :undoc-members:
    :show-inheritance:
 
-Trainable player
-****************
-
-.. warning:: This class is experimental and currently not tested. Use at your own risk. We recommend using ``EnvPlayer`` instead.
-
-.. automodule:: poke_env.player.trainable_player
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Player network interface
 ************************
 
