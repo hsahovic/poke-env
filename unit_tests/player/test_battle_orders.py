@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from poke_env.player.battle_order import (
+from poke_env.player import (
     BattleOrder,
     DoubleBattleOrder,
     ForfeitBattleOrder,

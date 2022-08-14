@@ -43,7 +43,7 @@ By default, players play the ``gen8randombattle`` format. You can specify anothe
 .. code-block:: python
 
     ...
-    from poke_env.player.random_player import RandomPlayer
+    from poke_env.player import RandomPlayer
 
     async def main():
         # We create three random players
@@ -69,7 +69,7 @@ To do so, we can use the helper function ``cross_evaluate``:
 .. code-block:: python
 
     ...
-    from poke_env.player.utils import cross_evaluate
+    from poke_env.player import cross_evaluate
 
     async def main():
         ...

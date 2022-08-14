@@ -12,14 +12,15 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
 
 from poke_env.abstract_battle import AbstractBattle
-from poke_env.player.baselines import (
+from poke_env.player import (
+    background_evaluate_player,
+    background_cross_evaluate,
+    Gen8EnvSinglePlayer,
     RandomPlayer,
     MaxBasePowerPlayer,
+    ObservationType,
     SimpleHeuristicsPlayer,
 )
-from poke_env.player.env_player import Gen8EnvSinglePlayer
-from poke_env.player.openai_api import ObservationType
-from poke_env.player.utils import background_evaluate_player, background_cross_evaluate
 
 
 class SimpleRLPlayer(Gen8EnvSinglePlayer):

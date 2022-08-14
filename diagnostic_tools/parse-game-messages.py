@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from poke_env.player.random_player import RandomPlayer
+from poke_env.player import RandomPlayer
 from poke_env import PlayerConfiguration
 import asyncio
 import json
@@ -26,6 +26,3 @@ async def main():
 
 
 asyncio.get_event_loop().run_until_complete(main())
-
-# from poke_env.player.player import c
-# print(c)

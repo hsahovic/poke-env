@@ -2,9 +2,7 @@
 import asyncio
 import time
 
-from poke_env.player.player import Player
-from poke_env.player.random_player import RandomPlayer
-from poke_env.player.utils import cross_evaluate
+from poke_env.player import cross_evaluate, Player, RandomPlayer
 from poke_env import (
     LocalhostServerConfiguration,
     PlayerConfiguration,

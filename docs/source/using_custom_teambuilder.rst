@@ -172,7 +172,7 @@ Our ``custom_builder`` can now be used! To use a ``Teambuilder`` with a given ``
 
 .. code-block:: python
 
-    from poke_env.player.random_player import RandomPlayer
+    from poke_env.player import RandomPlayer
 
     player_1 = RandomPlayer(
         battle_format="gen8ou",
@@ -202,7 +202,7 @@ The complete example looks like that:
     import asyncio
     import numpy as np
 
-    from poke_env.player.random_player import RandomPlayer
+    from poke_env.player import RandomPlayer
     from poke_env.teambuilder import Teambuilder
 
 

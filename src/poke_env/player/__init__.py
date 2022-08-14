@@ -9,6 +9,33 @@ from poke_env.player import random_player
 from poke_env.player import trainable_player
 from poke_env.player import utils
 
+from poke_env.player.baselines import MaxBasePowerPlayer, SimpleHeuristicsPlayer
+from poke_env.player.battle_order import (
+    BattleOrder,
+    DefaultBattleOrder,
+    DoubleBattleOrder,
+    ForfeitBattleOrder,
+)
+from poke_env.player.utils import (
+    cross_evaluate,
+    background_cross_evaluate,
+    background_evaluate_player,
+    evaluate_player,
+)
+from poke_env.player.random_player import RandomPlayer
+from poke_env.player.player import Player
+from poke_env.player.player_network_interface import PlayerNetwork
+from poke_env.player.openai_api import ObservationType, OpenAIGymEnv
+from poke_env.player.internals import POKE_LOOP
+from poke_env.player.env_player import (
+    EnvPlayer,
+    Gen4EnvSinglePlayer,
+    Gen5EnvSinglePlayer,
+    Gen6EnvSinglePlayer,
+    Gen7EnvSinglePlayer,
+    Gen8EnvSinglePlayer,
+)
+
 __all__ = [
     "env_player",
     "openai_api",
@@ -17,4 +44,26 @@ __all__ = [
     "random_player",
     "trainable_player",
     "utils",
+    "ObservationType",
+    "EnvPlayer",
+    "ForfeitBattleOrder",
+    "Gen4EnvSinglePlayer",
+    "Gen5EnvSinglePlayer",
+    "Gen6EnvSinglePlayer",
+    "Gen7EnvSinglePlayer",
+    "Gen8EnvSinglePlayer",
+    "POKE_LOOP",
+    "OpenAIGymEnv",
+    "PlayerNetwork",
+    "Player",
+    "RandomPlayer",
+    "cross_evaluate",
+    "background_cross_evaluate",
+    "background_evaluate_player",
+    "evaluate_player",
+    "BattleOrder",
+    "DefaultBattleOrder",
+    "DoubleBattleOrder",
+    "MaxBasePowerPlayer",
+    "SimpleHeuristicsPlayer",
 ]

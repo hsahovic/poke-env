@@ -2,7 +2,7 @@
 import asyncio
 import pytest
 
-from poke_env.player.random_player import RandomPlayer
+from poke_env.player import RandomPlayer
 
 
 async def simple_laddering(n_battles, max_concurrent_battles):
