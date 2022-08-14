@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 from unittest.mock import MagicMock
 
-from poke_env.environment.double_battle import DoubleBattle
-from poke_env.environment.pokemon import Pokemon
+from poke_env.environment import DoubleBattle, Pokemon
 
 
 def test_battle_request_parsing(example_doubles_request):

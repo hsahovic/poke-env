@@ -8,9 +8,7 @@ from typing import Union
 
 from gym import Space
 
-from poke_env.environment.abstract_battle import AbstractBattle
-from poke_env.environment.battle import Battle
-from poke_env.environment.pokemon import Pokemon
+from poke_env.environment import AbstractBattle, Battle, Pokemon
 from poke_env.player.battle_order import ForfeitBattleOrder, BattleOrder
 from poke_env.player.openai_api import (
     _AsyncQueue,

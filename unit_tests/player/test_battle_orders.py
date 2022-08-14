@@ -4,8 +4,7 @@ from poke_env.player.battle_order import (
     DoubleBattleOrder,
     ForfeitBattleOrder,
 )
-from poke_env.environment.move import Move, SPECIAL_MOVES
-from poke_env.environment.pokemon import Pokemon
+from poke_env.environment import Move, SPECIAL_MOVES, Pokemon
 
 
 def test_recharge_order():

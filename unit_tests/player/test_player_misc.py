@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 import pytest
 
-from poke_env.environment.battle import Battle
-from poke_env.environment.double_battle import DoubleBattle
-from poke_env.environment.move import Move
+from poke_env.environment.battle import Battle, DoubleBattle, Move
 from poke_env.player.battle_order import BattleOrder
 from poke_env.player.player import Player
 from poke_env.player.random_player import RandomPlayer

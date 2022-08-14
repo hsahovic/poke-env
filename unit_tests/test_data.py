@@ -2,7 +2,7 @@
 
 from poke_env import TYPE_CHART
 from poke_env.data import _TYPE_CHART_PATH, _compute_type_chart
-from poke_env.environment.pokemon_type import PokemonType
+from poke_env.environment import PokemonType
 
 
 def test_type_chart_corresponds_to__compute_type_chart():
