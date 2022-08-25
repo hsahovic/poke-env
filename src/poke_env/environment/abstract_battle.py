@@ -448,6 +448,12 @@ class AbstractBattle(ABC):
             if split_message[-1] == "[from]Magic Coat":
                 return
 
+            if split_message[-1].startswith("[spread]"):
+                split_message = split_message[:-1]
+
+            while split_message[-1] == "[still]":
+                split_message = split_message[:-1]
+
             if split_message[-1] == "":
                 split_message = split_message[:-1]
 
