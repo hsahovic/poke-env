@@ -73,7 +73,7 @@ class Move:
 
         if move_id.startswith("hiddenpower") and raw_id is not None:
             base_power = "".join([c for c in raw_id if c.isdigit()])
-            self._id = "".join([c for c in to_id_str(raw_id) if c.isdigit()])
+            self._id = "".join([c for c in to_id_str(raw_id) if not c.isdigit()])
 
             if base_power:
                 try:
