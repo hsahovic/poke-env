@@ -10,7 +10,7 @@ import websockets  # pyre-ignore
 from abc import ABC
 from abc import abstractmethod
 from asyncio import CancelledError
-from asyncio import ensure_future
+from asyncio import create_task
 from asyncio import Event
 from asyncio import Lock
 from asyncio import sleep
@@ -66,6 +66,7 @@ class PlayerNetwork(ABC):
             If None pings will never time out.
         :type ping_timeout: float, optional
         """
+        self._active_tasks: set = set()
         self._ping_interval = ping_interval
         self._ping_timeout = ping_timeout
         self._authentication_url = server_configuration.authentication_url
@@ -309,7 +310,10 @@ class PlayerNetwork(ABC):
                 self._websocket = websocket
                 async for message in websocket:
                     self.logger.info("\033[92m\033[1m<<<\033[0m %s", message)
-                    ensure_future(self._handle_message(message))
+                    task = create_task(self._handle_message(message))
+                    self._active_tasks.add(task)
+                    task.add_done_callback(self._active_tasks.discard)
+
         except websockets.exceptions.ConnectionClosedOK:
             self.logger.warning(
                 "Websocket connection with %s closed", self.websocket_url
