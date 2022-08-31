@@ -11,7 +11,7 @@ from tensorflow.keras.layers import Dense, Flatten
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
 
-from poke_env.abstract_battle import AbstractBattle
+from poke_env.environment import AbstractBattle
 from poke_env.player import (
     background_evaluate_player,
     background_cross_evaluate,
