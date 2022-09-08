@@ -37,7 +37,6 @@ class EnvPlayer(OpenAIGymEnv, ABC):
         ping_timeout: Optional[float] = 20.0,
         team: Optional[Union[str, Teambuilder]] = None,
         start_challenging: bool = True,
-        use_old_gym_api: bool = True,  # False when new API is implemented in most ML libs
     ):
         """
         :param opponent: Opponent to challenge.
@@ -82,10 +81,6 @@ class EnvPlayer(OpenAIGymEnv, ABC):
         :param start_challenging: Whether to automatically start the challenge loop
             or leave it inactive.
         :type start_challenging: bool
-        :param use_old_gym_api: Whether to use old gym api (where step returns
-            (observation, reward, done, info)) or the new one (where step returns
-            (observation, reward, terminated, truncated, info))
-        :type use_old_gym_api: bool
         """
         self._reward_buffer = {}
         self._opponent_lock = Lock()
@@ -108,7 +103,6 @@ class EnvPlayer(OpenAIGymEnv, ABC):
             ping_interval=ping_interval,
             ping_timeout=ping_timeout,
             start_challenging=start_challenging,
-            use_old_gym_api=use_old_gym_api,
         )
 
     def reward_computing_helper(
