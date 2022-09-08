@@ -130,7 +130,6 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         ping_timeout: Optional[float] = 20.0,
         team: Optional[Union[str, Teambuilder]] = None,
         start_challenging: bool = False,
-        use_old_gym_api: bool = True,  # False when new API is implemented in most ML libs
     ):
         """
         :param player_configuration: Player configuration. If empty, defaults to an
@@ -173,10 +172,6 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         :param start_challenging: Whether to automatically start the challenge loop or
             leave it inactive.
         :type start_challenging: bool
-        :param use_old_gym_api: Whether to use old gym api (where step returns
-            (observation, reward, done, info)) or the new one (where step returns
-            (observation, reward, terminated, truncated, info))
-        :type use_old_gym_api: bool
         """
         self.agent = _AsyncPlayer(
             self,
@@ -201,8 +196,8 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         self.current_battle: Optional[AbstractBattle] = None
         self.last_battle: Optional[AbstractBattle] = None
         self._keep_challenging: bool = False
-        self._old_step_api: bool = use_old_gym_api
         self._challenge_task = None
+        self._seed_initialized: bool = False
         if start_challenging:
             self._keep_challenging = True
             self._challenge_task = asyncio.run_coroutine_threadsafe(
@@ -309,8 +304,12 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         return_info: bool = False,
         options: Optional[dict] = None,
     ) -> Union[ObservationType, Tuple[ObservationType, dict]]:  # pyre-ignore
-        if seed:
-            self.seed(seed)
+        if seed is not None:
+            super().reset(seed=seed)
+            self._seed_initialized = True
+        elif not self._seed_initialized:
+            super().reset(seed=int(time.time()))
+            self._seed_initialized = True
         if not self.agent.current_battle:
             count = self._INIT_RETRIES
             while not self.agent.current_battle:
@@ -332,9 +331,7 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         battle = copy.copy(self.current_battle)
         battle.logger = None  # pyre-ignore
         self.last_battle = copy.deepcopy(battle)
-        if return_info:
-            return self._observations.get(), self.get_additional_info()
-        return self._observations.get()
+        return self._observations.get(), self.get_additional_info()
 
     def get_additional_info(self) -> dict:
         """
@@ -353,7 +350,8 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         Tuple[ObservationType, float, bool, dict],
     ]:  # pragma: no cover
         if not self.current_battle:
-            return self.reset(), 0.0, False, {}  # pyre-ignore
+            obs, info = self.reset(return_info=True)
+            return obs, 0.0, False, False, info  # pyre-ignore
         if self.current_battle.finished:
             raise RuntimeError("Battle is already finished, call reset")
         battle = copy.copy(self.current_battle)
@@ -384,10 +382,7 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
                 terminated = True
             else:
                 truncated = True
-        if self._old_step_api:
-            return observation, reward, terminated or truncated, {}
-        else:
-            return observation, reward, terminated, truncated, {}
+        return observation, reward, terminated, truncated, self.get_additional_info()
 
     def render(self, mode="human"):
         print(
@@ -707,3 +702,23 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         :rtype: str
         """
         return self.agent.websocket_url
+
+
+class LegacyOpenAIGymEnv(OpenAIGymEnv, ABC):
+    def reset(
+        self,
+        *,
+        seed: Optional[int] = None,
+        return_info: bool = False,
+        options: Optional[dict] = None,
+    ) -> Union[ObservationType, Tuple[ObservationType, dict]]:  # pyre-ignore
+        obs, info = super().reset(seed=seed, return_info=True, options=options)
+        if return_info:
+            return obs, info
+        return obs
+
+    def step(
+        self, action: ActionType
+    ) -> Tuple[ObservationType, float, bool, dict]:  # pragma: no cover
+        obs, reward, terminated, truncated, info = super().step(action)
+        return obs, reward, terminated or truncated, info
