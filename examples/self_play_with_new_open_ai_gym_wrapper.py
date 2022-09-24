@@ -10,6 +10,10 @@ from poke_env.player_configuration import PlayerConfiguration
 
 
 class SimpleRLPlayer(Gen8EnvSinglePlayer):
+    def __init__(self, *args, **kwargs):
+        super(SimpleRLPlayer, self).__init__(*args, **kwargs)
+        self.done_training = False
+
     def calc_reward(self, last_battle, current_battle) -> float:
         return self.reward_computing_helper(
             current_battle, fainted_value=2.0, hp_value=1.0, victory_value=30.0
@@ -63,7 +67,7 @@ async def battle_handler(player1, player2, num_challenges):
     )
 
 
-def training_function(player, kwargs):
+def training_function(player, opponent, kwargs):
     state = player.reset()
     for i in range(kwargs["num_steps"]):
         action = np.random.randint(player.action_space.n)
@@ -76,8 +80,15 @@ def training_function(player, kwargs):
     # Play out the remaining battles so both fit() functions complete
     # We use 99 to give the agent an invalid option so it's forced
     # to take a random legal action
+    while not opponent.done_training:
+        _, _, done, _ = player.step(99)
+        if done and not opponent.done_training:
+            _ = player.reset()
+            done = False
+    
+    # Forfeit any ongoing battles
     while player.current_battle and not player.current_battle.finished:
-        _ = player.step(99)
+        _ = player.step(-1)
 
 
 if __name__ == "__main__":
@@ -107,10 +118,10 @@ if __name__ == "__main__":
 
     loop = asyncio.get_event_loop()
     # Make Two Threads; one per player and train
-    t1 = Thread(target=lambda: training_function(player1, p1_env_kwargs))
+    t1 = Thread(target=lambda: training_function(player1, player2, p1_env_kwargs))
     t1.start()
 
-    t2 = Thread(target=lambda: training_function(player2, p2_env_kwargs))
+    t2 = Thread(target=lambda: training_function(player2, player1, p2_env_kwargs))
     t2.start()
 
     # On the network side, keep sending & accepting battles
