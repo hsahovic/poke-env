@@ -75,7 +75,8 @@ def play_function(player, n_battles):
         done = False
         player.reset()
         while not done:
-            _, _, done, _ = player.step(player.action_space.sample())
+            _, _, terminated, truncated, _ = player.step(player.action_space.sample())
+            done = terminated or truncated
 
 
 @pytest.mark.timeout(30)
@@ -141,28 +142,32 @@ def test_two_successive_calls_gen8():
 
 
 @pytest.mark.timeout(60)
-def check_envs():
-    random_player = RandomPlayer(battle_format="gen8randombattle", log_level=20)
+def test_check_envs():
+    random_player = RandomPlayer(battle_format="gen4randombattle", log_level=20)
     env_player_gen4 = RandomGen4EnvPlayer(
         log_level=20, opponent=random_player, start_challenging=True
     )
     check_env(env_player_gen4)
     env_player_gen4.close()
+    random_player = RandomPlayer(battle_format="gen5randombattle", log_level=20)
     env_player_gen5 = RandomGen5EnvPlayer(
         log_level=20, opponent=random_player, start_challenging=True
     )
     check_env(env_player_gen5)
     env_player_gen5.close()
+    random_player = RandomPlayer(battle_format="gen6randombattle", log_level=20)
     env_player_gen6 = RandomGen6EnvPlayer(
         log_level=20, opponent=random_player, start_challenging=True
     )
     check_env(env_player_gen6)
     env_player_gen6.close()
+    random_player = RandomPlayer(battle_format="gen7randombattle", log_level=20)
     env_player_gen7 = RandomGen7EnvPlayer(
         log_level=20, opponent=random_player, start_challenging=True
     )
     check_env(env_player_gen7)
     env_player_gen7.close()
+    random_player = RandomPlayer(battle_format="gen8randombattle", log_level=20)
     env_player_gen8 = RandomGen8EnvPlayer(
         log_level=20, opponent=random_player, start_challenging=True
     )
