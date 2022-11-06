@@ -621,6 +621,8 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
             timeout.
         :rtype: bool
         """
+        if self._challenge_task is None:
+            return True
         if timeout is None:
             self._challenge_task.result()
             return True
