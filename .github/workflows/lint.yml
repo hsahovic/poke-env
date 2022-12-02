@@ -52,3 +52,9 @@ jobs:
         run: |
           . venv/bin/activate
           pyre check
+
+      - name: Build docs
+        run: |
+            . venv/bin/activate
+            cd docs
+            make html
