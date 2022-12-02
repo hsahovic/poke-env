@@ -1,0 +1,115 @@
+name: tests
+on: push
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    strategy:
+      matrix:
+        versions: [3.7, 3.8, 3.9, 3.10]
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      # Setup Python (faster than using Python container)
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "${{ matrix.version }}"
+
+      - name: Store python version in file
+        run: python --version > python-version.txt
+
+      - name: Cache dev dependencies
+        id: dev-dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            venv
+            pokemon-showdown
+          key: requirements-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}-{{ checksum "python-version.txt" }}-ps
+
+      - name: install dev dependencies
+        run: |
+          python -m venv venv
+          . venv/bin/activate
+          pip install -r requirements-dev.txt
+
+      - name: install dependencies
+        run: |
+          python -m venv venv
+          . venv/bin/activate
+          pip install -r requirements.txt
+
+      - name: run tests
+        run: |
+          . venv/bin/activate
+          PYTHONPATH=src pytest -x --cov=src/poke_env unit_tests/
+
+      - name: Convert coverage to XML
+        run: |
+          . venv/bin/activate
+          coverage xml
+
+      - uses: codecov/codecov-action@v3
+        with:
+          file: coverage.xml
+
+      - name: Build package
+        run: |
+            . venv/bin/activate
+            python setup.py sdist bdist_wheel
+
+      - name: Install built package
+        run: |
+            . venv/bin/activate
+            pip install --force-reinstall dist/*.whl
+
+      - name: Run package-based tests
+        run: |
+            . venv/bin/activate
+            pytest -x unit_tests/
+
+      - name: Uninstall package
+        run: pip uninstall poke-env --yes
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install PS
+        run: |
+            if [ -d "pokemon-showdown" ]
+            then
+                cd pokemon-showdown;git pull
+            else
+                git clone https://github.com/smogon/pokemon-showdown.git
+            fi
+
+      - name: Install PS dependencies & setup config
+        run: |
+            cd pokemon-showdown
+            npm install
+            cp config/config-example.js config/config.js
+            sed  -i 's/backdoor = true/backdoor = false/g' config/config.js
+            sed  -i 's/simulatorprocesses = 1/simulatorprocesses = 2/g' config/config.js
+
+      - name: Start PS
+        run: |
+            cd pokemon-showdown;node pokemon-showdown start --no-security --max-old-space-size=3000 &
+
+      - name: Wait for server to be up
+        run: |
+            until $(curl --output /dev/null --silent --head --fail http://localhost:8000); do
+              sleep .01
+            done
+            sleep 1
+
+      - name: Run integration tests
+        run: |
+            . venv/bin/activate
+            pytest -x integration_tests/
