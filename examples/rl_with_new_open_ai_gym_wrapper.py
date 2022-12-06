@@ -11,7 +11,7 @@ from tensorflow.keras.layers import Dense, Flatten
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
 
-from poke_env.abstract_battle import AbstractBattle
+from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.player import (
     background_evaluate_player,
     background_cross_evaluate,
@@ -73,7 +73,8 @@ class SimpleRLPlayer(Gen8EnvSinglePlayer):
 async def main():
     # First test the environment to ensure the class is consistent
     # with the OpenAI API
-    test_env = SimpleRLPlayer(battle_format="gen8randombattle", start_challenging=True)
+    opponent = RandomPlayer(battle_format="gen8randombattle")
+    test_env = SimpleRLPlayer(battle_format="gen8randombattle", start_challenging=True, opponent=opponent)
     check_env(test_env)
     test_env.close()
 
