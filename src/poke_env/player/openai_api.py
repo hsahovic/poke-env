@@ -715,7 +715,7 @@ class LegacyOpenAIGymEnv(OpenAIGymEnv, ABC):
         return_info: bool = False,
         options: Optional[dict] = None,
     ) -> Union[ObservationType, Tuple[ObservationType, dict]]:  # pyre-ignore
-        obs, info = super().reset(seed=seed, return_info=True, options=options)
+        obs, info = OpenAIGymEnv.reset(self, seed=seed, return_info=True, options=options)
         if return_info:
             return obs, info
         return obs
@@ -723,5 +723,11 @@ class LegacyOpenAIGymEnv(OpenAIGymEnv, ABC):
     def step(
         self, action: ActionType
     ) -> Tuple[ObservationType, float, bool, dict]:  # pragma: no cover
-        obs, reward, terminated, truncated, info = super().step(action)
+        obs, reward, terminated, truncated, info = OpenAIGymEnv.step(self, action)
         return obs, reward, terminated or truncated, info
+
+
+def wrap_for_old_gym_api(env: OpenAIGymEnv) -> OpenAIGymEnv:
+    env.reset = LegacyOpenAIGymEnv.reset.__get__(env, env.__class__)
+    env.step = LegacyOpenAIGymEnv.step.__get__(env, env.__class__)
+    return env
