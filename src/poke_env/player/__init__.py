@@ -23,7 +23,12 @@ from poke_env.player.utils import (
 from poke_env.player.random_player import RandomPlayer
 from poke_env.player.player import Player
 from poke_env.player.player_network_interface import PlayerNetwork
-from poke_env.player.openai_api import ObservationType, OpenAIGymEnv
+from poke_env.player.openai_api import (
+    ActionType,
+    ObservationType,
+    OpenAIGymEnv,
+    wrap_for_old_gym_api,
+)
 from poke_env.player.internals import POKE_LOOP
 from poke_env.player.env_player import (
     EnvPlayer,
@@ -41,7 +46,9 @@ __all__ = [
     "player_network_interface",
     "random_player",
     "utils",
+    "ActionType",
     "ObservationType",
+    "wrap_for_old_gym_api",
     "EnvPlayer",
     "ForfeitBattleOrder",
     "Gen4EnvSinglePlayer",

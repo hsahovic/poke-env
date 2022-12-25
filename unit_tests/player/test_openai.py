@@ -16,7 +16,12 @@ from poke_env.player import (
     ObservationType,
     Player,
 )
-from poke_env.player.openai_api import _AsyncQueue, _AsyncPlayer
+from poke_env.player.openai_api import (
+    _AsyncQueue,
+    _AsyncPlayer,
+    LegacyOpenAIGymEnv,
+    wrap_for_old_gym_api,
+)
 
 
 class DummyEnv(OpenAIGymEnv):
@@ -25,16 +30,16 @@ class DummyEnv(OpenAIGymEnv):
         super().__init__(*args, **kwargs)
 
     def calc_reward(self, last_battle, current_battle) -> float:
-        pass
+        return 69.42
 
     def action_to_move(self, action: int, battle: AbstractBattle) -> BattleOrder:
-        pass
+        return ForfeitBattleOrder()
 
     def embed_battle(self, battle: AbstractBattle) -> ObservationType:
-        pass
+        return [0, 1, 2]
 
     def describe_embedding(self) -> Space:
-        return None
+        return "Space"
 
     def action_space_size(self) -> int:
         return 1
@@ -133,3 +138,54 @@ def test_get_opponent():
     player.opponent = [0]
     with pytest.raises(RuntimeError):
         player._get_opponent()
+
+
+def test_legacy_wrapper():
+    dummy = DummyEnv(start_listening=False)
+    wrapped = wrap_for_old_gym_api(dummy)
+    assert dummy.reset.__func__ is OpenAIGymEnv.reset
+    assert dummy.step.__func__ is OpenAIGymEnv.step
+    assert wrapped.reset.__func__ is LegacyOpenAIGymEnv.reset
+    assert wrapped.step.__func__ is LegacyOpenAIGymEnv.step
+    assert id(dummy._keep_challenging) == id(wrapped._keep_challenging)
+    wrapped._keep_challenging = True
+    assert id(dummy._keep_challenging) == id(wrapped._keep_challenging)
+    dummy._keep_challenging = False
+    assert id(dummy._keep_challenging) == id(wrapped._keep_challenging)
+
+
+def test_legacy_wrapper_calc_reward():
+    dummy = DummyEnv(start_listening=False)
+    wrapped = wrap_for_old_gym_api(dummy)
+    assert wrapped.calc_reward(None, None) == 69.42
+
+
+def test_legacy_wrapper_action_to_move():
+    dummy = DummyEnv(start_listening=False)
+    wrapped = wrap_for_old_gym_api(dummy)
+    assert isinstance(wrapped.action_to_move(2, None), ForfeitBattleOrder)
+
+
+def test_legacy_wrapper_embed_battle():
+    dummy = DummyEnv(start_listening=False)
+    wrapped = wrap_for_old_gym_api(dummy)
+    assert wrapped.embed_battle(None) == [0, 1, 2]
+
+
+def test_legacy_wrapper_describe_embedding():
+    dummy = DummyEnv(start_listening=False)
+    wrapped = wrap_for_old_gym_api(dummy)
+    assert wrapped.describe_embedding() == "Space"
+
+
+def test_legacy_wrapper_action_space_size():
+    dummy = DummyEnv(start_listening=False)
+    wrapped = wrap_for_old_gym_api(dummy)
+    assert wrapped.action_space_size() == 1
+
+
+def test_legacy_wrapper_get_opponent():
+    dummy = DummyEnv(start_listening=False)
+    dummy.opponent = "Opponent"
+    wrapped = wrap_for_old_gym_api(dummy)
+    assert wrapped.get_opponent() == "Opponent"

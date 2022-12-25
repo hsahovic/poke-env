@@ -6,7 +6,7 @@ Top level modules
 Utils
 *****
 
-.. automodule:: poke_env.utils
+.. automodule:: poke_env.stats
    :members:
    :undoc-members:
    :show-inheritance:
