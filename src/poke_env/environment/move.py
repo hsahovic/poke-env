@@ -7,7 +7,7 @@ from poke_env.environment.move_category import MoveCategory
 from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.status import Status
 from poke_env.environment.weather import Weather
-from poke_env.utils import to_id_str
+from poke_env.stats import to_id_str
 
 from functools import lru_cache
 from typing import Dict

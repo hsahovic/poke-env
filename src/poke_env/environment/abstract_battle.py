@@ -16,7 +16,7 @@ from poke_env.environment.field import Field
 from poke_env.environment.pokemon import Pokemon, GEN_TO_POKEMON
 from poke_env.environment.side_condition import STACKABLE_CONDITIONS, SideCondition
 from poke_env.environment.weather import Weather
-from poke_env.utils import to_id_str
+from poke_env.stats import to_id_str
 
 import os
 
