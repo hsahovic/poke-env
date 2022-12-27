@@ -38,7 +38,7 @@ from poke_env.server_configuration import LocalhostServerConfiguration
 from poke_env.server_configuration import ServerConfiguration
 from poke_env.teambuilder.teambuilder import Teambuilder
 from poke_env.teambuilder.constant_teambuilder import ConstantTeambuilder
-from poke_env.utils import to_id_str
+from poke_env.stats import to_id_str
 
 
 class Player(PlayerNetwork, ABC):
@@ -334,6 +334,7 @@ class Player(PlayerNetwork, ABC):
                 return
             message = self.teampreview(battle)
         else:
+            await self._send_message("Hello!", battle.battle_tag)
             message = self.choose_move(battle)
             if isawaitable(message):
                 message = await message

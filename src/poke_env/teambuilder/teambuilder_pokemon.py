@@ -2,7 +2,8 @@
 """This module defines the TeambuilderPokemon class, which is used as an intermediate
 format to specify pokemon builds in teambuilders custom classes.
 """
-from poke_env.utils import to_id_str, STATS_TO_IDX
+from poke_env.data import to_id_str
+from poke_env.stats import STATS_TO_IDX
 
 
 class TeambuilderPokemon:

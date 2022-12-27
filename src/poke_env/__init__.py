@@ -10,7 +10,7 @@ import poke_env.player as player
 import poke_env.player_configuration as player_configuration
 import poke_env.server_configuration as server_configuration
 import poke_env.teambuilder as teambuilder
-import poke_env.utils as utils
+import poke_env.stats as stats
 from poke_env.data import (
     GEN4_MOVES,
     GEN4_POKEDEX,
@@ -38,7 +38,7 @@ from poke_env.server_configuration import (
     ServerConfiguration,
     ShowdownServerConfiguration,
 )
-from poke_env.utils import (
+from poke_env.stats import (
     compute_raw_stats,
 )
 
@@ -81,5 +81,5 @@ __all__ = [
     "server_configuration",
     "teambuilder",
     "to_id_str",
-    "utils",
+    "stats",
 ]

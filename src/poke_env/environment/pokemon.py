@@ -13,7 +13,7 @@ from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.move import Move, GEN_TO_MOVE_CLASS, SPECIAL_MOVES
 from poke_env.environment.status import Status
 from poke_env.environment.z_crystal import Z_CRYSTAL
-from poke_env.utils import to_id_str
+from poke_env.stats import to_id_str
 
 
 class Pokemon:
