@@ -9,7 +9,6 @@
             2
         ],
         "flags": {
-            "heal": 1,
             "mirror": 1,
             "protect": 1
         },
@@ -56,7 +55,7 @@
         },
         "name": "Acid Armor",
         "num": 151,
-        "pp": 20,
+        "pp": 40,
         "priority": 0,
         "secondary": null,
         "target": "self",
@@ -65,55 +64,14 @@
             "effect": "clearnegativeboost"
         }
     },
-    "acidspray": {
-        "accuracy": 100,
-        "basePower": 40,
-        "category": "Special",
-        "contestType": "Beautiful",
-        "flags": {
-            "bullet": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Acid Spray",
-        "num": 491,
-        "pp": 20,
-        "priority": 0,
-        "secondary": {
-            "boosts": {
-                "spd": -2
-            },
-            "chance": 100
-        },
-        "target": "normal",
-        "type": "Poison"
-    },
-    "acrobatics": {
-        "accuracy": 100,
-        "basePower": 55,
-        "basePowerCallback": "basePowerCallback",
-        "category": "Physical",
-        "contestType": "Cool",
-        "flags": {
-            "contact": 1,
-            "distance": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Acrobatics",
-        "num": 512,
-        "pp": 15,
-        "priority": 0,
-        "secondary": null,
-        "target": "any",
-        "type": "Flying"
-    },
     "acupressure": {
         "accuracy": true,
         "basePower": 0,
         "category": "Status",
         "contestType": "Tough",
-        "flags": {},
+        "flags": {
+            "snatch": 1
+        },
         "name": "Acupressure",
         "num": 367,
         "onHit": "onHit",
@@ -135,7 +93,8 @@
             "contact": 1,
             "distance": 1,
             "mirror": 1,
-            "protect": 1
+            "protect": 1,
+            "slicing": 1
         },
         "name": "Aerial Ace",
         "num": 332,
@@ -156,6 +115,7 @@
             "mirror": 1,
             "protect": 1
         },
+        "isNonstandard": null,
         "name": "Aeroblast",
         "num": 177,
         "pp": 5,
@@ -163,29 +123,6 @@
         "secondary": null,
         "target": "any",
         "type": "Flying"
-    },
-    "afteryou": {
-        "accuracy": true,
-        "basePower": 0,
-        "category": "Status",
-        "contestType": "Cute",
-        "flags": {
-            "allyanim": 1,
-            "bypasssub": 1
-        },
-        "name": "After You",
-        "num": 495,
-        "onHit": "onHit",
-        "pp": 15,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Normal",
-        "zMove": {
-            "boost": {
-                "spe": 1
-            }
-        }
     },
     "agility": {
         "accuracy": true,
@@ -211,13 +148,15 @@
     },
     "aircutter": {
         "accuracy": 95,
-        "basePower": 60,
+        "basePower": 55,
         "category": "Special",
         "contestType": "Cool",
         "critRatio": 2,
         "flags": {
             "mirror": 1,
-            "protect": 1
+            "protect": 1,
+            "slicing": 1,
+            "wind": 1
         },
         "name": "Air Cutter",
         "num": 314,
@@ -235,11 +174,12 @@
         "flags": {
             "distance": 1,
             "mirror": 1,
-            "protect": 1
+            "protect": 1,
+            "slicing": 1
         },
         "name": "Air Slash",
         "num": 403,
-        "pp": 15,
+        "pp": 20,
         "priority": 0,
         "secondary": {
             "chance": 30,
@@ -247,27 +187,6 @@
         },
         "target": "any",
         "type": "Flying"
-    },
-    "allyswitch": {
-        "accuracy": true,
-        "basePower": 0,
-        "category": "Status",
-        "contestType": "Clever",
-        "flags": {},
-        "name": "Ally Switch",
-        "num": 502,
-        "onHit": "onHit",
-        "onTryHit": "onTryHit",
-        "pp": 15,
-        "priority": 1,
-        "secondary": null,
-        "target": "self",
-        "type": "Psychic",
-        "zMove": {
-            "boost": {
-                "spe": 2
-            }
-        }
     },
     "amnesia": {
         "accuracy": true,
@@ -343,13 +262,12 @@
         "category": "Status",
         "condition": {
             "onResidual": "onResidual",
-            "onResidualOrder": 6,
+            "onResidualOrder": 10,
+            "onResidualSubOrder": 2,
             "onStart": "onStart"
         },
         "contestType": "Beautiful",
-        "flags": {
-            "snatch": 1
-        },
+        "flags": {},
         "name": "Aqua Ring",
         "num": 392,
         "pp": 20,
@@ -413,6 +331,7 @@
             "distance": 1,
             "snatch": 1
         },
+        "isNonstandard": null,
         "name": "Aromatherapy",
         "num": 312,
         "onHit": "onHit",
@@ -422,30 +341,6 @@
         "type": "Grass",
         "zMove": {
             "effect": "heal"
-        }
-    },
-    "aromaticmist": {
-        "accuracy": true,
-        "basePower": 0,
-        "boosts": {
-            "spd": 1
-        },
-        "category": "Status",
-        "contestType": "Beautiful",
-        "flags": {
-            "bypasssub": 1
-        },
-        "name": "Aromatic Mist",
-        "num": 597,
-        "pp": 20,
-        "priority": 0,
-        "secondary": null,
-        "target": "adjacentAlly",
-        "type": "Fairy",
-        "zMove": {
-            "boost": {
-                "spd": 2
-            }
         }
     },
     "assist": {
@@ -466,7 +361,7 @@
     },
     "assurance": {
         "accuracy": 100,
-        "basePower": 60,
+        "basePower": 50,
         "basePowerCallback": "basePowerCallback",
         "category": "Physical",
         "contestType": "Clever",
@@ -555,7 +450,7 @@
     },
     "aurasphere": {
         "accuracy": true,
-        "basePower": 80,
+        "basePower": 90,
         "category": "Special",
         "contestType": "Beautiful",
         "flags": {
@@ -595,30 +490,6 @@
         "target": "normal",
         "type": "Ice"
     },
-    "autotomize": {
-        "accuracy": true,
-        "basePower": 0,
-        "boosts": {
-            "spe": 2
-        },
-        "category": "Status",
-        "contestType": "Beautiful",
-        "flags": {
-            "snatch": 1
-        },
-        "name": "Autotomize",
-        "num": 475,
-        "onHit": "onHit",
-        "onTryHit": "onTryHit",
-        "pp": 15,
-        "priority": 0,
-        "secondary": null,
-        "target": "self",
-        "type": "Steel",
-        "zMove": {
-            "effect": "clearnegativeboost"
-        }
-    },
     "avalanche": {
         "accuracy": 100,
         "basePower": 60,
@@ -637,33 +508,6 @@
         "secondary": null,
         "target": "normal",
         "type": "Ice"
-    },
-    "babydolleyes": {
-        "accuracy": 100,
-        "basePower": 0,
-        "boosts": {
-            "atk": -1
-        },
-        "category": "Status",
-        "contestType": "Cute",
-        "flags": {
-            "allyanim": 1,
-            "mirror": 1,
-            "protect": 1,
-            "reflectable": 1
-        },
-        "name": "Baby-Doll Eyes",
-        "num": 608,
-        "pp": 30,
-        "priority": 1,
-        "secondary": null,
-        "target": "normal",
-        "type": "Fairy",
-        "zMove": {
-            "boost": {
-                "def": 1
-            }
-        }
     },
     "barrage": {
         "accuracy": 85,
@@ -702,7 +546,7 @@
         "isNonstandard": null,
         "name": "Barrier",
         "num": 112,
-        "pp": 20,
+        "pp": 30,
         "priority": 0,
         "secondary": null,
         "target": "self",
@@ -735,9 +579,16 @@
     },
     "beatup": {
         "accuracy": 100,
-        "basePower": 0,
+        "basePower": 10,
         "basePowerCallback": "basePowerCallback",
         "category": "Physical",
+        "condition": {
+            "duration": 1,
+            "onFoeModifyDef": "onFoeModifyDef",
+            "onFoeModifyDefPriority": -101,
+            "onModifyAtk": "onModifyAtk",
+            "onModifyAtkPriority": -101
+        },
         "contestType": "Clever",
         "flags": {
             "allyanim": 1,
@@ -752,22 +603,6 @@
         "secondary": null,
         "target": "normal",
         "type": "Dark"
-    },
-    "belch": {
-        "accuracy": 90,
-        "basePower": 120,
-        "category": "Special",
-        "contestType": "Tough",
-        "flags": {
-            "protect": 1
-        },
-        "name": "Belch",
-        "num": 562,
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Poison"
     },
     "bellydrum": {
         "accuracy": true,
@@ -789,31 +624,6 @@
             "effect": "heal"
         }
     },
-    "bestow": {
-        "accuracy": true,
-        "basePower": 0,
-        "category": "Status",
-        "contestType": "Cute",
-        "flags": {
-            "allyanim": 1,
-            "bypasssub": 1,
-            "mirror": 1
-        },
-        "isNonstandard": null,
-        "name": "Bestow",
-        "num": 516,
-        "onHit": "onHit",
-        "pp": 15,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Normal",
-        "zMove": {
-            "boost": {
-                "spe": 2
-            }
-        }
-    },
     "bide": {
         "accuracy": true,
         "basePower": 0,
@@ -821,6 +631,7 @@
         "category": "Physical",
         "condition": {
             "duration": 3,
+            "onAfterSetStatus": "onAfterSetStatus",
             "onBeforeMove": "onBeforeMove",
             "onDamage": "onDamage",
             "onDamagePriority": -101,
@@ -846,7 +657,7 @@
         "volatileStatus": "bide"
     },
     "bind": {
-        "accuracy": 85,
+        "accuracy": 75,
         "basePower": 15,
         "category": "Physical",
         "contestType": "Tough",
@@ -931,12 +742,13 @@
     },
     "blizzard": {
         "accuracy": 70,
-        "basePower": 110,
+        "basePower": 120,
         "category": "Special",
         "contestType": "Beautiful",
         "flags": {
             "mirror": 1,
-            "protect": 1
+            "protect": 1,
+            "wind": 1
         },
         "name": "Blizzard",
         "num": 59,
@@ -957,6 +769,7 @@
         "contestType": "Cute",
         "flags": {
             "mirror": 1,
+            "protect": 1,
             "reflectable": 1
         },
         "name": "Block",
@@ -972,26 +785,6 @@
                 "def": 1
             }
         }
-    },
-    "blueflare": {
-        "accuracy": 85,
-        "basePower": 130,
-        "category": "Special",
-        "contestType": "Beautiful",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Blue Flare",
-        "num": 551,
-        "pp": 5,
-        "priority": 0,
-        "secondary": {
-            "chance": 20,
-            "status": "brn"
-        },
-        "target": "normal",
-        "type": "Fire"
     },
     "bodyslam": {
         "accuracy": 100,
@@ -1014,27 +807,6 @@
         },
         "target": "normal",
         "type": "Normal"
-    },
-    "boltstrike": {
-        "accuracy": 85,
-        "basePower": 130,
-        "category": "Physical",
-        "contestType": "Beautiful",
-        "flags": {
-            "contact": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Bolt Strike",
-        "num": 550,
-        "pp": 5,
-        "priority": 0,
-        "secondary": {
-            "chance": 20,
-            "status": "par"
-        },
-        "target": "normal",
-        "type": "Electric"
     },
     "boneclub": {
         "accuracy": 85,
@@ -1066,6 +838,7 @@
             "mirror": 1,
             "protect": 1
         },
+        "isNonstandard": null,
         "maxMove": {
             "basePower": 130
         },
@@ -1079,7 +852,7 @@
         "type": "Ground"
     },
     "bonerush": {
-        "accuracy": 90,
+        "accuracy": 80,
         "basePower": 25,
         "category": "Physical",
         "contestType": "Tough",
@@ -1104,25 +877,6 @@
         "zMove": {
             "basePower": 140
         }
-    },
-    "boomburst": {
-        "accuracy": 100,
-        "basePower": 140,
-        "category": "Special",
-        "contestType": "Tough",
-        "flags": {
-            "bypasssub": 1,
-            "mirror": 1,
-            "protect": 1,
-            "sound": 1
-        },
-        "name": "Boomburst",
-        "num": 586,
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "allAdjacent",
-        "type": "Normal"
     },
     "bounce": {
         "accuracy": 85,
@@ -1170,8 +924,8 @@
         "pp": 15,
         "priority": 0,
         "recoil": [
-            33,
-            100
+            1,
+            3
         ],
         "secondary": null,
         "target": "any",
@@ -1216,7 +970,7 @@
     },
     "bubble": {
         "accuracy": 100,
-        "basePower": 40,
+        "basePower": 20,
         "category": "Special",
         "contestType": "Cute",
         "flags": {
@@ -1284,7 +1038,6 @@
         "category": "Special",
         "contestType": "Beautiful",
         "flags": {
-            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "sound": 1
@@ -1327,29 +1080,6 @@
             }
         }
     },
-    "bulldoze": {
-        "accuracy": 100,
-        "basePower": 60,
-        "category": "Physical",
-        "contestType": "Tough",
-        "flags": {
-            "mirror": 1,
-            "nonsky": 1,
-            "protect": 1
-        },
-        "name": "Bulldoze",
-        "num": 523,
-        "pp": 20,
-        "priority": 0,
-        "secondary": {
-            "boosts": {
-                "spe": -1
-            },
-            "chance": 100
-        },
-        "target": "allAdjacent",
-        "type": "Ground"
-    },
     "bulletpunch": {
         "accuracy": 100,
         "basePower": 40,
@@ -1371,7 +1101,7 @@
     },
     "bulletseed": {
         "accuracy": 100,
-        "basePower": 25,
+        "basePower": 10,
         "category": "Physical",
         "contestType": "Cool",
         "flags": {
@@ -1471,30 +1201,6 @@
             }
         }
     },
-    "celebrate": {
-        "accuracy": true,
-        "basePower": 0,
-        "category": "Status",
-        "contestType": "Cute",
-        "flags": {},
-        "name": "Celebrate",
-        "num": 606,
-        "onTryHit": "onTryHit",
-        "pp": 40,
-        "priority": 0,
-        "secondary": null,
-        "target": "self",
-        "type": "Normal",
-        "zMove": {
-            "boost": {
-                "atk": 1,
-                "def": 1,
-                "spa": 1,
-                "spd": 1,
-                "spe": 1
-            }
-        }
-    },
     "charge": {
         "accuracy": true,
         "basePower": 0,
@@ -1503,10 +1209,13 @@
         },
         "category": "Status",
         "condition": {
-            "duration": 2,
+            "onAfterMove": "onAfterMove",
             "onBasePower": "onBasePower",
             "onBasePowerPriority": 9,
-            "onRestart": "onRestart"
+            "onEnd": "onEnd",
+            "onMoveAborted": "onMoveAborted",
+            "onRestart": "onRestart",
+            "onStart": "onStart"
         },
         "contestType": "Clever",
         "flags": {
@@ -1514,7 +1223,6 @@
         },
         "name": "Charge",
         "num": 268,
-        "onHit": "onHit",
         "pp": 20,
         "priority": 0,
         "secondary": null,
@@ -1571,7 +1279,7 @@
         "priority": 0,
         "secondary": null,
         "target": "normal",
-        "type": "Fairy",
+        "type": "Normal",
         "zMove": {
             "boost": {
                 "def": 1
@@ -1580,13 +1288,11 @@
     },
     "chatter": {
         "accuracy": 100,
-        "basePower": 65,
+        "basePower": 60,
         "category": "Special",
         "contestType": "Cute",
         "flags": {
-            "bypasssub": 1,
             "distance": 1,
-            "mirror": 1,
             "protect": 1,
             "sound": 1
         },
@@ -1594,56 +1300,18 @@
         "name": "Chatter",
         "noSketch": true,
         "num": 448,
+        "onModifyMove": "onModifyMove",
         "pp": 20,
         "priority": 0,
         "secondary": {
-            "chance": 100,
+            "chance": 31,
             "volatileStatus": "confusion"
         },
         "target": "any",
         "type": "Flying"
     },
-    "chipaway": {
-        "accuracy": 100,
-        "basePower": 70,
-        "category": "Physical",
-        "contestType": "Tough",
-        "flags": {
-            "contact": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "ignoreDefensive": true,
-        "ignoreEvasion": true,
-        "isNonstandard": null,
-        "name": "Chip Away",
-        "num": 498,
-        "pp": 20,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Normal"
-    },
-    "circlethrow": {
-        "accuracy": 90,
-        "basePower": 60,
-        "category": "Physical",
-        "contestType": "Cool",
-        "flags": {
-            "contact": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "forceSwitch": true,
-        "name": "Circle Throw",
-        "num": 509,
-        "pp": 10,
-        "priority": -6,
-        "target": "normal",
-        "type": "Fighting"
-    },
     "clamp": {
-        "accuracy": 85,
+        "accuracy": 75,
         "basePower": 35,
         "category": "Physical",
         "contestType": "Tough",
@@ -1655,30 +1323,12 @@
         "isNonstandard": null,
         "name": "Clamp",
         "num": 128,
-        "pp": 15,
+        "pp": 10,
         "priority": 0,
         "secondary": null,
         "target": "normal",
         "type": "Water",
         "volatileStatus": "partiallytrapped"
-    },
-    "clearsmog": {
-        "accuracy": true,
-        "basePower": 50,
-        "category": "Special",
-        "contestType": "Beautiful",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Clear Smog",
-        "num": 499,
-        "onHit": "onHit",
-        "pp": 15,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Poison"
     },
     "closecombat": {
         "accuracy": 100,
@@ -1703,30 +1353,6 @@
         },
         "target": "normal",
         "type": "Fighting"
-    },
-    "coil": {
-        "accuracy": true,
-        "basePower": 0,
-        "boosts": {
-            "accuracy": 1,
-            "atk": 1,
-            "def": 1
-        },
-        "category": "Status",
-        "contestType": "Tough",
-        "flags": {
-            "snatch": 1
-        },
-        "name": "Coil",
-        "num": 489,
-        "pp": 20,
-        "priority": 0,
-        "secondary": null,
-        "target": "self",
-        "type": "Poison",
-        "zMove": {
-            "effect": "clearnegativeboost"
-        }
     },
     "cometpunch": {
         "accuracy": 85,
@@ -1754,33 +1380,6 @@
         "secondary": null,
         "target": "normal",
         "type": "Normal"
-    },
-    "confide": {
-        "accuracy": true,
-        "basePower": 0,
-        "boosts": {
-            "spa": -1
-        },
-        "category": "Status",
-        "contestType": "Cute",
-        "flags": {
-            "bypasssub": 1,
-            "mirror": 1,
-            "reflectable": 1,
-            "sound": 1
-        },
-        "name": "Confide",
-        "num": 590,
-        "pp": 20,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Normal",
-        "zMove": {
-            "boost": {
-                "spd": 1
-            }
-        }
     },
     "confuseray": {
         "accuracy": 100,
@@ -1855,9 +1454,8 @@
         "basePower": 0,
         "category": "Status",
         "contestType": "Beautiful",
-        "flags": {
-            "snatch": 1
-        },
+        "flags": {},
+        "isNonstandard": null,
         "name": "Conversion",
         "num": 160,
         "onHit": "onHit",
@@ -1884,6 +1482,7 @@
         "flags": {
             "bypasssub": 1
         },
+        "isNonstandard": null,
         "name": "Conversion 2",
         "num": 176,
         "onHit": "onHit",
@@ -1928,6 +1527,7 @@
         "flags": {
             "snatch": 1
         },
+        "isNonstandard": null,
         "name": "Cosmic Power",
         "num": 322,
         "pp": 20,
@@ -1941,30 +1541,8 @@
             }
         }
     },
-    "cottonguard": {
-        "accuracy": true,
-        "basePower": 0,
-        "boosts": {
-            "def": 3
-        },
-        "category": "Status",
-        "contestType": "Cute",
-        "flags": {
-            "snatch": 1
-        },
-        "name": "Cotton Guard",
-        "num": 538,
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "self",
-        "type": "Grass",
-        "zMove": {
-            "effect": "clearnegativeboost"
-        }
-    },
     "cottonspore": {
-        "accuracy": 100,
+        "accuracy": 85,
         "basePower": 0,
         "boosts": {
             "spe": -2
@@ -1979,10 +1557,11 @@
         },
         "name": "Cotton Spore",
         "num": 178,
+        "onTryHit": "onTryHit",
         "pp": 40,
         "priority": 0,
         "secondary": null,
-        "target": "allAdjacentFoes",
+        "target": "normal",
         "type": "Grass",
         "zMove": {
             "effect": "clearnegativeboost"
@@ -2021,7 +1600,7 @@
     },
     "covet": {
         "accuracy": 100,
-        "basePower": 60,
+        "basePower": 40,
         "category": "Physical",
         "contestType": "Cute",
         "flags": {
@@ -2032,15 +1611,15 @@
         "name": "Covet",
         "num": 343,
         "onAfterHit": "onAfterHit",
-        "pp": 25,
+        "pp": 40,
         "priority": 0,
         "secondary": null,
         "target": "normal",
         "type": "Normal"
     },
     "crabhammer": {
-        "accuracy": 90,
-        "basePower": 100,
+        "accuracy": 85,
+        "basePower": 90,
         "category": "Physical",
         "contestType": "Tough",
         "critRatio": 2,
@@ -2056,33 +1635,6 @@
         "secondary": null,
         "target": "normal",
         "type": "Water"
-    },
-    "craftyshield": {
-        "accuracy": true,
-        "basePower": 0,
-        "category": "Status",
-        "condition": {
-            "duration": 1,
-            "onSideStart": "onSideStart",
-            "onTryHit": "onTryHit",
-            "onTryHitPriority": 3
-        },
-        "contestType": "Clever",
-        "flags": {},
-        "name": "Crafty Shield",
-        "num": 578,
-        "onTry": "onTry",
-        "pp": 10,
-        "priority": 3,
-        "secondary": null,
-        "sideCondition": "craftyshield",
-        "target": "allySide",
-        "type": "Fairy",
-        "zMove": {
-            "boost": {
-                "spd": 1
-            }
-        }
     },
     "crosschop": {
         "accuracy": 80,
@@ -2112,7 +1664,8 @@
         "flags": {
             "contact": 1,
             "mirror": 1,
-            "protect": 1
+            "protect": 1,
+            "slicing": 1
         },
         "name": "Cross Poison",
         "num": 440,
@@ -2183,6 +1736,7 @@
             "mirror": 1,
             "protect": 1
         },
+        "isNonstandard": null,
         "maxMove": {
             "basePower": 140
         },
@@ -2203,13 +1757,12 @@
         "category": "Status",
         "condition": {
             "onResidual": "onResidual",
-            "onResidualOrder": 12,
+            "onResidualOrder": 10,
+            "onResidualSubOrder": 8,
             "onStart": "onStart"
         },
         "contestType": "Tough",
-        "flags": {
-            "bypasssub": 1
-        },
+        "flags": {},
         "name": "Curse",
         "nonGhostTarget": "self",
         "num": 174,
@@ -2220,7 +1773,7 @@
         "priority": 0,
         "secondary": null,
         "target": "normal",
-        "type": "Ghost",
+        "type": "???",
         "volatileStatus": "curse",
         "zMove": {
             "effect": "curse"
@@ -2234,7 +1787,8 @@
         "flags": {
             "contact": 1,
             "mirror": 1,
-            "protect": 1
+            "protect": 1,
+            "slicing": 1
         },
         "name": "Cut",
         "num": 15,
@@ -2289,23 +1843,6 @@
         "zMove": {
             "effect": "clearnegativeboost"
         }
-    },
-    "dazzlinggleam": {
-        "accuracy": 100,
-        "basePower": 80,
-        "category": "Special",
-        "contestType": "Beautiful",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Dazzling Gleam",
-        "num": 605,
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "allAdjacentFoes",
-        "type": "Fairy"
     },
     "defendorder": {
         "accuracy": true,
@@ -2369,8 +1906,7 @@
         "flags": {
             "bypasssub": 1,
             "mirror": 1,
-            "protect": 1,
-            "reflectable": 1
+            "protect": 1
         },
         "name": "Defog",
         "num": 432,
@@ -2418,6 +1954,12 @@
         "accuracy": true,
         "basePower": 0,
         "category": "Status",
+        "condition": {
+            "duration": 1,
+            "onStart": "onStart",
+            "onTryHit": "onTryHit",
+            "onTryHitPriority": 3
+        },
         "contestType": "Cool",
         "flags": {},
         "name": "Detect",
@@ -2425,7 +1967,7 @@
         "onHit": "onHit",
         "onPrepareHit": "onPrepareHit",
         "pp": 5,
-        "priority": 4,
+        "priority": 3,
         "secondary": null,
         "stallingMove": true,
         "target": "self",
@@ -2436,31 +1978,6 @@
                 "evasion": 1
             }
         }
-    },
-    "diamondstorm": {
-        "accuracy": 95,
-        "basePower": 100,
-        "category": "Physical",
-        "contestType": "Beautiful",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Diamond Storm",
-        "num": 591,
-        "pp": 5,
-        "priority": 0,
-        "secondary": {
-            "chance": 50,
-            "self": {
-                "boosts": {
-                    "def": 1
-                }
-            }
-        },
-        "self": null,
-        "target": "allAdjacentFoes",
-        "type": "Rock"
     },
     "dig": {
         "accuracy": 100,
@@ -2490,25 +2007,25 @@
         "type": "Ground"
     },
     "disable": {
-        "accuracy": 100,
+        "accuracy": 80,
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "duration": 5,
+            "durationCallback": "durationCallback",
             "noCopy": true,
             "onBeforeMove": "onBeforeMove",
             "onBeforeMovePriority": 7,
             "onDisableMove": "onDisableMove",
             "onEnd": "onEnd",
-            "onResidualOrder": 17,
+            "onResidualOrder": 10,
+            "onResidualSubOrder": 13,
             "onStart": "onStart"
         },
         "contestType": "Clever",
         "flags": {
             "bypasssub": 1,
             "mirror": 1,
-            "protect": 1,
-            "reflectable": 1
+            "protect": 1
         },
         "name": "Disable",
         "num": 50,
@@ -2522,25 +2039,6 @@
         "zMove": {
             "effect": "clearnegativeboost"
         }
-    },
-    "disarmingvoice": {
-        "accuracy": true,
-        "basePower": 40,
-        "category": "Special",
-        "contestType": "Cute",
-        "flags": {
-            "bypasssub": 1,
-            "mirror": 1,
-            "protect": 1,
-            "sound": 1
-        },
-        "name": "Disarming Voice",
-        "num": 574,
-        "pp": 15,
-        "priority": 0,
-        "secondary": null,
-        "target": "allAdjacentFoes",
-        "type": "Fairy"
     },
     "discharge": {
         "accuracy": 100,
@@ -2613,12 +2111,13 @@
         "type": "Normal"
     },
     "doomdesire": {
-        "accuracy": 100,
-        "basePower": 140,
+        "accuracy": 85,
+        "basePower": 120,
         "category": "Special",
         "contestType": "Beautiful",
         "flags": {},
         "isFutureMove": true,
+        "isNonstandard": null,
         "name": "Doom Desire",
         "num": 353,
         "onTry": "onTry",
@@ -2643,8 +2142,8 @@
         "pp": 15,
         "priority": 0,
         "recoil": [
-            33,
-            100
+            1,
+            3
         ],
         "secondary": null,
         "target": "normal",
@@ -2744,7 +2243,7 @@
     },
     "dracometeor": {
         "accuracy": 90,
-        "basePower": 130,
+        "basePower": 140,
         "category": "Special",
         "contestType": "Beautiful",
         "flags": {
@@ -2763,30 +2262,6 @@
         },
         "target": "normal",
         "type": "Dragon"
-    },
-    "dragonascent": {
-        "accuracy": 100,
-        "basePower": 120,
-        "category": "Physical",
-        "contestType": "Beautiful",
-        "flags": {
-            "contact": 1,
-            "distance": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Dragon Ascent",
-        "num": 620,
-        "pp": 5,
-        "priority": 0,
-        "self": {
-            "boosts": {
-                "def": -1,
-                "spd": -1
-            }
-        },
-        "target": "any",
-        "type": "Flying"
     },
     "dragonbreath": {
         "accuracy": 100,
@@ -2852,7 +2327,7 @@
     },
     "dragonpulse": {
         "accuracy": 100,
-        "basePower": 85,
+        "basePower": 90,
         "category": "Special",
         "contestType": "Beautiful",
         "flags": {
@@ -2909,50 +2384,9 @@
         "target": "normal",
         "type": "Dragon"
     },
-    "dragontail": {
-        "accuracy": 90,
-        "basePower": 60,
-        "category": "Physical",
-        "contestType": "Tough",
-        "flags": {
-            "contact": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "forceSwitch": true,
-        "name": "Dragon Tail",
-        "num": 525,
-        "pp": 10,
-        "priority": -6,
-        "target": "normal",
-        "type": "Dragon"
-    },
-    "drainingkiss": {
-        "accuracy": 100,
-        "basePower": 50,
-        "category": "Special",
-        "contestType": "Cute",
-        "drain": [
-            3,
-            4
-        ],
-        "flags": {
-            "contact": 1,
-            "heal": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Draining Kiss",
-        "num": 577,
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Fairy"
-    },
     "drainpunch": {
         "accuracy": 100,
-        "basePower": 75,
+        "basePower": 60,
         "category": "Physical",
         "contestType": "Tough",
         "drain": [
@@ -2961,14 +2395,13 @@
         ],
         "flags": {
             "contact": 1,
-            "heal": 1,
             "mirror": 1,
             "protect": 1,
             "punch": 1
         },
         "name": "Drain Punch",
         "num": 409,
-        "pp": 10,
+        "pp": 5,
         "priority": 0,
         "secondary": null,
         "target": "normal",
@@ -2984,7 +2417,6 @@
             2
         ],
         "flags": {
-            "heal": 1,
             "mirror": 1,
             "protect": 1
         },
@@ -3015,47 +2447,6 @@
         "secondary": null,
         "target": "any",
         "type": "Flying"
-    },
-    "drillrun": {
-        "accuracy": 95,
-        "basePower": 80,
-        "category": "Physical",
-        "contestType": "Tough",
-        "critRatio": 2,
-        "flags": {
-            "contact": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Drill Run",
-        "num": 529,
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Ground"
-    },
-    "dualchop": {
-        "accuracy": 90,
-        "basePower": 40,
-        "category": "Physical",
-        "contestType": "Tough",
-        "flags": {
-            "contact": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "maxMove": {
-            "basePower": 130
-        },
-        "multihit": 2,
-        "name": "Dual Chop",
-        "num": 530,
-        "pp": 15,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Dragon"
     },
     "dynamicpunch": {
         "accuracy": 50,
@@ -3120,58 +2511,6 @@
         "target": "allAdjacent",
         "type": "Ground"
     },
-    "echoedvoice": {
-        "accuracy": 100,
-        "basePower": 40,
-        "basePowerCallback": "basePowerCallback",
-        "category": "Special",
-        "condition": {
-            "duration": 2,
-            "onFieldRestart": "onFieldRestart",
-            "onFieldStart": "onFieldStart"
-        },
-        "contestType": "Beautiful",
-        "flags": {
-            "bypasssub": 1,
-            "mirror": 1,
-            "protect": 1,
-            "sound": 1
-        },
-        "name": "Echoed Voice",
-        "num": 497,
-        "onTry": "onTry",
-        "pp": 15,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Normal"
-    },
-    "eerieimpulse": {
-        "accuracy": 100,
-        "basePower": 0,
-        "boosts": {
-            "spa": -2
-        },
-        "category": "Status",
-        "contestType": "Clever",
-        "flags": {
-            "mirror": 1,
-            "protect": 1,
-            "reflectable": 1
-        },
-        "name": "Eerie Impulse",
-        "num": 598,
-        "pp": 15,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Electric",
-        "zMove": {
-            "boost": {
-                "spd": 1
-            }
-        }
-    },
     "eggbomb": {
         "accuracy": 75,
         "basePower": 100,
@@ -3191,117 +2530,6 @@
         "target": "normal",
         "type": "Normal"
     },
-    "electricterrain": {
-        "accuracy": true,
-        "basePower": 0,
-        "category": "Status",
-        "condition": {
-            "duration": 5,
-            "durationCallback": "durationCallback",
-            "onBasePower": "onBasePower",
-            "onFieldEnd": "onFieldEnd",
-            "onFieldResidualOrder": 27,
-            "onFieldResidualSubOrder": 7,
-            "onFieldStart": "onFieldStart",
-            "onSetStatus": "onSetStatus",
-            "onTryAddVolatile": "onTryAddVolatile"
-        },
-        "contestType": "Clever",
-        "flags": {
-            "nonsky": 1
-        },
-        "name": "Electric Terrain",
-        "num": 604,
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "all",
-        "terrain": "electricterrain",
-        "type": "Electric",
-        "zMove": {
-            "boost": {
-                "spe": 1
-            }
-        }
-    },
-    "electrify": {
-        "accuracy": true,
-        "basePower": 0,
-        "category": "Status",
-        "condition": {
-            "duration": 1,
-            "onModifyType": "onModifyType",
-            "onModifyTypePriority": -2,
-            "onStart": "onStart"
-        },
-        "contestType": "Clever",
-        "flags": {
-            "allyanim": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Electrify",
-        "num": 582,
-        "onTryHit": "onTryHit",
-        "pp": 20,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Electric",
-        "volatileStatus": "electrify",
-        "zMove": {
-            "boost": {
-                "spa": 1
-            }
-        }
-    },
-    "electroball": {
-        "accuracy": 100,
-        "basePower": 0,
-        "basePowerCallback": "basePowerCallback",
-        "category": "Special",
-        "contestType": "Cool",
-        "flags": {
-            "bullet": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "maxMove": {
-            "basePower": 130
-        },
-        "name": "Electro Ball",
-        "num": 486,
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Electric",
-        "zMove": {
-            "basePower": 160
-        }
-    },
-    "electroweb": {
-        "accuracy": 95,
-        "basePower": 55,
-        "category": "Special",
-        "contestType": "Beautiful",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Electroweb",
-        "num": 527,
-        "pp": 15,
-        "priority": 0,
-        "secondary": {
-            "boosts": {
-                "spe": -1
-            },
-            "chance": 100
-        },
-        "target": "allAdjacentFoes",
-        "type": "Electric"
-    },
     "embargo": {
         "accuracy": 100,
         "basePower": 0,
@@ -3309,18 +2537,19 @@
         "condition": {
             "duration": 5,
             "onEnd": "onEnd",
-            "onResidualOrder": 21,
+            "onResidualOrder": 10,
+            "onResidualSubOrder": 18,
             "onStart": "onStart"
         },
         "contestType": "Clever",
         "flags": {
             "mirror": 1,
-            "protect": 1,
-            "reflectable": 1
+            "protect": 1
         },
         "isNonstandard": null,
         "name": "Embargo",
         "num": 373,
+        "onTryHit": "onTryHit",
         "pp": 15,
         "priority": 0,
         "secondary": null,
@@ -3358,20 +2587,20 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "duration": 3,
+            "durationCallback": "durationCallback",
             "onDisableMove": "onDisableMove",
             "onEnd": "onEnd",
             "onOverrideAction": "onOverrideAction",
             "onResidual": "onResidual",
-            "onResidualOrder": 16,
+            "onResidualOrder": 10,
+            "onResidualSubOrder": 14,
             "onStart": "onStart"
         },
         "contestType": "Cute",
         "flags": {
             "bypasssub": 1,
             "mirror": 1,
-            "protect": 1,
-            "reflectable": 1
+            "protect": 1
         },
         "name": "Encore",
         "num": 227,
@@ -3403,6 +2632,7 @@
         },
         "name": "Endeavor",
         "num": 283,
+        "onTry": "onTry",
         "onTryImmunity": "onTryImmunity",
         "pp": 5,
         "priority": 0,
@@ -3442,7 +2672,7 @@
     },
     "energyball": {
         "accuracy": 100,
-        "basePower": 90,
+        "basePower": 80,
         "category": "Special",
         "contestType": "Beautiful",
         "flags": {
@@ -3462,32 +2692,6 @@
         },
         "target": "normal",
         "type": "Grass"
-    },
-    "entrainment": {
-        "accuracy": 100,
-        "basePower": 0,
-        "category": "Status",
-        "contestType": "Cute",
-        "flags": {
-            "allyanim": 1,
-            "mirror": 1,
-            "protect": 1,
-            "reflectable": 1
-        },
-        "name": "Entrainment",
-        "num": 494,
-        "onHit": "onHit",
-        "onTryHit": "onTryHit",
-        "pp": 15,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Normal",
-        "zMove": {
-            "boost": {
-                "spd": 1
-            }
-        }
     },
     "eruption": {
         "accuracy": 100,
@@ -3536,7 +2740,7 @@
         },
         "name": "Extrasensory",
         "num": 326,
-        "pp": 20,
+        "pp": 30,
         "priority": 0,
         "secondary": {
             "chance": 10,
@@ -3558,7 +2762,7 @@
         "name": "Extreme Speed",
         "num": 245,
         "pp": 5,
-        "priority": 2,
+        "priority": 1,
         "secondary": null,
         "target": "normal",
         "type": "Normal"
@@ -3582,51 +2786,6 @@
         "target": "normal",
         "type": "Normal"
     },
-    "fairylock": {
-        "accuracy": true,
-        "basePower": 0,
-        "category": "Status",
-        "condition": {
-            "duration": 2,
-            "onFieldStart": "onFieldStart",
-            "onTrapPokemon": "onTrapPokemon"
-        },
-        "contestType": "Clever",
-        "flags": {
-            "bypasssub": 1,
-            "mirror": 1
-        },
-        "name": "Fairy Lock",
-        "num": 587,
-        "pp": 10,
-        "priority": 0,
-        "pseudoWeather": "fairylock",
-        "secondary": null,
-        "target": "all",
-        "type": "Fairy",
-        "zMove": {
-            "boost": {
-                "def": 1
-            }
-        }
-    },
-    "fairywind": {
-        "accuracy": 100,
-        "basePower": 40,
-        "category": "Special",
-        "contestType": "Beautiful",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Fairy Wind",
-        "num": 584,
-        "pp": 30,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Fairy"
-    },
     "fakeout": {
         "accuracy": 100,
         "basePower": 40,
@@ -3641,7 +2800,7 @@
         "num": 252,
         "onTry": "onTry",
         "pp": 10,
-        "priority": 3,
+        "priority": 1,
         "secondary": {
             "chance": 100,
             "volatileStatus": "flinch"
@@ -3726,15 +2885,14 @@
     },
     "feint": {
         "accuracy": 100,
-        "basePower": 30,
+        "basePower": 50,
         "breaksProtect": true,
         "category": "Physical",
         "contestType": "Clever",
-        "flags": {
-            "mirror": 1
-        },
+        "flags": {},
         "name": "Feint",
         "num": 364,
+        "onTry": "onTry",
         "pp": 10,
         "priority": 2,
         "secondary": null,
@@ -3760,73 +2918,9 @@
         "target": "normal",
         "type": "Dark"
     },
-    "fellstinger": {
-        "accuracy": 100,
-        "basePower": 30,
-        "category": "Physical",
-        "contestType": "Cool",
-        "flags": {
-            "contact": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Fell Stinger",
-        "num": 565,
-        "onAfterMoveSecondarySelf": "onAfterMoveSecondarySelf",
-        "pp": 25,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Bug"
-    },
-    "fierydance": {
-        "accuracy": 100,
-        "basePower": 80,
-        "category": "Special",
-        "contestType": "Beautiful",
-        "flags": {
-            "dance": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Fiery Dance",
-        "num": 552,
-        "pp": 10,
-        "priority": 0,
-        "secondary": {
-            "chance": 50,
-            "self": {
-                "boosts": {
-                    "spa": 1
-                }
-            }
-        },
-        "target": "normal",
-        "type": "Fire"
-    },
-    "finalgambit": {
-        "accuracy": 100,
-        "basePower": 0,
-        "category": "Special",
-        "contestType": "Tough",
-        "damageCallback": "damageCallback",
-        "flags": {
-            "protect": 1
-        },
-        "name": "Final Gambit",
-        "num": 515,
-        "pp": 5,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Fighting",
-        "zMove": {
-            "basePower": 180
-        }
-    },
     "fireblast": {
         "accuracy": 85,
-        "basePower": 110,
+        "basePower": 120,
         "category": "Special",
         "contestType": "Beautiful",
         "flags": {
@@ -3872,37 +2966,6 @@
         "target": "normal",
         "type": "Fire"
     },
-    "firepledge": {
-        "accuracy": 100,
-        "basePower": 80,
-        "basePowerCallback": "basePowerCallback",
-        "category": "Special",
-        "condition": {
-            "duration": 4,
-            "onResidual": "onResidual",
-            "onResidualOrder": 5,
-            "onResidualSubOrder": 1,
-            "onSideEnd": "onSideEnd",
-            "onSideResidualOrder": 26,
-            "onSideResidualSubOrder": 8,
-            "onSideStart": "onSideStart"
-        },
-        "contestType": "Beautiful",
-        "flags": {
-            "mirror": 1,
-            "nonsky": 1,
-            "protect": 1
-        },
-        "name": "Fire Pledge",
-        "num": 519,
-        "onModifyMove": "onModifyMove",
-        "onPrepareHit": "onPrepareHit",
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Fire"
-    },
     "firepunch": {
         "accuracy": 100,
         "basePower": 75,
@@ -3926,8 +2989,8 @@
         "type": "Fire"
     },
     "firespin": {
-        "accuracy": 85,
-        "basePower": 35,
+        "accuracy": 70,
+        "basePower": 15,
         "category": "Special",
         "contestType": "Beautiful",
         "flags": {
@@ -3993,54 +3056,9 @@
             "basePower": 160
         }
     },
-    "flameburst": {
-        "accuracy": 100,
-        "basePower": 70,
-        "category": "Special",
-        "contestType": "Beautiful",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "isNonstandard": null,
-        "name": "Flame Burst",
-        "num": 481,
-        "onAfterSubDamage": "onAfterSubDamage",
-        "onHit": "onHit",
-        "pp": 15,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Fire"
-    },
-    "flamecharge": {
-        "accuracy": 100,
-        "basePower": 50,
-        "category": "Physical",
-        "contestType": "Cool",
-        "flags": {
-            "contact": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Flame Charge",
-        "num": 488,
-        "pp": 20,
-        "priority": 0,
-        "secondary": {
-            "chance": 100,
-            "self": {
-                "boosts": {
-                    "spe": 1
-                }
-            }
-        },
-        "target": "normal",
-        "type": "Fire"
-    },
     "flamethrower": {
         "accuracy": 100,
-        "basePower": 90,
+        "basePower": 95,
         "category": "Special",
         "contestType": "Beautiful",
         "flags": {
@@ -4096,8 +3114,8 @@
         "pp": 15,
         "priority": 0,
         "recoil": [
-            33,
-            100
+            1,
+            3
         ],
         "secondary": {
             "chance": 10,
@@ -4205,28 +3223,6 @@
         "target": "normal",
         "type": "Dark"
     },
-    "flowershield": {
-        "accuracy": true,
-        "basePower": 0,
-        "category": "Status",
-        "contestType": "Beautiful",
-        "flags": {
-            "distance": 1
-        },
-        "name": "Flower Shield",
-        "num": 579,
-        "onHitField": "onHitField",
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "all",
-        "type": "Fairy",
-        "zMove": {
-            "boost": {
-                "def": 1
-            }
-        }
-    },
     "fly": {
         "accuracy": 95,
         "basePower": 90,
@@ -4253,31 +3249,6 @@
         "secondary": null,
         "target": "any",
         "type": "Flying"
-    },
-    "flyingpress": {
-        "accuracy": 95,
-        "basePower": 80,
-        "category": "Physical",
-        "contestType": "Tough",
-        "flags": {
-            "contact": 1,
-            "distance": 1,
-            "gravity": 1,
-            "mirror": 1,
-            "nonsky": 1,
-            "protect": 1
-        },
-        "name": "Flying Press",
-        "num": 560,
-        "onEffectiveness": "onEffectiveness",
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "any",
-        "type": "Fighting",
-        "zMove": {
-            "basePower": 170
-        }
     },
     "focusblast": {
         "accuracy": 70,
@@ -4332,6 +3303,7 @@
         "accuracy": 100,
         "basePower": 150,
         "beforeMoveCallback": "beforeMoveCallback",
+        "beforeTurnCallback": "beforeTurnCallback",
         "category": "Physical",
         "condition": {
             "duration": 1,
@@ -4347,6 +3319,7 @@
         },
         "name": "Focus Punch",
         "num": 264,
+        "onTry": "onTry",
         "pp": 20,
         "priority": -3,
         "priorityChargeCallback": "priorityChargeCallback",
@@ -4370,7 +3343,7 @@
         "num": 266,
         "onTry": "onTry",
         "pp": 20,
-        "priority": 2,
+        "priority": 3,
         "secondary": null,
         "target": "self",
         "type": "Normal",
@@ -4414,8 +3387,7 @@
         "flags": {
             "bypasssub": 1,
             "mirror": 1,
-            "protect": 1,
-            "reflectable": 1
+            "protect": 1
         },
         "isNonstandard": null,
         "name": "Foresight",
@@ -4430,97 +3402,6 @@
         "zMove": {
             "effect": "crit2"
         }
-    },
-    "forestscurse": {
-        "accuracy": 100,
-        "basePower": 0,
-        "category": "Status",
-        "contestType": "Clever",
-        "flags": {
-            "allyanim": 1,
-            "mirror": 1,
-            "protect": 1,
-            "reflectable": 1
-        },
-        "name": "Forest's Curse",
-        "num": 571,
-        "onHit": "onHit",
-        "pp": 20,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Grass",
-        "zMove": {
-            "boost": {
-                "atk": 1,
-                "def": 1,
-                "spa": 1,
-                "spd": 1,
-                "spe": 1
-            }
-        }
-    },
-    "foulplay": {
-        "accuracy": 100,
-        "basePower": 95,
-        "category": "Physical",
-        "contestType": "Clever",
-        "flags": {
-            "contact": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Foul Play",
-        "num": 492,
-        "overrideOffensivePokemon": "target",
-        "pp": 15,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Dark"
-    },
-    "freezedry": {
-        "accuracy": 100,
-        "basePower": 70,
-        "category": "Special",
-        "contestType": "Beautiful",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Freeze-Dry",
-        "num": 573,
-        "onEffectiveness": "onEffectiveness",
-        "pp": 20,
-        "priority": 0,
-        "secondary": {
-            "chance": 10,
-            "status": "frz"
-        },
-        "target": "normal",
-        "type": "Ice"
-    },
-    "freezeshock": {
-        "accuracy": 90,
-        "basePower": 140,
-        "category": "Physical",
-        "contestType": "Beautiful",
-        "flags": {
-            "charge": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Freeze Shock",
-        "num": 553,
-        "onTryMove": "onTryMove",
-        "pp": 5,
-        "priority": 0,
-        "secondary": {
-            "chance": 30,
-            "status": "par"
-        },
-        "target": "normal",
-        "type": "Ice"
     },
     "frenzyplant": {
         "accuracy": 90,
@@ -4543,24 +3424,6 @@
         },
         "target": "normal",
         "type": "Grass"
-    },
-    "frostbreath": {
-        "accuracy": 90,
-        "basePower": 60,
-        "category": "Special",
-        "contestType": "Beautiful",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Frost Breath",
-        "num": 524,
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Ice",
-        "willCrit": true
     },
     "frustration": {
         "accuracy": 100,
@@ -4612,7 +3475,7 @@
     },
     "furycutter": {
         "accuracy": 95,
-        "basePower": 40,
+        "basePower": 10,
         "basePowerCallback": "basePowerCallback",
         "category": "Physical",
         "condition": {
@@ -4624,7 +3487,8 @@
         "flags": {
             "contact": 1,
             "mirror": 1,
-            "protect": 1
+            "protect": 1,
+            "slicing": 1
         },
         "name": "Fury Cutter",
         "num": 210,
@@ -4659,46 +3523,9 @@
         "target": "normal",
         "type": "Normal"
     },
-    "fusionbolt": {
-        "accuracy": 100,
-        "basePower": 100,
-        "category": "Physical",
-        "contestType": "Cool",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Fusion Bolt",
-        "num": 559,
-        "onBasePower": "onBasePower",
-        "pp": 5,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Electric"
-    },
-    "fusionflare": {
-        "accuracy": 100,
-        "basePower": 100,
-        "category": "Special",
-        "contestType": "Beautiful",
-        "flags": {
-            "defrost": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Fusion Flare",
-        "num": 558,
-        "onBasePower": "onBasePower",
-        "pp": 5,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Fire"
-    },
     "futuresight": {
-        "accuracy": 100,
-        "basePower": 120,
+        "accuracy": 90,
+        "basePower": 80,
         "category": "Special",
         "contestType": "Clever",
         "flags": {},
@@ -4707,7 +3534,7 @@
         "name": "Future Sight",
         "num": 248,
         "onTry": "onTry",
-        "pp": 10,
+        "pp": 15,
         "priority": 0,
         "secondary": null,
         "target": "normal",
@@ -4743,66 +3570,9 @@
             }
         }
     },
-    "geargrind": {
-        "accuracy": 85,
-        "basePower": 50,
-        "category": "Physical",
-        "contestType": "Clever",
-        "flags": {
-            "contact": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "maxMove": {
-            "basePower": 130
-        },
-        "multihit": 2,
-        "name": "Gear Grind",
-        "num": 544,
-        "pp": 15,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Steel",
-        "zMove": {
-            "basePower": 180
-        }
-    },
-    "geomancy": {
-        "accuracy": true,
-        "basePower": 0,
-        "boosts": {
-            "spa": 2,
-            "spd": 2,
-            "spe": 2
-        },
-        "category": "Status",
-        "contestType": "Beautiful",
-        "flags": {
-            "charge": 1,
-            "nonsky": 1
-        },
-        "name": "Geomancy",
-        "num": 601,
-        "onTryMove": "onTryMove",
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "self",
-        "type": "Fairy",
-        "zMove": {
-            "boost": {
-                "atk": 1,
-                "def": 1,
-                "spa": 1,
-                "spd": 1,
-                "spe": 1
-            }
-        }
-    },
     "gigadrain": {
         "accuracy": 100,
-        "basePower": 75,
+        "basePower": 60,
         "category": "Special",
         "contestType": "Clever",
         "drain": [
@@ -4810,7 +3580,6 @@
             2
         ],
         "flags": {
-            "heal": 1,
             "mirror": 1,
             "protect": 1
         },
@@ -4844,30 +3613,8 @@
         "target": "normal",
         "type": "Normal"
     },
-    "glaciate": {
-        "accuracy": 95,
-        "basePower": 65,
-        "category": "Special",
-        "contestType": "Beautiful",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Glaciate",
-        "num": 549,
-        "pp": 10,
-        "priority": 0,
-        "secondary": {
-            "boosts": {
-                "spe": -1
-            },
-            "chance": 100
-        },
-        "target": "allAdjacentFoes",
-        "type": "Ice"
-    },
     "glare": {
-        "accuracy": 100,
+        "accuracy": 75,
         "basePower": 0,
         "category": "Status",
         "contestType": "Tough",
@@ -4917,42 +3664,12 @@
             "basePower": 160
         }
     },
-    "grasspledge": {
-        "accuracy": 100,
-        "basePower": 80,
-        "basePowerCallback": "basePowerCallback",
-        "category": "Special",
-        "condition": {
-            "duration": 4,
-            "onModifySpe": "onModifySpe",
-            "onSideEnd": "onSideEnd",
-            "onSideResidualOrder": 26,
-            "onSideResidualSubOrder": 9,
-            "onSideStart": "onSideStart"
-        },
-        "contestType": "Beautiful",
-        "flags": {
-            "mirror": 1,
-            "nonsky": 1,
-            "protect": 1
-        },
-        "name": "Grass Pledge",
-        "num": 520,
-        "onModifyMove": "onModifyMove",
-        "onPrepareHit": "onPrepareHit",
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Grass"
-    },
     "grasswhistle": {
         "accuracy": 55,
         "basePower": 0,
         "category": "Status",
         "contestType": "Clever",
         "flags": {
-            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "reflectable": 1,
@@ -4973,40 +3690,6 @@
             }
         }
     },
-    "grassyterrain": {
-        "accuracy": true,
-        "basePower": 0,
-        "category": "Status",
-        "condition": {
-            "duration": 5,
-            "durationCallback": "durationCallback",
-            "onBasePower": "onBasePower",
-            "onFieldEnd": "onFieldEnd",
-            "onFieldResidualOrder": 27,
-            "onFieldResidualSubOrder": 7,
-            "onFieldStart": "onFieldStart",
-            "onResidual": "onResidual",
-            "onResidualOrder": 5,
-            "onResidualSubOrder": 2
-        },
-        "contestType": "Beautiful",
-        "flags": {
-            "nonsky": 1
-        },
-        "name": "Grassy Terrain",
-        "num": 580,
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "all",
-        "terrain": "grassyterrain",
-        "type": "Grass",
-        "zMove": {
-            "boost": {
-                "def": 1
-            }
-        }
-    },
     "gravity": {
         "accuracy": true,
         "basePower": 0,
@@ -5018,8 +3701,7 @@
             "onBeforeMovePriority": 6,
             "onDisableMove": "onDisableMove",
             "onFieldEnd": "onFieldEnd",
-            "onFieldResidualOrder": 27,
-            "onFieldResidualSubOrder": 2,
+            "onFieldResidualOrder": 9,
             "onFieldStart": "onFieldStart",
             "onModifyAccuracy": "onModifyAccuracy",
             "onModifyMove": "onModifyMove"
@@ -5051,7 +3733,6 @@
         "category": "Status",
         "contestType": "Cute",
         "flags": {
-            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "reflectable": 1,
@@ -5074,7 +3755,6 @@
         "accuracy": true,
         "basePower": 0,
         "boosts": {
-            "atk": 1,
             "spa": 1
         },
         "category": "Status",
@@ -5085,7 +3765,7 @@
         "name": "Growth",
         "num": 74,
         "onModifyMove": "onModifyMove",
-        "pp": 20,
+        "pp": 40,
         "priority": 0,
         "secondary": null,
         "target": "self",
@@ -5110,6 +3790,7 @@
         "flags": {
             "bypasssub": 1
         },
+        "isNonstandard": null,
         "name": "Grudge",
         "num": 288,
         "pp": 5,
@@ -5120,29 +3801,6 @@
         "volatileStatus": "grudge",
         "zMove": {
             "effect": "redirect"
-        }
-    },
-    "guardsplit": {
-        "accuracy": true,
-        "basePower": 0,
-        "category": "Status",
-        "contestType": "Clever",
-        "flags": {
-            "allyanim": 1,
-            "protect": 1
-        },
-        "name": "Guard Split",
-        "num": 470,
-        "onHit": "onHit",
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Psychic",
-        "zMove": {
-            "boost": {
-                "spe": 1
-            }
         }
     },
     "guardswap": {
@@ -5196,7 +3854,7 @@
         }
     },
     "gunkshot": {
-        "accuracy": 80,
+        "accuracy": 70,
         "basePower": 120,
         "category": "Physical",
         "contestType": "Tough",
@@ -5223,7 +3881,8 @@
         "flags": {
             "distance": 1,
             "mirror": 1,
-            "protect": 1
+            "protect": 1,
+            "wind": 1
         },
         "name": "Gust",
         "num": 16,
@@ -5265,6 +3924,7 @@
         "category": "Status",
         "contestType": "Beautiful",
         "flags": {},
+        "isNonstandard": null,
         "name": "Hail",
         "num": 258,
         "pp": 10,
@@ -5302,30 +3962,6 @@
         },
         "target": "normal",
         "type": "Fighting"
-    },
-    "happyhour": {
-        "accuracy": true,
-        "basePower": 0,
-        "category": "Status",
-        "contestType": "Cute",
-        "flags": {},
-        "name": "Happy Hour",
-        "num": 603,
-        "onTryHit": "onTryHit",
-        "pp": 30,
-        "priority": 0,
-        "secondary": null,
-        "target": "allySide",
-        "type": "Normal",
-        "zMove": {
-            "boost": {
-                "atk": 1,
-                "def": 1,
-                "spa": 1,
-                "spd": 1,
-                "spe": 1
-            }
-        }
     },
     "harden": {
         "accuracy": true,
@@ -5392,28 +4028,6 @@
         "target": "normal",
         "type": "Normal"
     },
-    "headcharge": {
-        "accuracy": 100,
-        "basePower": 120,
-        "category": "Physical",
-        "contestType": "Tough",
-        "flags": {
-            "contact": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Head Charge",
-        "num": 543,
-        "pp": 15,
-        "priority": 0,
-        "recoil": [
-            1,
-            4
-        ],
-        "secondary": null,
-        "target": "normal",
-        "type": "Normal"
-    },
     "headsmash": {
         "accuracy": 80,
         "basePower": 150,
@@ -5442,11 +4056,10 @@
         "category": "Status",
         "contestType": "Beautiful",
         "flags": {
-            "bypasssub": 1,
-            "distance": 1,
             "snatch": 1,
             "sound": 1
         },
+        "isNonstandard": null,
         "name": "Heal Bell",
         "num": 215,
         "onHit": "onHit",
@@ -5469,17 +4082,15 @@
             "onBeforeMovePriority": 6,
             "onDisableMove": "onDisableMove",
             "onEnd": "onEnd",
-            "onModifyMove": "onModifyMove",
-            "onResidualOrder": 20,
-            "onRestart": "onRestart",
+            "onResidualOrder": 10,
+            "onResidualSubOrder": 17,
             "onStart": "onStart",
             "onTryHeal": "onTryHeal"
         },
         "contestType": "Clever",
         "flags": {
             "mirror": 1,
-            "protect": 1,
-            "reflectable": 1
+            "protect": 1
         },
         "isNonstandard": null,
         "name": "Heal Block",
@@ -5501,17 +4112,17 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "duration": 2,
+            "duration": 1,
             "onSwitchIn": "onSwitchIn",
-            "onSwitchInPriority": 1
+            "onSwitchInPriority": -1
         },
         "contestType": "Beautiful",
         "flags": {
-            "heal": 1,
-            "snatch": 1
+            "heal": 1
         },
         "name": "Healing Wish",
         "num": 361,
+        "onAfterMove": "onAfterMove",
         "onTryHit": "onTryHit",
         "pp": 10,
         "priority": 0,
@@ -5546,53 +4157,6 @@
             "effect": "clearnegativeboost"
         }
     },
-    "healpulse": {
-        "accuracy": true,
-        "basePower": 0,
-        "category": "Status",
-        "contestType": "Beautiful",
-        "flags": {
-            "allyanim": 1,
-            "distance": 1,
-            "heal": 1,
-            "protect": 1,
-            "pulse": 1,
-            "reflectable": 1
-        },
-        "name": "Heal Pulse",
-        "num": 505,
-        "onHit": "onHit",
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "any",
-        "type": "Psychic",
-        "zMove": {
-            "effect": "clearnegativeboost"
-        }
-    },
-    "heartstamp": {
-        "accuracy": 100,
-        "basePower": 60,
-        "category": "Physical",
-        "contestType": "Cute",
-        "flags": {
-            "contact": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "isNonstandard": null,
-        "name": "Heart Stamp",
-        "num": 531,
-        "pp": 25,
-        "priority": 0,
-        "secondary": {
-            "chance": 30,
-            "volatileStatus": "flinch"
-        },
-        "target": "normal",
-        "type": "Psychic"
-    },
     "heartswap": {
         "accuracy": true,
         "basePower": 0,
@@ -5617,41 +4181,15 @@
             "effect": "crit2"
         }
     },
-    "heatcrash": {
-        "accuracy": 100,
-        "basePower": 0,
-        "basePowerCallback": "basePowerCallback",
-        "category": "Physical",
-        "contestType": "Tough",
-        "flags": {
-            "contact": 1,
-            "mirror": 1,
-            "nonsky": 1,
-            "protect": 1
-        },
-        "maxMove": {
-            "basePower": 130
-        },
-        "name": "Heat Crash",
-        "num": 535,
-        "onTryHit": "onTryHit",
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Fire",
-        "zMove": {
-            "basePower": 160
-        }
-    },
     "heatwave": {
         "accuracy": 90,
-        "basePower": 95,
+        "basePower": 100,
         "category": "Special",
         "contestType": "Beautiful",
         "flags": {
             "mirror": 1,
-            "protect": 1
+            "protect": 1,
+            "wind": 1
         },
         "name": "Heat Wave",
         "num": 257,
@@ -5663,33 +4201,6 @@
         },
         "target": "allAdjacentFoes",
         "type": "Fire"
-    },
-    "heavyslam": {
-        "accuracy": 100,
-        "basePower": 0,
-        "basePowerCallback": "basePowerCallback",
-        "category": "Physical",
-        "contestType": "Tough",
-        "flags": {
-            "contact": 1,
-            "mirror": 1,
-            "nonsky": 1,
-            "protect": 1
-        },
-        "maxMove": {
-            "basePower": 130
-        },
-        "name": "Heavy Slam",
-        "num": 484,
-        "onTryHit": "onTryHit",
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Steel",
-        "zMove": {
-            "basePower": 160
-        }
     },
     "helpinghand": {
         "accuracy": true,
@@ -5719,30 +4230,10 @@
             "effect": "clearnegativeboost"
         }
     },
-    "hex": {
-        "accuracy": 100,
-        "basePower": 65,
-        "basePowerCallback": "basePowerCallback",
-        "category": "Special",
-        "contestType": "Clever",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Hex",
-        "num": 506,
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Ghost",
-        "zMove": {
-            "basePower": 160
-        }
-    },
     "hiddenpower": {
         "accuracy": 100,
-        "basePower": 60,
+        "basePower": 0,
+        "basePowerCallback": "basePowerCallback",
         "category": "Special",
         "contestType": "Clever",
         "flags": {
@@ -5761,7 +4252,7 @@
     },
     "hiddenpowerbug": {
         "accuracy": 100,
-        "basePower": 60,
+        "basePower": 70,
         "category": "Special",
         "contestType": "Clever",
         "flags": {
@@ -5780,7 +4271,7 @@
     },
     "hiddenpowerdark": {
         "accuracy": 100,
-        "basePower": 60,
+        "basePower": 70,
         "category": "Special",
         "contestType": "Clever",
         "flags": {
@@ -5799,7 +4290,7 @@
     },
     "hiddenpowerdragon": {
         "accuracy": 100,
-        "basePower": 60,
+        "basePower": 70,
         "category": "Special",
         "contestType": "Clever",
         "flags": {
@@ -5818,7 +4309,7 @@
     },
     "hiddenpowerelectric": {
         "accuracy": 100,
-        "basePower": 60,
+        "basePower": 70,
         "category": "Special",
         "contestType": "Clever",
         "flags": {
@@ -5837,7 +4328,7 @@
     },
     "hiddenpowerfighting": {
         "accuracy": 100,
-        "basePower": 60,
+        "basePower": 70,
         "category": "Special",
         "contestType": "Clever",
         "flags": {
@@ -5856,7 +4347,7 @@
     },
     "hiddenpowerfire": {
         "accuracy": 100,
-        "basePower": 60,
+        "basePower": 70,
         "category": "Special",
         "contestType": "Clever",
         "flags": {
@@ -5875,7 +4366,7 @@
     },
     "hiddenpowerflying": {
         "accuracy": 100,
-        "basePower": 60,
+        "basePower": 70,
         "category": "Special",
         "contestType": "Clever",
         "flags": {
@@ -5894,7 +4385,7 @@
     },
     "hiddenpowerghost": {
         "accuracy": 100,
-        "basePower": 60,
+        "basePower": 70,
         "category": "Special",
         "contestType": "Clever",
         "flags": {
@@ -5913,7 +4404,7 @@
     },
     "hiddenpowergrass": {
         "accuracy": 100,
-        "basePower": 60,
+        "basePower": 70,
         "category": "Special",
         "contestType": "Clever",
         "flags": {
@@ -5932,7 +4423,7 @@
     },
     "hiddenpowerground": {
         "accuracy": 100,
-        "basePower": 60,
+        "basePower": 70,
         "category": "Special",
         "contestType": "Clever",
         "flags": {
@@ -5951,7 +4442,7 @@
     },
     "hiddenpowerice": {
         "accuracy": 100,
-        "basePower": 60,
+        "basePower": 70,
         "category": "Special",
         "contestType": "Clever",
         "flags": {
@@ -5970,7 +4461,7 @@
     },
     "hiddenpowerpoison": {
         "accuracy": 100,
-        "basePower": 60,
+        "basePower": 70,
         "category": "Special",
         "contestType": "Clever",
         "flags": {
@@ -5989,7 +4480,7 @@
     },
     "hiddenpowerpsychic": {
         "accuracy": 100,
-        "basePower": 60,
+        "basePower": 70,
         "category": "Special",
         "contestType": "Clever",
         "flags": {
@@ -6008,7 +4499,7 @@
     },
     "hiddenpowerrock": {
         "accuracy": 100,
-        "basePower": 60,
+        "basePower": 70,
         "category": "Special",
         "contestType": "Clever",
         "flags": {
@@ -6027,7 +4518,7 @@
     },
     "hiddenpowersteel": {
         "accuracy": 100,
-        "basePower": 60,
+        "basePower": 70,
         "category": "Special",
         "contestType": "Clever",
         "flags": {
@@ -6046,7 +4537,7 @@
     },
     "hiddenpowerwater": {
         "accuracy": 100,
-        "basePower": 60,
+        "basePower": 70,
         "category": "Special",
         "contestType": "Clever",
         "flags": {
@@ -6065,7 +4556,7 @@
     },
     "highjumpkick": {
         "accuracy": 90,
-        "basePower": 130,
+        "basePower": 100,
         "category": "Physical",
         "contestType": "Cool",
         "flags": {
@@ -6078,81 +4569,11 @@
         "name": "High Jump Kick",
         "num": 136,
         "onMoveFail": "onMoveFail",
-        "pp": 10,
+        "pp": 20,
         "priority": 0,
         "secondary": null,
         "target": "normal",
         "type": "Fighting"
-    },
-    "holdback": {
-        "accuracy": 100,
-        "basePower": 40,
-        "category": "Physical",
-        "contestType": "Cool",
-        "flags": {
-            "contact": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Hold Back",
-        "num": 610,
-        "onDamage": "onDamage",
-        "onDamagePriority": -20,
-        "pp": 40,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Normal"
-    },
-    "holdhands": {
-        "accuracy": true,
-        "basePower": 0,
-        "category": "Status",
-        "contestType": "Cute",
-        "flags": {
-            "bypasssub": 1
-        },
-        "name": "Hold Hands",
-        "num": 607,
-        "pp": 40,
-        "priority": 0,
-        "secondary": null,
-        "target": "adjacentAlly",
-        "type": "Normal",
-        "zMove": {
-            "boost": {
-                "atk": 1,
-                "def": 1,
-                "spa": 1,
-                "spd": 1,
-                "spe": 1
-            }
-        }
-    },
-    "honeclaws": {
-        "accuracy": true,
-        "basePower": 0,
-        "boosts": {
-            "accuracy": 1,
-            "atk": 1
-        },
-        "category": "Status",
-        "contestType": "Cute",
-        "flags": {
-            "snatch": 1
-        },
-        "name": "Hone Claws",
-        "num": 468,
-        "pp": 15,
-        "priority": 0,
-        "secondary": null,
-        "target": "self",
-        "type": "Dark",
-        "zMove": {
-            "boost": {
-                "atk": 1
-            }
-        }
     },
     "hornattack": {
         "accuracy": 100,
@@ -6197,29 +4618,6 @@
             "basePower": 180
         }
     },
-    "hornleech": {
-        "accuracy": 100,
-        "basePower": 75,
-        "category": "Physical",
-        "contestType": "Tough",
-        "drain": [
-            1,
-            2
-        ],
-        "flags": {
-            "contact": 1,
-            "heal": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Horn Leech",
-        "num": 532,
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Grass"
-    },
     "howl": {
         "accuracy": true,
         "basePower": 0,
@@ -6244,28 +4642,6 @@
             }
         }
     },
-    "hurricane": {
-        "accuracy": 70,
-        "basePower": 110,
-        "category": "Special",
-        "contestType": "Tough",
-        "flags": {
-            "distance": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Hurricane",
-        "num": 542,
-        "onModifyMove": "onModifyMove",
-        "pp": 10,
-        "priority": 0,
-        "secondary": {
-            "chance": 30,
-            "volatileStatus": "confusion"
-        },
-        "target": "any",
-        "type": "Flying"
-    },
     "hydrocannon": {
         "accuracy": 90,
         "basePower": 150,
@@ -6289,7 +4665,7 @@
     },
     "hydropump": {
         "accuracy": 80,
-        "basePower": 110,
+        "basePower": 120,
         "category": "Special",
         "contestType": "Beautiful",
         "flags": {
@@ -6348,57 +4724,12 @@
         "target": "normal",
         "type": "Normal"
     },
-    "hyperspacefury": {
-        "accuracy": true,
-        "basePower": 100,
-        "breaksProtect": true,
-        "category": "Physical",
-        "contestType": "Tough",
-        "flags": {
-            "bypasssub": 1,
-            "mirror": 1
-        },
-        "isNonstandard": null,
-        "name": "Hyperspace Fury",
-        "num": 621,
-        "onTry": "onTry",
-        "pp": 5,
-        "priority": 0,
-        "secondary": null,
-        "self": {
-            "boosts": {
-                "def": -1
-            }
-        },
-        "target": "normal",
-        "type": "Dark"
-    },
-    "hyperspacehole": {
-        "accuracy": true,
-        "basePower": 80,
-        "breaksProtect": true,
-        "category": "Special",
-        "contestType": "Clever",
-        "flags": {
-            "bypasssub": 1,
-            "mirror": 1
-        },
-        "isNonstandard": null,
-        "name": "Hyperspace Hole",
-        "num": 593,
-        "pp": 5,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Psychic"
-    },
     "hypervoice": {
         "accuracy": 100,
         "basePower": 90,
         "category": "Special",
         "contestType": "Cool",
         "flags": {
-            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "sound": 1
@@ -6441,10 +4772,9 @@
         "basePowerCallback": "basePowerCallback",
         "category": "Physical",
         "condition": {
-            "duration": 2,
+            "duration": 1,
             "onLockMove": "iceball",
             "onResidual": "onResidual",
-            "onRestart": "onRestart",
             "onStart": "onStart"
         },
         "contestType": "Beautiful",
@@ -6457,6 +4787,8 @@
         "isNonstandard": null,
         "name": "Ice Ball",
         "num": 301,
+        "onAfterMove": "onAfterMove",
+        "onModifyMove": "onModifyMove",
         "pp": 20,
         "priority": 0,
         "secondary": null,
@@ -6465,7 +4797,7 @@
     },
     "icebeam": {
         "accuracy": 100,
-        "basePower": 90,
+        "basePower": 95,
         "category": "Special",
         "contestType": "Beautiful",
         "flags": {
@@ -6479,28 +4811,6 @@
         "secondary": {
             "chance": 10,
             "status": "frz"
-        },
-        "target": "normal",
-        "type": "Ice"
-    },
-    "iceburn": {
-        "accuracy": 90,
-        "basePower": 140,
-        "category": "Special",
-        "contestType": "Beautiful",
-        "flags": {
-            "charge": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Ice Burn",
-        "num": 554,
-        "onTryMove": "onTryMove",
-        "pp": 5,
-        "priority": 0,
-        "secondary": {
-            "chance": 30,
-            "status": "brn"
         },
         "target": "normal",
         "type": "Ice"
@@ -6572,29 +4882,9 @@
         "target": "normal",
         "type": "Ice"
     },
-    "iciclecrash": {
-        "accuracy": 90,
-        "basePower": 85,
-        "category": "Physical",
-        "contestType": "Beautiful",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Icicle Crash",
-        "num": 556,
-        "pp": 10,
-        "priority": 0,
-        "secondary": {
-            "chance": 30,
-            "volatileStatus": "flinch"
-        },
-        "target": "normal",
-        "type": "Ice"
-    },
     "iciclespear": {
         "accuracy": 100,
-        "basePower": 25,
+        "basePower": 10,
         "category": "Physical",
         "contestType": "Beautiful",
         "flags": {
@@ -6626,7 +4916,8 @@
         "contestType": "Beautiful",
         "flags": {
             "mirror": 1,
-            "protect": 1
+            "protect": 1,
+            "wind": 1
         },
         "name": "Icy Wind",
         "num": 196,
@@ -6654,11 +4945,11 @@
         },
         "contestType": "Clever",
         "flags": {
-            "bypasssub": 1,
-            "snatch": 1
+            "bypasssub": 1
         },
         "name": "Imprison",
         "num": 286,
+        "onTryHit": "onTryHit",
         "pp": 10,
         "pressureTarget": "foeSide",
         "priority": 0,
@@ -6672,63 +4963,6 @@
             }
         }
     },
-    "incinerate": {
-        "accuracy": 100,
-        "basePower": 60,
-        "category": "Special",
-        "contestType": "Tough",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Incinerate",
-        "num": 510,
-        "onHit": "onHit",
-        "pp": 15,
-        "priority": 0,
-        "secondary": null,
-        "target": "allAdjacentFoes",
-        "type": "Fire"
-    },
-    "inferno": {
-        "accuracy": 50,
-        "basePower": 100,
-        "category": "Special",
-        "contestType": "Beautiful",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Inferno",
-        "num": 517,
-        "pp": 5,
-        "priority": 0,
-        "secondary": {
-            "chance": 100,
-            "status": "brn"
-        },
-        "target": "normal",
-        "type": "Fire"
-    },
-    "infestation": {
-        "accuracy": 100,
-        "basePower": 20,
-        "category": "Special",
-        "contestType": "Cute",
-        "flags": {
-            "contact": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Infestation",
-        "num": 611,
-        "pp": 20,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Bug",
-        "volatileStatus": "partiallytrapped"
-    },
     "ingrain": {
         "accuracy": true,
         "basePower": 0,
@@ -6736,7 +4970,8 @@
         "condition": {
             "onDragOut": "onDragOut",
             "onResidual": "onResidual",
-            "onResidualOrder": 7,
+            "onResidualOrder": 10,
+            "onResidualSubOrder": 1,
             "onStart": "onStart",
             "onTrapPokemon": "onTrapPokemon"
         },
@@ -6756,33 +4991,6 @@
         "zMove": {
             "boost": {
                 "spd": 1
-            }
-        }
-    },
-    "iondeluge": {
-        "accuracy": true,
-        "basePower": 0,
-        "category": "Status",
-        "condition": {
-            "duration": 1,
-            "onFieldStart": "onFieldStart",
-            "onModifyType": "onModifyType",
-            "onModifyTypePriority": -2
-        },
-        "contestType": "Beautiful",
-        "flags": {},
-        "isNonstandard": null,
-        "name": "Ion Deluge",
-        "num": 569,
-        "pp": 25,
-        "priority": 1,
-        "pseudoWeather": "iondeluge",
-        "secondary": null,
-        "target": "all",
-        "type": "Electric",
-        "zMove": {
-            "boost": {
-                "spa": 1
             }
         }
     },
@@ -6873,7 +5081,7 @@
     },
     "jumpkick": {
         "accuracy": 95,
-        "basePower": 100,
+        "basePower": 85,
         "category": "Physical",
         "contestType": "Cool",
         "flags": {
@@ -6887,7 +5095,7 @@
         "name": "Jump Kick",
         "num": 26,
         "onMoveFail": "onMoveFail",
-        "pp": 10,
+        "pp": 25,
         "priority": 0,
         "secondary": null,
         "target": "normal",
@@ -6926,6 +5134,7 @@
             "protect": 1,
             "reflectable": 1
         },
+        "isNonstandard": null,
         "name": "Kinesis",
         "num": 134,
         "pp": 15,
@@ -6939,37 +5148,9 @@
             }
         }
     },
-    "kingsshield": {
-        "accuracy": true,
-        "basePower": 0,
-        "category": "Status",
-        "condition": {
-            "duration": 1,
-            "onHit": "onHit",
-            "onStart": "onStart",
-            "onTryHit": "onTryHit",
-            "onTryHitPriority": 3
-        },
-        "contestType": "Cool",
-        "flags": {},
-        "name": "King's Shield",
-        "num": 588,
-        "onHit": "onHit",
-        "onPrepareHit": "onPrepareHit",
-        "pp": 10,
-        "priority": 4,
-        "secondary": null,
-        "stallingMove": true,
-        "target": "self",
-        "type": "Steel",
-        "volatileStatus": "kingsshield",
-        "zMove": {
-            "effect": "clearnegativeboost"
-        }
-    },
     "knockoff": {
         "accuracy": 100,
-        "basePower": 65,
+        "basePower": 20,
         "category": "Physical",
         "contestType": "Clever",
         "flags": {
@@ -6987,30 +5168,9 @@
         "target": "normal",
         "type": "Dark"
     },
-    "landswrath": {
-        "accuracy": 100,
-        "basePower": 90,
-        "category": "Physical",
-        "contestType": "Beautiful",
-        "flags": {
-            "mirror": 1,
-            "nonsky": 1,
-            "protect": 1
-        },
-        "name": "Land's Wrath",
-        "num": 616,
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "allAdjacentFoes",
-        "type": "Ground",
-        "zMove": {
-            "basePower": 185
-        }
-    },
     "lastresort": {
         "accuracy": 100,
-        "basePower": 140,
+        "basePower": 130,
         "category": "Physical",
         "contestType": "Cute",
         "flags": {
@@ -7056,7 +5216,8 @@
         "flags": {
             "contact": 1,
             "mirror": 1,
-            "protect": 1
+            "protect": 1,
+            "slicing": 1
         },
         "name": "Leaf Blade",
         "num": 348,
@@ -7068,7 +5229,7 @@
     },
     "leafstorm": {
         "accuracy": 90,
-        "basePower": 130,
+        "basePower": 140,
         "category": "Special",
         "contestType": "Beautiful",
         "flags": {
@@ -7088,28 +5249,6 @@
         "target": "normal",
         "type": "Grass"
     },
-    "leaftornado": {
-        "accuracy": 90,
-        "basePower": 65,
-        "category": "Special",
-        "contestType": "Cool",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Leaf Tornado",
-        "num": 536,
-        "pp": 10,
-        "priority": 0,
-        "secondary": {
-            "boosts": {
-                "accuracy": -1
-            },
-            "chance": 50
-        },
-        "target": "normal",
-        "type": "Grass"
-    },
     "leechlife": {
         "accuracy": 100,
         "basePower": 20,
@@ -7121,7 +5260,6 @@
         ],
         "flags": {
             "contact": 1,
-            "heal": 1,
             "mirror": 1,
             "protect": 1
         },
@@ -7139,7 +5277,8 @@
         "category": "Status",
         "condition": {
             "onResidual": "onResidual",
-            "onResidualOrder": 8,
+            "onResidualOrder": 10,
+            "onResidualSubOrder": 5,
             "onStart": "onStart"
         },
         "contestType": "Clever",
@@ -7189,7 +5328,7 @@
     },
     "lick": {
         "accuracy": 100,
-        "basePower": 30,
+        "basePower": 20,
         "category": "Physical",
         "contestType": "Cute",
         "flags": {
@@ -7208,28 +5347,6 @@
         "target": "normal",
         "type": "Ghost"
     },
-    "lightofruin": {
-        "accuracy": 90,
-        "basePower": 140,
-        "category": "Special",
-        "contestType": "Beautiful",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "isNonstandard": "Unobtainable",
-        "name": "Light of Ruin",
-        "num": 617,
-        "pp": 5,
-        "priority": 0,
-        "recoil": [
-            1,
-            2
-        ],
-        "secondary": null,
-        "target": "normal",
-        "type": "Fairy"
-    },
     "lightscreen": {
         "accuracy": true,
         "basePower": 0,
@@ -7237,10 +5354,9 @@
         "condition": {
             "duration": 5,
             "durationCallback": "durationCallback",
-            "onAnyModifyDamage": "onAnyModifyDamage",
+            "onAnyModifyDamagePhase1": "onAnyModifyDamagePhase1",
             "onSideEnd": "onSideEnd",
-            "onSideResidualOrder": 26,
-            "onSideResidualSubOrder": 2,
+            "onSideResidualOrder": 2,
             "onSideStart": "onSideStart"
         },
         "contestType": "Beautiful",
@@ -7267,7 +5383,6 @@
         "category": "Status",
         "condition": {
             "duration": 2,
-            "noCopy": true,
             "onSourceAccuracy": "onSourceAccuracy",
             "onSourceInvulnerability": "onSourceInvulnerability",
             "onSourceInvulnerabilityPriority": 1
@@ -7302,6 +5417,7 @@
             "protect": 1,
             "reflectable": 1
         },
+        "isNonstandard": null,
         "name": "Lovely Kiss",
         "num": 142,
         "pp": 10,
@@ -7339,29 +5455,6 @@
             "basePower": 160
         }
     },
-    "lowsweep": {
-        "accuracy": 100,
-        "basePower": 65,
-        "category": "Physical",
-        "contestType": "Clever",
-        "flags": {
-            "contact": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Low Sweep",
-        "num": 490,
-        "pp": 20,
-        "priority": 0,
-        "secondary": {
-            "boosts": {
-                "spe": -1
-            },
-            "chance": 100
-        },
-        "target": "normal",
-        "type": "Fighting"
-    },
     "luckychant": {
         "accuracy": true,
         "basePower": 0,
@@ -7370,14 +5463,11 @@
             "duration": 5,
             "onCriticalHit": false,
             "onSideEnd": "onSideEnd",
-            "onSideResidualOrder": 26,
-            "onSideResidualSubOrder": 6,
+            "onSideResidualOrder": 6,
             "onSideStart": "onSideStart"
         },
         "contestType": "Cute",
-        "flags": {
-            "snatch": 1
-        },
+        "flags": {},
         "isNonstandard": null,
         "name": "Lucky Chant",
         "num": 381,
@@ -7398,18 +5488,18 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "duration": 2,
+            "duration": 1,
+            "onSideStart": "onSideStart",
             "onSwitchIn": "onSwitchIn",
-            "onSwitchInPriority": 1
+            "onSwitchInPriority": -1
         },
         "contestType": "Beautiful",
         "flags": {
-            "dance": 1,
-            "heal": 1,
-            "snatch": 1
+            "heal": 1
         },
         "name": "Lunar Dance",
         "num": 461,
+        "onAfterMove": "onAfterMove",
         "onTryHit": "onTryHit",
         "pp": 10,
         "priority": 0,
@@ -7428,6 +5518,7 @@
             "mirror": 1,
             "protect": 1
         },
+        "isNonstandard": null,
         "name": "Luster Purge",
         "num": 295,
         "pp": 5,
@@ -7483,13 +5574,12 @@
         "category": "Status",
         "condition": {
             "duration": 1,
-            "onAllyTryHitSide": "onAllyTryHitSide",
-            "onStart": "onStart",
             "onTryHit": "onTryHit",
             "onTryHitPriority": 2
         },
         "contestType": "Beautiful",
         "flags": {},
+        "isNonstandard": null,
         "name": "Magic Coat",
         "num": 277,
         "pp": 15,
@@ -7504,40 +5594,9 @@
             }
         }
     },
-    "magicroom": {
-        "accuracy": true,
-        "basePower": 0,
-        "category": "Status",
-        "condition": {
-            "duration": 5,
-            "durationCallback": "durationCallback",
-            "onFieldEnd": "onFieldEnd",
-            "onFieldResidualOrder": 27,
-            "onFieldResidualSubOrder": 6,
-            "onFieldRestart": "onFieldRestart",
-            "onFieldStart": "onFieldStart"
-        },
-        "contestType": "Clever",
-        "flags": {
-            "mirror": 1
-        },
-        "name": "Magic Room",
-        "num": 478,
-        "pp": 10,
-        "priority": 0,
-        "pseudoWeather": "magicroom",
-        "secondary": null,
-        "target": "all",
-        "type": "Psychic",
-        "zMove": {
-            "boost": {
-                "spd": 1
-            }
-        }
-    },
     "magmastorm": {
-        "accuracy": 75,
-        "basePower": 100,
+        "accuracy": 70,
+        "basePower": 120,
         "category": "Special",
         "contestType": "Tough",
         "flags": {
@@ -7572,30 +5631,6 @@
         "target": "normal",
         "type": "Steel"
     },
-    "magneticflux": {
-        "accuracy": true,
-        "basePower": 0,
-        "category": "Status",
-        "contestType": "Clever",
-        "flags": {
-            "bypasssub": 1,
-            "distance": 1,
-            "snatch": 1
-        },
-        "name": "Magnetic Flux",
-        "num": 602,
-        "onHitSide": "onHitSide",
-        "pp": 20,
-        "priority": 0,
-        "secondary": null,
-        "target": "allySide",
-        "type": "Electric",
-        "zMove": {
-            "boost": {
-                "spd": 1
-            }
-        }
-    },
     "magnetrise": {
         "accuracy": true,
         "basePower": 0,
@@ -7604,13 +5639,13 @@
             "duration": 5,
             "onEnd": "onEnd",
             "onImmunity": "onImmunity",
-            "onResidualOrder": 18,
+            "onResidualOrder": 10,
+            "onResidualSubOrder": 16,
             "onStart": "onStart"
         },
         "contestType": "Clever",
         "flags": {
-            "gravity": 1,
-            "snatch": 1
+            "gravity": 1
         },
         "name": "Magnet Rise",
         "num": 393,
@@ -7654,37 +5689,6 @@
             "basePower": 140
         }
     },
-    "matblock": {
-        "accuracy": true,
-        "basePower": 0,
-        "category": "Status",
-        "condition": {
-            "duration": 1,
-            "onSideStart": "onSideStart",
-            "onTryHit": "onTryHit",
-            "onTryHitPriority": 3
-        },
-        "contestType": "Cool",
-        "flags": {
-            "nonsky": 1,
-            "snatch": 1
-        },
-        "name": "Mat Block",
-        "num": 561,
-        "onTry": "onTry",
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "sideCondition": "matblock",
-        "stallingMove": true,
-        "target": "allySide",
-        "type": "Fighting",
-        "zMove": {
-            "boost": {
-                "def": 1
-            }
-        }
-    },
     "meanlook": {
         "accuracy": true,
         "basePower": 0,
@@ -7692,6 +5696,7 @@
         "contestType": "Beautiful",
         "flags": {
             "mirror": 1,
+            "protect": 1,
             "reflectable": 1
         },
         "name": "Mean Look",
@@ -7739,8 +5744,7 @@
         "category": "Status",
         "condition": {
             "duration": 1,
-            "onBasePower": "onBasePower",
-            "onBasePowerPriority": 12
+            "onModifyDamagePhase2": "onModifyDamagePhase2"
         },
         "contestType": "Clever",
         "flags": {
@@ -7772,7 +5776,6 @@
             2
         ],
         "flags": {
-            "heal": 1,
             "mirror": 1,
             "protect": 1
         },
@@ -7921,8 +5924,6 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
-            "allyanim": 1,
-            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "reflectable": 1,
@@ -7942,8 +5943,8 @@
         }
     },
     "meteormash": {
-        "accuracy": 90,
-        "basePower": 90,
+        "accuracy": 85,
+        "basePower": 100,
         "category": "Physical",
         "contestType": "Cool",
         "flags": {
@@ -7975,74 +5976,31 @@
         "flags": {},
         "name": "Metronome",
         "noMetronome": [
-            "After You",
             "Assist",
-            "Baneful Bunker",
-            "Beak Blast",
-            "Belch",
-            "Bestow",
-            "Celebrate",
             "Chatter",
             "Copycat",
             "Counter",
             "Covet",
-            "Crafty Shield",
             "Destiny Bond",
             "Detect",
-            "Diamond Storm",
-            "Dragon Ascent",
             "Endure",
             "Feint",
-            "Fleur Cannon",
             "Focus Punch",
             "Follow Me",
-            "Freeze Shock",
             "Helping Hand",
-            "Hold Hands",
-            "Hyperspace Fury",
-            "Hyperspace Hole",
-            "Ice Burn",
-            "Instruct",
-            "King's Shield",
-            "Light of Ruin",
-            "Mat Block",
             "Me First",
             "Metronome",
             "Mimic",
-            "Mind Blown",
             "Mirror Coat",
             "Mirror Move",
-            "Nature Power",
-            "Origin Pulse",
-            "Photon Geyser",
-            "Plasma Fists",
-            "Precipice Blades",
             "Protect",
-            "Quash",
-            "Quick Guard",
-            "Rage Powder",
-            "Relic Song",
-            "Secret Sword",
-            "Shell Trap",
             "Sketch",
             "Sleep Talk",
-            "Snarl",
             "Snatch",
-            "Snore",
-            "Spectral Thief",
-            "Spiky Shield",
-            "Spotlight",
-            "Steam Eruption",
             "Struggle",
             "Switcheroo",
-            "Techno Blast",
             "Thief",
-            "Thousand Arrows",
-            "Thousand Waves",
-            "Transform",
-            "Trick",
-            "V-create",
-            "Wide Guard"
+            "Trick"
         ],
         "num": 118,
         "onHit": "onHit",
@@ -8109,6 +6067,7 @@
             "mirror": 1,
             "protect": 1
         },
+        "isNonstandard": null,
         "name": "Mind Reader",
         "num": 170,
         "onHit": "onHit",
@@ -8128,12 +6087,11 @@
         "accuracy": true,
         "basePower": 0,
         "boosts": {
-            "evasion": 2
+            "evasion": 1
         },
         "category": "Status",
         "condition": {
             "noCopy": true,
-            "onAccuracy": "onAccuracy",
             "onSourceModifyDamage": "onSourceModifyDamage"
         },
         "contestType": "Cute",
@@ -8142,7 +6100,7 @@
         },
         "name": "Minimize",
         "num": 107,
-        "pp": 10,
+        "pp": 20,
         "priority": 0,
         "secondary": null,
         "target": "self",
@@ -8166,8 +6124,7 @@
         "flags": {
             "bypasssub": 1,
             "mirror": 1,
-            "protect": 1,
-            "reflectable": 1
+            "protect": 1
         },
         "isNonstandard": null,
         "name": "Miracle Eye",
@@ -8221,11 +6178,12 @@
         "isNonstandard": null,
         "name": "Mirror Move",
         "num": 119,
+        "onHit": "onHit",
         "onTryHit": "onTryHit",
         "pp": 20,
         "priority": 0,
         "secondary": null,
-        "target": "normal",
+        "target": "self",
         "type": "Flying",
         "zMove": {
             "boost": {
@@ -8264,8 +6222,7 @@
             "duration": 5,
             "onBoost": "onBoost",
             "onSideEnd": "onSideEnd",
-            "onSideResidualOrder": 26,
-            "onSideResidualSubOrder": 4,
+            "onSideResidualOrder": 3,
             "onSideStart": "onSideStart"
         },
         "contestType": "Beautiful",
@@ -8294,6 +6251,7 @@
             "mirror": 1,
             "protect": 1
         },
+        "isNonstandard": null,
         "name": "Mist Ball",
         "num": 296,
         "pp": 5,
@@ -8306,60 +6264,6 @@
         },
         "target": "normal",
         "type": "Psychic"
-    },
-    "mistyterrain": {
-        "accuracy": true,
-        "basePower": 0,
-        "category": "Status",
-        "condition": {
-            "duration": 5,
-            "durationCallback": "durationCallback",
-            "onBasePower": "onBasePower",
-            "onFieldEnd": "onFieldEnd",
-            "onFieldResidualOrder": 27,
-            "onFieldResidualSubOrder": 7,
-            "onFieldStart": "onFieldStart",
-            "onSetStatus": "onSetStatus"
-        },
-        "contestType": "Beautiful",
-        "flags": {
-            "nonsky": 1
-        },
-        "name": "Misty Terrain",
-        "num": 581,
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "all",
-        "terrain": "mistyterrain",
-        "type": "Fairy",
-        "zMove": {
-            "boost": {
-                "spd": 1
-            }
-        }
-    },
-    "moonblast": {
-        "accuracy": 100,
-        "basePower": 95,
-        "category": "Special",
-        "contestType": "Beautiful",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Moonblast",
-        "num": 585,
-        "pp": 15,
-        "priority": 0,
-        "secondary": {
-            "boosts": {
-                "spa": -1
-            },
-            "chance": 30
-        },
-        "target": "normal",
-        "type": "Fairy"
     },
     "moonlight": {
         "accuracy": true,
@@ -8377,7 +6281,7 @@
         "priority": 0,
         "secondary": null,
         "target": "self",
-        "type": "Fairy",
+        "type": "Normal",
         "zMove": {
             "effect": "clearnegativeboost"
         }
@@ -8429,7 +6333,7 @@
     },
     "muddywater": {
         "accuracy": 85,
-        "basePower": 90,
+        "basePower": 95,
         "category": "Special",
         "contestType": "Tough",
         "flags": {
@@ -8499,54 +6403,29 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "duration": 5,
-            "onBasePower": "onBasePower",
-            "onBasePowerPriority": 1,
-            "onFieldEnd": "onFieldEnd",
-            "onFieldResidualOrder": 27,
-            "onFieldResidualSubOrder": 4,
-            "onFieldStart": "onFieldStart"
+            "noCopy": true,
+            "onAnyBasePower": "onAnyBasePower",
+            "onBasePowerPriority": 3,
+            "onStart": "onStart"
         },
         "contestType": "Cute",
-        "flags": {
-            "nonsky": 1
-        },
+        "flags": {},
         "isNonstandard": null,
         "name": "Mud Sport",
         "num": 300,
+        "onTryHitField": "onTryHitField",
         "pp": 15,
         "priority": 0,
         "pseudoWeather": "mudsport",
         "secondary": null,
         "target": "all",
         "type": "Ground",
+        "volatileStatus": "mudsport",
         "zMove": {
             "boost": {
                 "spd": 1
             }
         }
-    },
-    "mysticalfire": {
-        "accuracy": 100,
-        "basePower": 65,
-        "category": "Special",
-        "contestType": "Beautiful",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Mystical Fire",
-        "num": 595,
-        "pp": 10,
-        "priority": 0,
-        "secondary": {
-            "boosts": {
-                "spa": -1
-            },
-            "chance": 100
-        },
-        "target": "normal",
-        "type": "Fire"
     },
     "nastyplot": {
         "accuracy": true,
@@ -8602,13 +6481,15 @@
         "category": "Status",
         "contestType": "Beautiful",
         "flags": {},
+        "isNonstandard": null,
         "name": "Nature Power",
         "num": 267,
+        "onHit": "onHit",
         "onTryHit": "onTryHit",
         "pp": 20,
         "priority": 0,
         "secondary": null,
-        "target": "normal",
+        "target": "self",
         "type": "Normal"
     },
     "needlearm": {
@@ -8633,28 +6514,6 @@
         "target": "normal",
         "type": "Grass"
     },
-    "nightdaze": {
-        "accuracy": 95,
-        "basePower": 85,
-        "category": "Special",
-        "contestType": "Cool",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Night Daze",
-        "num": 539,
-        "pp": 10,
-        "priority": 0,
-        "secondary": {
-            "boosts": {
-                "accuracy": -1
-            },
-            "chance": 40
-        },
-        "target": "normal",
-        "type": "Dark"
-    },
     "nightmare": {
         "accuracy": 100,
         "basePower": 0,
@@ -8662,7 +6521,8 @@
         "condition": {
             "noCopy": true,
             "onResidual": "onResidual",
-            "onResidualOrder": 11,
+            "onResidualOrder": 10,
+            "onResidualSubOrder": 7,
             "onStart": "onStart"
         },
         "contestType": "Clever",
@@ -8712,7 +6572,8 @@
         "flags": {
             "contact": 1,
             "mirror": 1,
-            "protect": 1
+            "protect": 1,
+            "slicing": 1
         },
         "name": "Night Slash",
         "num": 400,
@@ -8721,79 +6582,6 @@
         "secondary": null,
         "target": "normal",
         "type": "Dark"
-    },
-    "nobleroar": {
-        "accuracy": 100,
-        "basePower": 0,
-        "boosts": {
-            "atk": -1,
-            "spa": -1
-        },
-        "category": "Status",
-        "contestType": "Tough",
-        "flags": {
-            "bypasssub": 1,
-            "mirror": 1,
-            "protect": 1,
-            "reflectable": 1,
-            "sound": 1
-        },
-        "name": "Noble Roar",
-        "num": 568,
-        "pp": 30,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Normal",
-        "zMove": {
-            "boost": {
-                "def": 1
-            }
-        }
-    },
-    "nuzzle": {
-        "accuracy": 100,
-        "basePower": 20,
-        "category": "Physical",
-        "contestType": "Cute",
-        "flags": {
-            "contact": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Nuzzle",
-        "num": 609,
-        "pp": 20,
-        "priority": 0,
-        "secondary": {
-            "chance": 100,
-            "status": "par"
-        },
-        "target": "normal",
-        "type": "Electric"
-    },
-    "oblivionwing": {
-        "accuracy": 100,
-        "basePower": 80,
-        "category": "Special",
-        "contestType": "Cool",
-        "drain": [
-            3,
-            4
-        ],
-        "flags": {
-            "distance": 1,
-            "heal": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Oblivion Wing",
-        "num": 613,
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "any",
-        "type": "Flying"
     },
     "octazooka": {
         "accuracy": 85,
@@ -8805,6 +6593,7 @@
             "mirror": 1,
             "protect": 1
         },
+        "isNonstandard": null,
         "name": "Octazooka",
         "num": 190,
         "pp": 10,
@@ -8824,11 +6613,9 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
-            "allyanim": 1,
             "bypasssub": 1,
             "mirror": 1,
-            "protect": 1,
-            "reflectable": 1
+            "protect": 1
         },
         "isNonstandard": null,
         "name": "Odor Sleuth",
@@ -8875,23 +6662,6 @@
         "target": "normal",
         "type": "Ghost"
     },
-    "originpulse": {
-        "accuracy": 85,
-        "basePower": 110,
-        "category": "Special",
-        "contestType": "Beautiful",
-        "flags": {
-            "mirror": 1,
-            "protect": 1,
-            "pulse": 1
-        },
-        "name": "Origin Pulse",
-        "num": 618,
-        "pp": 10,
-        "priority": 0,
-        "target": "allAdjacentFoes",
-        "type": "Water"
-    },
     "outrage": {
         "accuracy": 100,
         "basePower": 120,
@@ -8905,7 +6675,7 @@
         "name": "Outrage",
         "num": 200,
         "onAfterMove": "onAfterMove",
-        "pp": 10,
+        "pp": 15,
         "priority": 0,
         "secondary": null,
         "self": {
@@ -8916,7 +6686,7 @@
     },
     "overheat": {
         "accuracy": 90,
-        "basePower": 130,
+        "basePower": 140,
         "category": "Special",
         "contestType": "Beautiful",
         "flags": {
@@ -8983,53 +6753,6 @@
         "target": "normal",
         "type": "Rock"
     },
-    "paraboliccharge": {
-        "accuracy": 100,
-        "basePower": 50,
-        "category": "Special",
-        "contestType": "Clever",
-        "drain": [
-            1,
-            2
-        ],
-        "flags": {
-            "heal": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Parabolic Charge",
-        "num": 570,
-        "pp": 20,
-        "priority": 0,
-        "secondary": null,
-        "target": "allAdjacent",
-        "type": "Electric"
-    },
-    "partingshot": {
-        "accuracy": 100,
-        "basePower": 0,
-        "category": "Status",
-        "contestType": "Cool",
-        "flags": {
-            "bypasssub": 1,
-            "mirror": 1,
-            "protect": 1,
-            "reflectable": 1,
-            "sound": 1
-        },
-        "name": "Parting Shot",
-        "num": 575,
-        "onHit": "onHit",
-        "pp": 20,
-        "priority": 0,
-        "secondary": null,
-        "selfSwitch": true,
-        "target": "normal",
-        "type": "Dark",
-        "zMove": {
-            "effect": "healreplacement"
-        }
-    },
     "payback": {
         "accuracy": 100,
         "basePower": 50,
@@ -9094,11 +6817,10 @@
             "duration": 4,
             "onEnd": "onEnd",
             "onResidual": "onResidual",
-            "onResidualOrder": 24
+            "onResidualOrder": 12
         },
         "contestType": "Beautiful",
         "flags": {
-            "bypasssub": 1,
             "distance": 1,
             "sound": 1
         },
@@ -9114,26 +6836,9 @@
             "effect": "clearnegativeboost"
         }
     },
-    "petalblizzard": {
-        "accuracy": 100,
-        "basePower": 90,
-        "category": "Physical",
-        "contestType": "Beautiful",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Petal Blizzard",
-        "num": 572,
-        "pp": 15,
-        "priority": 0,
-        "secondary": null,
-        "target": "allAdjacent",
-        "type": "Grass"
-    },
     "petaldance": {
         "accuracy": 100,
-        "basePower": 120,
+        "basePower": 90,
         "category": "Special",
         "contestType": "Beautiful",
         "flags": {
@@ -9145,7 +6850,7 @@
         "name": "Petal Dance",
         "num": 80,
         "onAfterMove": "onAfterMove",
-        "pp": 10,
+        "pp": 20,
         "priority": 0,
         "secondary": null,
         "self": {
@@ -9154,33 +6859,9 @@
         "target": "randomNormal",
         "type": "Grass"
     },
-    "phantomforce": {
-        "accuracy": 100,
-        "basePower": 90,
-        "breaksProtect": true,
-        "category": "Physical",
-        "condition": {
-            "duration": 2,
-            "onInvulnerability": false
-        },
-        "contestType": "Cool",
-        "flags": {
-            "charge": 1,
-            "contact": 1,
-            "mirror": 1
-        },
-        "name": "Phantom Force",
-        "num": 566,
-        "onTryMove": "onTryMove",
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Ghost"
-    },
     "pinmissile": {
-        "accuracy": 95,
-        "basePower": 25,
+        "accuracy": 85,
+        "basePower": 14,
         "category": "Physical",
         "contestType": "Cool",
         "flags": {
@@ -9204,55 +6885,6 @@
         "zMove": {
             "basePower": 140
         }
-    },
-    "playnice": {
-        "accuracy": true,
-        "basePower": 0,
-        "boosts": {
-            "atk": -1
-        },
-        "category": "Status",
-        "contestType": "Cute",
-        "flags": {
-            "bypasssub": 1,
-            "mirror": 1,
-            "reflectable": 1
-        },
-        "name": "Play Nice",
-        "num": 589,
-        "pp": 20,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Normal",
-        "zMove": {
-            "boost": {
-                "def": 1
-            }
-        }
-    },
-    "playrough": {
-        "accuracy": 90,
-        "basePower": 90,
-        "category": "Physical",
-        "contestType": "Cute",
-        "flags": {
-            "contact": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Play Rough",
-        "num": 583,
-        "pp": 10,
-        "priority": 0,
-        "secondary": {
-            "boosts": {
-                "atk": -1
-            },
-            "chance": 10
-        },
-        "target": "normal",
-        "type": "Fairy"
     },
     "pluck": {
         "accuracy": 100,
@@ -9290,14 +6922,14 @@
         "pp": 15,
         "priority": 0,
         "secondary": {
-            "chance": 50,
+            "chance": 30,
             "status": "tox"
         },
         "target": "normal",
         "type": "Poison"
     },
     "poisongas": {
-        "accuracy": 90,
+        "accuracy": 55,
         "basePower": 0,
         "category": "Status",
         "contestType": "Clever",
@@ -9312,7 +6944,7 @@
         "priority": 0,
         "secondary": null,
         "status": "psn",
-        "target": "allAdjacentFoes",
+        "target": "normal",
         "type": "Poison",
         "zMove": {
             "boost": {
@@ -9354,6 +6986,7 @@
         },
         "name": "Poison Powder",
         "num": 77,
+        "onTryHit": "onTryHit",
         "pp": 35,
         "priority": 0,
         "secondary": null,
@@ -9426,39 +7059,6 @@
         "target": "normal",
         "type": "Normal"
     },
-    "powder": {
-        "accuracy": 100,
-        "basePower": 0,
-        "category": "Status",
-        "condition": {
-            "duration": 1,
-            "onStart": "onStart",
-            "onTryMove": "onTryMove",
-            "onTryMovePriority": 1
-        },
-        "contestType": "Clever",
-        "flags": {
-            "bypasssub": 1,
-            "mirror": 1,
-            "powder": 1,
-            "protect": 1,
-            "reflectable": 1
-        },
-        "isNonstandard": null,
-        "name": "Powder",
-        "num": 600,
-        "pp": 20,
-        "priority": 1,
-        "secondary": null,
-        "target": "normal",
-        "type": "Bug",
-        "volatileStatus": "powder",
-        "zMove": {
-            "boost": {
-                "spd": 2
-            }
-        }
-    },
     "powdersnow": {
         "accuracy": 100,
         "basePower": 40,
@@ -9481,7 +7081,7 @@
     },
     "powergem": {
         "accuracy": 100,
-        "basePower": 80,
+        "basePower": 70,
         "category": "Special",
         "contestType": "Beautiful",
         "flags": {
@@ -9495,29 +7095,6 @@
         "secondary": null,
         "target": "normal",
         "type": "Rock"
-    },
-    "powersplit": {
-        "accuracy": true,
-        "basePower": 0,
-        "category": "Status",
-        "contestType": "Clever",
-        "flags": {
-            "allyanim": 1,
-            "protect": 1
-        },
-        "name": "Power Split",
-        "num": 471,
-        "onHit": "onHit",
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Psychic",
-        "zMove": {
-            "boost": {
-                "spe": 1
-            }
-        }
     },
     "powerswap": {
         "accuracy": true,
@@ -9555,9 +7132,7 @@
             "onStart": "onStart"
         },
         "contestType": "Clever",
-        "flags": {
-            "snatch": 1
-        },
+        "flags": {},
         "name": "Power Trick",
         "num": 379,
         "pp": 10,
@@ -9571,32 +7146,6 @@
                 "atk": 1
             }
         }
-    },
-    "poweruppunch": {
-        "accuracy": 100,
-        "basePower": 40,
-        "category": "Physical",
-        "contestType": "Tough",
-        "flags": {
-            "contact": 1,
-            "mirror": 1,
-            "protect": 1,
-            "punch": 1
-        },
-        "name": "Power-Up Punch",
-        "num": 612,
-        "pp": 20,
-        "priority": 0,
-        "secondary": {
-            "chance": 100,
-            "self": {
-                "boosts": {
-                    "atk": 1
-                }
-            }
-        },
-        "target": "normal",
-        "type": "Fighting"
     },
     "powerwhip": {
         "accuracy": 85,
@@ -9615,24 +7164,6 @@
         "secondary": null,
         "target": "normal",
         "type": "Grass"
-    },
-    "precipiceblades": {
-        "accuracy": 85,
-        "basePower": 120,
-        "category": "Physical",
-        "contestType": "Cool",
-        "flags": {
-            "mirror": 1,
-            "nonsky": 1,
-            "protect": 1
-        },
-        "isNonstandard": null,
-        "name": "Precipice Blades",
-        "num": 619,
-        "pp": 10,
-        "priority": 0,
-        "target": "allAdjacentFoes",
-        "type": "Ground"
     },
     "present": {
         "accuracy": 90,
@@ -9669,7 +7200,7 @@
         "onHit": "onHit",
         "onPrepareHit": "onPrepareHit",
         "pp": 10,
-        "priority": 4,
+        "priority": 3,
         "secondary": null,
         "stallingMove": true,
         "target": "self",
@@ -9752,7 +7283,8 @@
         "critRatio": 2,
         "flags": {
             "mirror": 1,
-            "protect": 1
+            "protect": 1,
+            "slicing": 1
         },
         "name": "Psycho Cut",
         "num": 427,
@@ -9763,7 +7295,7 @@
         "type": "Psychic"
     },
     "psychoshift": {
-        "accuracy": 100,
+        "accuracy": 90,
         "basePower": 0,
         "category": "Status",
         "contestType": "Clever",
@@ -9771,6 +7303,7 @@
             "mirror": 1,
             "protect": 1
         },
+        "isNonstandard": null,
         "name": "Psycho Shift",
         "num": 375,
         "onTryHit": "onTryHit",
@@ -9794,8 +7327,8 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
-            "allyanim": 1,
-            "bypasssub": 1
+            "bypasssub": 1,
+            "snatch": 1
         },
         "name": "Psych Up",
         "num": 244,
@@ -9809,44 +7342,8 @@
             "effect": "heal"
         }
     },
-    "psyshock": {
-        "accuracy": 100,
-        "basePower": 80,
-        "category": "Special",
-        "contestType": "Beautiful",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Psyshock",
-        "num": 473,
-        "overrideDefensiveStat": "def",
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Psychic"
-    },
-    "psystrike": {
-        "accuracy": 100,
-        "basePower": 100,
-        "category": "Special",
-        "contestType": "Cool",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Psystrike",
-        "num": 540,
-        "overrideDefensiveStat": "def",
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Psychic"
-    },
     "psywave": {
-        "accuracy": 100,
+        "accuracy": 80,
         "basePower": 0,
         "category": "Special",
         "contestType": "Clever",
@@ -9917,29 +7414,6 @@
         "target": "normal",
         "type": "Dark"
     },
-    "quash": {
-        "accuracy": 100,
-        "basePower": 0,
-        "category": "Status",
-        "contestType": "Clever",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Quash",
-        "num": 511,
-        "onHit": "onHit",
-        "pp": 15,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Dark",
-        "zMove": {
-            "boost": {
-                "spe": 1
-            }
-        }
-    },
     "quickattack": {
         "accuracy": 100,
         "basePower": 40,
@@ -9957,61 +7431,6 @@
         "secondary": null,
         "target": "normal",
         "type": "Normal"
-    },
-    "quickguard": {
-        "accuracy": true,
-        "basePower": 0,
-        "category": "Status",
-        "condition": {
-            "duration": 1,
-            "onSideStart": "onSideStart",
-            "onTryHit": "onTryHit",
-            "onTryHitPriority": 4
-        },
-        "contestType": "Cool",
-        "flags": {
-            "snatch": 1
-        },
-        "name": "Quick Guard",
-        "num": 501,
-        "onHitSide": "onHitSide",
-        "onTry": "onTry",
-        "pp": 15,
-        "priority": 3,
-        "secondary": null,
-        "sideCondition": "quickguard",
-        "target": "allySide",
-        "type": "Fighting",
-        "zMove": {
-            "boost": {
-                "def": 1
-            }
-        }
-    },
-    "quiverdance": {
-        "accuracy": true,
-        "basePower": 0,
-        "boosts": {
-            "spa": 1,
-            "spd": 1,
-            "spe": 1
-        },
-        "category": "Status",
-        "contestType": "Beautiful",
-        "flags": {
-            "dance": 1,
-            "snatch": 1
-        },
-        "name": "Quiver Dance",
-        "num": 483,
-        "pp": 20,
-        "priority": 0,
-        "secondary": null,
-        "target": "self",
-        "type": "Bug",
-        "zMove": {
-            "effect": "clearnegativeboost"
-        }
     },
     "rage": {
         "accuracy": 100,
@@ -10040,33 +7459,6 @@
         },
         "target": "normal",
         "type": "Normal"
-    },
-    "ragepowder": {
-        "accuracy": true,
-        "basePower": 0,
-        "category": "Status",
-        "condition": {
-            "duration": 1,
-            "onFoeRedirectTarget": "onFoeRedirectTarget",
-            "onFoeRedirectTargetPriority": 1,
-            "onStart": "onStart"
-        },
-        "contestType": "Clever",
-        "flags": {
-            "powder": 1
-        },
-        "name": "Rage Powder",
-        "num": 476,
-        "onTry": "onTry",
-        "pp": 20,
-        "priority": 2,
-        "secondary": null,
-        "target": "self",
-        "type": "Bug",
-        "volatileStatus": "ragepowder",
-        "zMove": {
-            "effect": "clearnegativeboost"
-        }
     },
     "raindance": {
         "accuracy": true,
@@ -10105,6 +7497,9 @@
         "pp": 40,
         "priority": 0,
         "secondary": null,
+        "self": {
+            "onHit": "onHit"
+        },
         "target": "normal",
         "type": "Normal"
     },
@@ -10116,7 +7511,8 @@
         "critRatio": 2,
         "flags": {
             "mirror": 1,
-            "protect": 1
+            "protect": 1,
+            "slicing": 1
         },
         "name": "Razor Leaf",
         "num": 75,
@@ -10125,29 +7521,6 @@
         "secondary": null,
         "target": "allAdjacentFoes",
         "type": "Grass"
-    },
-    "razorshell": {
-        "accuracy": 95,
-        "basePower": 75,
-        "category": "Physical",
-        "contestType": "Cool",
-        "flags": {
-            "contact": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Razor Shell",
-        "num": 534,
-        "pp": 10,
-        "priority": 0,
-        "secondary": {
-            "boosts": {
-                "def": -1
-            },
-            "chance": 50
-        },
-        "target": "normal",
-        "type": "Water"
     },
     "razorwind": {
         "accuracy": 100,
@@ -10199,9 +7572,7 @@
         "basePower": 0,
         "category": "Status",
         "contestType": "Clever",
-        "flags": {
-            "snatch": 1
-        },
+        "flags": {},
         "name": "Recycle",
         "num": 278,
         "onHit": "onHit",
@@ -10223,10 +7594,9 @@
         "condition": {
             "duration": 5,
             "durationCallback": "durationCallback",
-            "onAnyModifyDamage": "onAnyModifyDamage",
+            "onAnyModifyDamagePhase1": "onAnyModifyDamagePhase1",
             "onSideEnd": "onSideEnd",
-            "onSideResidualOrder": 26,
-            "onSideResidualSubOrder": 1,
+            "onSideResidualOrder": 1,
             "onSideStart": "onSideStart"
         },
         "contestType": "Clever",
@@ -10244,30 +7614,6 @@
         "zMove": {
             "boost": {
                 "def": 1
-            }
-        }
-    },
-    "reflecttype": {
-        "accuracy": true,
-        "basePower": 0,
-        "category": "Status",
-        "contestType": "Clever",
-        "flags": {
-            "allyanim": 1,
-            "bypasssub": 1,
-            "protect": 1
-        },
-        "name": "Reflect Type",
-        "num": 513,
-        "onHit": "onHit",
-        "pp": 15,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Normal",
-        "zMove": {
-            "boost": {
-                "spa": 1
             }
         }
     },
@@ -10292,31 +7638,6 @@
             "effect": "heal"
         }
     },
-    "relicsong": {
-        "accuracy": 100,
-        "basePower": 75,
-        "category": "Special",
-        "contestType": "Beautiful",
-        "flags": {
-            "bypasssub": 1,
-            "mirror": 1,
-            "protect": 1,
-            "sound": 1
-        },
-        "isNonstandard": null,
-        "name": "Relic Song",
-        "num": 547,
-        "onAfterMoveSecondarySelf": "onAfterMoveSecondarySelf",
-        "onHit": "onHit",
-        "pp": 10,
-        "priority": 0,
-        "secondary": {
-            "chance": 10,
-            "status": "slp"
-        },
-        "target": "allAdjacentFoes",
-        "type": "Normal"
-    },
     "rest": {
         "accuracy": true,
         "basePower": 0,
@@ -10338,25 +7659,6 @@
         "zMove": {
             "effect": "clearnegativeboost"
         }
-    },
-    "retaliate": {
-        "accuracy": 100,
-        "basePower": 70,
-        "category": "Physical",
-        "contestType": "Cool",
-        "flags": {
-            "contact": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Retaliate",
-        "num": 514,
-        "onBasePower": "onBasePower",
-        "pp": 5,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Normal"
     },
     "return": {
         "accuracy": 100,
@@ -10395,6 +7697,7 @@
             "mirror": 1,
             "protect": 1
         },
+        "isNonstandard": null,
         "name": "Revenge",
         "num": 279,
         "pp": 10,
@@ -10426,15 +7729,14 @@
         }
     },
     "roar": {
-        "accuracy": true,
+        "accuracy": 100,
         "basePower": 0,
         "category": "Status",
         "contestType": "Cool",
         "flags": {
-            "allyanim": 1,
             "bypasssub": 1,
             "mirror": 1,
-            "reflectable": 1,
+            "protect": 1,
             "sound": 1
         },
         "forceSwitch": true,
@@ -10473,7 +7775,7 @@
         "type": "Dragon"
     },
     "rockblast": {
-        "accuracy": 90,
+        "accuracy": 80,
         "basePower": 25,
         "category": "Physical",
         "contestType": "Tough",
@@ -10604,8 +7906,8 @@
         "type": "Rock"
     },
     "rocktomb": {
-        "accuracy": 95,
-        "basePower": 60,
+        "accuracy": 80,
+        "basePower": 50,
         "category": "Physical",
         "contestType": "Clever",
         "flags": {
@@ -10614,7 +7916,7 @@
         },
         "name": "Rock Tomb",
         "num": 317,
-        "pp": 15,
+        "pp": 10,
         "priority": 0,
         "secondary": {
             "boosts": {
@@ -10636,6 +7938,7 @@
             "protect": 1,
             "recharge": 1
         },
+        "isNonstandard": null,
         "name": "Rock Wrecker",
         "num": 439,
         "pp": 5,
@@ -10699,10 +8002,9 @@
         "basePowerCallback": "basePowerCallback",
         "category": "Physical",
         "condition": {
-            "duration": 2,
+            "duration": 1,
             "onLockMove": "rollout",
             "onResidual": "onResidual",
-            "onRestart": "onRestart",
             "onStart": "onStart"
         },
         "contestType": "Cute",
@@ -10713,6 +8015,8 @@
         },
         "name": "Rollout",
         "num": 205,
+        "onAfterMove": "onAfterMove",
+        "onModifyMove": "onModifyMove",
         "pp": 20,
         "priority": 0,
         "secondary": null,
@@ -10753,51 +8057,6 @@
             "effect": "clearnegativeboost"
         }
     },
-    "rototiller": {
-        "accuracy": true,
-        "basePower": 0,
-        "category": "Status",
-        "contestType": "Tough",
-        "flags": {
-            "distance": 1,
-            "nonsky": 1
-        },
-        "isNonstandard": null,
-        "name": "Rototiller",
-        "num": 563,
-        "onHitField": "onHitField",
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "all",
-        "type": "Ground",
-        "zMove": {
-            "boost": {
-                "atk": 1
-            }
-        }
-    },
-    "round": {
-        "accuracy": 100,
-        "basePower": 60,
-        "basePowerCallback": "basePowerCallback",
-        "category": "Special",
-        "contestType": "Beautiful",
-        "flags": {
-            "bypasssub": 1,
-            "mirror": 1,
-            "protect": 1,
-            "sound": 1
-        },
-        "name": "Round",
-        "num": 496,
-        "onTry": "onTry",
-        "pp": 15,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Normal"
-    },
     "sacredfire": {
         "accuracy": 95,
         "basePower": 100,
@@ -10808,6 +8067,7 @@
             "mirror": 1,
             "protect": 1
         },
+        "isNonstandard": null,
         "name": "Sacred Fire",
         "num": 221,
         "pp": 5,
@@ -10819,26 +8079,6 @@
         "target": "normal",
         "type": "Fire"
     },
-    "sacredsword": {
-        "accuracy": 100,
-        "basePower": 90,
-        "category": "Physical",
-        "contestType": "Cool",
-        "flags": {
-            "contact": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "ignoreDefensive": true,
-        "ignoreEvasion": true,
-        "name": "Sacred Sword",
-        "num": 533,
-        "pp": 15,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Fighting"
-    },
     "safeguard": {
         "accuracy": true,
         "basePower": 0,
@@ -10848,8 +8088,7 @@
             "durationCallback": "durationCallback",
             "onSetStatus": "onSetStatus",
             "onSideEnd": "onSideEnd",
-            "onSideResidualOrder": 26,
-            "onSideResidualSubOrder": 3,
+            "onSideResidualOrder": 4,
             "onSideStart": "onSideStart",
             "onTryAddVolatile": "onTryAddVolatile"
         },
@@ -10902,7 +8141,9 @@
         "basePower": 0,
         "category": "Status",
         "contestType": "Tough",
-        "flags": {},
+        "flags": {
+            "wind": 1
+        },
         "name": "Sandstorm",
         "num": 201,
         "pp": 10,
@@ -10918,8 +8159,8 @@
         }
     },
     "sandtomb": {
-        "accuracy": 85,
-        "basePower": 35,
+        "accuracy": 70,
+        "basePower": 15,
         "category": "Physical",
         "contestType": "Clever",
         "flags": {
@@ -10935,30 +8176,8 @@
         "type": "Ground",
         "volatileStatus": "partiallytrapped"
     },
-    "scald": {
-        "accuracy": 100,
-        "basePower": 80,
-        "category": "Special",
-        "contestType": "Tough",
-        "flags": {
-            "defrost": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Scald",
-        "num": 503,
-        "pp": 15,
-        "priority": 0,
-        "secondary": {
-            "chance": 30,
-            "status": "brn"
-        },
-        "target": "normal",
-        "thawsTarget": true,
-        "type": "Water"
-    },
     "scaryface": {
-        "accuracy": 100,
+        "accuracy": 90,
         "basePower": 0,
         "boosts": {
             "spe": -2
@@ -11011,8 +8230,6 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
-            "allyanim": 1,
-            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "reflectable": 1,
@@ -11030,27 +8247,6 @@
                 "atk": 1
             }
         }
-    },
-    "searingshot": {
-        "accuracy": 100,
-        "basePower": 100,
-        "category": "Special",
-        "contestType": "Cool",
-        "flags": {
-            "bullet": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Searing Shot",
-        "num": 545,
-        "pp": 5,
-        "priority": 0,
-        "secondary": {
-            "chance": 30,
-            "status": "brn"
-        },
-        "target": "allAdjacent",
-        "type": "Fire"
     },
     "secretpower": {
         "accuracy": 100,
@@ -11073,24 +8269,6 @@
         },
         "target": "normal",
         "type": "Normal"
-    },
-    "secretsword": {
-        "accuracy": 100,
-        "basePower": 85,
-        "category": "Special",
-        "contestType": "Beautiful",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Secret Sword",
-        "num": 548,
-        "overrideDefensiveStat": "def",
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Fighting"
     },
     "seedbomb": {
         "accuracy": 100,
@@ -11350,55 +8528,6 @@
             "basePower": 180
         }
     },
-    "shellsmash": {
-        "accuracy": true,
-        "basePower": 0,
-        "boosts": {
-            "atk": 2,
-            "def": -1,
-            "spa": 2,
-            "spd": -1,
-            "spe": 2
-        },
-        "category": "Status",
-        "contestType": "Tough",
-        "flags": {
-            "snatch": 1
-        },
-        "name": "Shell Smash",
-        "num": 504,
-        "pp": 15,
-        "priority": 0,
-        "secondary": null,
-        "target": "self",
-        "type": "Normal",
-        "zMove": {
-            "effect": "clearnegativeboost"
-        }
-    },
-    "shiftgear": {
-        "accuracy": true,
-        "basePower": 0,
-        "boosts": {
-            "atk": 1,
-            "spe": 2
-        },
-        "category": "Status",
-        "contestType": "Clever",
-        "flags": {
-            "snatch": 1
-        },
-        "name": "Shift Gear",
-        "num": 508,
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "self",
-        "type": "Steel",
-        "zMove": {
-            "effect": "clearnegativeboost"
-        }
-    },
     "shockwave": {
         "accuracy": true,
         "basePower": 60,
@@ -11466,39 +8595,12 @@
         "target": "normal",
         "type": "Bug"
     },
-    "simplebeam": {
-        "accuracy": 100,
-        "basePower": 0,
-        "category": "Status",
-        "contestType": "Cute",
-        "flags": {
-            "allyanim": 1,
-            "mirror": 1,
-            "protect": 1,
-            "reflectable": 1
-        },
-        "name": "Simple Beam",
-        "num": 493,
-        "onHit": "onHit",
-        "onTryHit": "onTryHit",
-        "pp": 15,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Normal",
-        "zMove": {
-            "boost": {
-                "spa": 1
-            }
-        }
-    },
     "sing": {
         "accuracy": 55,
         "basePower": 0,
         "category": "Status",
         "contestType": "Cute",
         "flags": {
-            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "reflectable": 1,
@@ -11576,7 +8678,7 @@
     },
     "skullbash": {
         "accuracy": 100,
-        "basePower": 130,
+        "basePower": 100,
         "category": "Physical",
         "contestType": "Tough",
         "flags": {
@@ -11585,10 +8687,11 @@
             "mirror": 1,
             "protect": 1
         },
+        "isNonstandard": null,
         "name": "Skull Bash",
         "num": 130,
         "onTryMove": "onTryMove",
-        "pp": 10,
+        "pp": 15,
         "priority": 0,
         "secondary": null,
         "target": "normal",
@@ -11615,46 +8718,6 @@
             "chance": 30,
             "volatileStatus": "flinch"
         },
-        "target": "any",
-        "type": "Flying"
-    },
-    "skydrop": {
-        "accuracy": 100,
-        "basePower": 60,
-        "category": "Physical",
-        "condition": {
-            "duration": 2,
-            "onAnyBasePower": "onAnyBasePower",
-            "onAnyDragOut": "onAnyDragOut",
-            "onAnyInvulnerability": "onAnyInvulnerability",
-            "onFaint": "onFaint",
-            "onFoeBeforeMove": "onFoeBeforeMove",
-            "onFoeBeforeMovePriority": 12,
-            "onFoeTrapPokemon": "onFoeTrapPokemon",
-            "onFoeTrapPokemonPriority": -15,
-            "onRedirectTarget": "onRedirectTarget",
-            "onRedirectTargetPriority": 99
-        },
-        "contestType": "Tough",
-        "flags": {
-            "charge": 1,
-            "contact": 1,
-            "distance": 1,
-            "gravity": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "isNonstandard": null,
-        "name": "Sky Drop",
-        "num": 507,
-        "onHit": "onHit",
-        "onModifyMove": "onModifyMove",
-        "onMoveFail": "onMoveFail",
-        "onTry": "onTry",
-        "onTryHit": "onTryHit",
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
         "target": "any",
         "type": "Flying"
     },
@@ -11730,7 +8793,8 @@
         "flags": {
             "contact": 1,
             "mirror": 1,
-            "protect": 1
+            "protect": 1,
+            "slicing": 1
         },
         "name": "Slash",
         "num": 163,
@@ -11753,6 +8817,7 @@
         },
         "name": "Sleep Powder",
         "num": 79,
+        "onTryHit": "onTryHit",
         "pp": 15,
         "priority": 0,
         "secondary": null,
@@ -11775,6 +8840,7 @@
         "num": 214,
         "onHit": "onHit",
         "onTry": "onTry",
+        "onTryHit": "onTryHit",
         "pp": 10,
         "priority": 0,
         "secondary": null,
@@ -11826,53 +8892,9 @@
         "target": "normal",
         "type": "Poison"
     },
-    "sludgewave": {
-        "accuracy": 100,
-        "basePower": 95,
-        "category": "Special",
-        "contestType": "Tough",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Sludge Wave",
-        "num": 482,
-        "pp": 10,
-        "priority": 0,
-        "secondary": {
-            "chance": 10,
-            "status": "psn"
-        },
-        "target": "allAdjacent",
-        "type": "Poison"
-    },
-    "smackdown": {
-        "accuracy": 100,
-        "basePower": 50,
-        "category": "Physical",
-        "condition": {
-            "noCopy": true,
-            "onRestart": "onRestart",
-            "onStart": "onStart"
-        },
-        "contestType": "Tough",
-        "flags": {
-            "mirror": 1,
-            "nonsky": 1,
-            "protect": 1
-        },
-        "name": "Smack Down",
-        "num": 479,
-        "pp": 15,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Rock",
-        "volatileStatus": "smackdown"
-    },
     "smellingsalts": {
         "accuracy": 100,
-        "basePower": 70,
+        "basePower": 60,
         "basePowerCallback": "basePowerCallback",
         "category": "Physical",
         "contestType": "Tough",
@@ -11893,7 +8915,7 @@
     },
     "smog": {
         "accuracy": 70,
-        "basePower": 30,
+        "basePower": 20,
         "category": "Special",
         "contestType": "Tough",
         "flags": {
@@ -11937,30 +8959,6 @@
             }
         }
     },
-    "snarl": {
-        "accuracy": 95,
-        "basePower": 55,
-        "category": "Special",
-        "contestType": "Tough",
-        "flags": {
-            "bypasssub": 1,
-            "mirror": 1,
-            "protect": 1,
-            "sound": 1
-        },
-        "name": "Snarl",
-        "num": 555,
-        "pp": 15,
-        "priority": 0,
-        "secondary": {
-            "boosts": {
-                "spa": -1
-            },
-            "chance": 100
-        },
-        "target": "allAdjacentFoes",
-        "type": "Dark"
-    },
     "snatch": {
         "accuracy": true,
         "basePower": 0,
@@ -11993,11 +8991,10 @@
     },
     "snore": {
         "accuracy": 100,
-        "basePower": 50,
+        "basePower": 40,
         "category": "Special",
         "contestType": "Cute",
         "flags": {
-            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "sound": 1
@@ -12014,31 +9011,6 @@
         "sleepUsable": true,
         "target": "normal",
         "type": "Normal"
-    },
-    "soak": {
-        "accuracy": 100,
-        "basePower": 0,
-        "category": "Status",
-        "contestType": "Cute",
-        "flags": {
-            "allyanim": 1,
-            "mirror": 1,
-            "protect": 1,
-            "reflectable": 1
-        },
-        "name": "Soak",
-        "num": 487,
-        "onHit": "onHit",
-        "pp": 20,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Water",
-        "zMove": {
-            "boost": {
-                "spa": 1
-            }
-        }
     },
     "softboiled": {
         "accuracy": true,
@@ -12202,10 +9174,7 @@
             "onSideStart": "onSideStart"
         },
         "contestType": "Clever",
-        "flags": {
-            "nonsky": 1,
-            "reflectable": 1
-        },
+        "flags": {},
         "name": "Spikes",
         "num": 191,
         "pp": 20,
@@ -12220,36 +9189,6 @@
             }
         }
     },
-    "spikyshield": {
-        "accuracy": true,
-        "basePower": 0,
-        "category": "Status",
-        "condition": {
-            "duration": 1,
-            "onHit": "onHit",
-            "onStart": "onStart",
-            "onTryHit": "onTryHit",
-            "onTryHitPriority": 3
-        },
-        "contestType": "Tough",
-        "flags": {},
-        "name": "Spiky Shield",
-        "num": 596,
-        "onHit": "onHit",
-        "onPrepareHit": "onPrepareHit",
-        "pp": 10,
-        "priority": 4,
-        "secondary": null,
-        "stallingMove": true,
-        "target": "self",
-        "type": "Grass",
-        "volatileStatus": "spikyshield",
-        "zMove": {
-            "boost": {
-                "def": 1
-            }
-        }
-    },
     "spite": {
         "accuracy": 100,
         "basePower": 0,
@@ -12258,8 +9197,7 @@
         "flags": {
             "bypasssub": 1,
             "mirror": 1,
-            "protect": 1,
-            "reflectable": 1
+            "protect": 1
         },
         "name": "Spite",
         "num": 180,
@@ -12328,6 +9266,7 @@
         },
         "name": "Spore",
         "num": 147,
+        "onTryHit": "onTryHit",
         "pp": 15,
         "priority": 0,
         "secondary": null,
@@ -12347,9 +9286,7 @@
             "onSideStart": "onSideStart"
         },
         "contestType": "Cool",
-        "flags": {
-            "reflectable": 1
-        },
+        "flags": {},
         "name": "Stealth Rock",
         "num": 446,
         "pp": 20,
@@ -12363,50 +9300,6 @@
                 "def": 1
             }
         }
-    },
-    "steameruption": {
-        "accuracy": 95,
-        "basePower": 110,
-        "category": "Special",
-        "contestType": "Beautiful",
-        "flags": {
-            "defrost": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Steam Eruption",
-        "num": 592,
-        "pp": 5,
-        "priority": 0,
-        "secondary": {
-            "chance": 30,
-            "status": "brn"
-        },
-        "target": "normal",
-        "thawsTarget": true,
-        "type": "Water"
-    },
-    "steamroller": {
-        "accuracy": 100,
-        "basePower": 65,
-        "category": "Physical",
-        "contestType": "Tough",
-        "flags": {
-            "contact": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "isNonstandard": null,
-        "name": "Steamroller",
-        "num": 537,
-        "pp": 20,
-        "priority": 0,
-        "secondary": {
-            "chance": 30,
-            "volatileStatus": "flinch"
-        },
-        "target": "normal",
-        "type": "Bug"
     },
     "steelwing": {
         "accuracy": 90,
@@ -12432,33 +9325,6 @@
         },
         "target": "normal",
         "type": "Steel"
-    },
-    "stickyweb": {
-        "accuracy": true,
-        "basePower": 0,
-        "category": "Status",
-        "condition": {
-            "onEntryHazard": "onEntryHazard",
-            "onSideStart": "onSideStart"
-        },
-        "contestType": "Tough",
-        "flags": {
-            "reflectable": 1
-        },
-        "name": "Sticky Web",
-        "num": 564,
-        "pp": 20,
-        "pressureTarget": "self",
-        "priority": 0,
-        "secondary": null,
-        "sideCondition": "stickyweb",
-        "target": "foeSide",
-        "type": "Bug",
-        "zMove": {
-            "boost": {
-                "spe": 1
-            }
-        }
     },
     "stockpile": {
         "accuracy": true,
@@ -12527,49 +9393,6 @@
         "target": "normal",
         "type": "Rock"
     },
-    "storedpower": {
-        "accuracy": 100,
-        "basePower": 20,
-        "basePowerCallback": "basePowerCallback",
-        "category": "Special",
-        "contestType": "Clever",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "maxMove": {
-            "basePower": 130
-        },
-        "name": "Stored Power",
-        "num": 500,
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Psychic",
-        "zMove": {
-            "basePower": 160
-        }
-    },
-    "stormthrow": {
-        "accuracy": 100,
-        "basePower": 60,
-        "category": "Physical",
-        "contestType": "Cool",
-        "flags": {
-            "contact": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Storm Throw",
-        "num": 480,
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Fighting",
-        "willCrit": true
-    },
     "strength": {
         "accuracy": 100,
         "basePower": 80,
@@ -12592,7 +9415,7 @@
         "accuracy": 95,
         "basePower": 0,
         "boosts": {
-            "spe": -2
+            "spe": -1
         },
         "category": "Status",
         "contestType": "Clever",
@@ -12635,28 +9458,6 @@
         "target": "randomNormal",
         "type": "Normal"
     },
-    "strugglebug": {
-        "accuracy": 100,
-        "basePower": 50,
-        "category": "Special",
-        "contestType": "Cute",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Struggle Bug",
-        "num": 522,
-        "pp": 20,
-        "priority": 0,
-        "secondary": {
-            "boosts": {
-                "spa": -1
-            },
-            "chance": 100
-        },
-        "target": "allAdjacentFoes",
-        "type": "Bug"
-    },
     "stunspore": {
         "accuracy": 75,
         "basePower": 0,
@@ -12670,6 +9471,7 @@
         },
         "name": "Stun Spore",
         "num": 78,
+        "onTryHit": "onTryHit",
         "pp": 30,
         "priority": 0,
         "secondary": null,
@@ -12692,9 +9494,10 @@
             "mirror": 1,
             "protect": 1
         },
+        "isNonstandard": null,
         "name": "Submission",
         "num": 66,
-        "pp": 20,
+        "pp": 25,
         "priority": 0,
         "recoil": [
             1,
@@ -12821,7 +9624,6 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
-            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "reflectable": 1,
@@ -12843,7 +9645,7 @@
     },
     "surf": {
         "accuracy": 100,
-        "basePower": 90,
+        "basePower": 95,
         "category": "Special",
         "contestType": "Beautiful",
         "flags": {
@@ -12923,7 +9725,7 @@
         "priority": 0,
         "secondary": null,
         "target": "normal",
-        "type": "Fairy",
+        "type": "Normal",
         "volatileStatus": "confusion",
         "zMove": {
             "boost": {
@@ -12935,7 +9737,7 @@
         "accuracy": 100,
         "basePower": 0,
         "boosts": {
-            "evasion": -2
+            "evasion": -1
         },
         "category": "Status",
         "contestType": "Cute",
@@ -12987,6 +9789,7 @@
         "name": "Switcheroo",
         "num": 415,
         "onHit": "onHit",
+        "onTryHit": "onTryHit",
         "onTryImmunity": "onTryImmunity",
         "pp": 10,
         "priority": 0,
@@ -13013,7 +9816,7 @@
         },
         "name": "Swords Dance",
         "num": 14,
-        "pp": 20,
+        "pp": 30,
         "priority": 0,
         "secondary": null,
         "target": "self",
@@ -13021,25 +9824,6 @@
         "zMove": {
             "effect": "clearnegativeboost"
         }
-    },
-    "synchronoise": {
-        "accuracy": 100,
-        "basePower": 120,
-        "category": "Special",
-        "contestType": "Clever",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "isNonstandard": null,
-        "name": "Synchronoise",
-        "num": 485,
-        "onTryImmunity": "onTryImmunity",
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "allAdjacent",
-        "type": "Psychic"
     },
     "synthesis": {
         "accuracy": true,
@@ -13063,8 +9847,8 @@
         }
     },
     "tackle": {
-        "accuracy": 100,
-        "basePower": 50,
+        "accuracy": 95,
+        "basePower": 35,
         "category": "Physical",
         "contestType": "Tough",
         "flags": {
@@ -13084,7 +9868,7 @@
         "accuracy": true,
         "basePower": 0,
         "boosts": {
-            "spa": 3
+            "spa": 2
         },
         "category": "Status",
         "contestType": "Beautiful",
@@ -13101,34 +9885,6 @@
         "type": "Bug",
         "zMove": {
             "effect": "clearnegativeboost"
-        }
-    },
-    "tailslap": {
-        "accuracy": 85,
-        "basePower": 25,
-        "category": "Physical",
-        "contestType": "Cute",
-        "flags": {
-            "contact": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "maxMove": {
-            "basePower": 130
-        },
-        "multihit": [
-            2,
-            5
-        ],
-        "name": "Tail Slap",
-        "num": 541,
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Normal",
-        "zMove": {
-            "basePower": 140
         }
     },
     "tailwhip": {
@@ -13162,21 +9918,21 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "duration": 4,
+            "duration": 3,
             "durationCallback": "durationCallback",
             "onModifySpe": "onModifySpe",
             "onSideEnd": "onSideEnd",
-            "onSideResidualOrder": 26,
-            "onSideResidualSubOrder": 5,
+            "onSideResidualOrder": 5,
             "onSideStart": "onSideStart"
         },
         "contestType": "Cool",
         "flags": {
-            "snatch": 1
+            "snatch": 1,
+            "wind": 1
         },
         "name": "Tailwind",
         "num": 366,
-        "pp": 15,
+        "pp": 30,
         "priority": 0,
         "secondary": null,
         "sideCondition": "tailwind",
@@ -13213,20 +9969,20 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "duration": 3,
+            "durationCallback": "durationCallback",
             "onBeforeMove": "onBeforeMove",
             "onBeforeMovePriority": 5,
             "onDisableMove": "onDisableMove",
             "onEnd": "onEnd",
-            "onResidualOrder": 15,
+            "onResidualOrder": 10,
+            "onResidualSubOrder": 15,
             "onStart": "onStart"
         },
         "contestType": "Clever",
         "flags": {
             "bypasssub": 1,
             "mirror": 1,
-            "protect": 1,
-            "reflectable": 1
+            "protect": 1
         },
         "name": "Taunt",
         "num": 269,
@@ -13241,24 +9997,6 @@
                 "atk": 1
             }
         }
-    },
-    "technoblast": {
-        "accuracy": 100,
-        "basePower": 120,
-        "category": "Special",
-        "contestType": "Cool",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Techno Blast",
-        "num": 546,
-        "onModifyType": "onModifyType",
-        "pp": 5,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Normal"
     },
     "teeterdance": {
         "accuracy": 100,
@@ -13278,44 +10016,6 @@
         "target": "allAdjacent",
         "type": "Normal",
         "volatileStatus": "confusion",
-        "zMove": {
-            "boost": {
-                "spa": 1
-            }
-        }
-    },
-    "telekinesis": {
-        "accuracy": true,
-        "basePower": 0,
-        "category": "Status",
-        "condition": {
-            "duration": 3,
-            "onAccuracy": "onAccuracy",
-            "onAccuracyPriority": -1,
-            "onEnd": "onEnd",
-            "onImmunity": "onImmunity",
-            "onResidualOrder": 19,
-            "onStart": "onStart",
-            "onUpdate": "onUpdate"
-        },
-        "contestType": "Clever",
-        "flags": {
-            "allyanim": 1,
-            "gravity": 1,
-            "mirror": 1,
-            "protect": 1,
-            "reflectable": 1
-        },
-        "isNonstandard": null,
-        "name": "Telekinesis",
-        "num": 477,
-        "onTry": "onTry",
-        "pp": 15,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Psychic",
-        "volatileStatus": "telekinesis",
         "zMove": {
             "boost": {
                 "spa": 1
@@ -13343,7 +10043,7 @@
     },
     "thief": {
         "accuracy": 100,
-        "basePower": 60,
+        "basePower": 40,
         "category": "Physical",
         "contestType": "Tough",
         "flags": {
@@ -13354,62 +10054,15 @@
         "name": "Thief",
         "num": 168,
         "onAfterHit": "onAfterHit",
-        "pp": 25,
+        "pp": 10,
         "priority": 0,
         "secondary": null,
         "target": "normal",
         "type": "Dark"
     },
-    "thousandarrows": {
-        "accuracy": 100,
-        "basePower": 90,
-        "category": "Physical",
-        "contestType": "Beautiful",
-        "flags": {
-            "mirror": 1,
-            "nonsky": 1,
-            "protect": 1
-        },
-        "ignoreImmunity": {
-            "Ground": true
-        },
-        "isNonstandard": "Unobtainable",
-        "name": "Thousand Arrows",
-        "num": 614,
-        "onEffectiveness": "onEffectiveness",
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "allAdjacentFoes",
-        "type": "Ground",
-        "volatileStatus": "smackdown",
-        "zMove": {
-            "basePower": 180
-        }
-    },
-    "thousandwaves": {
-        "accuracy": 100,
-        "basePower": 90,
-        "category": "Physical",
-        "contestType": "Tough",
-        "flags": {
-            "mirror": 1,
-            "nonsky": 1,
-            "protect": 1
-        },
-        "isNonstandard": "Unobtainable",
-        "name": "Thousand Waves",
-        "num": 615,
-        "onHit": "onHit",
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "allAdjacentFoes",
-        "type": "Ground"
-    },
     "thrash": {
         "accuracy": 100,
-        "basePower": 120,
+        "basePower": 90,
         "category": "Physical",
         "contestType": "Tough",
         "flags": {
@@ -13420,7 +10073,7 @@
         "name": "Thrash",
         "num": 37,
         "onAfterMove": "onAfterMove",
-        "pp": 10,
+        "pp": 20,
         "priority": 0,
         "secondary": null,
         "self": {
@@ -13431,7 +10084,7 @@
     },
     "thunder": {
         "accuracy": 70,
-        "basePower": 110,
+        "basePower": 120,
         "category": "Special",
         "contestType": "Cool",
         "flags": {
@@ -13452,7 +10105,7 @@
     },
     "thunderbolt": {
         "accuracy": 100,
-        "basePower": 90,
+        "basePower": 95,
         "category": "Special",
         "contestType": "Cool",
         "flags": {
@@ -13593,31 +10246,6 @@
             }
         }
     },
-    "topsyturvy": {
-        "accuracy": true,
-        "basePower": 0,
-        "category": "Status",
-        "contestType": "Clever",
-        "flags": {
-            "allyanim": 1,
-            "mirror": 1,
-            "protect": 1,
-            "reflectable": 1
-        },
-        "name": "Topsy-Turvy",
-        "num": 576,
-        "onHit": "onHit",
-        "pp": 20,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Dark",
-        "zMove": {
-            "boost": {
-                "atk": 1
-            }
-        }
-    },
     "torment": {
         "accuracy": 100,
         "basePower": 0,
@@ -13632,8 +10260,7 @@
         "flags": {
             "bypasssub": 1,
             "mirror": 1,
-            "protect": 1,
-            "reflectable": 1
+            "protect": 1
         },
         "name": "Torment",
         "num": 259,
@@ -13650,7 +10277,7 @@
         }
     },
     "toxic": {
-        "accuracy": 90,
+        "accuracy": 85,
         "basePower": 0,
         "category": "Status",
         "condition": {
@@ -13691,10 +10318,7 @@
             "onSideStart": "onSideStart"
         },
         "contestType": "Clever",
-        "flags": {
-            "nonsky": 1,
-            "reflectable": 1
-        },
+        "flags": {},
         "name": "Toxic Spikes",
         "num": 390,
         "pp": 20,
@@ -13715,7 +10339,7 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
-            "allyanim": 1
+            "bypasssub": 1
         },
         "name": "Transform",
         "num": 144,
@@ -13762,6 +10386,7 @@
         "name": "Trick",
         "num": 271,
         "onHit": "onHit",
+        "onTryHit": "onTryHit",
         "onTryImmunity": "onTryImmunity",
         "pp": 10,
         "priority": 0,
@@ -13774,35 +10399,6 @@
             }
         }
     },
-    "trickortreat": {
-        "accuracy": 100,
-        "basePower": 0,
-        "category": "Status",
-        "contestType": "Cute",
-        "flags": {
-            "allyanim": 1,
-            "mirror": 1,
-            "protect": 1,
-            "reflectable": 1
-        },
-        "name": "Trick-or-Treat",
-        "num": 567,
-        "onHit": "onHit",
-        "pp": 20,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Ghost",
-        "zMove": {
-            "boost": {
-                "atk": 1,
-                "def": 1,
-                "spa": 1,
-                "spd": 1,
-                "spe": 1
-            }
-        }
-    },
     "trickroom": {
         "accuracy": true,
         "basePower": 0,
@@ -13811,8 +10407,7 @@
             "duration": 5,
             "durationCallback": "durationCallback",
             "onFieldEnd": "onFieldEnd",
-            "onFieldResidualOrder": 27,
-            "onFieldResidualSubOrder": 1,
+            "onFieldResidualOrder": 13,
             "onFieldRestart": "onFieldRestart",
             "onFieldStart": "onFieldStart"
         },
@@ -13845,6 +10440,7 @@
             "mirror": 1,
             "protect": 1
         },
+        "isNonstandard": null,
         "maxMove": {
             "basePower": 80
         },
@@ -13920,7 +10516,8 @@
         "contestType": "Cool",
         "flags": {
             "mirror": 1,
-            "protect": 1
+            "protect": 1,
+            "wind": 1
         },
         "name": "Twister",
         "num": 239,
@@ -13935,21 +10532,19 @@
     },
     "uproar": {
         "accuracy": 100,
-        "basePower": 90,
+        "basePower": 50,
         "category": "Special",
         "condition": {
-            "duration": 3,
             "onAnySetStatus": "onAnySetStatus",
             "onEnd": "onEnd",
             "onLockMove": "uproar",
             "onResidual": "onResidual",
-            "onResidualOrder": 28,
-            "onResidualSubOrder": 1,
+            "onResidualOrder": 10,
+            "onResidualSubOrder": 11,
             "onStart": "onStart"
         },
         "contestType": "Cute",
         "flags": {
-            "bypasssub": 1,
             "mirror": 1,
             "protect": 1,
             "sound": 1
@@ -14002,79 +10597,9 @@
         "target": "normal",
         "type": "Fighting"
     },
-    "vcreate": {
-        "accuracy": 95,
-        "basePower": 180,
-        "category": "Physical",
-        "contestType": "Cool",
-        "flags": {
-            "contact": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "V-create",
-        "num": 557,
-        "pp": 5,
-        "priority": 0,
-        "secondary": null,
-        "self": {
-            "boosts": {
-                "def": -1,
-                "spd": -1,
-                "spe": -1
-            }
-        },
-        "target": "normal",
-        "type": "Fire",
-        "zMove": {
-            "basePower": 220
-        }
-    },
-    "venomdrench": {
-        "accuracy": 100,
-        "basePower": 0,
-        "category": "Status",
-        "contestType": "Clever",
-        "flags": {
-            "mirror": 1,
-            "protect": 1,
-            "reflectable": 1
-        },
-        "name": "Venom Drench",
-        "num": 599,
-        "onHit": "onHit",
-        "pp": 20,
-        "priority": 0,
-        "secondary": null,
-        "target": "allAdjacentFoes",
-        "type": "Poison",
-        "zMove": {
-            "boost": {
-                "def": 1
-            }
-        }
-    },
-    "venoshock": {
-        "accuracy": 100,
-        "basePower": 65,
-        "category": "Special",
-        "contestType": "Beautiful",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Venoshock",
-        "num": 474,
-        "onBasePower": "onBasePower",
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Poison"
-    },
     "vinewhip": {
         "accuracy": 100,
-        "basePower": 45,
+        "basePower": 35,
         "category": "Physical",
         "contestType": "Cool",
         "flags": {
@@ -14084,7 +10609,7 @@
         },
         "name": "Vine Whip",
         "num": 22,
-        "pp": 25,
+        "pp": 15,
         "priority": 0,
         "secondary": null,
         "target": "normal",
@@ -14118,6 +10643,7 @@
             "mirror": 1,
             "protect": 1
         },
+        "isNonstandard": null,
         "name": "Vital Throw",
         "num": 233,
         "pp": 10,
@@ -14125,24 +10651,6 @@
         "secondary": null,
         "target": "normal",
         "type": "Fighting"
-    },
-    "voltswitch": {
-        "accuracy": 100,
-        "basePower": 70,
-        "category": "Special",
-        "contestType": "Cool",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Volt Switch",
-        "num": 521,
-        "pp": 20,
-        "priority": 0,
-        "secondary": null,
-        "selfSwitch": true,
-        "target": "normal",
-        "type": "Electric"
     },
     "volttackle": {
         "accuracy": 100,
@@ -14159,8 +10667,8 @@
         "pp": 15,
         "priority": 0,
         "recoil": [
-            33,
-            100
+            1,
+            3
         ],
         "secondary": {
             "chance": 10,
@@ -14171,7 +10679,7 @@
     },
     "wakeupslap": {
         "accuracy": 100,
-        "basePower": 70,
+        "basePower": 60,
         "basePowerCallback": "basePowerCallback",
         "category": "Physical",
         "contestType": "Tough",
@@ -14228,35 +10736,6 @@
         "target": "normal",
         "type": "Water"
     },
-    "waterpledge": {
-        "accuracy": 100,
-        "basePower": 80,
-        "basePowerCallback": "basePowerCallback",
-        "category": "Special",
-        "condition": {
-            "duration": 4,
-            "onModifyMove": "onModifyMove",
-            "onSideEnd": "onSideEnd",
-            "onSideResidualOrder": 26,
-            "onSideResidualSubOrder": 7,
-            "onSideStart": "onSideStart"
-        },
-        "contestType": "Beautiful",
-        "flags": {
-            "mirror": 1,
-            "nonsky": 1,
-            "protect": 1
-        },
-        "name": "Water Pledge",
-        "num": 518,
-        "onModifyMove": "onModifyMove",
-        "onPrepareHit": "onPrepareHit",
-        "pp": 10,
-        "priority": 0,
-        "secondary": null,
-        "target": "normal",
-        "type": "Water"
-    },
     "waterpulse": {
         "accuracy": 100,
         "basePower": 60,
@@ -14279,54 +10758,29 @@
         "target": "any",
         "type": "Water"
     },
-    "watershuriken": {
-        "accuracy": 100,
-        "basePower": 15,
-        "basePowerCallback": "basePowerCallback",
-        "category": "Physical",
-        "contestType": "Cool",
-        "flags": {
-            "mirror": 1,
-            "protect": 1
-        },
-        "multihit": [
-            2,
-            5
-        ],
-        "name": "Water Shuriken",
-        "num": 594,
-        "pp": 20,
-        "priority": 1,
-        "secondary": null,
-        "target": "normal",
-        "type": "Water"
-    },
     "watersport": {
         "accuracy": true,
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "duration": 5,
-            "onBasePower": "onBasePower",
-            "onBasePowerPriority": 1,
-            "onFieldEnd": "onFieldEnd",
-            "onFieldResidualOrder": 27,
-            "onFieldResidualSubOrder": 3,
-            "onFieldStart": "onFieldStart"
+            "noCopy": true,
+            "onAnyBasePower": "onAnyBasePower",
+            "onBasePowerPriority": 3,
+            "onStart": "onStart"
         },
         "contestType": "Cute",
-        "flags": {
-            "nonsky": 1
-        },
+        "flags": {},
         "isNonstandard": null,
         "name": "Water Sport",
         "num": 346,
+        "onTryHitField": "onTryHitField",
         "pp": 15,
         "priority": 0,
         "pseudoWeather": "watersport",
         "secondary": null,
         "target": "all",
         "type": "Water",
+        "volatileStatus": "watersport",
         "zMove": {
             "boost": {
                 "spd": 1
@@ -14378,8 +10832,8 @@
         }
     },
     "whirlpool": {
-        "accuracy": 85,
-        "basePower": 35,
+        "accuracy": 70,
+        "basePower": 15,
         "category": "Special",
         "contestType": "Beautiful",
         "flags": {
@@ -14396,15 +10850,14 @@
         "volatileStatus": "partiallytrapped"
     },
     "whirlwind": {
-        "accuracy": true,
+        "accuracy": 100,
         "basePower": 0,
         "category": "Status",
         "contestType": "Clever",
         "flags": {
-            "allyanim": 1,
             "bypasssub": 1,
             "mirror": 1,
-            "reflectable": 1
+            "protect": 1
         },
         "forceSwitch": true,
         "name": "Whirlwind",
@@ -14420,60 +10873,8 @@
             }
         }
     },
-    "wideguard": {
-        "accuracy": true,
-        "basePower": 0,
-        "category": "Status",
-        "condition": {
-            "duration": 1,
-            "onSideStart": "onSideStart",
-            "onTryHit": "onTryHit",
-            "onTryHitPriority": 4
-        },
-        "contestType": "Tough",
-        "flags": {
-            "snatch": 1
-        },
-        "name": "Wide Guard",
-        "num": 469,
-        "onHitSide": "onHitSide",
-        "onTry": "onTry",
-        "pp": 10,
-        "priority": 3,
-        "secondary": null,
-        "sideCondition": "wideguard",
-        "target": "allySide",
-        "type": "Rock",
-        "zMove": {
-            "boost": {
-                "def": 1
-            }
-        }
-    },
-    "wildcharge": {
-        "accuracy": 100,
-        "basePower": 90,
-        "category": "Physical",
-        "contestType": "Tough",
-        "flags": {
-            "contact": 1,
-            "mirror": 1,
-            "protect": 1
-        },
-        "name": "Wild Charge",
-        "num": 528,
-        "pp": 15,
-        "priority": 0,
-        "recoil": [
-            1,
-            4
-        ],
-        "secondary": null,
-        "target": "normal",
-        "type": "Electric"
-    },
     "willowisp": {
-        "accuracy": 85,
+        "accuracy": 75,
         "basePower": 0,
         "category": "Status",
         "contestType": "Beautiful",
@@ -14522,13 +10923,11 @@
         "condition": {
             "duration": 2,
             "onEnd": "onEnd",
-            "onResidualOrder": 4,
-            "onStart": "onStart"
+            "onResidualOrder": 7
         },
         "contestType": "Cute",
         "flags": {
-            "heal": 1,
-            "snatch": 1
+            "heal": 1
         },
         "name": "Wish",
         "num": 273,
@@ -14568,38 +10967,6 @@
             }
         }
     },
-    "wonderroom": {
-        "accuracy": true,
-        "basePower": 0,
-        "category": "Status",
-        "condition": {
-            "duration": 5,
-            "durationCallback": "durationCallback",
-            "onFieldEnd": "onFieldEnd",
-            "onFieldResidualOrder": 27,
-            "onFieldResidualSubOrder": 5,
-            "onFieldRestart": "onFieldRestart",
-            "onFieldStart": "onFieldStart",
-            "onModifyMove": "onModifyMove"
-        },
-        "contestType": "Clever",
-        "flags": {
-            "mirror": 1
-        },
-        "name": "Wonder Room",
-        "num": 472,
-        "pp": 10,
-        "priority": 0,
-        "pseudoWeather": "wonderroom",
-        "secondary": null,
-        "target": "all",
-        "type": "Psychic",
-        "zMove": {
-            "boost": {
-                "spd": 1
-            }
-        }
-    },
     "woodhammer": {
         "accuracy": 100,
         "basePower": 120,
@@ -14615,37 +10982,12 @@
         "pp": 15,
         "priority": 0,
         "recoil": [
-            33,
-            100
+            1,
+            3
         ],
         "secondary": null,
         "target": "normal",
         "type": "Grass"
-    },
-    "workup": {
-        "accuracy": true,
-        "basePower": 0,
-        "boosts": {
-            "atk": 1,
-            "spa": 1
-        },
-        "category": "Status",
-        "contestType": "Tough",
-        "flags": {
-            "snatch": 1
-        },
-        "name": "Work Up",
-        "num": 526,
-        "pp": 30,
-        "priority": 0,
-        "secondary": null,
-        "target": "self",
-        "type": "Normal",
-        "zMove": {
-            "boost": {
-                "atk": 1
-            }
-        }
     },
     "worryseed": {
         "accuracy": 100,
@@ -14675,7 +11017,7 @@
         }
     },
     "wrap": {
-        "accuracy": 90,
+        "accuracy": 85,
         "basePower": 15,
         "category": "Physical",
         "contestType": "Tough",
@@ -14727,7 +11069,8 @@
         "flags": {
             "contact": 1,
             "mirror": 1,
-            "protect": 1
+            "protect": 1,
+            "slicing": 1
         },
         "name": "X-Scissor",
         "num": 404,
@@ -14745,7 +11088,8 @@
             "duration": 2,
             "noCopy": true,
             "onEnd": "onEnd",
-            "onResidualOrder": 23,
+            "onResidualOrder": 10,
+            "onResidualSubOrder": 19,
             "onStart": "onStart"
         },
         "contestType": "Cute",

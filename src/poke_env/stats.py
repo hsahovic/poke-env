@@ -6,7 +6,7 @@ import math
 
 from typing import List
 
-from poke_env.data import POKEDEX, NATURES, to_id_str  # noqa: F401
+from poke_env.data.pokemon_data import POKEDEX, NATURES, to_id_str  # noqa: F401
 
 STATS_TO_IDX = {
     "hp": 0,

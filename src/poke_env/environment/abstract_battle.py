@@ -11,7 +11,7 @@ from typing import Set
 from typing import Tuple
 from typing import Union
 
-from poke_env.data import _REPLAY_TEMPLATE
+from poke_env.data.pokemon_data import _REPLAY_TEMPLATE
 from poke_env.environment.field import Field
 from poke_env.environment.pokemon import Pokemon, GEN_TO_POKEMON
 from poke_env.environment.side_condition import STACKABLE_CONDITIONS, SideCondition
