@@ -7,7 +7,7 @@ from enum import auto
 from enum import Enum
 from enum import unique
 from typing import Optional
-from ..data import TYPE_CHART
+from poke_env.data.pokemon_data import TYPE_CHART
 
 
 @unique

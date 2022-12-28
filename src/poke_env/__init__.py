@@ -3,7 +3,7 @@
 """
 import logging
 
-import poke_env.data as data
+import poke_env.data.pokemon_data as pokemon_data
 import poke_env.environment as environment
 import poke_env.exceptions as exceptions
 import poke_env.player as player
@@ -11,7 +11,7 @@ import poke_env.player_configuration as player_configuration
 import poke_env.server_configuration as server_configuration
 import poke_env.teambuilder as teambuilder
 import poke_env.stats as stats
-from poke_env.data import (
+from poke_env.data.pokemon_data import (
     GEN4_MOVES,
     GEN4_POKEDEX,
     GEN5_MOVES,
@@ -73,7 +73,7 @@ __all__ = [
     "TYPE_CHART",
     "UNKNOWN_ITEM",
     "compute_raw_stats",
-    "data",
+    "pokemon_data",
     "environment",
     "exceptions",
     "player",

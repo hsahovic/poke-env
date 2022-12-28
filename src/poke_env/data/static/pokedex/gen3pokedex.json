@@ -2486,7 +2486,7 @@
         "num": -60,
         "types": [
             "Dark",
-            "Poison"
+            "Normal"
         ],
         "weightkg": 215
     },
@@ -3804,6 +3804,10 @@
         "eggGroups": [
             "Field"
         ],
+        "evos": [
+            "Dudunsparce",
+            "Dudunsparce-Three-Segment"
+        ],
         "heightm": 1.5,
         "name": "Dunsparce",
         "num": 206,
@@ -4465,6 +4469,7 @@
             "Grass"
         ],
         "evoItem": "Leaf Stone",
+        "evoRegion": "Alola",
         "evoType": "useItem",
         "forme": "Alola",
         "heightm": 10.9,
@@ -5185,6 +5190,9 @@
         "color": "Yellow",
         "eggGroups": [
             "Field"
+        ],
+        "evos": [
+            "Farigiraf"
         ],
         "heightm": 1.5,
         "name": "Girafarig",
@@ -6622,8 +6630,8 @@
     },
     "jumbao": {
         "abilities": {
-            "0": "Drought",
-            "1": "Trace"
+            "0": "Trace",
+            "1": "Overcoat"
         },
         "baseStats": {
             "atk": 63,
@@ -6648,7 +6656,8 @@
             "Grass",
             "Fairy"
         ],
-        "weightkg": 600
+        "unreleasedHidden": true,
+        "weightkg": 200
     },
     "jumpluff": {
         "abilities": {
@@ -8556,6 +8565,7 @@
         ],
         "evoCondition": "at night",
         "evoLevel": 28,
+        "evoRegion": "Alola",
         "forme": "Alola",
         "heightm": 1,
         "name": "Marowak-Alola",
@@ -9223,9 +9233,9 @@
             "atk": 135,
             "def": 60,
             "hp": 85,
-            "spa": 115,
-            "spd": 85,
-            "spe": 92
+            "spa": 88,
+            "spd": 105,
+            "spe": 99
         },
         "color": "Green",
         "eggGroups": [
@@ -9611,6 +9621,7 @@
             "Human-Like"
         ],
         "evoMove": "Mimic",
+        "evoRegion": "Galar",
         "evoType": "levelMove",
         "evos": [
             "Mr. Rime"
@@ -9725,8 +9736,8 @@
     },
     "mumbao": {
         "abilities": {
-            "0": "Solar Power",
-            "1": "Trace"
+            "0": "Trace",
+            "1": "Overcoat"
         },
         "baseStats": {
             "atk": 30,
@@ -9751,7 +9762,8 @@
             "Grass",
             "Fairy"
         ],
-        "weightkg": 250
+        "unreleasedHidden": true,
+        "weightkg": 83
     },
     "murkrow": {
         "abilities": {
@@ -12397,6 +12409,9 @@
             "Field"
         ],
         "evoLevel": 28,
+        "evos": [
+            "Annihilape"
+        ],
         "heightm": 1,
         "name": "Primeape",
         "num": 57,
@@ -12667,7 +12682,7 @@
             "spd": 55,
             "spe": 85
         },
-        "color": "Gray",
+        "color": "Black",
         "eggGroups": [
             "Water 2"
         ],
@@ -12738,6 +12753,7 @@
             "Fairy"
         ],
         "evoItem": "Thunder Stone",
+        "evoRegion": "Alola",
         "evoType": "useItem",
         "forme": "Alola",
         "heightm": 0.7,
@@ -13464,25 +13480,57 @@
             "1": "Serene Grace"
         },
         "baseStats": {
-            "atk": 120,
+            "atk": 112,
             "def": 105,
             "hp": 70,
             "spa": 65,
-            "spd": 130,
-            "spe": 90
+            "spd": 123,
+            "spe": 78
         },
         "color": "White",
         "eggGroups": [
-            "Undiscovered"
+            "Field"
         ],
+        "evoItem": "Shiny Stone",
+        "evoType": "useItem",
         "gen": 8,
         "heightm": 2.3,
         "name": "Saharaja",
         "num": -68,
+        "prevo": "Saharascal",
         "types": [
             "Ground"
         ],
         "weightkg": 303.9
+    },
+    "saharascal": {
+        "abilities": {
+            "0": "Water Absorb",
+            "1": "Pickpocket"
+        },
+        "baseStats": {
+            "atk": 80,
+            "def": 65,
+            "hp": 50,
+            "spa": 45,
+            "spd": 90,
+            "spe": 70
+        },
+        "color": "Brown",
+        "eggGroups": [
+            "Field"
+        ],
+        "evos": [
+            "Saharaja"
+        ],
+        "gen": 8,
+        "heightm": 1.2,
+        "name": "Saharascal",
+        "num": -67,
+        "types": [
+            "Ground"
+        ],
+        "weightkg": 48
     },
     "salamence": {
         "abilities": {
@@ -15012,7 +15060,7 @@
             "spd": 75,
             "spe": 115
         },
-        "color": "Black",
+        "color": "Gray",
         "eggGroups": [
             "Field"
         ],
@@ -16124,12 +16172,109 @@
         "eggGroups": [
             "Field"
         ],
+        "formeOrder": [
+            "Tauros",
+            "Tauros-Paldea",
+            "Tauros-Paldea-Fire",
+            "Tauros-Paldea-Water"
+        ],
         "gender": "M",
         "heightm": 1.4,
         "name": "Tauros",
         "num": 128,
+        "otherFormes": [
+            "Tauros-Paldea",
+            "Tauros-Paldea-Fire",
+            "Tauros-Paldea-Water"
+        ],
         "types": [
             "Normal"
+        ],
+        "weightkg": 88.4
+    },
+    "taurospaldea": {
+        "abilities": {
+            "0": "Intimidate",
+            "1": "Anger Point"
+        },
+        "baseSpecies": "Tauros",
+        "baseStats": {
+            "atk": 110,
+            "def": 105,
+            "hp": 75,
+            "spa": 30,
+            "spd": 70,
+            "spe": 100
+        },
+        "color": "Black",
+        "eggGroups": [
+            "Field"
+        ],
+        "forme": "Paldea",
+        "gender": "M",
+        "heightm": 1.4,
+        "name": "Tauros-Paldea",
+        "num": 128,
+        "types": [
+            "Fighting"
+        ],
+        "weightkg": 88.4
+    },
+    "taurospaldeafire": {
+        "abilities": {
+            "0": "Intimidate",
+            "1": "Anger Point"
+        },
+        "baseSpecies": "Tauros",
+        "baseStats": {
+            "atk": 110,
+            "def": 105,
+            "hp": 75,
+            "spa": 30,
+            "spd": 70,
+            "spe": 100
+        },
+        "color": "Black",
+        "eggGroups": [
+            "Field"
+        ],
+        "forme": "Paldea-Fire",
+        "gender": "M",
+        "heightm": 1.4,
+        "name": "Tauros-Paldea-Fire",
+        "num": 128,
+        "types": [
+            "Fighting",
+            "Fire"
+        ],
+        "weightkg": 88.4
+    },
+    "taurospaldeawater": {
+        "abilities": {
+            "0": "Intimidate",
+            "1": "Anger Point"
+        },
+        "baseSpecies": "Tauros",
+        "baseStats": {
+            "atk": 110,
+            "def": 105,
+            "hp": 75,
+            "spa": 30,
+            "spd": 70,
+            "spe": 100
+        },
+        "color": "Black",
+        "eggGroups": [
+            "Field"
+        ],
+        "forme": "Paldea-Water",
+        "gender": "M",
+        "heightm": 1.4,
+        "name": "Tauros-Paldea-Water",
+        "num": 128,
+        "types": [
+            "Fighting",
+            "Water"
         ],
         "weightkg": 88.4
     },
@@ -16843,7 +16988,7 @@
         },
         "baseForme": "Prologue",
         "baseStats": {
-            "atk": 70,
+            "atk": 50,
             "def": 113,
             "hp": 85,
             "spa": 118,
@@ -16852,7 +16997,7 @@
         },
         "color": "Purple",
         "eggGroups": [
-            "Undiscovered"
+            "Amorphous"
         ],
         "formeOrder": [
             "Venomicon",
@@ -16881,14 +17026,14 @@
             "atk": 102,
             "def": 85,
             "hp": 85,
-            "spa": 63,
+            "spa": 62,
             "spd": 85,
-            "spe": 120
+            "spe": 101
         },
         "changesFrom": "Venomicon",
         "color": "Purple",
         "eggGroups": [
-            "Undiscovered"
+            "Amorphous"
         ],
         "forme": "Epilogue",
         "gen": 8,
@@ -17701,6 +17846,7 @@
             "Amorphous"
         ],
         "evoLevel": 35,
+        "evoRegion": "Galar",
         "forme": "Galar",
         "heightm": 3,
         "name": "Weezing-Galar",
@@ -17876,11 +18022,50 @@
         "evos": [
             "Quagsire"
         ],
+        "formeOrder": [
+            "Wooper",
+            "Wooper-Paldea"
+        ],
         "heightm": 0.4,
         "name": "Wooper",
         "num": 194,
+        "otherFormes": [
+            "Wooper-Paldea"
+        ],
         "types": [
             "Water",
+            "Ground"
+        ],
+        "weightkg": 8.5
+    },
+    "wooperpaldea": {
+        "abilities": {
+            "0": "Poison Point",
+            "1": "Water Absorb"
+        },
+        "baseSpecies": "Wooper",
+        "baseStats": {
+            "atk": 45,
+            "def": 45,
+            "hp": 55,
+            "spa": 25,
+            "spd": 25,
+            "spe": 15
+        },
+        "color": "Brown",
+        "eggGroups": [
+            "Water 1",
+            "Field"
+        ],
+        "evos": [
+            "Clodsire"
+        ],
+        "forme": "Paldea",
+        "heightm": 0.4,
+        "name": "Wooper-Paldea",
+        "num": 194,
+        "types": [
+            "Poison",
             "Ground"
         ],
         "weightkg": 8.5

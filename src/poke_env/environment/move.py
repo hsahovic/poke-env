@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import copy
 
-from poke_env.data import MOVES, GEN_TO_MOVES
+from poke_env.data.pokemon_data import MOVES, GEN_TO_MOVES
 from poke_env.environment.field import Field
 from poke_env.environment.move_category import MoveCategory
 from poke_env.environment.pokemon_type import PokemonType
@@ -226,8 +226,15 @@ class Move:
         :return: Move's defender category.
         :rtype: MoveCategory
         """
-        if "defensiveCategory" in self.entry:
-            return MoveCategory[self.entry["defensiveCategory"].upper()]
+        if "overrideDefensiveStat" in self.entry:
+            if self.entry["overrideDefensiveStat"] == "def":
+                return MoveCategory["PHYSICAL"]
+            elif self.entry["overrideDefensiveStat"] == "spd":
+                return MoveCategory["SPECIAL"]
+            else:
+                raise ValueError(
+                    f"Unsupported value for overrideDefensiveStat: {self.entry['overrideDefensiveStat']}"  # noqa
+                )
         return self.category
 
     @property
@@ -661,7 +668,7 @@ class Move:
         :return: Whether the move uses the target's offensive statistics.
         :rtype: bool
         """
-        return self.entry.get("useTargetOffensive", False)
+        return self.entry.get("overrideOffensivePokemon", False) == "target"
 
     @property
     def volatile_status(self) -> Optional[str]:

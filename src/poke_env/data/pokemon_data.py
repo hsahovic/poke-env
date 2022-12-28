@@ -53,7 +53,10 @@ def to_id_str(name: str) -> str:
 
 
 _TYPE_CHART_PATH: str = os.path.join(
-    os.path.dirname(os.path.realpath(__file__)), "data", "typeChart.json"
+    os.path.dirname(os.path.realpath(__file__)),
+    "static",
+    "typechart",
+    "gen8typechart.json",
 )
 "Path to the json file containing type informations."
 
@@ -61,7 +64,12 @@ _TYPE_CHART_PATH: str = os.path.join(
 POKEDEX: Dict[str, Any] = {}
 
 with open(
-    os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "pokedex.json")
+    os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        "static",
+        "pokedex",
+        "gen8pokedex.json",
+    )
 ) as pokedex:
     POKEDEX = orjson.loads(pokedex.read())
 
@@ -90,9 +98,9 @@ GEN4_POKEDEX: Dict[str, Any] = {}
 with open(
     os.path.join(
         os.path.dirname(os.path.realpath(__file__)),
-        "data",
-        "pokedex_by_gen",
-        "gen4_pokedex.json",
+        "static",
+        "pokedex",
+        "gen4pokedex.json",
     )
 ) as pokedex:
     GEN4_POKEDEX = orjson.loads(pokedex.read())
@@ -117,9 +125,9 @@ GEN5_POKEDEX: Dict[str, Any] = {}
 with open(
     os.path.join(
         os.path.dirname(os.path.realpath(__file__)),
-        "data",
-        "pokedex_by_gen",
-        "gen5_pokedex.json",
+        "static",
+        "pokedex",
+        "gen5pokedex.json",
     )
 ) as pokedex:
     GEN5_POKEDEX = orjson.loads(pokedex.read())
@@ -144,9 +152,9 @@ GEN6_POKEDEX: Dict[str, Any] = {}
 with open(
     os.path.join(
         os.path.dirname(os.path.realpath(__file__)),
-        "data",
-        "pokedex_by_gen",
-        "gen6_pokedex.json",
+        "static",
+        "pokedex",
+        "gen6pokedex.json",
     )
 ) as pokedex:
     GEN6_POKEDEX = orjson.loads(pokedex.read())
@@ -171,9 +179,9 @@ GEN7_POKEDEX: Dict[str, Any] = {}
 with open(
     os.path.join(
         os.path.dirname(os.path.realpath(__file__)),
-        "data",
-        "pokedex_by_gen",
-        "gen7_pokedex.json",
+        "static",
+        "pokedex",
+        "gen7pokedex.json",
     )
 ) as pokedex:
     GEN7_POKEDEX = orjson.loads(pokedex.read())
@@ -198,9 +206,9 @@ GEN8_POKEDEX: Dict[str, Any] = {}
 with open(
     os.path.join(
         os.path.dirname(os.path.realpath(__file__)),
-        "data",
-        "pokedex_by_gen",
-        "gen8_pokedex.json",
+        "static",
+        "pokedex",
+        "gen8pokedex.json",
     )
 ) as pokedex:
     GEN8_POKEDEX = orjson.loads(pokedex.read())
@@ -232,7 +240,9 @@ GEN_TO_POKEDEX: Dict[int, Dict[str, Any]] = {
 MOVES: Dict[str, Any] = {}
 
 with open(
-    os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "moves.json")
+    os.path.join(
+        os.path.dirname(os.path.realpath(__file__)), "static", "moves", "gen8moves.json"
+    )
 ) as moves:
     MOVES = orjson.loads(moves.read())
 
@@ -242,9 +252,9 @@ GEN4_MOVES: Dict[str, Any] = {}
 with open(
     os.path.join(
         os.path.dirname(os.path.realpath(__file__)),
-        "data",
-        "moves_by_gen",
-        "gen4_moves.json",
+        "static",
+        "moves",
+        "gen4moves.json",
     )
 ) as moves:
     GEN4_MOVES = orjson.loads(moves.read())
@@ -255,9 +265,9 @@ GEN5_MOVES: Dict[str, Any] = {}
 with open(
     os.path.join(
         os.path.dirname(os.path.realpath(__file__)),
-        "data",
-        "moves_by_gen",
-        "gen5_moves.json",
+        "static",
+        "moves",
+        "gen5moves.json",
     )
 ) as moves:
     GEN5_MOVES = orjson.loads(moves.read())
@@ -268,9 +278,9 @@ GEN6_MOVES: Dict[str, Any] = {}
 with open(
     os.path.join(
         os.path.dirname(os.path.realpath(__file__)),
-        "data",
-        "moves_by_gen",
-        "gen6_moves.json",
+        "static",
+        "moves",
+        "gen6moves.json",
     )
 ) as moves:
     GEN6_MOVES = orjson.loads(moves.read())
@@ -281,9 +291,9 @@ GEN7_MOVES: Dict[str, Any] = {}
 with open(
     os.path.join(
         os.path.dirname(os.path.realpath(__file__)),
-        "data",
-        "moves_by_gen",
-        "gen7_moves.json",
+        "static",
+        "moves",
+        "gen7moves.json",
     )
 ) as moves:
     GEN7_MOVES = orjson.loads(moves.read())
@@ -294,9 +304,9 @@ GEN8_MOVES: Dict[str, Any] = {}
 with open(
     os.path.join(
         os.path.dirname(os.path.realpath(__file__)),
-        "data",
-        "moves_by_gen",
-        "gen8_moves.json",
+        "static",
+        "moves",
+        "gen8moves.json",
     )
 ) as moves:
     GEN8_MOVES = orjson.loads(moves.read())
@@ -313,7 +323,7 @@ GEN_TO_MOVES: Dict[int, Dict[str, Any]] = {
 NATURES: Dict[str, Dict[str, Union[int, float]]] = {}
 
 with open(
-    os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", "natures.json")
+    os.path.join(os.path.dirname(os.path.realpath(__file__)), "static", "natures.json")
 ) as natures:
     NATURES = orjson.loads(natures.read())
 
@@ -333,7 +343,7 @@ function.
 
 with open(
     os.path.join(
-        os.path.dirname(os.path.realpath(__file__)), "data", "replay_template.html"
+        os.path.dirname(os.path.realpath(__file__)), "static", "replay_template.html"
     )
 ) as f:
     _REPLAY_TEMPLATE = f.read()
