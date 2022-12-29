@@ -22,3 +22,15 @@ updates:
   - dependency-name: pyre-check
     versions:
     - 0.0.59
+- package-ecosystem: github-actions
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "10:00"
+  open-pull-requests-limit: 10
+  reviewers:
+    - hsahovic
+  assignees:
+    - hsahovic
+  labels:
+    - CI actions

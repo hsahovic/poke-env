@@ -1,5 +1,14 @@
 name: tests
-on: push
+on:
+  push:
+    branches:
+      - "master"
+  pull_request:
+    branches:
+      - "master"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   tests:
@@ -8,87 +17,72 @@ jobs:
 
     strategy:
       matrix:
-        versions: [3.7, 3.8, 3.9, 3.10]
+        version: ['3.7', '3.8', '3.9', '3.10']
 
     steps:
-      - name: Check out repository code
-        uses: actions/checkout@v2
+      - name: Checkout repository code
+        uses: actions/checkout@v3
 
       # Setup Python (faster than using Python container)
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: "${{ matrix.version }}"
+          python-version: ${{ matrix.version }}
 
-      - name: Store python version in file
-        run: python --version > python-version.txt
+      - name: Install dev dependencies
+        run: pip install -r requirements-dev.txt
 
-      - name: Cache dev dependencies
-        id: dev-dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            venv
-            pokemon-showdown
-          key: requirements-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}-{{ checksum "python-version.txt" }}-ps
+      - name: Install dependencies
+        run: pip install -r requirements.txt
 
-      - name: install dev dependencies
-        run: |
-          python -m venv venv
-          . venv/bin/activate
-          pip install -r requirements-dev.txt
-
-      - name: install dependencies
-        run: |
-          python -m venv venv
-          . venv/bin/activate
-          pip install -r requirements.txt
-
-      - name: run tests
-        run: |
-          . venv/bin/activate
-          PYTHONPATH=src pytest -x --cov=src/poke_env unit_tests/
+      - name: Run tests
+        run: PYTHONPATH=src pytest -x --cov=src/poke_env unit_tests/
 
       - name: Convert coverage to XML
-        run: |
-          . venv/bin/activate
-          coverage xml
+        run: coverage xml
 
-      - uses: codecov/codecov-action@v3
+      - name: Upload coverage report to Codecov
+        uses: codecov/codecov-action@v3
         with:
           file: coverage.xml
 
       - name: Build package
-        run: |
-            . venv/bin/activate
-            python setup.py sdist bdist_wheel
+        run: python setup.py sdist bdist_wheel
 
       - name: Install built package
-        run: |
-            . venv/bin/activate
-            pip install --force-reinstall dist/*.whl
+        run: pip install --force-reinstall dist/*.whl
+
+      - name: Remove source
+        run: rm -rf ./src
 
       - name: Run package-based tests
-        run: |
-            . venv/bin/activate
-            pytest -x unit_tests/
-
-      - name: Uninstall package
-        run: pip uninstall poke-env --yes
+        run: pytest -x unit_tests/
 
       - name: Setup node
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: Install PS
+      - name: Checkout PS
+        uses: actions/checkout@v3
+        with:
+          repository: smogon/pokemon-showdown
+          path: pokemon-showdown
+          submodules: recursive
+
+      - name: Get last showdown commit hash
+        id: showdown-hash
         run: |
-            if [ -d "pokemon-showdown" ]
-            then
-                cd pokemon-showdown;git pull
-            else
-                git clone https://github.com/smogon/pokemon-showdown.git
-            fi
+          cd pokemon-showdown/
+          export hash=`git log -1 --pretty=format:%H`
+          echo "hash=$hash" >> $GITHUB_OUTPUT
+
+      - name: Restore server cache
+        uses: actions/cache@v3
+        with:
+          path: pokemon-showdown/node_modules
+          key: showdown-python${{ matrix.version }}-${{ steps.showdown-hash.outputs.hash }}
+          restore-keys: showdown-python${{ matrix.version }}-
 
       - name: Install PS dependencies & setup config
         run: |
@@ -100,8 +94,7 @@ jobs:
             sed  -i 's/.workers = 1 = 1/.workers = 2/g' config/config.js
 
       - name: Start PS
-        run: |
-            cd pokemon-showdown;node pokemon-showdown start --no-security --max-old-space-size=3000 &
+        run: cd pokemon-showdown;node pokemon-showdown start --no-security --max-old-space-size=3000 &
 
       - name: Wait for server to be up
         run: |
@@ -111,6 +104,4 @@ jobs:
             sleep 1
 
       - name: Run integration tests
-        run: |
-            . venv/bin/activate
-            pytest -x integration_tests/
+        run: pytest -x integration_tests/
