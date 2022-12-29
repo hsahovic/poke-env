@@ -108,6 +108,9 @@ class _OpenAIGymEnvMetaclass(_EnvMetaclass, _ABCMetaclass):
 
 
 class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
+    """
+    Base class implementing the OpenAI Gym API on the main thread.
+    """
 
     _INIT_RETRIES = 100
     _TIME_BETWEEN_RETRIES = 0.5
@@ -708,6 +711,12 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
 
 
 class LegacyOpenAIGymEnv(OpenAIGymEnv, ABC):
+    """
+    Subclass of OpenAIGymEnv compatible with the old gym API.
+    If you need compatibility with the old gym API you should use the
+    `wrap_for_old_gym_api` function.
+    """
+
     def reset(
         self,
         *,
@@ -715,7 +724,9 @@ class LegacyOpenAIGymEnv(OpenAIGymEnv, ABC):
         return_info: bool = False,
         options: Optional[dict] = None,
     ) -> Union[ObservationType, Tuple[ObservationType, dict]]:  # pyre-ignore
-        obs, info = OpenAIGymEnv.reset(self, seed=seed, return_info=True, options=options)
+        obs, info = OpenAIGymEnv.reset(
+            self, seed=seed, return_info=True, options=options
+        )
         if return_info:
             return obs, info
         return obs
@@ -728,6 +739,15 @@ class LegacyOpenAIGymEnv(OpenAIGymEnv, ABC):
 
 
 def wrap_for_old_gym_api(env: OpenAIGymEnv) -> OpenAIGymEnv:
+    """
+    Wraps an OpenAIGymEnv in order to support the old gym API.
+
+    :param env: the environment to wrap.
+    :type env: OpenAIGymEnv
+    :return: The wrapped environment
+    :rtype: OpenAIGymEnv
+    """
+    env = copy.copy(env)
     env.reset = LegacyOpenAIGymEnv.reset.__get__(env, env.__class__)
     env.step = LegacyOpenAIGymEnv.step.__get__(env, env.__class__)
     return env

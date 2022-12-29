@@ -16,7 +16,12 @@ from poke_env.player import (
     ObservationType,
     Player,
 )
-from poke_env.player.openai_api import _AsyncQueue, _AsyncPlayer
+from poke_env.player.openai_api import (
+    _AsyncQueue,
+    _AsyncPlayer,
+    LegacyOpenAIGymEnv,
+    wrap_for_old_gym_api,
+)
 
 
 class DummyEnv(OpenAIGymEnv):
@@ -133,3 +138,12 @@ def test_get_opponent():
     player.opponent = [0]
     with pytest.raises(RuntimeError):
         player._get_opponent()
+
+
+def test_legacy_wrapper():
+    dummy = DummyEnv(start_listening=False)
+    wrapped = wrap_for_old_gym_api(dummy)
+    assert dummy.reset.__func__ is OpenAIGymEnv.reset
+    assert dummy.step.__func__ is OpenAIGymEnv.step
+    assert wrapped.reset.__func__ is LegacyOpenAIGymEnv.reset
+    assert wrapped.step.__func__ is LegacyOpenAIGymEnv.step
