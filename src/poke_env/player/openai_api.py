@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pyre-ignore-all-errors[34]
 """This module defines a player class with the OpenAI API on the main thread.
 For a black-box implementation consider using the module env_player.
 """
@@ -220,6 +221,7 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         :type last_battle: AbstractBattle
         :param current_battle: The current battle state.
         :type current_battle: AbstractBattle
+
         :return: The reward for current_battle.
         :rtype: float
         """
@@ -236,6 +238,7 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         :type action: int
         :param battle: The current battle state
         :type battle: AbstractBattle
+
         :return: The battle order for the given action in context of the current battle.
         :rtype: BattleOrder
         """
@@ -244,13 +247,14 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
     @abstractmethod
     def embed_battle(
         self, battle: AbstractBattle
-    ) -> ObservationType:  # pyre-ignore  # pragma: no cover
+    ) -> ObservationType:  # pragma: no cover
         """
         Returns the embedding of the current battle state in a format compatible with
         the OpenAI gym API.
 
         :param battle: The current battle state.
         :type battle: AbstractBattle
+
         :return: The embedding of the current battle state.
         """
         pass
@@ -307,9 +311,9 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         seed: Optional[int] = None,
         return_info: bool = False,
         options: Optional[dict] = None,
-    ) -> Union[ObservationType, Tuple[ObservationType, dict]]:  # pyre-ignore
+    ) -> Union[ObservationType, Tuple[ObservationType, dict]]:  # pragma: no cover
         if seed is not None:
-            super().reset(seed=seed)
+            super().reset(seed=seed)  # pyre-ignore
             self._seed_initialized = True
         elif not self._seed_initialized:
             super().reset(seed=int(time.time()))
@@ -349,13 +353,13 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
 
     def step(
         self, action: ActionType
-    ) -> Union[  # pyre-ignore
+    ) -> Union[
         Tuple[ObservationType, float, bool, bool, dict],
         Tuple[ObservationType, float, bool, dict],
     ]:  # pragma: no cover
         if not self.current_battle:
             obs, info = self.reset(return_info=True)
-            return obs, 0.0, False, False, info  # pyre-ignore
+            return obs, 0.0, False, False, info
         if self.current_battle.finished:
             raise RuntimeError("Battle is already finished, call reset")
         battle = copy.copy(self.current_battle)
@@ -621,6 +625,7 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         :param timeout: The amount of time to wait for if the task is not already done.
             If empty it will wait until the task is done.
         :type timeout: int, optional
+
         :return: True if the task is done or if the task gets completed after the
             timeout.
         :rtype: bool
@@ -723,7 +728,7 @@ class LegacyOpenAIGymEnv(OpenAIGymEnv, ABC):
         seed: Optional[int] = None,
         return_info: bool = False,
         options: Optional[dict] = None,
-    ) -> Union[ObservationType, Tuple[ObservationType, dict]]:  # pyre-ignore
+    ) -> Union[ObservationType, Tuple[ObservationType, dict]]:  # pragma: no cover
         obs, info = OpenAIGymEnv.reset(
             self, seed=seed, return_info=True, options=options
         )
@@ -744,10 +749,11 @@ def wrap_for_old_gym_api(env: OpenAIGymEnv) -> OpenAIGymEnv:
 
     :param env: the environment to wrap.
     :type env: OpenAIGymEnv
+
     :return: The wrapped environment
     :rtype: OpenAIGymEnv
     """
     env = copy.copy(env)
-    env.reset = LegacyOpenAIGymEnv.reset.__get__(env, env.__class__)
-    env.step = LegacyOpenAIGymEnv.step.__get__(env, env.__class__)
+    env.reset = LegacyOpenAIGymEnv.reset.__get__(env, env.__class__)  # pyre-ignore
+    env.step = LegacyOpenAIGymEnv.step.__get__(env, env.__class__)  # pyre-ignore
     return env
