@@ -17,38 +17,20 @@ from poke_env.environment import z_crystal
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.battle import (
     Battle,
-    Gen4Battle,
-    Gen5Battle,
-    Gen6Battle,
-    Gen7Battle,
-    Gen8Battle,
 )
 from poke_env.environment.double_battle import DoubleBattle
 from poke_env.environment.effect import Effect
 from poke_env.environment.field import Field
 from poke_env.environment.move_category import MoveCategory
 from poke_env.environment.move import (
-    SPECIAL_MOVES,
-    Move,
     EmptyMove,
-    Gen4Move,
-    Gen5Move,
-    Gen6Move,
-    Gen7Move,
-    Gen8Move,
-    GEN_TO_MOVE_CLASS,
-    GEN_TO_MOVES,
+    Move,
+    SPECIAL_MOVES,
 )
 from poke_env.environment.pokemon_gender import PokemonGender
 from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.pokemon import (
     Pokemon,
-    Gen4Pokemon,
-    Gen5Pokemon,
-    Gen6Pokemon,
-    Gen7Pokemon,
-    Gen8Pokemon,
-    GEN_TO_POKEMON,
 )
 from poke_env.environment.side_condition import SideCondition, STACKABLE_CONDITIONS
 from poke_env.environment.status import Status

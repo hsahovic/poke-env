@@ -18,24 +18,25 @@ def test_max_base_power_player():
             "can_z_move",
             "can_dynamax",
             "can_mega_evolve",
+            "gen",
         ),
     )
-    battle = PseudoBattle([], [], False, False, False)
+    battle = PseudoBattle([], [], False, False, False, 8)
 
     player_pkg.Battle = PseudoBattle
 
     assert player.choose_move(battle).message == "/choose default"
 
-    battle.available_switches.append(Pokemon(species="ponyta"))
+    battle.available_switches.append(Pokemon(species="ponyta", gen=8))
     assert player.choose_move(battle).message == "/choose switch ponyta"
 
-    battle.available_moves.append(Move("protect"))
+    battle.available_moves.append(Move("protect", gen=8))
     assert player.choose_move(battle).message == "/choose move protect"
 
-    battle.available_moves.append(Move("quickattack"))
+    battle.available_moves.append(Move("quickattack", gen=8))
     assert player.choose_move(battle).message == "/choose move quickattack"
 
-    battle.available_moves.append(Move("flamethrower"))
+    battle.available_moves.append(Move("flamethrower", gen=8))
     assert player.choose_move(battle).message == "/choose move flamethrower"
 
     player_pkg.Battle = (
@@ -46,16 +47,16 @@ def test_max_base_power_player():
 def test_simple_heuristics_player_estimate_matchup():
     player = SimpleHeuristicsPlayer(start_listening=False)
 
-    dragapult = Pokemon(species="dragapult")
+    dragapult = Pokemon(species="dragapult", gen=8)
     assert player._estimate_matchup(dragapult, dragapult) == 0
 
-    gengar = Pokemon(species="gengar")
+    gengar = Pokemon(species="gengar", gen=8)
     assert player._estimate_matchup(dragapult, gengar) == -player._estimate_matchup(
         gengar, dragapult
     )
     assert player._estimate_matchup(dragapult, gengar) == player.SPEED_TIER_COEFICIENT
 
-    mamoswine = Pokemon(species="mamoswine")
+    mamoswine = Pokemon(species="mamoswine", gen=8)
     assert (
         player._estimate_matchup(dragapult, mamoswine)
         == -1 + player.SPEED_TIER_COEFICIENT
@@ -77,12 +78,18 @@ def test_simple_heuristics_player_should_dynamax():
     player = SimpleHeuristicsPlayer(start_listening=False)
 
     battle = PseudoBattle(
-        Pokemon(species="charmander"), Pokemon(species="charmander"), {}, False
+        Pokemon(species="charmander", gen=8),
+        Pokemon(species="charmander", gen=8),
+        {},
+        False,
     )
     assert player._should_dynamax(battle, 4) is False
 
     battle = PseudoBattle(
-        Pokemon(species="charmander"), Pokemon(species="charmander"), {}, True
+        Pokemon(species="charmander", gen=8),
+        Pokemon(species="charmander", gen=8),
+        {},
+        True,
     )
     assert player._should_dynamax(battle, 1) is True
 
@@ -91,12 +98,12 @@ def test_simple_heuristics_player_should_dynamax():
     assert player._should_dynamax(battle, 4) is True
 
     battle = PseudoBattle(
-        Pokemon(species="squirtle"),
-        Pokemon(species="charmander"),
+        Pokemon(species="squirtle", gen=8),
+        Pokemon(species="charmander", gen=8),
         {
-            "kakuna": Pokemon(species="kakuna"),
-            "venusaur": Pokemon(species="venusaur"),
-            "charmander": Pokemon(species="charmander"),
+            "kakuna": Pokemon(species="kakuna", gen=8),
+            "venusaur": Pokemon(species="venusaur", gen=8),
+            "charmander": Pokemon(species="charmander", gen=8),
         },
         True,
     )
@@ -116,17 +123,19 @@ def test_simple_heuristics_player_should_switch_out():
     player = SimpleHeuristicsPlayer(start_listening=False)
 
     battle = PseudoBattle(
-        Pokemon(species="charmander"), Pokemon(species="charmander"), []
+        Pokemon(species="charmander", gen=8),
+        Pokemon(species="charmander", gen=8),
+        [],
     )
     battle.active_pokemon._last_request["stats"] = {
         stat: 0 for stat in battle.active_pokemon.base_stats
     }
     assert player._should_switch_out(battle) is False
 
-    battle.available_switches.append(Pokemon(species="venusaur"))
+    battle.available_switches.append(Pokemon(species="venusaur", gen=8))
     assert player._should_switch_out(battle) is False
 
-    battle.available_switches.append(Pokemon(species="gyarados"))
+    battle.available_switches.append(Pokemon(species="gyarados", gen=8))
     assert player._should_switch_out(battle) is False
 
     battle.active_pokemon._boost("spa", -3)
@@ -140,16 +149,16 @@ def test_simple_heuristics_player_should_switch_out():
     assert player._should_switch_out(battle) is True
 
     battle = PseudoBattle(
-        Pokemon(species="gible"),
-        Pokemon(species="mamoswine"),
-        [Pokemon(species="charizard")],
+        Pokemon(species="gible", gen=8),
+        Pokemon(species="mamoswine", gen=8),
+        [Pokemon(species="charizard", gen=8)],
     )
     assert player._should_switch_out(battle) is True
 
 
 def test_simple_heuristics_player_stat_estimation():
     player = SimpleHeuristicsPlayer(start_listening=False)
-    mon = Pokemon(species="charizard")
+    mon = Pokemon(species="charizard", gen=8)
 
     assert player._stat_estimation(mon, "spe") == 236
 
@@ -177,10 +186,10 @@ def test_simple_heuristics_player():
         ),
     )
     battle = PseudoBattle(
-        Pokemon(species="dragapult"),
-        Pokemon(species="gengar"),
+        Pokemon(species="dragapult", gen=8),
+        Pokemon(species="gengar", gen=8),
         [],
-        [Pokemon(species="togekiss")],
+        [Pokemon(species="togekiss", gen=8)],
         {},
         True,
         set(),
@@ -193,18 +202,18 @@ def test_simple_heuristics_player():
     battle.available_switches[0]._set_hp("100/100")
     assert player.choose_move(battle).message == "/choose switch togekiss"
 
-    battle.available_moves.append(Move("quickattack"))
+    battle.available_moves.append(Move("quickattack", gen=8))
     assert player.choose_move(battle).message == "/choose move quickattack"
 
-    battle.available_moves.append(Move("flamethrower"))
+    battle.available_moves.append(Move("flamethrower", gen=8))
     assert player.choose_move(battle).message == "/choose move flamethrower"
 
-    battle.available_moves.append(Move("dracometeor"))
+    battle.available_moves.append(Move("dracometeor", gen=8))
     assert player.choose_move(battle).message == "/choose move dracometeor"
 
     battle.active_pokemon._boost("atk", -3)
     battle.active_pokemon._boost("spa", -3)
-    battle.available_switches.append(Pokemon(species="sneasel"))
+    battle.available_switches.append(Pokemon(species="sneasel", gen=8))
     battle.available_switches[1]._set_hp("100/100")
     assert player.choose_move(battle).message == "/choose switch sneasel"
 
@@ -223,31 +232,32 @@ def test_random_player():
             "can_z_move",
             "can_dynamax",
             "can_mega_evolve",
+            "gen",
         ),
     )
-    battle = PseudoBattle([], [], False, False, False)
+    battle = PseudoBattle([], [], False, False, False, 8)
 
     player_pkg.Battle = PseudoBattle
 
     assert player.choose_move(battle).message == "/choose default"
 
-    battle.available_switches.append(Pokemon(species="ponyta"))
+    battle.available_switches.append(Pokemon(species="ponyta", gen=8))
     assert player.choose_move(battle).message == "/choose switch ponyta"
 
-    battle.available_moves.append(Move("protect"))
+    battle.available_moves.append(Move("protect", gen=8))
     assert player.choose_move(battle).message in {
         "/choose move protect",
         "/choose switch ponyta",
     }
 
-    battle.available_moves.append(Move("quickattack"))
+    battle.available_moves.append(Move("quickattack", gen=8))
     assert player.choose_move(battle).message in {
         "/choose move protect",
         "/choose switch ponyta",
         "/choose move quickattack",
     }
 
-    battle.available_moves.append(Move("flamethrower"))
+    battle.available_moves.append(Move("flamethrower", gen=8))
     assert player.choose_move(battle).message in {
         "/choose move protect",
         "/choose switch ponyta",

@@ -1,67 +1,51 @@
-from poke_env import GEN_TO_MOVES
+from poke_env.data import GenData
 from poke_env.environment import (
-    GEN_TO_MOVE_CLASS,
-    GEN_TO_POKEMON,
-    Gen4Battle,
-    Gen4Move,
-    Gen4Pokemon,
-    Gen5Battle,
-    Gen5Move,
-    Gen5Pokemon,
-    Gen6Battle,
-    Gen6Move,
-    Gen6Pokemon,
-    Gen7Battle,
-    Gen7Move,
-    Gen7Pokemon,
-    Gen8Battle,
-    Gen8Move,
-    Gen8Pokemon,
+    Battle,
     Move,
     MoveCategory,
+    Pokemon,
 )
 from unittest.mock import MagicMock
+import pytest
 
 # MOVES TESTS
 
 
 def move_generator(gen):
-    for move in GEN_TO_MOVES[gen]:
-        yield GEN_TO_MOVE_CLASS[gen](move)
+    for move in GenData.from_gen(gen).moves:
+        yield Move(move, gen=gen)
 
 
 def test_tackle():
-    g4 = Gen4Move("tackle")
-    g5 = Gen5Move("tackle")
-    g6 = Gen6Move("tackle")
-    g7 = Gen7Move("tackle")
-    g8 = Gen8Move("tackle")
-    gx = Move("tackle")
+    g4 = Move("tackle", gen=4)
+    g5 = Move("tackle", gen=5)
+    g6 = Move("tackle", gen=6)
+    g7 = Move("tackle", gen=7)
+    g8 = Move("tackle", gen=8)
     assert g4.base_power == 35
     assert g5.base_power == 50
     assert g6.base_power == 50
     assert g7.base_power == 40
     assert g8.base_power == 40
-    assert gx.base_power == 40
 
 
 def test_water_shuriken():
     try:
-        Gen5Move("watershuriken")
+        Move("watershuriken", gen=5)
         assert 1 == 0
     except ValueError:
         assert 1 == 1
 
 
 def test_accuracy():
-    g7_volt_thunderbolt = Gen7Move("10000000voltthunderbolt")
-    g8_volt_thunderbolt = Gen8Move("10000000voltthunderbolt")
+    g7_volt_thunderbolt = Move("10000000voltthunderbolt", gen=7)
+    g8_volt_thunderbolt = Move("10000000voltthunderbolt", gen=8)
     assert g7_volt_thunderbolt.accuracy == 1
     assert g8_volt_thunderbolt.accuracy == 1
 
     for gen in range(4, 8 + 1):
-        absorb = GEN_TO_MOVE_CLASS[gen]("absorb")
-        aeroblast = GEN_TO_MOVE_CLASS[gen]("aeroblast")
+        absorb = Move("absorb", gen=gen)
+        aeroblast = Move("aeroblast", gen=gen)
         assert absorb.accuracy == 1
         assert aeroblast.accuracy == 0.95
 
@@ -73,15 +57,15 @@ def test_accuracy():
 def test_all_moves_instanciate():
     for gen in range(4, 8 + 1):
         for move in move_generator(gen):
-            move_from_id = GEN_TO_MOVE_CLASS[gen](move_id=move.id)
+            move_from_id = Move(move_id=move.id, gen=gen)
             assert str(move) == str(move_from_id)
 
 
 def test_category():
     for gen in range(4, 8 + 1):
-        flame_thrower = GEN_TO_MOVE_CLASS[gen]("flamethrower")
-        close_combat = GEN_TO_MOVE_CLASS[gen]("closecombat")
-        protect = GEN_TO_MOVE_CLASS[gen]("protect")
+        flame_thrower = Move("flamethrower", gen=gen)
+        close_combat = Move("closecombat", gen=gen)
+        protect = Move("protect", gen=gen)
 
         assert flame_thrower.category == MoveCategory["SPECIAL"]
         assert close_combat.category == MoveCategory["PHYSICAL"]
@@ -96,28 +80,28 @@ def test_category():
 
 def test_right_gen_move():
     for gen in range(4, 8 + 1):
-        mon = GEN_TO_POKEMON[gen](species="charizard")
+        mon = Pokemon(species="charizard", gen=gen)
 
         mon._moved("flamethrower")
         assert "flamethrower" in mon.moves
         flame_thrower = mon.moves["flamethrower"]
-        assert isinstance(flame_thrower, GEN_TO_MOVE_CLASS[gen])
+        assert flame_thrower._moves_dict == GenData.from_gen(gen).moves
 
 
 def test_right_abilities():
-    g4_nido = Gen4Pokemon(species="nidoqueen")
+    g4_nido = Pokemon(species="nidoqueen", gen=4)
     assert len(g4_nido.possible_abilities) == 2
-    g5_nido = Gen5Pokemon(species="nidoqueen")
+    g5_nido = Pokemon(species="nidoqueen", gen=5)
     assert len(g5_nido.possible_abilities) == 3
 
-    g5_dusk = Gen5Pokemon(species="dusknoir")
+    g5_dusk = Pokemon(species="dusknoir", gen=5)
     assert len(g5_dusk.possible_abilities) == 1
-    g6_dusk = Gen6Pokemon(species="dusknoir")
+    g6_dusk = Pokemon(species="dusknoir", gen=6)
     assert len(g6_dusk.possible_abilities) == 2
 
-    g7_weez = Gen7Pokemon(species="weezing")
+    g7_weez = Pokemon(species="weezing", gen=7)
     assert len(g7_weez.possible_abilities) == 1
-    g8_weez = Gen8Pokemon(species="weezing")
+    g8_weez = Pokemon(species="weezing", gen=8)
     assert len(g8_weez.possible_abilities) == 3
 
 
@@ -125,17 +109,16 @@ def test_right_abilities():
 
 
 def test_right_gen_mon():
-    GEN_TO_BATTLE = {
-        4: Gen4Battle,
-        5: Gen5Battle,
-        6: Gen6Battle,
-        7: Gen7Battle,
-        8: Gen8Battle,
-    }
-    for gen in range(4, 8 + 1):
+    for gen in range(1, 9):
         logger = MagicMock()
-        battle = GEN_TO_BATTLE[gen]("tag", "username", logger)
+        battle = Battle("tag", "username", logger, gen=gen)
+
+        if gen == 1:
+            with pytest.raises(KeyError):
+                battle.get_pokemon("p2: azumarill", force_self_team=True)
+            continue
 
         battle.get_pokemon("p2: azumarill", force_self_team=True)
+
         assert "p2: azumarill" in battle.team
-        assert isinstance(battle.team["p2: azumarill"], GEN_TO_POKEMON[gen])
+        assert battle.team["p2: azumarill"]._data.gen == gen

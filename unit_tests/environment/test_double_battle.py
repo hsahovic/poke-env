@@ -6,7 +6,7 @@ from poke_env.environment import DoubleBattle, Pokemon
 
 def test_battle_request_parsing(example_doubles_request):
     logger = MagicMock()
-    battle = DoubleBattle("tag", "username", logger)
+    battle = DoubleBattle("tag", "username", logger, gen=8)
 
     battle._parse_request(example_doubles_request)
     assert len(battle.team) == 6
@@ -30,7 +30,7 @@ def test_battle_request_parsing(example_doubles_request):
 
 def test_battle_request_parsing_and_interactions(example_doubles_request):
     logger = MagicMock()
-    battle = DoubleBattle("tag", "username", logger)
+    battle = DoubleBattle("tag", "username", logger, gen=8)
 
     battle._parse_request(example_doubles_request)
     mr_rime, klinklang = battle.active_pokemon
@@ -112,7 +112,7 @@ def test_battle_request_parsing_and_interactions(example_doubles_request):
 
 def test_get_possible_showdown_targets(example_doubles_request):
     logger = MagicMock()
-    battle = DoubleBattle("tag", "username", logger)
+    battle = DoubleBattle("tag", "username", logger, gen=8)
 
     battle._parse_request(example_doubles_request)
     mr_rime, klinklang = battle.active_pokemon
@@ -134,7 +134,7 @@ def test_get_possible_showdown_targets(example_doubles_request):
 
 def test_end_illusion():
     logger = MagicMock()
-    battle = DoubleBattle("tag", "username", logger)
+    battle = DoubleBattle("tag", "username", logger, gen=8)
     battle._player_role = "p2"
 
     battle._switch("p2a: Celebi", "Celebi", "100/100")

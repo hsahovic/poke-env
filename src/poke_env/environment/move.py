@@ -1,23 +1,17 @@
 # -*- coding: utf-8 -*-
 import copy
 
-from poke_env.data.pokemon_data import MOVES, GEN_TO_MOVES
 from poke_env.environment.field import Field
 from poke_env.environment.move_category import MoveCategory
 from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.status import Status
 from poke_env.environment.weather import Weather
-from poke_env.stats import to_id_str
 
+from poke_env.data import GenData, to_id_str
 from functools import lru_cache
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Set
-from typing import Tuple
-from typing import Union
+from typing import Dict, List, Optional, Set, Tuple, Union
 
-SPECIAL_MOVES: Dict
+SPECIAL_MOVES: Set = {"struggle", "recharge"}
 
 _PROTECT_MOVES = {
     "protect",
@@ -56,20 +50,22 @@ class Move:
         "beforeMoveCallback",
     ]
 
-    _MOVES_DICT = GEN_TO_MOVES[8]
-
     __slots__ = (
         "_id",
         "_base_power_override",
         "_current_pp",
         "_dynamaxed_move",
+        "_gen",
         "_is_empty",
+        "_moves_dict",
         "_request_target",
     )
 
-    def __init__(self, move_id: str, raw_id: Optional[str] = None):
+    def __init__(self, move_id: str, gen: int, raw_id: Optional[str] = None):
         self._id = move_id
         self._base_power_override = None
+        self._gen = gen
+        self._moves_dict = GenData.from_gen(gen).moves
 
         if move_id.startswith("hiddenpower") and raw_id is not None:
             base_power = "".join([c for c in raw_id if c.isdigit()])
@@ -95,31 +91,33 @@ class Move:
         self._current_pp -= 1
 
     @staticmethod
-    def is_id_z(id_) -> bool:
-        if id_.startswith("z") and id_[1:] in MOVES:
+    def is_id_z(id_, gen: int) -> bool:
+        if id_.startswith("z") and id_[1:] in GenData.from_gen(gen).moves:
             return True
-        return "isZ" in MOVES[id_]
+        return "isZ" in GenData.from_gen(gen).moves[id_]
 
     @staticmethod
-    def is_max_move(id_) -> bool:
+    def is_max_move(id_, gen: int) -> bool:
         if id_.startswith("max"):
             return True
-        elif MOVES[id_].get("isNonstandard", None) == "Gigantamax":
+        elif (
+            GenData.from_gen(gen).moves[id_].get("isNonstandard", None) == "Gigantamax"
+        ):
             return True
-        elif MOVES[id_].get("isMax", None) is not None:
+        elif GenData.from_gen(gen).moves[id_].get("isMax", None) is not None:
             return True
         return False
 
     @staticmethod
     @lru_cache(4096)
-    def should_be_stored(move_id: str) -> bool:
+    def should_be_stored(move_id: str, gen: int) -> bool:
         if move_id in SPECIAL_MOVES:
             return False
-        if move_id not in MOVES:
+        if move_id not in GenData.from_gen(gen).moves:
             return False
-        if Move.is_id_z(move_id):
+        if Move.is_id_z(move_id, gen):
             return False
-        if Move.is_max_move(move_id):
+        if Move.is_max_move(move_id, gen):
             return False
         return True
 
@@ -267,10 +265,12 @@ class Move:
         :return: The data entry corresponding to the move
         :rtype: dict
         """
-        if self._id in self._MOVES_DICT:
-            return self._MOVES_DICT[self._id]
-        elif self._id.startswith("z") and self._id[1:] in self._MOVES_DICT:
-            return self._MOVES_DICT[self._id[1:]]
+        if self._id in self._moves_dict:
+            return self._moves_dict[self._id]
+        elif self._id.startswith("z") and self._id[1:] in self._moves_dict:
+            return self._moves_dict[self._id[1:]]
+        elif self._id == "recharge":
+            return {"pp": 1, "type": "normal"}
         else:
             raise ValueError("Unknown move: %s" % self._id)
 
@@ -415,7 +415,7 @@ class Move:
         :return: Whether the move is a z move.
         :rtype: bool
         """
-        return Move.is_id_z(self.id)
+        return Move.is_id_z(self.id, gen=self._gen)
 
     @property
     def max_pp(self) -> int:
@@ -755,31 +755,6 @@ class EmptyMove(Move):
 
     def __deepcopy__(self, memodict={}):
         return EmptyMove(copy.deepcopy(self._id, memodict))
-
-
-class Gen4Move(Move):
-    _MOVES_DICT = GEN_TO_MOVES[4]
-
-
-class Gen5Move(Move):
-    _MOVES_DICT = GEN_TO_MOVES[5]
-
-
-class Gen6Move(Move):
-    _MOVES_DICT = GEN_TO_MOVES[6]
-
-
-class Gen7Move(Move):
-    _MOVES_DICT = GEN_TO_MOVES[7]
-
-
-class Gen8Move(Move):
-    _MOVES_DICT = GEN_TO_MOVES[8]
-
-
-GEN_TO_MOVE_CLASS = {4: Gen4Move, 5: Gen5Move, 6: Gen6Move, 7: Gen7Move, 8: Gen8Move}
-
-SPECIAL_MOVES = {"struggle": Move("struggle"), "recharge": EmptyMove("recharge")}
 
 
 class DynamaxMove(Move):

@@ -4,16 +4,16 @@ from poke_env.player import (
     DoubleBattleOrder,
     ForfeitBattleOrder,
 )
-from poke_env.environment import Move, SPECIAL_MOVES, Pokemon
+from poke_env.environment import Move, EmptyMove, Pokemon
 
 
 def test_recharge_order():
-    recharge = SPECIAL_MOVES["recharge"]
+    recharge = EmptyMove("recharge")
     assert BattleOrder(recharge).message == "/choose move 1"
 
 
 def test_single_orders():
-    move = Move("flamethrower")
+    move = Move("flamethrower", gen=8)
     assert (
         BattleOrder(move).message
         == "/choose move flamethrower"
@@ -24,13 +24,13 @@ def test_single_orders():
 
     assert BattleOrder(move, z_move=True).message == "/choose move flamethrower zmove"
 
-    mon = Pokemon(species="charizard")
+    mon = Pokemon(species="charizard", gen=8)
     assert BattleOrder(mon).message == "/choose switch charizard"
 
 
 def test_double_orders():
-    move = BattleOrder(Move("selfdestruct"), move_target=2)
-    mon = BattleOrder(Pokemon(species="lugia"))
+    move = BattleOrder(Move("selfdestruct", gen=8), move_target=2)
+    mon = BattleOrder(Pokemon(species="lugia", gen=8))
 
     assert (
         DoubleBattleOrder(move, mon).message

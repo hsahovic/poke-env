@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-from poke_env.environment import Move, SPECIAL_MOVES, Pokemon, PokemonType
+from poke_env.environment import Move, Pokemon, PokemonType, SPECIAL_MOVES
 
 
 def test_pokemon_moves():
-    mon = Pokemon(species="charizard")
+    mon = Pokemon(species="charizard", gen=8)
 
     mon._moved("flamethrower")
     assert "flamethrower" in mon.moves
@@ -17,22 +17,22 @@ def test_pokemon_moves():
 
 def test_pokemon_types():
     # single type
-    mon = Pokemon(species="pikachu")
+    mon = Pokemon(species="pikachu", gen=8)
     assert mon.type_1 == PokemonType.ELECTRIC
     assert mon.type_2 is None
 
     # dual type
-    mon = Pokemon(species="garchomp")
+    mon = Pokemon(species="garchomp", gen=8)
     assert mon.type_1 == PokemonType.DRAGON
     assert mon.type_2 == PokemonType.GROUND
 
     # alolan forms
-    mon = Pokemon(species="raichualola")
+    mon = Pokemon(species="raichualola", gen=8)
     assert mon.type_1 == PokemonType.ELECTRIC
     assert mon.type_2 == PokemonType.PSYCHIC
 
     # megas
-    mon = Pokemon(species="altaria")
+    mon = Pokemon(species="altaria", gen=8)
     assert mon.type_1 == PokemonType.DRAGON
     assert mon.type_2 == PokemonType.FLYING
 
@@ -40,13 +40,13 @@ def test_pokemon_types():
     assert mon.type_1 == PokemonType.DRAGON
     assert mon.type_2 == PokemonType.FAIRY
 
-    mon = Pokemon(species="charizard")
+    mon = Pokemon(species="charizard", gen=8)
     mon._mega_evolve("charizarditex")
     assert mon.type_1 == PokemonType.FIRE
     assert mon.type_2 == PokemonType.DRAGON
 
     # primals
-    mon = Pokemon(species="groudon")
+    mon = Pokemon(species="groudon", gen=8)
     assert mon.type_1 == PokemonType.GROUND
     assert mon.type_2 is None
 
@@ -56,24 +56,24 @@ def test_pokemon_types():
 
 
 def test_pokemon_damage_multiplier():
-    mon = Pokemon(species="pikachu")
+    mon = Pokemon(species="pikachu", gen=8)
     assert mon.damage_multiplier(PokemonType.GROUND) == 2
     assert mon.damage_multiplier(PokemonType.ELECTRIC) == 0.5
 
-    mon = Pokemon(species="garchomp")
-    assert mon.damage_multiplier(Move("icebeam")) == 4
-    assert mon.damage_multiplier(Move("dracometeor")) == 2
+    mon = Pokemon(species="garchomp", gen=8)
+    assert mon.damage_multiplier(Move("icebeam", gen=8)) == 4
+    assert mon.damage_multiplier(Move("dracometeor", gen=8)) == 2
 
-    mon = Pokemon(species="linoone")
-    assert mon.damage_multiplier(Move("closecombat")) == 2
+    mon = Pokemon(species="linoone", gen=8)
+    assert mon.damage_multiplier(Move("closecombat", gen=8)) == 2
     assert mon.damage_multiplier(PokemonType.GHOST) == 0
 
-    mon = Pokemon(species="linoone")
-    assert mon.damage_multiplier(SPECIAL_MOVES["recharge"]) == 1
+    mon = Pokemon(species="linoone", gen=8)
+    assert mon.damage_multiplier(Move("recharge", gen=8)) == 1
 
 
 def test_powerherb_ends_move_preparation():
-    mon = Pokemon(species="roserade")
+    mon = Pokemon(species="roserade", gen=8)
     mon.item = "powerherb"
 
     mon._prepare("solarbeam", "talonflame")
@@ -84,7 +84,7 @@ def test_powerherb_ends_move_preparation():
 
 
 def test_protect_counter_interactions():
-    mon = Pokemon(species="xerneas")
+    mon = Pokemon(species="xerneas", gen=8)
     mon._moved("protect", failed=False)
 
     assert mon.protect_counter == 1
@@ -101,7 +101,7 @@ def test_protect_counter_interactions():
 
 
 def test_pokemon_as_strs():
-    mon = Pokemon(species="charizard")
+    mon = Pokemon(species="charizard", gen=8)
     assert str(mon) == mon.__str__() == mon.__repr__()
     assert str(mon) == "charizard (pokemon object) [Active: False, Status: None]"
 
@@ -119,7 +119,7 @@ def test_pokemon_as_strs():
 
 
 def test_pokemon_boosts():
-    mon = Pokemon(species="blastoise")
+    mon = Pokemon(species="blastoise", gen=8)
     assert set(mon.boosts.values()) == {0}
 
     mon._boost("accuracy", 1)

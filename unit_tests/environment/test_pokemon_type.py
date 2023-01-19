@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from poke_env.data import GenData
 from poke_env.environment import PokemonType
 
 import pytest
@@ -22,59 +23,129 @@ def test_existence_of_some_PokemonTypes():
 
 
 def test_damage_multiplier_immunity_simple_PokemonType():
-    assert PokemonType.NORMAL.damage_multiplier(PokemonType.GHOST) == 0
-    assert PokemonType.ELECTRIC.damage_multiplier(PokemonType.GROUND) == 0
+    assert (
+        PokemonType.NORMAL.damage_multiplier(
+            PokemonType.GHOST, type_chart=GenData.from_gen(8).type_chart
+        )
+        == 0
+    )
+    assert (
+        PokemonType.ELECTRIC.damage_multiplier(
+            PokemonType.GROUND, type_chart=GenData.from_gen(8).type_chart
+        )
+        == 0
+    )
 
 
 def test_damage_multiplier_immunity_double_PokemonType():
     assert (
-        PokemonType.NORMAL.damage_multiplier(PokemonType.GHOST, PokemonType.NORMAL) == 0
-    )
-    assert (
-        PokemonType.NORMAL.damage_multiplier(PokemonType.NORMAL, PokemonType.GHOST) == 0
-    )
-
-    assert (
-        PokemonType.ELECTRIC.damage_multiplier(PokemonType.GROUND, PokemonType.WATER)
+        PokemonType.NORMAL.damage_multiplier(
+            PokemonType.GHOST,
+            PokemonType.NORMAL,
+            type_chart=GenData.from_gen(8).type_chart,
+        )
         == 0
     )
     assert (
-        PokemonType.ELECTRIC.damage_multiplier(PokemonType.WATER, PokemonType.GROUND)
+        PokemonType.NORMAL.damage_multiplier(
+            PokemonType.NORMAL,
+            PokemonType.GHOST,
+            type_chart=GenData.from_gen(8).type_chart,
+        )
+        == 0
+    )
+
+    assert (
+        PokemonType.ELECTRIC.damage_multiplier(
+            PokemonType.GROUND,
+            PokemonType.WATER,
+            type_chart=GenData.from_gen(8).type_chart,
+        )
+        == 0
+    )
+    assert (
+        PokemonType.ELECTRIC.damage_multiplier(
+            PokemonType.WATER,
+            PokemonType.GROUND,
+            type_chart=GenData.from_gen(8).type_chart,
+        )
         == 0
     )
 
 
 def test_damage_multiplier_weakness_simple_PokemonType():
-    assert PokemonType.BUG.damage_multiplier(PokemonType.FLYING) == 0.5
+    assert (
+        PokemonType.BUG.damage_multiplier(
+            PokemonType.FLYING, type_chart=GenData.from_gen(8).type_chart
+        )
+        == 0.5
+    )
 
 
 def test_damage_multiplier_weakness_double_PokemonType():
     assert (
-        PokemonType.BUG.damage_multiplier(PokemonType.FLYING, PokemonType.FIGHTING)
+        PokemonType.BUG.damage_multiplier(
+            PokemonType.FLYING,
+            PokemonType.FIGHTING,
+            type_chart=GenData.from_gen(8).type_chart,
+        )
         == 0.25
     )
     assert (
-        PokemonType.BUG.damage_multiplier(PokemonType.FIGHTING, PokemonType.FLYING)
+        PokemonType.BUG.damage_multiplier(
+            PokemonType.FIGHTING,
+            PokemonType.FLYING,
+            type_chart=GenData.from_gen(8).type_chart,
+        )
         == 0.25
     )
 
 
 def test_damage_multiplier_strength_simple_PokemonType():
-    assert PokemonType.WATER.damage_multiplier(PokemonType.FIRE) == 2
+    assert (
+        PokemonType.WATER.damage_multiplier(
+            PokemonType.FIRE, type_chart=GenData.from_gen(8).type_chart
+        )
+        == 2
+    )
 
 
 def test_damage_multiplier_strength_double_PokemonType():
     assert (
-        PokemonType.WATER.damage_multiplier(PokemonType.FIRE, PokemonType.GROUND) == 4
+        PokemonType.WATER.damage_multiplier(
+            PokemonType.FIRE,
+            PokemonType.GROUND,
+            type_chart=GenData.from_gen(8).type_chart,
+        )
+        == 4
     )
     assert (
-        PokemonType.WATER.damage_multiplier(PokemonType.GROUND, PokemonType.FIRE) == 4
+        PokemonType.WATER.damage_multiplier(
+            PokemonType.GROUND,
+            PokemonType.FIRE,
+            type_chart=GenData.from_gen(8).type_chart,
+        )
+        == 4
     )
 
 
 def test_damage_multiplier_compensating_double_PokemonType():
-    assert PokemonType.WATER.damage_multiplier(PokemonType.FIRE, PokemonType.GRASS) == 1
-    assert PokemonType.WATER.damage_multiplier(PokemonType.GRASS, PokemonType.FIRE) == 1
+    assert (
+        PokemonType.WATER.damage_multiplier(
+            PokemonType.FIRE,
+            PokemonType.GRASS,
+            type_chart=GenData.from_gen(8).type_chart,
+        )
+        == 1
+    )
+    assert (
+        PokemonType.WATER.damage_multiplier(
+            PokemonType.GRASS,
+            PokemonType.FIRE,
+            type_chart=GenData.from_gen(8).type_chart,
+        )
+        == 1
+    )
 
 
 def test_types_str():

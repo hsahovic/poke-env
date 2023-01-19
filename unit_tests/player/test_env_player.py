@@ -73,7 +73,6 @@ class AsyncMock(unittest.mock.MagicMock):
 )
 @patch("poke_env.player.openai_api._AsyncQueue.async_put", new_callable=AsyncMock)
 def test_choose_move(queue_put_mock, queue_get_mock):
-    print("ciao")
     player = CustomEnvPlayer(
         None,
         player_configuration=player_configuration,
@@ -82,8 +81,8 @@ def test_choose_move(queue_put_mock, queue_get_mock):
         battle_format="gen7randombattles",
         start_challenging=False,
     )
-    battle = Battle("bat1", player.username, player.logger)
-    battle._available_moves = {Move("flamethrower")}
+    battle = Battle("bat1", player.username, player.logger, gen=8)
+    battle._available_moves = {Move("flamethrower", gen=8)}
     message = player.agent.choose_move(battle)
 
     assert isawaitable(message)
@@ -92,7 +91,7 @@ def test_choose_move(queue_put_mock, queue_get_mock):
 
     assert message.message == "/choose move flamethrower"
 
-    battle._available_moves = {Pokemon(species="charizard")}
+    battle._available_moves = {Pokemon(species="charizard", gen=8)}
 
     message = player.agent.choose_move(battle)
 
@@ -111,10 +110,10 @@ def test_reward_computing_helper():
         start_listening=False,
         battle_format="gen7randombattles",
     )
-    battle_1 = Battle("bat1", player.username, player.logger)
-    battle_2 = Battle("bat2", player.username, player.logger)
-    battle_3 = Battle("bat3", player.username, player.logger)
-    battle_4 = Battle("bat4", player.username, player.logger)
+    battle_1 = Battle("bat1", player.username, player.logger, gen=8)
+    battle_2 = Battle("bat2", player.username, player.logger, gen=8)
+    battle_3 = Battle("bat3", player.username, player.logger, gen=8)
+    battle_4 = Battle("bat4", player.username, player.logger, gen=8)
 
     assert (
         player.reward_computing_helper(
@@ -170,8 +169,8 @@ def test_reward_computing_helper():
         == -5
     )
 
-    battle_3._team = {i: Pokemon(species="slaking") for i in range(4)}
-    battle_3._opponent_team = {i: Pokemon(species="slowbro") for i in range(3)}
+    battle_3._team = {i: Pokemon(species="slaking", gen=8) for i in range(4)}
+    battle_3._opponent_team = {i: Pokemon(species="slowbro", gen=8) for i in range(3)}
 
     battle_3._team[0].status = Status["FRZ"]
     battle_3._team[1]._current_hp = 100
@@ -321,11 +320,11 @@ def test_action_to_move(z_moves_mock):
                 return None
 
         p = CustomEnvClass(None, start_listening=False, start_challenging=False)
-        battle = Battle("bat1", p.username, p.logger)
+        battle = Battle("bat1", p.username, p.logger, gen=8)
         assert p.action_to_move(-1, battle).message == "/forfeit"
-        battle._available_moves = [Move("flamethrower")]
+        battle._available_moves = [Move("flamethrower", gen=8)]
         assert p.action_to_move(0, battle).message == "/choose move flamethrower"
-        battle._available_switches = [Pokemon(species="charizard")]
+        battle._available_switches = [Pokemon(species="charizard", gen=8)]
         assert (
             p.action_to_move(
                 4
@@ -346,10 +345,10 @@ def test_action_to_move(z_moves_mock):
             battle._can_mega_evolve = False
         if has_z_moves:
             battle._can_z_move = True
-            active_pokemon = Pokemon(species="charizard")
+            active_pokemon = Pokemon(species="charizard", gen=8)
             active_pokemon._active = True
             battle._team = {"charizard": active_pokemon}
-            z_moves_mock.return_value = [Move("flamethrower")]
+            z_moves_mock.return_value = [Move("flamethrower", gen=8)]
             assert (
                 p.action_to_move(4, battle).message == "/choose move flamethrower zmove"
             )

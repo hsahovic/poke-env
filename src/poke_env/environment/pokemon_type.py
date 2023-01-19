@@ -6,8 +6,7 @@ PokemonTypes are mainly associated with Pokemons and moves.
 from enum import auto
 from enum import Enum
 from enum import unique
-from typing import Optional
-from poke_env.data.pokemon_data import TYPE_CHART
+from typing import Dict, Optional
 
 
 @unique
@@ -41,7 +40,11 @@ class PokemonType(Enum):
         return f"{self.name} (pokemon type) object"
 
     def damage_multiplier(
-        self, type_1: "PokemonType", type_2: Optional["PokemonType"] = None
+        self,
+        type_1: "PokemonType",
+        type_2: Optional["PokemonType"] = None,
+        *,
+        type_chart: Dict["PokemonType", Dict["PokemonType", float]],
     ) -> float:
         """Computes the damage multiplier from this type on a pokemon with types `type_1`
         and, optionally, `type_2`.
@@ -54,9 +57,9 @@ class PokemonType(Enum):
             and, optionally, `type_2`.
         :rtype: float
         """
-        damage_multiplier = TYPE_CHART[self.name][type_1.name]
+        damage_multiplier = type_chart[type_1.name][self.name]
         if type_2 is not None:
-            return damage_multiplier * TYPE_CHART[self.name][type_2.name]
+            return damage_multiplier * type_chart[type_2.name][self.name]
         return damage_multiplier
 
     @staticmethod

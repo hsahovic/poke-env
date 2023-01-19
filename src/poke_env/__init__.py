@@ -3,7 +3,6 @@
 """
 import logging
 
-import poke_env.data.pokemon_data as pokemon_data
 import poke_env.environment as environment
 import poke_env.exceptions as exceptions
 import poke_env.player as player
@@ -11,26 +10,7 @@ import poke_env.player_configuration as player_configuration
 import poke_env.server_configuration as server_configuration
 import poke_env.teambuilder as teambuilder
 import poke_env.stats as stats
-from poke_env.data.pokemon_data import (
-    GEN4_MOVES,
-    GEN4_POKEDEX,
-    GEN5_MOVES,
-    GEN5_POKEDEX,
-    GEN6_MOVES,
-    GEN6_POKEDEX,
-    GEN7_MOVES,
-    GEN7_POKEDEX,
-    GEN8_MOVES,
-    GEN8_POKEDEX,
-    GEN_TO_MOVES,
-    GEN_TO_POKEDEX,
-    MOVES,
-    NATURES,
-    POKEDEX,
-    TYPE_CHART,
-    UNKNOWN_ITEM,
-    to_id_str,
-)
+from poke_env.data import to_id_str, gen_data
 from poke_env.exceptions import ShowdownException
 from poke_env.player_configuration import PlayerConfiguration
 from poke_env.server_configuration import (
@@ -50,18 +30,6 @@ __logger.addHandler(__stream_handler)
 logging.addLevelName(25, "PS_ERROR")
 
 __all__ = [
-    "GEN4_MOVES",
-    "GEN4_POKEDEX",
-    "GEN5_MOVES",
-    "GEN5_POKEDEX",
-    "GEN6_MOVES",
-    "GEN6_POKEDEX",
-    "GEN7_MOVES",
-    "GEN7_POKEDEX",
-    "GEN8_MOVES",
-    "GEN8_POKEDEX",
-    "GEN_TO_MOVES",
-    "GEN_TO_POKEDEX",
     "LocalhostServerConfiguration",
     "MOVES",
     "NATURES",
@@ -70,16 +38,15 @@ __all__ = [
     "ServerConfiguration",
     "ShowdownException",
     "ShowdownServerConfiguration",
-    "TYPE_CHART",
     "UNKNOWN_ITEM",
     "compute_raw_stats",
-    "pokemon_data",
     "environment",
     "exceptions",
+    "gen_data",
     "player",
     "player_configuration",
     "server_configuration",
+    "stats",
     "teambuilder",
     "to_id_str",
-    "stats",
 ]
