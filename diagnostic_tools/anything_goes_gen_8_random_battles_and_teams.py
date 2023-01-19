@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """This script can be used to run anything goes gen 8 battles with random teams.
 This is especially useful for debugging / testing purposes.
 

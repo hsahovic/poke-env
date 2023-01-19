@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from poke_env.environment import Move, Pokemon, PokemonType
 
 

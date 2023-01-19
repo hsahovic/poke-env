@@ -53,8 +53,7 @@ Our player will play the ``gen8randombattle`` format. We can therefore inherit f
 
 .. code-block:: python
 
-    # -*- coding: utf-8 -*-
-    import numpy as np
+        import numpy as np
     from gym.spaces import Space, Box
     from poke_env.player import Gen8EnvSinglePlayer
 

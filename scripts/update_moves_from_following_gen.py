@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Move indexes to gen:
     Gen 1: 001 - 165

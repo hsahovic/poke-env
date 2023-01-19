@@ -198,8 +198,7 @@ The complete example looks like that:
 
 .. code-block:: python
 
-    # -*- coding: utf-8 -*-
-    import asyncio
+        import asyncio
     import numpy as np
 
     from poke_env.player import RandomPlayer

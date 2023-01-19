@@ -75,8 +75,7 @@ A complete example source code is:
 
 .. code-block:: python
 
-    # -*- coding: utf-8 -*-
-    import asyncio
+        import asyncio
 
     from poke_env.player import RandomPlayer
     from poke_env import PlayerConfiguration, ShowdownServerConfiguration

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # self-play training is a planned feature for poke-env
 # This script illustrates a very rough approach that can currently be used to train using self-play
 # Don't hesitate to open an issue if things seem not to be working

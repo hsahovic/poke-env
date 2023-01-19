@@ -21,8 +21,7 @@ Let's start by defining a ``main`` and some boilerplate code to run it with ``as
 
 .. code-block:: python
 
-    # -*- coding: utf-8 -*-
-    import asyncio
+        import asyncio
 
     async def main():
         pass
