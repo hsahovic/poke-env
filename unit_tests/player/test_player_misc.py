@@ -42,7 +42,7 @@ def test_player_default_order():
 def test_random_teampreview():
     player = SimplePlayer()
     logger = MagicMock()
-    battle = Battle("tag", "username", logger)
+    battle = Battle("tag", "username", logger, 8)
 
     battle._team = [None for _ in range(6)]
 
@@ -90,7 +90,7 @@ def test_random_teampreview():
 @patch("poke_env.player.player.random.random")
 def test_choose_random_move_doubles(pseudo_random, example_doubles_request):
     logger = MagicMock()
-    battle = DoubleBattle("tag", "username", logger)
+    battle = DoubleBattle("tag", "username", logger, 8)
     player = RandomPlayer()
     battle._parse_request(example_doubles_request)
     battle._switch("p2a: Tyranitar", "Tyranitar, L50, M", "48/48")
@@ -216,19 +216,21 @@ class AsyncMock(MagicMock):
 
 
 async def return_move():
-    return BattleOrder(Move("bite"))
+    return BattleOrder(Move("bite", gen=8))
 
 
 @pytest.mark.asyncio
 async def test_awaitable_move():
     player = SimplePlayer(start_listening=False)
-    battle = Battle("bat1", player.username, player.logger)
+    battle = Battle("bat1", player.username, player.logger, 8)
     battle._teampreview = False
     with patch.object(
         player, "_send_message", new_callable=AsyncMock
     ) as send_message_mock:
         with patch.object(
-            player, "choose_move", return_value=BattleOrder(Move("tackle"))
+            player,
+            "choose_move",
+            return_value=BattleOrder(Move("tackle", gen=8)),
         ):
             await player._handle_battle_request(battle)
             send_message_mock.assert_called_with("/choose move tackle", "bat1")

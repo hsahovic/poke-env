@@ -6,14 +6,13 @@ from typing import Optional
 from typing import Tuple
 from typing import Union
 
-from poke_env.data.pokemon_data import GEN_TO_POKEDEX, UNKNOWN_ITEM
 from poke_env.environment.effect import Effect
 from poke_env.environment.pokemon_gender import PokemonGender
 from poke_env.environment.pokemon_type import PokemonType
-from poke_env.environment.move import Move, GEN_TO_MOVE_CLASS, SPECIAL_MOVES
+from poke_env.environment.move import Move, SPECIAL_MOVES
 from poke_env.environment.status import Status
 from poke_env.environment.z_crystal import Z_CRYSTAL
-from poke_env.stats import to_id_str
+from poke_env.data import GenData, to_id_str
 
 
 class Pokemon:
@@ -25,6 +24,7 @@ class Pokemon:
         "_base_stats",
         "_boosts",
         "_current_hp",
+        "_data",
         "_effects",
         "_first_turn",
         "_gender",
@@ -50,16 +50,17 @@ class Pokemon:
         "_weightkg",
     )
 
-    MOVE_CLASS = GEN_TO_MOVE_CLASS[8]
-    _POKEDEX_DICT = GEN_TO_POKEDEX[8]
-
     def __init__(
         self,
+        gen: int,
         *,
         species: Optional[str] = None,
         request_pokemon: Optional[Dict[str, Any]] = None,
         details: Optional[str] = None,
     ) -> None:
+        # Base data
+        self._data = GenData.from_gen(gen)
+
         # Species related attributes
         self._base_stats: Dict[str, int]
         self._heightm: int
@@ -93,7 +94,7 @@ class Pokemon:
         self._current_hp: int = 0
         self._effects: Dict[Effect, int] = {}
         self._first_turn: bool = False
-        self._item: Optional[str] = UNKNOWN_ITEM
+        self._item: Optional[str] = self._data.UNKNOWN_ITEM
         self._last_request: dict = {}
         self._last_details: str = ""
         self._must_recharge = False
@@ -127,13 +128,13 @@ class Pokemon:
 
     def _add_move(self, move_id: str, use: bool = False) -> Optional[Move]:
         """Store the move if applicable."""
-        id_ = self.MOVE_CLASS.retrieve_id(move_id)
+        id_ = Move.retrieve_id(move_id)
 
-        if not self.MOVE_CLASS.should_be_stored(id_):
+        if not Move.should_be_stored(id_, self._data.gen):
             return
 
         if id_ not in self._moves:
-            move = self.MOVE_CLASS(move_id=id_, raw_id=move_id)
+            move = Move(move_id=id_, raw_id=move_id, gen=self._data.gen)
             self._moves[id_] = move
         if use:
             self._moves[id_].use()
@@ -224,7 +225,7 @@ class Pokemon:
             if not species_id_str.endswith("mega")
             else species_id_str
         )
-        if mega_species in self._POKEDEX_DICT:
+        if mega_species in self._data.pokedex:
             self._update_from_pokedex(mega_species, store_species=False)
         elif stone[-1] in "XYxy":
             mega_species = mega_species + stone[-1].lower()
@@ -264,7 +265,7 @@ class Pokemon:
     def _prepare(self, move, target):
         self._moved(move, use=False)
 
-        move_id = self.MOVE_CLASS.retrieve_id(move)
+        move_id = Move.retrieve_id(move)
         move = self.moves[move_id]
 
         self._preparing_move = move
@@ -350,7 +351,7 @@ class Pokemon:
 
     def _update_from_pokedex(self, species: str, store_species: bool = True) -> None:
         species = to_id_str(species)
-        dex_entry = self._POKEDEX_DICT[species]
+        dex_entry = self._data.pokedex[species]
         if store_species:
             self._species = species
         self._base_stats = dex_entry["baseStats"]
@@ -437,8 +438,7 @@ class Pokemon:
 
         if len(self._moves) > 4:
             moves_to_keep = {
-                self.MOVE_CLASS.retrieve_id(move_id)
-                for move_id in request_pokemon["moves"]
+                Move.retrieve_id(move_id) for move_id in request_pokemon["moves"]
             }
             self._moves = {
                 move_id: move
@@ -475,7 +475,7 @@ class Pokemon:
                 else:
                     moves.append(self.moves[move])
             elif move in SPECIAL_MOVES:
-                moves.append(SPECIAL_MOVES[move])
+                moves.append(Move(move, gen=self._data.gen))
             elif (
                 move == "hiddenpower"
                 and len([m for m in self.moves if m.startswith("hiddenpower")]) == 1
@@ -497,7 +497,7 @@ class Pokemon:
                     "metronome, mefirst, mirrormove, assist, transform or mimic. Got"
                     f" {self.moves}"
                 )
-                moves.append(self.MOVE_CLASS(move))
+                moves.append(Move(move, gen=self._data.gen))
         return moves
 
     def damage_multiplier(self, type_or_move: Union[PokemonType, Move]) -> float:
@@ -515,7 +515,9 @@ class Pokemon:
         if isinstance(type_or_move, Move):
             type_or_move = type_or_move.type
         if isinstance(type_or_move, PokemonType):
-            return type_or_move.damage_multiplier(self._type_1, self._type_2)
+            return type_or_move.damage_multiplier(
+                self._type_1, self._type_2, type_chart=self._data.type_chart
+            )
         # This can happen with special moves, which do not necessarily have a type
         return 1
 
@@ -832,40 +834,3 @@ class Pokemon:
         :rtype: float
         """
         return self._weightkg
-
-
-# Gen specific classes
-
-
-class Gen4Pokemon(Pokemon):
-    MOVE_CLASS = GEN_TO_MOVE_CLASS[4]
-    _POKEDEX_DICT = GEN_TO_POKEDEX[4]
-
-
-class Gen5Pokemon(Pokemon):
-    MOVE_CLASS = GEN_TO_MOVE_CLASS[5]
-    _POKEDEX_DICT = GEN_TO_POKEDEX[5]
-
-
-class Gen6Pokemon(Pokemon):
-    MOVE_CLASS = GEN_TO_MOVE_CLASS[6]
-    _POKEDEX_DICT = GEN_TO_POKEDEX[6]
-
-
-class Gen7Pokemon(Pokemon):
-    MOVE_CLASS = GEN_TO_MOVE_CLASS[7]
-    _POKEDEX_DICT = GEN_TO_POKEDEX[7]
-
-
-class Gen8Pokemon(Pokemon):
-    MOVE_CLASS = GEN_TO_MOVE_CLASS[8]
-    _POKEDEX_DICT = GEN_TO_POKEDEX[8]
-
-
-GEN_TO_POKEMON = {
-    4: Gen4Pokemon,
-    5: Gen5Pokemon,
-    6: Gen6Pokemon,
-    7: Gen7Pokemon,
-    8: Gen8Pokemon,
-}

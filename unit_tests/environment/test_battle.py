@@ -3,16 +3,11 @@ import pytest
 
 from unittest.mock import MagicMock
 
-from poke_env import POKEDEX, UNKNOWN_ITEM
+from poke_env.data import GenData
 from poke_env.environment import (
     Battle,
     Effect,
     Field,
-    Gen4Battle,
-    Gen5Battle,
-    Gen6Battle,
-    Gen7Battle,
-    Gen8Battle,
     PokemonType,
     SideCondition,
     Status,
@@ -22,7 +17,7 @@ from poke_env.environment import (
 
 def test_battle_get_pokemon():
     logger = MagicMock()
-    battle = Battle("tag", "username", logger)
+    battle = Battle("tag", "username", logger, gen=8)
 
     battle.get_pokemon("p2: azumarill", force_self_team=True)
     assert "p2: azumarill" in battle.team
@@ -63,7 +58,7 @@ def test_battle_get_pokemon():
 
 def test_battle_side_start_end():
     logger = MagicMock()
-    battle = Battle("tag", "username", logger)
+    battle = Battle("tag", "username", logger, gen=8)
     battle._player_role = "p1"
 
     assert not battle.side_conditions
@@ -90,7 +85,7 @@ def test_battle_side_start_end():
 
 def test_battle_field_interactions():
     logger = MagicMock()
-    battle = Battle("tag", "username", logger)
+    battle = Battle("tag", "username", logger, gen=8)
 
     assert not battle.fields
 
@@ -112,7 +107,7 @@ def test_battle_field_interactions():
 
 def test_battle_weather_interactions():
     logger = MagicMock()
-    battle = Battle("tag", "username", logger)
+    battle = Battle("tag", "username", logger, gen=8)
 
     assert battle.weather == {}
 
@@ -128,7 +123,7 @@ def test_battle_weather_interactions():
 
 def test_battle_player_role_interaction():
     logger = MagicMock()
-    battle = Battle("tag", "username", logger)
+    battle = Battle("tag", "username", logger, gen=8)
 
     battle._parse_message(["", "player", "p4", "username", "", ""])
     assert battle._player_role == "p4"
@@ -136,7 +131,7 @@ def test_battle_player_role_interaction():
 
 def test_stackable_side_start():
     logger = MagicMock()
-    battle = Battle("tag", "username", logger)
+    battle = Battle("tag", "username", logger, gen=8)
 
     battle._parse_message(["", "player", "p1", "username", "", ""])
     battle._parse_message(["", "-sidestart", "p1: username", "move: Stealth Rock"])
@@ -158,14 +153,14 @@ def test_stackable_side_start():
 
 def test_battle_tag():
     logger = MagicMock()
-    battle = Battle("tag", "username", logger)
+    battle = Battle("tag", "username", logger, gen=8)
 
     assert battle.battle_tag == "tag"
 
 
 def test_battle_request_parsing(example_request):
     logger = MagicMock()
-    battle = Battle("tag", "username", logger)
+    battle = Battle("tag", "username", logger, gen=8)
 
     battle._parse_request(example_request)
 
@@ -205,7 +200,7 @@ def test_battle_request_parsing(example_request):
 
 def test_battle_request_and_interactions(example_request):
     logger = MagicMock()
-    battle = Battle("tag", "username", logger)
+    battle = Battle("tag", "username", logger, gen=8)
 
     battle._parse_request(example_request)
     mon = battle.active_pokemon
@@ -380,7 +375,10 @@ def test_battle_request_and_interactions(example_request):
 
     battle._parse_message(["", "-transform", "p1: Groudon", "p2: Necrozma"])
     assert battle.opponent_active_pokemon.species == "groudon"
-    assert battle.opponent_active_pokemon.base_stats == POKEDEX["necrozma"]["baseStats"]
+    assert (
+        battle.opponent_active_pokemon.base_stats
+        == GenData.from_gen(8).pokedex["necrozma"]["baseStats"]
+    )
     assert battle.opponent_active_pokemon.boosts == battle.active_pokemon.boosts
 
     battle._parse_message(["", "switch", "p1: Sunflora", "Sunflora, L82", "100/100"])
@@ -527,14 +525,14 @@ def test_battle_request_and_interactions(example_request):
     assert battle.active_pokemon.ability == "waterabsorb"
     battle.active_pokemon._ability = None
 
-    battle.active_pokemon.item = UNKNOWN_ITEM
+    battle.active_pokemon.item = GenData.UNKNOWN_ITEM
     battle._parse_message(
         ["", "-heal", "p2a: Necrozma", "200/265", "[from] item: Leftovers"]
     )
     assert battle.active_pokemon.item == "leftovers"
     battle.active_pokemon.item = None
 
-    battle.opponent_active_pokemon.item = UNKNOWN_ITEM
+    battle.opponent_active_pokemon.item = GenData.UNKNOWN_ITEM
     battle._parse_message(
         ["", "-heal", "p1a: Groudon", "200/265", "[from] item: Leftovers"]
     )
@@ -550,7 +548,7 @@ def test_battle_request_and_interactions(example_request):
 
 def test_end_illusion():
     logger = MagicMock()
-    battle = Battle("tag", "username", logger)
+    battle = Battle("tag", "username", logger, gen=8)
     empty_boosts = {
         "accuracy": 0,
         "atk": 0,
@@ -587,7 +585,7 @@ def test_end_illusion():
 
 def test_toxic_counter(example_request):
     logger = MagicMock()
-    battle = Battle("tag", "username", logger)
+    battle = Battle("tag", "username", logger, gen=8)
 
     battle._parse_request(example_request)
     battle._parse_message(["", "-status", "p2a: Venusaur", "tox"])
@@ -625,7 +623,7 @@ def test_toxic_counter(example_request):
 
 def test_sleep_counter(example_request):
     logger = MagicMock()
-    battle = Battle("tag", "username", logger)
+    battle = Battle("tag", "username", logger, gen=8)
 
     battle._parse_request(example_request)
     battle._parse_message(["", "-status", "p2a: Venusaur", "slp"])
@@ -666,7 +664,7 @@ def test_sleep_counter(example_request):
 
 def test_rules_are_tracked():
     logger = MagicMock()
-    battle = Battle("tag", "username", logger)
+    battle = Battle("tag", "username", logger, gen=8)
 
     battle._parse_message(["", "rule", "hello"])
     battle._parse_message(["", "rule", "hi"])
@@ -677,7 +675,7 @@ def test_rules_are_tracked():
 
 def test_field_terrain_interactions():
     logger = MagicMock()
-    battle = Battle("tag", "username", logger)
+    battle = Battle("tag", "username", logger, gen=8)
 
     battle._field_start("electricterrain")
     assert battle.fields == {Field.ELECTRIC_TERRAIN: 0}
@@ -693,33 +691,3 @@ def test_field_terrain_interactions():
 
     battle._field_start("psychicterrain")
     assert battle.fields == {Field.GRAVITY: 2, Field.PSYCHIC_TERRAIN: 3}
-
-
-def test_battle_from_format():
-    assert isinstance(
-        Battle.from_format("gen1ou", "battle", "username", None), Gen4Battle
-    )
-    assert isinstance(
-        Battle.from_format("gen2randombattle", "battle", "username", None), Gen4Battle
-    )
-    assert isinstance(
-        Battle.from_format("gen3uber", "battle", "username", None), Gen4Battle
-    )
-    assert isinstance(
-        Battle.from_format("gen4ou", "battle", "username", None), Gen4Battle
-    )
-    assert isinstance(
-        Battle.from_format("gen5randombattle", "battle", "username", None), Gen5Battle
-    )
-    assert isinstance(
-        Battle.from_format("gen6ou", "battle", "username", None), Gen6Battle
-    )
-    assert isinstance(
-        Battle.from_format("gen7randombattle", "battle", "username", None), Gen7Battle
-    )
-    assert isinstance(
-        Battle.from_format("gen8doubleou", "battle", "username", None), Gen8Battle
-    )
-    assert isinstance(
-        Battle.from_format("gen9doubleou", "battle", "username", None), Gen4Battle
-    )

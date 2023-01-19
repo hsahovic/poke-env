@@ -6,7 +6,7 @@ import math
 
 from typing import List
 
-from poke_env.data.pokemon_data import POKEDEX, NATURES, to_id_str  # noqa: F401
+from poke_env.data import GenData  # noqa: F401
 
 STATS_TO_IDX = {
     "hp": 0,
@@ -49,7 +49,7 @@ def _raw_hp(base: int, ev: int, iv: int, level: int) -> int:
 
 
 def compute_raw_stats(
-    species: str, evs: List[int], ivs: List[int], level: int, nature: str
+    species: str, evs: List[int], ivs: List[int], level: int, nature: str, data: GenData
 ) -> List[int]:
     """Converts to raw stats
     :param species: pokemon species
@@ -64,11 +64,11 @@ def compute_raw_stats(
     assert len(ivs) == 6
 
     base_stats = [0] * 6
-    for stat, value in POKEDEX[species]["baseStats"].items():
+    for stat, value in data.pokedex[species]["baseStats"].items():
         base_stats[STATS_TO_IDX[stat]] = value
 
     nature_multiplier = [1.0] * 6
-    for stat, multiplier in NATURES[nature].items():
+    for stat, multiplier in data.natures[nature].items():
         if stat != "num":
             nature_multiplier[STATS_TO_IDX[stat]] = multiplier
 

@@ -11,19 +11,16 @@ from typing import Set
 from typing import Tuple
 from typing import Union
 
-from poke_env.data.pokemon_data import _REPLAY_TEMPLATE
+from poke_env.data import _REPLAY_TEMPLATE, GenData, to_id_str
 from poke_env.environment.field import Field
-from poke_env.environment.pokemon import Pokemon, GEN_TO_POKEMON
+from poke_env.environment.pokemon import Pokemon
 from poke_env.environment.side_condition import STACKABLE_CONDITIONS, SideCondition
 from poke_env.environment.weather import Weather
-from poke_env.stats import to_id_str
 
 import os
 
 
 class AbstractBattle(ABC):
-
-    POKEMON_CLASS = GEN_TO_POKEMON[8]
 
     MESSAGES_TO_IGNORE = {
         "-anim",
@@ -124,7 +121,11 @@ class AbstractBattle(ABC):
         username: str,
         logger: Logger,
         save_replays: Union[str, bool],
+        gen: int,
     ):
+        # Load data
+        self._data = GenData.from_gen(gen)
+
         # Utils attributes
         self._battle_tag: str = battle_tag
         self._format: Optional[str] = None
@@ -220,12 +221,12 @@ class AbstractBattle(ABC):
             )
 
         if request:
-            team[identifier] = self.POKEMON_CLASS(request_pokemon=request)
+            team[identifier] = Pokemon(request_pokemon=request, gen=self._data.gen)
         elif details:
-            team[identifier] = self.POKEMON_CLASS(details=details)
+            team[identifier] = Pokemon(details=details, gen=self._data.gen)
         else:
             species = identifier[4:]
-            team[identifier] = self.POKEMON_CLASS(species=species)
+            team[identifier] = Pokemon(species=species, gen=self._data.gen)
 
         return team[identifier]
 
@@ -741,7 +742,7 @@ class AbstractBattle(ABC):
 
     def _register_teampreview_pokemon(self, player: str, details: str):
         if player != self._player_role:
-            mon = self.POKEMON_CLASS(details=details)
+            mon = Pokemon(details=details, gen=self._data.gen)
             self._teampreview_opponent_team.add(mon)
 
     def _side_end(self, side, condition):

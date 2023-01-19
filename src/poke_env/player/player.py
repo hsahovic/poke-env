@@ -38,7 +38,7 @@ from poke_env.server_configuration import LocalhostServerConfiguration
 from poke_env.server_configuration import ServerConfiguration
 from poke_env.teambuilder.teambuilder import Teambuilder
 from poke_env.teambuilder.constant_teambuilder import ConstantTeambuilder
-from poke_env.stats import to_id_str
+from poke_env.data import GenData, to_id_str
 
 
 class Player(PlayerNetwork, ABC):
@@ -168,21 +168,24 @@ class Player(PlayerNetwork, ABC):
             if battle_tag in self._battles:
                 return self._battles[battle_tag]
             else:
+                gen = GenData.from_format(self._format).gen
                 if self.format_is_doubles:
                     battle = DoubleBattle(
                         battle_tag=battle_tag,
                         username=self.username,
                         logger=self.logger,
                         save_replays=self._save_replays,
+                        gen=gen,
                     )
                 else:
-                    battle = Battle.from_format(
-                        format_=self._format,
+                    battle = Battle(
                         battle_tag=battle_tag,
                         username=self.username,
                         logger=self.logger,
                         save_replays=self._save_replays,
+                        gen=gen,
                     )
+
                 await self._battle_count_queue.put(None)
                 if battle_tag in self._battles:
                     self._battle_count_queue.get()

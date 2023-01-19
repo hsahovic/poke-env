@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import copy
 
-from poke_env import MOVES
+from poke_env.data import GenData
 from poke_env.environment import (
     EmptyMove,
     Field,
@@ -14,15 +14,15 @@ from poke_env.environment import (
 
 
 def move_generator():
-    for move in MOVES:
-        yield Move(move)
-        yield Move("z" + move)
+    for move in GenData.from_gen(8).moves:
+        yield Move(move, gen=8)
+        yield Move("z" + move, gen=8)
 
 
 def test_accuracy():
-    volt_thunderbolt = Move("10000000voltthunderbolt")
-    absorb = Move("absorb")
-    aeroblast = Move("aeroblast")
+    volt_thunderbolt = Move("10000000voltthunderbolt", gen=8)
+    absorb = Move("absorb", gen=8)
+    aeroblast = Move("aeroblast", gen=8)
 
     assert volt_thunderbolt.accuracy == 1
     assert absorb.accuracy == 1
@@ -35,13 +35,13 @@ def test_accuracy():
 
 def test_all_moves_instanciate():
     for move in move_generator():
-        move_from_id = Move(move_id=move.id)
+        move_from_id = Move(move_id=move.id, gen=8)
         assert str(move) == str(move_from_id)
 
 
 def test_boosts():
-    sharpen = Move("sharpen")
-    flame_thrower = Move("flamethrower")
+    sharpen = Move("sharpen", gen=8)
+    flame_thrower = Move("flamethrower", gen=8)
 
     assert flame_thrower.boosts is None
     assert sharpen.boosts == {"atk": 1}
@@ -51,7 +51,7 @@ def test_boosts():
 
 
 def test_can_z_move():
-    flame_thrower = Move("flamethrower")
+    flame_thrower = Move("flamethrower", gen=8)
 
     assert flame_thrower.can_z_move is True
 
@@ -60,9 +60,9 @@ def test_can_z_move():
 
 
 def test_category():
-    flame_thrower = Move("flamethrower")
-    close_combat = Move("closecombat")
-    protect = Move("protect")
+    flame_thrower = Move("flamethrower", gen=8)
+    close_combat = Move("closecombat", gen=8)
+    protect = Move("protect", gen=8)
 
     assert flame_thrower.category == MoveCategory["SPECIAL"]
     assert close_combat.category == MoveCategory["PHYSICAL"]
@@ -73,8 +73,8 @@ def test_category():
 
 
 def test_crit_ratio():
-    aeroblast = Move("aeroblast")
-    flame_thrower = Move("flamethrower")
+    aeroblast = Move("aeroblast", gen=8)
+    flame_thrower = Move("flamethrower", gen=8)
 
     assert aeroblast.crit_ratio == 2
     assert flame_thrower.crit_ratio == 0
@@ -90,9 +90,9 @@ def test_current_pp():
 
 
 def test_damage():
-    flame_thrower = Move("flamethrower")
-    night_shade = Move("nightshade")
-    dragon_rage = Move("dragonrage")
+    flame_thrower = Move("flamethrower", gen=8)
+    night_shade = Move("nightshade", gen=8)
+    dragon_rage = Move("dragonrage", gen=8)
 
     assert flame_thrower.damage == 0
     assert night_shade.damage == "level"
@@ -103,9 +103,9 @@ def test_damage():
 
 
 def test_defensive_category():
-    psyshock = Move("psyshock")
-    close_combat = Move("closecombat")
-    flame_thrower = Move("flamethrower")
+    psyshock = Move("psyshock", gen=8)
+    close_combat = Move("closecombat", gen=8)
+    flame_thrower = Move("flamethrower", gen=8)
 
     assert psyshock.defensive_category == MoveCategory["PHYSICAL"]
     assert close_combat.defensive_category == MoveCategory["PHYSICAL"]
@@ -116,8 +116,8 @@ def test_defensive_category():
 
 
 def test_drain():
-    draining_kiss = Move("drainingkiss")
-    flame_thrower = Move("flamethrower")
+    draining_kiss = Move("drainingkiss", gen=8)
+    flame_thrower = Move("flamethrower", gen=8)
 
     assert draining_kiss.drain == 0.75
     assert flame_thrower.drain == 0
@@ -136,8 +136,8 @@ def test_empty_move_basic():
 
 
 def test_flags():
-    flame_thrower = Move("flamethrower")
-    sludge_bomb = Move("sludgebomb")
+    flame_thrower = Move("flamethrower", gen=8)
+    sludge_bomb = Move("sludgebomb", gen=8)
 
     assert flame_thrower.flags == {"protect", "mirror"}
     assert sludge_bomb.flags == {"bullet", "protect", "mirror"}
@@ -146,8 +146,8 @@ def test_flags():
 
 
 def test_heal():
-    roost = Move("roost")
-    flame_thrower = Move("flamethrower")
+    roost = Move("roost", gen=8)
+    flame_thrower = Move("flamethrower", gen=8)
 
     assert roost.heal == 0.5
     assert flame_thrower.heal == 0
@@ -158,8 +158,8 @@ def test_heal():
 
 
 def test_ignore_ability():
-    flame_thrower = Move("flamethrower")
-    menacing_moonraze_maelstrom = Move("menacingmoonrazemaelstrom")
+    flame_thrower = Move("flamethrower", gen=8)
+    menacing_moonraze_maelstrom = Move("menacingmoonrazemaelstrom", gen=8)
 
     assert menacing_moonraze_maelstrom.ignore_ability is True
     assert flame_thrower.ignore_ability is False
@@ -169,8 +169,8 @@ def test_ignore_ability():
 
 
 def test_ignore_defensive():
-    flame_thrower = Move("flamethrower")
-    chipaway = Move("chipaway")
+    flame_thrower = Move("flamethrower", gen=8)
+    chipaway = Move("chipaway", gen=8)
 
     assert chipaway.ignore_defensive is True
     assert flame_thrower.ignore_defensive is False
@@ -180,8 +180,8 @@ def test_ignore_defensive():
 
 
 def test_ignore_evasion():
-    flame_thrower = Move("flamethrower")
-    chipaway = Move("chipaway")
+    flame_thrower = Move("flamethrower", gen=8)
+    chipaway = Move("chipaway", gen=8)
 
     assert chipaway.ignore_evasion is True
     assert flame_thrower.ignore_evasion is False
@@ -191,10 +191,10 @@ def test_ignore_evasion():
 
 
 def test_ignore_immunity():
-    thousand_arrows = Move("thousandarrows")
-    thunder_wave = Move("thunderwave")
-    bide = Move("bide")
-    flame_thrower = Move("flamethrower")
+    thousand_arrows = Move("thousandarrows", gen=8)
+    thunder_wave = Move("thunderwave", gen=8)
+    bide = Move("bide", gen=8)
+    flame_thrower = Move("flamethrower", gen=8)
 
     assert thousand_arrows.ignore_immunity == {PokemonType["GROUND"]}
     assert thunder_wave.ignore_immunity is False
@@ -206,8 +206,8 @@ def test_ignore_immunity():
 
 
 def test_is_z():
-    flame_thrower = Move("flamethrower")
-    clangorous_soul_blaze = Move("clangoroussoulblaze")
+    flame_thrower = Move("flamethrower", gen=8)
+    clangorous_soul_blaze = Move("clangoroussoulblaze", gen=8)
 
     assert clangorous_soul_blaze.is_z is True
     assert flame_thrower.is_z is False
@@ -217,8 +217,8 @@ def test_is_z():
 
 
 def test_force_switch():
-    flame_thrower = Move("flamethrower")
-    dragon_tail = Move("dragontail")
+    flame_thrower = Move("flamethrower", gen=8)
+    dragon_tail = Move("dragontail", gen=8)
 
     assert flame_thrower.force_switch is False
     assert dragon_tail.force_switch is True
@@ -239,9 +239,9 @@ def test_move_breaks_protect():
 
 
 def test_n_hit():
-    furys_wipes = Move("furyswipes")
-    flame_thrower = Move("flamethrower")
-    gear_grind = Move("geargrind")
+    furys_wipes = Move("furyswipes", gen=8)
+    flame_thrower = Move("flamethrower", gen=8)
+    gear_grind = Move("geargrind", gen=8)
 
     assert furys_wipes.n_hit == (2, 5)
     assert flame_thrower.n_hit == (1, 1)
@@ -252,8 +252,8 @@ def test_n_hit():
 
 
 def test_no_pp_boosts():
-    flame_thrower = Move("flamethrower")
-    sketch = Move("sketch")
+    flame_thrower = Move("flamethrower", gen=8)
+    sketch = Move("sketch", gen=8)
 
     assert sketch.no_pp_boosts is True
     assert flame_thrower.no_pp_boosts is False
@@ -263,8 +263,8 @@ def test_no_pp_boosts():
 
 
 def test_non_ghost_target():
-    flame_thrower = Move("flamethrower")
-    curse = Move("curse")
+    flame_thrower = Move("flamethrower", gen=8)
+    curse = Move("curse", gen=8)
 
     assert curse.non_ghost_target is True
     assert flame_thrower.non_ghost_target is False
@@ -274,9 +274,9 @@ def test_non_ghost_target():
 
 
 def test_priority():
-    flame_thrower = Move("flamethrower")
-    trick_room = Move("trickroom")
-    fake_out = Move("fakeout")
+    flame_thrower = Move("flamethrower", gen=8)
+    trick_room = Move("trickroom", gen=8)
+    fake_out = Move("fakeout", gen=8)
 
     assert flame_thrower.priority == 0
     assert trick_room.priority == -7
@@ -287,8 +287,8 @@ def test_priority():
 
 
 def test_pseudo_weather():
-    flame_thrower = Move("flamethrower")
-    fairy_lock = Move("fairylock")
+    flame_thrower = Move("flamethrower", gen=8)
+    fairy_lock = Move("fairylock", gen=8)
 
     assert flame_thrower.pseudo_weather is None
     assert fairy_lock.pseudo_weather == "fairylock"
@@ -298,8 +298,8 @@ def test_pseudo_weather():
 
 
 def test_recoil():
-    flare_blitz = Move("flareblitz")
-    flame_thrower = Move("flamethrower")
+    flare_blitz = Move("flareblitz", gen=8)
+    flame_thrower = Move("flamethrower", gen=8)
 
     assert flare_blitz.recoil == 0.33
     assert flame_thrower.recoil == 0
@@ -310,9 +310,9 @@ def test_recoil():
 
 
 def test_secondary():
-    fake_out = Move("fakeout")
-    flame_thrower = Move("flamethrower")
-    acid_armor = Move("acidarmor")
+    fake_out = Move("fakeout", gen=8)
+    flame_thrower = Move("flamethrower", gen=8)
+    acid_armor = Move("acidarmor", gen=8)
 
     assert fake_out.secondary == [{"chance": 100, "volatileStatus": "flinch"}]
     assert flame_thrower.secondary == [{"chance": 10, "status": "brn"}]
@@ -327,9 +327,9 @@ def test_secondary():
 
 
 def test_self_boosts():
-    clanging_scales = Move("clangingscales")
-    close_combat = Move("closecombat")
-    fire_blast = Move("fireblast")
+    clanging_scales = Move("clangingscales", gen=8)
+    close_combat = Move("closecombat", gen=8)
+    fire_blast = Move("fireblast", gen=8)
 
     assert fire_blast.self_boost is None
     assert close_combat.self_boost == {"def": -1, "spd": -1}
@@ -340,8 +340,8 @@ def test_self_boosts():
 
 
 def test_self_destruct():
-    flame_thrower = Move("flamethrower")
-    self_destruct = Move("selfdestruct")
+    flame_thrower = Move("flamethrower", gen=8)
+    self_destruct = Move("selfdestruct", gen=8)
 
     assert self_destruct.self_destruct == "always"
     assert flame_thrower.self_destruct is None
@@ -351,9 +351,9 @@ def test_self_destruct():
 
 
 def test_self_switch():
-    flame_thrower = Move("flamethrower")
-    baton_pass = Move("batonpass")
-    parting_shot = Move("partingshot")
+    flame_thrower = Move("flamethrower", gen=8)
+    baton_pass = Move("batonpass", gen=8)
+    parting_shot = Move("partingshot", gen=8)
 
     assert baton_pass.self_switch == "copyvolatile"
     assert flame_thrower.self_switch is False
@@ -364,8 +364,8 @@ def test_self_switch():
 
 
 def test_side_condition():
-    flame_thrower = Move("flamethrower")
-    quick_guard = Move("quickguard")
+    flame_thrower = Move("flamethrower", gen=8)
+    quick_guard = Move("quickguard", gen=8)
 
     assert quick_guard.side_condition == "quickguard"
     assert flame_thrower.side_condition is None
@@ -375,8 +375,8 @@ def test_side_condition():
 
 
 def test_sleep_usable():
-    flame_thrower = Move("flamethrower")
-    sleep_talk = Move("sleeptalk")
+    flame_thrower = Move("flamethrower", gen=8)
+    sleep_talk = Move("sleeptalk", gen=8)
 
     assert sleep_talk.sleep_usable is True
     assert flame_thrower.sleep_usable is False
@@ -386,8 +386,8 @@ def test_sleep_usable():
 
 
 def test_slot_condition():
-    flame_thrower = Move("flamethrower")
-    healing_wish = Move("healingwish")
+    flame_thrower = Move("flamethrower", gen=8)
+    healing_wish = Move("healingwish", gen=8)
 
     assert healing_wish.slot_condition == "healingwish"
     assert flame_thrower.slot_condition is None
@@ -397,8 +397,8 @@ def test_slot_condition():
 
 
 def test_stalling_move():
-    flame_thrower = Move("flamethrower")
-    kings_shield = Move("kingsshield")
+    flame_thrower = Move("flamethrower", gen=8)
+    kings_shield = Move("kingsshield", gen=8)
 
     assert kings_shield.stalling_move is True
     assert flame_thrower.stalling_move is False
@@ -408,10 +408,10 @@ def test_stalling_move():
 
 
 def test_status():
-    dark_void = Move("darkvoid")
-    sleep_powder = Move("sleeppowder")
-    flame_thrower = Move("flamethrower")
-    thunder_wave = Move("thunderwave")
+    dark_void = Move("darkvoid", gen=8)
+    sleep_powder = Move("sleeppowder", gen=8)
+    flame_thrower = Move("flamethrower", gen=8)
+    thunder_wave = Move("thunderwave", gen=8)
 
     assert dark_void.status == Status["SLP"]
     assert sleep_powder.status == Status["SLP"]
@@ -423,8 +423,8 @@ def test_status():
 
 
 def test_steals_boosts():
-    flame_thrower = Move("flamethrower")
-    spectral_thief = Move("spectralthief")
+    flame_thrower = Move("flamethrower", gen=8)
+    spectral_thief = Move("spectralthief", gen=8)
 
     assert spectral_thief.steals_boosts is True
     assert flame_thrower.steals_boosts is False
@@ -434,8 +434,8 @@ def test_steals_boosts():
 
 
 def test_target():
-    flame_thrower = Move("flamethrower")
-    earthquake = Move("earthquake")
+    flame_thrower = Move("flamethrower", gen=8)
+    earthquake = Move("earthquake", gen=8)
 
     assert earthquake.target == "allAdjacent"
     assert flame_thrower.target == "normal"
@@ -445,8 +445,8 @@ def test_target():
 
 
 def test_terrain():
-    flame_thrower = Move("flamethrower")
-    electric_terrain = Move("electricterrain")
+    flame_thrower = Move("flamethrower", gen=8)
+    electric_terrain = Move("electricterrain", gen=8)
 
     assert electric_terrain.terrain == Field.ELECTRIC_TERRAIN
     assert flame_thrower.terrain is None
@@ -456,8 +456,8 @@ def test_terrain():
 
 
 def test_thaws_target():
-    flame_thrower = Move("flamethrower")
-    scald = Move("scald")
+    flame_thrower = Move("flamethrower", gen=8)
+    scald = Move("scald", gen=8)
 
     assert scald.thaws_target is True
     assert flame_thrower.thaws_target is False
@@ -467,8 +467,8 @@ def test_thaws_target():
 
 
 def test_type():
-    flame_thrower = Move("flamethrower")
-    scald = Move("scald")
+    flame_thrower = Move("flamethrower", gen=8)
+    scald = Move("scald", gen=8)
 
     assert scald.type == PokemonType["WATER"]
     assert flame_thrower.type == PokemonType["FIRE"]
@@ -478,8 +478,8 @@ def test_type():
 
 
 def test_use_target_offensive():
-    flame_thrower = Move("flamethrower")
-    foul_play = Move("foulplay")
+    flame_thrower = Move("flamethrower", gen=8)
+    foul_play = Move("foulplay", gen=8)
 
     assert foul_play.use_target_offensive is True
     assert flame_thrower.use_target_offensive is False
@@ -489,8 +489,8 @@ def test_use_target_offensive():
 
 
 def test_volatile_status():
-    flame_thrower = Move("flamethrower")
-    heal_block = Move("healblock")
+    flame_thrower = Move("flamethrower", gen=8)
+    heal_block = Move("healblock", gen=8)
 
     assert heal_block.volatile_status == "healblock"
     assert flame_thrower.volatile_status is None
@@ -500,17 +500,17 @@ def test_volatile_status():
 
 
 def test_weather():
-    flame_thrower = Move("flamethrower")
-    sand_storm = Move("sandstorm")
+    flame_thrower = Move("flamethrower", gen=8)
+    sand_storm = Move("sandstorm", gen=8)
 
     assert flame_thrower.weather is None
     assert sand_storm.weather is Weather["SANDSTORM"]
 
 
 def test_z_move_boost():
-    misty_terrain = Move("mistyterrain")
-    flame_thrower = Move("flamethrower")
-    mist = Move("mist")
+    misty_terrain = Move("mistyterrain", gen=8)
+    flame_thrower = Move("flamethrower", gen=8)
+    mist = Move("mist", gen=8)
 
     assert misty_terrain.z_move_boost == {"spd": 1}
     assert flame_thrower.z_move_boost is None
@@ -521,9 +521,9 @@ def test_z_move_boost():
 
 
 def test_z_move_effect():
-    flare_blitz = Move("flareblitz")
-    flame_thrower = Move("flamethrower")
-    mist = Move("mist")
+    flare_blitz = Move("flareblitz", gen=8)
+    flame_thrower = Move("flamethrower", gen=8)
+    mist = Move("mist", gen=8)
 
     assert flare_blitz.z_move_effect is None
     assert flame_thrower.z_move_effect is None
@@ -534,9 +534,9 @@ def test_z_move_effect():
 
 
 def test_z_move_power():
-    flare_blitz = Move("flareblitz")
-    flame_thrower = Move("flamethrower")
-    mist = Move("mist")
+    flare_blitz = Move("flareblitz", gen=8)
+    flame_thrower = Move("flamethrower", gen=8)
+    mist = Move("mist", gen=8)
 
     assert flare_blitz.z_move_power == 190
     assert flame_thrower.z_move_power == 175
@@ -547,7 +547,7 @@ def test_z_move_power():
 
 
 def test_dynamax_move_with_boosts():
-    move = Move("dracometeor")
+    move = Move("dracometeor", gen=8)
     dynamaxed = move.dynamaxed
 
     assert dynamaxed.boosts == {"atk": -1}
@@ -556,7 +556,7 @@ def test_dynamax_move_with_boosts():
     assert dynamaxed.terrain is None
     assert dynamaxed.self_boost is None
 
-    move = Move("tackle")
+    move = Move("tackle", gen=8)
     dynamaxed = move.dynamaxed
 
     assert dynamaxed.boosts == {"spe": -1}
@@ -566,7 +566,7 @@ def test_dynamax_move_with_boosts():
 
 
 def test_dynamax_move_with_self_boosts():
-    move = Move("fly")
+    move = Move("fly", gen=8)
     dynamaxed = move.dynamaxed
 
     assert dynamaxed.boosts is None
@@ -574,7 +574,7 @@ def test_dynamax_move_with_self_boosts():
     assert dynamaxed.terrain is None
     assert dynamaxed.self_boost == {"spe": 1}
 
-    move = Move("earthquake")
+    move = Move("earthquake", gen=8)
     dynamaxed = move.dynamaxed
 
     assert dynamaxed.boosts is None
@@ -584,7 +584,7 @@ def test_dynamax_move_with_self_boosts():
 
 
 def test_dynamax_move_with_terrain():
-    move = Move("psychic")
+    move = Move("psychic", gen=8)
     dynamaxed = move.dynamaxed
 
     assert dynamaxed.boosts is None
@@ -592,7 +592,7 @@ def test_dynamax_move_with_terrain():
     assert dynamaxed.terrain == Field.PSYCHIC_TERRAIN
     assert dynamaxed.self_boost is None
 
-    move = Move("thunder")
+    move = Move("thunder", gen=8)
     dynamaxed = move.dynamaxed
 
     assert dynamaxed.boosts is None
@@ -602,7 +602,7 @@ def test_dynamax_move_with_terrain():
 
 
 def test_dynamax_move_with_weather():
-    move = Move("flamethrower")
+    move = Move("flamethrower", gen=8)
     dynamaxed = move.dynamaxed
 
     assert dynamaxed.boosts is None
@@ -610,7 +610,7 @@ def test_dynamax_move_with_weather():
     assert dynamaxed.terrain is None
     assert dynamaxed.self_boost is None
 
-    move = Move("watergun")
+    move = Move("watergun", gen=8)
     dynamaxed = move.dynamaxed
 
     assert dynamaxed.boosts is None
@@ -620,7 +620,7 @@ def test_dynamax_move_with_weather():
 
 
 def test_misc_dynamax_move_properties():
-    move = Move("watergun")
+    move = Move("watergun", gen=8)
     dynamaxed = move.dynamaxed
 
     assert dynamaxed.accuracy == 1
@@ -638,14 +638,14 @@ def test_misc_dynamax_move_properties():
     assert dynamaxed.status is None
     assert dynamaxed.type == PokemonType.WATER
 
-    move = Move("closecombat")
+    move = Move("closecombat", gen=8)
     dynamaxed = move.dynamaxed
     assert dynamaxed.defensive_category is MoveCategory.PHYSICAL
     assert dynamaxed.type == PokemonType.FIGHTING
 
 
 def test_dynamax_status_move_properties():
-    move = Move("recover")
+    move = Move("recover", gen=8)
     dynamaxed = move.dynamaxed
 
     assert dynamaxed.accuracy == 1
@@ -691,46 +691,46 @@ def test_dynamax_moves_base_power():
 
     for move_name, bp in move_to_dynamax_power.items():
         print("Expecting", move_name, "to have", bp, "base power once dynamaxed")
-        move = Move(move_name)
+        move = Move(move_name, gen=8)
         dynamaxed = move.dynamaxed
         assert dynamaxed == move.dynamaxed == move._dynamaxed_move  # testing caching
         assert dynamaxed.base_power == bp
 
 
 def test_should_be_stored():
-    assert Move.should_be_stored("flamethrower")
-    assert not Move.should_be_stored("aciddownpour")
-    assert not Move.should_be_stored("maxooze")
+    assert Move.should_be_stored("flamethrower", gen=8)
+    assert not Move.should_be_stored("aciddownpour", gen=8)
+    assert not Move.should_be_stored("maxooze", gen=8)
 
 
 def test_is_max_move():
-    assert not Move.is_max_move("flamethrower")
-    assert Move.is_max_move("gmaxwildfire")
-    assert Move.is_max_move("gmaxcannonade")
-    assert Move.is_max_move("maxooze")
+    assert not Move.is_max_move("flamethrower", gen=8)
+    assert Move.is_max_move("gmaxwildfire", gen=8)
+    assert Move.is_max_move("gmaxcannonade", gen=8)
+    assert Move.is_max_move("maxooze", gen=8)
 
 
 def test_expected_hits():
-    assert Move("flamethrower").expected_hits == 1
+    assert Move("flamethrower", gen=8).expected_hits == 1
     assert (
-        Move("triplekick").expected_hits == 5.23
+        Move("triplekick", gen=8).expected_hits == 5.23
     )  # TODO: double check interactions here
-    assert Move("bulletseed").expected_hits == 3.166666666666667
+    assert Move("bulletseed", gen=8).expected_hits == 3.166666666666667
 
 
 def test_is_protect_move():
-    assert not Move("flamethrower").is_protect_move
-    assert not Move("flamethrower").is_side_protect_move
-    assert Move("protect").is_protect_move
-    assert not Move("protect").is_side_protect_move
-    assert not Move("wideguard").is_protect_move
-    assert Move("wideguard").is_side_protect_move
+    assert not Move("flamethrower", gen=8).is_protect_move
+    assert not Move("flamethrower", gen=8).is_side_protect_move
+    assert Move("protect", gen=8).is_protect_move
+    assert not Move("protect", gen=8).is_side_protect_move
+    assert not Move("wideguard", gen=8).is_protect_move
+    assert Move("wideguard", gen=8).is_side_protect_move
 
 
 def test_hiddenpower_types():
-    hidden_power_bug = Move("hiddenpowerbug")
-    hidden_power_fire = Move("hiddenpowerfire")
-    hidden_power_water = Move("hiddenpowerwater")
+    hidden_power_bug = Move("hiddenpowerbug", gen=8)
+    hidden_power_fire = Move("hiddenpowerfire", gen=8)
+    hidden_power_water = Move("hiddenpowerwater", gen=8)
 
     assert hidden_power_bug.type == PokemonType.BUG
     assert hidden_power_fire.type == PokemonType.FIRE
@@ -738,7 +738,7 @@ def test_hiddenpower_types():
 
 
 def test_deepcopy_move():
-    move = Move("flamethrower")
+    move = Move("flamethrower", gen=8)
     copy_move = copy.deepcopy(move)
     assert copy_move != move
     assert copy_move.id == move.id

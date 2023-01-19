@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import logging
-
 from logging import Logger
 from typing import Dict
 from typing import List
@@ -8,7 +6,7 @@ from typing import Optional
 from typing import Union
 
 from poke_env.environment.move import Move
-from poke_env.environment.pokemon import Pokemon, GEN_TO_POKEMON
+from poke_env.environment.pokemon import Pokemon
 from poke_env.environment.abstract_battle import AbstractBattle
 
 
@@ -18,9 +16,10 @@ class Battle(AbstractBattle):
         battle_tag: str,
         username: str,
         logger: Logger,
+        gen: int,
         save_replays: Union[str, bool] = False,
     ):
-        super(Battle, self).__init__(battle_tag, username, logger, save_replays)
+        super(Battle, self).__init__(battle_tag, username, logger, save_replays, gen)
 
         # Turn choice attributes
         self._available_moves: List[Move] = []
@@ -202,38 +201,6 @@ class Battle(AbstractBattle):
         """
         return self._force_switch
 
-    @staticmethod
-    def from_format(
-        format_: str,
-        battle_tag: str,
-        username: str,
-        logger: Logger,
-        save_replays: Union[bool, str] = False,
-    ) -> AbstractBattle:
-        """
-        :return: A GenXBattle instance, depending on the format received
-        :rtype: Battle
-        """
-        gen = format_[3]  # Update when Gen 10 comes
-        if gen not in _GEN_TO_BATTLE_CLASS:
-            if gen not in _WARNED_GENS:
-                logging.getLogger("poke-env").warning(
-                    f"A gen {gen} Battle object was initialized. poke-env does not have "
-                    "explicit support for this gen and will instead use objects meant "
-                    f"for gen {_DEFAULT_BATTLE_CLASS_KEY}. Please open an issue at "
-                    "https://github.com/hsahovic/poke-env/issues/ if this behavior "
-                    "creates problems for your use case."
-                )
-                _WARNED_GENS.add(gen)
-            gen = _DEFAULT_BATTLE_CLASS_KEY
-
-        return _GEN_TO_BATTLE_CLASS[gen](
-            battle_tag=battle_tag,
-            username=username,
-            logger=logger,
-            save_replays=save_replays,
-        )
-
     @property
     def maybe_trapped(self) -> bool:
         """
@@ -302,37 +269,3 @@ class Battle(AbstractBattle):
     @trapped.setter
     def trapped(self, value):
         self._trapped = value
-
-
-# Gen specific classes
-
-
-class Gen4Battle(Battle):
-    POKEMON_CLASS = GEN_TO_POKEMON[4]
-
-
-class Gen5Battle(Battle):
-    POKEMON_CLASS = GEN_TO_POKEMON[5]
-
-
-class Gen6Battle(Battle):
-    POKEMON_CLASS = GEN_TO_POKEMON[6]
-
-
-class Gen7Battle(Battle):
-    POKEMON_CLASS = GEN_TO_POKEMON[7]
-
-
-class Gen8Battle(Battle):
-    POKEMON_CLASS = GEN_TO_POKEMON[8]
-
-
-_GEN_TO_BATTLE_CLASS: Dict = {
-    "4": Gen4Battle,
-    "5": Gen5Battle,
-    "6": Gen6Battle,
-    "7": Gen7Battle,
-    "8": Gen8Battle,
-}
-_DEFAULT_BATTLE_CLASS_KEY = "4"
-_WARNED_GENS = set()

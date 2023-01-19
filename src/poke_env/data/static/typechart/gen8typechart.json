@@ -1,126 +1,534 @@
-[
-  {
-    "name": "Normal",
-    "immunes": ["Ghost"],
-    "weaknesses": ["Rock", "Steel"],
-    "strengths": []
-  },
-  {
-    "name": "Fire",
-    "immunes": [],
-    "weaknesses": ["Fire", "Water", "Rock", "Dragon"],
-    "strengths": ["Grass", "Ice", "Bug", "Steel"]
-  },
-  {
-    "name": "Water",
-    "immunes": [],
-    "weaknesses": ["Water", "Grass", "Dragon"],
-    "strengths": ["Fire", "Ground", "Rock"]
-  },
-  {
-    "name": "Electric",
-    "immunes": ["Ground"],
-    "weaknesses": ["Electric", "Grass", "Dragon"],
-    "strengths": ["Water", "Flying"]
-  },
-  {
-    "name": "Grass",
-    "immunes": [],
-    "weaknesses": [
-      "Fire",
-      "Grass",
-      "Poison",
-      "Flying",
-      "Bug",
-      "Dragon",
-      "Steel"
-    ],
-    "strengths": ["Water", "Ground", "Rock"]
-  },
-  {
-    "name": "Ice",
-    "immunes": [],
-    "weaknesses": ["Fire", "Water", "Ice", "Steel"],
-    "strengths": ["Grass", "Ground", "Flying", "Dragon"]
-  },
-  {
-    "name": "Fighting",
-    "immunes": ["Ghost"],
-    "weaknesses": ["Poison", "Flying", "Psychic", "Bug", "Fairy"],
-    "strengths": ["Normal", "Ice", "Rock", "Dark", "Steel"]
-  },
-  {
-    "name": "Poison",
-    "immunes": ["Steel"],
-    "weaknesses": ["Poison", "Ground", "Rock", "Ghost"],
-    "strengths": ["Grass", "Fairy"]
-  },
-  {
-    "name": "Ground",
-    "immunes": ["Flying"],
-    "weaknesses": ["Grass", "Bug"],
-    "strengths": ["Fire", "Electric", "Poison", "Rock", "Steel"]
-  },
-  {
-    "name": "Flying",
-    "immunes": [],
-    "weaknesses": ["Electric", "Rock", "Steel"],
-    "strengths": ["Grass", "Fighting", "Bug"]
-  },
-  {
-    "name": "Psychic",
-    "immunes": ["Dark"],
-    "weaknesses": ["Psychic", "Steel"],
-    "strengths": ["Fighting", "Poison"]
-  },
-  {
-    "name": "Bug",
-    "immunes": [],
-    "weaknesses": [
-      "Fire",
-      "Fighting",
-      "Poison",
-      "Flying",
-      "Ghost",
-      "Steel",
-      "Fairy"
-    ],
-    "strengths": ["Grass", "Psychic", "Dark"]
-  },
-  {
-    "name": "Rock",
-    "immunes": [],
-    "weaknesses": ["Fighting", "Ground", "Steel"],
-    "strengths": ["Fire", "Ice", "Flying", "Bug"]
-  },
-  {
-    "name": "Ghost",
-    "immunes": ["Normal"],
-    "weaknesses": ["Dark"],
-    "strengths": ["Psychic", "Ghost"]
-  },
-  {
-    "name": "Dragon",
-    "immunes": ["Fairy"],
-    "weaknesses": ["Steel"],
-    "strengths": ["Dragon"]
-  },
-  {
-    "name": "Dark",
-    "immunes": [],
-    "weaknesses": ["Fighting", "Dark", "Fairy"],
-    "strengths": ["Psychic", "Ghost"]
-  },
-  {
-    "name": "Steel",
-    "immunes": [],
-    "weaknesses": ["Fire", "Water", "Electric", "Steel"],
-    "strengths": ["Ice", "Rock", "Fairy"]
-  },
-  {
-    "name": "Fairy",
-    "immunes": [],
-    "weaknesses": ["Fire", "Poison", "Steel"],
-    "strengths": ["Fighting", "Dragon", "Dark"]
-  }
-]
+{
+    "bug": {
+        "HPdvs": {
+            "atk": 13,
+            "def": 13
+        },
+        "HPivs": {
+            "atk": 30,
+            "def": 30,
+            "spd": 30
+        },
+        "damageTaken": {
+            "Bug": 0,
+            "Dark": 0,
+            "Dragon": 0,
+            "Electric": 0,
+            "Fairy": 0,
+            "Fighting": 2,
+            "Fire": 1,
+            "Flying": 1,
+            "Ghost": 0,
+            "Grass": 2,
+            "Ground": 2,
+            "Ice": 0,
+            "Normal": 0,
+            "Poison": 0,
+            "Psychic": 0,
+            "Rock": 1,
+            "Steel": 0,
+            "Water": 0
+        }
+    },
+    "dark": {
+        "HPivs": {},
+        "damageTaken": {
+            "Bug": 1,
+            "Dark": 2,
+            "Dragon": 0,
+            "Electric": 0,
+            "Fairy": 1,
+            "Fighting": 1,
+            "Fire": 0,
+            "Flying": 0,
+            "Ghost": 2,
+            "Grass": 0,
+            "Ground": 0,
+            "Ice": 0,
+            "Normal": 0,
+            "Poison": 0,
+            "Psychic": 3,
+            "Rock": 0,
+            "Steel": 0,
+            "Water": 0,
+            "prankster": 3
+        }
+    },
+    "dragon": {
+        "HPdvs": {
+            "def": 14
+        },
+        "HPivs": {
+            "atk": 30
+        },
+        "damageTaken": {
+            "Bug": 0,
+            "Dark": 0,
+            "Dragon": 1,
+            "Electric": 2,
+            "Fairy": 1,
+            "Fighting": 0,
+            "Fire": 2,
+            "Flying": 0,
+            "Ghost": 0,
+            "Grass": 2,
+            "Ground": 0,
+            "Ice": 1,
+            "Normal": 0,
+            "Poison": 0,
+            "Psychic": 0,
+            "Rock": 0,
+            "Steel": 0,
+            "Water": 2
+        }
+    },
+    "electric": {
+        "HPdvs": {
+            "atk": 14
+        },
+        "HPivs": {
+            "spa": 30
+        },
+        "damageTaken": {
+            "Bug": 0,
+            "Dark": 0,
+            "Dragon": 0,
+            "Electric": 2,
+            "Fairy": 0,
+            "Fighting": 0,
+            "Fire": 0,
+            "Flying": 2,
+            "Ghost": 0,
+            "Grass": 0,
+            "Ground": 1,
+            "Ice": 0,
+            "Normal": 0,
+            "Poison": 0,
+            "Psychic": 0,
+            "Rock": 0,
+            "Steel": 2,
+            "Water": 0,
+            "par": 3
+        }
+    },
+    "fairy": {
+        "damageTaken": {
+            "Bug": 2,
+            "Dark": 2,
+            "Dragon": 3,
+            "Electric": 0,
+            "Fairy": 0,
+            "Fighting": 2,
+            "Fire": 0,
+            "Flying": 0,
+            "Ghost": 0,
+            "Grass": 0,
+            "Ground": 0,
+            "Ice": 0,
+            "Normal": 0,
+            "Poison": 1,
+            "Psychic": 0,
+            "Rock": 0,
+            "Steel": 1,
+            "Water": 0
+        }
+    },
+    "fighting": {
+        "HPdvs": {
+            "atk": 12,
+            "def": 12
+        },
+        "HPivs": {
+            "def": 30,
+            "spa": 30,
+            "spd": 30,
+            "spe": 30
+        },
+        "damageTaken": {
+            "Bug": 2,
+            "Dark": 2,
+            "Dragon": 0,
+            "Electric": 0,
+            "Fairy": 1,
+            "Fighting": 0,
+            "Fire": 0,
+            "Flying": 1,
+            "Ghost": 0,
+            "Grass": 0,
+            "Ground": 0,
+            "Ice": 0,
+            "Normal": 0,
+            "Poison": 0,
+            "Psychic": 1,
+            "Rock": 2,
+            "Steel": 0,
+            "Water": 0
+        }
+    },
+    "fire": {
+        "HPdvs": {
+            "atk": 14,
+            "def": 12
+        },
+        "HPivs": {
+            "atk": 30,
+            "spa": 30,
+            "spe": 30
+        },
+        "damageTaken": {
+            "Bug": 2,
+            "Dark": 0,
+            "Dragon": 0,
+            "Electric": 0,
+            "Fairy": 2,
+            "Fighting": 0,
+            "Fire": 2,
+            "Flying": 0,
+            "Ghost": 0,
+            "Grass": 2,
+            "Ground": 1,
+            "Ice": 2,
+            "Normal": 0,
+            "Poison": 0,
+            "Psychic": 0,
+            "Rock": 1,
+            "Steel": 2,
+            "Water": 1,
+            "brn": 3
+        }
+    },
+    "flying": {
+        "HPdvs": {
+            "atk": 12,
+            "def": 13
+        },
+        "HPivs": {
+            "atk": 30,
+            "def": 30,
+            "hp": 30,
+            "spa": 30,
+            "spd": 30
+        },
+        "damageTaken": {
+            "Bug": 2,
+            "Dark": 0,
+            "Dragon": 0,
+            "Electric": 1,
+            "Fairy": 0,
+            "Fighting": 2,
+            "Fire": 0,
+            "Flying": 0,
+            "Ghost": 0,
+            "Grass": 2,
+            "Ground": 3,
+            "Ice": 1,
+            "Normal": 0,
+            "Poison": 0,
+            "Psychic": 0,
+            "Rock": 1,
+            "Steel": 0,
+            "Water": 0
+        }
+    },
+    "ghost": {
+        "HPdvs": {
+            "atk": 13,
+            "def": 14
+        },
+        "HPivs": {
+            "def": 30,
+            "spd": 30
+        },
+        "damageTaken": {
+            "Bug": 2,
+            "Dark": 1,
+            "Dragon": 0,
+            "Electric": 0,
+            "Fairy": 0,
+            "Fighting": 3,
+            "Fire": 0,
+            "Flying": 0,
+            "Ghost": 1,
+            "Grass": 0,
+            "Ground": 0,
+            "Ice": 0,
+            "Normal": 3,
+            "Poison": 2,
+            "Psychic": 0,
+            "Rock": 0,
+            "Steel": 0,
+            "Water": 0,
+            "trapped": 3
+        }
+    },
+    "grass": {
+        "HPdvs": {
+            "atk": 14,
+            "def": 14
+        },
+        "HPivs": {
+            "atk": 30,
+            "spa": 30
+        },
+        "damageTaken": {
+            "Bug": 1,
+            "Dark": 0,
+            "Dragon": 0,
+            "Electric": 2,
+            "Fairy": 0,
+            "Fighting": 0,
+            "Fire": 1,
+            "Flying": 1,
+            "Ghost": 0,
+            "Grass": 2,
+            "Ground": 2,
+            "Ice": 1,
+            "Normal": 0,
+            "Poison": 1,
+            "Psychic": 0,
+            "Rock": 0,
+            "Steel": 0,
+            "Water": 2,
+            "powder": 3
+        }
+    },
+    "ground": {
+        "HPdvs": {
+            "atk": 12
+        },
+        "HPivs": {
+            "spa": 30,
+            "spd": 30
+        },
+        "damageTaken": {
+            "Bug": 0,
+            "Dark": 0,
+            "Dragon": 0,
+            "Electric": 3,
+            "Fairy": 0,
+            "Fighting": 0,
+            "Fire": 0,
+            "Flying": 0,
+            "Ghost": 0,
+            "Grass": 1,
+            "Ground": 0,
+            "Ice": 1,
+            "Normal": 0,
+            "Poison": 2,
+            "Psychic": 0,
+            "Rock": 2,
+            "Steel": 0,
+            "Water": 1,
+            "sandstorm": 3
+        }
+    },
+    "ice": {
+        "HPdvs": {
+            "def": 13
+        },
+        "HPivs": {
+            "atk": 30,
+            "def": 30
+        },
+        "damageTaken": {
+            "Bug": 0,
+            "Dark": 0,
+            "Dragon": 0,
+            "Electric": 0,
+            "Fairy": 0,
+            "Fighting": 1,
+            "Fire": 1,
+            "Flying": 0,
+            "Ghost": 0,
+            "Grass": 0,
+            "Ground": 0,
+            "Ice": 2,
+            "Normal": 0,
+            "Poison": 0,
+            "Psychic": 0,
+            "Rock": 1,
+            "Steel": 1,
+            "Water": 0,
+            "frz": 3,
+            "hail": 3
+        }
+    },
+    "normal": {
+        "damageTaken": {
+            "Bug": 0,
+            "Dark": 0,
+            "Dragon": 0,
+            "Electric": 0,
+            "Fairy": 0,
+            "Fighting": 1,
+            "Fire": 0,
+            "Flying": 0,
+            "Ghost": 3,
+            "Grass": 0,
+            "Ground": 0,
+            "Ice": 0,
+            "Normal": 0,
+            "Poison": 0,
+            "Psychic": 0,
+            "Rock": 0,
+            "Steel": 0,
+            "Water": 0
+        }
+    },
+    "poison": {
+        "HPdvs": {
+            "atk": 12,
+            "def": 14
+        },
+        "HPivs": {
+            "def": 30,
+            "spa": 30,
+            "spd": 30
+        },
+        "damageTaken": {
+            "Bug": 2,
+            "Dark": 0,
+            "Dragon": 0,
+            "Electric": 0,
+            "Fairy": 2,
+            "Fighting": 2,
+            "Fire": 0,
+            "Flying": 0,
+            "Ghost": 0,
+            "Grass": 2,
+            "Ground": 1,
+            "Ice": 0,
+            "Normal": 0,
+            "Poison": 2,
+            "Psychic": 1,
+            "Rock": 0,
+            "Steel": 0,
+            "Water": 0,
+            "psn": 3,
+            "tox": 3
+        }
+    },
+    "psychic": {
+        "HPdvs": {
+            "def": 12
+        },
+        "HPivs": {
+            "atk": 30,
+            "spe": 30
+        },
+        "damageTaken": {
+            "Bug": 1,
+            "Dark": 1,
+            "Dragon": 0,
+            "Electric": 0,
+            "Fairy": 0,
+            "Fighting": 2,
+            "Fire": 0,
+            "Flying": 0,
+            "Ghost": 1,
+            "Grass": 0,
+            "Ground": 0,
+            "Ice": 0,
+            "Normal": 0,
+            "Poison": 0,
+            "Psychic": 2,
+            "Rock": 0,
+            "Steel": 0,
+            "Water": 0
+        }
+    },
+    "rock": {
+        "HPdvs": {
+            "atk": 13,
+            "def": 12
+        },
+        "HPivs": {
+            "def": 30,
+            "spd": 30,
+            "spe": 30
+        },
+        "damageTaken": {
+            "Bug": 0,
+            "Dark": 0,
+            "Dragon": 0,
+            "Electric": 0,
+            "Fairy": 0,
+            "Fighting": 1,
+            "Fire": 2,
+            "Flying": 2,
+            "Ghost": 0,
+            "Grass": 1,
+            "Ground": 1,
+            "Ice": 0,
+            "Normal": 2,
+            "Poison": 2,
+            "Psychic": 0,
+            "Rock": 0,
+            "Steel": 1,
+            "Water": 1,
+            "sandstorm": 3
+        }
+    },
+    "steel": {
+        "HPdvs": {
+            "atk": 13
+        },
+        "HPivs": {
+            "spd": 30
+        },
+        "damageTaken": {
+            "Bug": 2,
+            "Dark": 0,
+            "Dragon": 2,
+            "Electric": 0,
+            "Fairy": 2,
+            "Fighting": 1,
+            "Fire": 1,
+            "Flying": 2,
+            "Ghost": 0,
+            "Grass": 2,
+            "Ground": 1,
+            "Ice": 2,
+            "Normal": 2,
+            "Poison": 3,
+            "Psychic": 2,
+            "Rock": 2,
+            "Steel": 2,
+            "Water": 0,
+            "psn": 3,
+            "sandstorm": 3,
+            "tox": 3
+        }
+    },
+    "water": {
+        "HPdvs": {
+            "atk": 14,
+            "def": 13
+        },
+        "HPivs": {
+            "atk": 30,
+            "def": 30,
+            "spa": 30
+        },
+        "damageTaken": {
+            "Bug": 0,
+            "Dark": 0,
+            "Dragon": 0,
+            "Electric": 1,
+            "Fairy": 0,
+            "Fighting": 0,
+            "Fire": 2,
+            "Flying": 0,
+            "Ghost": 0,
+            "Grass": 1,
+            "Ground": 0,
+            "Ice": 2,
+            "Normal": 0,
+            "Poison": 0,
+            "Psychic": 0,
+            "Rock": 0,
+            "Steel": 2,
+            "Water": 2
+        }
+    }
+}

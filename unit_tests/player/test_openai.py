@@ -78,7 +78,7 @@ def test_queue():
 
 def test_async_player():
     player = _AsyncPlayer(UserFuncs(), start_listening=False, username="usr")
-    battle = Battle("bat1", player.username, player.logger)
+    battle = Battle("bat1", player.username, player.logger, gen=8)
     player._actions.put(-1)
     order = asyncio.get_event_loop().run_until_complete(player._env_move(battle))
     assert isinstance(order, ForfeitBattleOrder)
@@ -96,12 +96,12 @@ def render(battle):
 
 
 def test_render():
-    battle = Battle("bat1", "usr", None)
+    battle = Battle("bat1", "usr", None, gen=8)
     battle._turn = 3
-    active_mon = Pokemon(species="charizard")
+    active_mon = Pokemon(species="charizard", gen=8)
     active_mon._active = True
     battle._team = {"1": active_mon}
-    opponent_mon = Pokemon(species="pikachu")
+    opponent_mon = Pokemon(species="pikachu", gen=8)
     opponent_mon._active = True
     battle._opponent_team = {"1": opponent_mon}
     expected = "  Turn    3. | [●][  0/  0hp]  charizard -    pikachu [  0%hp][●]\r"
@@ -113,7 +113,7 @@ def test_render():
     opponent_mon._current_hp = 20
     expected = "  Turn    3. | [●][ 60/120hp]  charizard -    pikachu [ 20%hp][●]\r"
     assert render(battle) == expected
-    other_mon = Pokemon(species="pichu")
+    other_mon = Pokemon(species="pichu", gen=8)
     battle._team["2"] = other_mon
     expected = "  Turn    3. | [●●][ 60/120hp]  charizard -    pikachu [ 20%hp][●]\r"
     assert render(battle) == expected
