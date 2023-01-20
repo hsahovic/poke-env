@@ -336,7 +336,6 @@ class Player(PlayerNetwork, ABC):
                 return
             message = self.teampreview(battle)
         else:
-            await self._send_message("Hello!", battle.battle_tag)
             message = self.choose_move(battle)
             if isawaitable(message):
                 message = await message
