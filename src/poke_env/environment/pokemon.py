@@ -43,6 +43,8 @@ class Pokemon:
         "_species",
         "_status",
         "_status_counter",
+        "_terastallize_type",
+        "_terastallized",
         "_type_1",
         "_type_2",
         "_weightkg",
@@ -92,6 +94,8 @@ class Pokemon:
         self._current_hp: int = 0
         self._effects: Dict[Effect, int] = {}
         self._first_turn: bool = False
+        self._terastallized: bool = False
+        self._terastallized_type: Optional[PokemonType] = None
         self._item: Optional[str] = self._data.UNKNOWN_ITEM
         self._last_request: dict = {}
         self._last_details: str = ""
@@ -343,6 +347,10 @@ class Pokemon:
 
         if self._status == Status.TOX:
             self._status_counter = 0
+
+    def _terastallize(self, type_):
+        self._terastallize_type = PokemonType.from_name(type_)
+        self._terastallized = True
 
     def _transform(self, into):
         current_hp = self.current_hp
@@ -805,11 +813,34 @@ class Pokemon:
         self._status = status
 
     @property
+    def stab_multiplier(self) -> float:
+        """
+        :return: The pokemon's STAB multiplier.
+        :rtype: float
+        """
+        if self._terastallized and self._terastallized_type in (
+            self._type_1,
+            self._type_2,
+        ):
+            return 2
+        return 1
+
+    @property
+    def terastallized(self) -> bool:
+        """
+        :return: Whether the pokemon is currently terastallized
+        :rtype: bool
+        """
+        return self._terastallized
+
+    @property
     def type_1(self) -> PokemonType:
         """
         :return: The pokemon's first type.
         :rtype: PokemonType
         """
+        if self._terastallized and self._terastallized_type is not None:
+            return self._terastallized_type
         return self._type_1
 
     @property
@@ -818,6 +849,8 @@ class Pokemon:
         :return: The pokemon's second type.
         :rtype: Optional[PokemonType]
         """
+        if self._terastallized:
+            return None
         return self._type_2
 
     @property
