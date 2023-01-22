@@ -56,7 +56,7 @@ class Player(PlayerNetwork, ABC):
         player_configuration: Optional[PlayerConfiguration] = None,
         *,
         avatar: Optional[int] = None,
-        battle_format: str = "gen8randombattle",
+        battle_format: str = "gen9randombattle",
         log_level: Optional[int] = None,
         max_concurrent_battles: int = 1,
         save_replays: Union[bool, str] = False,
@@ -442,7 +442,15 @@ class Player(PlayerNetwork, ABC):
 
         for (
             idx,
-            (orders, mon, switches, moves, can_mega, can_z_move, can_dynamax),
+            (
+                orders,
+                mon,
+                switches,
+                moves,
+                can_mega,
+                can_z_move,
+                can_dynamax,
+            ),
         ) in enumerate(
             zip(
                 active_orders,
@@ -522,6 +530,14 @@ class Player(PlayerNetwork, ABC):
         if battle.can_dynamax:
             available_orders.extend(
                 [BattleOrder(move, dynamax=True) for move in battle.available_moves]
+            )
+
+        if battle.can_terastallize:
+            available_orders.extend(
+                [
+                    BattleOrder(move, terastallize=True)
+                    for move in battle.available_moves
+                ]
             )
 
         if battle.can_z_move and battle.active_pokemon:
@@ -696,6 +712,7 @@ class Player(PlayerNetwork, ABC):
         mega: bool = False,
         z_move: bool = False,
         dynamax: bool = False,
+        terastallize: bool = False,
         move_target: int = DoubleBattle.EMPTY_TARGET_POSITION,
     ) -> BattleOrder:
         """Formats an move order corresponding to the provided pokemon or move.
@@ -708,13 +725,20 @@ class Player(PlayerNetwork, ABC):
         :type z_move: bool
         :param dynamax: Whether to dynamax, if a move is chosen.
         :type dynamax: bool
+        :param terastallize: Whether to terastallize, if a move is chosen.
+        :type terastallize: bool
         :param move_target: Target Pokemon slot of a given move
         :type move_target: int
         :return: Formatted move order
         :rtype: str
         """
         return BattleOrder(
-            order, mega=mega, move_target=move_target, z_move=z_move, dynamax=dynamax
+            order,
+            mega=mega,
+            move_target=move_target,
+            z_move=z_move,
+            dynamax=dynamax,
+            terastallize=terastallize,
         )
 
     @property

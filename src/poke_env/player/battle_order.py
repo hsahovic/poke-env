@@ -11,6 +11,7 @@ class BattleOrder:
     mega: bool = False
     z_move: bool = False
     dynamax: bool = False
+    terastallize: bool = False
     move_target: int = DoubleBattle.EMPTY_TARGET_POSITION
 
     DEFAULT_ORDER = "/choose default"
@@ -31,6 +32,8 @@ class BattleOrder:
                 message += " zmove"
             elif self.dynamax:
                 message += " dynamax"
+            elif self.terastallize:
+                message += " terastallize"
 
             if self.move_target != DoubleBattle.EMPTY_TARGET_POSITION:
                 message += f" {self.move_target}"
