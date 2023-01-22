@@ -31,6 +31,7 @@ class Effect(Enum):
     CONFUSION = auto()
     COURT_CHANGE = auto()
     CRAFTY_SHIELD = auto()
+    CUD_CHEW = auto()
     CURSE = auto()
     CUSTAP_BERRY = auto()
     DANCER = auto()
@@ -45,6 +46,12 @@ class Effect(Enum):
     EMERGENCY_EXIT = auto()
     ENCORE = auto()
     ENDURE = auto()
+    FALLEN = auto()
+    FALLEN1 = auto()
+    FALLEN2 = auto()
+    FALLEN3 = auto()
+    FALLEN4 = auto()
+    FALLEN5 = auto()
     FAIRY_LOCK = auto()
     FEINT = auto()
     FIRE_SPIN = auto()
@@ -64,6 +71,7 @@ class Effect(Enum):
     GRUDGE = auto()
     GUARD_SPLIT = auto()
     GULP_MISSILE = auto()
+    HADRON_ENGINE = auto()
     HEAL_BELL = auto()
     HEAL_BLOCK = auto()
     HEALER = auto()
@@ -103,6 +111,7 @@ class Effect(Enum):
     NO_RETREAT = auto()
     OBLIVIOUS = auto()
     OCTOLOCK = auto()
+    ORICHALCUM_PULSE = auto()
     OWN_TEMPO = auto()
     PASTEL_VEIL = auto()
     PERISH0 = auto()
@@ -117,8 +126,20 @@ class Effect(Enum):
     POWER_TRICK = auto()
     PROTECT = auto()
     PROTECTIVE_PADS = auto()
+    PROTOSYNTHESIS = auto()
+    PROTOSYNTHESISATK = auto()
+    PROTOSYNTHESISDEF = auto()
+    PROTOSYNTHESISSPA = auto()
+    PROTOSYNTHESISSPD = auto()
+    PROTOSYNTHESISSPE = auto()
     PSYCHIC_TERRAIN = auto()
     PURSUIT = auto()
+    QUARK_DRIVE = auto()
+    QUARKDRIVEATK = auto()
+    QUARKDRIVEDEF = auto()
+    QUARKDRIVESPA = auto()
+    QUARKDRIVESPD = auto()
+    QUARKDRIVESPE = auto()
     QUASH = auto()
     QUICK_CLAW = auto()
     QUICK_GUARD = auto()
@@ -127,6 +148,7 @@ class Effect(Enum):
     ROUGH_SKIN = auto()
     SAFEGUARD = auto()
     SAFETY_GOGGLES = auto()
+    SALT_CURE = auto()
     SAND_TOMB = auto()
     SCREEN_CLEANER = auto()
     SHADOW_FORCE = auto()
@@ -150,6 +172,7 @@ class Effect(Enum):
     STRUGGLE = auto()
     SUBSTITUTE = auto()
     SUCTION_CUPS = auto()
+    SUPREME_OVERLORD = auto()
     SWEET_VEIL = auto()
     SYMBIOSIS = auto()
     SYNCHRONIZE = auto()
@@ -157,6 +180,8 @@ class Effect(Enum):
     TAUNT = auto()
     TELEKINESIS = auto()
     TELEPATHY = auto()
+    TIDY_UP = auto()
+    TOXIC_DEBRIS = auto()
     THROAT_CHOP = auto()
     THUNDER_CAGE = auto()
     TORMENT = auto()
@@ -175,6 +200,7 @@ class Effect(Enum):
     WIMP_OUT = auto()
     WRAP = auto()
     YAWN = auto()
+    ZERO_TO_HERO = auto()
 
     def __str__(self) -> str:
         return f"{self.name} (effect) object"
@@ -193,8 +219,13 @@ class Effect(Enum):
         message = message.replace("ability: ", "")
         message = message.replace(" ", "_")
         message = message.replace("-", "_")
+        message = message.upper()
+
+        if message == "FALLENUNDEFINED":
+            message = "FALLEN"
+
         try:
-            return Effect[message.upper()]
+            return Effect[message]
         except KeyError:
             logging.getLogger("poke-env").warning(
                 "Unexpected effect '%s' received. Effect._UNKNOWN will be used instead. "
