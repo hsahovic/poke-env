@@ -76,7 +76,9 @@ class Battle(AbstractBattle):
         self._can_dynamax = False
         self._can_terastallize = None
         self._maybe_trapped = False
-        self._reviving = any([m["reviving"] for m in side.get("pokemon", [])])
+        self._reviving = any(
+            [m["reviving"] for m in side.get("pokemon", []) if "reviving" in m]
+        )
         self._trapped = False
         self._force_switch = request.get("forceSwitch", False)
 

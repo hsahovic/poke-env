@@ -16,11 +16,12 @@ def test_max_base_power_player():
             "available_switches",
             "can_z_move",
             "can_dynamax",
+            "can_terastallize",
             "can_mega_evolve",
             "gen",
         ),
     )
-    battle = PseudoBattle([], [], False, False, False, 8)
+    battle = PseudoBattle([], [], False, False, False, False, 8)
 
     player_pkg.Battle = PseudoBattle
 
@@ -230,11 +231,12 @@ def test_random_player():
             "available_switches",
             "can_z_move",
             "can_dynamax",
+            "can_terastallize",
             "can_mega_evolve",
             "gen",
         ),
     )
-    battle = PseudoBattle([], [], False, False, False, 8)
+    battle = PseudoBattle([], [], False, False, False, False, 8)
 
     player_pkg.Battle = PseudoBattle
 
