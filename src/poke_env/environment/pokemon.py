@@ -43,7 +43,7 @@ class Pokemon:
         "_species",
         "_status",
         "_status_counter",
-        "_terastallize_type",
+        "_terastallized_type",
         "_terastallized",
         "_type_1",
         "_type_2",

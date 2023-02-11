@@ -198,8 +198,6 @@ class Player(PlayerNetwork, ABC):
                     await self._send_message("/timer on", battle.battle_tag)
 
                 return battle
-
-            return self._battles[battle_tag]
         else:
             self.logger.critical(
                 "Unmanaged battle initialisation message received: %s", split_message
