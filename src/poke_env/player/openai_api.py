@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
-# pyre-ignore-all-errors[34]
 """This module defines a player class with the OpenAI API on the main thread.
 For a black-box implementation consider using the module env_player.
 """
+# pyre-ignore-all-errors[34]
 import asyncio
 import copy
 import numpy as np  # pyre-ignore
