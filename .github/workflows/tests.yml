@@ -105,3 +105,9 @@ jobs:
 
       - name: Run integration tests
         run: pytest -x integration_tests/
+
+      - name: Install examples dependencies
+        run: pip install -r .github/scripts/examples-requirements.txt
+
+      - name: Check examples run successfully
+        run: python ./.github/scripts/check_examples.py
