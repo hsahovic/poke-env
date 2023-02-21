@@ -7,6 +7,8 @@ from poke_env.player import RandomPlayer
 @pytest.mark.asyncio
 async def test_laddering_sequential():
     async def send_message(self, *args, **kwargs):
+        if "/search" not in args[0]:
+            return
         interactions.append("Search start")
         asyncio.ensure_future(start_battle())
 
@@ -56,6 +58,8 @@ async def test_laddering_sequential():
 @pytest.mark.asyncio
 async def test_laddering_parallel():
     async def send_message(self, *args, **kwargs):
+        if "/search" not in args[0]:
+            return
         interactions.append("Search start")
         asyncio.ensure_future(start_battle())
 
