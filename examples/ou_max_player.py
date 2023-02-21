@@ -2,6 +2,7 @@ import asyncio
 import numpy as np
 
 from poke_env.player import Player, RandomPlayer
+from poke_env.data import GenData
 
 
 class MaxDamagePlayer(Player):
@@ -43,11 +44,11 @@ def teampreview_performance(mon_a, mon_b):
     a_on_b = b_on_a = -np.inf
     for type_ in mon_a.types:
         if type_:
-            a_on_b = max(a_on_b, type_.damage_multiplier(*mon_b.types))
+            a_on_b = max(a_on_b, type_.damage_multiplier(*mon_b.types, type_chart=GenData.from_gen(8).type_chart))
     # We do the same for mon_b over mon_a
     for type_ in mon_b.types:
         if type_:
-            b_on_a = max(b_on_a, type_.damage_multiplier(*mon_a.types))
+            b_on_a = max(b_on_a, type_.damage_multiplier(*mon_a.types, type_chart=GenData.from_gen(8).type_chart))
     # Our performance metric is the different between the two
     return a_on_b - b_on_a
 
@@ -74,14 +75,14 @@ IVs: 0 Atk
 - Protect
 - Wish
 
-Cinderace (M) @ Life Orb
+Charizard (M) @ Life Orb
 Ability: Blaze
 EVs: 252 Atk / 4 SpD / 252 Spe
 Jolly Nature
-- Pyro Ball
-- Sucker Punch
-- U-turn
-- High Jump Kick
+- Flamethrower
+- Wing Attack
+- Cut
+- Fire Blast
 
 Toxtricity (M) @ Throat Spray
 Ability: Punk Rock
@@ -131,7 +132,7 @@ IVs: 0 Atk
 - Thunder
 - Energy Ball
 
-Cloyster @ King's Rock
+Cloyster @ Leftovers
 Ability: Skill Link
 EVs: 252 Atk / 4 SpD / 252 Spe
 Adamant Nature
@@ -158,7 +159,7 @@ Adamant Nature
 - Earthquake
 - Rapid Spin
 
-Cinccino @ King's Rock
+Cinccino @ Choice Band
 Ability: Skill Link
 EVs: 252 Atk / 4 Def / 252 Spe
 Jolly Nature

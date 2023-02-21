@@ -3,6 +3,7 @@ import numpy as np
 
 from poke_env.player import cross_evaluate, Player, RandomPlayer
 from poke_env import LocalhostServerConfiguration, PlayerConfiguration
+from poke_env.data import GenData
 
 
 class MaxDamagePlayer(Player):
@@ -44,11 +45,11 @@ def teampreview_performance(mon_a, mon_b):
     a_on_b = b_on_a = -np.inf
     for type_ in mon_a.types:
         if type_:
-            a_on_b = max(a_on_b, type_.damage_multiplier(*mon_b.types))
+            a_on_b = max(a_on_b, type_.damage_multiplier(*mon_b.types, type_chart=GenData.from_gen(7).type_chart))
     # We do the same for mon_b over mon_a
     for type_ in mon_b.types:
         if type_:
-            b_on_a = max(b_on_a, type_.damage_multiplier(*mon_a.types))
+            b_on_a = max(b_on_a, type_.damage_multiplier(*mon_a.types, type_chart=GenData.from_gen(7).type_chart))
     # Our performance metric is the different between the two
     return a_on_b - b_on_a
 
@@ -173,8 +174,8 @@ Jolly Nature
 """
 
     # We define two player configurations.
-    player_1_configuration = PlayerConfiguration("Random player", None)
-    player_2_configuration = PlayerConfiguration("Max damage player", None)
+    player_1_configuration = PlayerConfiguration("RandomPlayer", None)
+    player_2_configuration = PlayerConfiguration("MaxDamagePlayer", None)
 
     # We create the corresponding players.
     random_player = RandomPlayer(

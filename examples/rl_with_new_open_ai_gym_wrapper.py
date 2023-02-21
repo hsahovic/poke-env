@@ -11,7 +11,8 @@ from tensorflow.keras.layers import Dense, Flatten
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
 
-from poke_env.environment.abstract_battle import AbstractBattle
+from poke_env.data import GenData
+from poke_env.environment import AbstractBattle
 from poke_env.player import (
     background_evaluate_player,
     background_cross_evaluate,
@@ -43,6 +44,7 @@ class SimpleRLPlayer(Gen8EnvSinglePlayer):
                 moves_dmg_multiplier[i] = move.type.damage_multiplier(
                     battle.opponent_active_pokemon.type_1,
                     battle.opponent_active_pokemon.type_2,
+                    type_chart=GenData.from_gen(8).type_chart
                 )
 
         # We count how many pokemons have fainted in each team
@@ -130,27 +132,27 @@ async def main():
     dqn.compile(Adam(learning_rate=0.00025), metrics=["mae"])
 
     # Training the model
-    dqn.fit(train_env, nb_steps=10000)
+    dqn.fit(train_env, nb_steps=100)
     train_env.close()
 
     # Evaluating the model
     print("Results against random player:")
-    dqn.test(eval_env, nb_episodes=100, verbose=False, visualize=False)
+    dqn.test(eval_env, nb_episodes=10, verbose=False, visualize=False)
     print(
         f"DQN Evaluation: {eval_env.n_won_battles} victories out of {eval_env.n_finished_battles} episodes"
     )
     second_opponent = MaxBasePowerPlayer(battle_format="gen8randombattle")
     eval_env.reset_env(restart=True, opponent=second_opponent)
     print("Results against max base power player:")
-    dqn.test(eval_env, nb_episodes=100, verbose=False, visualize=False)
+    dqn.test(eval_env, nb_episodes=10, verbose=False, visualize=False)
     print(
         f"DQN Evaluation: {eval_env.n_won_battles} victories out of {eval_env.n_finished_battles} episodes"
     )
     eval_env.reset_env(restart=False)
 
     # Evaluate the player with included util method
-    n_challenges = 250
-    placement_battles = 40
+    n_challenges = 20
+    placement_battles = 2
     eval_task = background_evaluate_player(
         eval_env.agent, n_challenges, placement_battles
     )
@@ -159,7 +161,7 @@ async def main():
     eval_env.reset_env(restart=False)
 
     # Cross evaluate the player with included util method
-    n_challenges = 50
+    n_challenges = 10
     players = [
         eval_env.agent,
         RandomPlayer(battle_format="gen8randombattle"),

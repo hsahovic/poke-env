@@ -12,7 +12,7 @@ async def main():
     )
 
     # Sending challenges to 'your_username'
-    await player.send_challenges("your_username", n_challenges=1)
+    # await player.send_challenges("your_username", n_challenges=1)
 
     # Accepting one challenge from any user
     # await player.accept_challenges(None, 1)

@@ -2,69 +2,63 @@
 # This script illustrates a very rough approach that can currently be used to train using self-play
 # Don't hesitate to open an issue if things seem not to be working
 
-import asyncio
 import numpy as np
-from poke_env.player import cross_evaluate, Gen8EnvSinglePlayer, RandomPlayer
-from tabulate import tabulate
+from gym.spaces import Space, Box
+from poke_env.environment import AbstractBattle
+from poke_env.player import Gen8EnvSinglePlayer
 from threading import Thread
-
-from poke_env import to_id_str
 
 
 class RandomGen8EnvPlayer(Gen8EnvSinglePlayer):
     def embed_battle(self, battle):
         return np.array([0])
 
+    def calc_reward(
+        self, last_battle: AbstractBattle, current_battle: AbstractBattle
+    ) -> float:
+        self.reward_computing_helper(current_battle, fainted_value=1.0, hp_value=0.1, victory_value=10.0)
 
-def env_algorithm(player, n_battles):
-    for _ in range(n_battles):
+    def describe_embedding(self) -> Space:
+        return Box(low=0, high=1, shape=(1,))
+
+
+def train_function(player, opponent, battles):
+    for _ in range(battles):
         done = False
         player.reset()
         while not done:
-            _, _, done, _ = player.step(np.random.choice(player.action_space))
-
-
-async def launch_battles(player, opponent):
-    battles_coroutine = asyncio.gather(
-        player.send_challenges(
-            opponent=to_id_str(opponent.username),
-            n_challenges=1,
-            to_wait=opponent.logged_in,
-        ),
-        opponent.accept_challenges(opponent=to_id_str(player.username), n_challenges=1),
-    )
-    await battles_coroutine
-
-
-def env_algorithm_wrapper(player, kwargs):
-    env_algorithm(player, **kwargs)
-
-    player._start_new_battle = False
-    while True:
-        try:
-            player.complete_current_battle()
+            action = player.action_space.sample()
+            step, reward, terminated, truncated, info = player.step(action)
+            done = terminated or truncated
+        player.finish_training = True
+    while not opponent.finish_training or not player.agent.current_battle.finished:
+        if player.current_battle.finished and not player.agent.current_battle.finished:
             player.reset()
-        except OSError:
-            break
+        done = False
+        while not done:
+            action = player.action_space.sample()
+            step, reward, terminated, truncated, info = player.step(action)
+            done = terminated or truncated
 
 
-p1 = RandomGen8EnvPlayer(log_level=25)
-p2 = RandomGen8EnvPlayer(log_level=25)
+N_CHALLENGES = 5
 
-p1._start_new_battle = True
-p2._start_new_battle = True
+p1 = RandomGen8EnvPlayer(log_level=25, opponent=None, use_old_gym_api=False)
+p2 = RandomGen8EnvPlayer(log_level=25, opponent=None, use_old_gym_api=False)
+p1.set_opponent(p2.agent)
+p2.set_opponent(p1.agent)
+p1.start_challenging()
+p1.finish_training = False
+p2.finish_training = False
 
-loop = asyncio.get_event_loop()
-
-env_algorithm_kwargs = {"n_battles": 5}
-
-t1 = Thread(target=lambda: env_algorithm_wrapper(p1, env_algorithm_kwargs))
+t1 = Thread(target=lambda: train_function(p1, p2, N_CHALLENGES))
 t1.start()
 
-t2 = Thread(target=lambda: env_algorithm_wrapper(p2, env_algorithm_kwargs))
+t2 = Thread(target=lambda: train_function(p2, p1, N_CHALLENGES))
 t2.start()
 
-while p1._start_new_battle:
-    loop.run_until_complete(launch_battles(p1, p2))
 t1.join()
 t2.join()
+
+p1.close()
+p2.close()

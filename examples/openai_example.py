@@ -72,6 +72,7 @@ def openai_api():
         battle_format="gen8randombattle",
         server_configuration=LocalhostServerConfiguration,
         start_challenging=True,
+        use_old_gym_api=False,
     )
     check_env(gym_env)
     gym_env.close()
@@ -87,6 +88,7 @@ def env_player():
         server_configuration=LocalhostServerConfiguration,
         start_challenging=True,
         opponent=opponent,
+        use_old_gym_api=False,
     )
     check_env(gym_env)
     gym_env.close()

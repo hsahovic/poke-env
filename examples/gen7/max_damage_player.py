@@ -25,8 +25,8 @@ async def main():
     start = time.time()
 
     # We define two player configurations.
-    player_1_configuration = PlayerConfiguration("Random player", None)
-    player_2_configuration = PlayerConfiguration("Max damage player", None)
+    player_1_configuration = PlayerConfiguration("RandomPlayer", None)
+    player_2_configuration = PlayerConfiguration("MaxDamagePlayer", None)
 
     # We create the corresponding players.
     random_player = RandomPlayer(
