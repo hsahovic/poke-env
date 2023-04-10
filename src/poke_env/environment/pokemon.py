@@ -154,6 +154,9 @@ class Pokemon:
         if self._status == Status.SLP:
             self._status_counter += 1
 
+    def _clear_active(self):
+        self._active = False
+
     def _clear_boosts(self):
         for stat in self._boosts:
             self._boosts[stat] = 0

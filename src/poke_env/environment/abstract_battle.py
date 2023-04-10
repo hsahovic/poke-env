@@ -656,6 +656,8 @@ class AbstractBattle(ABC):
             self.get_pokemon(pokemon)._used_z_move()
         elif split_message[1] == "clearpoke":
             self._in_team_preview = True
+            for mon in self.team.values():
+                mon._clear_active()
         elif split_message[1] == "gen":
             self._format = split_message[2]
         elif split_message[1] == "inactive":
