@@ -4,12 +4,13 @@
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/poke-env.svg)](https://pypi.python.org/pypi/poke-env/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Documentation Status](https://readthedocs.org/projects/poke-env/badge/?version=stable)](https://poke-env.readthedocs.io/en/stable/?badge=stable)
+[![codecov](https://codecov.io/gh/hsahovic/poke-env/branch/master/graph/badge.svg)](https://codecov.io/gh/hsahovic/poke-env)
 
 A Python interface to create battling pokemon agents. `poke-env` offers an easy-to-use interface for creating rule-based or training Reinforcement Learning bots to battle on [pokemon showdown](https://pokemonshowdown.com/).
 
 ![A simple agent in action](rl-gif.gif)
 
-# Getting started
+## Getting started
 
 Agents are instance of python classes inheriting from `Player`. Here is what your first agent could look like:
 
@@ -58,7 +59,7 @@ cp config/config-example.js config/config.js
 node pokemon-showdown start --no-security
 ```
 
-### Development version
+## Development version
 
 You can also clone the latest master version with:
 
@@ -88,8 +89,13 @@ Data files are adapted version of the `js` data files of [Pokemon Showdown](http
 ## License
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Other
+## Citing `poke-env`
 
-[![CircleCI](https://circleci.com/gh/hsahovic/poke-env.svg?style=svg)](https://circleci.com/gh/hsahovic/poke-env)
-[![codecov](https://codecov.io/gh/hsahovic/poke-env/branch/master/graph/badge.svg)](https://codecov.io/gh/hsahovic/poke-env)
-<a href="https://github.com/ambv/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
+```bibtex
+@misc{poke_env_2020_11_14,
+    author       = {Haris Sahovic},
+    title        = {Poke-env: pokemon AI in python},
+    version      = {0.3.10},
+    url          = {https://github.com/hsahovic/poke-env}
+}
+```
