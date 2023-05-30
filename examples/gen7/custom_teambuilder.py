@@ -137,7 +137,6 @@ custom_builder = RandomTeamFromPool([team_1, team_2])
 
 
 async def main():
-
     # We define two player configurations.
     player_1_configuration = PlayerConfiguration("Random player 1", None)
     player_2_configuration = PlayerConfiguration("Random player 2", None)

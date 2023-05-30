@@ -75,7 +75,9 @@ async def main():
     # First test the environment to ensure the class is consistent
     # with the OpenAI API
     opponent = RandomPlayer(battle_format="gen8randombattle")
-    test_env = SimpleRLPlayer(battle_format="gen8randombattle", start_challenging=True, opponent=opponent)
+    test_env = SimpleRLPlayer(
+        battle_format="gen8randombattle", start_challenging=True, opponent=opponent
+    )
     check_env(test_env)
     test_env.close()
 

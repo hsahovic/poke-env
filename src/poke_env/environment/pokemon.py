@@ -15,7 +15,6 @@ from poke_env.data import GenData, to_id_str
 
 
 class Pokemon:
-
     __slots__ = (
         "_ability",
         "_active",

@@ -20,7 +20,6 @@ import os
 
 
 class AbstractBattle(ABC):
-
     MESSAGES_TO_IGNORE = {
         "-anim",
         "-burst",
