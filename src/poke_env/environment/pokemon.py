@@ -43,8 +43,8 @@ class Pokemon:
         "_species",
         "_status",
         "_status_counter",
-        "_terastallized_type",
         "_terastallized",
+        "_terastallized_type",
         "_type_1",
         "_type_2",
         "_weightkg",
@@ -349,7 +349,7 @@ class Pokemon:
             self._status_counter = 0
 
     def _terastallize(self, type_):
-        self._terastallize_type = PokemonType.from_name(type_)
+        self._terastallized_type = PokemonType.from_name(type_)
         self._terastallized = True
 
     def _transform(self, into):
