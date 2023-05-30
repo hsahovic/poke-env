@@ -92,10 +92,9 @@ Data files are adapted version of the `js` data files of [Pokemon Showdown](http
 ## Citing `poke-env`
 
 ```bibtex
-@misc{poke_env_2020_11_14,
+@misc{poke_env,
     author       = {Haris Sahovic},
     title        = {Poke-env: pokemon AI in python},
-    version      = {0.3.10},
     url          = {https://github.com/hsahovic/poke-env}
 }
 ```
