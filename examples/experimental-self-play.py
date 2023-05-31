@@ -16,7 +16,7 @@ class RandomGen8EnvPlayer(Gen8EnvSinglePlayer):
     def calc_reward(
         self, last_battle: AbstractBattle, current_battle: AbstractBattle
     ) -> float:
-        self.reward_computing_helper(current_battle, fainted_value=1.0, hp_value=0.1, victory_value=10.0)
+        return self.reward_computing_helper(current_battle, fainted_value=1.0, hp_value=0.1, victory_value=10.0)
 
     def describe_embedding(self) -> Space:
         return Box(low=0, high=1, shape=(1,))
@@ -43,8 +43,8 @@ def train_function(player, opponent, battles):
 
 N_CHALLENGES = 5
 
-p1 = RandomGen8EnvPlayer(log_level=25, opponent=None, use_old_gym_api=False)
-p2 = RandomGen8EnvPlayer(log_level=25, opponent=None, use_old_gym_api=False)
+p1 = RandomGen8EnvPlayer(log_level=25, opponent=None)
+p2 = RandomGen8EnvPlayer(log_level=25, opponent=None)
 p1.set_opponent(p2.agent)
 p2.set_opponent(p1.agent)
 p1.start_challenging()
