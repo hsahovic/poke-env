@@ -137,22 +137,22 @@ async def main():
 
     # Evaluating the model
     print("Results against random player:")
-    dqn.test(eval_env, nb_episodes=10, verbose=False, visualize=False)
+    dqn.test(eval_env, nb_episodes=1, verbose=False, visualize=False)
     print(
         f"DQN Evaluation: {eval_env.n_won_battles} victories out of {eval_env.n_finished_battles} episodes"
     )
     second_opponent = MaxBasePowerPlayer(battle_format="gen8randombattle")
     eval_env.reset_env(restart=True, opponent=second_opponent)
     print("Results against max base power player:")
-    dqn.test(eval_env, nb_episodes=10, verbose=False, visualize=False)
+    dqn.test(eval_env, nb_episodes=1, verbose=False, visualize=False)
     print(
         f"DQN Evaluation: {eval_env.n_won_battles} victories out of {eval_env.n_finished_battles} episodes"
     )
     eval_env.reset_env(restart=False)
 
     # Evaluate the player with included util method
-    n_challenges = 20
-    placement_battles = 2
+    n_challenges = 60
+    placement_battles = 4
     eval_task = background_evaluate_player(
         eval_env.agent, n_challenges, placement_battles
     )
@@ -161,7 +161,7 @@ async def main():
     eval_env.reset_env(restart=False)
 
     # Cross evaluate the player with included util method
-    n_challenges = 10
+    n_challenges = 2
     players = [
         eval_env.agent,
         RandomPlayer(battle_format="gen8randombattle"),
