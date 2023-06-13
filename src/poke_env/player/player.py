@@ -151,6 +151,21 @@ class Player(PlayerNetwork, ABC):
     def _battle_finished_callback(self, battle: AbstractBattle) -> None:
         pass
 
+    def update_team(self, team) -> None:
+        """Updates the team used by the player.
+
+        :param team: The new team to use.
+        :type team: str or Teambuilder
+        """
+        if isinstance(team, Teambuilder):
+            self._team = team
+        elif isinstance(team, str):
+            self._team = ConstantTeambuilder(team)
+        else:
+            raise TypeError(
+                "Team must be a showdown team string or a Teambuilder object."
+            )
+
     async def _create_battle(self, split_message: List[str]) -> AbstractBattle:
         """Returns battle object corresponding to received message.
 
