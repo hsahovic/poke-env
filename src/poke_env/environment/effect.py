@@ -89,6 +89,7 @@ class Effect(Enum):
     IRON_BARBS = auto()
     LASER_FOCUS = auto()
     LEECH_SEED = auto()
+    LEPPA_BERRY = auto()
     LIGHTNING_ROD = auto()
     LIMBER = auto()
     LIQUID_OOZE = auto()
