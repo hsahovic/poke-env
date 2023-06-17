@@ -398,6 +398,13 @@ class Pokemon:
         gender = None
         level = None
 
+        for split_detail in split_details:
+            if split_detail.startswith("tera:"):
+                self._terastallized_type = PokemonType.from_name(split_detail[5:])
+
+                split_details.remove(split_detail)
+                break
+
         if len(split_details) == 3:
             species, level, gender = split_details
         elif len(split_details) == 2:
