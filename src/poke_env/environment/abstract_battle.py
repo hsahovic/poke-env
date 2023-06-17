@@ -404,6 +404,9 @@ class AbstractBattle(ABC):
             if split_message[-1] == "[notarget]":
                 split_message = split_message[:-1]
 
+            if split_message[-1].startswith("[spread]"):
+                split_message = split_message[:-1]
+
             if split_message[-1] in {"[from]lockedmove", "[from]Pursuit", "[zeffect]"}:
                 split_message = split_message[:-1]
 
@@ -451,9 +454,6 @@ class AbstractBattle(ABC):
                     )
             if split_message[-1] == "[from]Magic Coat":
                 return
-
-            if split_message[-1].startswith("[spread]"):
-                split_message = split_message[:-1]
 
             while split_message[-1] == "[still]":
                 split_message = split_message[:-1]
