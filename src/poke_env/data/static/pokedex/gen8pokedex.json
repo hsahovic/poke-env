@@ -2675,38 +2675,7 @@
             "1": "Adaptability",
             "H": "Mold Breaker"
         },
-        "baseForme": "M",
-        "baseStats": {
-            "atk": 112,
-            "def": 65,
-            "hp": 120,
-            "spa": 80,
-            "spd": 75,
-            "spe": 78
-        },
-        "color": "Green",
-        "eggGroups": [
-            "Water 2"
-        ],
-        "evoCondition": "Receive 294+ recoil without fainting",
-        "evoType": "other",
-        "formeOrder": [
-            "Basculegion",
-            "Basculegion-F"
-        ],
-        "gender": "M",
-        "heightm": 3,
-        "name": "Basculegion",
-        "num": 902,
-        "otherFormes": [
-            "Basculegion-F"
-        ],
-        "prevo": "Basculin-White-Striped",
-        "types": [
-            "Water",
-            "Ghost"
-        ],
-        "weightkg": 110
+        "inherit": true
     },
     "basculegionf": {
         "abilities": {
@@ -2714,32 +2683,7 @@
             "1": "Adaptability",
             "H": "Mold Breaker"
         },
-        "baseSpecies": "Basculegion",
-        "baseStats": {
-            "atk": 92,
-            "def": 65,
-            "hp": 120,
-            "spa": 100,
-            "spd": 75,
-            "spe": 78
-        },
-        "color": "Green",
-        "eggGroups": [
-            "Water 2"
-        ],
-        "evoCondition": "Receive 294+ recoil without fainting",
-        "evoType": "other",
-        "forme": "F",
-        "gender": "F",
-        "heightm": 3,
-        "name": "Basculegion-F",
-        "num": 902,
-        "prevo": "Basculin-White-Striped",
-        "types": [
-            "Water",
-            "Ghost"
-        ],
-        "weightkg": 110
+        "inherit": true
     },
     "basculin": {
         "abilities": {
@@ -10524,67 +10468,7 @@
             "0": "Healer",
             "H": "Contrary"
         },
-        "baseForme": "Incarnate",
-        "baseStats": {
-            "atk": 115,
-            "def": 70,
-            "hp": 74,
-            "spa": 135,
-            "spd": 80,
-            "spe": 106
-        },
-        "color": "Pink",
-        "eggGroups": [
-            "Undiscovered"
-        ],
-        "formeOrder": [
-            "Enamorus",
-            "Enamorus-Therian"
-        ],
-        "gender": "F",
-        "heightm": 1.6,
-        "name": "Enamorus",
-        "num": 905,
-        "otherFormes": [
-            "Enamorus-Therian"
-        ],
-        "tags": [
-            "Sub-Legendary"
-        ],
-        "types": [
-            "Fairy",
-            "Flying"
-        ],
-        "weightkg": 48
-    },
-    "enamorustherian": {
-        "abilities": {
-            "0": "Overcoat"
-        },
-        "baseSpecies": "Enamorus",
-        "baseStats": {
-            "atk": 115,
-            "def": 110,
-            "hp": 74,
-            "spa": 135,
-            "spd": 100,
-            "spe": 46
-        },
-        "changesFrom": "Enamorus",
-        "color": "Pink",
-        "eggGroups": [
-            "Undiscovered"
-        ],
-        "forme": "Therian",
-        "gender": "F",
-        "heightm": 1.6,
-        "name": "Enamorus-Therian",
-        "num": 905,
-        "types": [
-            "Fairy",
-            "Flying"
-        ],
-        "weightkg": 48
+        "inherit": true
     },
     "entei": {
         "abilities": {
@@ -15218,6 +15102,33 @@
         ],
         "weightkg": 6
     },
+    "hemogoblin": {
+        "abilities": {
+            "0": "Pixilate",
+            "1": "Intimidate"
+        },
+        "baseStats": {
+            "atk": 99,
+            "def": 89,
+            "hp": 90,
+            "spa": 99,
+            "spd": 97,
+            "spe": 55
+        },
+        "color": "Pink",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "gen": 9,
+        "heightm": 1.4,
+        "name": "Hemogoblin",
+        "num": -71,
+        "types": [
+            "Fairy",
+            "Fire"
+        ],
+        "weightkg": 85
+    },
     "heracross": {
         "abilities": {
             "0": "Swarm",
@@ -17115,29 +17026,7 @@
             "1": "Sheer Force",
             "H": "Steadfast"
         },
-        "baseStats": {
-            "atk": 135,
-            "def": 95,
-            "hp": 70,
-            "spa": 45,
-            "spd": 70,
-            "spe": 85
-        },
-        "color": "Brown",
-        "eggGroups": [
-            "Bug"
-        ],
-        "evoCondition": "Black Augurite",
-        "evoType": "other",
-        "heightm": 1.8,
-        "name": "Kleavor",
-        "num": 900,
-        "prevo": "Scyther",
-        "types": [
-            "Bug",
-            "Rock"
-        ],
-        "weightkg": 89
+        "inherit": true
     },
     "klefki": {
         "abilities": {
@@ -23825,36 +23714,6 @@
         ],
         "weightkg": 5.9
     },
-    "overqwil": {
-        "abilities": {
-            "0": "Poison Point",
-            "1": "Swift Swim",
-            "H": "Intimidate"
-        },
-        "baseStats": {
-            "atk": 115,
-            "def": 95,
-            "hp": 85,
-            "spa": 65,
-            "spd": 65,
-            "spe": 85
-        },
-        "color": "Gray",
-        "eggGroups": [
-            "Water 2"
-        ],
-        "evoCondition": "Use Strong style Barb Barrage 20 times",
-        "evoType": "other",
-        "heightm": 0.5,
-        "name": "Overqwil",
-        "num": 904,
-        "prevo": "Qwilfish-Hisui",
-        "types": [
-            "Dark",
-            "Poison"
-        ],
-        "weightkg": 3.9
-    },
     "pachirisu": {
         "abilities": {
             "0": "Run Away",
@@ -27841,7 +27700,7 @@
         },
         "color": "Gray",
         "eggGroups": [
-            "Undiscovered"
+            "Mineral"
         ],
         "evos": [
             "Tactite"
@@ -32567,30 +32426,10 @@
             "0": "Pressure",
             "H": "Poison Touch"
         },
-        "baseStats": {
-            "atk": 130,
-            "def": 60,
-            "hp": 80,
-            "spa": 40,
-            "spd": 80,
-            "spe": 120
-        },
-        "color": "Purple",
-        "eggGroups": [
-            "Field"
-        ],
         "evoCondition": "during the day",
         "evoItem": "Razor Claw",
         "evoType": "useItem",
-        "heightm": 1.3,
-        "name": "Sneasler",
-        "num": 903,
-        "prevo": "Sneasel-Hisui",
-        "types": [
-            "Fighting",
-            "Poison"
-        ],
-        "weightkg": 43
+        "inherit": true
     },
     "snivy": {
         "abilities": {
@@ -33662,7 +33501,7 @@
         },
         "color": "Gray",
         "eggGroups": [
-            "Undiscovered"
+            "Mineral"
         ],
         "evoType": "trade",
         "gen": 4,
@@ -34398,7 +34237,7 @@
         },
         "color": "Gray",
         "eggGroups": [
-            "Undiscovered"
+            "Mineral"
         ],
         "evoLevel": 28,
         "evos": [
@@ -34670,25 +34509,25 @@
         ],
         "formeOrder": [
             "Tauros",
-            "Tauros-Paldea",
-            "Tauros-Paldea-Fire",
-            "Tauros-Paldea-Water"
+            "Tauros-Paldea-Combat",
+            "Tauros-Paldea-Blaze",
+            "Tauros-Paldea-Aqua"
         ],
         "gender": "M",
         "heightm": 1.4,
         "name": "Tauros",
         "num": 128,
         "otherFormes": [
-            "Tauros-Paldea",
-            "Tauros-Paldea-Fire",
-            "Tauros-Paldea-Water"
+            "Tauros-Paldea-Combat",
+            "Tauros-Paldea-Blaze",
+            "Tauros-Paldea-Aqua"
         ],
         "types": [
             "Normal"
         ],
         "weightkg": 88.4
     },
-    "taurospaldea": {
+    "taurospaldeaaqua": {
         "abilities": {
             "0": "Intimidate",
             "1": "Anger Point",
@@ -34707,17 +34546,18 @@
         "eggGroups": [
             "Field"
         ],
-        "forme": "Paldea",
+        "forme": "Paldea-Aqua",
         "gender": "M",
         "heightm": 1.4,
-        "name": "Tauros-Paldea",
+        "name": "Tauros-Paldea-Aqua",
         "num": 128,
         "types": [
-            "Fighting"
+            "Fighting",
+            "Water"
         ],
         "weightkg": 88.4
     },
-    "taurospaldeafire": {
+    "taurospaldeablaze": {
         "abilities": {
             "0": "Intimidate",
             "1": "Anger Point",
@@ -34736,10 +34576,10 @@
         "eggGroups": [
             "Field"
         ],
-        "forme": "Paldea-Fire",
+        "forme": "Paldea-Blaze",
         "gender": "M",
         "heightm": 1.4,
-        "name": "Tauros-Paldea-Fire",
+        "name": "Tauros-Paldea-Blaze",
         "num": 128,
         "types": [
             "Fighting",
@@ -34747,7 +34587,7 @@
         ],
         "weightkg": 88.4
     },
-    "taurospaldeawater": {
+    "taurospaldeacombat": {
         "abilities": {
             "0": "Intimidate",
             "1": "Anger Point",
@@ -34766,14 +34606,13 @@
         "eggGroups": [
             "Field"
         ],
-        "forme": "Paldea-Water",
+        "forme": "Paldea-Combat",
         "gender": "M",
         "heightm": 1.4,
-        "name": "Tauros-Paldea-Water",
+        "name": "Tauros-Paldea-Combat",
         "num": 128,
         "types": [
-            "Fighting",
-            "Water"
+            "Fighting"
         ],
         "weightkg": 88.4
     },
@@ -36595,36 +36434,6 @@
             "Psychic"
         ],
         "weightkg": 5
-    },
-    "ursaluna": {
-        "abilities": {
-            "0": "Guts",
-            "1": "Bulletproof",
-            "H": "Unnerve"
-        },
-        "baseStats": {
-            "atk": 140,
-            "def": 105,
-            "hp": 130,
-            "spa": 45,
-            "spd": 80,
-            "spe": 50
-        },
-        "color": "Brown",
-        "eggGroups": [
-            "Field"
-        ],
-        "evoCondition": "Peat Block when there's a full moon",
-        "evoType": "other",
-        "heightm": 2.4,
-        "name": "Ursaluna",
-        "num": 901,
-        "prevo": "Ursaring",
-        "types": [
-            "Ground",
-            "Normal"
-        ],
-        "weightkg": 290
     },
     "ursaring": {
         "abilities": {
@@ -38899,36 +38708,6 @@
             "Psychic"
         ],
         "weightkg": 14
-    },
-    "wyrdeer": {
-        "abilities": {
-            "0": "Intimidate",
-            "1": "Frisk",
-            "H": "Sap Sipper"
-        },
-        "baseStats": {
-            "atk": 105,
-            "def": 72,
-            "hp": 103,
-            "spa": 105,
-            "spd": 75,
-            "spe": 65
-        },
-        "color": "White",
-        "eggGroups": [
-            "Field"
-        ],
-        "evoCondition": "Use Agile style Psyshield Bash 20 times",
-        "evoType": "other",
-        "heightm": 1.8,
-        "name": "Wyrdeer",
-        "num": 899,
-        "prevo": "Stantler",
-        "types": [
-            "Normal",
-            "Psychic"
-        ],
-        "weightkg": 95.1
     },
     "xatu": {
         "abilities": {
