@@ -121,7 +121,7 @@ class SimpleHeuristicsPlayer(Player):
                 [m for m in battle.team.values() if m.fainted is False]
             )
             n_opp_remaining_mons = 6 - len(
-                [m for m in battle.team.values() if m.fainted is True]
+                [m for m in battle.opponent_team.values() if m.fainted is True]
             )
 
             # Entry hazard...
