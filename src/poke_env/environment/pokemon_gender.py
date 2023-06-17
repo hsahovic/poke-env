@@ -19,7 +19,7 @@ class PokemonGender(Enum):
 
     @staticmethod
     def from_request_details(gender: str) -> "PokemonGender":
-        """Returns the PokemonGenre object corresponding to the gender received in a
+        """Returns the PokemonGender object corresponding to the gender received in a
             message.
 
         :param gender: The received gender to convert.
