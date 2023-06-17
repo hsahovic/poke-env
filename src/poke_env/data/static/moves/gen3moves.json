@@ -245,7 +245,11 @@
         "basePower": 0,
         "category": "Status",
         "contestType": "Cute",
-        "flags": {},
+        "flags": {
+            "failcopycat": 1,
+            "noassist": 1,
+            "nosleeptalk": 1
+        },
         "isNonstandard": null,
         "name": "Assist",
         "num": 274,
@@ -299,6 +303,7 @@
         },
         "name": "Attract",
         "num": 213,
+        "onTryImmunity": "onTryImmunity",
         "pp": 15,
         "priority": 0,
         "secondary": null,
@@ -385,7 +390,7 @@
         "flags": {},
         "name": "Baton Pass",
         "num": 226,
-        "onHit": "onHit",
+        "onTryHit": "onTryHit",
         "pp": 40,
         "priority": 0,
         "secondary": null,
@@ -464,6 +469,8 @@
         "contestType": "Tough",
         "flags": {
             "contact": 1,
+            "failinstruct": 1,
+            "nosleeptalk": 1,
             "protect": 1
         },
         "ignoreImmunity": true,
@@ -715,6 +722,7 @@
             "distance": 1,
             "gravity": 1,
             "mirror": 1,
+            "nosleeptalk": 1,
             "protect": 1
         },
         "name": "Bounce",
@@ -1182,6 +1190,9 @@
         "damageCallback": "damageCallback",
         "flags": {
             "contact": 1,
+            "failcopycat": 1,
+            "failmefirst": 1,
+            "noassist": 1,
             "protect": 1
         },
         "maxMove": {
@@ -1203,6 +1214,7 @@
         "contestType": "Cute",
         "flags": {
             "mirror": 1,
+            "noassist": 1,
             "protect": 1
         },
         "name": "Covet",
@@ -1388,7 +1400,9 @@
         },
         "contestType": "Clever",
         "flags": {
-            "bypasssub": 1
+            "bypasssub": 1,
+            "failcopycat": 1,
+            "noassist": 1
         },
         "name": "Destiny Bond",
         "num": 194,
@@ -1414,7 +1428,10 @@
             "onTryHitPriority": 3
         },
         "contestType": "Cool",
-        "flags": {},
+        "flags": {
+            "failcopycat": 1,
+            "noassist": 1
+        },
         "name": "Detect",
         "num": 197,
         "onHit": "onHit",
@@ -1448,6 +1465,7 @@
             "contact": 1,
             "mirror": 1,
             "nonsky": 1,
+            "nosleeptalk": 1,
             "protect": 1
         },
         "name": "Dig",
@@ -1506,6 +1524,7 @@
             "contact": 1,
             "mirror": 1,
             "nonsky": 1,
+            "nosleeptalk": 1,
             "protect": 1
         },
         "name": "Dive",
@@ -1545,8 +1564,9 @@
         "basePower": 120,
         "category": "Special",
         "contestType": "Beautiful",
-        "flags": {},
-        "isFutureMove": true,
+        "flags": {
+            "futuremove": 1
+        },
         "isNonstandard": null,
         "name": "Doom Desire",
         "num": 353,
@@ -1864,6 +1884,7 @@
         "contestType": "Cute",
         "flags": {
             "bypasssub": 1,
+            "failencore": 1,
             "mirror": 1,
             "protect": 1
         },
@@ -1890,6 +1911,7 @@
         "flags": {
             "contact": 1,
             "mirror": 1,
+            "noparentalbond": 1,
             "protect": 1
         },
         "maxMove": {
@@ -1919,7 +1941,10 @@
             "onStart": "onStart"
         },
         "contestType": "Tough",
-        "flags": {},
+        "flags": {
+            "failcopycat": 1,
+            "noassist": 1
+        },
         "name": "Endure",
         "num": 203,
         "onHit": "onHit",
@@ -1960,6 +1985,7 @@
         "contestType": "Beautiful",
         "flags": {
             "mirror": 1,
+            "noparentalbond": 1,
             "protect": 1
         },
         "name": "Explosion",
@@ -2418,6 +2444,11 @@
         "contestType": "Tough",
         "flags": {
             "contact": 1,
+            "failcopycat": 1,
+            "failinstruct": 1,
+            "failmefirst": 1,
+            "noassist": 1,
+            "nosleeptalk": 1,
             "protect": 1,
             "punch": 1
         },
@@ -2442,7 +2473,10 @@
             "onStart": "onStart"
         },
         "contestType": "Cute",
-        "flags": {},
+        "flags": {
+            "failcopycat": 1,
+            "noassist": 1
+        },
         "name": "Follow Me",
         "num": 266,
         "onTry": "onTry",
@@ -2613,9 +2647,10 @@
         "basePower": 80,
         "category": "Special",
         "contestType": "Clever",
-        "flags": {},
+        "flags": {
+            "futuremove": 1
+        },
         "ignoreImmunity": true,
-        "isFutureMove": true,
         "name": "Future Sight",
         "num": 248,
         "onTry": "onTry",
@@ -2961,7 +2996,9 @@
         },
         "contestType": "Clever",
         "flags": {
-            "bypasssub": 1
+            "bypasssub": 1,
+            "failcopycat": 1,
+            "noassist": 1
         },
         "name": "Helping Hand",
         "num": 270,
@@ -3528,7 +3565,9 @@
         "flags": {
             "bullet": 1,
             "contact": 1,
+            "failinstruct": 1,
             "mirror": 1,
+            "noparentalbond": 1,
             "protect": 1
         },
         "isNonstandard": null,
@@ -3653,7 +3692,6 @@
         "num": 286,
         "onTryHit": "onTryHit",
         "pp": 10,
-        "pressureTarget": "foeSide",
         "priority": 0,
         "secondary": null,
         "target": "self",
@@ -4404,7 +4442,12 @@
         "basePower": 0,
         "category": "Status",
         "contestType": "Cute",
-        "flags": {},
+        "flags": {
+            "failcopycat": 1,
+            "failmimic": 1,
+            "noassist": 1,
+            "nosleeptalk": 1
+        },
         "name": "Metronome",
         "noMetronome": [
             "Assist",
@@ -4473,6 +4516,9 @@
         "flags": {
             "allyanim": 1,
             "bypasssub": 1,
+            "failencore": 1,
+            "failmimic": 1,
+            "noassist": 1,
             "protect": 1
         },
         "name": "Mimic",
@@ -4558,6 +4604,9 @@
         "contestType": "Beautiful",
         "damageCallback": "damageCallback",
         "flags": {
+            "failcopycat": 1,
+            "failmefirst": 1,
+            "noassist": 1,
             "protect": 1
         },
         "name": "Mirror Coat",
@@ -4574,7 +4623,13 @@
         "basePower": 0,
         "category": "Status",
         "contestType": "Clever",
-        "flags": {},
+        "flags": {
+            "failcopycat": 1,
+            "failencore": 1,
+            "failinstruct": 1,
+            "noassist": 1,
+            "nosleeptalk": 1
+        },
         "isNonstandard": null,
         "name": "Mirror Move",
         "num": 119,
@@ -4597,10 +4652,10 @@
         "category": "Status",
         "condition": {
             "duration": 5,
-            "onBoost": "onBoost",
             "onSideEnd": "onSideEnd",
             "onSideResidualOrder": 3,
-            "onSideStart": "onSideStart"
+            "onSideStart": "onSideStart",
+            "onTryBoost": "onTryBoost"
         },
         "contestType": "Beautiful",
         "flags": {
@@ -4761,24 +4816,16 @@
             "onBasePowerPriority": 3,
             "onStart": "onStart"
         },
-        "contestType": "Cute",
         "flags": {},
-        "isNonstandard": null,
         "name": "Mud Sport",
         "num": 300,
         "onTryHitField": "onTryHitField",
         "pp": 15,
         "priority": 0,
-        "pseudoWeather": "mudsport",
         "secondary": null,
         "target": "all",
         "type": "Ground",
-        "volatileStatus": "mudsport",
-        "zMove": {
-            "boost": {
-                "spd": 1
-            }
-        }
+        "volatileStatus": "mudsport"
     },
     "naturepower": {
         "accuracy": 95,
@@ -4926,6 +4973,7 @@
         "contestType": "Cool",
         "flags": {
             "contact": 1,
+            "failinstruct": 1,
             "mirror": 1,
             "protect": 1
         },
@@ -5083,6 +5131,7 @@
         "flags": {
             "contact": 1,
             "dance": 1,
+            "failinstruct": 1,
             "mirror": 1,
             "protect": 1
         },
@@ -5306,7 +5355,10 @@
             "onTryHitPriority": 3
         },
         "contestType": "Cute",
-        "flags": {},
+        "flags": {
+            "failcopycat": 1,
+            "noassist": 1
+        },
         "name": "Protect",
         "num": 182,
         "onHit": "onHit",
@@ -5570,7 +5622,9 @@
         "critRatio": 2,
         "flags": {
             "charge": 1,
+            "failinstruct": 1,
             "mirror": 1,
+            "nosleeptalk": 1,
             "protect": 1
         },
         "isNonstandard": null,
@@ -5962,7 +6016,9 @@
         "contestType": "Cute",
         "flags": {
             "contact": 1,
+            "failinstruct": 1,
             "mirror": 1,
+            "noparentalbond": 1,
             "protect": 1
         },
         "name": "Rollout",
@@ -6218,6 +6274,7 @@
         "contestType": "Beautiful",
         "flags": {
             "mirror": 1,
+            "noparentalbond": 1,
             "protect": 1
         },
         "name": "Self-Destruct",
@@ -6442,8 +6499,10 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
-            "allyanim": 1,
-            "bypasssub": 1
+            "bypasssub": 1,
+            "failencore": 1,
+            "failmimic": 1,
+            "noassist": 1
         },
         "isNonstandard": null,
         "name": "Sketch",
@@ -6500,7 +6559,9 @@
         "flags": {
             "charge": 1,
             "contact": 1,
+            "failinstruct": 1,
             "mirror": 1,
+            "nosleeptalk": 1,
             "protect": 1
         },
         "isNonstandard": null,
@@ -6522,7 +6583,9 @@
         "flags": {
             "charge": 1,
             "distance": 1,
+            "failinstruct": 1,
             "mirror": 1,
+            "nosleeptalk": 1,
             "protect": 1
         },
         "name": "Sky Attack",
@@ -6651,7 +6714,11 @@
         "basePower": 0,
         "category": "Status",
         "contestType": "Cute",
-        "flags": {},
+        "flags": {
+            "failcopycat": 1,
+            "noassist": 1,
+            "nosleeptalk": 1
+        },
         "name": "Sleep Talk",
         "num": 214,
         "onHit": "onHit",
@@ -6787,13 +6854,14 @@
         },
         "contestType": "Clever",
         "flags": {
-            "bypasssub": 1
+            "bypasssub": 1,
+            "failcopycat": 1,
+            "noassist": 1
         },
         "isNonstandard": null,
         "name": "Snatch",
         "num": 289,
         "pp": 10,
-        "pressureTarget": "foeSide",
         "priority": 4,
         "secondary": null,
         "target": "self",
@@ -6859,7 +6927,9 @@
         "contestType": "Cool",
         "flags": {
             "charge": 1,
+            "failinstruct": 1,
             "mirror": 1,
+            "nosleeptalk": 1,
             "protect": 1
         },
         "name": "Solar Beam",
@@ -7200,6 +7270,9 @@
         "contestType": "Tough",
         "flags": {
             "contact": 1,
+            "failencore": 1,
+            "failmimic": 1,
+            "noassist": 1,
             "protect": 1
         },
         "name": "Struggle",
@@ -7730,7 +7803,10 @@
         "contestType": "Tough",
         "flags": {
             "contact": 1,
+            "failcopycat": 1,
+            "failmefirst": 1,
             "mirror": 1,
+            "noassist": 1,
             "protect": 1
         },
         "name": "Thief",
@@ -7749,6 +7825,7 @@
         "contestType": "Tough",
         "flags": {
             "contact": 1,
+            "failinstruct": 1,
             "mirror": 1,
             "protect": 1
         },
@@ -7968,7 +8045,8 @@
         "category": "Status",
         "contestType": "Clever",
         "flags": {
-            "bypasssub": 1
+            "bypasssub": 1,
+            "failencore": 1
         },
         "name": "Transform",
         "num": 144,
@@ -8009,7 +8087,9 @@
         "contestType": "Clever",
         "flags": {
             "allyanim": 1,
+            "failcopycat": 1,
             "mirror": 1,
+            "noassist": 1,
             "protect": 1
         },
         "name": "Trick",
@@ -8118,6 +8198,7 @@
         "contestType": "Cute",
         "flags": {
             "mirror": 1,
+            "nosleeptalk": 1,
             "protect": 1,
             "sound": 1
         },
@@ -8277,24 +8358,16 @@
             "onBasePowerPriority": 3,
             "onStart": "onStart"
         },
-        "contestType": "Cute",
         "flags": {},
-        "isNonstandard": null,
         "name": "Water Sport",
         "num": 346,
         "onTryHitField": "onTryHitField",
         "pp": 15,
         "priority": 0,
-        "pseudoWeather": "watersport",
         "secondary": null,
         "target": "all",
         "type": "Water",
-        "volatileStatus": "watersport",
-        "zMove": {
-            "boost": {
-                "spd": 1
-            }
-        }
+        "volatileStatus": "watersport"
     },
     "waterspout": {
         "accuracy": 100,
