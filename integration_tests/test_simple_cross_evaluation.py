@@ -18,7 +18,7 @@ async def simple_cross_evaluation(n_battles, format_):
             battle_format=format_,
             server_configuration=LocalhostServerConfiguration,
             max_concurrent_battles=n_battles,
-            log_level=20,
+            log_level=25,
         )
         for _ in range(3)
     ]
