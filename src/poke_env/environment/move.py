@@ -171,6 +171,8 @@ class Move:
         :return: The move category.
         :rtype: MoveCategory
         """
+        if "category" not in self.entry:
+            print(self, self.entry)
         return MoveCategory[self.entry["category"].upper()]
 
     @property
@@ -269,7 +271,7 @@ class Move:
         elif self._id.startswith("z") and self._id[1:] in self._moves_dict:
             return self._moves_dict[self._id[1:]]
         elif self._id == "recharge":
-            return {"pp": 1, "type": "normal"}
+            return {"pp": 1, "type": "normal", "category": "Special"}
         else:
             raise ValueError("Unknown move: %s" % self._id)
 
