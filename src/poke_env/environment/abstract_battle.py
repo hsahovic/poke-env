@@ -501,13 +501,13 @@ class AbstractBattle(ABC):
 
             if override_move:
                 # Both copy cat and sleep talk, the two moves that can trigger this branch, have two `move` messages.
-                # We're setting use=False in the one with the override in order to prevent two pps from being used 
+                # We're setting use=False in the one with the override in order to prevent two pps from being used
                 # incorrectly.
-                self.get_pokemon(pokemon)._moved(override_move, failed=failed, use=False)
-            if override_move is None or reveal_other_move:
                 self.get_pokemon(pokemon)._moved(
-                    move, failed=failed, use=False
+                    override_move, failed=failed, use=False
                 )
+            if override_move is None or reveal_other_move:
+                self.get_pokemon(pokemon)._moved(move, failed=failed, use=False)
         elif split_message[1] == "cant":
             pokemon, _ = split_message[2:4]
             self.get_pokemon(pokemon)._cant_move()
