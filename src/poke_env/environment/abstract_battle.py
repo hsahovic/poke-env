@@ -413,16 +413,13 @@ class AbstractBattle(ABC):
             if split_message[-1].startswith("[anim]"):
                 split_message = split_message[:-1]
 
-            if split_message[-1] == "null":
-                split_message = split_message[:-1]
-
             if split_message[-1].startswith("[from]move: "):
                 override_move = split_message.pop()[12:]
 
                 if override_move == "Sleep Talk":
                     # Sleep talk was used, but also reveals another move
                     reveal_other_move = True
-                elif override_move == "Copycat":
+                elif override_move in {"Copycat", "Metronome", "Nature Power"}:
                     pass
                 else:
                     self.logger.warning(
@@ -433,6 +430,9 @@ class AbstractBattle(ABC):
                         self.battle_tag,
                         self.turn,
                     )
+
+            if split_message[-1] == "null":
+                split_message = split_message[:-1]
 
             if split_message[-1].startswith("[from]ability: "):
                 revealed_ability = split_message.pop()[15:]
@@ -500,8 +500,8 @@ class AbstractBattle(ABC):
                 temp_pokemon._start_effect("MINIMIZE")
 
             if override_move:
-                # Both copy cat and sleep talk, the two moves that can trigger this branch, have two `move` messages.
-                # We're setting use=False in the one with the override in order to prevent two pps from being used
+                # Moves that can trigger this branch results in two `move` messages being sent.
+                # We're setting use=False in the one (with the override) in order to prevent two pps from being used
                 # incorrectly.
                 self.get_pokemon(pokemon)._moved(
                     override_move, failed=failed, use=False
