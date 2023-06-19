@@ -6,6 +6,7 @@ from typing import Union
 
 from poke_env.environment.move import Move
 from poke_env.environment.pokemon import Pokemon
+from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.abstract_battle import AbstractBattle
 
 
@@ -25,10 +26,12 @@ class Battle(AbstractBattle):
         self._available_switches: List[Pokemon] = []
         self._can_dynamax: bool = False
         self._can_mega_evolve: bool = False
+        self._can_terastallize: Optional[PokemonType] = None
         self._can_z_move: bool = False
         self._opponent_can_dynamax = True
         self._opponent_can_mega_evolve = True
         self._opponent_can_z_move = True
+        self._opponent_can_terastallize: bool = False
         self._force_switch: bool = False
         self._maybe_trapped: bool = False
         self._trapped: bool = False
@@ -64,12 +67,18 @@ class Battle(AbstractBattle):
         else:
             self._wait = False
 
+        side = request["side"]
+
         self._available_moves = []
         self._available_switches = []
         self._can_mega_evolve = False
         self._can_z_move = False
         self._can_dynamax = False
+        self._can_terastallize = None
         self._maybe_trapped = False
+        self._reviving = any(
+            [m["reviving"] for m in side.get("pokemon", []) if "reviving" in m]
+        )
         self._trapped = False
         self._force_switch = request.get("forceSwitch", False)
 
@@ -105,17 +114,26 @@ class Battle(AbstractBattle):
                 self._can_dynamax = True
             if active_request.get("maybeTrapped", False):
                 self._maybe_trapped = True
-
-        side = request["side"]
+            if active_request.get("canTerastallize", False):
+                self._can_terastallize = PokemonType.from_name(
+                    active_request["canTerastallize"]
+                )
 
         if side["pokemon"]:
             self._player_role = side["pokemon"][0]["ident"][:2]
 
-        if not self.trapped:
+        if not self.trapped and not self.reviving:
             for pokemon in side["pokemon"]:
                 if pokemon:
                     pokemon = self._team[pokemon["ident"]]
                     if not pokemon.active and not pokemon.fainted:
+                        self._available_switches.append(pokemon)
+
+        if not self.trapped and self.reviving:
+            for pokemon in side["pokemon"]:
+                if pokemon and pokemon.get("reviving", False):
+                    pokemon = self._team[pokemon["ident"]]
+                    if not pokemon.active:
                         self._available_switches.append(pokemon)
 
     def _switch(self, pokemon, details, hp_status):
@@ -184,6 +202,14 @@ class Battle(AbstractBattle):
         return self._can_mega_evolve
 
     @property
+    def can_terastallize(self) -> Optional[PokemonType]:
+        """
+        :return: None, or the type the active pokemon can terastallize into.
+        :rtype: PokemonType, optional
+        """
+        return self._can_terastallize
+
+    @property
     def can_z_move(self) -> bool:
         """
         :return: Whether or not the current active pokemon can z-move.
@@ -243,6 +269,14 @@ class Battle(AbstractBattle):
     @opponent_can_mega_evolve.setter
     def opponent_can_mega_evolve(self, value: bool) -> None:
         self._opponent_can_mega_evolve = value
+
+    @property
+    def opponent_can_terastallize(self) -> bool:
+        """
+        :return: Whether or not opponent's current active pokemon can terastallize
+        :rtype: bool
+        """
+        return self._opponent_can_terastallize
 
     @property
     def opponent_can_z_move(self) -> bool:

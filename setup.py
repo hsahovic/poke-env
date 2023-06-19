@@ -18,7 +18,7 @@ URL = "https://github.com/hsahovic/poke-env"
 EMAIL = "contact@sahovic.fr"
 AUTHOR = "Haris Sahovic"
 REQUIRES_PYTHON = ">=3.7.0"
-VERSION = "0.6.0"
+VERSION = "0.7.0"
 
 # What packages are required for this module to be executed?
 with open("requirements.txt") as requirements:

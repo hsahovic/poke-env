@@ -41,6 +41,9 @@ class Teambuilder(ABC):
         mons = []
 
         for line in team.split("\n"):
+            while line and line.startswith(" "):
+                line = line[1:]
+
             if line == "":
                 if not current_mon_has_been_added:
                     mons.append(current_mon)

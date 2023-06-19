@@ -285,6 +285,8 @@ class PlayerNetwork(ABC):
     async def _set_team(self):
         if self._team is not None:
             await self._send_message("/utm %s" % self._team.yield_team())
+        else:
+            await self._send_message("/utm null")
 
     async def _wait_for_login(
         self, checking_interval: float = 0.001, wait_for: int = 5

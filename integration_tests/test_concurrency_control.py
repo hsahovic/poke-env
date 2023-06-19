@@ -19,10 +19,10 @@ class MoveCallTrackingRandomPlayer(RandomPlayer):
 async def simple_cross_evaluation(n_battles, n_concurrent_battles):
     players = [
         SimpleHeuristicsPlayer(
-            max_concurrent_battles=n_concurrent_battles, log_level=20
+            max_concurrent_battles=n_concurrent_battles, log_level=25
         ),
         MoveCallTrackingRandomPlayer(
-            max_concurrent_battles=n_concurrent_battles, log_level=20
+            max_concurrent_battles=n_concurrent_battles, log_level=25
         ),
     ]
     await cross_evaluate(players, n_challenges=n_battles)
@@ -35,7 +35,7 @@ async def simple_cross_evaluation(n_battles, n_concurrent_battles):
 
 async def check_max_concurrent_battle_works(n_battles, n_concurrent_battles):
     result = await asyncio.wait_for(
-        simple_cross_evaluation(n_battles, n_concurrent_battles), timeout=n_battles + 30
+        simple_cross_evaluation(n_battles, n_concurrent_battles), timeout=n_battles + 5
     )
 
     times_per_battle = {}

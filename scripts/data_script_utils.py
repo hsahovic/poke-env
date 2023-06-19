@@ -1,19 +1,19 @@
-import requests
-import re
 import json
+import re
 
-for gen in range(1, 9):
-    if gen != 8:
-        # Fetch latest version
-        data = requests.get(
-            "https://raw.githubusercontent.com/smogon/pokemon-showdown/master/data/mods/gen"  # noqa
-            + str(gen)
-            + "/moves.ts"
-        ).text
-    else:
-        data = requests.get(
-            "https://raw.githubusercontent.com/smogon/pokemon-showdown/master/data/moves.ts"  # noqa
-        ).text
+import requests
+
+CURRENT_GEN = 9
+MAX_MON_IDX_PER_GEN = {1: 151, 2: 251, 3: 386, 4: 493, 5: 649, 6: 721, 7: 809, 8: 898}
+MAX_MOVE_IDX_PER_GEN = {1: 165, 2: 251, 3: 354, 4: 467, 5: 559, 6: 621, 7: 742, 8: 850}
+STATIC_DATA_ROOT = "src/poke_env/data/static"
+
+
+def fetch_and_clean_ps_data(url: str, deserialize: bool = True):
+    data = requests.get(url).text
+
+    if data == "404: Not Found":
+        return {}
 
     # Remove start and end of the file
     data = "{" + "= {".join(data.split("= {")[1:])[:-2]
@@ -22,10 +22,10 @@ for gen in range(1, 9):
     data = data.replace("\t", " ")
 
     # Transform keys into correct json strings
-    data = re.sub(r"(\w+): ", r'"\1": ', data)
+    data = re.sub(r"([\w\d]+): ", r'"\1": ', data)
 
     # Transform single quoted text into double quoted text
-    data = re.sub(r"'(\w+)'", r'"\1"', data)
+    data = re.sub(r"'([\w\d ]+)'", r'"\1"', data)
 
     # Remove comments
     data = re.sub(r" +//.+", "", data)
@@ -34,7 +34,13 @@ for gen in range(1, 9):
     for _ in range(3):
         data = re.sub(r"\n\n", "\n", data)
 
-    data = data.replace(": undefined", ": null")
+    data = re.sub(r",\n( +)\]", r"\n\1]", data)
+
+    # Correct double-quoted text inside double-quoted text
+    data = re.sub(r': ""(.*)":(.*)",', r': "\1:\2",', data)
+
+    # Correct isolated "undefined" values
+    data = re.sub(r": undefined", r": null", data)
 
     # Callback and handlers
     for function_title_match in (r"(on\w+)", r"(\w+Callback)"):
@@ -54,29 +60,32 @@ for gen in range(1, 9):
         sub = r'"\1": "\1"'
         data = re.sub(pattern, sub, data, flags=re.MULTILINE)
 
+    # Remove incorrect commas
+    data = re.sub(r",\n( *)\}", r"\n\1}", data)
+
     # Null arrow functions
     data = re.sub(r"\(\) => null", r"null", data)
 
     # Remove incorrect commas
     data = re.sub(r",\n( *)\}", r"\n\1}", data)
     data = re.sub(r",\n( +)\]", r"\n\1]", data)
-
     # Correct double-quoted text inside double-quoted text
+
     data = re.sub(r': "(.*)"(.*)":(.*)",', r': "\1\2:\3",', data)
     data = re.sub(r': ""(.*)":(.*)",', r': "\1:\2",', data)
 
-    if gen != 8:
-        with open("gen" + str(gen) + "_move_changes.json", "w+") as f:
-            f.write(data)
-    else:
-        with open("gen" + str(gen) + "_moves.json", "w+") as f:
-            f.write(data)
+    # Correct non-quoted number keys
+    data = re.sub(r"(\d+):", r'"\1":', data)
+    # Correct non-quoted H keys
 
-    if gen == 2:
-        with open("gen2_move_changes.json", "r") as f:
-            g2changes = json.load(f)
+    data = re.sub(r"H: ", r'"H": ', data)
 
-        if "block" in g2changes:
-            g2changes.pop("block")
-            with open("gen2_move_changes.json", "w") as f:
-                f.write(json.dumps(g2changes, indent=4, sort_keys=True))
+    try:
+        if deserialize:
+            return json.loads(data)
+        else:
+            return data
+    except:
+        with open("out.json", "w+") as f:
+            f.write(data)
+        raise Exception

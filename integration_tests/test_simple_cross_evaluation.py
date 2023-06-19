@@ -18,7 +18,7 @@ async def simple_cross_evaluation(n_battles, format_):
             battle_format=format_,
             server_configuration=LocalhostServerConfiguration,
             max_concurrent_battles=n_battles,
-            log_level=20,
+            log_level=25,
         )
         for _ in range(3)
     ]
@@ -27,6 +27,13 @@ async def simple_cross_evaluation(n_battles, format_):
     for player in players:
         player.reset_battles()
         await player.stop_listening()
+
+
+@pytest.mark.asyncio
+async def test_small_cross_evaluation_gen9():
+    await asyncio.wait_for(
+        simple_cross_evaluation(5, format_="gen9randombattle"), timeout=20
+    )
 
 
 @pytest.mark.asyncio

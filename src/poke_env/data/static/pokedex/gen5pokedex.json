@@ -10625,6 +10625,33 @@
         "unreleasedHidden": true,
         "weightkg": 430
     },
+    "hemogoblin": {
+        "abilities": {
+            "0": "Pixilate",
+            "1": "Intimidate"
+        },
+        "baseStats": {
+            "atk": 99,
+            "def": 89,
+            "hp": 90,
+            "spa": 99,
+            "spd": 97,
+            "spe": 55
+        },
+        "color": "Pink",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "gen": 9,
+        "heightm": 1.4,
+        "name": "Hemogoblin",
+        "num": -71,
+        "types": [
+            "Fairy",
+            "Fire"
+        ],
+        "weightkg": 85
+    },
     "heracross": {
         "abilities": {
             "0": "Swarm",
@@ -20412,7 +20439,7 @@
         },
         "color": "Gray",
         "eggGroups": [
-            "Undiscovered"
+            "Mineral"
         ],
         "evos": [
             "Tactite"
@@ -24417,7 +24444,7 @@
         },
         "color": "Gray",
         "eggGroups": [
-            "Undiscovered"
+            "Mineral"
         ],
         "evoType": "trade",
         "gen": 4,
@@ -25064,7 +25091,7 @@
         },
         "color": "Gray",
         "eggGroups": [
-            "Undiscovered"
+            "Mineral"
         ],
         "evoLevel": 28,
         "evos": [
@@ -25188,25 +25215,25 @@
         ],
         "formeOrder": [
             "Tauros",
-            "Tauros-Paldea",
-            "Tauros-Paldea-Fire",
-            "Tauros-Paldea-Water"
+            "Tauros-Paldea-Combat",
+            "Tauros-Paldea-Blaze",
+            "Tauros-Paldea-Aqua"
         ],
         "gender": "M",
         "heightm": 1.4,
         "name": "Tauros",
         "num": 128,
         "otherFormes": [
-            "Tauros-Paldea",
-            "Tauros-Paldea-Fire",
-            "Tauros-Paldea-Water"
+            "Tauros-Paldea-Combat",
+            "Tauros-Paldea-Blaze",
+            "Tauros-Paldea-Aqua"
         ],
         "types": [
             "Normal"
         ],
         "weightkg": 88.4
     },
-    "taurospaldea": {
+    "taurospaldeaaqua": {
         "abilities": {
             "0": "Intimidate",
             "1": "Anger Point",
@@ -25225,17 +25252,18 @@
         "eggGroups": [
             "Field"
         ],
-        "forme": "Paldea",
+        "forme": "Paldea-Aqua",
         "gender": "M",
         "heightm": 1.4,
-        "name": "Tauros-Paldea",
+        "name": "Tauros-Paldea-Aqua",
         "num": 128,
         "types": [
-            "Fighting"
+            "Fighting",
+            "Water"
         ],
         "weightkg": 88.4
     },
-    "taurospaldeafire": {
+    "taurospaldeablaze": {
         "abilities": {
             "0": "Intimidate",
             "1": "Anger Point",
@@ -25254,10 +25282,10 @@
         "eggGroups": [
             "Field"
         ],
-        "forme": "Paldea-Fire",
+        "forme": "Paldea-Blaze",
         "gender": "M",
         "heightm": 1.4,
-        "name": "Tauros-Paldea-Fire",
+        "name": "Tauros-Paldea-Blaze",
         "num": 128,
         "types": [
             "Fighting",
@@ -25265,7 +25293,7 @@
         ],
         "weightkg": 88.4
     },
-    "taurospaldeawater": {
+    "taurospaldeacombat": {
         "abilities": {
             "0": "Intimidate",
             "1": "Anger Point",
@@ -25284,14 +25312,13 @@
         "eggGroups": [
             "Field"
         ],
-        "forme": "Paldea-Water",
+        "forme": "Paldea-Combat",
         "gender": "M",
         "heightm": 1.4,
-        "name": "Tauros-Paldea-Water",
+        "name": "Tauros-Paldea-Combat",
         "num": 128,
         "types": [
-            "Fighting",
-            "Water"
+            "Fighting"
         ],
         "weightkg": 88.4
     },

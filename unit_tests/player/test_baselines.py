@@ -16,11 +16,12 @@ def test_max_base_power_player():
             "available_switches",
             "can_z_move",
             "can_dynamax",
+            "can_terastallize",
             "can_mega_evolve",
             "gen",
         ),
     )
-    battle = PseudoBattle([], [], False, False, False, 8)
+    battle = PseudoBattle([], [], False, False, False, False, 8)
 
     player_pkg.Battle = PseudoBattle
 
@@ -179,6 +180,7 @@ def test_simple_heuristics_player():
             "available_moves",
             "available_switches",
             "team",
+            "opponent_team",
             "can_dynamax",
             "side_conditions",
             "opponent_side_conditions",
@@ -189,6 +191,7 @@ def test_simple_heuristics_player():
         Pokemon(species="gengar", gen=8),
         [],
         [Pokemon(species="togekiss", gen=8)],
+        {},
         {},
         True,
         set(),
@@ -230,11 +233,12 @@ def test_random_player():
             "available_switches",
             "can_z_move",
             "can_dynamax",
+            "can_terastallize",
             "can_mega_evolve",
             "gen",
         ),
     )
-    battle = PseudoBattle([], [], False, False, False, 8)
+    battle = PseudoBattle([], [], False, False, False, False, 8)
 
     player_pkg.Battle = PseudoBattle
 

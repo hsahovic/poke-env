@@ -7,13 +7,15 @@ from poke_env.player import RandomPlayer
 @pytest.mark.asyncio
 async def test_laddering_sequential():
     async def send_message(self, *args, **kwargs):
+        if args == ("/utm null",):
+            return
         interactions.append("Search start")
         asyncio.ensure_future(start_battle())
 
     async def start_battle():
         interactions.append(f"Battle {player.count} start")
         await player._handle_message(
-            f">battle-gen8randombattle-{player.count}\n|init|battle"
+            f">battle-gen9randombattle-{player.count}\n|init|battle"
         )
         asyncio.ensure_future(end_battle(player.count))
         player.count += 1
@@ -22,7 +24,7 @@ async def test_laddering_sequential():
         await asyncio.sleep(0.01)
         interactions.append(f"Battle {count} end")
         await player._handle_message(
-            f">battle-gen8randombattle-{count}\n|win|{player.username}"
+            f">battle-gen9randombattle-{count}\n|win|{player.username}"
         )
 
     player = RandomPlayer(start_listening=False)
@@ -56,13 +58,16 @@ async def test_laddering_sequential():
 @pytest.mark.asyncio
 async def test_laddering_parallel():
     async def send_message(self, *args, **kwargs):
+        if args == ("/utm null",):
+            return
+
         interactions.append("Search start")
         asyncio.ensure_future(start_battle())
 
     async def start_battle():
         interactions.append(f"Battle {player.count} start")
         await player._handle_message(
-            f">battle-gen8randombattle-{player.count}\n|init|battle"
+            f">battle-gen9randombattle-{player.count}\n|init|battle"
         )
         asyncio.ensure_future(end_battle(player.count))
         player.count += 1
@@ -71,7 +76,7 @@ async def test_laddering_parallel():
         await asyncio.sleep(0.01)
         interactions.append(f"Battle {count} end")
         await player._handle_message(
-            f">battle-gen8randombattle-{count}\n|win|{player.username}"
+            f">battle-gen9randombattle-{count}\n|win|{player.username}"
         )
 
     player = RandomPlayer(start_listening=False, max_concurrent_battles=3)
