@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import copy
 
 from poke_env.data import GenData

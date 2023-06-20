@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from poke_env.player import evaluate_player, RandomPlayer
 from poke_env.player.utils import _estimate_strength_from_results
 

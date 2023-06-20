@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """This module defines the PokemonType class, which represents a Pokemon type.
 PokemonTypes are mainly associated with Pokemons and moves.
 """

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import asyncio
 
 from poke_env.player import cross_evaluate, RandomPlayer

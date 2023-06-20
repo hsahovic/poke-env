@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from functools import lru_cache
 import orjson  # pyre-ignore[21]
 import os
@@ -7,7 +8,7 @@ from poke_env.data.normalize import to_id_str
 
 
 class GenData:
-    __slots__ = ("gen", "moves", "natures", "pokedex", "type_chart")
+    __slots__ = ("gen", "moves", "natures", "pokedex", "type_chart", "learnset")
 
     UNKNOWN_ITEM = "unknown_item"
 
@@ -22,6 +23,7 @@ class GenData:
         self.natures = self.load_natures()
         self.pokedex = self.load_pokedex(gen)
         self.type_chart = self.load_type_chart(gen)
+        self.learnset = self.load_learnset()
 
     def load_moves(self, gen: int) -> Dict[str, Any]:
         with open(
@@ -31,6 +33,10 @@ class GenData:
 
     def load_natures(self) -> Dict[str, Dict[str, Union[int, float]]]:
         with open(os.path.join(self._static_files_root, "natures.json")) as f:
+            return orjson.loads(f.read())
+
+    def load_learnset(self) -> Dict[str, Dict[str, Union[int, float]]]:
+        with open(os.path.join(self._static_files_root, "learnset.json")) as f:
             return orjson.loads(f.read())
 
     def load_pokedex(self, gen: int) -> Dict[str, Any]:

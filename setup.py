@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 # From https://github.com/navdeep-G/setup.py
 
 # Note: To use the 'upload' functionality of this file, you must:
