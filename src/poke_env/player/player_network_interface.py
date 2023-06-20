@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """This module defines a base class for communicating with showdown servers.
 """
 import asyncio

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import copy
 
 from poke_env.environment.field import Field

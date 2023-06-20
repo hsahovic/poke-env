@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """This script can be used to run gen 8 random battles.
 
 usage:

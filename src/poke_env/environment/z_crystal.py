@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """This module contains objects related ot z-crystal management. It should not be used
 directly.
 """

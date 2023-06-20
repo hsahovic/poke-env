@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from poke_env.teambuilder import ConstantTeambuilder
 
 

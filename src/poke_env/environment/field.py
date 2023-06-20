@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """This module defines the Field class, which represents a battle field.
 """
 # pyre-ignore-all-errors[45]

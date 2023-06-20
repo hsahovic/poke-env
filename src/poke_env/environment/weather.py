@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """This module defines the Weather class, which represents a in-battle weather.
 """
 # pyre-ignore-all-errors[45]
