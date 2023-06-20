@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from unittest.mock import MagicMock
 
 from poke_env.environment import DoubleBattle, Pokemon

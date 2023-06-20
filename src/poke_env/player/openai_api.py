@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """This module defines a player class with the OpenAI API on the main thread.
 For a black-box implementation consider using the module env_player.
 """

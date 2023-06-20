@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import asyncio
 import numpy as np
 
@@ -172,7 +173,7 @@ Jolly Nature
     random_player = RandomPlayer(
         battle_format="gen8ou", team=team_1, max_concurrent_battles=10
     )
-    
+
     max_damage_player = MaxDamagePlayer(
         battle_format="gen8ou", team=team_2, max_concurrent_battles=10
     )

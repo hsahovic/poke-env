@@ -1,2 +1,1 @@
-tensorflow<2.13
-keras-rl2
+keras-rl2tensorflow<2.13

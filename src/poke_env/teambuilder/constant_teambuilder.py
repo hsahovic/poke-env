@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """This module defines the ConstantTeambuilder class, which is a subclass of
 ShowdownTeamBuilder that yields a constant team.
 """

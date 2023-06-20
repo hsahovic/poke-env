@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """This module contains objects related to player configuration.
 """
 from collections import namedtuple

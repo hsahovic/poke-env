@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """This script can be used to run anything goes gen 9 battles with random teams.
 This is especially useful for debugging / testing purposes.
 
@@ -36,7 +37,10 @@ def random_evs():
 def random_mon():
     mon = np.random.choice(mons)
 
-    if GenData.from_gen(9).pokedex[mon]["num"] <= 0 or GenData.from_gen(9).pokedex[mon]["num"] == 79:
+    if (
+        GenData.from_gen(9).pokedex[mon]["num"] <= 0
+        or GenData.from_gen(9).pokedex[mon]["num"] == 79
+    ):
         return random_mon()
 
     if "baseSpecies" in GenData.from_gen(9).pokedex[mon]:

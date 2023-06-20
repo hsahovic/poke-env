@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """poke_env.player module init.
 """
 from poke_env.player import env_player

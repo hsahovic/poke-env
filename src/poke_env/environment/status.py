@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """This module defines the Status class, which represents statuses a pokemon can be
 afflicted with.
 """

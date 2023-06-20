@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 These tests aim to verify that concurrency control is working properly.
 """
