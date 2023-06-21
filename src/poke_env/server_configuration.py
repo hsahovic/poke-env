@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """This module contains objects related to server configuration.
 """
 from collections import namedtuple

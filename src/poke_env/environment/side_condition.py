@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """This module defines the SideCondition class, which represents a in-battle side
 condition.
 """

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from poke_env.player import RandomPlayer, cross_evaluate
 import asyncio
 import orjson

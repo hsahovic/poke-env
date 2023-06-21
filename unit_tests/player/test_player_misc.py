@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pytest
 
 from poke_env.environment import Battle, DoubleBattle, Move

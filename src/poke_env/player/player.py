@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """This module defines a base class for players.
 """
 

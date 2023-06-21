@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """This module defines the PokemonGender class, which represents the gender of a
 Pokemon.
 """
