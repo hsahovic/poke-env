@@ -82,5 +82,11 @@
             "showdown-file": "custom gen7 ou.showdown",
             "packed-format": "zuzu|azumarill|aguavberry|hugepower|aquajet,bellydrum,return,playrough|Adamant|44,252,18,4,18,172|F||S|67|211]metal bird|celesteela|leftovers|beastboost|protect,rockslide,heavyslam,leechseed|Impish|252,,72,,184,||,,,0,9,20|||144]Garchomp||choiceband|roughskin|rockslide,earthpower,outrage,aquatail|Jolly|8,252,,,,248|||S||]Greninja||choicespecs|protean|scald,icebeam,darkpulse,extrasensory|Timid|4,,,252,,252|M|29,0,3,6,21,23|||]Heatran||assaultvest|flashfire|overheat,flamethrower,flashcannon,earthpower|Modest|252,,,252,,4||,0,,,26,|||,Ice,]kaaaaaaa|kartana|focussash|beastboost|leafblade,sacredsword,swordsdance,xscissor|Jolly|4,252,,,,252||||62|200"
         }
+    ],
+    "gen9vgc2023regulationc": [
+        {
+            "showdown-file": "new balance.showdown",
+            "packed-format": "Gyarados||figyberry|intimidate|waterfall,taunt,thunderwave,protect|Adamant|252,36,36,,180,4||||50|,,,,,Fairy]Flutter Mane||choicespecs|protosynthesis|moonblast,shadowball,dazzlinggleam,thunderbolt|Timid|28,,132,92,4,252||||50|,,,,,Fairy]Iron Hands||assaultvest|quarkdrive|fakeout,drainpunch,wildcharge,voltswitch|Adamant|12,156,84,,252,4||||50|,,,,,Grass]Amoonguss||sitrusberry|regenerator|spore,ragepowder,pollenpuff,clearsmog|Calm|244,,180,4,76,4||||50|,,,,,Water]Ting-Lu||leftovers|vesselofruin|stompingtantrum,ruination,protect,heavyslam|Adamant|76,156,20,,252,4||||50|,,,,,Poison]Chi-Yu||safetygoggles|beadsofruin|heatwave,darkpulse,nastyplot,protect|Modest|252,,76,36,4,140||||50|,,,,,Water"
+        }
     ]
 }
