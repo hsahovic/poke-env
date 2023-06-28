@@ -11,9 +11,9 @@ async def cross_evaluation(n_battles, format_, teams):
                 battle_format=format_,
                 max_concurrent_battles=n_battles,
                 team=team,
-                log_level=20,
+                log_level=25,
             )
-            for i, team in enumerate(teams)
+            for team in teams
         ]
     else:
         assert len(teams) == 1
@@ -22,7 +22,7 @@ async def cross_evaluation(n_battles, format_, teams):
                 battle_format=format_,
                 max_concurrent_battles=n_battles,
                 team=teams[0],
-                log_level=20,
+                log_level=25,
             )
             for _ in range(2)
         ]
@@ -38,5 +38,5 @@ async def test_all_formats_cross_evaluation(showdown_format_teams):
     for format_, teams in showdown_format_teams.items():
         await asyncio.wait_for(
             cross_evaluation(n_battles=5, format_=format_, teams=teams),
-            timeout=30,
+            timeout=len(teams) * len(teams) + 1,
         )
