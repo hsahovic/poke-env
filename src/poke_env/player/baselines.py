@@ -1,3 +1,4 @@
+from poke_env.environment.double_battle import DoubleBattle
 from poke_env.environment.move_category import MoveCategory
 from poke_env.environment.side_condition import SideCondition
 from poke_env.player.player import Player
@@ -102,6 +103,9 @@ class SimpleHeuristicsPlayer(Player):
         return ((2 * mon.base_stats[stat] + 31) + 5) * boost
 
     def choose_move(self, battle):
+        if isinstance(battle, DoubleBattle):
+            return self.choose_random_doubles_move(battle)
+
         # Main mons shortcuts
         active = battle.active_pokemon
         opponent = battle.opponent_active_pokemon
