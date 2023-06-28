@@ -37,6 +37,7 @@ class DoubleBattle(AbstractBattle):
         self._can_mega_evolve: List[bool] = [False, False]
         self._can_z_move: List[bool] = [False, False]
         self._can_dynamax: List[bool] = [False, False]
+        self._can_tera: List[Union[bool, PokemonType]] = [False, False]
         self._opponent_can_dynamax: List[bool] = [True, True]
         self._opponent_can_mega_evolve: List[bool] = [True, True]
         self._opponent_can_z_move: List[bool] = [True, True]
@@ -108,6 +109,7 @@ class DoubleBattle(AbstractBattle):
         self._can_dynamax = [False, False]
         self._maybe_trapped = [False, False]
         self._trapped = [False, False]
+        self._can_tera = [False, False]
         self._force_switch = request.get("forceSwitch", [False, False])
 
         if any(self._force_switch):
@@ -161,6 +163,10 @@ class DoubleBattle(AbstractBattle):
                     self._can_z_move[active_pokemon_number] = True
                 if active_request.get("canDynamax", False):
                     self._can_dynamax[active_pokemon_number] = True
+                if active_request.get("canTerastallize", False):
+                    self._can_tera[active_pokemon_number] = PokemonType.from_name(
+                        active_request["canTerastallize"]
+                    )
                 if active_request.get("maybeTrapped", False):
                     self._maybe_trapped[active_pokemon_number] = True
 
@@ -349,6 +355,14 @@ class DoubleBattle(AbstractBattle):
         :rtype: List[bool]
         """
         return self._can_mega_evolve
+
+    @property
+    def can_tera(self) -> List[Union[bool, PokemonType]]:
+        """
+        :return: Whether or not the current active pokemon can terastallize. If yes, will be a PokemonType.
+        :rtype: List[Union[bool, PokemonType]]
+        """
+        return self._can_tera
 
     @property
     def can_z_move(self) -> List[bool]:
