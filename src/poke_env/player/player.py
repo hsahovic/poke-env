@@ -467,6 +467,7 @@ class Player(PlayerNetwork, ABC):
                 can_mega,
                 can_z_move,
                 can_dynamax,
+                can_tera,
             ),
         ) in enumerate(
             zip(
@@ -477,6 +478,7 @@ class Player(PlayerNetwork, ABC):
                 battle.can_mega_evolve,
                 battle.can_z_move,
                 battle.can_dynamax,
+                battle.can_tera,
             )
         ):
             if mon:
@@ -516,6 +518,15 @@ class Player(PlayerNetwork, ABC):
                     orders.extend(
                         [
                             BattleOrder(move, move_target=target, dynamax=True)
+                            for move in moves
+                            for target in targets[move]
+                        ]
+                    )
+
+                if can_tera:
+                    orders.extend(
+                        [
+                            BattleOrder(move, move_target=target, terastallize=True)
                             for move in moves
                             for target in targets[move]
                         ]
