@@ -327,6 +327,10 @@ class Player(PlayerNetwork, ABC):
                     " Pokémon."
                 ):
                     await self._handle_battle_request(battle, maybe_default_order=True)
+                elif split_message[2].startswith(
+                    "[Invalid choice] Can't move: You can only Terastallize once per battle."
+                ):
+                    await self._handle_battle_request(battle, maybe_default_order=True)
                 else:
                     self.logger.critical("Unexpected error message: %s", split_message)
             elif split_message[1] == "turn":

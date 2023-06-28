@@ -86,6 +86,7 @@ class DoubleBattleOrder(BattleOrder):
                 if not first_order.mega or not second_order.mega
                 if not first_order.z_move or not second_order.z_move
                 if not first_order.dynamax or not second_order.dynamax
+                if not first_order.terastallize or not second_order.terastallize
                 if first_order.order != second_order.order
             ]
             if orders:
