@@ -185,6 +185,7 @@ class Effect(Enum):
     TOXIC_DEBRIS = auto()
     THROAT_CHOP = auto()
     THUNDER_CAGE = auto()
+    THERMAL_EXCHANGE = auto()
     TORMENT = auto()
     TRAPPED = auto()
     TRICK = auto()
