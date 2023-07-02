@@ -13978,7 +13978,7 @@
         "evoLevel": 36,
         "formeOrder": [
             "Greninja",
-            "Greninja",
+            "Greninja-Bond",
             "Greninja-Ash"
         ],
         "genderRatio": {
@@ -13989,6 +13989,7 @@
         "name": "Greninja",
         "num": 658,
         "otherFormes": [
+            "Greninja-Bond",
             "Greninja-Ash"
         ],
         "prevo": "Frogadier",
@@ -14011,7 +14012,7 @@
             "spd": 71,
             "spe": 132
         },
-        "battleOnly": "Greninja",
+        "battleOnly": "Greninja-Bond",
         "color": "Blue",
         "eggGroups": [
             "Undiscovered"
@@ -14023,6 +14024,35 @@
         "name": "Greninja-Ash",
         "num": 658,
         "requiredAbility": "Battle Bond",
+        "types": [
+            "Water",
+            "Dark"
+        ],
+        "weightkg": 40
+    },
+    "greninjabond": {
+        "abilities": {
+            "0": "Battle Bond"
+        },
+        "baseSpecies": "Greninja",
+        "baseStats": {
+            "atk": 95,
+            "def": 67,
+            "hp": 72,
+            "spa": 103,
+            "spd": 71,
+            "spe": 122
+        },
+        "color": "Blue",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "forme": "Bond",
+        "gen": 7,
+        "gender": "M",
+        "heightm": 1.5,
+        "name": "Greninja-Bond",
+        "num": 658,
         "types": [
             "Water",
             "Dark"
@@ -15108,11 +15138,11 @@
             "1": "Intimidate"
         },
         "baseStats": {
-            "atk": 99,
-            "def": 89,
+            "atk": 96,
+            "def": 87,
             "hp": 90,
             "spa": 99,
-            "spd": 97,
+            "spd": 89,
             "spe": 55
         },
         "color": "Pink",
