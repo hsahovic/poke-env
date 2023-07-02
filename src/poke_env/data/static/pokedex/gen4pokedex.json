@@ -8213,11 +8213,11 @@
             "1": "Intimidate"
         },
         "baseStats": {
-            "atk": 99,
-            "def": 89,
+            "atk": 96,
+            "def": 87,
             "hp": 90,
             "spa": 99,
-            "spd": 97,
+            "spd": 89,
             "spe": 55
         },
         "color": "Pink",

@@ -120,8 +120,8 @@
   },
   "eventData": [
    {"generation": 3, "level": 70, "moves": ["sweetscent", "growth", "solarbeam", "synthesis"], "pokeball": "pokeball"},
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["tackle", "growl", "leechseed", "vinewhip"], "pokeball": "pokeball"},
-   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, "moves": ["tackle", "growl", "leechseed", "vinewhip"]},
+   {"generation": 3, "level": 10, "gender": "M", moves: ["tackle", "growl", "leechseed", "vinewhip"], "pokeball": "pokeball"},
+   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, moves: ["tackle", "growl", "leechseed", "vinewhip"]},
    {"generation": 5, "level": 1, "shiny": 1, "ivs": {"def": 31}, "moves": ["falseswipe", "block", "frenzyplant", "weatherball"], "pokeball": "pokeball"},
    {"generation": 6, "level": 5, "moves": ["growl", "leechseed", "vinewhip", "poisonpowder"], "pokeball": "cherishball"},
    {"generation": 6, "level": 5, "isHidden": true, "moves": ["tackle", "growl", "celebrate"], "pokeball": "cherishball"}
@@ -419,12 +419,12 @@
    "workup": ["8M", "7M"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["scratch", "growl", "ember"], "pokeball": "pokeball"},
-   {"generation": 4, "level": 40, "gender": "M", "nature": "Mild", "moves": ["return", "hiddenpower", "quickattack", "howl"], "pokeball": "cherishball"},
-   {"generation": 4, "level": 40, "gender": "M", "nature": "Naive", "moves": ["return", "hiddenpower", "quickattack", "howl"], "pokeball": "cherishball"},
-   {"generation": 4, "level": 40, "gender": "M", "nature": "Naughty", "moves": ["return", "hiddenpower", "quickattack", "howl"], "pokeball": "cherishball"},
-   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, "moves": ["scratch", "growl", "ember", "smokescreen"]},
-   {"generation": 4, "level": 40, "gender": "M", "nature": "Hardy", "moves": ["return", "hiddenpower", "quickattack", "howl"], "pokeball": "cherishball"},
+   {"generation": 3, "level": 10, "gender": "M", moves: ["scratch", "growl", "ember"], "pokeball": "pokeball"},
+   {"generation": 4, "level": 40, "gender": "M", "nature": "Mild", moves: ["return", "hiddenpower", "quickattack", "howl"], "pokeball": "cherishball"},
+   {"generation": 4, "level": 40, "gender": "M", "nature": "Naive", moves: ["return", "hiddenpower", "quickattack", "howl"], "pokeball": "cherishball"},
+   {"generation": 4, "level": 40, "gender": "M", "nature": "Naughty", moves: ["return", "hiddenpower", "quickattack", "howl"], "pokeball": "cherishball"},
+   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, moves: ["scratch", "growl", "ember", "smokescreen"]},
+   {"generation": 4, "level": 40, "gender": "M", "nature": "Hardy", moves: ["return", "hiddenpower", "quickattack", "howl"], "pokeball": "cherishball"},
    {"generation": 5, "level": 1, "shiny": 1, "ivs": {"spe": 31}, "moves": ["falseswipe", "block", "blastburn", "acrobatics"], "pokeball": "pokeball"},
    {"generation": 6, "level": 5, "moves": ["growl", "ember", "smokescreen", "dragonrage"], "pokeball": "cherishball"},
    {"generation": 6, "level": 5, "isHidden": true, "moves": ["scratch", "growl", "celebrate"], "pokeball": "cherishball"}
@@ -663,16 +663,16 @@
   },
   "eventData": [
    {"generation": 3, "level": 70, "moves": ["wingattack", "slash", "dragonrage", "firespin"], "pokeball": "pokeball"},
-   {"generation": 6, "level": 36, "gender": "M", "moves": ["firefang", "flameburst", "airslash", "inferno"], "pokeball": "cherishball"},
-   {"generation": 6, "level": 36, "gender": "M", "moves": ["firefang", "airslash", "dragonclaw", "dragonrage"], "pokeball": "cherishball"},
-   {"generation": 6, "level": 36, "shiny": true, "gender": "M", "moves": ["overheat", "solarbeam", "focusblast", "holdhands"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 36, "gender": "M", moves: ["firefang", "flameburst", "airslash", "inferno"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 36, "gender": "M", moves: ["firefang", "airslash", "dragonclaw", "dragonrage"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 36, "shiny": true, "gender": "M", moves: ["overheat", "solarbeam", "focusblast", "holdhands"], "pokeball": "cherishball"},
    {"generation": 6, "level": 100, "isHidden": true, "moves": ["flareblitz", "blastburn", "scaryface", "firepledge"], "pokeball": "cherishball"},
-   {"generation": 6, "level": 36, "gender": "M", "nature": "Serious", "moves": ["flamethrower", "ember", "firespin", "flameburst"], "pokeball": "cherishball"},
-   {"generation": 7, "level": 40, "nature": "Jolly", "moves": ["dragonclaw", "dragonrage", "fly", "flareblitz"], "pokeball": "cherishball"},
-   {"generation": 7, "level": 40, "gender": "M", "nature": "Jolly", "moves": ["flareblitz", "dragonclaw", "fly", "dragonrage"], "pokeball": "cherishball"},
-   {"generation": 7, "level": 40, "gender": "M", "nature": "Adamant", "moves": ["flamethrower", "dragonrage", "slash", "seismictoss"], "pokeball": "pokeball"},
+   {"generation": 6, "level": 36, "gender": "M", "nature": "Serious", moves: ["flamethrower", "ember", "firespin", "flameburst"], "pokeball": "cherishball"},
+   {"generation": 7, "level": 40, "nature": "Jolly", moves: ["dragonclaw", "dragonrage", "fly", "flareblitz"], "pokeball": "cherishball"},
+   {"generation": 7, "level": 40, "gender": "M", "nature": "Jolly", moves: ["flareblitz", "dragonclaw", "fly", "dragonrage"], "pokeball": "cherishball"},
+   {"generation": 7, "level": 40, "gender": "M", "nature": "Adamant", moves: ["flamethrower", "dragonrage", "slash", "seismictoss"], "pokeball": "pokeball"},
    {"generation": 7, "level": 50, "moves": ["dragondance", "flareblitz", "fly", "earthquake"], "pokeball": "cherishball"},
-   {"generation": 8, "level": 50, "gender": "M", "nature": "Adamant", "moves": ["flamethrower", "dragontail", "slash", "seismictoss"], "pokeball": "pokeball"}
+   {"generation": 8, "level": 50, "gender": "M", "nature": "Adamant", moves: ["flamethrower", "dragontail", "slash", "seismictoss"], "pokeball": "pokeball"}
   ]
  },
  "squirtle": {
@@ -782,8 +782,8 @@
    "zenheadbutt": ["8M", "7T", "6T", "5T", "4T"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["tackle", "tailwhip", "bubble", "withdraw"], "pokeball": "pokeball"},
-   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, "moves": ["tackle", "tailwhip", "bubble", "withdraw"]},
+   {"generation": 3, "level": 10, "gender": "M", moves: ["tackle", "tailwhip", "bubble", "withdraw"], "pokeball": "pokeball"},
+   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, moves: ["tackle", "tailwhip", "bubble", "withdraw"]},
    {"generation": 5, "level": 1, "shiny": 1, "ivs": {"hp": 31}, "moves": ["falseswipe", "block", "hydrocannon", "followme"], "pokeball": "pokeball"},
    {"generation": 6, "level": 5, "moves": ["tailwhip", "watergun", "withdraw", "bubble"], "pokeball": "cherishball"},
    {"generation": 6, "level": 5, "isHidden": true, "moves": ["tackle", "tailwhip", "celebrate"], "pokeball": "cherishball"}
@@ -1461,7 +1461,7 @@
    "workup": ["7M", "5M"]
   },
   "eventData": [
-   {"generation": 5, "level": 61, "gender": "M", "nature": "Naughty", "ivs": {"hp": 30, "atk": 30, "def": 30, "spa": 30, "spd": 30, "spe": 30}, "abilities": ["keeneye"], "moves": ["whirlwind", "wingattack", "skyattack", "mirrormove"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 61, "gender": "M", "nature": "Naughty", "ivs": {"hp": 30, "atk": 30, "def": 30, "spa": 30, "spd": 30, "spe": 30}, "abilities": ["keeneye"], moves: ["whirlwind", "wingattack", "skyattack", "mirrormove"], "pokeball": "cherishball"}
   ],
   "encounters": [
    {"generation": 7, "level": 29}
@@ -2107,8 +2107,8 @@
    "wrap": ["8V", "7L1", "7V", "6L1", "5L1", "4L1", "3L1", "3S0", "3S1"]
   },
   "eventData": [
-   {"generation": 3, "level": 14, "gender": "F", "nature": "Docile", "ivs": {"hp": 26, "atk": 28, "def": 6, "spa": 14, "spd": 30, "spe": 11}, "abilities": ["shedskin"], "moves": ["leer", "wrap", "poisonsting", "bite"], "pokeball": "pokeball"},
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["wrap", "leer", "poisonsting"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 14, "gender": "F", "nature": "Docile", "ivs": {"hp": 26, "atk": 28, "def": 6, "spa": 14, "spd": 30, "spe": 11}, "abilities": ["shedskin"], moves: ["leer", "wrap", "poisonsting", "bite"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 10, "gender": "M", moves: ["wrap", "leer", "poisonsting"], "pokeball": "pokeball"}
   ],
   "encounters": [
    {"generation": 1, "level": 6},
@@ -2306,7 +2306,7 @@
    {"generation": 3, "level": 5, "shiny": 1, "moves": ["thundershock", "charm", "teeterdance"], "pokeball": "pokeball"},
    {"generation": 3, "level": 5, "shiny": 1, "moves": ["thundershock", "charm", "followme"], "pokeball": "pokeball"},
    {"generation": 4, "level": 1, "moves": ["volttackle", "thunderbolt", "grassknot", "return"], "pokeball": "pokeball"},
-   {"generation": 4, "level": 30, "shiny": true, "gender": "M", "nature": "Jolly", "moves": ["charge", "volttackle", "endeavor", "endure"], "pokeball": "cherishball"}
+   {"generation": 4, "level": 30, "shiny": true, "gender": "M", "nature": "Jolly", moves: ["charge", "volttackle", "endeavor", "endure"], "pokeball": "cherishball"}
   ]
  },
  "pichuspikyeared": {
@@ -2356,7 +2356,7 @@
    "volttackle": ["4S0"]
   },
   "eventData": [
-   {"generation": 4, "level": 30, "gender": "F", "nature": "Naughty", "moves": ["helpinghand", "volttackle", "swagger", "painsplit"], "pokeball": "pokeball"}
+   {"generation": 4, "level": 30, "gender": "F", "nature": "Naughty", moves: ["helpinghand", "volttackle", "swagger", "painsplit"], "pokeball": "pokeball"}
   ],
   "eventOnly": true
  },
@@ -2491,52 +2491,52 @@
    {"generation": 3, "level": 70, "moves": ["thunderbolt", "thunder", "lightscreen", "fly"], "pokeball": "pokeball"},
    {"generation": 3, "level": 70, "moves": ["thunderbolt", "thunder", "lightscreen", "surf"], "pokeball": "pokeball"},
    {"generation": 3, "level": 70, "moves": ["thunderbolt", "thunder", "lightscreen", "agility"], "pokeball": "pokeball"},
-   {"generation": 4, "level": 10, "gender": "F", "nature": "Hardy", "moves": ["surf", "volttackle", "tailwhip", "thunderwave"], "pokeball": "pokeball"},
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["thundershock", "growl", "tailwhip", "thunderwave"], "pokeball": "pokeball"},
-   {"generation": 4, "level": 50, "gender": "M", "nature": "Hardy", "moves": ["surf", "thunderbolt", "lightscreen", "quickattack"], "pokeball": "cherishball"},
-   {"generation": 4, "level": 20, "gender": "F", "nature": "Bashful", "moves": ["present", "quickattack", "thundershock", "tailwhip"], "pokeball": "cherishball"},
-   {"generation": 4, "level": 20, "gender": "M", "nature": "Jolly", "moves": ["grassknot", "thunderbolt", "flash", "doubleteam"], "pokeball": "pokeball"},
-   {"generation": 4, "level": 40, "gender": "M", "nature": "Modest", "moves": ["surf", "thunder", "protect"], "pokeball": "cherishball"},
-   {"generation": 4, "level": 20, "gender": "F", "nature": "Bashful", "moves": ["quickattack", "thundershock", "tailwhip", "present"], "pokeball": "cherishball"},
-   {"generation": 4, "level": 40, "gender": "M", "nature": "Mild", "moves": ["surf", "thunder", "protect"], "pokeball": "cherishball"},
-   {"generation": 4, "level": 20, "gender": "F", "nature": "Bashful", "moves": ["present", "quickattack", "thunderwave", "tailwhip"], "pokeball": "cherishball"},
-   {"generation": 4, "level": 30, "gender": "M", "nature": "Naughty", "moves": ["lastresort", "present", "thunderbolt", "quickattack"], "pokeball": "cherishball"},
-   {"generation": 4, "level": 50, "gender": "M", "nature": "Relaxed", "moves": ["rest", "sleeptalk", "yawn", "snore"], "pokeball": "cherishball"},
-   {"generation": 4, "level": 20, "gender": "M", "nature": "Docile", "moves": ["present", "quickattack", "thundershock", "tailwhip"], "pokeball": "cherishball"},
-   {"generation": 4, "level": 50, "gender": "M", "nature": "Naughty", "moves": ["volttackle", "irontail", "quickattack", "thunderbolt"], "pokeball": "cherishball"},
-   {"generation": 4, "level": 20, "gender": "M", "nature": "Bashful", "moves": ["present", "quickattack", "thundershock", "tailwhip"], "pokeball": "cherishball"},
-   {"generation": 5, "level": 30, "gender": "F", "isHidden": true, "moves": ["sing", "teeterdance", "encore", "electroball"], "pokeball": "cherishball"},
+   {"generation": 4, "level": 10, "gender": "F", "nature": "Hardy", moves: ["surf", "volttackle", "tailwhip", "thunderwave"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 10, "gender": "M", moves: ["thundershock", "growl", "tailwhip", "thunderwave"], "pokeball": "pokeball"},
+   {"generation": 4, "level": 50, "gender": "M", "nature": "Hardy", moves: ["surf", "thunderbolt", "lightscreen", "quickattack"], "pokeball": "cherishball"},
+   {"generation": 4, "level": 20, "gender": "F", "nature": "Bashful", moves: ["present", "quickattack", "thundershock", "tailwhip"], "pokeball": "cherishball"},
+   {"generation": 4, "level": 20, "gender": "M", "nature": "Jolly", moves: ["grassknot", "thunderbolt", "flash", "doubleteam"], "pokeball": "pokeball"},
+   {"generation": 4, "level": 40, "gender": "M", "nature": "Modest", moves: ["surf", "thunder", "protect"], "pokeball": "cherishball"},
+   {"generation": 4, "level": 20, "gender": "F", "nature": "Bashful", moves: ["quickattack", "thundershock", "tailwhip", "present"], "pokeball": "cherishball"},
+   {"generation": 4, "level": 40, "gender": "M", "nature": "Mild", moves: ["surf", "thunder", "protect"], "pokeball": "cherishball"},
+   {"generation": 4, "level": 20, "gender": "F", "nature": "Bashful", moves: ["present", "quickattack", "thunderwave", "tailwhip"], "pokeball": "cherishball"},
+   {"generation": 4, "level": 30, "gender": "M", "nature": "Naughty", moves: ["lastresort", "present", "thunderbolt", "quickattack"], "pokeball": "cherishball"},
+   {"generation": 4, "level": 50, "gender": "M", "nature": "Relaxed", moves: ["rest", "sleeptalk", "yawn", "snore"], "pokeball": "cherishball"},
+   {"generation": 4, "level": 20, "gender": "M", "nature": "Docile", moves: ["present", "quickattack", "thundershock", "tailwhip"], "pokeball": "cherishball"},
+   {"generation": 4, "level": 50, "gender": "M", "nature": "Naughty", moves: ["volttackle", "irontail", "quickattack", "thunderbolt"], "pokeball": "cherishball"},
+   {"generation": 4, "level": 20, "gender": "M", "nature": "Bashful", moves: ["present", "quickattack", "thundershock", "tailwhip"], "pokeball": "cherishball"},
+   {"generation": 5, "level": 30, "gender": "F", "isHidden": true, moves: ["sing", "teeterdance", "encore", "electroball"], "pokeball": "cherishball"},
    {"generation": 5, "level": 50, "moves": ["fly", "irontail", "electroball", "quickattack"], "pokeball": "cherishball"},
-   {"generation": 5, "level": 100, "shiny": 1, "gender": "F", "moves": ["thunder", "volttackle", "grassknot", "quickattack"], "pokeball": "cherishball"},
-   {"generation": 5, "level": 50, "shiny": 1, "gender": "F", "moves": ["extremespeed", "thunderbolt", "grassknot", "brickbreak"], "pokeball": "cherishball"},
-   {"generation": 5, "level": 50, "gender": "F", "nature": "Timid", "isHidden": true, "moves": ["fly", "thunderbolt", "grassknot", "protect"], "pokeball": "cherishball"},
-   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, "moves": ["thundershock", "tailwhip", "thunderwave", "headbutt"]},
-   {"generation": 5, "level": 100, "gender": "M", "isHidden": true, "moves": ["volttackle", "quickattack", "feint", "voltswitch"], "pokeball": "cherishball"},
-   {"generation": 5, "level": 50, "gender": "M", "nature": "Brave", "moves": ["thunderbolt", "quickattack", "irontail", "electroball"], "pokeball": "cherishball"},
+   {"generation": 5, "level": 100, "shiny": 1, "gender": "F", moves: ["thunder", "volttackle", "grassknot", "quickattack"], "pokeball": "cherishball"},
+   {"generation": 5, "level": 50, "shiny": 1, "gender": "F", moves: ["extremespeed", "thunderbolt", "grassknot", "brickbreak"], "pokeball": "cherishball"},
+   {"generation": 5, "level": 50, "gender": "F", "nature": "Timid", "isHidden": true, moves: ["fly", "thunderbolt", "grassknot", "protect"], "pokeball": "cherishball"},
+   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, moves: ["thundershock", "tailwhip", "thunderwave", "headbutt"]},
+   {"generation": 5, "level": 100, "gender": "M", "isHidden": true, moves: ["volttackle", "quickattack", "feint", "voltswitch"], "pokeball": "cherishball"},
+   {"generation": 5, "level": 50, "gender": "M", "nature": "Brave", moves: ["thunderbolt", "quickattack", "irontail", "electroball"], "pokeball": "cherishball"},
    {"generation": 6, "level": 10, "moves": ["celebrate", "growl", "playnice", "quickattack"], "pokeball": "cherishball"},
    {"generation": 6, "level": 22, "moves": ["quickattack", "electroball", "doubleteam", "megakick"], "pokeball": "cherishball"},
    {"generation": 6, "level": 10, "moves": ["thunderbolt", "quickattack", "surf", "holdhands"], "pokeball": "cherishball"},
-   {"generation": 6, "level": 10, "gender": "F", "moves": ["thunderbolt", "quickattack", "heartstamp", "holdhands"], "pokeball": "healball"},
+   {"generation": 6, "level": 10, "gender": "F", moves: ["thunderbolt", "quickattack", "heartstamp", "holdhands"], "pokeball": "healball"},
    {"generation": 6, "level": 36, "shiny": true, "isHidden": true, "moves": ["thunder", "substitute", "playnice", "holdhands"], "pokeball": "cherishball"},
-   {"generation": 6, "level": 10, "gender": "F", "moves": ["playnice", "charm", "nuzzle", "sweetkiss"], "pokeball": "cherishball"},
-   {"generation": 6, "level": 50, "gender": "M", "nature": "Naughty", "moves": ["thunderbolt", "quickattack", "irontail", "electroball"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 10, "gender": "F", moves: ["playnice", "charm", "nuzzle", "sweetkiss"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 50, "gender": "M", "nature": "Naughty", moves: ["thunderbolt", "quickattack", "irontail", "electroball"], "pokeball": "cherishball"},
    {"generation": 6, "level": 10, "shiny": true, "moves": ["teeterdance", "playnice", "tailwhip", "nuzzle"], "pokeball": "cherishball"},
    {"generation": 6, "level": 10, "perfectIVs": 2, "isHidden": true, "moves": ["fakeout", "encore", "volttackle", "endeavor"], "pokeball": "cherishball"},
    {"generation": 6, "level": 99, "moves": ["happyhour", "playnice", "holdhands", "flash"], "pokeball": "cherishball"},
    {"generation": 6, "level": 10, "moves": ["fly", "surf", "agility", "celebrate"], "pokeball": "cherishball"},
    {"generation": 6, "level": 10, "moves": ["bestow", "holdhands", "return", "playnice"], "pokeball": "healball"},
-   {"generation": 7, "level": 10, "nature": "Jolly", "moves": ["celebrate", "growl", "playnice", "quickattack"], "pokeball": "cherishball"},
+   {"generation": 7, "level": 10, "nature": "Jolly", moves: ["celebrate", "growl", "playnice", "quickattack"], "pokeball": "cherishball"},
    {"generation": 7, "level": 10, "moves": ["bestow", "holdhands", "return", "playnice"], "pokeball": "cherishball"},
    {"generation": 7, "level": 10, "moves": ["holdhands", "playnice", "teeterdance", "happyhour"], "pokeball": "cherishball"},
    {"generation": 7, "level": 10, "moves": ["growl", "quickattack", "thundershock", "happyhour"], "pokeball": "cherishball"},
    {"generation": 7, "level": 40, "shiny": 1, "perfectIVs": 3, "moves": ["nuzzle", "discharge", "slam", "surf"], "pokeball": "pokeball"},
    {"generation": 7, "level": 5, "moves": ["celebrate", "sweetscent", "counter", "refresh"], "pokeball": "cherishball"},
    {"generation": 7, "level": 10, "moves": ["fly", "surf", "thunderbolt", "quickattack"], "pokeball": "cherishball"},
-   {"generation": 8, "level": 5, "gender": "M", "nature": "Serious", "moves": ["celebrate", "playnice", "thundershock", "quickattack"], "pokeball": "cherishball"},
-   {"generation": 8, "level": 21, "gender": "M", "nature": "Brave", "moves": ["thunderbolt", "swift", "wish", "celebrate"], "pokeball": "cherishball"},
+   {"generation": 8, "level": 5, "gender": "M", "nature": "Serious", moves: ["celebrate", "playnice", "thundershock", "quickattack"], "pokeball": "cherishball"},
+   {"generation": 8, "level": 21, "gender": "M", "nature": "Brave", moves: ["thunderbolt", "swift", "wish", "celebrate"], "pokeball": "cherishball"},
    {"generation": 8, "level": 25, "isHidden": true, "moves": ["sing", "encore", "celebrate", "electroball"], "pokeball": "cherishball"},
    {"generation": 9, "level": 5, "moves": ["fly", "tailwhip", "thundershock", "quickattack"], "pokeball": "pokeball"},
-   {"generation": 9, "level": 100, "gender": "M", "nature": "Quiet", "perfectIVs": 6, "isHidden": true, "moves": ["thunder", "surf", "playrough", "irontail"], "pokeball": "pokeball"}
+   {"generation": 9, "level": 100, "gender": "M", "nature": "Quiet", "perfectIVs": 6, "isHidden": true, moves: ["thunder", "surf", "playrough", "irontail"], "pokeball": "pokeball"}
   ],
   "encounters": [
    {"generation": 1, "level": 3},
@@ -2723,8 +2723,8 @@
    "wish": ["8E"]
   },
   "eventData": [
-   {"generation": 7, "level": 1, "nature": "Hardy", "moves": ["thunderbolt", "quickattack", "thunder", "agility"], "pokeball": "pokeball"},
-   {"generation": 8, "level": 25, "nature": "Hardy", "isHidden": false, "moves": ["thunderbolt", "quickattack", "irontail", "electroweb", "volttackle"], "pokeball": "pokeball"}
+   {"generation": 7, "level": 1, "nature": "Hardy", moves: ["thunderbolt", "quickattack", "thunder", "agility"], "pokeball": "pokeball"},
+   {"generation": 8, "level": 25, "nature": "Hardy", "isHidden": false, moves: ["thunderbolt", "quickattack", "irontail", "electroweb", "volttackle"], "pokeball": "pokeball"}
   ],
   "eventOnly": true
  },
@@ -2815,8 +2815,8 @@
    "wish": ["8E"]
   },
   "eventData": [
-   {"generation": 7, "level": 6, "nature": "Hardy", "moves": ["thunderbolt", "quickattack", "thunder", "irontail"], "pokeball": "pokeball"},
-   {"generation": 8, "level": 25, "nature": "Hardy", "isHidden": false, "moves": ["thunderbolt", "quickattack", "irontail", "electroweb", "volttackle"], "pokeball": "pokeball"}
+   {"generation": 7, "level": 6, "nature": "Hardy", moves: ["thunderbolt", "quickattack", "thunder", "irontail"], "pokeball": "pokeball"},
+   {"generation": 8, "level": 25, "nature": "Hardy", "isHidden": false, moves: ["thunderbolt", "quickattack", "irontail", "electroweb", "volttackle"], "pokeball": "pokeball"}
   ],
   "eventOnly": true
  },
@@ -2907,8 +2907,8 @@
    "wish": ["8E"]
   },
   "eventData": [
-   {"generation": 7, "level": 10, "nature": "Hardy", "moves": ["thunderbolt", "quickattack", "irontail", "volttackle"], "pokeball": "pokeball"},
-   {"generation": 8, "level": 25, "nature": "Hardy", "isHidden": false, "moves": ["thunderbolt", "quickattack", "irontail", "electroweb", "volttackle"], "pokeball": "pokeball"}
+   {"generation": 7, "level": 10, "nature": "Hardy", moves: ["thunderbolt", "quickattack", "irontail", "volttackle"], "pokeball": "pokeball"},
+   {"generation": 8, "level": 25, "nature": "Hardy", "isHidden": false, moves: ["thunderbolt", "quickattack", "irontail", "electroweb", "volttackle"], "pokeball": "pokeball"}
   ],
   "eventOnly": true
  },
@@ -2999,8 +2999,8 @@
    "wish": ["8E"]
   },
   "eventData": [
-   {"generation": 7, "level": 14, "nature": "Hardy", "moves": ["thunderbolt", "quickattack", "irontail", "volttackle"], "pokeball": "pokeball"},
-   {"generation": 8, "level": 25, "nature": "Hardy", "isHidden": false, "moves": ["thunderbolt", "quickattack", "irontail", "electroweb", "volttackle"], "pokeball": "pokeball"}
+   {"generation": 7, "level": 14, "nature": "Hardy", moves: ["thunderbolt", "quickattack", "irontail", "volttackle"], "pokeball": "pokeball"},
+   {"generation": 8, "level": 25, "nature": "Hardy", "isHidden": false, moves: ["thunderbolt", "quickattack", "irontail", "electroweb", "volttackle"], "pokeball": "pokeball"}
   ],
   "eventOnly": true
  },
@@ -3091,8 +3091,8 @@
    "wish": ["8E"]
   },
   "eventData": [
-   {"generation": 7, "level": 17, "nature": "Hardy", "moves": ["thunderbolt", "quickattack", "irontail", "electroball"], "pokeball": "pokeball"},
-   {"generation": 8, "level": 25, "nature": "Hardy", "isHidden": false, "moves": ["thunderbolt", "quickattack", "irontail", "electroweb", "volttackle"], "pokeball": "pokeball"}
+   {"generation": 7, "level": 17, "nature": "Hardy", moves: ["thunderbolt", "quickattack", "irontail", "electroball"], "pokeball": "pokeball"},
+   {"generation": 8, "level": 25, "nature": "Hardy", "isHidden": false, moves: ["thunderbolt", "quickattack", "irontail", "electroweb", "volttackle"], "pokeball": "pokeball"}
   ],
   "eventOnly": true
  },
@@ -3183,8 +3183,8 @@
    "wish": ["8E"]
   },
   "eventData": [
-   {"generation": 7, "level": 20, "nature": "Hardy", "moves": ["thunderbolt", "quickattack", "irontail", "electroball"], "pokeball": "pokeball"},
-   {"generation": 8, "level": 25, "nature": "Hardy", "isHidden": false, "moves": ["thunderbolt", "quickattack", "irontail", "electroweb", "volttackle"], "pokeball": "pokeball"}
+   {"generation": 7, "level": 20, "nature": "Hardy", moves: ["thunderbolt", "quickattack", "irontail", "electroball"], "pokeball": "pokeball"},
+   {"generation": 8, "level": 25, "nature": "Hardy", "isHidden": false, moves: ["thunderbolt", "quickattack", "irontail", "electroweb", "volttackle"], "pokeball": "pokeball"}
   ],
   "eventOnly": true
  },
@@ -3275,8 +3275,8 @@
    "wish": ["8E"]
   },
   "eventData": [
-   {"generation": 7, "level": 21, "shiny": 1, "nature": "Hardy", "moves": ["thunderbolt", "quickattack", "thunder", "irontail"], "pokeball": "pokeball"},
-   {"generation": 8, "level": 25, "nature": "Hardy", "isHidden": false, "moves": ["thunderbolt", "quickattack", "irontail", "electroweb", "volttackle"], "pokeball": "pokeball"}
+   {"generation": 7, "level": 21, "shiny": 1, "nature": "Hardy", moves: ["thunderbolt", "quickattack", "thunder", "irontail"], "pokeball": "pokeball"},
+   {"generation": 8, "level": 25, "nature": "Hardy", "isHidden": false, moves: ["thunderbolt", "quickattack", "irontail", "electroweb", "volttackle"], "pokeball": "pokeball"}
   ],
   "eventOnly": true
  },
@@ -3392,8 +3392,8 @@
    "wish": ["8E"]
   },
   "eventData": [
-   {"generation": 8, "level": 25, "nature": "Hardy", "moves": ["thunderbolt", "quickattack", "irontail", "electroweb", "volttackle"], "pokeball": "pokeball"},
-   {"generation": 8, "level": 80, "nature": "Hardy", "ivs": {"hp": 31, "atk": 30, "def": 30, "spa": 31, "spd": 30, "spe": 31}, "moves": ["thunderbolt", "quickattack", "irontail", "electroweb"], "pokeball": "pokeball"}
+   {"generation": 8, "level": 25, "nature": "Hardy", moves: ["thunderbolt", "quickattack", "irontail", "electroweb", "volttackle"], "pokeball": "pokeball"},
+   {"generation": 8, "level": 80, "nature": "Hardy", "ivs": {"hp": 31, "atk": 30, "def": 30, "spa": 31, "spd": 30, "spe": 31}, moves: ["thunderbolt", "quickattack", "irontail", "electroweb"], "pokeball": "pokeball"}
   ],
   "eventOnly": true
  },
@@ -3701,7 +3701,7 @@
    "xscissor": ["8M", "8V", "7M", "6M", "5M", "4M"]
   },
   "eventData": [
-   {"generation": 3, "level": 12, "gender": "M", "nature": "Docile", "ivs": {"hp": 4, "atk": 23, "def": 8, "spa": 31, "spd": 1, "spe": 25}, "moves": ["scratch", "defensecurl", "sandattack", "poisonsting"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 12, "gender": "M", "nature": "Docile", "ivs": {"hp": 4, "atk": 23, "def": 8, "spa": 31, "spd": 1, "spe": 25}, moves: ["scratch", "defensecurl", "sandattack", "poisonsting"], "pokeball": "pokeball"}
   ],
   "encounters": [
    {"generation": 1, "level": 6}
@@ -4859,8 +4859,8 @@
    "zenheadbutt": ["8M", "8S1", "7T", "6T", "5T", "4T"]
   },
   "eventData": [
-   {"generation": 8, "level": 50, "gender": "F", "shiny": true, "nature": "Bold", "isHidden": true, "ivs": {"hp": 31, "atk": 0, "def": 31, "spa": 31, "spd": 31, "spe": 31}, "moves": ["followme", "icywind", "helpinghand", "protect"], "pokeball": "cherishball"},
-   {"generation": 8, "level": 15, "gender": "M", "nature": "Modest", "abilities": ["cutecharm"], "moves": ["metronome", "moonblast", "zenheadbutt", "moonlight"], "pokeball": "moonball"}
+   {"generation": 8, "level": 50, "gender": "F", "shiny": true, "nature": "Bold", "isHidden": true, "ivs": {"hp": 31, "atk": 0, "def": 31, "spa": 31, "spd": 31, "spe": 31}, moves: ["followme", "icywind", "helpinghand", "protect"], "pokeball": "cherishball"},
+   {"generation": 8, "level": 15, "gender": "M", "nature": "Modest", "abilities": ["cutecharm"], moves: ["metronome", "moonblast", "zenheadbutt", "moonlight"], "pokeball": "moonball"}
   ],
   "encounters": [
    {"generation": 1, "level": 8}
@@ -5102,7 +5102,7 @@
    "zenheadbutt": ["8M", "7T", "6T", "5T", "4T"]
   },
   "eventData": [
-   {"generation": 3, "level": 18, "gender": "F", "nature": "Quirky", "ivs": {"hp": 15, "atk": 6, "def": 3, "spa": 25, "spd": 13, "spe": 22}, "moves": ["tailwhip", "roar", "quickattack", "willowisp"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 18, "gender": "F", "nature": "Quirky", "ivs": {"hp": 15, "atk": 6, "def": 3, "spa": 25, "spd": 13, "spe": 22}, moves: ["tailwhip", "roar", "quickattack", "willowisp"], "pokeball": "pokeball"},
    {"generation": 3, "level": 18, "moves": ["charm", "heatwave", "ember", "dig"]}
   ],
   "encounters": [
@@ -5187,7 +5187,7 @@
   },
   "eventData": [
    {"generation": 7, "level": 10, "moves": ["celebrate", "tailwhip", "babydolleyes", "iceshard"], "pokeball": "cherishball"},
-   {"generation": 7, "level": 10, "gender": "F", "nature": "Modest", "moves": ["powdersnow"], "pokeball": "cherishball"}
+   {"generation": 7, "level": 10, "gender": "F", nature: "Modest", "moves": ["powdersnow"], "pokeball": "cherishball"}
   ]
  },
  "ninetales": {
@@ -5280,7 +5280,7 @@
    "zenheadbutt": ["8M", "7T", "6T", "5T", "4T"]
   },
   "eventData": [
-   {"generation": 5, "level": 50, "gender": "M", "nature": "Bold", "ivs": {"def": 31}, "isHidden": true, "moves": ["heatwave", "solarbeam", "psyshock", "willowisp"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 50, "gender": "M", "nature": "Bold", "ivs": {"def": 31}, "isHidden": true, moves: ["heatwave", "solarbeam", "psyshock", "willowisp"], "pokeball": "cherishball"}
   ]
  },
  "ninetalesalola": {
@@ -6046,8 +6046,8 @@
    "zenheadbutt": ["8M", "7T", "6T", "5T", "4T"]
   },
   "eventData": [
-   {"generation": 4, "level": 30, "gender": "M", "nature": "Timid", "moves": ["heatwave", "airslash", "sludgebomb", "superfang"], "pokeball": "cherishball"},
-   {"generation": 7, "level": 64, "gender": "M", "moves": ["airslash", "toxic", "darkpulse", "sludgebomb"], "pokeball": "cherishball"}
+   {"generation": 4, "level": 30, "gender": "M", "nature": "Timid", moves: ["heatwave", "airslash", "sludgebomb", "superfang"], "pokeball": "cherishball"},
+   {"generation": 7, "level": 64, "gender": "M", moves: ["airslash", "toxic", "darkpulse", "sludgebomb"], "pokeball": "cherishball"}
   ]
  },
  "oddish": {
@@ -6122,7 +6122,7 @@
    "worryseed": ["7T", "6T", "5T", "4T"]
   },
   "eventData": [
-   {"generation": 3, "level": 26, "gender": "M", "nature": "Quirky", "ivs": {"hp": 23, "atk": 24, "def": 20, "spa": 21, "spd": 9, "spe": 16}, "moves": ["poisonpowder", "stunspore", "sleeppowder", "acid"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 26, "gender": "M", "nature": "Quirky", "ivs": {"hp": 23, "atk": 24, "def": 20, "spa": 21, "spd": 9, "spe": 16}, moves: ["poisonpowder", "stunspore", "sleeppowder", "acid"], "pokeball": "pokeball"},
    {"generation": 3, "level": 5, "shiny": 1, "moves": ["absorb", "leechseed"], "pokeball": "pokeball"}
   ],
   "encounters": [
@@ -7175,16 +7175,16 @@
   "eventData": [
    {"generation": 3, "level": 5, "shiny": 1, "moves": ["scratch", "growl", "petaldance"], "pokeball": "pokeball"},
    {"generation": 3, "level": 5, "moves": ["scratch", "growl"], "pokeball": "pokeball"},
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["scratch", "growl", "bite"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 10, "gender": "M", moves: ["scratch", "growl", "bite"], "pokeball": "pokeball"},
    {"generation": 3, "level": 22, "moves": ["sing", "slash", "payday", "bite"]},
-   {"generation": 4, "level": 21, "gender": "F", "nature": "Jolly", "abilities": ["pickup"], "moves": ["bite", "fakeout", "furyswipes", "screech"], "pokeball": "cherishball"},
-   {"generation": 4, "level": 10, "gender": "M", "nature": "Jolly", "abilities": ["pickup"], "moves": ["fakeout", "payday", "assist", "scratch"], "pokeball": "cherishball"},
-   {"generation": 5, "level": 15, "gender": "M", "abilities": ["pickup"], "moves": ["furyswipes", "sing", "nastyplot", "snatch"], "pokeball": "cherishball"},
+   {"generation": 4, "level": 21, "gender": "F", "nature": "Jolly", "abilities": ["pickup"], moves: ["bite", "fakeout", "furyswipes", "screech"], "pokeball": "cherishball"},
+   {"generation": 4, "level": 10, "gender": "M", "nature": "Jolly", "abilities": ["pickup"], moves: ["fakeout", "payday", "assist", "scratch"], "pokeball": "cherishball"},
+   {"generation": 5, "level": 15, "gender": "M", "abilities": ["pickup"], moves: ["furyswipes", "sing", "nastyplot", "snatch"], "pokeball": "cherishball"},
    {"generation": 6, "level": 20, "abilities": ["pickup"], "moves": ["happyhour", "screech", "bite", "fakeout"], "pokeball": "cherishball"}
   ],
   "encounters": [
    {"generation": 1, "level": 10},
-   {"generation": 3, "level": 3, "gender": "M", "nature": "Naive", "ivs": {"hp": 4, "atk": 5, "def": 4, "spa": 5, "spd": 4, "spe": 4}, "abilities": ["pickup"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 3, "gender": "M", nature: "Naive", "ivs": {"hp": 4, "atk": 5, "def": 4, "spa": 5, "spd": 4, "spe": 4}, "abilities": ["pickup"], "pokeball": "pokeball"}
   ]
  },
  "meowthalola": {
@@ -7770,7 +7770,7 @@
    "zenheadbutt": ["9M", "9L18", "8M", "8L18", "7T", "7L25", "6T", "6L29", "5T", "5L44", "4T", "4L40"]
   },
   "eventData": [
-   {"generation": 3, "level": 27, "gender": "M", "nature": "Lax", "ivs": {"hp": 31, "atk": 16, "def": 12, "spa": 29, "spd": 31, "spe": 14}, "abilities": ["damp"], "moves": ["tailwhip", "confusion", "disable", "screech"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 27, "gender": "M", "nature": "Lax", "ivs": {"hp": 31, "atk": 16, "def": 12, "spa": 29, "spd": 31, "spe": 14}, "abilities": ["damp"], moves: ["tailwhip", "confusion", "disable", "screech"], "pokeball": "pokeball"},
    {"generation": 3, "level": 5, "shiny": 1, "moves": ["watersport", "scratch", "tailwhip", "mudsport"], "pokeball": "pokeball"}
   ],
   "encounters": [
@@ -7899,7 +7899,7 @@
   },
   "eventData": [
    {"generation": 3, "level": 33, "moves": ["charm", "waterfall", "psychup", "brickbreak"]},
-   {"generation": 7, "level": 50, "gender": "M", "nature": "Timid", "ivs": {"hp": 31, "atk": 30, "def": 31, "spa": 31, "spd": 31, "spe": 31}, "isHidden": true, "moves": ["hydropump", "scald", "encore", "protect"], "pokeball": "cherishball"}
+   {"generation": 7, "level": 50, "gender": "M", "nature": "Timid", "ivs": {"hp": 31, "atk": 30, "def": 31, "spa": 31, "spd": 31, "spe": 31}, "isHidden": true, moves: ["hydropump", "scald", "encore", "protect"], "pokeball": "cherishball"}
   ],
   "encounters": [
    {"generation": 1, "level": 15},
@@ -8312,8 +8312,8 @@
    "willowisp": ["9M", "8M", "8V", "7M", "6M", "5M", "4M"]
   },
   "eventData": [
-   {"generation": 3, "level": 32, "gender": "F", "nature": "Quiet", "ivs": {"hp": 11, "atk": 24, "def": 28, "spa": 1, "spd": 20, "spe": 2}, "abilities": ["intimidate"], "moves": ["leer", "odorsleuth", "takedown", "flamewheel"], "pokeball": "pokeball"},
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["bite", "roar", "ember"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 32, "gender": "F", "nature": "Quiet", "ivs": {"hp": 11, "atk": 24, "def": 28, "spa": 1, "spd": 20, "spe": 2}, "abilities": ["intimidate"], moves: ["leer", "odorsleuth", "takedown", "flamewheel"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 10, "gender": "M", moves: ["bite", "roar", "ember"], "pokeball": "pokeball"},
    {"generation": 3, "level": 28, "moves": ["charm", "flamethrower", "bite", "takedown"]}
   ],
   "encounters": [
@@ -8704,7 +8704,7 @@
    {"generation": 3, "level": 20},
    {"generation": 4, "level": 10},
    {"generation": 7, "level": 24},
-   {"generation": 7, "level": 22, "gender": "F", "nature": "Naughty", "abilities": ["damp"], "pokeball": "pokeball"}
+   {"generation": 7, "level": 22, "gender": "F", nature: "Naughty", "abilities": ["damp"], "pokeball": "pokeball"}
   ]
  },
  "poliwrath": {
@@ -8902,7 +8902,7 @@
    "whirlpool": ["8M", "7V", "4M"]
   },
   "eventData": [
-   {"generation": 5, "level": 50, "gender": "M", "nature": "Calm", "ivs": {"hp": 31, "atk": 13, "def": 31, "spa": 5, "spd": 31, "spe": 5}, "isHidden": true, "moves": ["scald", "icebeam", "perishsong", "protect"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 50, "gender": "M", "nature": "Calm", "ivs": {"hp": 31, "atk": 13, "def": 31, "spa": 5, "spd": 31, "spe": 5}, "isHidden": true, moves: ["scald", "icebeam", "perishsong", "protect"], "pokeball": "cherishball"}
   ]
  },
  "abra": {
@@ -9545,10 +9545,10 @@
    "workup": ["8M", "7M", "5M"]
   },
   "eventData": [
-   {"generation": 3, "level": 38, "gender": "M", "nature": "Quiet", "ivs": {"hp": 9, "atk": 23, "def": 25, "spa": 20, "spd": 15, "spe": 10}, "abilities": ["guts"], "moves": ["seismictoss", "foresight", "revenge", "vitalthrow"], "pokeball": "pokeball"},
-   {"generation": 6, "level": 50, "shiny": true, "gender": "M", "nature": "Adamant", "ivs": {"hp": 31, "atk": 31, "def": 31, "spa": 31, "spd": 31, "spe": 31}, "abilities": ["noguard"], "moves": ["dynamicpunch", "stoneedge", "wideguard", "knockoff"], "pokeball": "cherishball"},
-   {"generation": 6, "level": 39, "gender": "M", "nature": "Hardy", "abilities": ["noguard"], "moves": ["seismictoss", "dynamicpunch", "dig", "focusenergy"], "pokeball": "cherishball"},
-   {"generation": 7, "level": 34, "gender": "F", "nature": "Brave", "ivs": {"atk": 31}, "abilities": ["guts"], "moves": ["strength", "bulkup", "quickguard", "doubleedge"], "pokeball": "cherishball"}
+   {"generation": 3, "level": 38, "gender": "M", "nature": "Quiet", "ivs": {"hp": 9, "atk": 23, "def": 25, "spa": 20, "spd": 15, "spe": 10}, "abilities": ["guts"], moves: ["seismictoss", "foresight", "revenge", "vitalthrow"], "pokeball": "pokeball"},
+   {"generation": 6, "level": 50, "shiny": true, "gender": "M", "nature": "Adamant", "ivs": {"hp": 31, "atk": 31, "def": 31, "spa": 31, "spd": 31, "spe": 31}, "abilities": ["noguard"], moves: ["dynamicpunch", "stoneedge", "wideguard", "knockoff"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 39, "gender": "M", "nature": "Hardy", "abilities": ["noguard"], moves: ["seismictoss", "dynamicpunch", "dig", "focusenergy"], "pokeball": "cherishball"},
+   {"generation": 7, "level": 34, "gender": "F", "nature": "Brave", "ivs": {"atk": 31}, "abilities": ["guts"], moves: ["strength", "bulkup", "quickguard", "doubleedge"], "pokeball": "cherishball"}
   ],
   "encounters": [
    {"generation": 1, "level": 16},
@@ -9633,7 +9633,7 @@
   },
   "eventData": [
    {"generation": 3, "level": 5, "shiny": 1, "moves": ["vinewhip", "teeterdance"], "pokeball": "pokeball"},
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["vinewhip", "growth"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 10, "gender": "M", moves: ["vinewhip", "growth"], "pokeball": "pokeball"}
   ],
   "encounters": [
    {"generation": 1, "level": 12},
@@ -10855,8 +10855,8 @@
    "zenheadbutt": ["9M", "9L24", "8M", "8L24", "7T", "7L32", "7E", "6T", "6L32", "6E", "5T", "5L32", "5E", "4T", "4L34", "4E"]
   },
   "eventData": [
-   {"generation": 3, "level": 31, "gender": "F", "nature": "Naive", "ivs": {"hp": 17, "atk": 11, "def": 19, "spa": 20, "spd": 5, "spe": 10}, "abilities": ["oblivious"], "moves": ["watergun", "confusion", "disable", "headbutt"], "pokeball": "pokeball"},
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["curse", "yawn", "tackle", "growl"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 31, "gender": "F", "nature": "Naive", "ivs": {"hp": 17, "atk": 11, "def": 19, "spa": 20, "spd": 5, "spe": 10}, "abilities": ["oblivious"], moves: ["watergun", "confusion", "disable", "headbutt"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 10, "gender": "M", moves: ["curse", "yawn", "tackle", "growl"], "pokeball": "pokeball"},
    {"generation": 5, "level": 30, "moves": ["confusion", "disable", "headbutt", "waterpulse"], "pokeball": "cherishball"}
   ],
   "encounters": [
@@ -11083,7 +11083,7 @@
    "zenheadbutt": ["9M", "9L24", "8M", "8L24", "7T", "7L32", "6T", "6L32", "5T", "5L32", "4T", "4L34"]
   },
   "eventData": [
-   {"generation": 6, "level": 100, "nature": "Quiet", "abilities": ["oblivious"], "moves": ["scald", "trickroom", "slackoff", "irontail"], "pokeball": "cherishball"}
+   {"generation": 6, "level": 100, "nature": "Quiet", "abilities": ["oblivious"], moves: ["scald", "trickroom", "slackoff", "irontail"], "pokeball": "cherishball"}
   ],
   "encounters": [
    {"generation": 1, "level": 15},
@@ -11807,7 +11807,7 @@
   ],
   "encounters": [
    {"generation": 1, "level": 3},
-   {"generation": 3, "level": 3, "gender": "M", "nature": "Adamant", "ivs": {"hp": 20, "atk": 25, "def": 21, "spa": 24, "spd": 15, "spe": 20}, "abilities": ["keeneye"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 3, "gender": "M", nature: "Adamant", "ivs": {"hp": 20, "atk": 25, "def": 21, "spa": 24, "spd": 15, "spe": 20}, "abilities": ["keeneye"], "pokeball": "pokeball"}
   ]
  },
  "farfetchdgalar": {
@@ -11912,7 +11912,7 @@
    "workup": ["8M"]
   },
   "eventData": [
-   {"generation": 8, "level": 80, "gender": "M", "nature": "Brave", "abilities": ["steadfast"], "ivs": {"hp": 30, "atk": 31, "def": 31, "spa": 30, "spd": 30, "spe": 31}, "moves": ["meteorassault", "brutalswing", "furycutter", "detect"], "pokeball": "pokeball"}
+   {"generation": 8, "level": 80, "gender": "M", "nature": "Brave", "abilities": ["steadfast"], "ivs": {"hp": 30, "atk": 31, "def": 31, "spa": 30, "spd": 30, "spe": 31}, moves: ["meteorassault", "brutalswing", "furycutter", "detect"], "pokeball": "pokeball"}
   ]
  },
  "doduo": {
@@ -12068,7 +12068,7 @@
    {"generation": 2, "level": 10, "gender": "F"},
    {"generation": 2, "level": 30},
    {"generation": 3, "level": 29, "pokeball": "safariball"},
-   {"generation": 4, "level": 15, "gender": "F", "nature": "Impish", "ivs": {"hp": 20, "atk": 20, "def": 20, "spa": 15, "spd": 15, "spe": 15}, "abilities": ["runaway"], "pokeball": "pokeball"}
+   {"generation": 4, "level": 15, "gender": "F", nature: "Impish", "ivs": {"hp": 20, "atk": 20, "def": 20, "spa": 15, "spd": 15, "spe": 15}, "abilities": ["runaway"], "pokeball": "pokeball"}
   ]
  },
  "seel": {
@@ -12730,8 +12730,8 @@
    "withdraw": ["9L4", "8L4", "8V", "7L4", "7V", "6L4", "5L4", "5D", "4L4", "3L1", "3S0", "3S1"]
   },
   "eventData": [
-   {"generation": 3, "level": 24, "gender": "F", "nature": "Brave", "ivs": {"hp": 5, "atk": 19, "def": 18, "spa": 5, "spd": 11, "spe": 13}, "abilities": ["shellarmor"], "moves": ["withdraw", "iciclespear", "supersonic", "aurorabeam"], "pokeball": "pokeball"},
-   {"generation": 3, "level": 10, "gender": "M", "abilities": ["shellarmor"], "moves": ["tackle", "withdraw", "iciclespear"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 24, "gender": "F", "nature": "Brave", "ivs": {"hp": 5, "atk": 19, "def": 18, "spa": 5, "spd": 11, "spe": 13}, "abilities": ["shellarmor"], moves: ["withdraw", "iciclespear", "supersonic", "aurorabeam"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 10, "gender": "M", "abilities": ["shellarmor"], moves: ["tackle", "withdraw", "iciclespear"], "pokeball": "pokeball"},
    {"generation": 3, "level": 29, "abilities": ["shellarmor"], "moves": ["refresh", "takedown", "surf", "aurorabeam"]}
   ],
   "encounters": [
@@ -12830,7 +12830,7 @@
    "withdraw": ["9L1", "8L1", "8V", "7L1", "7V", "6L1", "5L1", "4L1", "3L1"]
   },
   "eventData": [
-   {"generation": 5, "level": 30, "gender": "M", "nature": "Naughty", "abilities": ["skilllink"], "moves": ["iciclespear", "rockblast", "hiddenpower", "razorshell"], "pokeball": "pokeball"}
+   {"generation": 5, "level": 30, "gender": "M", "nature": "Naughty", "abilities": ["skilllink"], moves: ["iciclespear", "rockblast", "hiddenpower", "razorshell"], "pokeball": "pokeball"}
   ]
  },
  "gastly": {
@@ -13173,14 +13173,14 @@
    "zapcannon": ["7V"]
   },
   "eventData": [
-   {"generation": 3, "level": 23, "gender": "F", "nature": "Hardy", "ivs": {"hp": 19, "atk": 14, "def": 0, "spa": 14, "spd": 17, "spe": 27}, "moves": ["spite", "curse", "nightshade", "confuseray"], "pokeball": "pokeball"},
-   {"generation": 6, "level": 25, "nature": "Timid", "moves": ["psychic", "confuseray", "suckerpunch", "shadowpunch"], "pokeball": "cherishball"},
+   {"generation": 3, "level": 23, "gender": "F", "nature": "Hardy", "ivs": {"hp": 19, "atk": 14, "def": 0, "spa": 14, "spd": 17, "spe": 27}, moves: ["spite", "curse", "nightshade", "confuseray"], "pokeball": "pokeball"},
+   {"generation": 6, "level": 25, "nature": "Timid", moves: ["psychic", "confuseray", "suckerpunch", "shadowpunch"], "pokeball": "cherishball"},
    {"generation": 6, "level": 25, "moves": ["nightshade", "confuseray", "suckerpunch", "shadowpunch"], "pokeball": "cherishball"},
    {"generation": 6, "level": 50, "moves": ["shadowball", "sludgebomb", "willowisp", "destinybond"], "pokeball": "cherishball"},
    {"generation": 6, "level": 25, "shiny": true, "moves": ["shadowball", "sludgewave", "confuseray", "astonish"], "pokeball": "duskball"},
-   {"generation": 6, "level": 50, "shiny": true, "gender": "M", "moves": ["meanlook", "hypnosis", "psychic", "hyperbeam"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 50, "shiny": true, "gender": "M", moves: ["meanlook", "hypnosis", "psychic", "hyperbeam"], "pokeball": "cherishball"},
    {"generation": 6, "level": 100, "moves": ["meanlook", "hypnosis", "psychic", "hyperbeam"], "pokeball": "cherishball"},
-   {"generation": 8, "level": 80, "gender": "M", "nature": "Naughty", "abilities": ["cursedbody"], "ivs": {"hp": 30, "atk": 30, "def": 30, "spa": 31, "spd": 31, "spe": 31}, "moves": ["shadowball", "sludgebomb", "dazzlinggleam", "willowisp"], "pokeball": "pokeball"}
+   {"generation": 8, "level": 80, "gender": "M", "nature": "Naughty", "abilities": ["cursedbody"], "ivs": {"hp": 30, "atk": 30, "def": 30, "spa": 31, "spd": 31, "spe": 31}, moves: ["shadowball", "sludgebomb", "dazzlinggleam", "willowisp"], "pokeball": "pokeball"}
   ]
  },
  "onix": {
@@ -14336,7 +14336,7 @@
    "zenheadbutt": ["8M", "7T"]
   },
   "eventData": [
-   {"generation": 7, "level": 50, "gender": "M", "nature": "Modest", "isHidden": true, "moves": ["powerswap", "celebrate", "leafstorm", "dracometeor"], "pokeball": "cherishball"}
+   {"generation": 7, "level": 50, "gender": "M", "nature": "Modest", "isHidden": true, moves: ["powerswap", "celebrate", "leafstorm", "dracometeor"], "pokeball": "cherishball"}
   ]
  },
  "cubone": {
@@ -15089,7 +15089,7 @@
    "workup": ["8M", "7M", "5M"]
   },
   "eventData": [
-   {"generation": 5, "level": 55, "gender": "M", "nature": "Adamant", "abilities": ["intimidate"], "moves": ["fakeout", "closecombat", "suckerpunch", "helpinghand"]}
+   {"generation": 5, "level": 55, "gender": "M", "nature": "Adamant", "abilities": ["intimidate"], moves: ["fakeout", "closecombat", "suckerpunch", "helpinghand"]}
   ]
  },
  "lickitung": {
@@ -16475,7 +16475,7 @@
    "wringout": ["7L49", "6L49", "5L50", "4L50"]
   },
   "eventData": [
-   {"generation": 4, "level": 50, "gender": "M", "nature": "Brave", "moves": ["sunnyday", "morningsun", "ancientpower", "naturalgift"], "pokeball": "cherishball"}
+   {"generation": 4, "level": 50, "gender": "M", "nature": "Brave", moves: ["sunnyday", "morningsun", "ancientpower", "naturalgift"], "pokeball": "cherishball"}
   ]
  },
  "kangaskhan": {
@@ -16843,7 +16843,7 @@
   },
   "eventData": [
    {"generation": 3, "level": 50, "abilities": ["swiftswim"], "moves": ["leer", "watergun", "twister", "agility"], "pokeball": "pokeball"},
-   {"generation": 5, "level": 50, "gender": "M", "nature": "Timid", "ivs": {"hp": 31, "atk": 17, "def": 8, "spa": 31, "spd": 11, "spe": 31}, "abilities": ["swiftswim"], "moves": ["dracometeor", "muddywater", "dragonpulse", "protect"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 50, "gender": "M", "nature": "Timid", "ivs": {"hp": 31, "atk": 17, "def": 8, "spa": 31, "spd": 11, "spe": 31}, "abilities": ["swiftswim"], moves: ["dracometeor", "muddywater", "dragonpulse", "protect"], "pokeball": "cherishball"}
   ]
  },
  "goldeen": {
@@ -17095,7 +17095,7 @@
   },
   "eventData": [
    {"generation": 3, "level": 50, "moves": ["minimize", "lightscreen", "cosmicpower", "hydropump"], "pokeball": "pokeball"},
-   {"generation": 3, "level": 18, "nature": "Timid", "ivs": {"hp": 10, "atk": 3, "def": 22, "spa": 24, "spd": 3, "spe": 18}, "abilities": ["illuminate"], "moves": ["harden", "watergun", "rapidspin", "recover"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 18, "nature": "Timid", "ivs": {"hp": 10, "atk": 3, "def": 22, "spa": 24, "spd": 3, "spe": 18}, "abilities": ["illuminate"], moves: ["harden", "watergun", "rapidspin", "recover"], "pokeball": "pokeball"}
   ],
   "encounters": [
    {"generation": 1, "level": 5}
@@ -17713,7 +17713,7 @@
    "xscissor": ["9M", "9L40", "8M", "8L40", "8V", "7M", "7L41", "6M", "6L41", "5M", "5L41", "4M", "4L41"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "abilities": ["swarm"], "moves": ["quickattack", "leer", "focusenergy"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 10, "gender": "M", "abilities": ["swarm"], moves: ["quickattack", "leer", "focusenergy"], "pokeball": "pokeball"},
    {"generation": 3, "level": 40, "abilities": ["swarm"], "moves": ["morningsun", "razorwind", "silverwind", "slash"]},
    {"generation": 5, "level": 30, "moves": ["agility", "wingattack", "furycutter", "slash"], "pokeball": "cherishball"}
   ],
@@ -17819,12 +17819,12 @@
    "xscissor": ["9M", "9L40", "8M", "8L40", "7M", "7L41", "6M", "6L41", "6S4", "5M", "5L41", "4M", "4L41", "4S1"]
   },
   "eventData": [
-   {"generation": 3, "level": 50, "gender": "M", "abilities": ["swarm"], "moves": ["furycutter", "metalclaw", "swordsdance", "slash"], "pokeball": "pokeball"},
-   {"generation": 4, "level": 50, "gender": "M", "nature": "Adamant", "abilities": ["swarm"], "moves": ["xscissor", "swordsdance", "irondefense", "agility"], "pokeball": "cherishball"},
-   {"generation": 5, "level": 100, "gender": "M", "abilities": ["technician"], "moves": ["bulletpunch", "bugbite", "roost", "swordsdance"], "pokeball": "cherishball"},
-   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, "moves": ["leer", "focusenergy", "pursuit", "steelwing"]},
-   {"generation": 6, "level": 50, "gender": "M", "moves": ["xscissor", "nightslash", "doublehit", "ironhead"], "pokeball": "cherishball"},
-   {"generation": 6, "level": 25, "nature": "Adamant", "abilities": ["technician"], "moves": ["aerialace", "falseswipe", "agility", "furycutter"], "pokeball": "cherishball"},
+   {"generation": 3, "level": 50, "gender": "M", "abilities": ["swarm"], moves: ["furycutter", "metalclaw", "swordsdance", "slash"], "pokeball": "pokeball"},
+   {"generation": 4, "level": 50, "gender": "M", "nature": "Adamant", "abilities": ["swarm"], moves: ["xscissor", "swordsdance", "irondefense", "agility"], "pokeball": "cherishball"},
+   {"generation": 5, "level": 100, "gender": "M", "abilities": ["technician"], moves: ["bulletpunch", "bugbite", "roost", "swordsdance"], "pokeball": "cherishball"},
+   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, moves: ["leer", "focusenergy", "pursuit", "steelwing"]},
+   {"generation": 6, "level": 50, "gender": "M", moves: ["xscissor", "nightslash", "doublehit", "ironhead"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 25, "nature": "Adamant", "abilities": ["technician"], moves: ["aerialace", "falseswipe", "agility", "furycutter"], "pokeball": "cherishball"},
    {"generation": 6, "level": 25, "moves": ["metalclaw", "falseswipe", "agility", "furycutter"], "pokeball": "cherishball"},
    {"generation": 6, "level": 50, "abilities": ["technician"], "moves": ["bulletpunch", "swordsdance", "roost", "uturn"], "pokeball": "cherishball"}
   ]
@@ -18284,11 +18284,11 @@
    "zapcannon": ["7V"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["quickattack", "leer", "thunderpunch"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 10, "gender": "M", moves: ["quickattack", "leer", "thunderpunch"], "pokeball": "pokeball"},
    {"generation": 3, "level": 43, "moves": ["followme", "crosschop", "thunderwave", "thunderbolt"]},
-   {"generation": 4, "level": 30, "gender": "M", "nature": "Naughty", "moves": ["lowkick", "shockwave", "lightscreen", "thunderpunch"], "pokeball": "pokeball"},
+   {"generation": 4, "level": 30, "gender": "M", "nature": "Naughty", moves: ["lowkick", "shockwave", "lightscreen", "thunderpunch"], "pokeball": "pokeball"},
    {"generation": 5, "level": 30, "moves": ["lowkick", "swift", "shockwave", "lightscreen"], "pokeball": "cherishball"},
-   {"generation": 6, "level": 30, "gender": "M", "isHidden": true, "moves": ["lowkick", "shockwave", "lightscreen", "thunderpunch"], "pokeball": "cherishball"}
+   {"generation": 6, "level": 30, "gender": "M", "isHidden": true, moves: ["lowkick", "shockwave", "lightscreen", "thunderpunch"], "pokeball": "cherishball"}
   ],
   "encounters": [
    {"generation": 1, "level": 33},
@@ -18383,8 +18383,8 @@
    "wildcharge": ["8M", "7M", "6M", "5M"]
   },
   "eventData": [
-   {"generation": 4, "level": 50, "gender": "M", "nature": "Adamant", "moves": ["thunderpunch", "icepunch", "crosschop", "earthquake"], "pokeball": "pokeball"},
-   {"generation": 4, "level": 50, "gender": "M", "nature": "Serious", "moves": ["lightscreen", "thunderpunch", "discharge", "thunderbolt"], "pokeball": "cherishball"}
+   {"generation": 4, "level": 50, "gender": "M", "nature": "Adamant", moves: ["thunderpunch", "icepunch", "crosschop", "earthquake"], "pokeball": "pokeball"},
+   {"generation": 4, "level": 50, "gender": "M", "nature": "Serious", moves: ["lightscreen", "thunderpunch", "discharge", "thunderbolt"], "pokeball": "cherishball"}
   ]
  },
  "magby": {
@@ -18560,11 +18560,11 @@
    "willowisp": ["8M", "8V", "7M", "6M", "5M", "4M"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["leer", "smog", "firepunch", "ember"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 10, "gender": "M", moves: ["leer", "smog", "firepunch", "ember"], "pokeball": "pokeball"},
    {"generation": 3, "level": 36, "moves": ["followme", "fireblast", "crosschop", "thunderpunch"]},
-   {"generation": 4, "level": 30, "gender": "M", "nature": "Quiet", "moves": ["smokescreen", "firespin", "confuseray", "firepunch"], "pokeball": "pokeball"},
+   {"generation": 4, "level": 30, "gender": "M", "nature": "Quiet", moves: ["smokescreen", "firespin", "confuseray", "firepunch"], "pokeball": "pokeball"},
    {"generation": 5, "level": 30, "moves": ["smokescreen", "feintattack", "firespin", "confuseray"], "pokeball": "cherishball"},
-   {"generation": 6, "level": 30, "gender": "M", "isHidden": true, "moves": ["smokescreen", "firespin", "confuseray", "firepunch"], "pokeball": "cherishball"}
+   {"generation": 6, "level": 30, "gender": "M", "isHidden": true, moves: ["smokescreen", "firespin", "confuseray", "firepunch"], "pokeball": "cherishball"}
   ],
   "encounters": [
    {"generation": 1, "level": 34},
@@ -18659,8 +18659,8 @@
    "willowisp": ["8M", "7M", "6M", "5M", "4M"]
   },
   "eventData": [
-   {"generation": 4, "level": 50, "gender": "F", "nature": "Modest", "moves": ["flamethrower", "psychic", "hyperbeam", "solarbeam"], "pokeball": "pokeball"},
-   {"generation": 4, "level": 50, "gender": "M", "nature": "Hardy", "moves": ["confuseray", "firepunch", "lavaplume", "flamethrower"], "pokeball": "cherishball"}
+   {"generation": 4, "level": 50, "gender": "F", "nature": "Modest", moves: ["flamethrower", "psychic", "hyperbeam", "solarbeam"], "pokeball": "pokeball"},
+   {"generation": 4, "level": 50, "gender": "M", "nature": "Hardy", moves: ["confuseray", "firepunch", "lavaplume", "flamethrower"], "pokeball": "cherishball"}
   ]
  },
  "pinsir": {
@@ -18753,8 +18753,8 @@
   },
   "eventData": [
    {"generation": 3, "level": 35, "abilities": ["hypercutter"], "moves": ["helpinghand", "guillotine", "falseswipe", "submission"]},
-   {"generation": 6, "level": 50, "gender": "F", "nature": "Adamant", "moves": ["xscissor", "earthquake", "stoneedge", "return"], "pokeball": "cherishball"},
-   {"generation": 6, "level": 50, "nature": "Jolly", "isHidden": true, "moves": ["earthquake", "swordsdance", "feint", "quickattack"], "pokeball": "cherishball"}
+   {"generation": 6, "level": 50, "gender": "F", "nature": "Adamant", moves: ["xscissor", "earthquake", "stoneedge", "return"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 50, "nature": "Jolly", "isHidden": true, moves: ["earthquake", "swordsdance", "feint", "quickattack"], "pokeball": "cherishball"}
   ],
   "encounters": [
    {"generation": 1, "level": 15},
@@ -18861,7 +18861,7 @@
    "zenheadbutt": ["9M", "9L30", "8M", "8L30", "7T", "7L35", "6T", "6L35", "5T", "5L35", "4T", "4L29"]
   },
   "eventData": [
-   {"generation": 3, "level": 25, "nature": "Docile", "ivs": {"hp": 14, "atk": 19, "def": 12, "spa": 17, "spd": 5, "spe": 26}, "abilities": ["intimidate"], "moves": ["rage", "hornattack", "scaryface", "pursuit"], "pokeball": "safariball"},
+   {"generation": 3, "level": 25, "nature": "Docile", "ivs": {"hp": 14, "atk": 19, "def": 12, "spa": 17, "spd": 5, "spe": 26}, "abilities": ["intimidate"], moves: ["rage", "hornattack", "scaryface", "pursuit"], "pokeball": "safariball"},
    {"generation": 3, "level": 10, "abilities": ["intimidate"], "moves": ["tackle", "tailwhip", "rage", "hornattack"], "pokeball": "pokeball"},
    {"generation": 3, "level": 46, "abilities": ["intimidate"], "moves": ["refresh", "earthquake", "tailwhip", "bodyslam"]}
   ],
@@ -19040,12 +19040,12 @@
    "tackle": ["9L15", "8L15", "8V", "7L15", "7V", "6L15", "5L15", "4L15", "3L15"]
   },
   "eventData": [
-   {"generation": 4, "level": 5, "gender": "M", "nature": "Relaxed", "moves": ["splash"], "pokeball": "pokeball"},
-   {"generation": 4, "level": 6, "gender": "F", "nature": "Rash", "moves": ["splash"], "pokeball": "pokeball"},
-   {"generation": 4, "level": 7, "gender": "F", "nature": "Hardy", "moves": ["splash"], "pokeball": "pokeball"},
-   {"generation": 4, "level": 5, "gender": "F", "nature": "Lonely", "moves": ["splash"], "pokeball": "pokeball"},
-   {"generation": 4, "level": 4, "gender": "M", "nature": "Modest", "moves": ["splash"], "pokeball": "pokeball"},
-   {"generation": 5, "level": 99, "shiny": true, "gender": "M", "moves": ["flail", "hydropump", "bounce", "splash"], "pokeball": "cherishball"},
+   {"generation": 4, "level": 5, "gender": "M", nature: "Relaxed", "moves": ["splash"], "pokeball": "pokeball"},
+   {"generation": 4, "level": 6, "gender": "F", nature: "Rash", "moves": ["splash"], "pokeball": "pokeball"},
+   {"generation": 4, "level": 7, "gender": "F", nature: "Hardy", "moves": ["splash"], "pokeball": "pokeball"},
+   {"generation": 4, "level": 5, "gender": "F", nature: "Lonely", "moves": ["splash"], "pokeball": "pokeball"},
+   {"generation": 4, "level": 4, "gender": "M", nature: "Modest", "moves": ["splash"], "pokeball": "pokeball"},
+   {"generation": 5, "level": 99, "shiny": true, "gender": "M", moves: ["flail", "hydropump", "bounce", "splash"], "pokeball": "cherishball"},
    {"generation": 6, "level": 1, "shiny": 1, "moves": ["splash", "celebrate", "happyhour"], "pokeball": "cherishball"},
    {"generation": 7, "level": 19, "shiny": true, "moves": ["splash", "bounce"], "pokeball": "cherishball"}
   ],
@@ -19373,13 +19373,13 @@
    "yawn": ["9E", "8E", "7E", "6E", "5E", "4E"]
   },
   "eventData": [
-   {"generation": 4, "level": 10, "gender": "F", "nature": "Lonely", "abilities": ["adaptability"], "moves": ["covet", "bite", "helpinghand", "attract"], "pokeball": "cherishball"},
-   {"generation": 4, "level": 50, "shiny": true, "gender": "M", "nature": "Hardy", "abilities": ["adaptability"], "moves": ["irontail", "trumpcard", "flail", "quickattack"], "pokeball": "cherishball"},
-   {"generation": 5, "level": 50, "gender": "F", "nature": "Hardy", "abilities": ["adaptability"], "moves": ["sing", "return", "echoedvoice", "attract"], "pokeball": "cherishball"},
+   {"generation": 4, "level": 10, "gender": "F", "nature": "Lonely", "abilities": ["adaptability"], moves: ["covet", "bite", "helpinghand", "attract"], "pokeball": "cherishball"},
+   {"generation": 4, "level": 50, "shiny": true, "gender": "M", "nature": "Hardy", "abilities": ["adaptability"], moves: ["irontail", "trumpcard", "flail", "quickattack"], "pokeball": "cherishball"},
+   {"generation": 5, "level": 50, "gender": "F", "nature": "Hardy", "abilities": ["adaptability"], moves: ["sing", "return", "echoedvoice", "attract"], "pokeball": "cherishball"},
    {"generation": 6, "level": 10, "moves": ["celebrate", "sandattack", "babydolleyes", "swift"], "pokeball": "cherishball"},
    {"generation": 6, "level": 15, "shiny": true, "isHidden": true, "moves": ["swift", "quickattack", "babydolleyes", "helpinghand"], "pokeball": "cherishball"},
-   {"generation": 7, "level": 10, "nature": "Jolly", "moves": ["celebrate", "sandattack", "babydolleyes"], "pokeball": "cherishball"},
-   {"generation": 8, "level": 5, "gender": "M", "nature": "Docile", "abilities": ["runaway"], "moves": ["celebrate", "covet", "helpinghand", "tackle"], "pokeball": "cherishball"}
+   {"generation": 7, "level": 10, "nature": "Jolly", moves: ["celebrate", "sandattack", "babydolleyes"], "pokeball": "cherishball"},
+   {"generation": 8, "level": 5, "gender": "M", "nature": "Docile", "abilities": ["runaway"], moves: ["celebrate", "covet", "helpinghand", "tackle"], "pokeball": "cherishball"}
   ],
   "encounters": [
    {"generation": 1, "level": 25}
@@ -19525,9 +19525,9 @@
    "yawn": ["8V"]
   },
   "eventData": [
-   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, "moves": ["tailwhip", "tackle", "helpinghand", "sandattack"]},
+   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, moves: ["tailwhip", "tackle", "helpinghand", "sandattack"]},
    {"generation": 6, "level": 10, "moves": ["celebrate", "tailwhip", "sandattack", "watergun"], "pokeball": "cherishball"},
-   {"generation": 7, "level": 50, "gender": "F", "isHidden": true, "moves": ["scald", "icebeam", "raindance", "rest"], "pokeball": "cherishball"}
+   {"generation": 7, "level": 50, "gender": "F", "isHidden": true, moves: ["scald", "icebeam", "raindance", "rest"], "pokeball": "cherishball"}
   ]
  },
  "jolteon": {
@@ -19628,9 +19628,9 @@
    "zapcannon": ["7V"]
   },
   "eventData": [
-   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, "moves": ["tailwhip", "tackle", "helpinghand", "sandattack"]},
+   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, moves: ["tailwhip", "tackle", "helpinghand", "sandattack"]},
    {"generation": 6, "level": 10, "moves": ["celebrate", "tailwhip", "sandattack", "thundershock"], "pokeball": "cherishball"},
-   {"generation": 7, "level": 50, "gender": "F", "moves": ["thunderbolt", "shadowball", "lightscreen", "voltswitch"], "pokeball": "cherishball"}
+   {"generation": 7, "level": 50, "gender": "F", moves: ["thunderbolt", "shadowball", "lightscreen", "voltswitch"], "pokeball": "cherishball"}
   ]
  },
  "flareon": {
@@ -19729,9 +19729,9 @@
    "zapcannon": ["7V"]
   },
   "eventData": [
-   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, "moves": ["tailwhip", "tackle", "helpinghand", "sandattack"]},
+   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, moves: ["tailwhip", "tackle", "helpinghand", "sandattack"]},
    {"generation": 6, "level": 10, "moves": ["celebrate", "tailwhip", "sandattack", "ember"], "pokeball": "cherishball"},
-   {"generation": 7, "level": 50, "gender": "F", "isHidden": true, "moves": ["flareblitz", "facade", "willowisp", "quickattack"], "pokeball": "cherishball"}
+   {"generation": 7, "level": 50, "gender": "F", "isHidden": true, moves: ["flareblitz", "facade", "willowisp", "quickattack"], "pokeball": "cherishball"}
   ]
  },
  "espeon": {
@@ -19837,9 +19837,9 @@
   },
   "eventData": [
    {"generation": 3, "level": 70, "moves": ["psybeam", "psychup", "psychic", "morningsun"], "pokeball": "pokeball"},
-   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, "moves": ["tailwhip", "tackle", "helpinghand", "sandattack"]},
+   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, moves: ["tailwhip", "tackle", "helpinghand", "sandattack"]},
    {"generation": 6, "level": 10, "moves": ["celebrate", "tailwhip", "sandattack", "confusion"], "pokeball": "cherishball"},
-   {"generation": 7, "level": 50, "gender": "F", "isHidden": true, "moves": ["psychic", "dazzlinggleam", "shadowball", "reflect"], "pokeball": "cherishball"}
+   {"generation": 7, "level": 50, "gender": "F", "isHidden": true, moves: ["psychic", "dazzlinggleam", "shadowball", "reflect"], "pokeball": "cherishball"}
   ]
  },
  "umbreon": {
@@ -19944,9 +19944,9 @@
   },
   "eventData": [
    {"generation": 3, "level": 70, "moves": ["feintattack", "meanlook", "screech", "moonlight"], "pokeball": "pokeball"},
-   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, "moves": ["tailwhip", "tackle", "helpinghand", "sandattack"]},
+   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, moves: ["tailwhip", "tackle", "helpinghand", "sandattack"]},
    {"generation": 6, "level": 10, "moves": ["celebrate", "tailwhip", "sandattack", "pursuit"], "pokeball": "cherishball"},
-   {"generation": 7, "level": 50, "gender": "F", "moves": ["snarl", "toxic", "protect", "moonlight"], "pokeball": "cherishball"}
+   {"generation": 7, "level": 50, "gender": "F", moves: ["snarl", "toxic", "protect", "moonlight"], "pokeball": "cherishball"}
   ]
  },
  "leafeon": {
@@ -20040,9 +20040,9 @@
    "xscissor": ["9M", "8M", "7M", "6M", "5M", "4M"]
   },
   "eventData": [
-   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, "moves": ["tailwhip", "tackle", "helpinghand", "sandattack"]},
+   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, moves: ["tailwhip", "tackle", "helpinghand", "sandattack"]},
    {"generation": 6, "level": 10, "moves": ["celebrate", "tailwhip", "sandattack", "razorleaf"], "pokeball": "cherishball"},
-   {"generation": 7, "level": 50, "gender": "F", "isHidden": true, "moves": ["leafblade", "swordsdance", "sunnyday", "synthesis"], "pokeball": "cherishball"}
+   {"generation": 7, "level": 50, "gender": "F", "isHidden": true, moves: ["leafblade", "swordsdance", "sunnyday", "synthesis"], "pokeball": "cherishball"}
   ]
  },
  "glaceon": {
@@ -20131,9 +20131,9 @@
    "workup": ["8M", "7M", "5M"]
   },
   "eventData": [
-   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, "moves": ["tailwhip", "tackle", "helpinghand", "sandattack"]},
+   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, moves: ["tailwhip", "tackle", "helpinghand", "sandattack"]},
    {"generation": 6, "level": 10, "moves": ["celebrate", "tailwhip", "sandattack", "icywind"], "pokeball": "cherishball"},
-   {"generation": 7, "level": 50, "gender": "F", "moves": ["blizzard", "shadowball", "hail", "auroraveil"], "pokeball": "cherishball"}
+   {"generation": 7, "level": 50, "gender": "F", moves: ["blizzard", "shadowball", "hail", "auroraveil"], "pokeball": "cherishball"}
   ]
  },
  "porygon": {
@@ -20311,7 +20311,7 @@
    "zenheadbutt": ["8M", "7T", "6T", "5T", "4T"]
   },
   "eventData": [
-   {"generation": 8, "level": 50, "nature": "Sassy", "abilities": ["download"], "ivs": {"hp": 31, "atk": 0, "spe": 0}, "moves": ["recover", "trickroom", "icebeam", "thunderbolt"], "pokeball": "cherishball"}
+   {"generation": 8, "level": 50, "nature": "Sassy", "abilities": ["download"], "ivs": {"hp": 31, "atk": 0, "spe": 0}, moves: ["recover", "trickroom", "icebeam", "thunderbolt"], "pokeball": "cherishball"}
   ]
  },
  "porygonz": {
@@ -20477,7 +20477,7 @@
    "wringout": ["7E", "6E", "5E", "4E"]
   },
   "eventData": [
-   {"generation": 5, "level": 15, "gender": "M", "abilities": ["swiftswim"], "moves": ["bubblebeam", "supersonic", "withdraw", "bite"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 15, "gender": "M", "abilities": ["swiftswim"], moves: ["bubblebeam", "supersonic", "withdraw", "bite"], "pokeball": "cherishball"}
   ],
   "encounters": [
    {"generation": 1, "level": 30}
@@ -20660,7 +20660,7 @@
    "wringout": ["7L50", "6L50", "5L51", "4L51"]
   },
   "eventData": [
-   {"generation": 5, "level": 15, "gender": "M", "abilities": ["battlearmor"], "moves": ["confuseray", "dig", "scratch", "harden"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 15, "gender": "M", "abilities": ["battlearmor"], moves: ["confuseray", "dig", "scratch", "harden"], "pokeball": "cherishball"}
   ],
   "encounters": [
    {"generation": 1, "level": 30}
@@ -20876,7 +20876,7 @@
    "wingattack": ["8L10", "8V", "7L1", "7V", "6L1", "5L1", "4L1", "3L1"]
   },
   "eventData": [
-   {"generation": 5, "level": 15, "gender": "M", "abilities": ["pressure"], "moves": ["steelwing", "icefang", "firefang", "thunderfang"], "pokeball": "cherishball"},
+   {"generation": 5, "level": 15, "gender": "M", "abilities": ["pressure"], moves: ["steelwing", "icefang", "firefang", "thunderfang"], "pokeball": "cherishball"},
    {"generation": 7, "level": 50, "isHidden": true, "moves": ["ancientpower", "rockpolish", "wideguard", "celebrate"], "pokeball": "cherishball"}
   ],
   "encounters": [
@@ -20986,7 +20986,7 @@
   },
   "eventData": [
    {"generation": 4, "level": 5, "moves": ["metronome", "tackle", "defensecurl", "selfdestruct"]},
-   {"generation": 4, "level": 5, "gender": "F", "nature": "Relaxed", "abilities": ["thickfat"], "moves": ["metronome", "odorsleuth", "tackle", "curse"], "pokeball": "cherishball"},
+   {"generation": 4, "level": 5, "gender": "F", "nature": "Relaxed", "abilities": ["thickfat"], moves: ["metronome", "odorsleuth", "tackle", "curse"], "pokeball": "cherishball"},
    {"generation": 7, "level": 5, "abilities": ["thickfat"], "moves": ["tackle", "metronome", "holdback", "happyhour"], "pokeball": "cherishball"}
   ]
  },
@@ -21969,14 +21969,14 @@
   "eventData": [
    {"generation": 3, "level": 70, "moves": ["agility", "safeguard", "wingattack", "outrage"], "pokeball": "pokeball"},
    {"generation": 3, "level": 55, "moves": ["healbell", "hyperbeam", "dragondance", "earthquake"]},
-   {"generation": 4, "level": 50, "gender": "M", "nature": "Mild", "moves": ["dracometeor", "thunderbolt", "outrage", "dragondance"], "pokeball": "cherishball"},
-   {"generation": 5, "level": 100, "gender": "M", "isHidden": true, "moves": ["extremespeed", "firepunch", "dragondance", "outrage"], "pokeball": "cherishball"},
-   {"generation": 5, "level": 55, "gender": "M", "isHidden": true, "moves": ["dragonrush", "safeguard", "wingattack", "thunderpunch"]},
-   {"generation": 5, "level": 55, "gender": "M", "isHidden": true, "moves": ["dragonrush", "safeguard", "wingattack", "extremespeed"]},
-   {"generation": 5, "level": 50, "gender": "M", "nature": "Brave", "ivs": {"hp": 30, "atk": 30, "def": 30, "spa": 30, "spd": 30, "spe": 30}, "moves": ["fireblast", "safeguard", "outrage", "hyperbeam"], "pokeball": "cherishball"},
-   {"generation": 6, "level": 55, "gender": "M", "isHidden": true, "moves": ["dragondance", "outrage", "hurricane", "extremespeed"], "pokeball": "cherishball"},
-   {"generation": 6, "level": 62, "gender": "M", "ivs": {"hp": 31, "def": 31, "spa": 31, "spd": 31}, "moves": ["agility", "slam", "barrier", "hyperbeam"], "pokeball": "cherishball"},
-   {"generation": 8, "level": 80, "gender": "F", "nature": "Jolly", "abilities": ["innerfocus"], "ivs": {"hp": 30, "atk": 31, "def": 30, "spa": 30, "spd": 31, "spe": 31}, "moves": ["dragonclaw", "dracometeor", "hurricane", "dragondance"], "pokeball": "pokeball"}
+   {"generation": 4, "level": 50, "gender": "M", "nature": "Mild", moves: ["dracometeor", "thunderbolt", "outrage", "dragondance"], "pokeball": "cherishball"},
+   {"generation": 5, "level": 100, "gender": "M", "isHidden": true, moves: ["extremespeed", "firepunch", "dragondance", "outrage"], "pokeball": "cherishball"},
+   {"generation": 5, "level": 55, "gender": "M", "isHidden": true, moves: ["dragonrush", "safeguard", "wingattack", "thunderpunch"]},
+   {"generation": 5, "level": 55, "gender": "M", "isHidden": true, moves: ["dragonrush", "safeguard", "wingattack", "extremespeed"]},
+   {"generation": 5, "level": 50, "gender": "M", "nature": "Brave", "ivs": {"hp": 30, "atk": 30, "def": 30, "spa": 30, "spd": 30, "spe": 30}, moves: ["fireblast", "safeguard", "outrage", "hyperbeam"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 55, "gender": "M", "isHidden": true, moves: ["dragondance", "outrage", "hurricane", "extremespeed"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 62, "gender": "M", "ivs": {"hp": 31, "def": 31, "spa": 31, "spd": 31}, moves: ["agility", "slam", "barrier", "hyperbeam"], "pokeball": "cherishball"},
+   {"generation": 8, "level": 80, "gender": "F", "nature": "Jolly", "abilities": ["innerfocus"], "ivs": {"hp": 30, "atk": 31, "def": 30, "spa": 30, "spd": 31, "spe": 31}, moves: ["dragonclaw", "dracometeor", "hurricane", "dragondance"], "pokeball": "pokeball"}
   ],
   "encounters": [
    {"generation": 5, "level": 50},
@@ -22153,7 +22153,7 @@
    {"generation": 3, "level": 70, "shiny": 1, "moves": ["swift", "recover", "safeguard", "psychic"]},
    {"generation": 4, "level": 70, "shiny": 1, "moves": ["psychocut", "amnesia", "powerswap", "guardswap"]},
    {"generation": 5, "level": 70, "moves": ["psystrike", "shadowball", "aurasphere", "electroball"], "pokeball": "cherishball"},
-   {"generation": 5, "level": 100, "nature": "Timid", "ivs": {"spa": 31, "spe": 31}, "isHidden": true, "moves": ["psystrike", "icebeam", "healpulse", "hurricane"], "pokeball": "cherishball"},
+   {"generation": 5, "level": 100, "nature": "Timid", "ivs": {"spa": 31, "spe": 31}, "isHidden": true, moves: ["psystrike", "icebeam", "healpulse", "hurricane"], "pokeball": "cherishball"},
    {"generation": 6, "level": 70, "moves": ["recover", "psychic", "barrier", "aurasphere"]},
    {"generation": 6, "level": 100, "shiny": true, "isHidden": true, "moves": ["psystrike", "psychic", "recover", "aurasphere"], "pokeball": "cherishball"},
    {"generation": 7, "level": 60, "shiny": 1, "moves": ["psychic", "recover", "swift", "psychocut"]},
@@ -22631,7 +22631,7 @@
    "wringout": ["7E", "6E", "5E", "4E"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["tackle", "growl", "razorleaf"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 10, "gender": "M", moves: ["tackle", "growl", "razorleaf"], "pokeball": "pokeball"},
    {"generation": 3, "level": 5, "moves": ["tackle", "growl", "ancientpower", "frenzyplant"], "pokeball": "pokeball"},
    {"generation": 6, "level": 5, "moves": ["tackle", "growl"], "pokeball": "cherishball"}
   ]
@@ -22857,7 +22857,7 @@
    "zenheadbutt": ["9M"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["tackle", "leer", "smokescreen"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 10, "gender": "M", moves: ["tackle", "leer", "smokescreen"], "pokeball": "pokeball"},
    {"generation": 3, "level": 5, "moves": ["tackle", "leer", "reversal", "blastburn"], "pokeball": "pokeball"},
    {"generation": 6, "level": 5, "moves": ["tackle", "leer"], "pokeball": "cherishball"}
   ]
@@ -23201,7 +23201,7 @@
    "workup": ["7M"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["scratch", "leer", "rage"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 10, "gender": "M", moves: ["scratch", "leer", "rage"], "pokeball": "pokeball"},
    {"generation": 3, "level": 5, "moves": ["scratch", "leer", "crunch", "hydrocannon"], "pokeball": "pokeball"},
    {"generation": 6, "level": 5, "moves": ["scratch", "leer"], "pokeball": "cherishball"}
   ]
@@ -23680,7 +23680,7 @@
    "zenheadbutt": ["8M", "7T", "7L16", "6T", "6L37", "5T", "5L37", "4T", "4L33"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["tackle", "growl", "foresight"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 10, "gender": "M", moves: ["tackle", "growl", "foresight"], "pokeball": "pokeball"}
   ],
   "encounters": [
    {"generation": 2, "level": 2}
@@ -24359,7 +24359,7 @@
    "zenheadbutt": ["8M", "7T", "6T", "5T", "4T"]
   },
   "eventData": [
-   {"generation": 3, "level": 20, "gender": "F", "abilities": ["serenegrace"], "moves": ["metronome", "charm", "sweetkiss", "yawn"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 20, "gender": "F", "abilities": ["serenegrace"], moves: ["metronome", "charm", "sweetkiss", "yawn"], "pokeball": "pokeball"},
    {"generation": 3, "level": 25, "moves": ["triattack", "followme", "ancientpower", "helpinghand"]}
   ]
  },
@@ -24600,7 +24600,7 @@
    "zenheadbutt": ["8M", "7T", "6T", "5T", "4T"]
   },
   "eventData": [
-   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, "moves": ["extremespeed", "aurasphere", "airslash", "present"]}
+   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, moves: ["extremespeed", "aurasphere", "airslash", "present"]}
   ]
  },
  "natu": {
@@ -24799,7 +24799,7 @@
   },
   "encounters": [
    {"generation": 2, "level": 15},
-   {"generation": 4, "level": 16, "gender": "M", "nature": "Modest", "ivs": {"hp": 15, "atk": 20, "def": 15, "spa": 20, "spd": 20, "spe": 20}, "abilities": ["synchronize"], "pokeball": "pokeball"},
+   {"generation": 4, "level": 16, "gender": "M", nature: "Modest", "ivs": {"hp": 15, "atk": 20, "def": 15, "spa": 20, "spd": 20, "spe": 20}, "abilities": ["synchronize"], "pokeball": "pokeball"},
    {"generation": 6, "level": 24, "maxEggMoves": 1},
    {"generation": 7, "level": 21}
   ]
@@ -24879,8 +24879,8 @@
    "zapcannon": ["7V"]
   },
   "eventData": [
-   {"generation": 3, "level": 37, "gender": "F", "moves": ["thunder", "thundershock", "thunderwave", "cottonspore"], "pokeball": "pokeball"},
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["tackle", "growl", "thundershock"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 37, "gender": "F", moves: ["thunder", "thundershock", "thunderwave", "cottonspore"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 10, "gender": "M", moves: ["tackle", "growl", "thundershock"], "pokeball": "pokeball"},
    {"generation": 3, "level": 17, "moves": ["healbell", "thundershock", "thunderwave", "bodyslam"]},
    {"generation": 6, "level": 10, "moves": ["holdback", "tackle", "thunderwave", "thundershock"], "pokeball": "cherishball"}
   ]
@@ -25795,7 +25795,7 @@
    "worryseed": ["7T", "7L54", "6T", "6L54", "5T", "5L54", "4T", "4L40"]
   },
   "eventData": [
-   {"generation": 5, "level": 27, "gender": "M", "isHidden": true, "moves": ["falseswipe", "sleeppowder", "bulletseed", "leechseed"]}
+   {"generation": 5, "level": 27, "gender": "M", "isHidden": true, moves: ["falseswipe", "sleeppowder", "bulletseed", "leechseed"]}
   ]
  },
  "aipom": {
@@ -25905,7 +25905,7 @@
    "zapcannon": ["7V"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["scratch", "tailwhip", "sandattack"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 10, "gender": "M", moves: ["scratch", "tailwhip", "sandattack"], "pokeball": "pokeball"}
   ]
  },
  "ambipom": {
@@ -26062,7 +26062,7 @@
    "worryseed": ["9L19", "7T", "7L19", "6T", "6L19", "5T", "5L25", "4T", "4L25"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "abilities": ["chlorophyll"], "moves": ["absorb", "growth"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 10, "gender": "M", "abilities": ["chlorophyll"], moves: ["absorb", "growth"], "pokeball": "pokeball"}
   ]
  },
  "sunflora": {
@@ -26695,7 +26695,7 @@
    "wingattack": ["9L15", "7L15", "7E", "7V", "6L15", "6E", "5L15", "5E", "4L15", "4E", "3E"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "abilities": ["insomnia"], "moves": ["peck", "astonish"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 10, "gender": "M", "abilities": ["insomnia"], moves: ["peck", "astonish"], "pokeball": "pokeball"}
   ]
  },
  "honchkrow": {
@@ -26782,7 +26782,7 @@
    "wingattack": ["9L1", "7L1", "6L1", "5L1", "4L1"]
   },
   "eventData": [
-   {"generation": 7, "level": 65, "gender": "M", "abilities": ["superluck"], "moves": ["nightslash", "skyattack", "heatwave", "icywind"], "pokeball": "cherishball"}
+   {"generation": 7, "level": 65, "gender": "M", "abilities": ["superluck"], moves: ["nightslash", "skyattack", "heatwave", "icywind"], "pokeball": "cherishball"}
   ]
  },
  "misdreavus": {
@@ -26892,7 +26892,7 @@
    "zapcannon": ["7V"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["growl", "psywave", "spite"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 10, "gender": "M", moves: ["growl", "psywave", "spite"], "pokeball": "pokeball"}
   ]
  },
  "mismagius": {
@@ -27029,9 +27029,9 @@
   },
   "eventData": [
    {"generation": 3, "level": 5, "moves": ["counter", "mirrorcoat", "safeguard", "destinybond"], "pokeball": "pokeball"},
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["counter", "mirrorcoat", "safeguard", "destinybond"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 10, "gender": "M", moves: ["counter", "mirrorcoat", "safeguard", "destinybond"], "pokeball": "pokeball"},
    {"generation": 6, "level": 10, "gender": "M", "moves": ["counter"], "pokeball": "cherishball"},
-   {"generation": 6, "level": 15, "gender": "M", "moves": ["counter", "mirrorcoat"], "pokeball": "cherishball"}
+   {"generation": 6, "level": 15, "gender": "M", moves: ["counter", "mirrorcoat"], "pokeball": "cherishball"}
   ],
   "encounters": [
    {"generation": 2, "level": 5},
@@ -27231,7 +27231,7 @@
    "venoshock": ["9M", "7M", "6M", "5M"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["tackle", "protect", "selfdestruct"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 10, "gender": "M", moves: ["tackle", "protect", "selfdestruct"], "pokeball": "pokeball"},
    {"generation": 3, "level": 20, "moves": ["refresh", "pinmissile", "spikes", "counter"]}
   ]
  },
@@ -27624,7 +27624,7 @@
    "xscissor": ["7M", "7L40", "6M", "6L40", "5M", "5L45", "4M", "4L42"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["poisonsting", "sandattack"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 10, "gender": "M", moves: ["poisonsting", "sandattack"], "pokeball": "pokeball"}
   ]
  },
  "gliscor": {
@@ -27813,7 +27813,7 @@
    "zapcannon": ["7V"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["tackle", "scaryface", "tailwhip", "charm"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 10, "gender": "M", moves: ["tackle", "scaryface", "tailwhip", "charm"], "pokeball": "pokeball"}
   ]
  },
  "granbull": {
@@ -28026,7 +28026,7 @@
    "whirlpool": ["8M", "7V", "4M"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["tackle", "poisonsting", "harden", "minimize"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 10, "gender": "M", moves: ["tackle", "poisonsting", "harden", "minimize"], "pokeball": "pokeball"}
   ]
  },
  "qwilfishhisui": {
@@ -28232,7 +28232,7 @@
    "wrap": ["8L1", "7L9", "7V", "6L9", "5L13", "4L22", "3L9", "3S0"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "abilities": ["sturdy"], "moves": ["constrict", "withdraw", "wrap"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 10, "gender": "M", "abilities": ["sturdy"], moves: ["constrict", "withdraw", "wrap"], "pokeball": "pokeball"},
    {"generation": 3, "level": 20, "abilities": ["sturdy"], "moves": ["substitute", "toxic", "sludgebomb", "encore"], "pokeball": "pokeball"}
   ]
  },
@@ -28334,8 +28334,8 @@
    "workup": ["8M", "7M", "5M"]
   },
   "eventData": [
-   {"generation": 6, "level": 50, "gender": "F", "nature": "Adamant", "moves": ["bulletseed", "pinmissile", "closecombat", "megahorn"], "pokeball": "cherishball"},
-   {"generation": 6, "level": 50, "nature": "Adamant", "abilities": ["guts"], "moves": ["pinmissile", "bulletseed", "earthquake", "rockblast"], "pokeball": "cherishball"}
+   {"generation": 6, "level": 50, "gender": "F", "nature": "Adamant", moves: ["bulletseed", "pinmissile", "closecombat", "megahorn"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 50, "nature": "Adamant", "abilities": ["guts"], moves: ["pinmissile", "bulletseed", "earthquake", "rockblast"], "pokeball": "cherishball"}
   ]
  },
  "sneasel": {
@@ -28457,7 +28457,7 @@
    "xscissor": ["9M", "8M", "7M", "6M", "5M", "4M"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["scratch", "leer", "taunt", "quickattack"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 10, "gender": "M", moves: ["scratch", "leer", "taunt", "quickattack"], "pokeball": "pokeball"}
   ]
  },
  "sneaselhisui": {
@@ -28632,8 +28632,8 @@
    "xscissor": ["9M", "8M", "7M", "6M", "6S1", "5M", "4M"]
   },
   "eventData": [
-   {"generation": 4, "level": 30, "gender": "M", "nature": "Jolly", "moves": ["fakeout", "iceshard", "nightslash", "brickbreak"], "pokeball": "cherishball"},
-   {"generation": 6, "level": 48, "gender": "M", "perfectIVs": 2, "moves": ["nightslash", "icepunch", "brickbreak", "xscissor"], "pokeball": "cherishball"}
+   {"generation": 4, "level": 30, "gender": "M", "nature": "Jolly", moves: ["fakeout", "iceshard", "nightslash", "brickbreak"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 48, "gender": "M", "perfectIVs": 2, moves: ["nightslash", "icepunch", "brickbreak", "xscissor"], "pokeball": "cherishball"}
   ]
  },
  "sneasler": {
@@ -28800,7 +28800,7 @@
    "zapcannon": ["7V"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "abilities": ["pickup"], "moves": ["scratch", "leer", "lick"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 10, "gender": "M", "abilities": ["pickup"], moves: ["scratch", "leer", "lick"], "pokeball": "pokeball"},
    {"generation": 3, "level": 11, "abilities": ["pickup"], "moves": ["refresh", "metalclaw", "lick", "return"]}
   ],
   "encounters": [
@@ -29377,8 +29377,8 @@
    "toxic": ["7M", "6M", "5M", "4M"]
   },
   "eventData": [
-   {"generation": 5, "level": 34, "gender": "M", "isHidden": true, "moves": ["hail", "icefang", "takedown", "doublehit"]},
-   {"generation": 6, "level": 50, "shiny": true, "gender": "M", "nature": "Adamant", "isHidden": true, "moves": ["iciclespear", "earthquake", "iciclecrash", "rockslide"], "pokeball": "pokeball"}
+   {"generation": 5, "level": 34, "gender": "M", "isHidden": true, moves: ["hail", "icefang", "takedown", "doublehit"]},
+   {"generation": 6, "level": 50, "shiny": true, "gender": "M", "nature": "Adamant", "isHidden": true, moves: ["iciclespear", "earthquake", "iciclecrash", "rockslide"], "pokeball": "pokeball"}
   ]
  },
  "corsola": {
@@ -29481,7 +29481,7 @@
   },
   "eventData": [
    {"generation": 3, "level": 5, "shiny": 1, "moves": ["tackle", "mudsport"], "pokeball": "pokeball"},
-   {"generation": 7, "level": 50, "gender": "F", "nature": "Serious", "abilities": ["hustle"], "moves": ["tackle", "powergem"], "pokeball": "ultraball"}
+   {"generation": 7, "level": 50, "gender": "F", "nature": "Serious", "abilities": ["hustle"], moves: ["tackle", "powergem"], "pokeball": "ultraball"}
   ]
  },
  "corsolagalar": {
@@ -29790,7 +29790,7 @@
    "wringout": ["7L28", "6L28", "5L36", "4L36"]
   },
   "eventData": [
-   {"generation": 4, "level": 50, "gender": "F", "nature": "Serious", "abilities": ["suctioncups"], "moves": ["octazooka", "icebeam", "signalbeam", "hyperbeam"], "pokeball": "cherishball"}
+   {"generation": 4, "level": 50, "gender": "F", "nature": "Serious", "abilities": ["suctioncups"], moves: ["octazooka", "icebeam", "signalbeam", "hyperbeam"], "pokeball": "cherishball"}
   ],
   "encounters": [
    {"generation": 4, "level": 19},
@@ -30063,7 +30063,7 @@
    "wingattack": ["8L1", "7L14", "7V", "6L14", "5L22", "4L22", "3L36"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["tackle", "bubble", "supersonic"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 10, "gender": "M", moves: ["tackle", "bubble", "supersonic"], "pokeball": "pokeball"}
   ]
  },
  "skarmory": {
@@ -30248,7 +30248,7 @@
    "willowisp": ["9M", "7M", "6M", "5M", "4M", "4E", "3E"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["leer", "ember", "howl"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 10, "gender": "M", moves: ["leer", "ember", "howl"], "pokeball": "pokeball"},
    {"generation": 3, "level": 17, "moves": ["charm", "feintattack", "ember", "roar"]}
   ]
  },
@@ -30346,7 +30346,7 @@
    "willowisp": ["9M", "7M", "6M", "5M", "4M"]
   },
   "eventData": [
-   {"generation": 6, "level": 50, "nature": "Timid", "abilities": ["flashfire"], "moves": ["flamethrower", "darkpulse", "solarbeam", "sludgebomb"], "pokeball": "cherishball"}
+   {"generation": 6, "level": 50, "nature": "Timid", "abilities": ["flashfire"], moves: ["flamethrower", "darkpulse", "solarbeam", "sludgebomb"], "pokeball": "cherishball"}
   ],
   "encounters": [
    {"generation": 4, "level": 20}
@@ -30633,7 +30633,7 @@
    "zenheadbutt": ["9M", "9L37", "7T", "7L38", "7E", "6T", "6L38", "6E", "5T", "5L38", "5E", "4T", "4L38", "4E"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "abilities": ["intimidate"], "moves": ["tackle", "leer"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 10, "gender": "M", "abilities": ["intimidate"], moves: ["tackle", "leer"], "pokeball": "pokeball"}
   ]
  },
  "wyrdeer": {
@@ -30709,8 +30709,8 @@
   },
   "eventData": [
    {"generation": 3, "level": 10, "gender": "M", "abilities": ["owntempo"], "moves": ["sketch"], "pokeball": "pokeball"},
-   {"generation": 5, "level": 50, "gender": "F", "nature": "Jolly", "ivs": {"atk": 31, "spe": 31}, "abilities": ["technician"], "moves": ["falseswipe", "spore", "odorsleuth", "meanlook"], "pokeball": "cherishball"},
-   {"generation": 6, "level": 40, "gender": "M", "nature": "Jolly", "abilities": ["owntempo"], "moves": ["sketch", "furyswipes", "seismictoss", "flamethrower"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 50, "gender": "F", "nature": "Jolly", "ivs": {"atk": 31, "spe": 31}, "abilities": ["technician"], moves: ["falseswipe", "spore", "odorsleuth", "meanlook"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 40, "gender": "M", "nature": "Jolly", "abilities": ["owntempo"], moves: ["sketch", "furyswipes", "seismictoss", "flamethrower"], "pokeball": "cherishball"}
   ]
  },
  "miltank": {
@@ -30905,7 +30905,7 @@
    {"generation": 3, "level": 50, "shiny": 1, "moves": ["thundershock", "roar", "quickattack", "spark"]},
    {"generation": 3, "level": 70, "moves": ["quickattack", "spark", "reflect", "crunch"], "pokeball": "pokeball"},
    {"generation": 4, "level": 40, "shiny": 1, "moves": ["roar", "quickattack", "spark", "reflect"]},
-   {"generation": 4, "level": 30, "shiny": true, "nature": "Rash", "moves": ["zapcannon", "aurasphere", "extremespeed", "weatherball"], "pokeball": "cherishball"},
+   {"generation": 4, "level": 30, "shiny": true, "nature": "Rash", moves: ["zapcannon", "aurasphere", "extremespeed", "weatherball"], "pokeball": "cherishball"},
    {"generation": 6, "level": 50, "shiny": 1, "moves": ["spark", "reflect", "crunch", "thunderfang"]},
    {"generation": 7, "level": 60, "shiny": 1, "moves": ["reflect", "crunch", "thunderfang", "discharge"]},
    {"generation": 7, "level": 60, "moves": ["reflect", "crunch", "thunderfang", "discharge"], "pokeball": "cherishball"},
@@ -31005,7 +31005,7 @@
    {"generation": 3, "level": 50, "shiny": 1, "moves": ["ember", "roar", "firespin", "stomp"]},
    {"generation": 3, "level": 70, "moves": ["firespin", "stomp", "flamethrower", "swagger"], "pokeball": "pokeball"},
    {"generation": 4, "level": 40, "shiny": 1, "moves": ["roar", "firespin", "stomp", "flamethrower"]},
-   {"generation": 4, "level": 30, "shiny": true, "nature": "Adamant", "moves": ["flareblitz", "howl", "extremespeed", "crushclaw"], "pokeball": "cherishball"},
+   {"generation": 4, "level": 30, "shiny": true, "nature": "Adamant", moves: ["flareblitz", "howl", "extremespeed", "crushclaw"], "pokeball": "cherishball"},
    {"generation": 6, "level": 50, "shiny": 1, "moves": ["stomp", "flamethrower", "swagger", "firefang"]},
    {"generation": 7, "level": 60, "shiny": 1, "moves": ["stomp", "bite", "swagger", "lavaplume"]},
    {"generation": 7, "level": 60, "moves": ["stomp", "bite", "swagger", "lavaplume"], "pokeball": "cherishball"},
@@ -31105,7 +31105,7 @@
    {"generation": 3, "level": 50, "shiny": 1, "moves": ["bubblebeam", "raindance", "gust", "aurorabeam"]},
    {"generation": 3, "level": 70, "moves": ["gust", "aurorabeam", "mist", "mirrorcoat"], "pokeball": "pokeball"},
    {"generation": 4, "level": 40, "shiny": 1, "moves": ["raindance", "gust", "aurorabeam", "mist"]},
-   {"generation": 4, "level": 30, "shiny": true, "nature": "Relaxed", "moves": ["sheercold", "airslash", "extremespeed", "aquaring"], "pokeball": "cherishball"},
+   {"generation": 4, "level": 30, "shiny": true, "nature": "Relaxed", moves: ["sheercold", "airslash", "extremespeed", "aquaring"], "pokeball": "cherishball"},
    {"generation": 6, "level": 50, "shiny": 1, "moves": ["aurorabeam", "mist", "mirrorcoat", "icefang"]},
    {"generation": 7, "level": 60, "shiny": 1, "moves": ["bubblebeam", "aurorabeam", "mist", "raindance"]},
    {"generation": 8, "level": 70, "shiny": 1, "moves": ["liquidation", "extrasensory", "extremespeed", "calmmind"]}
@@ -31201,7 +31201,7 @@
   },
   "eventData": [
    {"generation": 3, "level": 20, "moves": ["sandstorm", "dragondance", "bite", "outrage"], "pokeball": "pokeball"},
-   {"generation": 5, "level": 5, "shiny": true, "gender": "M", "moves": ["bite", "leer", "sandstorm", "superpower"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 5, "shiny": true, "gender": "M", moves: ["bite", "leer", "sandstorm", "superpower"], "pokeball": "cherishball"}
   ]
  },
  "pupitar": {
@@ -31424,11 +31424,11 @@
   },
   "eventData": [
    {"generation": 3, "level": 70, "moves": ["thrash", "scaryface", "crunch", "earthquake"], "pokeball": "pokeball"},
-   {"generation": 5, "level": 100, "gender": "M", "moves": ["fireblast", "icebeam", "stoneedge", "crunch"], "pokeball": "cherishball"},
-   {"generation": 5, "level": 55, "gender": "M", "isHidden": true, "moves": ["payback", "crunch", "earthquake", "seismictoss"]},
+   {"generation": 5, "level": 100, "gender": "M", moves: ["fireblast", "icebeam", "stoneedge", "crunch"], "pokeball": "cherishball"},
+   {"generation": 5, "level": 55, "gender": "M", "isHidden": true, moves: ["payback", "crunch", "earthquake", "seismictoss"]},
    {"generation": 6, "level": 50, "moves": ["stoneedge", "crunch", "earthquake", "icepunch"], "pokeball": "cherishball"},
-   {"generation": 6, "level": 50, "nature": "Jolly", "moves": ["rockslide", "earthquake", "crunch", "stoneedge"], "pokeball": "cherishball"},
-   {"generation": 6, "level": 55, "shiny": true, "nature": "Adamant", "ivs": {"hp": 31, "atk": 31, "def": 31, "spa": 14, "spd": 31, "spe": 0}, "moves": ["crunch", "rockslide", "lowkick", "protect"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 50, "nature": "Jolly", moves: ["rockslide", "earthquake", "crunch", "stoneedge"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 55, "shiny": true, "nature": "Adamant", "ivs": {"hp": 31, "atk": 31, "def": 31, "spa": 14, "spd": 31, "spe": 0}, moves: ["crunch", "rockslide", "lowkick", "protect"], "pokeball": "cherishball"},
    {"generation": 6, "level": 100, "moves": ["rockslide", "crunch", "icepunch", "lowkick"], "pokeball": "cherishball"}
   ],
   "encounters": [
@@ -31556,7 +31556,7 @@
    {"generation": 4, "level": 70, "shiny": 1, "moves": ["aeroblast", "punishment", "ancientpower", "safeguard"]},
    {"generation": 5, "level": 5, "isHidden": true, "moves": ["whirlwind", "weatherball"], "pokeball": "dreamball"},
    {"generation": 6, "level": 50, "shiny": 1, "moves": ["raindance", "hydropump", "aeroblast", "punishment"]},
-   {"generation": 6, "level": 50, "nature": "Timid", "moves": ["aeroblast", "hydropump", "dragonrush", "icebeam"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 50, "nature": "Timid", moves: ["aeroblast", "hydropump", "dragonrush", "icebeam"], "pokeball": "cherishball"},
    {"generation": 7, "level": 60, "shiny": 1, "moves": ["skillswap", "aeroblast", "extrasensory", "ancientpower"]},
    {"generation": 7, "level": 100, "isHidden": true, "moves": ["aeroblast", "hurricane", "defog", "tailwind"], "pokeball": "cherishball"},
    {"generation": 7, "level": 60, "moves": ["skillswap", "aeroblast", "extrasensory", "ancientpower"], "pokeball": "cherishball"},
@@ -31805,7 +31805,7 @@
    {"generation": 6, "level": 10, "moves": ["recover", "healbell", "safeguard", "holdback"], "pokeball": "luxuryball"},
    {"generation": 6, "level": 100, "moves": ["confusion", "recover", "healbell", "safeguard"], "pokeball": "cherishball"},
    {"generation": 7, "level": 30, "moves": ["healbell", "safeguard", "ancientpower", "futuresight"], "pokeball": "cherishball"},
-   {"generation": 8, "level": 60, "shiny": true, "nature": "Quirky", "moves": ["magicalleaf", "futuresight", "lifedew", "healbell"], "pokeball": "cherishball"}
+   {"generation": 8, "level": 60, "shiny": true, "nature": "Quirky", moves: ["magicalleaf", "futuresight", "lifedew", "healbell"], "pokeball": "cherishball"}
   ],
   "encounters": [
    {"generation": 2, "level": 30}
@@ -31906,8 +31906,8 @@
    "worryseed": ["8E", "7T", "7E", "6T", "6E", "5T", "5E", "4T", "4E"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["pound", "leer", "absorb"], "pokeball": "pokeball"},
-   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, "moves": ["pound", "leer", "absorb"]}
+   {"generation": 3, "level": 10, "gender": "M", moves: ["pound", "leer", "absorb"], "pokeball": "pokeball"},
+   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, moves: ["pound", "leer", "absorb"]}
   ]
  },
  "grovyle": {
@@ -32196,9 +32196,9 @@
    "workup": ["8M", "7M"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["scratch", "growl", "focusenergy", "ember"], "pokeball": "pokeball"},
-   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, "moves": ["scratch", "growl", "focusenergy", "ember"]},
-   {"generation": 6, "level": 10, "gender": "M", "isHidden": true, "moves": ["scratch", "growl", "focusenergy", "ember"], "pokeball": "cherishball"}
+   {"generation": 3, "level": 10, "gender": "M", moves: ["scratch", "growl", "focusenergy", "ember"], "pokeball": "pokeball"},
+   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, moves: ["scratch", "growl", "focusenergy", "ember"]},
+   {"generation": 6, "level": 10, "gender": "M", "isHidden": true, moves: ["scratch", "growl", "focusenergy", "ember"], "pokeball": "cherishball"}
   ]
  },
  "combusken": {
@@ -32499,8 +32499,8 @@
    "yawn": ["8E", "7E", "6E", "5E", "4E"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["tackle", "growl", "mudslap", "watergun"], "pokeball": "pokeball"},
-   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, "moves": ["tackle", "growl", "mudslap", "watergun"]}
+   {"generation": 3, "level": 10, "gender": "M", moves: ["tackle", "growl", "mudslap", "watergun"], "pokeball": "pokeball"},
+   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, moves: ["tackle", "growl", "mudslap", "watergun"]}
   ]
  },
  "marshtomp": {
@@ -32849,7 +32849,7 @@
    "yawn": ["7L44"]
   },
   "eventData": [
-   {"generation": 7, "level": 64, "gender": "M", "abilities": ["intimidate"], "moves": ["crunch", "firefang", "icefang", "thunderfang"], "pokeball": "cherishball"}
+   {"generation": 7, "level": 64, "gender": "M", "abilities": ["intimidate"], moves: ["crunch", "firefang", "icefang", "thunderfang"], "pokeball": "cherishball"}
   ]
  },
  "zigzagoon": {
@@ -33492,7 +33492,7 @@
    "zenheadbutt": ["8M", "8L38", "7T", "7L33", "6T", "6L31", "5T", "5L31", "4T", "4L27"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["astonish", "growl", "absorb"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 10, "gender": "M", moves: ["astonish", "growl", "absorb"], "pokeball": "pokeball"}
   ],
   "encounters": [
    {"generation": 3, "level": 3}
@@ -33685,7 +33685,7 @@
   },
   "eventData": [
    {"generation": 5, "level": 50, "shiny": 1, "abilities": ["swiftswim"], "moves": ["fakeout", "hydropump", "icebeam", "gigadrain"], "pokeball": "cherishball"},
-   {"generation": 5, "level": 30, "gender": "M", "nature": "Calm", "abilities": ["swiftswim"], "moves": ["scald", "gigadrain", "icebeam", "sunnyday"], "pokeball": "pokeball"}
+   {"generation": 5, "level": 30, "gender": "M", "nature": "Calm", "abilities": ["swiftswim"], moves: ["scald", "gigadrain", "icebeam", "sunnyday"], "pokeball": "pokeball"}
   ]
  },
  "seedot": {
@@ -33760,7 +33760,7 @@
    "worryseed": ["8E", "7T", "7E", "6T", "6E", "5T", "5E", "4T", "4E"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["bide", "harden", "growth"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 10, "gender": "M", moves: ["bide", "harden", "growth"], "pokeball": "pokeball"},
    {"generation": 3, "level": 17, "moves": ["refresh", "gigadrain", "bulletseed", "secretpower"]}
   ],
   "encounters": [
@@ -34630,7 +34630,7 @@
   },
   "eventData": [
    {"generation": 5, "level": 50, "shiny": 1, "abilities": ["trace"], "moves": ["hypnosis", "thunderbolt", "focusblast", "psychic"], "pokeball": "cherishball"},
-   {"generation": 6, "level": 50, "shiny": true, "gender": "F", "abilities": ["synchronize"], "moves": ["dazzlinggleam", "moonblast", "storedpower", "calmmind"], "pokeball": "cherishball"}
+   {"generation": 6, "level": 50, "shiny": true, "gender": "F", "abilities": ["synchronize"], moves: ["dazzlinggleam", "moonblast", "storedpower", "calmmind"], "pokeball": "cherishball"}
   ]
  },
  "gallade": {
@@ -34859,7 +34859,7 @@
   },
   "eventData": [
    {"generation": 3, "level": 5, "shiny": 1, "moves": ["bubble", "mudsport"], "pokeball": "pokeball"},
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["bubble", "quickattack"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 10, "gender": "M", moves: ["bubble", "quickattack"], "pokeball": "pokeball"}
   ],
   "encounters": [
    {"generation": 3, "level": 3}
@@ -35463,7 +35463,7 @@
    "zenheadbutt": ["9M"]
   },
   "eventData": [
-   {"generation": 4, "level": 50, "gender": "M", "nature": "Adamant", "moves": ["gigaimpact", "return", "shadowclaw", "aerialace"], "pokeball": "cherishball"}
+   {"generation": 4, "level": 50, "gender": "M", "nature": "Adamant", moves: ["gigaimpact", "return", "shadowclaw", "aerialace"], "pokeball": "cherishball"}
   ]
  },
  "nincada": {
@@ -36396,7 +36396,7 @@
   "eventData": [
    {"generation": 3, "level": 5, "shiny": 1, "abilities": ["cutecharm"], "moves": ["tackle", "growl", "tailwhip", "payday"], "pokeball": "pokeball"},
    {"generation": 3, "level": 5, "shiny": 1, "abilities": ["cutecharm"], "moves": ["growl", "tackle", "tailwhip", "rollout"], "pokeball": "pokeball"},
-   {"generation": 3, "level": 10, "gender": "M", "abilities": ["cutecharm"], "moves": ["growl", "tackle", "tailwhip", "attract"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 10, "gender": "M", "abilities": ["cutecharm"], moves: ["growl", "tackle", "tailwhip", "attract"], "pokeball": "pokeball"}
   ],
   "encounters": [
    {"generation": 3, "level": 3, "gender": "F", "ivs": {"hp": 5, "atk": 4, "def": 4, "spa": 5, "spd": 4, "spe": 4}, "abilities": ["cutecharm"], "pokeball": "pokeball"}
@@ -36620,11 +36620,11 @@
    "zenheadbutt": ["9M", "9L42", "8M", "8L42", "7T", "7L34", "6T", "6L1", "5T", "5L53", "4T", "4L50"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "abilities": ["keeneye"], "moves": ["leer", "scratch", "foresight", "nightshade"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 10, "gender": "M", "abilities": ["keeneye"], moves: ["leer", "scratch", "foresight", "nightshade"], "pokeball": "pokeball"},
    {"generation": 3, "level": 33, "abilities": ["keeneye"], "moves": ["helpinghand", "shadowball", "feintattack", "recover"]},
-   {"generation": 5, "level": 50, "gender": "M", "isHidden": true, "moves": ["foulplay", "octazooka", "tickle", "trick"], "pokeball": "cherishball"},
-   {"generation": 6, "level": 50, "nature": "Relaxed", "ivs": {"hp": 31, "spa": 31}, "isHidden": true, "moves": ["calmmind", "willowisp", "recover", "shadowball"], "pokeball": "cherishball"},
-   {"generation": 6, "level": 100, "nature": "Bold", "isHidden": true, "moves": ["willowisp", "recover", "taunt", "shockwave"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 50, "gender": "M", "isHidden": true, moves: ["foulplay", "octazooka", "tickle", "trick"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 50, "nature": "Relaxed", "ivs": {"hp": 31, "spa": 31}, "isHidden": true, moves: ["calmmind", "willowisp", "recover", "shadowball"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 100, "nature": "Bold", "isHidden": true, moves: ["willowisp", "recover", "taunt", "shockwave"], "pokeball": "cherishball"}
   ]
  },
  "mawile": {
@@ -36740,7 +36740,7 @@
    "visegrip": ["7L17", "6L17", "5L21", "4L21", "3L21", "3S1"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["astonish", "faketears"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 10, "gender": "M", moves: ["astonish", "faketears"], "pokeball": "pokeball"},
    {"generation": 3, "level": 22, "moves": ["sing", "falseswipe", "visegrip", "irondefense"]},
    {"generation": 6, "level": 50, "abilities": ["intimidate"], "moves": ["ironhead", "playrough", "firefang", "suckerpunch"], "pokeball": "cherishball"},
    {"generation": 6, "level": 100, "abilities": ["intimidate"], "moves": ["suckerpunch", "protect", "playrough", "ironhead"], "pokeball": "cherishball"}
@@ -37029,7 +37029,7 @@
   "eventData": [
    {"generation": 3, "level": 100, "moves": ["irontail", "protect", "metalsound", "doubleedge"], "pokeball": "pokeball"},
    {"generation": 3, "level": 50, "moves": ["takedown", "irontail", "protect", "metalsound"], "pokeball": "pokeball"},
-   {"generation": 6, "level": 50, "nature": "Brave", "abilities": ["rockhead"], "moves": ["ironhead", "earthquake", "headsmash", "rockslide"], "pokeball": "cherishball"}
+   {"generation": 6, "level": 50, "nature": "Brave", "abilities": ["rockhead"], moves: ["ironhead", "earthquake", "headsmash", "rockslide"], "pokeball": "cherishball"}
   ]
  },
  "meditite": {
@@ -37143,7 +37143,7 @@
    "zenheadbutt": ["9M", "9L25", "7T", "6T", "5T", "4T"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["bide", "meditate", "confusion"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 10, "gender": "M", moves: ["bide", "meditate", "confusion"], "pokeball": "pokeball"},
    {"generation": 3, "level": 20, "moves": ["dynamicpunch", "confusion", "shadowball", "detect"], "pokeball": "pokeball"}
   ]
  },
@@ -37405,7 +37405,7 @@
   },
   "eventData": [
    {"generation": 3, "level": 44, "moves": ["refresh", "thunder", "raindance", "bite"]},
-   {"generation": 6, "level": 50, "nature": "Timid", "abilities": ["lightningrod"], "moves": ["overheat", "thunderbolt", "voltswitch", "protect"], "pokeball": "cherishball"}
+   {"generation": 6, "level": 50, "nature": "Timid", "abilities": ["lightningrod"], moves: ["overheat", "thunderbolt", "voltswitch", "protect"], "pokeball": "cherishball"}
   ]
  },
  "plusle": {
@@ -37491,7 +37491,7 @@
   },
   "eventData": [
    {"generation": 3, "level": 5, "shiny": 1, "moves": ["growl", "thunderwave", "watersport"], "pokeball": "pokeball"},
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["growl", "thunderwave", "quickattack"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 10, "gender": "M", moves: ["growl", "thunderwave", "quickattack"], "pokeball": "pokeball"}
   ]
  },
  "minun": {
@@ -37578,7 +37578,7 @@
   },
   "eventData": [
    {"generation": 3, "level": 5, "shiny": 1, "moves": ["growl", "thunderwave", "mudsport"], "pokeball": "pokeball"},
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["growl", "thunderwave", "quickattack"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 10, "gender": "M", moves: ["growl", "thunderwave", "quickattack"], "pokeball": "pokeball"}
   ]
  },
  "volbeat": {
@@ -37895,7 +37895,7 @@
    "worryseed": ["8L1", "7T", "6T", "5T", "4T"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["absorb", "growth", "poisonsting"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 10, "gender": "M", moves: ["absorb", "growth", "poisonsting"], "pokeball": "pokeball"},
    {"generation": 3, "level": 22, "moves": ["sweetkiss", "magicalleaf", "leechseed", "grasswhistle"]}
   ]
  },
@@ -38322,8 +38322,8 @@
    "zenheadbutt": ["8M", "7T", "6T", "5T", "4T"]
   },
   "eventData": [
-   {"generation": 6, "level": 50, "nature": "Adamant", "isHidden": true, "moves": ["aquajet", "crunch", "icefang", "destinybond"], "pokeball": "cherishball"},
-   {"generation": 6, "level": 43, "gender": "M", "perfectIVs": 2, "moves": ["scaryface", "slash", "poisonfang", "crunch"], "pokeball": "cherishball"}
+   {"generation": 6, "level": 50, "nature": "Adamant", "isHidden": true, moves: ["aquajet", "crunch", "icefang", "destinybond"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 43, "gender": "M", "perfectIVs": 2, moves: ["scaryface", "slash", "poisonfang", "crunch"], "pokeball": "cherishball"}
   ],
   "encounters": [
    {"generation": 7, "level": 10}
@@ -38660,7 +38660,7 @@
    "zenheadbutt": ["9M"]
   },
   "eventData": [
-   {"generation": 6, "level": 43, "gender": "M", "perfectIVs": 2, "abilities": ["solidrock"], "moves": ["curse", "takedown", "rockslide", "yawn"], "pokeball": "cherishball"}
+   {"generation": 6, "level": 43, "gender": "M", "perfectIVs": 2, "abilities": ["solidrock"], moves: ["curse", "takedown", "rockslide", "yawn"], "pokeball": "cherishball"}
   ],
   "encounters": [
    {"generation": 6, "level": 30}
@@ -38757,7 +38757,7 @@
    "zenheadbutt": ["9M"]
   },
   "eventData": [
-   {"generation": 8, "level": 50, "gender": "M", "nature": "Bold", "abilities": ["drought"], "ivs": {"hp": 31, "atk": 12, "def": 31, "spa": 31, "spd": 31, "spe": 0}, "moves": ["burningjealousy", "bodypress", "yawn", "protect"], "pokeball": "cherishball"}
+   {"generation": 8, "level": 50, "gender": "M", "nature": "Bold", "abilities": ["drought"], "ivs": {"hp": 31, "atk": 12, "def": 31, "spa": 31, "spd": 31, "spe": 0}, moves: ["burningjealousy", "bodypress", "yawn", "protect"], "pokeball": "cherishball"}
   ]
  },
  "spoink": {
@@ -39343,7 +39343,7 @@
   },
   "eventData": [
    {"generation": 3, "level": 45, "moves": ["sandtomb", "crunch", "dragonbreath", "screech"], "pokeball": "pokeball"},
-   {"generation": 4, "level": 50, "gender": "M", "nature": "Naive", "moves": ["dracometeor", "uturn", "earthquake", "dragonclaw"], "pokeball": "cherishball"}
+   {"generation": 4, "level": 50, "gender": "M", "nature": "Naive", moves: ["dracometeor", "uturn", "earthquake", "dragonclaw"], "pokeball": "cherishball"}
   ]
  },
  "cacnea": {
@@ -39754,8 +39754,8 @@
   "eventData": [
    {"generation": 3, "level": 45, "moves": ["takedown", "dragonbreath", "dragondance", "refresh"], "pokeball": "pokeball"},
    {"generation": 3, "level": 36, "moves": ["healbell", "dragonbreath", "solarbeam", "aerialace"]},
-   {"generation": 5, "level": 35, "gender": "M", "isHidden": true, "moves": ["takedown", "naturalgift", "dragonbreath", "falseswipe"]},
-   {"generation": 6, "level": 100, "nature": "Modest", "isHidden": true, "moves": ["hypervoice", "fireblast", "protect", "agility"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 35, "gender": "M", "isHidden": true, moves: ["takedown", "naturalgift", "dragonbreath", "falseswipe"]},
+   {"generation": 6, "level": 100, "nature": "Modest", "isHidden": true, moves: ["hypervoice", "fireblast", "protect", "agility"], "pokeball": "cherishball"}
   ]
  },
  "zangoose": {
@@ -39886,7 +39886,7 @@
   },
   "eventData": [
    {"generation": 3, "level": 18, "moves": ["leer", "quickattack", "swordsdance", "furycutter"], "pokeball": "pokeball"},
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["scratch", "leer", "quickattack", "swordsdance"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 10, "gender": "M", moves: ["scratch", "leer", "quickattack", "swordsdance"], "pokeball": "pokeball"},
    {"generation": 3, "level": 28, "moves": ["refresh", "brickbreak", "counter", "crushclaw"]}
   ]
  },
@@ -39995,7 +39995,7 @@
   "eventData": [
    {"generation": 3, "level": 18, "moves": ["wrap", "lick", "bite", "poisontail"], "pokeball": "pokeball"},
    {"generation": 3, "level": 30, "moves": ["poisontail", "screech", "glare", "crunch"], "pokeball": "pokeball"},
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["wrap", "lick", "bite"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 10, "gender": "M", moves: ["wrap", "lick", "bite"], "pokeball": "pokeball"}
   ]
  },
  "lunatone": {
@@ -40364,7 +40364,7 @@
    "zenheadbutt": ["9M", "9L1", "8M", "8L1", "7T", "7L1", "6T", "6L1", "5T", "5L1", "4T", "4L1", "4S0"]
   },
   "eventData": [
-   {"generation": 4, "level": 51, "gender": "F", "nature": "Gentle", "abilities": ["oblivious"], "moves": ["earthquake", "aquatail", "zenheadbutt", "gigaimpact"], "pokeball": "cherishball"}
+   {"generation": 4, "level": 51, "gender": "F", "nature": "Gentle", "abilities": ["oblivious"], moves: ["earthquake", "aquatail", "zenheadbutt", "gigaimpact"], "pokeball": "cherishball"}
   ],
   "encounters": [
    {"generation": 4, "level": 10},
@@ -40821,7 +40821,7 @@
    "wringout": ["7L52", "7E", "6L52", "6E", "5L64", "5E", "4L64", "4E"]
   },
   "eventData": [
-   {"generation": 5, "level": 15, "gender": "M", "moves": ["recover", "rockslide", "constrict", "acid"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 15, "gender": "M", moves: ["recover", "rockslide", "constrict", "acid"], "pokeball": "cherishball"}
   ]
  },
  "cradily": {
@@ -40977,7 +40977,7 @@
    "xscissor": ["8M", "8L44", "7M", "7L44", "6M", "6L44", "5M", "5L61", "4M", "4L61"]
   },
   "eventData": [
-   {"generation": 5, "level": 15, "gender": "M", "moves": ["harden", "mudsport", "watergun", "crosspoison"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 15, "gender": "M", moves: ["harden", "mudsport", "watergun", "crosspoison"], "pokeball": "cherishball"}
   ]
  },
  "armaldo": {
@@ -41118,7 +41118,7 @@
    "whirlpool": ["8M", "4M"]
   },
   "eventData": [
-   {"generation": 4, "level": 5, "gender": "F", "nature": "Calm", "moves": ["splash", "mirrorcoat"], "pokeball": "cherishball"}
+   {"generation": 4, "level": 5, "gender": "F", "nature": "Calm", moves: ["splash", "mirrorcoat"], "pokeball": "cherishball"}
   ]
  },
  "milotic": {
@@ -41204,10 +41204,10 @@
   },
   "eventData": [
    {"generation": 3, "level": 35, "moves": ["waterpulse", "twister", "recover", "raindance"], "pokeball": "pokeball"},
-   {"generation": 4, "level": 50, "gender": "F", "nature": "Bold", "moves": ["recover", "raindance", "icebeam", "hydropump"], "pokeball": "cherishball"},
-   {"generation": 4, "level": 50, "shiny": true, "gender": "M", "nature": "Timid", "moves": ["raindance", "recover", "hydropump", "icywind"], "pokeball": "cherishball"},
+   {"generation": 4, "level": 50, "gender": "F", "nature": "Bold", moves: ["recover", "raindance", "icebeam", "hydropump"], "pokeball": "cherishball"},
+   {"generation": 4, "level": 50, "shiny": true, "gender": "M", "nature": "Timid", moves: ["raindance", "recover", "hydropump", "icywind"], "pokeball": "cherishball"},
    {"generation": 5, "level": 50, "shiny": 1, "moves": ["recover", "hydropump", "icebeam", "mirrorcoat"], "pokeball": "cherishball"},
-   {"generation": 5, "level": 58, "gender": "M", "nature": "Lax", "ivs": {"hp": 30, "atk": 30, "def": 30, "spa": 30, "spd": 30, "spe": 30}, "moves": ["recover", "surf", "icebeam", "toxic"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 58, "gender": "M", "nature": "Lax", "ivs": {"hp": 30, "atk": 30, "def": 30, "spa": 30, "spd": 30, "spe": 30}, moves: ["recover", "surf", "icebeam", "toxic"], "pokeball": "cherishball"}
   ]
  },
  "castform": {
@@ -41586,7 +41586,7 @@
   },
   "eventData": [
    {"generation": 3, "level": 37, "abilities": ["insomnia"], "moves": ["helpinghand", "feintattack", "shadowball", "curse"]},
-   {"generation": 5, "level": 37, "gender": "F", "isHidden": true, "moves": ["feintattack", "hex", "shadowball", "cottonguard"]}
+   {"generation": 5, "level": 37, "gender": "F", "isHidden": true, moves: ["feintattack", "hex", "shadowball", "cottonguard"]}
   ],
   "encounters": [
    {"generation": 5, "level": 32}
@@ -41978,7 +41978,7 @@
    "zenheadbutt": ["9M"]
   },
   "eventData": [
-   {"generation": 4, "level": 53, "gender": "F", "nature": "Jolly", "abilities": ["chlorophyll"], "moves": ["airslash", "synthesis", "sunnyday", "solarbeam"], "pokeball": "cherishball"}
+   {"generation": 4, "level": 53, "gender": "F", "nature": "Jolly", "abilities": ["chlorophyll"], moves: ["airslash", "synthesis", "sunnyday", "solarbeam"], "pokeball": "cherishball"}
   ]
  },
  "chingling": {
@@ -42150,7 +42150,7 @@
    "zenheadbutt": ["7T", "6T", "5T", "4T"]
   },
   "eventData": [
-   {"generation": 3, "level": 10, "gender": "M", "moves": ["wrap", "growl", "astonish"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 10, "gender": "M", moves: ["wrap", "growl", "astonish"], "pokeball": "pokeball"}
   ]
  },
  "absol": {
@@ -43316,7 +43316,7 @@
   "eventData": [
    {"generation": 3, "level": 50, "moves": ["protect", "dragonbreath", "scaryface", "fly"], "pokeball": "pokeball"},
    {"generation": 3, "level": 50, "moves": ["refresh", "dragonclaw", "dragondance", "aerialace"]},
-   {"generation": 4, "level": 50, "gender": "M", "nature": "Naughty", "moves": ["hydropump", "stoneedge", "fireblast", "dragonclaw"], "pokeball": "cherishball"},
+   {"generation": 4, "level": 50, "gender": "M", "nature": "Naughty", moves: ["hydropump", "stoneedge", "fireblast", "dragonclaw"], "pokeball": "cherishball"},
    {"generation": 5, "level": 50, "shiny": 1, "moves": ["dragondance", "dragonclaw", "outrage", "aerialace"], "pokeball": "cherishball"}
   ],
   "encounters": [
@@ -43527,14 +43527,14 @@
    "zenheadbutt": ["8M", "8L6", "7T", "7L32", "6T", "6L29", "5T", "5L62", "5S2", "5S3", "4T", "4L62", "4S0"]
   },
   "eventData": [
-   {"generation": 4, "level": 62, "nature": "Brave", "moves": ["bulletpunch", "meteormash", "hammerarm", "zenheadbutt"], "pokeball": "cherishball"},
+   {"generation": 4, "level": 62, "nature": "Brave", moves: ["bulletpunch", "meteormash", "hammerarm", "zenheadbutt"], "pokeball": "cherishball"},
    {"generation": 5, "level": 50, "shiny": 1, "moves": ["meteormash", "earthquake", "bulletpunch", "hammerarm"], "pokeball": "cherishball"},
    {"generation": 5, "level": 100, "moves": ["bulletpunch", "zenheadbutt", "hammerarm", "icepunch"], "pokeball": "cherishball"},
    {"generation": 5, "level": 45, "shiny": true, "moves": ["meteormash", "zenheadbutt", "earthquake", "protect"], "pokeball": "pokeball"},
    {"generation": 5, "level": 45, "isHidden": true, "moves": ["irondefense", "agility", "hammerarm", "doubleedge"]},
    {"generation": 5, "level": 45, "isHidden": true, "moves": ["psychic", "meteormash", "hammerarm", "doubleedge"]},
-   {"generation": 5, "level": 58, "nature": "Serious", "ivs": {"hp": 30, "atk": 30, "def": 30, "spa": 30, "spd": 30, "spe": 30}, "moves": ["earthquake", "hyperbeam", "psychic", "meteormash"], "pokeball": "cherishball"},
-   {"generation": 7, "level": 50, "nature": "Jolly", "ivs": {"hp": 31, "atk": 31, "def": 31, "spa": 31, "spd": 31, "spe": 31}, "moves": ["ironhead", "icepunch", "bulletpunch", "stompingtantrum"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 58, "nature": "Serious", "ivs": {"hp": 30, "atk": 30, "def": 30, "spa": 30, "spd": 30, "spe": 30}, moves: ["earthquake", "hyperbeam", "psychic", "meteormash"], "pokeball": "cherishball"},
+   {"generation": 7, "level": 50, "nature": "Jolly", "ivs": {"hp": 31, "atk": 31, "def": 31, "spa": 31, "spd": 31, "spe": 31}, moves: ["ironhead", "icepunch", "bulletpunch", "stompingtantrum"], "pokeball": "cherishball"}
   ]
  },
  "regirock": {
@@ -43956,7 +43956,7 @@
    {"generation": 7, "level": 60, "moves": ["mistball", "dragonpulse", "psychoshift", "wish"], "pokeball": "cherishball"},
    {"generation": 7, "level": 100, "moves": ["mistball", "psychic", "dracometeor", "tailwind"], "pokeball": "cherishball"},
    {"generation": 8, "level": 70, "shiny": 1, "moves": ["reflecttype", "dragonbreath", "zenheadbutt", "surf"]},
-   {"generation": 8, "level": 70, "nature": "Bashful", "moves": ["mistball", "dragonpulse", "dive", "sweetkiss"], "pokeball": "cherishball"}
+   {"generation": 8, "level": 70, "nature": "Bashful", moves: ["mistball", "dragonpulse", "dive", "sweetkiss"], "pokeball": "cherishball"}
   ],
   "eventOnly": true
  },
@@ -44078,7 +44078,7 @@
    {"generation": 4, "level": 40, "shiny": 1, "moves": ["protect", "refresh", "lusterpurge", "zenheadbutt"]},
    {"generation": 5, "level": 68, "shiny": 1, "moves": ["psychoshift", "dragondance", "psychic", "healpulse"]},
    {"generation": 6, "level": 30, "shiny": 1, "moves": ["healpulse", "dragonbreath", "lusterpurge", "psychoshift"]},
-   {"generation": 6, "level": 50, "nature": "Modest", "moves": ["dragonpulse", "lusterpurge", "psychic", "healpulse"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 50, "nature": "Modest", moves: ["dragonpulse", "lusterpurge", "psychic", "healpulse"], "pokeball": "cherishball"},
    {"generation": 7, "level": 60, "shiny": 1, "moves": ["lusterpurge", "dragonpulse", "psychoshift", "dragonbreath"]},
    {"generation": 7, "level": 60, "moves": ["lusterpurge", "dragonpulse", "psychoshift", "dragonbreath"], "pokeball": "cherishball"},
    {"generation": 7, "level": 100, "moves": ["lusterpurge", "psychic", "dracometeor", "tailwind"], "pokeball": "cherishball"},
@@ -44169,7 +44169,7 @@
    {"generation": 5, "level": 80, "shiny": 1, "moves": ["icebeam", "ancientpower", "waterspout", "thunder"], "pokeball": "cherishball"},
    {"generation": 5, "level": 100, "moves": ["waterspout", "thunder", "icebeam", "sheercold"], "pokeball": "cherishball"},
    {"generation": 6, "level": 45, "moves": ["bodyslam", "aquaring", "icebeam", "originpulse"]},
-   {"generation": 6, "level": 100, "nature": "Timid", "moves": ["waterspout", "thunder", "sheercold", "icebeam"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 100, "nature": "Timid", moves: ["waterspout", "thunder", "sheercold", "icebeam"], "pokeball": "cherishball"},
    {"generation": 7, "level": 60, "shiny": 1, "moves": ["icebeam", "originpulse", "calmmind", "muddywater"]},
    {"generation": 7, "level": 60, "shiny": true, "moves": ["icebeam", "originpulse", "calmmind", "muddywater"], "pokeball": "cherishball"},
    {"generation": 7, "level": 60, "moves": ["icebeam", "originpulse", "calmmind", "muddywater"], "pokeball": "cherishball"},
@@ -44294,7 +44294,7 @@
    {"generation": 5, "level": 80, "shiny": 1, "moves": ["earthquake", "ancientpower", "eruption", "solarbeam"], "pokeball": "cherishball"},
    {"generation": 5, "level": 100, "moves": ["eruption", "hammerarm", "earthpower", "solarbeam"], "pokeball": "cherishball"},
    {"generation": 6, "level": 45, "moves": ["lavaplume", "rest", "earthquake", "precipiceblades"]},
-   {"generation": 6, "level": 100, "nature": "Adamant", "moves": ["firepunch", "solarbeam", "hammerarm", "rockslide"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 100, "nature": "Adamant", moves: ["firepunch", "solarbeam", "hammerarm", "rockslide"], "pokeball": "cherishball"},
    {"generation": 7, "level": 60, "shiny": 1, "moves": ["earthquake", "precipiceblades", "bulkup", "solarbeam"]},
    {"generation": 7, "level": 60, "shiny": true, "moves": ["earthquake", "precipiceblades", "bulkup", "solarbeam"], "pokeball": "cherishball"},
    {"generation": 7, "level": 60, "moves": ["earthquake", "precipiceblades", "bulkup", "solarbeam"], "pokeball": "cherishball"},
@@ -44538,15 +44538,15 @@
   },
   "eventData": [
    {"generation": 3, "level": 5, "moves": ["wish", "confusion", "rest"], "pokeball": "pokeball"},
-   {"generation": 3, "level": 5, "shiny": true, "nature": "Bashful", "ivs": {"hp": 24, "atk": 3, "def": 30, "spa": 12, "spd": 16, "spe": 11}, "moves": ["wish", "confusion", "rest"], "pokeball": "pokeball"},
-   {"generation": 3, "level": 5, "shiny": true, "nature": "Careful", "ivs": {"hp": 10, "atk": 0, "def": 10, "spa": 10, "spd": 26, "spe": 12}, "moves": ["wish", "confusion", "rest"], "pokeball": "pokeball"},
-   {"generation": 3, "level": 5, "shiny": true, "nature": "Docile", "ivs": {"hp": 19, "atk": 7, "def": 10, "spa": 19, "spd": 10, "spe": 16}, "moves": ["wish", "confusion", "rest"], "pokeball": "pokeball"},
-   {"generation": 3, "level": 5, "shiny": true, "nature": "Hasty", "ivs": {"hp": 3, "atk": 12, "def": 12, "spa": 7, "spd": 11, "spe": 9}, "moves": ["wish", "confusion", "rest"], "pokeball": "pokeball"},
-   {"generation": 3, "level": 5, "shiny": true, "nature": "Jolly", "ivs": {"hp": 11, "atk": 8, "def": 6, "spa": 14, "spd": 5, "spe": 20}, "moves": ["wish", "confusion", "rest"], "pokeball": "pokeball"},
-   {"generation": 3, "level": 5, "shiny": true, "nature": "Lonely", "ivs": {"hp": 31, "atk": 23, "def": 26, "spa": 29, "spd": 18, "spe": 5}, "moves": ["wish", "confusion", "rest"], "pokeball": "pokeball"},
-   {"generation": 3, "level": 5, "shiny": true, "nature": "Naughty", "ivs": {"hp": 21, "atk": 31, "def": 31, "spa": 18, "spd": 24, "spe": 19}, "moves": ["wish", "confusion", "rest"], "pokeball": "pokeball"},
-   {"generation": 3, "level": 5, "shiny": true, "nature": "Serious", "ivs": {"hp": 29, "atk": 10, "def": 31, "spa": 25, "spd": 23, "spe": 21}, "moves": ["wish", "confusion", "rest"], "pokeball": "pokeball"},
-   {"generation": 3, "level": 5, "shiny": true, "nature": "Timid", "ivs": {"hp": 15, "atk": 28, "def": 29, "spa": 3, "spd": 0, "spe": 7}, "moves": ["wish", "confusion", "rest"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 5, "shiny": true, "nature": "Bashful", "ivs": {"hp": 24, "atk": 3, "def": 30, "spa": 12, "spd": 16, "spe": 11}, moves: ["wish", "confusion", "rest"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 5, "shiny": true, "nature": "Careful", "ivs": {"hp": 10, "atk": 0, "def": 10, "spa": 10, "spd": 26, "spe": 12}, moves: ["wish", "confusion", "rest"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 5, "shiny": true, "nature": "Docile", "ivs": {"hp": 19, "atk": 7, "def": 10, "spa": 19, "spd": 10, "spe": 16}, moves: ["wish", "confusion", "rest"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 5, "shiny": true, "nature": "Hasty", "ivs": {"hp": 3, "atk": 12, "def": 12, "spa": 7, "spd": 11, "spe": 9}, moves: ["wish", "confusion", "rest"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 5, "shiny": true, "nature": "Jolly", "ivs": {"hp": 11, "atk": 8, "def": 6, "spa": 14, "spd": 5, "spe": 20}, moves: ["wish", "confusion", "rest"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 5, "shiny": true, "nature": "Lonely", "ivs": {"hp": 31, "atk": 23, "def": 26, "spa": 29, "spd": 18, "spe": 5}, moves: ["wish", "confusion", "rest"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 5, "shiny": true, "nature": "Naughty", "ivs": {"hp": 21, "atk": 31, "def": 31, "spa": 18, "spd": 24, "spe": 19}, moves: ["wish", "confusion", "rest"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 5, "shiny": true, "nature": "Serious", "ivs": {"hp": 29, "atk": 10, "def": 31, "spa": 25, "spd": 23, "spe": 21}, moves: ["wish", "confusion", "rest"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 5, "shiny": true, "nature": "Timid", "ivs": {"hp": 15, "atk": 28, "def": 29, "spa": 3, "spd": 0, "spe": 7}, moves: ["wish", "confusion", "rest"], "pokeball": "pokeball"},
    {"generation": 3, "level": 30, "moves": ["helpinghand", "psychic", "refresh", "rest"], "pokeball": "pokeball"},
    {"generation": 4, "level": 5, "moves": ["wish", "confusion", "rest"], "pokeball": "cherishball"},
    {"generation": 4, "level": 5, "moves": ["wish", "confusion", "rest", "dracometeor"], "pokeball": "cherishball"},
@@ -44560,7 +44560,7 @@
    {"generation": 6, "level": 25, "shiny": true, "moves": ["wish", "confusion", "swift", "happyhour"], "pokeball": "cherishball"},
    {"generation": 6, "level": 100, "moves": ["wish", "confusion", "rest"], "pokeball": "cherishball"},
    {"generation": 7, "level": 15, "moves": ["swift", "wish", "healingwish", "rest"], "pokeball": "cherishball"},
-   {"generation": 8, "level": 70, "nature": "Timid", "moves": ["meteormash", "psychic", "rest", "wish"], "pokeball": "cherishball"}
+   {"generation": 8, "level": 70, "nature": "Timid", moves: ["meteormash", "psychic", "rest", "wish"], "pokeball": "cherishball"}
   ],
   "eventOnly": true
  },
@@ -44781,8 +44781,8 @@
    "worryseed": ["7T", "7E", "6T", "6E", "5T", "5E", "4T", "4E"]
   },
   "eventData": [
-   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, "moves": ["tackle", "withdraw", "absorb"]},
-   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, "moves": ["tackle", "withdraw", "absorb", "stockpile"]}
+   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, moves: ["tackle", "withdraw", "absorb"]},
+   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, moves: ["tackle", "withdraw", "absorb", "stockpile"]}
   ]
  },
  "grotle": {
@@ -44921,7 +44921,7 @@
    "worryseed": ["7T", "6T", "5T", "4T"]
   },
   "eventData": [
-   {"generation": 5, "level": 100, "gender": "M", "moves": ["woodhammer", "earthquake", "outrage", "stoneedge"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 100, "gender": "M", moves: ["woodhammer", "earthquake", "outrage", "stoneedge"], "pokeball": "cherishball"}
   ]
  },
  "chimchar": {
@@ -45010,10 +45010,10 @@
    "workup": ["7M"]
   },
   "eventData": [
-   {"generation": 4, "level": 40, "gender": "M", "nature": "Mild", "moves": ["flamethrower", "thunderpunch", "grassknot", "helpinghand"], "pokeball": "cherishball"},
-   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, "moves": ["scratch", "leer", "ember", "taunt"]},
-   {"generation": 4, "level": 40, "gender": "M", "nature": "Hardy", "moves": ["flamethrower", "thunderpunch", "grassknot", "helpinghand"], "pokeball": "cherishball"},
-   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, "moves": ["leer", "ember", "taunt", "fakeout"]}
+   {"generation": 4, "level": 40, "gender": "M", "nature": "Mild", moves: ["flamethrower", "thunderpunch", "grassknot", "helpinghand"], "pokeball": "cherishball"},
+   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, moves: ["scratch", "leer", "ember", "taunt"]},
+   {"generation": 4, "level": 40, "gender": "M", "nature": "Hardy", moves: ["flamethrower", "thunderpunch", "grassknot", "helpinghand"], "pokeball": "cherishball"},
+   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, moves: ["leer", "ember", "taunt", "fakeout"]}
   ]
  },
  "monferno": {
@@ -45196,7 +45196,7 @@
    "workup": ["7M", "5M"]
   },
   "eventData": [
-   {"generation": 5, "level": 100, "gender": "M", "moves": ["fireblast", "closecombat", "uturn", "grassknot"], "pokeball": "cherishball"},
+   {"generation": 5, "level": 100, "gender": "M", moves: ["fireblast", "closecombat", "uturn", "grassknot"], "pokeball": "cherishball"},
    {"generation": 6, "level": 88, "isHidden": true, "moves": ["fireblast", "closecombat", "firepunch", "focuspunch"], "pokeball": "cherishball"}
   ]
  },
@@ -45274,12 +45274,12 @@
    "yawn": ["7E", "6E", "5E", "4E"]
   },
   "eventData": [
-   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, "moves": ["pound", "growl", "bubble"]},
+   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, moves: ["pound", "growl", "bubble"]},
    {"generation": 5, "level": 15, "shiny": 1, "moves": ["hydropump", "featherdance", "watersport", "peck"], "pokeball": "cherishball"},
-   {"generation": 5, "level": 15, "gender": "M", "moves": ["sing", "round", "featherdance", "peck"], "pokeball": "cherishball"},
-   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, "moves": ["pound", "growl", "bubble", "featherdance"]},
+   {"generation": 5, "level": 15, "gender": "M", moves: ["sing", "round", "featherdance", "peck"], "pokeball": "cherishball"},
+   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, moves: ["pound", "growl", "bubble", "featherdance"]},
    {"generation": 6, "level": 7, "moves": ["pound", "growl", "return"], "pokeball": "cherishball"},
-   {"generation": 7, "level": 30, "gender": "M", "nature": "Hardy", "moves": ["hydropump", "bubblebeam", "whirlpool", "drillpeck"], "pokeball": "pokeball"}
+   {"generation": 7, "level": 30, "gender": "M", "nature": "Hardy", moves: ["hydropump", "bubblebeam", "whirlpool", "drillpeck"], "pokeball": "pokeball"}
   ]
  },
  "prinplup": {
@@ -45437,7 +45437,7 @@
    "workup": ["7M"]
   },
   "eventData": [
-   {"generation": 5, "level": 100, "gender": "M", "moves": ["hydropump", "icebeam", "aquajet", "grassknot"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 100, "gender": "M", moves: ["hydropump", "icebeam", "aquajet", "grassknot"], "pokeball": "cherishball"}
   ]
  },
  "starly": {
@@ -45508,7 +45508,7 @@
    "workup": ["7M", "5M"]
   },
   "eventData": [
-   {"generation": 4, "level": 1, "gender": "M", "nature": "Mild", "moves": ["tackle", "growl"], "pokeball": "pokeball"}
+   {"generation": 4, "level": 1, "gender": "M", "nature": "Mild", moves: ["tackle", "growl"], "pokeball": "pokeball"}
   ]
  },
  "staravia": {
@@ -45713,7 +45713,7 @@
    "yawn": ["7L21", "6L25", "5L25", "4L25"]
   },
   "eventData": [
-   {"generation": 4, "level": 1, "gender": "M", "nature": "Lonely", "abilities": ["simple"], "moves": ["tackle"], "pokeball": "pokeball"}
+   {"generation": 4, "level": 1, "gender": "M", nature: "Lonely", "abilities": ["simple"], "moves": ["tackle"], "pokeball": "pokeball"}
   ]
  },
  "bibarel": {
@@ -46195,7 +46195,7 @@
    "zenheadbutt": ["7T", "7L37", "6T", "6L37", "5T", "5L37", "4T", "4L33"]
   },
   "eventData": [
-   {"generation": 5, "level": 15, "gender": "M", "moves": ["pursuit", "takedown", "crunch", "headbutt"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 15, "gender": "M", moves: ["pursuit", "takedown", "crunch", "headbutt"], "pokeball": "cherishball"}
   ]
  },
  "rampardos": {
@@ -46360,7 +46360,7 @@
    "wideguard": ["7E", "6E", "5E"]
   },
   "eventData": [
-   {"generation": 5, "level": 15, "gender": "M", "moves": ["metalsound", "takedown", "bodyslam", "protect"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 15, "gender": "M", moves: ["metalsound", "takedown", "bodyslam", "protect"], "pokeball": "cherishball"}
   ]
  },
  "bastiodon": {
@@ -46907,7 +46907,7 @@
    "wildcharge": ["9M"]
   },
   "eventData": [
-   {"generation": 6, "level": 50, "nature": "Impish", "ivs": {"hp": 31, "atk": 31, "def": 31, "spa": 14, "spd": 31, "spe": 31}, "isHidden": true, "moves": ["nuzzle", "superfang", "followme", "protect"], "pokeball": "cherishball"}
+   {"generation": 6, "level": 50, "nature": "Impish", "ivs": {"hp": 31, "atk": 31, "def": 31, "spa": 14, "spd": 31, "spe": 31}, "isHidden": true, moves: ["nuzzle", "superfang", "followme", "protect"], "pokeball": "cherishball"}
   ]
  },
  "buizel": {
@@ -47372,7 +47372,7 @@
    "whirlpool": ["8M", "4M"]
   },
   "eventData": [
-   {"generation": 7, "level": 50, "gender": "F", "nature": "Modest", "abilities": ["stormdrain"], "ivs": {"hp": 31, "atk": 0, "def": 31, "spa": 31, "spd": 31, "spe": 31}, "moves": ["earthpower", "icebeam", "recover", "protect"], "pokeball": "cherishball"}
+   {"generation": 7, "level": 50, "gender": "F", "nature": "Modest", "abilities": ["stormdrain"], "ivs": {"hp": 31, "atk": 0, "def": 31, "spa": 31, "spd": 31, "spe": 31}, moves: ["earthpower", "icebeam", "recover", "protect"], "pokeball": "cherishball"}
   ],
   "encounters": [
    {"generation": 4, "level": 20}
@@ -47387,8 +47387,8 @@
    "yawn": ["8S1"]
   },
   "eventData": [
-   {"generation": 8, "level": 50, "gender": "F", "nature": "Quiet", "abilities": ["stormdrain"], "ivs": {"hp": 31, "atk": 2, "def": 31, "spa": 31, "spd": 31, "spe": 0}, "moves": ["protect", "surf", "icebeam", "earthpower"], "pokeball": "cherishball"},
-   {"generation": 8, "level": 50, "gender": "F", "nature": "Sassy", "abilities": ["stormdrain"], "ivs": {"hp": 31, "atk": 0, "def": 31, "spa": 31, "spd": 31, "spe": 0}, "moves": ["protect", "yawn", "icebeam", "earthpower"], "pokeball": "cherishball"}
+   {"generation": 8, "level": 50, "gender": "F", "nature": "Quiet", "abilities": ["stormdrain"], "ivs": {"hp": 31, "atk": 2, "def": 31, "spa": 31, "spd": 31, "spe": 0}, moves: ["protect", "surf", "icebeam", "earthpower"], "pokeball": "cherishball"},
+   {"generation": 8, "level": 50, "gender": "F", "nature": "Sassy", "abilities": ["stormdrain"], "ivs": {"hp": 31, "atk": 0, "def": 31, "spa": 31, "spd": 31, "spe": 0}, moves: ["protect", "yawn", "icebeam", "earthpower"], "pokeball": "cherishball"}
   ],
   "encounters": [
    {"generation": 4, "level": 20}
@@ -48385,7 +48385,7 @@
    "workup": ["7M", "5M"]
   },
   "eventData": [
-   {"generation": 4, "level": 25, "gender": "M", "nature": "Jolly", "abilities": ["keeneye"], "moves": ["mirrormove", "furyattack", "chatter", "taunt"]}
+   {"generation": 4, "level": 25, "gender": "M", "nature": "Jolly", "abilities": ["keeneye"], moves: ["mirrormove", "furyattack", "chatter", "taunt"]}
   ]
  },
  "spiritomb": {
@@ -48477,7 +48477,7 @@
    "wonderroom": ["8M", "7T", "6T", "5T"]
   },
   "eventData": [
-   {"generation": 5, "level": 61, "gender": "F", "nature": "Quiet", "ivs": {"hp": 30, "atk": 30, "def": 30, "spa": 30, "spd": 30, "spe": 30}, "moves": ["darkpulse", "psychic", "silverwind", "embargo"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 61, "gender": "F", "nature": "Quiet", "ivs": {"hp": 30, "atk": 30, "def": 30, "spa": 30, "spd": 30, "spe": 30}, moves: ["darkpulse", "psychic", "silverwind", "embargo"], "pokeball": "cherishball"}
   ]
  },
  "gible": {
@@ -48737,11 +48737,11 @@
    "whirlpool": ["8M", "4M"]
   },
   "eventData": [
-   {"generation": 5, "level": 100, "gender": "M", "moves": ["outrage", "earthquake", "swordsdance", "stoneedge"], "pokeball": "cherishball"},
-   {"generation": 5, "level": 48, "gender": "M", "isHidden": true, "moves": ["dragonclaw", "dig", "crunch", "outrage"]},
-   {"generation": 6, "level": 48, "gender": "M", "moves": ["dracometeor", "dragonclaw", "dig", "crunch"], "pokeball": "cherishball"},
-   {"generation": 6, "level": 50, "gender": "M", "moves": ["slash", "dragonclaw", "dig", "crunch"], "pokeball": "cherishball"},
-   {"generation": 6, "level": 66, "gender": "F", "perfectIVs": 3, "moves": ["dragonrush", "earthquake", "brickbreak", "gigaimpact"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 100, "gender": "M", moves: ["outrage", "earthquake", "swordsdance", "stoneedge"], "pokeball": "cherishball"},
+   {"generation": 5, "level": 48, "gender": "M", "isHidden": true, moves: ["dragonclaw", "dig", "crunch", "outrage"]},
+   {"generation": 6, "level": 48, "gender": "M", moves: ["dracometeor", "dragonclaw", "dig", "crunch"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 50, "gender": "M", moves: ["slash", "dragonclaw", "dig", "crunch"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 66, "gender": "F", "perfectIVs": 3, moves: ["dragonrush", "earthquake", "brickbreak", "gigaimpact"], "pokeball": "cherishball"}
   ]
  },
  "riolu": {
@@ -48843,7 +48843,7 @@
    "zenheadbutt": ["9M", "8M", "7T", "6T", "5T", "4T"]
   },
   "eventData": [
-   {"generation": 4, "level": 30, "gender": "M", "nature": "Serious", "abilities": ["steadfast"], "moves": ["aurasphere", "shadowclaw", "bulletpunch", "drainpunch"], "pokeball": "pokeball"}
+   {"generation": 4, "level": 30, "gender": "M", "nature": "Serious", "abilities": ["steadfast"], moves: ["aurasphere", "shadowclaw", "bulletpunch", "drainpunch"], "pokeball": "pokeball"}
   ]
  },
  "lucario": {
@@ -48962,13 +48962,13 @@
    "zenheadbutt": ["9M", "8M", "7T", "6T", "5T", "4T"]
   },
   "eventData": [
-   {"generation": 4, "level": 50, "gender": "M", "nature": "Modest", "abilities": ["steadfast"], "moves": ["aurasphere", "darkpulse", "dragonpulse", "waterpulse"], "pokeball": "cherishball"},
-   {"generation": 4, "level": 30, "gender": "M", "nature": "Adamant", "abilities": ["innerfocus"], "moves": ["forcepalm", "bonerush", "sunnyday", "blazekick"], "pokeball": "cherishball"},
-   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, "moves": ["detect", "metalclaw", "counter", "bulletpunch"]},
-   {"generation": 5, "level": 50, "gender": "M", "nature": "Naughty", "ivs": {"atk": 31}, "isHidden": true, "moves": ["bulletpunch", "closecombat", "stoneedge", "shadowclaw"], "pokeball": "cherishball"},
-   {"generation": 6, "level": 100, "nature": "Jolly", "abilities": ["innerfocus"], "moves": ["closecombat", "aurasphere", "flashcannon", "quickattack"], "pokeball": "cherishball"},
-   {"generation": 7, "level": 40, "gender": "M", "nature": "Serious", "abilities": ["steadfast"], "moves": ["aurasphere", "highjumpkick", "dragonpulse", "extremespeed"], "pokeball": "pokeball"},
-   {"generation": 8, "level": 80, "gender": "M", "nature": "Serious", "abilities": ["innerfocus"], "ivs": {"hp": 31, "atk": 30, "def": 30, "spa": 31, "spd": 30, "spe": 31}, "moves": ["aurasphere", "bulletpunch", "reversal", "steelbeam"], "pokeball": "pokeball"}
+   {"generation": 4, "level": 50, "gender": "M", "nature": "Modest", "abilities": ["steadfast"], moves: ["aurasphere", "darkpulse", "dragonpulse", "waterpulse"], "pokeball": "cherishball"},
+   {"generation": 4, "level": 30, "gender": "M", "nature": "Adamant", "abilities": ["innerfocus"], moves: ["forcepalm", "bonerush", "sunnyday", "blazekick"], "pokeball": "cherishball"},
+   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, moves: ["detect", "metalclaw", "counter", "bulletpunch"]},
+   {"generation": 5, "level": 50, "gender": "M", "nature": "Naughty", "ivs": {"atk": 31}, "isHidden": true, moves: ["bulletpunch", "closecombat", "stoneedge", "shadowclaw"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 100, "nature": "Jolly", "abilities": ["innerfocus"], moves: ["closecombat", "aurasphere", "flashcannon", "quickattack"], "pokeball": "cherishball"},
+   {"generation": 7, "level": 40, "gender": "M", "nature": "Serious", "abilities": ["steadfast"], moves: ["aurasphere", "highjumpkick", "dragonpulse", "extremespeed"], "pokeball": "pokeball"},
+   {"generation": 8, "level": 80, "gender": "M", "nature": "Serious", "abilities": ["innerfocus"], "ivs": {"hp": 31, "atk": 30, "def": 30, "spa": 31, "spd": 30, "spe": 31}, moves: ["aurasphere", "bulletpunch", "reversal", "steelbeam"], "pokeball": "pokeball"}
   ]
  },
  "hippopotas": {
@@ -49405,8 +49405,8 @@
    "xscissor": ["9M", "8M", "7M", "6M", "5M", "4M"]
   },
   "eventData": [
-   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, "moves": ["astonish", "mudslap", "poisonsting", "taunt"]},
-   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, "moves": ["mudslap", "poisonsting", "taunt", "poisonjab"]}
+   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, moves: ["astonish", "mudslap", "poisonsting", "taunt"]},
+   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, moves: ["mudslap", "poisonsting", "taunt", "poisonjab"]}
   ]
  },
  "toxicroak": {
@@ -49989,8 +49989,8 @@
    "willowisp": ["9M", "8M", "7M", "6M", "5M", "4M"]
   },
   "eventData": [
-   {"generation": 5, "level": 10, "nature": "Naughty", "moves": ["uproar", "astonish", "trick", "thundershock"], "pokeball": "cherishball"},
-   {"generation": 6, "level": 10, "nature": "Quirky", "moves": ["shockwave", "astonish", "trick", "thunderwave"], "pokeball": "cherishball"},
+   {"generation": 5, "level": 10, "nature": "Naughty", moves: ["uproar", "astonish", "trick", "thundershock"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 10, "nature": "Quirky", moves: ["shockwave", "astonish", "trick", "thunderwave"], "pokeball": "cherishball"},
    {"generation": 7, "level": 10, "moves": ["uproar", "confide", "disarmingvoice"], "pokeball": "cherishball"}
   ]
  },
@@ -50446,13 +50446,13 @@
    {"generation": 5, "level": 5, "isHidden": true, "moves": ["dragonbreath", "scaryface"], "pokeball": "dreamball"},
    {"generation": 5, "level": 100, "shiny": true, "moves": ["dragonpulse", "dracometeor", "aurasphere", "roaroftime"], "pokeball": "cherishball"},
    {"generation": 6, "level": 50, "shiny": 1, "moves": ["aurasphere", "irontail", "roaroftime", "flashcannon"]},
-   {"generation": 6, "level": 100, "nature": "Modest", "isHidden": true, "moves": ["metalburst", "overheat", "roaroftime", "flashcannon"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 100, "nature": "Modest", "isHidden": true, moves: ["metalburst", "overheat", "roaroftime", "flashcannon"], "pokeball": "cherishball"},
    {"generation": 7, "level": 60, "shiny": 1, "moves": ["aurasphere", "irontail", "roaroftime", "flashcannon"]},
    {"generation": 7, "level": 60, "moves": ["aurasphere", "irontail", "roaroftime", "flashcannon"], "pokeball": "cherishball"},
    {"generation": 7, "level": 100, "moves": ["roaroftime", "aurasphere", "dracometeor", "flashcannon"], "pokeball": "cherishball"},
    {"generation": 7, "level": 50, "moves": ["flashcannon", "dracometeor", "roaroftime", "aurasphere"], "pokeball": "cherishball"},
    {"generation": 8, "level": 70, "shiny": 1, "moves": ["slash", "ancientpower", "flashcannon", "dragonclaw"]},
-   {"generation": 8, "level": 70, "nature": "Bold", "isHidden": true, "moves": ["roaroftime", "flashcannon", "metalburst", "overheat"], "pokeball": "cherishball"}
+   {"generation": 8, "level": 70, "nature": "Bold", "isHidden": true, moves: ["roaroftime", "flashcannon", "metalburst", "overheat"], "pokeball": "cherishball"}
   ],
   "eventOnly": true
  },
@@ -50567,13 +50567,13 @@
    {"generation": 5, "level": 5, "isHidden": true, "moves": ["dragonbreath", "scaryface"], "pokeball": "dreamball"},
    {"generation": 5, "level": 100, "shiny": true, "moves": ["hydropump", "dracometeor", "spacialrend", "aurasphere"], "pokeball": "cherishball"},
    {"generation": 6, "level": 50, "shiny": 1, "moves": ["earthpower", "aurasphere", "spacialrend", "hydropump"]},
-   {"generation": 6, "level": 100, "nature": "Timid", "isHidden": true, "moves": ["earthpower", "aurasphere", "spacialrend", "hydropump"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 100, "nature": "Timid", "isHidden": true, moves: ["earthpower", "aurasphere", "spacialrend", "hydropump"], "pokeball": "cherishball"},
    {"generation": 7, "level": 60, "shiny": 1, "moves": ["aurasphere", "aquatail", "spacialrend", "hydropump"]},
    {"generation": 7, "level": 60, "moves": ["aurasphere", "aquatail", "spacialrend", "hydropump"], "pokeball": "cherishball"},
    {"generation": 7, "level": 100, "moves": ["spacialrend", "aurasphere", "dracometeor", "hydropump"], "pokeball": "cherishball"},
    {"generation": 7, "level": 50, "moves": ["hydropump", "dracometeor", "spacialrend", "aurasphere"], "pokeball": "cherishball"},
    {"generation": 8, "level": 70, "shiny": 1, "moves": ["slash", "surf", "ancientpower", "dragonclaw"]},
-   {"generation": 8, "level": 70, "nature": "Hasty", "isHidden": true, "moves": ["spacialrend", "hydropump", "aurasphere", "earthpower"], "pokeball": "cherishball"}
+   {"generation": 8, "level": 70, "nature": "Hasty", "isHidden": true, moves: ["spacialrend", "hydropump", "aurasphere", "earthpower"], "pokeball": "cherishball"}
   ],
   "eventOnly": true
  },
@@ -50670,7 +50670,7 @@
   "eventData": [
    {"generation": 4, "level": 70, "shiny": 1, "moves": ["scaryface", "lavaplume", "firespin", "ironhead"]},
    {"generation": 4, "level": 50, "shiny": 1, "moves": ["metalsound", "crunch", "scaryface", "lavaplume"]},
-   {"generation": 4, "level": 50, "gender": "M", "nature": "Quiet", "moves": ["eruption", "magmastorm", "earthpower", "ancientpower"], "pokeball": "pokeball"},
+   {"generation": 4, "level": 50, "gender": "M", "nature": "Quiet", moves: ["eruption", "magmastorm", "earthpower", "ancientpower"], "pokeball": "pokeball"},
    {"generation": 5, "level": 68, "shiny": 1, "moves": ["scaryface", "lavaplume", "firespin", "ironhead"]},
    {"generation": 6, "level": 50, "shiny": 1, "moves": ["metalsound", "crunch", "scaryface", "lavaplume"]},
    {"generation": 7, "level": 60, "shiny": 1, "moves": ["crunch", "scaryface", "lavaplume", "firespin"]},
@@ -50882,7 +50882,7 @@
    {"generation": 5, "level": 5, "isHidden": true, "moves": ["dragonbreath", "scaryface"], "pokeball": "dreamball"},
    {"generation": 5, "level": 100, "shiny": true, "moves": ["dragonpulse", "dragonclaw", "aurasphere", "shadowforce"], "pokeball": "cherishball"},
    {"generation": 6, "level": 50, "shiny": 1, "moves": ["aurasphere", "shadowclaw", "shadowforce", "hex"]},
-   {"generation": 6, "level": 100, "nature": "Brave", "isHidden": true, "moves": ["aurasphere", "dracometeor", "shadowforce", "ironhead"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 100, "nature": "Brave", "isHidden": true, moves: ["aurasphere", "dracometeor", "shadowforce", "ironhead"], "pokeball": "cherishball"},
    {"generation": 7, "level": 60, "shiny": 1, "moves": ["shadowforce", "aurasphere", "earthpower", "dragonclaw"]},
    {"generation": 8, "level": 70, "shiny": 1, "moves": ["dragonclaw", "scaryface", "shadowball", "ancientpower"]}
   ],
@@ -50977,7 +50977,7 @@
   "eventData": [
    {"generation": 4, "level": 50, "shiny": 1, "moves": ["mist", "aurorabeam", "futuresight", "slash"]},
    {"generation": 5, "level": 68, "shiny": 1, "moves": ["futuresight", "slash", "moonlight", "psychocut"]},
-   {"generation": 5, "level": 68, "nature": "Modest", "moves": ["icebeam", "psyshock", "energyball", "hiddenpower"]},
+   {"generation": 5, "level": 68, "nature": "Modest", moves: ["icebeam", "psyshock", "energyball", "hiddenpower"]},
    {"generation": 6, "level": 50, "shiny": 1, "moves": ["mist", "aurorabeam", "futuresight", "slash"]},
    {"generation": 7, "level": 60, "shiny": 1, "moves": ["aurorabeam", "futuresight", "slash", "moonlight"]},
    {"generation": 8, "level": 70, "shiny": 1, "moves": ["icywind", "moonblast", "psychocut", "psyshock"]}
@@ -51118,7 +51118,7 @@
    {"generation": 4, "level": 5, "moves": ["tailglow", "bubble", "watersport"]},
    {"generation": 4, "level": 1, "shiny": 1, "moves": ["tailglow", "bubble", "watersport"], "pokeball": "pokeball"},
    {"generation": 4, "level": 50, "moves": ["heartswap", "waterpulse", "whirlpool", "acidarmor"], "pokeball": "cherishball"},
-   {"generation": 4, "level": 50, "nature": "Impish", "moves": ["aquaring", "waterpulse", "watersport", "heartswap"], "pokeball": "cherishball"},
+   {"generation": 4, "level": 50, "nature": "Impish", moves: ["aquaring", "waterpulse", "watersport", "heartswap"], "pokeball": "cherishball"},
    {"generation": 6, "level": 1, "moves": ["tailglow", "bubble", "watersport", "heartswap"], "pokeball": "cherishball"},
    {"generation": 6, "level": 100, "moves": ["tailglow", "bubble", "watersport"], "pokeball": "cherishball"},
    {"generation": 7, "level": 15, "moves": ["tailglow", "waterpulse", "aquaring", "heartswap"], "pokeball": "cherishball"}
@@ -51652,7 +51652,7 @@
    {"generation": 6, "level": 100, "moves": ["incinerate", "quickattack", "endure", "confusion"], "pokeball": "cherishball"},
    {"generation": 6, "level": 15, "moves": ["quickattack", "swagger", "vcreate"], "pokeball": "cherishball"},
    {"generation": 7, "level": 15, "moves": ["vcreate", "reversal", "storedpower", "celebrate"], "pokeball": "cherishball"},
-   {"generation": 8, "level": 50, "nature": "Brave", "perfectIVs": 6, "moves": ["vcreate", "zenheadbutt", "workup", "flamecharge"], "pokeball": "cherishball"}
+   {"generation": 8, "level": 50, "nature": "Brave", "perfectIVs": 6, moves: ["vcreate", "zenheadbutt", "workup", "flamecharge"], "pokeball": "cherishball"}
   ],
   "eventOnly": true
  },
@@ -51728,7 +51728,7 @@
    "wringout": ["7L37", "6L37", "5L37"]
   },
   "eventData": [
-   {"generation": 5, "level": 5, "gender": "M", "nature": "Hardy", "moves": ["growth", "synthesis", "energyball", "aromatherapy"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 5, "gender": "M", "nature": "Hardy", moves: ["growth", "synthesis", "energyball", "aromatherapy"], "pokeball": "cherishball"}
   ]
  },
  "servine": {
@@ -51863,7 +51863,7 @@
    "wringout": ["7L50", "6L50", "6S1", "5L50"]
   },
   "eventData": [
-   {"generation": 5, "level": 100, "gender": "M", "moves": ["leafstorm", "substitute", "gigadrain", "leechseed"], "pokeball": "cherishball"},
+   {"generation": 5, "level": 100, "gender": "M", moves: ["leafstorm", "substitute", "gigadrain", "leechseed"], "pokeball": "cherishball"},
    {"generation": 6, "level": 50, "isHidden": true, "moves": ["leafstorm", "holdback", "wringout", "gigadrain"], "pokeball": "cherishball"}
   ]
  },
@@ -52091,7 +52091,7 @@
    "zenheadbutt": ["7T", "6T"]
   },
   "eventData": [
-   {"generation": 5, "level": 100, "gender": "M", "moves": ["flareblitz", "hammerarm", "wildcharge", "headsmash"], "pokeball": "cherishball"},
+   {"generation": 5, "level": 100, "gender": "M", moves: ["flareblitz", "hammerarm", "wildcharge", "headsmash"], "pokeball": "cherishball"},
    {"generation": 6, "level": 50, "isHidden": true, "moves": ["flareblitz", "holdback", "headsmash", "takedown"], "pokeball": "cherishball"}
   ]
  },
@@ -52330,7 +52330,7 @@
    "xscissor": ["9M", "7M", "6M", "5M"]
   },
   "eventData": [
-   {"generation": 5, "level": 100, "gender": "M", "moves": ["hydropump", "icebeam", "megahorn", "superpower"], "pokeball": "cherishball"},
+   {"generation": 5, "level": 100, "gender": "M", moves: ["hydropump", "icebeam", "megahorn", "superpower"], "pokeball": "cherishball"},
    {"generation": 6, "level": 50, "isHidden": true, "moves": ["razorshell", "holdback", "confide", "hydropump"], "pokeball": "cherishball"}
   ]
  },
@@ -52898,7 +52898,7 @@
    "uturn": ["8M", "7M", "6M", "5M"]
   },
   "eventData": [
-   {"generation": 5, "level": 20, "gender": "F", "nature": "Jolly", "isHidden": true, "moves": ["fakeout", "foulplay", "encore", "swagger"]}
+   {"generation": 5, "level": 20, "gender": "F", "nature": "Jolly", "isHidden": true, moves: ["fakeout", "foulplay", "encore", "swagger"]}
   ]
  },
  "pansage": {
@@ -52977,9 +52977,9 @@
    "worryseed": ["7T", "6T", "5T"]
   },
   "eventData": [
-   {"generation": 5, "level": 1, "shiny": 1, "gender": "M", "nature": "Brave", "ivs": {"spa": 31}, "moves": ["bulletseed", "bite", "solarbeam", "dig"], "pokeball": "pokeball"},
-   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, "moves": ["leer", "lick", "vinewhip", "leafstorm"]},
-   {"generation": 5, "level": 30, "gender": "M", "nature": "Serious", "moves": ["seedbomb", "solarbeam", "rocktomb", "dig"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 1, "shiny": 1, "gender": "M", "nature": "Brave", "ivs": {"spa": 31}, moves: ["bulletseed", "bite", "solarbeam", "dig"], "pokeball": "pokeball"},
+   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, moves: ["leer", "lick", "vinewhip", "leafstorm"]},
+   {"generation": 5, "level": 30, "gender": "M", "nature": "Serious", moves: ["seedbomb", "solarbeam", "rocktomb", "dig"], "pokeball": "cherishball"}
   ]
  },
  "simisage": {
@@ -53126,7 +53126,7 @@
    "yawn": ["7L16", "6L16", "5L16"]
   },
   "eventData": [
-   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, "moves": ["leer", "lick", "incinerate", "heatwave"]}
+   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, moves: ["leer", "lick", "incinerate", "heatwave"]}
   ]
  },
  "simisear": {
@@ -53280,7 +53280,7 @@
    "workup": ["7M", "5M"]
   },
   "eventData": [
-   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, "moves": ["leer", "lick", "watergun", "hydropump"]}
+   {"generation": 5, "level": 10, "gender": "M", "isHidden": true, moves: ["leer", "lick", "watergun", "hydropump"]}
   ]
  },
  "simipour": {
@@ -53433,7 +53433,7 @@
    "zenheadbutt": ["8M", "8L24", "7T", "7L23", "6T", "6L23", "5T", "5L23"]
   },
   "eventData": [
-   {"generation": 7, "level": 39, "nature": "Mild", "isHidden": true, "moves": ["hypnosis", "dreameater", "rest", "sleeptalk"], "pokeball": "dreamball"}
+   {"generation": 7, "level": 39, "nature": "Mild", "isHidden": true, moves: ["hypnosis", "dreameater", "rest", "sleeptalk"], "pokeball": "dreamball"}
   ]
  },
  "musharna": {
@@ -53570,7 +53570,7 @@
    "workup": ["8M", "7M", "5M"]
   },
   "eventData": [
-   {"generation": 5, "level": 1, "shiny": 1, "gender": "F", "nature": "Hardy", "ivs": {"atk": 31}, "abilities": ["superluck"], "moves": ["gust", "quickattack", "aircutter"], "pokeball": "pokeball"}
+   {"generation": 5, "level": 1, "shiny": 1, "gender": "F", "nature": "Hardy", "ivs": {"atk": 31}, "abilities": ["superluck"], moves: ["gust", "quickattack", "aircutter"], "pokeball": "pokeball"}
   ]
  },
  "tranquill": {
@@ -54386,10 +54386,10 @@
    "zenheadbutt": ["8M", "8L20", "7T", "6T", "5T"]
   },
   "eventData": [
-   {"generation": 5, "level": 30, "gender": "F", "nature": "Calm", "abilities": ["healer"], "moves": ["healpulse", "helpinghand", "refresh", "doubleslap"], "pokeball": "cherishball"},
-   {"generation": 5, "level": 30, "gender": "F", "nature": "Serious", "abilities": ["healer"], "moves": ["healpulse", "helpinghand", "refresh", "present"], "pokeball": "cherishball"},
-   {"generation": 5, "level": 30, "gender": "F", "nature": "Jolly", "abilities": ["healer"], "moves": ["healpulse", "helpinghand", "refresh", "present"], "pokeball": "cherishball"},
-   {"generation": 6, "level": 100, "nature": "Relaxed", "abilities": ["regenerator"], "moves": ["trickroom", "healpulse", "simplebeam", "thunderbolt"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 30, "gender": "F", "nature": "Calm", "abilities": ["healer"], moves: ["healpulse", "helpinghand", "refresh", "doubleslap"], "pokeball": "cherishball"},
+   {"generation": 5, "level": 30, "gender": "F", "nature": "Serious", "abilities": ["healer"], moves: ["healpulse", "helpinghand", "refresh", "present"], "pokeball": "cherishball"},
+   {"generation": 5, "level": 30, "gender": "F", "nature": "Jolly", "abilities": ["healer"], moves: ["healpulse", "helpinghand", "refresh", "present"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 100, "nature": "Relaxed", "abilities": ["regenerator"], moves: ["trickroom", "healpulse", "simplebeam", "thunderbolt"], "pokeball": "cherishball"}
   ]
  },
  "timburr": {
@@ -55457,7 +55457,7 @@
    "worryseed": ["7T", "6T", "5T"]
   },
   "eventData": [
-   {"generation": 5, "level": 50, "gender": "F", "nature": "Timid", "ivs": {"spe": 31}, "abilities": ["prankster"], "moves": ["swagger", "gigadrain", "beatup", "helpinghand"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 50, "gender": "F", "nature": "Timid", "ivs": {"spe": 31}, "abilities": ["prankster"], moves: ["swagger", "gigadrain", "beatup", "helpinghand"], "pokeball": "cherishball"}
   ]
  },
  "petilil": {
@@ -56384,7 +56384,7 @@
   },
   "eventData": [
    {"generation": 5, "level": 35, "isHidden": true, "moves": ["thrash", "bellydrum", "flareblitz", "hammerarm"]},
-   {"generation": 6, "level": 35, "gender": "M", "nature": "Calm", "ivs": {"hp": 30, "atk": 30, "def": 30, "spa": 30, "spd": 30, "spe": 30}, "isHidden": true, "moves": ["thrash", "bellydrum", "flareblitz", "hammerarm"], "pokeball": "cherishball"}
+   {"generation": 6, "level": 35, "gender": "M", "nature": "Calm", "ivs": {"hp": 30, "atk": 30, "def": 30, "spa": 30, "spd": 30, "spe": 30}, "isHidden": true, moves: ["thrash", "bellydrum", "flareblitz", "hammerarm"], "pokeball": "cherishball"}
   ],
   "encounters": [
    {"generation": 6, "level": 32, "maxEggMoves": 1}
@@ -56757,7 +56757,7 @@
    "zenheadbutt": ["8M", "7T", "7E", "6T", "6E", "5T", "5E"]
   },
   "eventData": [
-   {"generation": 5, "level": 1, "gender": "M", "nature": "Adamant", "abilities": ["moxie"], "moves": ["headbutt", "leer", "highjumpkick", "lowkick"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 1, "gender": "M", "nature": "Adamant", "abilities": ["moxie"], moves: ["headbutt", "leer", "highjumpkick", "lowkick"], "pokeball": "cherishball"}
   ]
  },
  "scrafty": {
@@ -56853,7 +56853,7 @@
    "zenheadbutt": ["8M", "7T", "6T", "5T"]
   },
   "eventData": [
-   {"generation": 5, "level": 50, "gender": "M", "nature": "Brave", "abilities": ["moxie"], "moves": ["firepunch", "payback", "drainpunch", "substitute"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 50, "gender": "M", "nature": "Brave", "abilities": ["moxie"], moves: ["firepunch", "payback", "drainpunch", "substitute"], "pokeball": "cherishball"}
   ]
  },
  "sigilyph": {
@@ -57152,7 +57152,7 @@
    "zenheadbutt": ["8M", "7T", "6T"]
   },
   "eventData": [
-   {"generation": 7, "level": 66, "gender": "M", "moves": ["willowisp", "shadowball", "powersplit", "darkpulse"], "pokeball": "cherishball"}
+   {"generation": 7, "level": 66, "gender": "M", moves: ["willowisp", "shadowball", "powersplit", "darkpulse"], "pokeball": "cherishball"}
   ],
   "encounters": [
    {"generation": 6, "level": 32, "maxEggMoves": 1}
@@ -57302,7 +57302,7 @@
    "zenheadbutt": ["8M", "7T", "6T"]
   },
   "eventData": [
-   {"generation": 5, "level": 15, "gender": "M", "abilities": ["sturdy"], "moves": ["bite", "protect", "aquajet", "bodyslam"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 15, "gender": "M", "abilities": ["sturdy"], moves: ["bite", "protect", "aquajet", "bodyslam"], "pokeball": "cherishball"}
   ]
  },
  "carracosta": {
@@ -57461,7 +57461,7 @@
    "zenheadbutt": ["8M", "7T", "6T"]
   },
   "eventData": [
-   {"generation": 5, "level": 15, "gender": "M", "moves": ["headsmash", "wingattack", "doubleteam", "scaryface"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 15, "gender": "M", moves: ["headsmash", "wingattack", "doubleteam", "scaryface"], "pokeball": "cherishball"}
   ]
  },
  "archeops": {
@@ -57921,9 +57921,9 @@
    "uturn": ["9M", "9L1", "8M", "8L1", "7M", "7L1", "6M", "6L1", "5M", "5L1"]
   },
   "eventData": [
-   {"generation": 5, "level": 50, "gender": "M", "nature": "Quirky", "moves": ["agility", "embargo", "punishment", "snarl"], "pokeball": "cherishball"},
+   {"generation": 5, "level": 50, "gender": "M", "nature": "Quirky", moves: ["agility", "embargo", "punishment", "snarl"], "pokeball": "cherishball"},
    {"generation": 6, "level": 50, "moves": ["sludgebomb", "darkpulse", "flamethrower", "suckerpunch"], "pokeball": "ultraball"},
-   {"generation": 6, "level": 45, "gender": "M", "nature": "Naughty", "moves": ["scaryface", "furyswipes", "nastyplot", "punishment"], "pokeball": "cherishball"}
+   {"generation": 6, "level": 45, "gender": "M", "nature": "Naughty", moves: ["scaryface", "furyswipes", "nastyplot", "punishment"], "pokeball": "cherishball"}
   ],
   "encounters": [
    {"generation": 5, "level": 25}
@@ -58311,8 +58311,8 @@
    "zenheadbutt": ["9M", "8M", "7T", "6T", "5T"]
   },
   "eventData": [
-   {"generation": 5, "level": 32, "gender": "M", "isHidden": true, "moves": ["psyshock", "flatter", "futuresight", "mirrorcoat"]},
-   {"generation": 5, "level": 32, "gender": "M", "isHidden": true, "moves": ["psyshock", "flatter", "futuresight", "imprison"]}
+   {"generation": 5, "level": 32, "gender": "M", "isHidden": true, moves: ["psyshock", "flatter", "futuresight", "mirrorcoat"]},
+   {"generation": 5, "level": 32, "gender": "M", "isHidden": true, moves: ["psyshock", "flatter", "futuresight", "imprison"]}
   ],
   "encounters": [
    {"generation": 5, "level": 31}
@@ -59018,7 +59018,7 @@
    "zenheadbutt": ["9M", "9L24"]
   },
   "eventData": [
-   {"generation": 5, "level": 30, "gender": "F", "isHidden": true, "moves": ["feintattack", "takedown", "jumpkick", "aromatherapy"]}
+   {"generation": 5, "level": 30, "gender": "F", "isHidden": true, moves: ["feintattack", "takedown", "jumpkick", "aromatherapy"]}
   ]
  },
  "sawsbuck": {
@@ -59427,7 +59427,7 @@
    "worryseed": ["7T", "6T", "5T"]
   },
   "eventData": [
-   {"generation": 8, "level": 50, "shiny": true, "gender": "F", "nature": "Sassy", "ivs": {"hp": 31, "atk": 0, "def": 31, "spa": 31, "spd": 31, "spe": 0}, "isHidden": true, "moves": ["clearsmog", "spore", "protect", "ragepowder"], "pokeball": "cherishball"}
+   {"generation": 8, "level": 50, "shiny": true, "gender": "F", "nature": "Sassy", "ivs": {"hp": 31, "atk": 0, "def": 31, "spa": 31, "spd": 31, "spe": 0}, "isHidden": true, moves: ["clearsmog", "spore", "protect", "ragepowder"], "pokeball": "cherishball"}
   ],
   "encounters": [
    {"generation": 5, "level": 37},
@@ -60685,7 +60685,7 @@
    "willowisp": ["8M", "8L1", "7M", "6M", "5M"]
   },
   "eventData": [
-   {"generation": 5, "level": 50, "gender": "F", "nature": "Modest", "ivs": {"spa": 31}, "abilities": ["flashfire"], "moves": ["heatwave", "shadowball", "energyball", "psychic"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 50, "gender": "F", "nature": "Modest", "ivs": {"spa": 31}, "abilities": ["flashfire"], moves: ["heatwave", "shadowball", "energyball", "psychic"], "pokeball": "cherishball"}
   ]
  },
  "axew": {
@@ -60770,9 +60770,9 @@
    "xscissor": ["9M", "8M", "7M", "6M", "5M"]
   },
   "eventData": [
-   {"generation": 5, "level": 1, "shiny": 1, "gender": "M", "nature": "Naive", "ivs": {"spe": 31}, "abilities": ["moldbreaker"], "moves": ["scratch", "dragonrage"], "pokeball": "pokeball"},
-   {"generation": 5, "level": 10, "gender": "F", "abilities": ["moldbreaker"], "moves": ["dragonrage", "return", "endure", "dragonclaw"], "pokeball": "cherishball"},
-   {"generation": 5, "level": 30, "gender": "M", "nature": "Naive", "abilities": ["rivalry"], "moves": ["dragonrage", "scratch", "outrage", "gigaimpact"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 1, "shiny": 1, "gender": "M", "nature": "Naive", "ivs": {"spe": 31}, "abilities": ["moldbreaker"], moves: ["scratch", "dragonrage"], "pokeball": "pokeball"},
+   {"generation": 5, "level": 10, "gender": "F", "abilities": ["moldbreaker"], moves: ["dragonrage", "return", "endure", "dragonclaw"], "pokeball": "cherishball"},
+   {"generation": 5, "level": 30, "gender": "M", "nature": "Naive", "abilities": ["rivalry"], moves: ["dragonrage", "scratch", "outrage", "gigaimpact"], "pokeball": "cherishball"}
   ]
  },
  "fraxure": {
@@ -60944,7 +60944,7 @@
    "xscissor": ["9M", "8M", "7M", "6M", "5M", "5S0"]
   },
   "eventData": [
-   {"generation": 5, "level": 59, "gender": "F", "nature": "Naive", "ivs": {"hp": 30, "atk": 30, "def": 30, "spa": 30, "spd": 30, "spe": 30}, "abilities": ["moldbreaker"], "moves": ["earthquake", "dualchop", "xscissor", "dragondance"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 59, "gender": "F", "nature": "Naive", "ivs": {"hp": 30, "atk": 30, "def": 30, "spa": 30, "spd": 30, "spe": 30}, "abilities": ["moldbreaker"], moves: ["earthquake", "dualchop", "xscissor", "dragondance"], "pokeball": "cherishball"}
   ]
  },
  "cubchoo": {
@@ -61642,7 +61642,7 @@
    "workup": ["8M", "7M", "5M"]
   },
   "eventData": [
-   {"generation": 7, "level": 65, "gender": "M", "abilities": ["innerfocus"], "moves": ["fakeout", "dualchop", "highjumpkick", "uturn"], "pokeball": "cherishball"}
+   {"generation": 7, "level": 65, "gender": "M", "abilities": ["innerfocus"], moves: ["fakeout", "dualchop", "highjumpkick", "uturn"], "pokeball": "cherishball"}
   ]
  },
  "druddigon": {
@@ -62243,7 +62243,7 @@
    "zenheadbutt": ["8M", "7T", "6T", "5T"]
   },
   "eventData": [
-   {"generation": 6, "level": 50, "nature": "Adamant", "ivs": {"hp": 31, "atk": 31}, "isHidden": true, "moves": ["headcharge", "facade", "earthquake", "rockslide"], "pokeball": "cherishball"}
+   {"generation": 6, "level": 50, "nature": "Adamant", "ivs": {"hp": 31, "atk": 31}, "isHidden": true, moves: ["headcharge", "facade", "earthquake", "rockslide"], "pokeball": "cherishball"}
   ]
  },
  "rufflet": {
@@ -62389,7 +62389,7 @@
    "zenheadbutt": ["9M", "8M", "7T", "6T"]
   },
   "eventData": [
-   {"generation": 5, "level": 25, "gender": "M", "isHidden": true, "moves": ["wingattack", "honeclaws", "scaryface", "aerialace"]}
+   {"generation": 5, "level": 25, "gender": "M", "isHidden": true, moves: ["wingattack", "honeclaws", "scaryface", "aerialace"]}
   ],
   "encounters": [
    {"generation": 6, "level": 45}
@@ -62600,7 +62600,7 @@
    "whirlwind": ["8L36", "7L1", "6L1", "5L57"]
   },
   "eventData": [
-   {"generation": 5, "level": 25, "gender": "F", "isHidden": true, "moves": ["pluck", "nastyplot", "flatter", "feintattack"]}
+   {"generation": 5, "level": 25, "gender": "F", "isHidden": true, moves: ["pluck", "nastyplot", "flatter", "feintattack"]}
   ]
  },
  "heatmor": {
@@ -63008,8 +63008,8 @@
    "zenheadbutt": ["9M", "8M", "7T", "6T", "5T"]
   },
   "eventData": [
-   {"generation": 5, "level": 70, "shiny": true, "gender": "M", "moves": ["hypervoice", "dragonbreath", "flamethrower", "focusblast"], "pokeball": "cherishball"},
-   {"generation": 6, "level": 52, "gender": "M", "perfectIVs": 2, "moves": ["dragonrush", "crunch", "rockslide", "frustration"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 70, "shiny": true, "gender": "M", moves: ["hypervoice", "dragonbreath", "flamethrower", "focusblast"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 52, "gender": "M", "perfectIVs": 2, moves: ["dragonrush", "crunch", "rockslide", "frustration"], "pokeball": "cherishball"}
   ],
   "encounters": [
    {"generation": 6, "level": 59}
@@ -63161,7 +63161,7 @@
   },
   "eventData": [
    {"generation": 5, "level": 35, "moves": ["stringshot", "leechlife", "gust", "firespin"]},
-   {"generation": 5, "level": 77, "gender": "M", "nature": "Calm", "ivs": {"hp": 30, "atk": 30, "def": 30, "spa": 30, "spd": 30, "spe": 30}, "moves": ["bugbuzz", "overheat", "hyperbeam", "quiverdance"], "pokeball": "cherishball"}
+   {"generation": 5, "level": 77, "gender": "M", "nature": "Calm", "ivs": {"hp": 30, "atk": 30, "def": 30, "spa": 30, "spd": 30, "spe": 30}, moves: ["bugbuzz", "overheat", "hyperbeam", "quiverdance"], "pokeball": "cherishball"}
   ],
   "encounters": [
    {"generation": 7, "level": 41}
@@ -63908,7 +63908,7 @@
    {"generation": 5, "level": 70, "shiny": 1, "moves": ["rockslide", "earthquake", "sandstorm", "fissure"]},
    {"generation": 5, "level": 5, "isHidden": true, "moves": ["block", "mudshot", "rocktomb"], "pokeball": "dreamball"},
    {"generation": 6, "level": 65, "shiny": 1, "moves": ["extrasensory", "swordsdance", "earthpower", "rockslide"]},
-   {"generation": 6, "level": 50, "nature": "Adamant", "ivs": {"hp": 31, "atk": 31, "def": 31, "spa": 1, "spd": 31, "spe": 24}, "moves": ["earthquake", "knockoff", "uturn", "rocktomb"], "pokeball": "cherishball"},
+   {"generation": 6, "level": 50, "nature": "Adamant", "ivs": {"hp": 31, "atk": 31, "def": 31, "spa": 1, "spd": 31, "spe": 24}, moves: ["earthquake", "knockoff", "uturn", "rocktomb"], "pokeball": "cherishball"},
    {"generation": 7, "level": 60, "shiny": 1, "moves": ["earthpower", "rockslide", "earthquake", "sandstorm"]},
    {"generation": 8, "level": 70, "shiny": 1, "moves": ["sandtomb", "rockslide", "bulldoze", "focusblast"]}
   ],
@@ -64479,7 +64479,7 @@
   "eventData": [
    {"generation": 5, "level": 50, "moves": ["technoblast", "magnetbomb", "solarbeam", "signalbeam"], "pokeball": "cherishball"},
    {"generation": 5, "level": 15, "moves": ["technoblast", "magnetbomb", "solarbeam", "signalbeam"], "pokeball": "cherishball"},
-   {"generation": 5, "level": 100, "shiny": true, "nature": "Hasty", "ivs": {"atk": 31, "spe": 31}, "moves": ["extremespeed", "technoblast", "blazekick", "shiftgear"], "pokeball": "cherishball"},
+   {"generation": 5, "level": 100, "shiny": true, "nature": "Hasty", "ivs": {"atk": 31, "spe": 31}, moves: ["extremespeed", "technoblast", "blazekick", "shiftgear"], "pokeball": "cherishball"},
    {"generation": 6, "level": 100, "moves": ["technoblast", "magnetbomb", "solarbeam", "signalbeam"], "pokeball": "cherishball"},
    {"generation": 8, "level": 60, "moves": ["technoblast", "xscissor", "metalclaw", "fellstinger"], "pokeball": "cherishball"}
   ],
@@ -64882,7 +64882,7 @@
    "workup": ["7M"]
   },
   "eventData": [
-   {"generation": 6, "level": 15, "gender": "F", "nature": "Hardy", "moves": ["scratch", "flamethrower", "hiddenpower"], "pokeball": "cherishball"}
+   {"generation": 6, "level": 15, "gender": "F", "nature": "Hardy", moves: ["scratch", "flamethrower", "hiddenpower"], "pokeball": "cherishball"}
   ]
  },
  "braixen": {
@@ -65331,7 +65331,7 @@
    {"generation": 6, "level": 100, "isHidden": true, "moves": ["hydrocannon", "gunkshot", "matblock", "happyhour"], "pokeball": "cherishball"}
   ]
  },
- "greninjaash": {
+ "greninjabond": {
   "learnset": {
    "acrobatics": ["7M"],
    "aerialace": ["9M", "9L33", "7M", "7S0"],
@@ -66158,7 +66158,7 @@
    "workup": ["9L1", "7M", "7L1", "6L8"]
   },
   "eventData": [
-   {"generation": 6, "level": 49, "gender": "M", "perfectIVs": 2, "abilities": ["unnerve"], "moves": ["hypervoice", "fireblast", "darkpulse"], "pokeball": "cherishball"}
+   {"generation": 6, "level": 49, "gender": "M", "perfectIVs": 2, "abilities": ["unnerve"], moves: ["hypervoice", "fireblast", "darkpulse"], "pokeball": "cherishball"}
   ],
   "encounters": [
    {"generation": 6, "level": 30}
@@ -66678,7 +66678,7 @@
    "zenheadbutt": ["8M", "7T", "6T"]
   },
   "eventData": [
-   {"generation": 6, "level": 30, "gender": "M", "nature": "Adamant", "abilities": ["moldbreaker"], "moves": ["armthrust", "stoneedge", "darkpulse"], "pokeball": "cherishball"}
+   {"generation": 6, "level": 30, "gender": "M", "nature": "Adamant", "abilities": ["moldbreaker"], moves: ["armthrust", "stoneedge", "darkpulse"], "pokeball": "cherishball"}
   ]
  },
  "pangoro": {
@@ -67298,7 +67298,7 @@
    "wideguard": ["6S0"]
   },
   "eventData": [
-   {"generation": 6, "level": 50, "gender": "F", "nature": "Quiet", "moves": ["wideguard", "kingsshield", "shadowball", "flashcannon"], "pokeball": "cherishball"}
+   {"generation": 6, "level": 50, "gender": "F", "nature": "Quiet", moves: ["wideguard", "kingsshield", "shadowball", "flashcannon"], "pokeball": "cherishball"}
   ]
  },
  "spritzee": {
@@ -67440,7 +67440,7 @@
    "trickroom": ["8M", "7M", "6M", "6S0"]
   },
   "eventData": [
-   {"generation": 6, "level": 50, "nature": "Relaxed", "isHidden": true, "moves": ["trickroom", "healpulse", "disable", "moonblast"], "pokeball": "cherishball"}
+   {"generation": 6, "level": 50, "nature": "Relaxed", "isHidden": true, moves: ["trickroom", "healpulse", "disable", "moonblast"], "pokeball": "cherishball"}
   ]
  },
  "swirlix": {
@@ -67737,7 +67737,7 @@
    "wrap": ["8L1"]
   },
   "eventData": [
-   {"generation": 6, "level": 50, "nature": "Adamant", "ivs": {"hp": 31, "atk": 31}, "abilities": ["contrary"], "moves": ["superpower", "knockoff", "facade", "rockslide"], "pokeball": "cherishball"}
+   {"generation": 6, "level": 50, "nature": "Adamant", "ivs": {"hp": 31, "atk": 31}, "abilities": ["contrary"], moves: ["superpower", "knockoff", "facade", "rockslide"], "pokeball": "cherishball"}
   ]
  },
  "binacle": {
@@ -68790,8 +68790,8 @@
   },
   "eventData": [
    {"generation": 6, "level": 10, "moves": ["celebrate", "helpinghand", "sandattack", "fairywind"], "pokeball": "cherishball"},
-   {"generation": 6, "level": 10, "gender": "F", "moves": ["disarmingvoice", "babydolleyes", "quickattack", "drainingkiss"], "pokeball": "cherishball"},
-   {"generation": 7, "level": 50, "gender": "F", "isHidden": true, "moves": ["hyperbeam", "drainingkiss", "psyshock", "calmmind"], "pokeball": "cherishball"}
+   {"generation": 6, "level": 10, "gender": "F", moves: ["disarmingvoice", "babydolleyes", "quickattack", "drainingkiss"], "pokeball": "cherishball"},
+   {"generation": 7, "level": 50, "gender": "F", "isHidden": true, moves: ["hyperbeam", "drainingkiss", "psyshock", "calmmind"], "pokeball": "cherishball"}
   ]
  },
  "hawlucha": {
@@ -74102,7 +74102,7 @@
    "zenheadbutt": ["8M", "7T"]
   },
   "eventData": [
-   {"generation": 7, "level": 50, "gender": "F", "isHidden": true, "moves": ["babydolleyes", "brutalswing", "superpower", "bind"], "pokeball": "cherishball"}
+   {"generation": 7, "level": 50, "gender": "F", "isHidden": true, moves: ["babydolleyes", "brutalswing", "superpower", "bind"], "pokeball": "cherishball"}
   ]
  },
  "bounsweet": {
@@ -74234,7 +74234,7 @@
    "zenheadbutt": ["9M", "8M", "7T"]
   },
   "eventData": [
-   {"generation": 7, "level": 20, "nature": "Naive", "abilities": ["leafguard"], "moves": ["magicalleaf", "doubleslap", "sweetscent"], "pokeball": "cherishball"}
+   {"generation": 7, "level": 20, "nature": "Naive", "abilities": ["leafguard"], moves: ["magicalleaf", "doubleslap", "sweetscent"], "pokeball": "cherishball"}
   ]
  },
  "tsareena": {
@@ -74398,7 +74398,7 @@
    "wrap": ["8L1", "7L16"]
   },
   "eventData": [
-   {"generation": 7, "level": 10, "nature": "Jolly", "moves": ["celebrate", "leechseed", "drainingkiss", "magicalleaf"], "pokeball": "cherishball"}
+   {"generation": 7, "level": 10, "nature": "Jolly", moves: ["celebrate", "leechseed", "drainingkiss", "magicalleaf"], "pokeball": "cherishball"}
   ]
  },
  "oranguru": {
@@ -75296,7 +75296,7 @@
   },
   "eventData": [
    {"generation": 7, "level": 1, "shiny": 1, "moves": ["flamethrower", "bodyslam", "wideguard"], "pokeball": "cherishball"},
-   {"generation": 7, "level": 30, "gender": "M", "nature": "Brave", "moves": ["flamethrower", "shelltrap", "dragontail"], "pokeball": "cherishball"}
+   {"generation": 7, "level": 30, "gender": "M", "nature": "Brave", moves: ["flamethrower", "shelltrap", "dragontail"], "pokeball": "cherishball"}
   ]
  },
  "togedemaru": {
@@ -76278,7 +76278,7 @@
   },
   "eventData": [
    {"generation": 7, "level": 60, "moves": ["naturesmadness", "discharge", "agility", "electroball"]},
-   {"generation": 7, "level": 60, "shiny": true, "nature": "Timid", "moves": ["naturesmadness", "discharge", "agility", "electroball"], "pokeball": "cherishball"},
+   {"generation": 7, "level": 60, "shiny": true, "nature": "Timid", moves: ["naturesmadness", "discharge", "agility", "electroball"], "pokeball": "cherishball"},
    {"generation": 7, "level": 60, "shiny": true, "moves": ["thunderbolt", "dazzlinggleam", "voltswitch", "naturesmadness"], "pokeball": "cherishball"},
    {"generation": 8, "level": 70, "shiny": 1, "moves": ["thunderbolt", "quickattack", "bravebird", "taunt"]}
   ],
@@ -77566,7 +77566,7 @@
    "zenheadbutt": ["9M", "8M"]
   },
   "eventData": [
-   {"generation": 8, "level": 50, "nature": "Mild", "ivs": {"hp": 31, "atk": 30, "def": 30, "spa": 31, "spd": 31, "spe": 0}, "moves": ["fleurcannon", "flashcannon", "defensecurl", "rest"], "pokeball": "cherishball"}
+   {"generation": 8, "level": 50, "nature": "Mild", "ivs": {"hp": 31, "atk": 30, "def": 30, "spa": 31, "spd": 31, "spe": 0}, moves: ["fleurcannon", "flashcannon", "defensecurl", "rest"], "pokeball": "cherishball"}
   ],
   "eventOnly": true
  },
@@ -77705,7 +77705,7 @@
   },
   "eventData": [
    {"generation": 7, "level": 40, "shiny": 1, "perfectIVs": 3, "moves": ["charm", "venomdrench", "nastyplot", "poisonjab"], "pokeball": "pokeball"},
-   {"generation": 7, "level": 40, "shiny": true, "nature": "Modest", "perfectIVs": 3, "moves": ["venomdrench", "nastyplot", "poisonjab", "dragonpulse"], "pokeball": "cherishball"},
+   {"generation": 7, "level": 40, "shiny": true, "nature": "Modest", "perfectIVs": 3, moves: ["venomdrench", "nastyplot", "poisonjab", "dragonpulse"], "pokeball": "cherishball"},
    {"generation": 8, "level": 20, "moves": ["helpinghand", "acid", "furyattack", "fellstinger"], "pokeball": "beastball"}
   ],
   "eventOnly": true
@@ -78029,7 +78029,7 @@
   },
   "eventData": [
    {"generation": 7, "level": 50, "moves": ["plasmafists", "thunderpunch", "closecombat", "thunder"], "pokeball": "cherishball"},
-   {"generation": 8, "level": 100, "shiny": true, "nature": "Hasty", "ivs": {"hp": 31, "atk": 31, "def": 30, "spa": 31, "spd": 31, "spe": 31}, "moves": ["plasmafists", "closecombat", "blazekick", "outrage"], "pokeball": "cherishball"}
+   {"generation": 8, "level": 100, "shiny": true, "nature": "Hasty", "ivs": {"hp": 31, "atk": 31, "def": 30, "spa": 31, "spd": 31, "spe": 31}, moves: ["plasmafists", "closecombat", "blazekick", "outrage"], "pokeball": "cherishball"}
   ],
   "eventOnly": true
  },
@@ -78108,7 +78108,7 @@
    "toxic": ["8V", "7M"]
   },
   "eventData": [
-   {"generation": 8, "level": 100, "nature": "Brave", "ivs": {"hp": 31, "atk": 31, "def": 31, "spa": 31, "spd": 31, "spe": 0}, "moves": ["doubleironbash", "hyperbeam", "dynamicpunch", "thunderpunch"], "pokeball": "cherishball"}
+   {"generation": 8, "level": 100, "nature": "Brave", "ivs": {"hp": 31, "atk": 31, "def": 31, "spa": 31, "spd": 31, "spe": 0}, moves: ["doubleironbash", "hyperbeam", "dynamicpunch", "thunderpunch"], "pokeball": "cherishball"}
   ]
  },
  "grookey": {
@@ -80162,7 +80162,7 @@
    "wildcharge": ["9M", "8M"]
   },
   "eventData": [
-   {"generation": 8, "level": 50, "shiny": true, "nature": "Rash", "abilities": ["punkrock"], "moves": ["overdrive", "sludgewave", "boomburst", "risingvoltage"], "pokeball": "cherishball"}
+   {"generation": 8, "level": 50, "shiny": true, "nature": "Rash", "abilities": ["punkrock"], moves: ["overdrive", "sludgewave", "boomburst", "risingvoltage"], "pokeball": "cherishball"}
   ]
  },
  "toxtricitylowkey": {
@@ -80976,7 +80976,7 @@
    "tackle": ["8L1"]
   },
   "eventData": [
-   {"generation": 8, "level": 5, "nature": "Hardy", "isHidden": false, "moves": ["celebrate", "lastresort", "entrainment", "attract"], "pokeball": "cherishball"}
+   {"generation": 8, "level": 5, "nature": "Hardy", "isHidden": false, moves: ["celebrate", "lastresort", "entrainment", "attract"], "pokeball": "cherishball"}
   ]
  },
  "alcremie": {
@@ -81832,7 +81832,7 @@
   },
   "eventData": [
    {"generation": 8, "level": 10, "shiny": 1, "perfectIVs": 3, "moves": ["tackle", "watergun", "protect"], "pokeball": "pokeball"},
-   {"generation": 8, "level": 80, "nature": "Naive", "abilities": ["strongjaw"], "ivs": {"hp": 30, "atk": 31, "def": 31, "spa": 30, "spd": 30, "spe": 31}, "moves": ["fishiousrend", "dragonrush", "icefang", "watergun"], "pokeball": "pokeball"}
+   {"generation": 8, "level": 80, "nature": "Naive", "abilities": ["strongjaw"], "ivs": {"hp": 30, "atk": 31, "def": 31, "spa": 30, "spd": 30, "spe": 31}, moves: ["fishiousrend", "dragonrush", "icefang", "watergun"], "pokeball": "pokeball"}
   ],
   "eventOnly": true
  },
@@ -82177,7 +82177,7 @@
   },
   "eventData": [
    {"generation": 8, "level": 70, "perfectIVs": 3, "moves": ["sacredsword", "swordsdance", "ironhead", "crunch"]},
-   {"generation": 8, "level": 100, "shiny": true, "nature": "Adamant", "ivs": {"hp": 31, "atk": 31, "def": 31, "spa": 30, "spd": 31, "spe": 31}, "moves": ["ironhead", "playrough", "swordsdance", "sacredsword"], "pokeball": "cherishball"}
+   {"generation": 8, "level": 100, "shiny": true, "nature": "Adamant", "ivs": {"hp": 31, "atk": 31, "def": 31, "spa": 30, "spd": 31, "spe": 31}, moves: ["ironhead", "playrough", "swordsdance", "sacredsword"], "pokeball": "cherishball"}
   ],
   "eventOnly": true
  },
@@ -82259,7 +82259,7 @@
   },
   "eventData": [
    {"generation": 8, "level": 70, "perfectIVs": 3, "moves": ["slash", "crunch", "ironhead", "irondefense"]},
-   {"generation": 8, "level": 100, "shiny": true, "nature": "Adamant", "ivs": {"hp": 31, "atk": 31, "def": 31, "spa": 30, "spd": 31, "spe": 31}, "moves": ["ironhead", "closecombat", "irondefense", "wideguard"], "pokeball": "cherishball"}
+   {"generation": 8, "level": 100, "shiny": true, "nature": "Adamant", "ivs": {"hp": 31, "atk": 31, "def": 31, "spa": 30, "spd": 31, "spe": 31}, moves: ["ironhead", "closecombat", "irondefense", "wideguard"], "pokeball": "cherishball"}
   ],
   "eventOnly": true
  },
@@ -82326,7 +82326,7 @@
   },
   "eventData": [
    {"generation": 8, "level": 60, "perfectIVs": 3, "moves": ["crosspoison", "dragonpulse", "flamethrower", "dynamaxcannon"]},
-   {"generation": 8, "level": 100, "shiny": true, "nature": "Timid", "perfectIVs": 6, "moves": ["eternabeam", "dynamaxcannon", "sludgebomb", "flamethrower"], "pokeball": "cherishball"}
+   {"generation": 8, "level": 100, "shiny": true, "nature": "Timid", "perfectIVs": 6, moves: ["eternabeam", "dynamaxcannon", "sludgebomb", "flamethrower"], "pokeball": "cherishball"}
   ],
   "eventOnly": true
  },
@@ -82618,7 +82618,7 @@
    "vinewhip": ["9L12", "8L12"]
   },
   "eventData": [
-   {"generation": 8, "level": 60, "nature": "Sassy", "moves": ["closecombat", "powerwhip", "swagger", "snarl"], "pokeball": "cherishball"}
+   {"generation": 8, "level": 60, "nature": "Sassy", moves: ["closecombat", "powerwhip", "swagger", "snarl"], "pokeball": "cherishball"}
   ],
   "eventOnly": true
  },
@@ -82703,7 +82703,7 @@
    "vinewhip": ["9L12", "8L12"]
   },
   "eventData": [
-   {"generation": 8, "level": 70, "nature": "Adamant", "moves": ["junglehealing", "hammerarm", "powerwhip", "energyball"], "pokeball": "cherishball"}
+   {"generation": 8, "level": 70, "nature": "Adamant", moves: ["junglehealing", "hammerarm", "powerwhip", "energyball"], "pokeball": "cherishball"}
   ],
   "eventOnly": true
  },
@@ -85201,7 +85201,7 @@
    "wrap": ["9L1", "9S0"]
   },
   "eventData": [
-   {"generation": 9, "level": 29, "gender": "M", "nature": "Quirky", "ivs": {"hp": 30, "atk": 30, "def": 30, "spa": 30, "spd": 30, "spe": 30}, "moves": ["irontail", "headbutt", "wrap", "sandstorm"]}
+   {"generation": 9, "level": 29, "gender": "M", "nature": "Quirky", "ivs": {"hp": 30, "atk": 30, "def": 30, "spa": 30, "spd": 30, "spe": 30}, moves: ["irontail", "headbutt", "wrap", "sandstorm"]}
   ]
  },
  "tandemaus": {
@@ -85620,7 +85620,7 @@
    "waterpulse": ["9M", "9L17"]
   },
   "eventData": [
-   {"generation": 9, "level": 57, "gender": "M", "nature": "Quiet", "ivs": {"hp": 30, "atk": 30, "def": 30, "spa": 30, "spd": 30, "spe": 30}, "moves": ["muddywater", "icywind", "taunt", "dragonpulse"]}
+   {"generation": 9, "level": 57, "gender": "M", "nature": "Quiet", "ivs": {"hp": 30, "atk": 30, "def": 30, "spa": 30, "spd": 30, "spe": 30}, moves: ["muddywater", "icywind", "taunt", "dragonpulse"]}
   ]
  },
  "cyclizar": {
@@ -85998,7 +85998,7 @@
    "wingattack": ["9L1", "9S0"]
   },
   "eventData": [
-   {"generation": 9, "level": 20, "gender": "F", "nature": "Jolly", "ivs": {"hp": 30, "atk": 30, "def": 30, "spa": 30, "spd": 30, "spe": 30}, "isHidden": true, "moves": ["rockthrow", "wingattack", "pluck", "torment"]}
+   {"generation": 9, "level": 20, "gender": "F", "nature": "Jolly", "ivs": {"hp": 30, "atk": 30, "def": 30, "spa": 30, "spd": 30, "spe": 30}, "isHidden": true, moves: ["rockthrow", "wingattack", "pluck", "torment"]}
   ]
  },
  "squawkabilly": {
@@ -86154,7 +86154,7 @@
    "xscissor": ["9M", "9L29"]
   },
   "eventData": [
-   {"generation": 9, "level": 16, "gender": "F", "nature": "Gentle", "ivs": {"hp": 30, "atk": 30, "def": 30, "spa": 30, "spd": 30, "spe": 30}, "abilities": ["angershell"], "moves": ["visegrip", "rocksmash", "block", "rocktomb"]}
+   {"generation": 9, "level": 16, "gender": "F", "nature": "Gentle", "ivs": {"hp": 30, "atk": 30, "def": 30, "spa": 30, "spd": 30, "spe": 30}, "abilities": ["angershell"], moves: ["visegrip", "rocksmash", "block", "rocktomb"]}
   ]
  },
  "nacli": {
@@ -86296,7 +86296,7 @@
    "zenheadbutt": ["9M"]
   },
   "eventData": [
-   {"generation": 9, "level": 50, "gender": "M", "nature": "Careful", "ivs": {"hp": 31, "atk": 31, "def": 31, "spa": 22, "spd": 31, "spe": 31}, "moves": ["saltcure", "recover", "wideguard", "protect"], "pokeball": "cherishball"}
+   {"generation": 9, "level": 50, "gender": "M", "nature": "Careful", "ivs": {"hp": 31, "atk": 31, "def": 31, "spa": 22, "spd": 31, "spe": 31}, moves: ["saltcure", "recover", "wideguard", "protect"], "pokeball": "cherishball"}
   ]
  },
  "glimmet": {
@@ -86778,24 +86778,25 @@
    "astonish": ["9L1", "9S0"],
    "confuseray": ["9M"],
    "endure": ["9M"],
-   "hex": ["9M"],
+   "hex": ["9M", "9S1"],
    "lightscreen": ["9M"],
    "nastyplot": ["9M"],
    "nightshade": ["9M"],
-   "powergem": ["9M"],
+   "powergem": ["9M", "9S1"],
    "protect": ["9M"],
    "reflect": ["9M"],
    "rest": ["9M"],
-   "shadowball": ["9M"],
+   "shadowball": ["9M", "9S1"],
    "sleeptalk": ["9M"],
    "substitute": ["9M"],
    "tackle": ["9L1", "9S0"],
-   "takedown": ["9M"],
+   "takedown": ["9M", "9S1"],
    "terablast": ["9M"],
    "thief": ["9M"]
   },
   "eventData": [
-   {"generation": 9, "level": 5, "moves": ["astonish", "tackle"]}
+   {"generation": 9, "level": 5, "moves": ["astonish", "tackle"]},
+   {"generation": 9, "level": 75, "shiny": 1, "perfectIVs": 4, "moves": ["takedown", "shadowball", "hex", "powergem"]}
   ],
   "eventOnly": true
  },
@@ -86901,7 +86902,7 @@
    "zenheadbutt": ["9M"]
   },
   "eventData": [
-   {"generation": 9, "level": 45, "nature": "Naughty", "ivs": {"hp": 30, "atk": 30, "def": 30, "spa": 30, "spd": 30, "spe": 30}, "moves": ["rapidspin", "brickbreak", "knockoff", "stompingtantrum"]},
+   {"generation": 9, "level": 45, "nature": "Naughty", "ivs": {"hp": 30, "atk": 30, "def": 30, "spa": 30, "spd": 30, "spe": 30}, moves: ["rapidspin", "brickbreak", "knockoff", "stompingtantrum"]},
    {"generation": 9, "level": 57, "shiny": 1, "moves": ["stompingtantrum", "knockoff", "earthquake", "gigaimpact"]}
   ],
   "eventOnly": true
@@ -87336,7 +87337,7 @@
    "zenheadbutt": ["9M"]
   },
   "eventData": [
-   {"generation": 9, "level": 45, "nature": "Naughty", "ivs": {"hp": 30, "atk": 30, "def": 30, "spa": 30, "spd": 30, "spe": 30}, "moves": ["rapidspin", "ironhead", "knockoff", "stompingtantrum"]},
+   {"generation": 9, "level": 45, "nature": "Naughty", "ivs": {"hp": 30, "atk": 30, "def": 30, "spa": 30, "spd": 30, "spe": 30}, moves: ["rapidspin", "ironhead", "knockoff", "stompingtantrum"]},
    {"generation": 9, "level": 57, "shiny": 1, "moves": ["knockoff", "earthquake", "heavyslam", "stompingtantrum"]}
   ]
  },
@@ -88001,8 +88002,8 @@
    "zenheadbutt": ["9M"]
   },
   "eventData": [
-   {"generation": 9, "level": 68, "nature": "Quirky", "ivs": {"hp": 31, "atk": 31, "def": 28, "spa": 31, "spd": 28, "spe": 31}, "moves": ["flamethrower", "collisioncourse", "endure", "terablast"], "pokeball": "pokeball"},
-   {"generation": 9, "level": 72, "nature": "Adamant", "ivs": {"hp": 25, "atk": 31, "def": 25, "spa": 31, "spd": 25, "spe": 31}, "moves": ["gigaimpact", "bulkup", "collisioncourse", "flamethrower"]}
+   {"generation": 9, "level": 68, "nature": "Quirky", "ivs": {"hp": 31, "atk": 31, "def": 28, "spa": 31, "spd": 28, "spe": 31}, moves: ["flamethrower", "collisioncourse", "endure", "terablast"], "pokeball": "pokeball"},
+   {"generation": 9, "level": 72, "nature": "Adamant", "ivs": {"hp": 25, "atk": 31, "def": 25, "spa": 31, "spd": 25, "spe": 31}, moves: ["gigaimpact", "bulkup", "collisioncourse", "flamethrower"]}
   ],
   "eventOnly": true
  },
@@ -88064,8 +88065,8 @@
    "zenheadbutt": ["9M"]
   },
   "eventData": [
-   {"generation": 9, "level": 68, "nature": "Quirky", "ivs": {"hp": 31, "atk": 31, "def": 28, "spa": 31, "spd": 28, "spe": 31}, "moves": ["powergem", "electrodrift", "endure", "terablast"], "pokeball": "pokeball"},
-   {"generation": 9, "level": 72, "nature": "Modest", "ivs": {"hp": 25, "atk": 31, "def": 25, "spa": 31, "spd": 25, "spe": 31}, "moves": ["hyperbeam", "charge", "electrodrift", "powergem"]}
+   {"generation": 9, "level": 68, "nature": "Quirky", "ivs": {"hp": 31, "atk": 31, "def": 28, "spa": 31, "spd": 28, "spe": 31}, moves: ["powergem", "electrodrift", "endure", "terablast"], "pokeball": "pokeball"},
+   {"generation": 9, "level": 72, "nature": "Modest", "ivs": {"hp": 25, "atk": 31, "def": 25, "spa": 31, "spd": 25, "spe": 31}, moves: ["hyperbeam", "charge", "electrodrift", "powergem"]}
   ],
   "eventOnly": true
  },
@@ -94163,7 +94164,6 @@
  "hemogoblin": {
   "learnset": {
    "bitterblade": ["9L1"],
-   "boomburst": ["9L1"],
    "bulkup": ["9M"],
    "doubleedge": ["9L1"],
    "drainingkiss": ["9M"],
@@ -94171,14 +94171,12 @@
    "explosion": ["9L1"],
    "extremespeed": ["9L1"],
    "facade": ["9M"],
-   "fierydance": ["9L1"],
    "fireblast": ["9M"],
    "firelash": ["9L1"],
    "flamethrower": ["9M"],
    "flareblitz": ["9M"],
    "helpinghand": ["9M"],
    "knockoff": ["9L1"],
-   "lavaplume": ["9L1"],
    "moonblast": ["9L1"],
    "moonlight": ["9L1"],
    "protect": ["9M"],
@@ -94186,14 +94184,12 @@
    "psyshock": ["9M"],
    "rest": ["9M"],
    "sleeptalk": ["9M"],
-   "spikes": ["9M"],
    "substitute": ["9M"],
    "takedown": ["9M"],
    "taunt": ["9M"],
    "terablast": ["9M"],
    "thunder": ["9M"],
    "thunderbolt": ["9M"],
-   "voltswitch": ["9M"],
    "wildcharge": ["9M"],
    "willowisp": ["9M"],
    "zenheadbutt": ["9M"]
@@ -94201,9 +94197,9 @@
  },
  "pokestarsmeargle": {
   "eventData": [
-   {"generation": 5, "level": 60, "gender": "M", "abilities": ["owntempo"], "moves": ["mindreader", "guillotine", "tailwhip", "gastroacid"]},
-   {"generation": 5, "level": 30, "gender": "M", "abilities": ["owntempo"], "moves": ["outrage", "magiccoat"]},
-   {"generation": 5, "level": 99, "gender": "M", "abilities": ["owntempo"], "moves": ["nastyplot", "sheercold", "attract", "shadowball"]}
+   {"generation": 5, "level": 60, "gender": "M", "abilities": ["owntempo"], moves: ["mindreader", "guillotine", "tailwhip", "gastroacid"]},
+   {"generation": 5, "level": 30, "gender": "M", "abilities": ["owntempo"], moves: ["outrage", "magiccoat"]},
+   {"generation": 5, "level": 99, "gender": "M", "abilities": ["owntempo"], moves: ["nastyplot", "sheercold", "attract", "shadowball"]}
   ]
  },
  "pokestarufo": {
@@ -94249,18 +94245,18 @@
  },
  "pokestarhumanoid": {
   "eventData": [
-   {"generation": 5, "level": 20, "gender": "M", "moves": ["scratch", "shadowclaw", "acid"]},
-   {"generation": 5, "level": 30, "gender": "M", "moves": ["darkpulse", "shadowclaw", "slash"]},
-   {"generation": 5, "level": 20, "gender": "F", "moves": ["acid", "nightslash"]},
-   {"generation": 5, "level": 20, "gender": "M", "moves": ["acid", "doubleedge"]},
-   {"generation": 5, "level": 20, "gender": "F", "moves": ["acid", "rockslide"]},
-   {"generation": 5, "level": 20, "gender": "M", "moves": ["acid", "thunderpunch"]},
-   {"generation": 5, "level": 20, "gender": "F", "moves": ["acid", "icepunch"]},
-   {"generation": 5, "level": 40, "gender": "F", "moves": ["explosion", "selfdestruct"]},
-   {"generation": 5, "level": 40, "gender": "F", "moves": ["shadowclaw", "scratch"]},
-   {"generation": 5, "level": 40, "gender": "M", "moves": ["nightslash", "scratch"]},
-   {"generation": 5, "level": 40, "gender": "M", "moves": ["doubleedge", "scratch"]},
-   {"generation": 5, "level": 40, "gender": "F", "moves": ["rockslide", "scratch"]}
+   {"generation": 5, "level": 20, "gender": "M", moves: ["scratch", "shadowclaw", "acid"]},
+   {"generation": 5, "level": 30, "gender": "M", moves: ["darkpulse", "shadowclaw", "slash"]},
+   {"generation": 5, "level": 20, "gender": "F", moves: ["acid", "nightslash"]},
+   {"generation": 5, "level": 20, "gender": "M", moves: ["acid", "doubleedge"]},
+   {"generation": 5, "level": 20, "gender": "F", moves: ["acid", "rockslide"]},
+   {"generation": 5, "level": 20, "gender": "M", moves: ["acid", "thunderpunch"]},
+   {"generation": 5, "level": 20, "gender": "F", moves: ["acid", "icepunch"]},
+   {"generation": 5, "level": 40, "gender": "F", moves: ["explosion", "selfdestruct"]},
+   {"generation": 5, "level": 40, "gender": "F", moves: ["shadowclaw", "scratch"]},
+   {"generation": 5, "level": 40, "gender": "M", moves: ["nightslash", "scratch"]},
+   {"generation": 5, "level": 40, "gender": "M", moves: ["doubleedge", "scratch"]},
+   {"generation": 5, "level": 40, "gender": "F", moves: ["rockslide", "scratch"]}
   ]
  },
  "pokestarmonster": {
