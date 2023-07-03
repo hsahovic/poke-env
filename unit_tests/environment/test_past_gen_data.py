@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from poke_env.data import GenData
 from poke_env.environment import (
     Battle,

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """This module defines a player class exposing the Open AI Gym API with utility functions.
 """
 from abc import ABC
