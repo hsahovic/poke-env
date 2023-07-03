@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """This module defines the TeambuilderPokemon class, which is used as an intermediate
 format to specify pokemon builds in teambuilders custom classes.
 """

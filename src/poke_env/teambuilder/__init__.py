@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """poke_env.teambuilder module init.
 """
 from poke_env.teambuilder import constant_teambuilder, teambuilder

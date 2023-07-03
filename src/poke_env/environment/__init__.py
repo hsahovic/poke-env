@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from poke_env.environment import abstract_battle
 from poke_env.environment import battle
 from poke_env.environment import double_battle

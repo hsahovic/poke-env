@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """poke_env module init.
 """
 import logging

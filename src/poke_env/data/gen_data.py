@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from functools import lru_cache
 import orjson  # pyre-ignore[21]
 import os

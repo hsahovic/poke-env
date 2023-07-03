@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from poke_env.player import RandomPlayer
 from poke_env import PlayerConfiguration
 import asyncio
