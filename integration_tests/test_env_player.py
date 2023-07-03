@@ -10,6 +10,7 @@ from poke_env.player import (
     Gen6EnvSinglePlayer,
     Gen7EnvSinglePlayer,
     Gen8EnvSinglePlayer,
+    Gen9EnvSinglePlayer,
     RandomPlayer,
 )
 
@@ -59,6 +60,17 @@ class RandomGen7EnvPlayer(Gen7EnvSinglePlayer):
 
 
 class RandomGen8EnvPlayer(Gen8EnvSinglePlayer):
+    def calc_reward(self, last_battle, current_battle) -> float:
+        return 0.0
+
+    def describe_embedding(self) -> Space:
+        return Box(np.array([0]), np.array([1]), dtype=int)
+
+    def embed_battle(self, battle):
+        return np.array([0])
+
+
+class RandomGen9EnvPlayer(Gen9EnvSinglePlayer):
     def calc_reward(self, last_battle, current_battle) -> float:
         return 0.0
 
@@ -128,10 +140,32 @@ def test_random_gym_players_gen8():
     play_function(env_player, 3)
 
 
+@pytest.mark.timeout(30)
+def test_random_gym_players_gen9():
+    random_player = RandomPlayer(battle_format="gen9randombattle", log_level=25)
+    env_player = RandomGen9EnvPlayer(
+        log_level=25, opponent=random_player, start_challenging=False
+    )
+    env_player.start_challenging(3)
+    play_function(env_player, 3)
+
+
 @pytest.mark.timeout(60)
 def test_two_successive_calls_gen8():
     random_player = RandomPlayer(battle_format="gen8randombattle", log_level=25)
     env_player = RandomGen8EnvPlayer(
+        log_level=25, opponent=random_player, start_challenging=False
+    )
+    env_player.start_challenging(2)
+    play_function(env_player, 2)
+    env_player.start_challenging(2)
+    play_function(env_player, 2)
+
+
+@pytest.mark.timeout(60)
+def test_two_successive_calls_gen9():
+    random_player = RandomPlayer(battle_format="gen9randombattle", log_level=25)
+    env_player = RandomGen9EnvPlayer(
         log_level=25, opponent=random_player, start_challenging=False
     )
     env_player.start_challenging(2)
@@ -172,3 +206,9 @@ def test_check_envs():
     )
     check_env(env_player_gen8)
     env_player_gen8.close()
+    random_player = RandomPlayer(battle_format="gen9randombattle", log_level=25)
+    env_player_gen9 = RandomGen9EnvPlayer(
+        log_level=25, opponent=random_player, start_challenging=True
+    )
+    check_env(env_player_gen9)
+    env_player_gen9.close()

@@ -37,6 +37,7 @@ from poke_env.player.env_player import (
     Gen6EnvSinglePlayer,
     Gen7EnvSinglePlayer,
     Gen8EnvSinglePlayer,
+    Gen9EnvSinglePlayer,
 )
 
 __all__ = [
@@ -56,6 +57,7 @@ __all__ = [
     "Gen6EnvSinglePlayer",
     "Gen7EnvSinglePlayer",
     "Gen8EnvSinglePlayer",
+    "Gen9EnvSinglePlayer",
     "POKE_LOOP",
     "OpenAIGymEnv",
     "PlayerNetwork",
