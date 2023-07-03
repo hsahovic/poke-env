@@ -24,6 +24,9 @@ class GenData:
         self.type_chart = self.load_type_chart(gen)
         self.learnset = self.load_learnset()
 
+    def __deepcopy__(self, memodict=None) -> "GenData":
+        return self
+
     def load_moves(self, gen: int) -> Dict[str, Any]:
         with open(
             os.path.join(self._static_files_root, "moves", f"gen{gen}moves.json")
