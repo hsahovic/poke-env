@@ -79,6 +79,8 @@ def fetch_and_clean_ps_data(url: str, deserialize: bool = True):
     # Correct non-quoted H keys
 
     data = re.sub(r"H: ", r'"H": ', data)
+    data = re.sub(r", moves:", r', "moves":', data)
+    data = re.sub(r", nature:", r', "nature":', data)
 
     try:
         if deserialize:
