@@ -20,6 +20,7 @@ from poke_env.player import (
     Gen6EnvSinglePlayer,
     Gen7EnvSinglePlayer,
     Gen8EnvSinglePlayer,
+    Gen9EnvSinglePlayer,
     RandomPlayer,
 )
 from poke_env.player.openai_api import _AsyncPlayer
@@ -288,20 +289,22 @@ def test_set_opponent():
     new_callable=unittest.mock.PropertyMock,
 )
 def test_action_to_move(z_moves_mock):
-    for PlayerClass, (has_megas, has_z_moves, has_dynamax) in zip(
+    for PlayerClass, (has_megas, has_z_moves, has_dynamax, has_tera) in zip(
         [
             Gen4EnvSinglePlayer,
             Gen5EnvSinglePlayer,
             Gen6EnvSinglePlayer,
             Gen7EnvSinglePlayer,
             Gen8EnvSinglePlayer,
+            Gen9EnvSinglePlayer,
         ],
         [
-            (False, False, False),
-            (False, False, False),
-            (True, False, False),
-            (True, True, False),
-            (True, True, True),
+            (False, False, False, False),
+            (False, False, False, False),
+            (True, False, False, False),
+            (True, True, False, False),
+            (True, True, True, False),
+            (True, True, True, True),
         ],
     ):
 
@@ -328,7 +331,9 @@ def test_action_to_move(z_moves_mock):
             p.action_to_move(
                 4
                 + (4 * int(has_megas))
-                + (4 * int(has_z_moves) + (4 * int(has_dynamax))),
+                + (4 * int(has_z_moves))
+                + (4 * int(has_dynamax))
+                + (4 * int(has_tera)),
                 battle,
             ).message
             == "/choose switch charizard"
@@ -341,7 +346,6 @@ def test_action_to_move(z_moves_mock):
                 p.action_to_move(4 + (4 * int(has_z_moves)), battle).message
                 == "/choose move flamethrower mega"
             )
-            battle._can_mega_evolve = False
         if has_z_moves:
             battle._can_z_move = True
             active_pokemon = Pokemon(species="charizard", gen=8)
@@ -357,4 +361,10 @@ def test_action_to_move(z_moves_mock):
             assert (
                 p.action_to_move(12, battle).message
                 == "/choose move flamethrower dynamax"
+            )
+        if has_tera:
+            battle._can_terastallize = True
+            assert (
+                p.action_to_move(16, battle).message
+                == "/choose move flamethrower terastallize"
             )
