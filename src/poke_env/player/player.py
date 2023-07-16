@@ -11,6 +11,7 @@ from typing import Awaitable, Dict, List, Optional, Union
 
 import orjson  # pyre-ignore
 
+from poke_env.concurrency import create_in_poke_loop, handle_threaded_coroutines
 from poke_env.data import GenData, to_id_str
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.battle import Battle
@@ -23,12 +24,12 @@ from poke_env.player.battle_order import (
     DefaultBattleOrder,
     DoubleBattleOrder,
 )
-from poke_env.player.player_network_interface import PSClient
-from poke_env.player_configuration import (
+from poke_env.ps_client import PSClient
+from poke_env.ps_client.account_configuration import (
     AccountConfiguration,
     _create_account_configuration_from_player,
 )
-from poke_env.server_configuration import (
+from poke_env.ps_client.server_configuration import (
     LocalhostServerConfiguration,
     ServerConfiguration,
 )
@@ -126,14 +127,14 @@ class Player(PSClient, ABC):
         self._start_timer_on_battle_start: bool = start_timer_on_battle_start
 
         self._battles: Dict[str, AbstractBattle] = {}
-        self._battle_semaphore: Semaphore = self._create_class(Semaphore, 0)
+        self._battle_semaphore: Semaphore = create_in_poke_loop(Semaphore, 0)
 
-        self._battle_start_condition: Condition = self._create_class(Condition)
-        self._battle_count_queue: Queue = self._create_class(
+        self._battle_start_condition: Condition = create_in_poke_loop(Condition)
+        self._battle_count_queue: Queue = create_in_poke_loop(
             Queue, max_concurrent_battles
         )
-        self._battle_end_condition: Condition = self._create_class(Condition)
-        self._challenge_queue: Queue = self._create_class(Queue)
+        self._battle_end_condition: Condition = create_in_poke_loop(Condition)
+        self._challenge_queue: Queue = create_in_poke_loop(Queue)
 
         if isinstance(team, Teambuilder):
             self._team = team
@@ -402,7 +403,7 @@ class Player(PSClient, ABC):
         :param n_challenges: Number of challenges that will be accepted
         :type n_challenges: int
         """
-        await self._handle_threaded_coroutines(
+        await handle_threaded_coroutines(
             self._accept_challenges(opponent, n_challenges)
         )
 
@@ -608,7 +609,7 @@ class Player(PSClient, ABC):
         :param n_games: Number of battles that will be played
         :type n_games: int
         """
-        await self._handle_threaded_coroutines(self._ladder(n_games))
+        await handle_threaded_coroutines(self._ladder(n_games))
 
     async def _ladder(self, n_games):
         await self._logged_in.wait()
@@ -639,9 +640,7 @@ class Player(PSClient, ABC):
         :param n_battles: The number of games to play. Defaults to 1.
         :type n_battles: int
         """
-        await self._handle_threaded_coroutines(
-            self._battle_against(opponent, n_battles)
-        )
+        await handle_threaded_coroutines(self._battle_against(opponent, n_battles))
 
     async def _battle_against(self, opponent: "Player", n_battles: int) -> None:
         await asyncio.gather(
@@ -670,7 +669,7 @@ class Player(PSClient, ABC):
         :param to_wait: Optional event to wait before launching challenges.
         :type to_wait: Event, optional.
         """
-        await self._handle_threaded_coroutines(
+        await handle_threaded_coroutines(
             self._send_challenges(opponent, n_challenges, to_wait)
         )
 

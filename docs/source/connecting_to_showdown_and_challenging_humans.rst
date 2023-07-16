@@ -12,7 +12,7 @@ Connecting your agent to showdown
 
 To connect an agent to a showdown server hosted online, you must specify a matching server configuration.
 
-A configuration pointing towards `play.pokemonshowdown.com <https://play.pokemonshowdown.com/>`__ is available in ``poke_env.server_configuration`` and can be used directly. To specify a different server, see :ref:`configuring a showdown server`.
+A configuration pointing towards `play.pokemonshowdown.com <https://play.pokemonshowdown.com/>`__ is available in ``poke_env.ps_client.server_configuration`` and can be used directly. To specify a different server, see :ref:`configuring a showdown server`.
 
 To connect to `play.pokemonshowdown.com <https://play.pokemonshowdown.com/>`__, you also need an account for your agent to use. The following snippets assumes that the account ``bot_username`` exists, and can be accessed with ``bot_password``.
 

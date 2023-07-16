@@ -13,12 +13,12 @@ import numpy as np  # pyre-ignore
 from gym.core import Env  # pyre-ignore
 from gym.spaces import Discrete, Space  # pyre-ignore
 
+from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.player.battle_order import BattleOrder, ForfeitBattleOrder
-from poke_env.player.internals import POKE_LOOP
 from poke_env.player.player import Player
-from poke_env.player_configuration import AccountConfiguration
-from poke_env.server_configuration import (
+from poke_env.ps_client import AccountConfiguration
+from poke_env.ps_client.server_configuration import (
     LocalhostServerConfiguration,
     ServerConfiguration,
 )
@@ -64,8 +64,8 @@ class _AsyncPlayer(Player):
         self.__class__.__name__ = username
         super().__init__(**kwargs)
         self.__class__.__name__ = "_AsyncPlayer"
-        self._observations = _AsyncQueue(self._create_class(asyncio.Queue, 1))
-        self._actions = _AsyncQueue(self._create_class(asyncio.Queue, 1))
+        self._observations = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
+        self._actions = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
         self.current_battle: Optional[AbstractBattle] = None
         self._user_funcs: OpenAIGymEnv = user_funcs
 

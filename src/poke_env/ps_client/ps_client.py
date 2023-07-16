@@ -3,7 +3,6 @@
 import asyncio
 import json
 import logging
-from abc import ABC, abstractmethod
 from asyncio import CancelledError, Event, Lock, create_task, sleep
 from logging import Logger
 from time import perf_counter
@@ -12,13 +11,17 @@ from typing import List, Optional
 import requests
 import websockets  # pyre-ignore
 
+from poke_env.concurrency import (
+    POKE_LOOP,
+    create_in_poke_loop,
+    handle_threaded_coroutines,
+)
 from poke_env.exceptions import ShowdownException
-from poke_env.player.internals import POKE_LOOP
 from poke_env.ps_client.account_configuration import AccountConfiguration
 from poke_env.ps_client.server_configuration import ServerConfiguration
 
 
-class PSClient(ABC):
+class PSClient:
     """
     Pokemon Showdown client.
 
@@ -68,8 +71,8 @@ class PSClient(ABC):
 
         self._avatar = avatar
 
-        self._logged_in: Event = self._create_class(Event)
-        self._sending_lock = self._create_class(Lock)
+        self._logged_in: Event = create_in_poke_loop(Event)
+        self._sending_lock = create_in_poke_loop(Lock)
 
         self._websocket: websockets.client.WebSocketClientProtocol  # pyre-ignore
         self._logger: Logger = self._create_logger(log_level)
@@ -78,30 +81,6 @@ class PSClient(ABC):
             self._listening_coroutine = asyncio.run_coroutine_threadsafe(
                 self.listen(), POKE_LOOP
             )
-
-    @staticmethod
-    def _create_class(cls, *args, **kwargs):  # pragma: no cover
-        try:
-            loop = asyncio.get_running_loop()
-        except RuntimeError:
-            # asyncio.get_running_loop raised exception so no loop is running
-            loop = None
-        if loop == POKE_LOOP:
-            return cls(*args, **kwargs)
-        else:
-            return asyncio.run_coroutine_threadsafe(
-                PSClient._create_class_async(cls, *args, **kwargs), POKE_LOOP
-            ).result()
-
-    @staticmethod
-    async def _create_class_async(cls, *args, **kwargs):
-        return cls(*args, **kwargs)
-
-    @staticmethod
-    async def _handle_threaded_coroutines(coro):
-        task = asyncio.run_coroutine_threadsafe(coro, POKE_LOOP)
-        await asyncio.wrap_future(task)
-        return task.result()
 
     async def _accept_challenge(self, username: str) -> None:
         assert (
@@ -310,7 +289,7 @@ class PSClient(ABC):
             await self.send_message("/utm null")
 
     async def stop_listening(self) -> None:  # pragma: no cover
-        await self._handle_threaded_coroutines(self._stop_listening())
+        await handle_threaded_coroutines(self._stop_listening())
 
     async def wait_for_login(
         self, checking_interval: float = 0.001, wait_for: int = 5
@@ -321,33 +300,6 @@ class PSClient(ABC):
             if self.logged_in:
                 return
         assert self.logged_in, f"Expected player {self._username} to be logged in."
-
-    @abstractmethod
-    async def _handle_battle_message(
-        self, split_messages: List[List[str]]
-    ) -> None:  # pragma: no cover
-        """Abstract method.
-
-        Implementation should redirect messages to corresponding battles.
-        """
-
-    @abstractmethod
-    async def _handle_challenge_request(
-        self, split_message: List[str]
-    ) -> None:  # pragma: no cover
-        """Abstract method.
-
-        Implementation should handle individual challenge.
-        """
-
-    @abstractmethod
-    async def _update_challenges(
-        self, split_message: List[str]
-    ) -> None:  # pragma: no cover
-        """Abstract method.
-
-        Implementation should keep track of current challenges.
-        """
 
     @property
     def account_configuration(self) -> AccountConfiguration:
