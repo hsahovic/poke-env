@@ -3157,7 +3157,7 @@
         "types": [
             "Fighting"
         ],
-        "weightkg": 15
+        "weightkg": 42
     },
     "fawnifer": {
         "abilities": {
@@ -11860,7 +11860,7 @@
             "Fighting",
             "Water"
         ],
-        "weightkg": 88.4
+        "weightkg": 110
     },
     "taurospaldeablaze": {
         "abilities": {
@@ -11889,7 +11889,7 @@
             "Fighting",
             "Fire"
         ],
-        "weightkg": 88.4
+        "weightkg": 85
     },
     "taurospaldeacombat": {
         "abilities": {
@@ -11917,7 +11917,7 @@
         "types": [
             "Fighting"
         ],
-        "weightkg": 88.4
+        "weightkg": 115
     },
     "teddiursa": {
         "abilities": {
@@ -13304,7 +13304,7 @@
             "Poison",
             "Ground"
         ],
-        "weightkg": 8.5
+        "weightkg": 11
     },
     "xatu": {
         "abilities": {
