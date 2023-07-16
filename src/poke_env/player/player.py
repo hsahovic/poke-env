@@ -23,10 +23,10 @@ from poke_env.player.battle_order import (
     DefaultBattleOrder,
     DoubleBattleOrder,
 )
-from poke_env.player.player_network_interface import PlayerNetwork
+from poke_env.player.player_network_interface import PSClient
 from poke_env.player_configuration import (
-    PlayerConfiguration,
-    _create_player_configuration_from_player,
+    AccountConfiguration,
+    _create_account_configuration_from_player,
 )
 from poke_env.server_configuration import (
     LocalhostServerConfiguration,
@@ -36,7 +36,7 @@ from poke_env.teambuilder.constant_teambuilder import ConstantTeambuilder
 from poke_env.teambuilder.teambuilder import Teambuilder
 
 
-class Player(PlayerNetwork, ABC):
+class Player(PSClient, ABC):
     """
     Base class for players.
     """
@@ -49,7 +49,7 @@ class Player(PlayerNetwork, ABC):
 
     def __init__(
         self,
-        player_configuration: Optional[PlayerConfiguration] = None,
+        account_configuration: Optional[AccountConfiguration] = None,
         *,
         avatar: Optional[int] = None,
         battle_format: str = "gen9randombattle",
@@ -64,10 +64,10 @@ class Player(PlayerNetwork, ABC):
         team: Optional[Union[str, Teambuilder]] = None,
     ) -> None:
         """
-        :param player_configuration: Player configuration. If empty, defaults to an
+        :param account_configuration: Player configuration. If empty, defaults to an
             automatically generated username with no password. This option must be set
             if the server configuration requires authentication.
-        :type player_configuration: PlayerConfiguration, optional
+        :type account_configuration: AccountConfiguration, optional
         :param avatar: Player avatar id. Optional.
         :type avatar: int, optional
         :param battle_format: Name of the battle format this player plays. Defaults to
@@ -104,14 +104,14 @@ class Player(PlayerNetwork, ABC):
             Defaults to None.
         :type team: str or Teambuilder, optional
         """
-        if player_configuration is None:
-            player_configuration = _create_player_configuration_from_player(self)
+        if account_configuration is None:
+            account_configuration = _create_account_configuration_from_player(self)
 
         if server_configuration is None:
             server_configuration = LocalhostServerConfiguration
 
         super(Player, self).__init__(
-            player_configuration=player_configuration,
+            account_configuration=account_configuration,
             avatar=avatar,
             log_level=log_level,
             server_configuration=server_configuration,
@@ -206,7 +206,7 @@ class Player(PlayerNetwork, ABC):
                     self._battles[battle_tag] = battle
 
                 if self._start_timer_on_battle_start:
-                    await self._send_message("/timer on", battle.battle_tag)
+                    await self.send_message("/timer on", battle.battle_tag)
 
                 return battle
         else:
@@ -358,7 +358,7 @@ class Player(PlayerNetwork, ABC):
                 message = await message
             message = message.message
 
-        await self._send_message(message, battle.battle_tag)
+        await self.send_message(message, battle.battle_tag)
 
     async def _handle_challenge_request(self, split_message: List[str]) -> None:
         """Handles an individual challenge."""
@@ -616,7 +616,7 @@ class Player(PlayerNetwork, ABC):
 
         for _ in range(n_games):
             async with self._battle_start_condition:
-                await self._search_ladder_game(self._format)
+                await self.search_ladder_game(self._format)
                 await self._battle_start_condition.wait()
                 while self._battle_count_queue.full():
                     async with self._battle_end_condition:

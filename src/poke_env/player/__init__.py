@@ -1,13 +1,6 @@
 """poke_env.player module init.
 """
-from poke_env.player import (
-    env_player,
-    openai_api,
-    player,
-    player_network_interface,
-    random_player,
-    utils,
-)
+from poke_env.player import env_player, openai_api, player, random_player, utils
 from poke_env.player.baselines import MaxBasePowerPlayer, SimpleHeuristicsPlayer
 from poke_env.player.battle_order import (
     BattleOrder,
@@ -32,7 +25,7 @@ from poke_env.player.openai_api import (
     wrap_for_old_gym_api,
 )
 from poke_env.player.player import Player
-from poke_env.player.player_network_interface import PlayerNetwork
+from poke_env.player.player_network_interface import PSClient
 from poke_env.player.random_player import RandomPlayer
 from poke_env.player.utils import (
     background_cross_evaluate,
@@ -45,7 +38,7 @@ __all__ = [
     "env_player",
     "openai_api",
     "player",
-    "player_network_interface",
+    "ps_client",
     "random_player",
     "utils",
     "ActionType",
@@ -61,7 +54,7 @@ __all__ = [
     "Gen9EnvSinglePlayer",
     "POKE_LOOP",
     "OpenAIGymEnv",
-    "PlayerNetwork",
+    "PSClient",
     "Player",
     "RandomPlayer",
     "cross_evaluate",

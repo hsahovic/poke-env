@@ -6,15 +6,15 @@ from unittest.mock import AsyncMock, PropertyMock, patch
 import pytest
 import websockets
 
-from poke_env import PlayerConfiguration, ServerConfiguration
-from poke_env.player import PlayerNetwork
+from poke_env import AccountConfiguration, ServerConfiguration
+from poke_env.player import PSClient
 
-player_configuration = PlayerConfiguration("username", "password")
+account_configuration = AccountConfiguration("username", "password")
 requests_tuple = namedtuple("requests_tuple", ["text"])
 server_configuration = ServerConfiguration("server.url", "auth.url")
 
 
-class PlayerNetworkChild(PlayerNetwork):
+class PSClientChild(PSClient):
     async def _handle_battle_message(self, message):
         pass
 
@@ -26,8 +26,8 @@ class PlayerNetworkChild(PlayerNetwork):
 
 
 def test_init_and_properties():
-    player = PlayerNetworkChild(
-        player_configuration=player_configuration,
+    player = PSClientChild(
+        account_configuration=account_configuration,
         server_configuration=server_configuration,
         start_listening=False,
     )
@@ -36,9 +36,9 @@ def test_init_and_properties():
     assert player.websocket_url == "ws://server.url/showdown/websocket"
 
 
-def test_create_player_logger():
-    player = PlayerNetworkChild(
-        player_configuration=player_configuration,
+def test_create_logger():
+    player = PSClientChild(
+        account_configuration=account_configuration,
         server_configuration=server_configuration,
         start_listening=False,
         log_level=38,
@@ -47,7 +47,7 @@ def test_create_player_logger():
     assert isinstance(player._logger, logging.Logger)
     assert player._logger.getEffectiveLevel() == 38
 
-    logger = player._create_player_logger(24)
+    logger = player._create_logger(24)
 
     assert isinstance(logger, logging.Logger)
     assert logger.getEffectiveLevel() == 24
@@ -55,57 +55,57 @@ def test_create_player_logger():
 
 @pytest.mark.asyncio
 @patch(
-    "poke_env.player.player_network_interface.requests.post",
+    "poke_env.ps_client.ps_client.requests.post",
     return_value=requests_tuple(':{"assertion":"content"}'),
 )
-async def test_log_in(post_mock):
-    player = PlayerNetworkChild(
-        player_configuration=player_configuration,
+async def testlog_in(post_mock):
+    player = PSClientChild(
+        account_configuration=account_configuration,
         avatar=12,
         server_configuration=server_configuration,
         log_level=38,
         start_listening=False,
     )
 
-    player._send_message = AsyncMock()
-    player._change_avatar = AsyncMock()
+    player.send_message = AsyncMock()
+    player.change_avatar = AsyncMock()
 
-    await player._log_in(["A", "B", "C", "D"])
+    await player.log_in(["A", "B", "C", "D"])
 
-    player._change_avatar.assert_called_once_with(12)
-    player._send_message.assert_called_once_with("/trn username,0,content")
+    player.change_avatar.assert_called_once_with(12)
+    player.send_message.assert_called_once_with("/trn username,0,content")
     post_mock.assert_called_once()
 
 
 @pytest.mark.asyncio
 async def test_change_avatar():
-    player = PlayerNetworkChild(
-        player_configuration=player_configuration,
+    player = PSClientChild(
+        account_configuration=account_configuration,
         avatar=12,
         server_configuration=server_configuration,
         start_listening=False,
     )
 
-    player._send_message = AsyncMock()
+    player.send_message = AsyncMock()
     player._logged_in.set()
 
-    await player._change_avatar(8)
+    await player.change_avatar(8)
 
-    player._send_message.assert_called_once_with("/avatar 8")
+    player.send_message.assert_called_once_with("/avatar 8")
 
 
 @pytest.mark.asyncio
 async def test_handle_message():
-    player = PlayerNetworkChild(
-        player_configuration=player_configuration,
+    player = PSClientChild(
+        account_configuration=account_configuration,
         avatar=12,
         server_configuration=server_configuration,
         start_listening=False,
     )
-    player._log_in = AsyncMock()
+    player.log_in = AsyncMock()
 
     await player._handle_message("|challstr")
-    player._log_in.assert_called_once()
+    player.log_in.assert_called_once()
 
     assert player.logged_in.is_set() is False
     await player._handle_message("|updateuser| username")
@@ -130,8 +130,8 @@ async def test_handle_message():
 
 @pytest.mark.asyncio
 async def test_listen():
-    player = PlayerNetworkChild(
-        player_configuration=player_configuration,
+    player = PSClientChild(
+        account_configuration=account_configuration,
         avatar=12,
         server_configuration=server_configuration,
         start_listening=False,
@@ -161,9 +161,9 @@ async def test_listen():
 
 
 @pytest.mark.asyncio
-async def test_send_message():
-    player = PlayerNetworkChild(
-        player_configuration=player_configuration,
+async def testsend_message():
+    player = PSClientChild(
+        account_configuration=account_configuration,
         avatar=12,
         server_configuration=server_configuration,
         start_listening=False,
@@ -171,8 +171,8 @@ async def test_send_message():
     player._websocket = AsyncMock()
     player._websocket.send = AsyncMock()
 
-    await player._send_message("hey", "home")
+    await player.send_message("hey", "home")
     player._websocket.send.assert_called_once_with("home|hey")
 
-    await player._send_message("hey", "home", "hey again")
+    await player.send_message("hey", "home", "hey again")
     player._websocket.send.assert_called_with("home|hey|hey again")

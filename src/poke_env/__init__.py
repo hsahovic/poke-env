@@ -11,7 +11,7 @@ import poke_env.stats as stats
 import poke_env.teambuilder as teambuilder
 from poke_env.data import gen_data, to_id_str
 from poke_env.exceptions import ShowdownException
-from poke_env.player_configuration import PlayerConfiguration
+from poke_env.player_configuration import AccountConfiguration
 from poke_env.server_configuration import (
     LocalhostServerConfiguration,
     ServerConfiguration,
@@ -27,11 +27,11 @@ __logger.addHandler(__stream_handler)
 logging.addLevelName(25, "PS_ERROR")
 
 __all__ = [
+    "AccountConfiguration",
     "LocalhostServerConfiguration",
     "MOVES",
     "NATURES",
     "POKEDEX",
-    "PlayerConfiguration",
     "ServerConfiguration",
     "ShowdownException",
     "ShowdownServerConfiguration",
@@ -42,6 +42,7 @@ __all__ = [
     "gen_data",
     "player",
     "player_configuration",
+    "ps_client",
     "server_configuration",
     "stats",
     "teambuilder",

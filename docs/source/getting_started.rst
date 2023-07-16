@@ -82,7 +82,7 @@ Configuring showdown players
 
 ``Player`` instances need a player configuration corresponding to showdown accounts. By default, such configurations are automatically generated for each ``Player``. These automatically generated configurations are compatible with servers bypassing authentication, such as the recommended fork mentionned above.
 
-You can create custom configurations, for instance to use existing showdown accounts. To do so, use the ``player_configuration`` argument of ``Player`` constructors: you can pass in a ``PlayerConfiguration``, which are named tuples with two arguments: an username and a password.
+You can create custom configurations, for instance to use existing showdown accounts. To do so, use the ``player_configuration`` argument of ``Player`` constructors: you can pass in a ``AccountConfiguration``, which are named tuples with two arguments: an username and a password.
 
 Users without authentication
 ----------------------------
@@ -91,11 +91,11 @@ If your showdown configuration does not require authentication, you can use any 
 
 .. code-block:: python
 
-    from poke_env import PlayerConfiguration
+    from poke_env import AccountConfiguration
 
     # This will work on servers that do not require authentication, which is the
     # case of the server launched in our 'Getting Started' section
-    my_player_config = PlayerConfiguration("my_username", None)
+    my_player_config = AccountConfiguration("my_username", None)
 
 Users with authentication
 --------------------------
@@ -104,11 +104,11 @@ If your showdown configuration uses authentication, the values of each ``player_
 
 .. code-block:: python
 
-    from poke_env import PlayerConfiguration
+    from poke_env import AccountConfiguration
 
     # This object can be used with a player connecting to a server using authentication
     # The user 'my_username' must exist and have 'super-secret-password' as his password
-    my_player_config = PlayerConfiguration("my_username", "super-secret-password")
+    my_player_config = AccountConfiguration("my_username", "super-secret-password")
 
 Connecting your bots to showdown
 ================================

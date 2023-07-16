@@ -1,7 +1,7 @@
 import asyncio
 import json
 
-from poke_env import PlayerConfiguration
+from poke_env import AccountConfiguration
 from poke_env.player import RandomPlayer
 
 with open("msgs.json", "r") as f:
@@ -9,13 +9,13 @@ with open("msgs.json", "r") as f:
 
 
 class FakePlayer(RandomPlayer):
-    async def _send_message(self, *args, **kwargs):
+    async def send_message(self, *args, **kwargs):
         pass
 
 
 p = FakePlayer(
     start_listening=False,
-    player_configuration=PlayerConfiguration("StoragePlayer 1", None),
+    account_configuration=AccountConfiguration("StoragePlayer 1", None),
 )
 p._logged_in.set()
 

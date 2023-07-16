@@ -30,7 +30,7 @@ async def test_laddering_sequential():
 
     player = RandomPlayer(start_listening=False)
     player.count = 0
-    type(player)._send_message = send_message
+    type(player).send_message = send_message
     player.logged_in.set()
 
     interactions = []
@@ -82,7 +82,7 @@ async def test_laddering_parallel():
 
     player = RandomPlayer(start_listening=False, max_concurrent_battles=3)
     player.count = 0
-    type(player)._send_message = send_message
+    type(player).send_message = send_message
     player.logged_in.set()
 
     interactions = []

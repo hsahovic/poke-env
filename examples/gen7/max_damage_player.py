@@ -1,7 +1,7 @@
 import asyncio
 import time
 
-from poke_env import LocalhostServerConfiguration, PlayerConfiguration
+from poke_env import AccountConfiguration, LocalhostServerConfiguration
 from poke_env.player import Player, RandomPlayer, cross_evaluate
 
 
@@ -22,17 +22,17 @@ async def main():
     start = time.time()
 
     # We define two player configurations.
-    player_1_configuration = PlayerConfiguration("Random player", None)
-    player_2_configuration = PlayerConfiguration("Max damage player", None)
+    player_1_configuration = AccountConfiguration("Random player", None)
+    player_2_configuration = AccountConfiguration("Max damage player", None)
 
     # We create the corresponding players.
     random_player = RandomPlayer(
-        player_configuration=player_1_configuration,
+        account_configuration=player_1_configuration,
         battle_format="gen7randombattle",
         server_configuration=LocalhostServerConfiguration,
     )
     max_damage_player = MaxDamagePlayer(
-        player_configuration=player_2_configuration,
+        account_configuration=player_2_configuration,
         battle_format="gen7randombattle",
         server_configuration=LocalhostServerConfiguration,
     )

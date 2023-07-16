@@ -17,7 +17,7 @@ from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.player.battle_order import BattleOrder, ForfeitBattleOrder
 from poke_env.player.internals import POKE_LOOP
 from poke_env.player.player import Player
-from poke_env.player_configuration import PlayerConfiguration
+from poke_env.player_configuration import AccountConfiguration
 from poke_env.server_configuration import (
     LocalhostServerConfiguration,
     ServerConfiguration,
@@ -119,7 +119,7 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
 
     def __init__(
         self,
-        player_configuration: Optional[PlayerConfiguration] = None,
+        account_configuration: Optional[AccountConfiguration] = None,
         *,
         avatar: Optional[int] = None,
         battle_format: str = "gen8randombattle",
@@ -136,10 +136,10 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         start_challenging: bool = False,
     ):
         """
-        :param player_configuration: Player configuration. If empty, defaults to an
+        :param account_configuration: Player configuration. If empty, defaults to an
             automatically generated username with no password. This option must be set
             if the server configuration requires authentication.
-        :type player_configuration: PlayerConfiguration, optional
+        :type account_configuration: AccountConfiguration, optional
         :param avatar: Player avatar id. Optional.
         :type avatar: int, optional
         :param battle_format: Name of the battle format this player plays. Defaults to
@@ -180,7 +180,7 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         self.agent = _AsyncPlayer(
             self,
             username=self.__class__.__name__,  # pyre-ignore
-            player_configuration=player_configuration,
+            account_configuration=account_configuration,
             avatar=avatar,
             battle_format=battle_format,
             log_level=log_level,

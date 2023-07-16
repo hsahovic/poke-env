@@ -9,8 +9,8 @@ from poke_env.environment.battle import Battle
 from poke_env.player.battle_order import BattleOrder, ForfeitBattleOrder
 from poke_env.player.openai_api import OpenAIGymEnv
 from poke_env.player.player import Player
-from poke_env.player_configuration import PlayerConfiguration
-from poke_env.server_configuration import ServerConfiguration
+from poke_env.ps_client.account_configuration import AccountConfiguration
+from poke_env.ps_client.server_configuration import ServerConfiguration
 from poke_env.teambuilder.teambuilder import Teambuilder
 
 
@@ -23,7 +23,7 @@ class EnvPlayer(OpenAIGymEnv, ABC):
     def __init__(
         self,
         opponent: Optional[Union[Player, str]],
-        player_configuration: Optional[PlayerConfiguration] = None,
+        account_configuration: Optional[AccountConfiguration] = None,
         *,
         avatar: Optional[int] = None,
         battle_format: Optional[str] = None,
@@ -40,10 +40,10 @@ class EnvPlayer(OpenAIGymEnv, ABC):
         """
         :param opponent: Opponent to challenge.
         :type opponent: Player or str, optional
-        :param player_configuration: Player configuration. If empty, defaults to an
+        :param account_configuration: Player configuration. If empty, defaults to an
             automatically generated username with no password. This option must be set
             if the server configuration requires authentication.
-        :type player_configuration: PlayerConfiguration, optional
+        :type account_configuration: AccountConfiguration, optional
         :param avatar: Player avatar id. Optional.
         :type avatar: int, optional
         :param battle_format: Name of the battle format this player plays. Defaults to
@@ -90,7 +90,7 @@ class EnvPlayer(OpenAIGymEnv, ABC):
         if opponent is None:
             start_challenging = False
         super().__init__(
-            player_configuration=player_configuration,
+            account_configuration=account_configuration,
             avatar=avatar,
             battle_format=b_format,
             log_level=log_level,

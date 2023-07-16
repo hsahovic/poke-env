@@ -10,7 +10,7 @@ class SimplePlayer(Player):
     def choose_move(self, battle):
         return self.choose_random_move(battle)
 
-    async def _send_message(self, message, room):
+    async def send_message(self, message, room):
         self._sent_messages = [message, room]
 
 
@@ -223,7 +223,7 @@ async def test_awaitable_move():
     battle = Battle("bat1", player.username, player.logger, 8)
     battle._teampreview = False
     with patch.object(
-        player, "_send_message", new_callable=AsyncMock
+        player, "send_message", new_callable=AsyncMock
     ) as send_message_mock:
         with patch.object(
             player,

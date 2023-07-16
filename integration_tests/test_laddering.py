@@ -15,7 +15,7 @@ async def simple_laddering(n_battles, max_concurrent_battles):
 
     for player in players:
         player.reset_battles()
-        await player.stop_listening()
+        await player.ps_client.stop_listening()
 
 
 @pytest.mark.asyncio
