@@ -43,7 +43,7 @@ line-length = 91
 profile = "black"
 
 [tool.setuptools.package-data]
-state = [
+poke_env = [
     "py.typed",
     "README.md",
     "src/poke_env/data/static/*.json",
