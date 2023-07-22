@@ -40,6 +40,9 @@ Repository = "https://github.com/hsahovic/poke-env"
 [tool.black]
 line-length = 91
 
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
 [tool.setuptools.package-data]
 poke_env = [
     "py.typed",
@@ -50,6 +53,3 @@ poke_env = [
     "src/poke_env/data/static/pokedex/*.json",
     "src/poke_env/data/static/typechart/*.json",
 ]
-
-[tool.setuptools.dynamic]
-dependencies = {file = ["requirements.txt"]}
