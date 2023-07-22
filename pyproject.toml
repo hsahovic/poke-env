@@ -31,6 +31,7 @@ classifiers=[
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
+dynamic = ["dependencies"]
 
 [project.urls]
 Documentation = "https://poke-env.readthedocs.io/en/stable/"
@@ -38,9 +39,6 @@ Repository = "https://github.com/hsahovic/poke-env"
 
 [tool.black]
 line-length = 91
-
-[tool.isort]
-profile = "black"
 
 [tool.setuptools.package-data]
 poke_env = [
@@ -52,3 +50,6 @@ poke_env = [
     "src/poke_env/data/static/pokedex/*.json",
     "src/poke_env/data/static/typechart/*.json",
 ]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
