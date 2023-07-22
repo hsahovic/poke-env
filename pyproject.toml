@@ -45,7 +45,6 @@ dependencies = {file = ["requirements.txt"]}
 
 [tool.setuptools.package-data]
 poke_env = [
-    "py.typed",
     "README.md",
     "src/poke_env/data/static/*.json",
     "src/poke_env/data/static/*.html",
