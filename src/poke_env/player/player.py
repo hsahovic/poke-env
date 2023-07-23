@@ -2,42 +2,37 @@
 """
 
 import asyncio
-import orjson  # pyre-ignore
 import random
-
-from abc import ABC
-from abc import abstractmethod
-from asyncio import Condition
-from asyncio import Event
-from asyncio import Queue
-from asyncio import Semaphore
-from inspect import isawaitable
+from abc import ABC, abstractmethod
+from asyncio import Condition, Event, Queue, Semaphore
 from time import perf_counter
-from typing import Awaitable
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Union
+from typing import Any, Awaitable
 
+import orjson
+
+from poke_env.data import GenData, to_id_str
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.battle import Battle
 from poke_env.environment.double_battle import DoubleBattle
 from poke_env.environment.move import Move
 from poke_env.environment.pokemon import Pokemon
 from poke_env.exceptions import ShowdownException
-from poke_env.player.player_network_interface import PlayerNetwork
 from poke_env.player.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
     DoubleBattleOrder,
 )
-from poke_env.player_configuration import _create_player_configuration_from_player
-from poke_env.player_configuration import PlayerConfiguration
-from poke_env.server_configuration import LocalhostServerConfiguration
-from poke_env.server_configuration import ServerConfiguration
-from poke_env.teambuilder.teambuilder import Teambuilder
+from poke_env.player.player_network_interface import PlayerNetwork
+from poke_env.player_configuration import (
+    PlayerConfiguration,
+    create_player_configuration_from_player,
+)
+from poke_env.server_configuration import (
+    LocalhostServerConfiguration,
+    ServerConfiguration,
+)
 from poke_env.teambuilder.constant_teambuilder import ConstantTeambuilder
-from poke_env.data import GenData, to_id_str
+from poke_env.teambuilder.teambuilder import Teambuilder
 
 
 class Player(PlayerNetwork, ABC):
@@ -53,20 +48,20 @@ class Player(PlayerNetwork, ABC):
 
     def __init__(
         self,
-        player_configuration: Optional[PlayerConfiguration] = None,
+        player_configuration: PlayerConfiguration | None = None,
         *,
-        avatar: Optional[int] = None,
+        avatar: int | None = None,
         battle_format: str = "gen9randombattle",
-        log_level: Optional[int] = None,
+        log_level: int | None = None,
         max_concurrent_battles: int = 1,
-        save_replays: Union[bool, str] = False,
-        server_configuration: Optional[ServerConfiguration] = None,
+        save_replays: bool | str = False,
+        server_configuration: ServerConfiguration | None = None,
         start_timer_on_battle_start: bool = False,
         start_listening: bool = True,
-        ping_interval: Optional[float] = 20.0,
-        ping_timeout: Optional[float] = 20.0,
-        team: Optional[Union[str, Teambuilder]] = None,
-    ) -> None:
+        ping_interval: float | None = 20.0,
+        ping_timeout: float | None = 20.0,
+        team: str | Teambuilder | None = None,
+    ):
         """
         :param player_configuration: Player configuration. If empty, defaults to an
             automatically generated username with no password. This option must be set
@@ -109,7 +104,7 @@ class Player(PlayerNetwork, ABC):
         :type team: str or Teambuilder, optional
         """
         if player_configuration is None:
-            player_configuration = _create_player_configuration_from_player(self)
+            player_configuration = create_player_configuration_from_player(self)
 
         if server_configuration is None:
             server_configuration = LocalhostServerConfiguration
@@ -129,15 +124,15 @@ class Player(PlayerNetwork, ABC):
         self._save_replays = save_replays
         self._start_timer_on_battle_start: bool = start_timer_on_battle_start
 
-        self._battles: Dict[str, AbstractBattle] = {}
+        self._battles: dict[str, AbstractBattle] = {}
         self._battle_semaphore: Semaphore = self._create_class(Semaphore, 0)
 
         self._battle_start_condition: Condition = self._create_class(Condition)
-        self._battle_count_queue: Queue = self._create_class(
+        self._battle_count_queue: Queue[Any] = self._create_class(
             Queue, max_concurrent_battles
         )
         self._battle_end_condition: Condition = self._create_class(Condition)
-        self._challenge_queue: Queue = self._create_class(Queue)
+        self._challenge_queue: Queue[Any] = self._create_class(Queue)
 
         if isinstance(team, Teambuilder):
             self._team = team
@@ -151,7 +146,7 @@ class Player(PlayerNetwork, ABC):
     def _battle_finished_callback(self, battle: AbstractBattle) -> None:
         pass
 
-    def update_team(self, team) -> None:
+    def update_team(self, team: Teambuilder | str) -> None:
         """Updates the team used by the player.
 
         :param team: The new team to use.
@@ -159,18 +154,14 @@ class Player(PlayerNetwork, ABC):
         """
         if isinstance(team, Teambuilder):
             self._team = team
-        elif isinstance(team, str):
-            self._team = ConstantTeambuilder(team)
         else:
-            raise TypeError(
-                "Team must be a showdown team string or a Teambuilder object."
-            )
+            self._team = ConstantTeambuilder(team)
 
-    async def _create_battle(self, split_message: List[str]) -> AbstractBattle:
+    async def _create_battle(self, split_message: list[str]) -> AbstractBattle:
         """Returns battle object corresponding to received message.
 
         :param split_message: The battle initialisation message.
-        :type split_message: List[str]
+        :type split_message: list[str]
         :return: The corresponding battle object.
         :rtype: AbstractBattle
         """
@@ -196,13 +187,13 @@ class Player(PlayerNetwork, ABC):
                         battle_tag=battle_tag,
                         username=self.username,
                         logger=self.logger,
-                        save_replays=self._save_replays,
                         gen=gen,
+                        save_replays=self._save_replays,
                     )
 
                 await self._battle_count_queue.put(None)
                 if battle_tag in self._battles:
-                    self._battle_count_queue.get()
+                    await self._battle_count_queue.get()
                     return self._battles[battle_tag]
                 async with self._battle_start_condition:
                     self._battle_semaphore.release()
@@ -227,7 +218,7 @@ class Player(PlayerNetwork, ABC):
             async with self._battle_start_condition:
                 await self._battle_start_condition.wait()
 
-    async def _handle_battle_message(self, split_messages: List[List[str]]) -> None:
+    async def _handle_battle_message(self, split_messages: list[list[str]]) -> None:
         """Handles a battle message.
 
         :param split_message: The received battle message.
@@ -252,15 +243,15 @@ class Player(PlayerNetwork, ABC):
             elif split_message[1] == "request":
                 if split_message[2]:
                     request = orjson.loads(split_message[2])
-                    battle._parse_request(request)
+                    battle.parse_request(request)
                     if battle.move_on_next_request:
                         await self._handle_battle_request(battle)
                         battle.move_on_next_request = False
             elif split_message[1] == "win" or split_message[1] == "tie":
                 if split_message[1] == "win":
-                    battle._won_by(split_message[2])
+                    battle.won_by(split_message[2])
                 else:
-                    battle._tied()
+                    battle.tied()
                 await self._battle_count_queue.get()
                 self._battle_count_queue.task_done()
                 self._battle_finished_callback(battle)
@@ -334,21 +325,21 @@ class Player(PlayerNetwork, ABC):
                 else:
                     self.logger.critical("Unexpected error message: %s", split_message)
             elif split_message[1] == "turn":
-                battle._parse_message(split_message)
+                battle.parse_message(split_message)
                 await self._handle_battle_request(battle)
             elif split_message[1] == "teampreview":
-                battle._parse_message(split_message)
+                battle.parse_message(split_message)
                 await self._handle_battle_request(battle, from_teampreview_request=True)
             elif split_message[1] == "bigerror":
                 self.logger.warning("Received 'bigerror' message: %s", split_message)
             else:
-                battle._parse_message(split_message)
+                battle.parse_message(split_message)
 
     async def _handle_battle_request(
         self,
         battle: AbstractBattle,
         from_teampreview_request: bool = False,
-        maybe_default_order=False,
+        maybe_default_order: bool = False,
     ):
         if maybe_default_order and random.random() < self.DEFAULT_CHOICE_CHANCE:
             message = self.choose_default_move(battle).message
@@ -358,13 +349,13 @@ class Player(PlayerNetwork, ABC):
             message = self.teampreview(battle)
         else:
             message = self.choose_move(battle)
-            if isawaitable(message):
+            if isinstance(message, Awaitable):
                 message = await message
             message = message.message
 
         await self._send_message(message, battle.battle_tag)
 
-    async def _handle_challenge_request(self, split_message: List[str]) -> None:
+    async def _handle_challenge_request(self, split_message: list[str]) -> None:
         """Handles an individual challenge."""
         challenging_player = split_message[2].strip()
 
@@ -373,14 +364,14 @@ class Player(PlayerNetwork, ABC):
                 if split_message[5] == self._format:
                     await self._challenge_queue.put(challenging_player)
 
-    async def _update_challenges(self, split_message: List[str]) -> None:
+    async def _update_challenges(self, split_message: list[str]) -> None:
         """Update internal challenge state.
 
         Add corresponding challenges to internal queue of challenges, where they will be
         processed if relevant.
 
         :param split_message: Recevied message, split.
-        :type split_message: List[str]
+        :type split_message: list[str]
         """
         self.logger.debug("Updating challenges with %s", split_message)
         challenges = orjson.loads(split_message[2]).get("challengesFrom", {})
@@ -389,8 +380,8 @@ class Player(PlayerNetwork, ABC):
                 await self._challenge_queue.put(user)
 
     async def accept_challenges(
-        self, opponent: Optional[Union[str, List[str]]], n_challenges: int
-    ) -> None:
+        self, opponent: str | list[str] | None, n_challenges: int
+    ):
         """Let the player wait for challenges from opponent, and accept them.
 
         If opponent is None, every challenge will be accepted. If opponent if a string,
@@ -411,7 +402,7 @@ class Player(PlayerNetwork, ABC):
         )
 
     async def _accept_challenges(
-        self, opponent: Optional[Union[str, List[str]]], n_challenges: int
+        self, opponent: str | list[str] | None, n_challenges: int
     ) -> None:  # pragma: no cover
         if opponent:
             if isinstance(opponent, list):
@@ -440,7 +431,7 @@ class Player(PlayerNetwork, ABC):
     @abstractmethod
     def choose_move(
         self, battle: AbstractBattle
-    ) -> Union[BattleOrder, Awaitable[BattleOrder]]:  # pragma: no cover
+    ) -> BattleOrder | Awaitable[BattleOrder]:  # pragma: no cover
         """Abstract method to choose a move in a battle.
 
         :param battle: The battle.
@@ -450,7 +441,7 @@ class Player(PlayerNetwork, ABC):
         """
         pass
 
-    def choose_default_move(self, *args, **kwargs) -> DefaultBattleOrder:
+    def choose_default_move(self, battle: AbstractBattle) -> DefaultBattleOrder:
         """Returns showdown's default move order.
 
         This order will result in the first legal order - according to showdown's
@@ -459,31 +450,26 @@ class Player(PlayerNetwork, ABC):
         return DefaultBattleOrder()
 
     def choose_random_doubles_move(self, battle: DoubleBattle) -> BattleOrder:
-        active_orders = [[], []]
+        active_orders: list[list[BattleOrder]] = [[], []]
 
         for (
-            idx,
-            (
-                orders,
-                mon,
-                switches,
-                moves,
-                can_mega,
-                can_z_move,
-                can_dynamax,
-                can_tera,
-            ),
-        ) in enumerate(
-            zip(
-                active_orders,
-                battle.active_pokemon,
-                battle.available_switches,
-                battle.available_moves,
-                battle.can_mega_evolve,
-                battle.can_z_move,
-                battle.can_dynamax,
-                battle.can_tera,
-            )
+            orders,
+            mon,
+            switches,
+            moves,
+            can_mega,
+            can_z_move,
+            can_dynamax,
+            can_tera,
+        ) in zip(
+            active_orders,
+            battle.active_pokemon,
+            battle.available_switches,
+            battle.available_moves,
+            battle.can_mega_evolve,
+            battle.can_z_move,
+            battle.can_dynamax,
+            battle.can_tera,
         ):
             if mon:
                 targets = {
@@ -539,7 +525,7 @@ class Player(PlayerNetwork, ABC):
                 if sum(battle.force_switch) == 1:
                     if orders:
                         return orders[int(random.random() * len(orders))]
-                    return self.choose_default_move()
+                    return self.choose_default_move(battle)
 
         orders = DoubleBattleOrder.join_orders(*active_orders)
 
@@ -604,7 +590,7 @@ class Player(PlayerNetwork, ABC):
                 "battle should be Battle or DoubleBattle. Received %d" % (type(battle))
             )
 
-    async def ladder(self, n_games):
+    async def ladder(self, n_games: int):
         """Make the player play games on the ladder.
 
         n_games defines how many battles will be played.
@@ -614,7 +600,7 @@ class Player(PlayerNetwork, ABC):
         """
         await self._handle_threaded_coroutines(self._ladder(n_games))
 
-    async def _ladder(self, n_games):
+    async def _ladder(self, n_games: int):
         await self._logged_in.wait()
         start_time = perf_counter()
 
@@ -656,7 +642,7 @@ class Player(PlayerNetwork, ABC):
         )
 
     async def send_challenges(
-        self, opponent: str, n_challenges: int, to_wait: Optional[Event] = None
+        self, opponent: str, n_challenges: int, to_wait: Event | None = None
     ) -> None:
         """Make the player send challenges to opponent.
 
@@ -679,7 +665,7 @@ class Player(PlayerNetwork, ABC):
         )
 
     async def _send_challenges(
-        self, opponent: str, n_challenges: int, to_wait: Optional[Event] = None
+        self, opponent: str, n_challenges: int, to_wait: Event | None = None
     ) -> None:
         await self._logged_in.wait()
         self.logger.info("Event logged in received in send challenge")
@@ -740,7 +726,7 @@ class Player(PlayerNetwork, ABC):
 
     @staticmethod
     def create_order(
-        order: Union[Move, Pokemon],
+        order: Move | Pokemon,
         mega: bool = False,
         z_move: bool = False,
         dynamax: bool = False,
@@ -774,7 +760,7 @@ class Player(PlayerNetwork, ABC):
         )
 
     @property
-    def battles(self) -> Dict[str, AbstractBattle]:
+    def battles(self) -> dict[str, AbstractBattle]:
         return self._battles
 
     @property

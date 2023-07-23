@@ -1,13 +1,10 @@
 from logging import Logger
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Union
+from typing import Any
 
+from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.move import Move
 from poke_env.environment.pokemon import Pokemon
 from poke_env.environment.pokemon_type import PokemonType
-from poke_env.environment.abstract_battle import AbstractBattle
 
 
 class Battle(AbstractBattle):
@@ -17,16 +14,16 @@ class Battle(AbstractBattle):
         username: str,
         logger: Logger,
         gen: int,
-        save_replays: Union[str, bool] = False,
+        save_replays: str | bool = False,
     ):
         super(Battle, self).__init__(battle_tag, username, logger, save_replays, gen)
 
         # Turn choice attributes
-        self._available_moves: List[Move] = []
-        self._available_switches: List[Pokemon] = []
+        self._available_moves: list[Move] = []
+        self._available_switches: list[Pokemon] = []
         self._can_dynamax: bool = False
         self._can_mega_evolve: bool = False
-        self._can_terastallize: Optional[PokemonType] = None
+        self._can_terastallize: PokemonType | None = None
         self._can_z_move: bool = False
         self._opponent_can_dynamax = True
         self._opponent_can_mega_evolve = True
@@ -36,12 +33,13 @@ class Battle(AbstractBattle):
         self._maybe_trapped: bool = False
         self._trapped: bool = False
 
-    def _clear_all_boosts(self):
-        self.active_pokemon._clear_boosts()
+    def clear_all_boosts(self):
+        if self.active_pokemon is not None:
+            self.active_pokemon.clear_boosts()
         if self.opponent_active_pokemon is not None:
-            self.opponent_active_pokemon._clear_boosts()
+            self.opponent_active_pokemon.clear_boosts()
 
-    def _end_illusion(self, pokemon_name: str, details: str):
+    def end_illusion(self, pokemon_name: str, details: str):
         if pokemon_name[:2] == self._player_role:
             active = self.active_pokemon
         else:
@@ -54,7 +52,7 @@ class Battle(AbstractBattle):
             illusioned=active, illusionist=pokemon_name, details=details
         )
 
-    def _parse_request(self, request: Dict) -> None:
+    def parse_request(self, request: dict[str, Any]):
         """
         Update the object from a request.
         The player's pokemon are all updated, as well as available moves, switches and
@@ -136,23 +134,23 @@ class Battle(AbstractBattle):
                     if not pokemon.active:
                         self._available_switches.append(pokemon)
 
-    def _switch(self, pokemon, details, hp_status):
-        identifier = pokemon.split(":")[0][:2]
+    def switch(self, pokemon_str: str, details: str, hp_status: str):
+        identifier = pokemon_str.split(":")[0][:2]
 
         if identifier == self._player_role:
             if self.active_pokemon:
-                self.active_pokemon._switch_out()
+                self.active_pokemon.switch_out()
         else:
             if self.opponent_active_pokemon:
-                self.opponent_active_pokemon._switch_out()
+                self.opponent_active_pokemon.switch_out()
 
-        pokemon = self.get_pokemon(pokemon, details=details)
+        pokemon = self.get_pokemon(pokemon_str, details=details)
 
-        pokemon._switch_in(details=details)
-        pokemon._set_hp_status(hp_status)
+        pokemon.switch_in(details=details)
+        pokemon.set_hp_status(hp_status)
 
     @property
-    def active_pokemon(self) -> Optional[Pokemon]:
+    def active_pokemon(self) -> Pokemon | None:
         """
         :return: The active pokemon
         :rtype: Optional[Pokemon]
@@ -162,26 +160,26 @@ class Battle(AbstractBattle):
                 return pokemon
 
     @property
-    def all_active_pokemons(self) -> List[Optional[Pokemon]]:
+    def all_active_pokemons(self) -> list[Pokemon | None]:
         """
         :return: A list containing all active pokemons and/or Nones.
-        :rtype: List[Optional[Pokemon]]
+        :rtype: list[Optional[Pokemon]]
         """
         return [self.active_pokemon, self.opponent_active_pokemon]
 
     @property
-    def available_moves(self) -> List[Move]:
+    def available_moves(self) -> list[Move]:
         """
         :return: The list of moves the player can use during the current move request.
-        :rtype: List[Move]
+        :rtype: list[Move]
         """
         return self._available_moves
 
     @property
-    def available_switches(self) -> List[Pokemon]:
+    def available_switches(self) -> list[Pokemon]:
         """
         :return: The list of switches the player can do during the current move request.
-        :rtype: List[Pokemon]
+        :rtype: list[Pokemon]
         """
         return self._available_switches
 
@@ -202,7 +200,7 @@ class Battle(AbstractBattle):
         return self._can_mega_evolve
 
     @property
-    def can_terastallize(self) -> Optional[PokemonType]:
+    def can_terastallize(self) -> PokemonType | None:
         """
         :return: None, or the type the active pokemon can terastallize into.
         :rtype: PokemonType, optional
@@ -236,7 +234,7 @@ class Battle(AbstractBattle):
         return self._maybe_trapped
 
     @property
-    def opponent_active_pokemon(self) -> Optional[Pokemon]:
+    def opponent_active_pokemon(self) -> Pokemon | None:
         """
         :return: The opponent active pokemon
         :rtype: Pokemon
@@ -300,5 +298,5 @@ class Battle(AbstractBattle):
         return self._trapped
 
     @trapped.setter
-    def trapped(self, value):
+    def trapped(self, value: bool):
         self._trapped = value

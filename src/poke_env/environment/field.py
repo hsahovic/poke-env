@@ -1,16 +1,15 @@
 """This module defines the Field class, which represents a battle field.
 """
 # pyre-ignore-all-errors[45]
-from enum import Enum, unique, auto
-
 import logging
+from enum import Enum, auto, unique
 
 
 @unique
 class Field(Enum):
     """Enumeration, represent a non null field in a battle."""
 
-    _UNKNOWN = auto()
+    UNKNOWN = auto()
     ELECTRIC_TERRAIN = auto()
     GRASSY_TERRAIN = auto()
     GRAVITY = auto()
@@ -52,7 +51,7 @@ class Field(Enum):
                 "message and a description of your program.",
                 message,
             )
-            return Field._UNKNOWN
+            return Field.UNKNOWN
 
     @property
     def is_terrain(self) -> bool:

@@ -1,9 +1,9 @@
 import asyncio
 import atexit
 import sys
-
-from logging import disable, CRITICAL
+from logging import CRITICAL, disable
 from threading import Thread
+from typing import Any
 
 
 def __run_loop(loop: asyncio.AbstractEventLoop):
@@ -13,12 +13,8 @@ def __run_loop(loop: asyncio.AbstractEventLoop):
 
 def __stop_loop(loop: asyncio.AbstractEventLoop, thread: Thread):  # pragma: no cover
     disable(CRITICAL)
-    tasks = []
-    if py_ver.major == 3 and py_ver.minor >= 7:
-        caller = asyncio
-    else:
-        caller = asyncio.Task
-    for task in caller.all_tasks(loop):
+    tasks: list[asyncio.Task[Any]] = []
+    for task in asyncio.all_tasks(loop):
         task.cancel()
         tasks.append(task)
     cancelled = False

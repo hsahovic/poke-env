@@ -1,19 +1,16 @@
 """This module contains utility functions and objects related to Player classes.
 """
 
-from poke_env.player.player import Player
-from poke_env.player.random_player import RandomPlayer
-from poke_env.player.internals import POKE_LOOP
-from poke_env.player.baselines import MaxBasePowerPlayer, SimpleHeuristicsPlayer
-from poke_env.data import to_id_str
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Tuple
-from concurrent.futures import Future
-
 import asyncio
 import math
+from concurrent.futures import Future
+from typing import Any, TypeVar
+
+from poke_env.data import to_id_str
+from poke_env.player.baselines import MaxBasePowerPlayer, SimpleHeuristicsPlayer
+from poke_env.player.internals import POKE_LOOP
+from poke_env.player.player import Player
+from poke_env.player.random_player import RandomPlayer
 
 _EVALUATION_RATINGS = {
     RandomPlayer: 1,
@@ -23,17 +20,22 @@ _EVALUATION_RATINGS = {
 
 
 def background_cross_evaluate(
-    players: List[Player], n_challenges: int
-) -> "Future[Dict[str, Dict[str, Optional[float]]]]":  # pragma: no cover
+    players: list[Player], n_challenges: int
+) -> "Future[dict[str, dict[str, float | None]]]":
     return asyncio.run_coroutine_threadsafe(
         cross_evaluate(players, n_challenges), POKE_LOOP
     )
 
 
+PlayerType = TypeVar("PlayerType", bound=Player)
+
+
 async def cross_evaluate(
-    players: List[Player], n_challenges: int
-) -> Dict[str, Dict[str, Optional[float]]]:
-    results = {p_1.username: {p_2.username: None for p_2 in players} for p_1 in players}
+    players: list[PlayerType], n_challenges: int
+) -> dict[str, dict[str, float | None]]:
+    results: dict[str, dict[str, float | None]] = {
+        p_1.username: {p_2.username: None for p_2 in players} for p_1 in players
+    }
     for i, p_1 in enumerate(players):
         for j, p_2 in enumerate(players):
             if j <= i:
@@ -48,17 +50,17 @@ async def cross_evaluate(
                     opponent=to_id_str(p_1.username), n_challenges=n_challenges
                 ),
             )
-            results[p_1.username][p_2.username] = p_1.win_rate  # pyre-ignore
-            results[p_2.username][p_1.username] = p_2.win_rate  # pyre-ignore
+            results[p_1.username][p_2.username] = p_1.win_rate
+            results[p_2.username][p_1.username] = p_2.win_rate
 
             p_1.reset_battles()
             p_2.reset_battles()
-    return results  # pyre-ignore
+    return results
 
 
 def _estimate_strength_from_results(
     number_of_games: int, number_of_wins: int, opponent_rating: float
-) -> Tuple[float, Tuple[float, float]]:
+) -> tuple[float, tuple[float, float]]:
     """Estimate player strength based on game results and opponent rating.
 
     :param number_of_games: Number of performance games for evaluation.
@@ -102,16 +104,16 @@ def _estimate_strength_from_results(
 
 
 def background_evaluate_player(
-    player, n_battles: int = 1000, n_placement_battles: int = 30
-) -> "Future[Tuple[float, Tuple[float, float]]]":  # pragma: no cover
+    player: Any, n_battles: int = 1000, n_placement_battles: int = 30
+) -> "Future[tuple[float, tuple[float, float]]]":  # pragma: no cover
     return asyncio.run_coroutine_threadsafe(
         evaluate_player(player, n_battles, n_placement_battles), POKE_LOOP
     )
 
 
 async def evaluate_player(
-    player, n_battles: int = 1000, n_placement_battles: int = 30
-) -> Tuple[float, Tuple[float, float]]:
+    player: Any, n_battles: int = 1000, n_placement_battles: int = 30
+) -> tuple[float, tuple[float, float]]:
     """Estimate player strength.
 
     This functions calculates an estimate of a player's strength, measured as its

@@ -1,11 +1,13 @@
 """This module contains objects related to server configuration.
 """
-from collections import namedtuple
+from typing import NamedTuple
 
 
-ServerConfiguration = namedtuple(
-    "ServerConfiguration", ["server_url", "authentication_url"]
-)
+class ServerConfiguration(NamedTuple):
+    server_url: str
+    authentication_url: str
+
+
 """Server configuration object. Represented with a tuple with two entries: server url
 and authentication endpoint url."""
 

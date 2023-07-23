@@ -1,16 +1,15 @@
 import copy
+from functools import lru_cache
+from typing import Any
 
+from poke_env.data import GenData, to_id_str
 from poke_env.environment.field import Field
 from poke_env.environment.move_category import MoveCategory
 from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.status import Status
 from poke_env.environment.weather import Weather
 
-from poke_env.data import GenData, to_id_str
-from functools import lru_cache
-from typing import Dict, List, Optional, Set, Tuple, Union
-
-SPECIAL_MOVES: Set = {"struggle", "recharge"}
+SPECIAL_MOVES: set[str] = {"struggle", "recharge"}
 
 _PROTECT_MOVES = {
     "protect",
@@ -60,7 +59,7 @@ class Move:
         "_request_target",
     )
 
-    def __init__(self, move_id: str, gen: int, raw_id: Optional[str] = None):
+    def __init__(self, move_id: str, gen: int, raw_id: str | None = None):
         self._id = move_id
         self._base_power_override = None
         self._gen = gen
@@ -90,13 +89,13 @@ class Move:
         self._current_pp -= 1
 
     @staticmethod
-    def is_id_z(id_, gen: int) -> bool:
+    def is_id_z(id_: str, gen: int) -> bool:
         if id_.startswith("z") and id_[1:] in GenData.from_gen(gen).moves:
             return True
         return "isZ" in GenData.from_gen(gen).moves[id_]
 
     @staticmethod
-    def is_max_move(id_, gen: int) -> bool:
+    def is_max_move(id_: str, gen: int) -> bool:
         if id_.startswith("max"):
             return True
         elif (
@@ -142,10 +141,10 @@ class Move:
         return self.entry.get("basePower", 0)
 
     @property
-    def boosts(self) -> Optional[Dict[str, float]]:
+    def boosts(self) -> dict[str, int] | None:
         """
         :return: Boosts conferred to the target by using the move.
-        :rtype: Optional[Dict[str, float]]
+        :rtype: dict[str, float] | None
         """
         return self.entry.get("boosts", None)
 
@@ -196,7 +195,7 @@ class Move:
         return self._current_pp
 
     @property
-    def damage(self) -> Union[int, str]:
+    def damage(self) -> int | str:
         """
         :return: The move's fix damages. Can be an int or 'level' for moves such as
             Seismic Toss.
@@ -205,7 +204,7 @@ class Move:
         return self.entry.get("damage", 0)
 
     @property
-    def deduced_target(self) -> Optional[str]:
+    def deduced_target(self) -> str | None:
         """
         :return: Move deduced target, based on Move.target and showdown's request
             messages.
@@ -259,7 +258,7 @@ class Move:
         return self._dynamaxed_move
 
     @property
-    def entry(self) -> dict:
+    def entry(self) -> dict[str, Any]:
         """
         Should not be used directly.
 
@@ -271,7 +270,7 @@ class Move:
         elif self._id.startswith("z") and self._id[1:] in self._moves_dict:
             return self._moves_dict[self._id[1:]]
         elif self._id == "recharge":
-            return {"pp": 1, "type": "normal", "category": "Special", "accuracy": 1}
+            return {"pp": "1", "type": "normal", "category": "Special", "accuracy": "1"}
         else:
             raise ValueError("Unknown move: %s" % self._id)
 
@@ -298,7 +297,7 @@ class Move:
             return (2 + 3) / 3 + (4 + 5) / 6
 
     @property
-    def flags(self) -> Set[str]:
+    def flags(self) -> set[str]:
         """
         This property is not well defined, and may be missing some information.
         If you need more information on some flag, please open an issue in the project.
@@ -362,7 +361,7 @@ class Move:
         return self.entry.get("ignoreEvasion", False)
 
     @property
-    def ignore_immunity(self) -> Union[bool, Set[PokemonType]]:
+    def ignore_immunity(self) -> bool | set[PokemonType]:
         """
         :return: Whether the opponent's immunity is ignored, or a list of ignored
             immunities.
@@ -427,14 +426,15 @@ class Move:
         return self.entry["pp"] * 8 // 5
 
     @property
-    def n_hit(self) -> Tuple:
+    def n_hit(self) -> tuple[int, int]:
         """
         :return: How many hits this move lands. Tuple of the form (min, max).
         :rtype: Tuple
         """
         if "multihit" in self.entry:
             if isinstance(self.entry["multihit"], list):
-                return tuple(self.entry["multihit"])
+                multihit_val: list[int] = self.entry["multihit"]
+                return tuple(multihit_val)
             else:
                 return self.entry["multihit"], self.entry["multihit"]
         return 1, 1
@@ -484,7 +484,7 @@ class Move:
         return 0.0
 
     @property
-    def request_target(self) -> Optional[str]:
+    def request_target(self) -> str | None:
         """
         :return: Target information sent by showdown in a request message, if any.
         :rtype: str, optional
@@ -492,7 +492,7 @@ class Move:
         return self._request_target
 
     @request_target.setter
-    def request_target(self, request_target: Optional[str]) -> None:
+    def request_target(self, request_target: str | None) -> None:
         """
         :param request_target: Target information received from showdown in a request
             message.
@@ -520,7 +520,7 @@ class Move:
         return move_name
 
     @property
-    def secondary(self) -> List[dict]:
+    def secondary(self) -> list[dict[str, Any]]:
         """
         :return: Secondary effects. At this point, the precise content of this property
             is not too clear.
@@ -533,10 +533,10 @@ class Move:
         return []
 
     @property
-    def self_boost(self) -> Optional[Dict[str, int]]:
+    def self_boost(self) -> dict[str, int] | None:
         """
         :return: Boosts applied to the move's user.
-        :rtype: Dict[str, int]
+        :rtype: dict[str, int]
         """
         if "selfBoost" in self.entry:
             return self.entry["selfBoost"].get("boosts", None)
@@ -545,26 +545,26 @@ class Move:
         return None
 
     @property
-    def self_destruct(self) -> Optional[str]:
+    def self_destruct(self) -> str | None:
         """
         :return: Move's self destruct consequences.
-        :rtype: Optional[str]
+        :rtype: str | None
         """
         return self.entry.get("selfdestruct", None)
 
     @property
-    def self_switch(self) -> Union[str, bool]:
+    def self_switch(self) -> str | bool:
         """
         :return: What kind of self swtich this move implies for the user.
-        :rtype: Optional[str]
+        :rtype: str | None
         """
         return self.entry.get("selfSwitch", False)
 
     @property
-    def side_condition(self) -> Optional[str]:
+    def side_condition(self) -> str | None:
         """
         :return: Side condition inflicted by the move.
-        :rtype: Optional[str]
+        :rtype: str | None
         """
         return self.entry.get("sideCondition", None)
 
@@ -577,10 +577,10 @@ class Move:
         return self.entry.get("sleepUsable", False)
 
     @property
-    def slot_condition(self) -> Optional[str]:
+    def slot_condition(self) -> str | None:
         """
         :return: Which slot condition is started by this move.
-        :rtype: Optional[str]
+        :rtype: str | None
         """
         return self.entry.get("slotCondition", None)
 
@@ -593,7 +593,7 @@ class Move:
         return self.entry.get("stallingMove", False)
 
     @property
-    def status(self) -> Optional[Status]:
+    def status(self) -> Status | None:
         """
         :return: The status inflicted by the move.
         :rtype: Optional[Status]
@@ -637,7 +637,7 @@ class Move:
         return self.entry["target"]
 
     @property
-    def terrain(self) -> Optional[Field]:
+    def terrain(self) -> Field | None:
         """
         :return: Terrain started by the move.
         :rtype: Optional[Field]
@@ -672,15 +672,15 @@ class Move:
         return self.entry.get("overrideOffensivePokemon", False) == "target"
 
     @property
-    def volatile_status(self) -> Optional[str]:
+    def volatile_status(self) -> str | None:
         """
         :return: Volatile status inflicted by the move.
-        :rtype: Optional[str]
+        :rtype: str | None
         """
         return self.entry.get("volatileStatus", None)
 
     @property
-    def weather(self) -> Optional[Weather]:
+    def weather(self) -> Weather | None:
         """
         :return: Weather started by the move.
         :rtype: Optional[Weather]
@@ -690,20 +690,20 @@ class Move:
         return None
 
     @property
-    def z_move_boost(self) -> Optional[Dict[str, int]]:
+    def z_move_boost(self) -> dict[str, int] | None:
         """
         :return: Boosts associated with the z-move version of this move.
-        :rtype: Dict[str, int]
+        :rtype: dict[str, int]
         """
         if "zMove" in self.entry and "boost" in self.entry["zMove"]:
             return self.entry["zMove"]["boost"]
         return None
 
     @property
-    def z_move_effect(self) -> Optional[str]:
+    def z_move_effect(self) -> str | None:
         """
         :return: Effects associated with the z-move version of this move.
-        :rtype: Optional[str]
+        :rtype: str | None
         """
         if "zMove" in self.entry and "effect" in self.entry["zMove"]:
             return self.entry["zMove"]["effect"]
@@ -744,17 +744,17 @@ class Move:
 
 
 class EmptyMove(Move):
-    def __init__(self, move_id):
-        self._id: str = move_id
+    def __init__(self, move_id: str):
+        self._id = move_id
         self._is_empty: bool = True
 
-    def __getattribute__(self, name):
+    def __getattribute__(self, name: str):
         try:
             return super(Move, self).__getattribute__(name)
         except (AttributeError, TypeError, ValueError):
             return 0
 
-    def __deepcopy__(self, memodict={}):
+    def __deepcopy__(self, memodict: dict[int, Any] | None = {}):
         return EmptyMove(copy.deepcopy(self._id, memodict))
 
 
@@ -789,7 +789,7 @@ class DynamaxMove(Move):
     def __init__(self, parent: Move):
         self._parent: Move = parent
 
-    def __getattr__(self, name):
+    def __getattr__(self, name: str):
         if name[:2] == "__":
             raise AttributeError(name)
         return getattr(self._parent, name)
@@ -833,7 +833,7 @@ class DynamaxMove(Move):
         return 0
 
     @property
-    def boosts(self) -> Optional[Dict[str, float]]:
+    def boosts(self) -> dict[str, int] | None:
         if self.category != MoveCategory.STATUS:
             return self.BOOSTS_MAP.get(self.type, None)
         return None
@@ -887,7 +887,7 @@ class DynamaxMove(Move):
         return 0
 
     @property
-    def self_boost(self) -> Optional[Dict[str, float]]:
+    def self_boost(self) -> dict[str, int] | None:
         if self.category != MoveCategory.STATUS:
             return self.SELF_BOOSTS_MAP.get(self.type, None)
         return None
@@ -897,13 +897,13 @@ class DynamaxMove(Move):
         return None
 
     @property
-    def terrain(self) -> Optional[Field]:
+    def terrain(self) -> Field | None:
         if self.category != MoveCategory.STATUS:
             return self.TERRAIN_MAP.get(self.type, None)
         return None
 
     @property
-    def weather(self) -> Optional[Weather]:
+    def weather(self) -> Weather | None:
         if self.category != MoveCategory.STATUS:
             return self.WEATHER_MAP.get(self.type, None)
         return None

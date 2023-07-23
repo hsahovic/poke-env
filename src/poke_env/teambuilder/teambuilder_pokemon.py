@@ -29,21 +29,21 @@ class TeambuilderPokemon:
 
     def __init__(
         self,
-        nickname=None,
-        species=None,
-        item=None,
-        ability=None,
-        moves=None,
-        nature=None,
-        evs=None,
-        gender=None,
-        ivs=None,
-        shiny=None,
-        level=None,
-        happiness=None,
-        hiddenpowertype=None,
-        gmax=None,
-        tera_type=None,
+        nickname: str | None = None,
+        species: str | None = None,
+        item: str | None = None,
+        ability: str | None = None,
+        moves: list[str] | None = None,
+        nature: str | None = None,
+        evs: list[str | None] = [None] * 6,
+        gender: str | None = None,
+        ivs: list[str | None] = [None] * 6,
+        shiny: bool | None = None,
+        level: str | None = None,
+        happiness: str | None = None,
+        hiddenpowertype: str | None = None,
+        gmax: bool | None = None,
+        tera_type: str | None = None,
     ):
         self.nickname = nickname
         self.species = species
@@ -57,16 +57,8 @@ class TeambuilderPokemon:
         self.hiddenpowertype = hiddenpowertype
         self.gmax = gmax
         self.tera_type = tera_type
-
-        if evs is not None:
-            self.evs = evs
-        else:
-            self.evs = [None] * 6
-
-        if ivs is not None:
-            self.ivs = ivs
-        else:
-            self.ivs = [None] * 6
+        self.evs = evs
+        self.ivs = ivs
 
         if moves is None:
             self.moves = []
@@ -81,14 +73,18 @@ class TeambuilderPokemon:
 
     @property
     def formatted_evs(self) -> str:
-        f_evs = ",".join([str(el) if el != 0 else "" for el in self.evs])
+        f_evs = ",".join(
+            [el if el is not None and el != "0" else "" for el in self.evs]
+        )
         if f_evs == "," * 5:
             return ""
         return f_evs
 
     @property
     def formatted_ivs(self) -> str:
-        f_ivs = ",".join([str(el) if el != 31 else "" for el in self.ivs])
+        f_ivs = ",".join(
+            [el if el is not None and el != "31" else "" for el in self.ivs]
+        )
         if f_ivs == "," * 5:
             return ""
         return f_ivs
@@ -135,6 +131,6 @@ class TeambuilderPokemon:
             move = to_id_str(move)
             if move.startswith("hiddenpower") and all([iv is None for iv in self.ivs]):
                 if len(move) > 11:
-                    self.ivs = list(self.HP_TO_IVS[move[11:]])
-        self.ivs = [iv if iv is not None else 31 for iv in self.ivs]
-        self.evs = [ev if ev is not None else 0 for ev in self.evs]
+                    self.ivs = [str(iv) for iv in self.HP_TO_IVS[move[11:]]]
+        self.ivs = [iv if iv is not None else "31" for iv in self.ivs]
+        self.evs = [ev if ev is not None else "0" for ev in self.evs]

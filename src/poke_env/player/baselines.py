@@ -1,12 +1,14 @@
+from typing import Any
+
+from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.double_battle import DoubleBattle
 from poke_env.environment.move_category import MoveCategory
 from poke_env.environment.side_condition import SideCondition
 from poke_env.player.player import Player
-from poke_env.player.random_player import RandomPlayer  # noqa: F401
 
 
 class MaxBasePowerPlayer(Player):
-    def choose_move(self, battle):
+    def choose_move(self, battle: AbstractBattle):
         if battle.available_moves:
             best_move = max(battle.available_moves, key=lambda move: move.base_power)
             return self.create_order(best_move)
@@ -27,7 +29,7 @@ class SimpleHeuristicsPlayer(Player):
     HP_FRACTION_COEFICIENT = 0.4
     SWITCH_OUT_MATCHUP_THRESHOLD = -2
 
-    def _estimate_matchup(self, mon, opponent):
+    def _estimate_matchup(self, mon: Any, opponent: Any):
         score = max([opponent.damage_multiplier(t) for t in mon.types if t is not None])
         score -= max(
             [mon.damage_multiplier(t) for t in opponent.types if t is not None]
@@ -42,7 +44,7 @@ class SimpleHeuristicsPlayer(Player):
 
         return score
 
-    def _should_dynamax(self, battle, n_remaining_mons):
+    def _should_dynamax(self, battle: AbstractBattle, n_remaining_mons: int):
         if battle.can_dynamax:
             # Last full HP mon
             if (
@@ -65,7 +67,7 @@ class SimpleHeuristicsPlayer(Player):
                 return True
         return False
 
-    def _should_switch_out(self, battle):
+    def _should_switch_out(self, battle: AbstractBattle):
         active = battle.active_pokemon
         opponent = battle.opponent_active_pokemon
         # If there is a decent switch in...
@@ -94,7 +96,7 @@ class SimpleHeuristicsPlayer(Player):
                 return True
         return False
 
-    def _stat_estimation(self, mon, stat):
+    def _stat_estimation(self, mon: Any, stat: str):
         # Stats boosts value
         if mon.boosts[stat] > 1:
             boost = (2 + mon.boosts[stat]) / 2
@@ -102,7 +104,7 @@ class SimpleHeuristicsPlayer(Player):
             boost = 2 / (2 - mon.boosts[stat])
         return ((2 * mon.base_stats[stat] + 31) + 5) * boost
 
-    def choose_move(self, battle):
+    def choose_move(self, battle: AbstractBattle):
         if isinstance(battle, DoubleBattle):
             return self.choose_random_doubles_move(battle)
 

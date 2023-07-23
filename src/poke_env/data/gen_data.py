@@ -1,8 +1,11 @@
-from functools import lru_cache
-import orjson  # pyre-ignore[21]
-import os
+from __future__ import annotations
 
-from typing import Any, Dict, Union
+import os
+from functools import lru_cache
+from typing import Any, Union
+
+import orjson  # pyre-ignore[21]
+
 from poke_env.data.normalize import to_id_str
 
 
@@ -11,7 +14,7 @@ class GenData:
 
     UNKNOWN_ITEM = "unknown_item"
 
-    _gen_data_per_gen = {}
+    _gen_data_per_gen: dict[int, GenData] = {}
 
     def __init__(self, gen: int) -> None:
         if gen in self._gen_data_per_gen:
@@ -24,31 +27,31 @@ class GenData:
         self.type_chart = self.load_type_chart(gen)
         self.learnset = self.load_learnset()
 
-    def __deepcopy__(self, memodict=None) -> "GenData":
+    def __deepcopy__(self) -> GenData:
         return self
 
-    def load_moves(self, gen: int) -> Dict[str, Any]:
+    def load_moves(self, gen: int) -> dict[str, Any]:
         with open(
             os.path.join(self._static_files_root, "moves", f"gen{gen}moves.json")
         ) as f:
             return orjson.loads(f.read())
 
-    def load_natures(self) -> Dict[str, Dict[str, Union[int, float]]]:
+    def load_natures(self) -> dict[str, dict[str, Union[int, float]]]:
         with open(os.path.join(self._static_files_root, "natures.json")) as f:
             return orjson.loads(f.read())
 
-    def load_learnset(self) -> Dict[str, Dict[str, Union[int, float]]]:
+    def load_learnset(self) -> dict[str, dict[str, Union[int, float]]]:
         with open(os.path.join(self._static_files_root, "learnset.json")) as f:
             return orjson.loads(f.read())
 
-    def load_pokedex(self, gen: int) -> Dict[str, Any]:
+    def load_pokedex(self, gen: int) -> dict[str, Any]:
         with open(
             os.path.join(self._static_files_root, "pokedex", f"gen{gen}pokedex.json")
         ) as f:
             dex = orjson.loads(f.read())
 
-        other_forms_dex: Dict[str, Any] = {}
-        for key, value in dex.items():
+        other_forms_dex: dict[str, Any] = {}
+        for value in dex.values():
             if "cosmeticFormes" in value:
                 for other_form in value["cosmeticFormes"]:
                     other_forms_dex[to_id_str(other_form)] = value
@@ -68,7 +71,7 @@ class GenData:
 
         return dex
 
-    def load_type_chart(self, gen: int) -> Dict[str, Dict[str, float]]:
+    def load_type_chart(self, gen: int) -> dict[str, dict[str, float]]:
         with open(
             os.path.join(
                 self._static_files_root, "typechart", f"gen{gen}typechart.json"
@@ -112,7 +115,7 @@ class GenData:
 
     @classmethod
     @lru_cache(None)
-    def from_gen(cls, gen: int) -> "GenData":
+    def from_gen(cls, gen: int) -> GenData:
         gen_data = GenData(gen)
         cls._gen_data_per_gen[gen] = gen_data
 
@@ -120,6 +123,6 @@ class GenData:
 
     @classmethod
     @lru_cache(None)
-    def from_format(cls, format: str) -> "GenData":
+    def from_format(cls, format: str) -> GenData:
         gen = int(format[3])  # Update when Gen 10 comes
         return cls.from_gen(gen)

@@ -2,7 +2,7 @@
 """
 from abc import ABC
 from threading import Lock
-from typing import Optional, Union, List
+from typing import Optional, Union
 
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.battle import Battle
@@ -25,9 +25,9 @@ class EnvPlayer(OpenAIGymEnv, ABC):
         opponent: Optional[Union[Player, str]],
         player_configuration: Optional[PlayerConfiguration] = None,
         *,
-        avatar: Optional[int] = None,
+        avatar: int | None = None,
         battle_format: Optional[str] = None,
-        log_level: Optional[int] = None,
+        log_level: int | None = None,
         save_replays: Union[bool, str] = False,
         server_configuration: Optional[ServerConfiguration] = None,
         start_listening: bool = True,
@@ -81,7 +81,7 @@ class EnvPlayer(OpenAIGymEnv, ABC):
             or leave it inactive.
         :type start_challenging: bool
         """
-        self._reward_buffer = {}
+        self._reward_buffer: dict[AbstractBattle, float] = {}
         self._opponent_lock = Lock()
         self._opponent: Optional[Union[Player, str]] = opponent
         b_format = self._DEFAULT_BATTLE_FORMAT
@@ -191,7 +191,7 @@ class EnvPlayer(OpenAIGymEnv, ABC):
     def action_space_size(self) -> int:
         return len(self._ACTION_SPACE)
 
-    def get_opponent(self) -> Union[Player, str, List[Player], List[str]]:
+    def get_opponent(self) -> Player | str | list[Player] | list[str]:
         with self._opponent_lock:
             if self._opponent is None:
                 raise RuntimeError(
@@ -200,15 +200,13 @@ class EnvPlayer(OpenAIGymEnv, ABC):
                 )
             return self._opponent
 
-    def set_opponent(self, opponent: Union[Player, str]):
+    def set_opponent(self, opponent: Player | str):
         """
         Sets the next opponent to the specified opponent.
 
         :param opponent: The next opponent to challenge
         :type opponent: Player or str
         """
-        if not isinstance(opponent, Player) and not isinstance(opponent, str):
-            raise RuntimeError(f"Expected type Player or str. Got {type(opponent)}")
         with self._opponent_lock:
             self._opponent = opponent
 

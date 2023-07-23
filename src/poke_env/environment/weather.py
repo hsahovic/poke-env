@@ -1,8 +1,8 @@
 """This module defines the Weather class, which represents a in-battle weather.
 """
 # pyre-ignore-all-errors[45]
-from enum import Enum, unique, auto
 import logging
+from enum import Enum, auto, unique
 
 
 @unique
@@ -23,7 +23,7 @@ class Weather(Enum):
         return f"{self.name} (weather) object"
 
     @staticmethod
-    def from_showdown_message(message):
+    def from_showdown_message(message: str):
         """Returns the Weather object corresponding to the message.
 
         :param message: The message to convert.

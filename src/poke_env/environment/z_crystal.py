@@ -1,14 +1,10 @@
 """This module contains objects related ot z-crystal management. It should not be used
 directly.
 """
-from typing import Dict
-from typing import Optional
-from typing import Tuple
 
 from poke_env.environment.pokemon_type import PokemonType
 
-
-Z_CRYSTAL: Dict[str, Tuple[Optional[PokemonType], Optional[str]]] = {
+Z_CRYSTAL: dict[str, tuple[PokemonType | None, str | None]] = {
     "buginiumz": (PokemonType.BUG, None),
     "darkiniumz": (PokemonType.DARK, None),
     "dragoniumz": (PokemonType.DRAGON, None),
