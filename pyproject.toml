@@ -38,7 +38,7 @@ Documentation = "https://poke-env.readthedocs.io/en/stable/"
 Repository = "https://github.com/hsahovic/poke-env"
 
 [tool.black]
-line-length = 91
+line-length = 88
 
 [tool.isort]
 profile = "black"
