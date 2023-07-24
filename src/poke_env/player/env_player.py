@@ -2,7 +2,7 @@
 """
 from abc import ABC
 from threading import Lock
-from typing import Optional, Union, List
+from typing import List, Optional, Union
 
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.battle import Battle

@@ -40,6 +40,11 @@ Repository = "https://github.com/hsahovic/poke-env"
 [tool.black]
 line-length = 91
 
+[tool.isort]
+profile = "black"
+line_length = 91
+multi_line_output = 3
+
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
 

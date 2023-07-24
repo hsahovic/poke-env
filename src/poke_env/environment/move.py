@@ -1,14 +1,13 @@
 import copy
+from functools import lru_cache
+from typing import Dict, List, Optional, Set, Tuple, Union
 
+from poke_env.data import GenData, to_id_str
 from poke_env.environment.field import Field
 from poke_env.environment.move_category import MoveCategory
 from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.status import Status
 from poke_env.environment.weather import Weather
-
-from poke_env.data import GenData, to_id_str
-from functools import lru_cache
-from typing import Dict, List, Optional, Set, Tuple, Union
 
 SPECIAL_MOVES: Set = {"struggle", "recharge"}
 

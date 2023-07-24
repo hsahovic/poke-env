@@ -4,24 +4,21 @@ For a black-box implementation consider using the module env_player.
 # pyre-ignore-all-errors[34]
 import asyncio
 import copy
-import numpy as np  # pyre-ignore
 import time
-
 from abc import ABC, abstractmethod
 from logging import Logger
-from typing import Union, Awaitable, Optional, Tuple, TypeVar, Callable, Dict, List
+from typing import Awaitable, Callable, Dict, List, Optional, Tuple, TypeVar, Union
+
+import numpy as np  # pyre-ignore
 from gym.core import Env  # pyre-ignore
-from gym.spaces import Space, Discrete  # pyre-ignore
+from gym.spaces import Discrete, Space  # pyre-ignore
 
 from poke_env.environment.abstract_battle import AbstractBattle
-from poke_env.player.internals import POKE_LOOP
 from poke_env.player.battle_order import BattleOrder, ForfeitBattleOrder
+from poke_env.player.internals import POKE_LOOP
 from poke_env.player.player import Player
 from poke_env.player_configuration import PlayerConfiguration
-from poke_env.server_configuration import (
-    ServerConfiguration,
-    LocalhostServerConfiguration,
-)
+from poke_env.server_configuration import LocalhostServerConfiguration, ServerConfiguration
 from poke_env.teambuilder.teambuilder import Teambuilder
 
 ObservationType = TypeVar("ObservationType")

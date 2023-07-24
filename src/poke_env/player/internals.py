@@ -1,8 +1,7 @@
 import asyncio
 import atexit
 import sys
-
-from logging import disable, CRITICAL
+from logging import CRITICAL, disable
 from threading import Thread
 
 

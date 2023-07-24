@@ -2,7 +2,6 @@
 """
 
 import math
-
 from typing import List
 
 from poke_env.data import GenData  # noqa: F401

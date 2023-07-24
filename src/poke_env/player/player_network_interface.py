@@ -3,21 +3,15 @@
 import asyncio
 import json
 import logging
+from abc import ABC, abstractmethod
+from asyncio import CancelledError, Event, Lock, create_task, sleep
+from logging import Logger
+from time import perf_counter
+from typing import List, Optional
+
 import requests
 import websockets  # pyre-ignore
 
-from abc import ABC
-from abc import abstractmethod
-from asyncio import CancelledError
-from asyncio import create_task
-from asyncio import Event
-from asyncio import Lock
-from asyncio import sleep
-from time import perf_counter
-from typing import List
-from typing import Optional
-
-from logging import Logger
 from poke_env.exceptions import ShowdownException
 from poke_env.player.internals import POKE_LOOP
 from poke_env.player_configuration import PlayerConfiguration

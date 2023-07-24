@@ -1,7 +1,7 @@
 """This module defines the MoveCategory class, which represents a move category.
 """
 # pyre-ignore-all-errors[45]
-from enum import Enum, unique, auto
+from enum import Enum, auto, unique
 
 
 @unique

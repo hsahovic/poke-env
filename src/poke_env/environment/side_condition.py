@@ -1,9 +1,10 @@
 """This module defines the SideCondition class, which represents a in-battle side
 condition.
 """
-# pyre-ignore-all-errors[45]
-from enum import Enum, unique, auto
 import logging
+
+# pyre-ignore-all-errors[45]
+from enum import Enum, auto, unique
 
 
 @unique

@@ -2,42 +2,31 @@
 """
 
 import asyncio
-import orjson  # pyre-ignore
 import random
-
-from abc import ABC
-from abc import abstractmethod
-from asyncio import Condition
-from asyncio import Event
-from asyncio import Queue
-from asyncio import Semaphore
+from abc import ABC, abstractmethod
+from asyncio import Condition, Event, Queue, Semaphore
 from inspect import isawaitable
 from time import perf_counter
-from typing import Awaitable
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Union
+from typing import Awaitable, Dict, List, Optional, Union
 
+import orjson  # pyre-ignore
+
+from poke_env.data import GenData, to_id_str
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.battle import Battle
 from poke_env.environment.double_battle import DoubleBattle
 from poke_env.environment.move import Move
 from poke_env.environment.pokemon import Pokemon
 from poke_env.exceptions import ShowdownException
+from poke_env.player.battle_order import BattleOrder, DefaultBattleOrder, DoubleBattleOrder
 from poke_env.player.player_network_interface import PlayerNetwork
-from poke_env.player.battle_order import (
-    BattleOrder,
-    DefaultBattleOrder,
-    DoubleBattleOrder,
+from poke_env.player_configuration import (
+    PlayerConfiguration,
+    _create_player_configuration_from_player,
 )
-from poke_env.player_configuration import _create_player_configuration_from_player
-from poke_env.player_configuration import PlayerConfiguration
-from poke_env.server_configuration import LocalhostServerConfiguration
-from poke_env.server_configuration import ServerConfiguration
-from poke_env.teambuilder.teambuilder import Teambuilder
+from poke_env.server_configuration import LocalhostServerConfiguration, ServerConfiguration
 from poke_env.teambuilder.constant_teambuilder import ConstantTeambuilder
-from poke_env.data import GenData, to_id_str
+from poke_env.teambuilder.teambuilder import Teambuilder
 
 
 class Player(PlayerNetwork, ABC):
