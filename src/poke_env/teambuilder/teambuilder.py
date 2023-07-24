@@ -5,6 +5,8 @@ from abc import ABC, abstractmethod
 
 from poke_env.teambuilder.teambuilder_pokemon import TeambuilderPokemon
 
+from poke_env.teambuilder.teambuilder_pokemon import TeambuilderPokemon
+
 
 class Teambuilder(ABC):
     """Teambuilder objects allow the generation of teams by Player instances.
