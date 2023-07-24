@@ -42,7 +42,6 @@ line-length = 88
 
 [tool.isort]
 profile = "black"
-line_length = 91
 multi_line_output = 3
 
 [tool.setuptools.dynamic]

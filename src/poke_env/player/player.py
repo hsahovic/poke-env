@@ -18,13 +18,20 @@ from poke_env.environment.double_battle import DoubleBattle
 from poke_env.environment.move import Move
 from poke_env.environment.pokemon import Pokemon
 from poke_env.exceptions import ShowdownException
-from poke_env.player.battle_order import BattleOrder, DefaultBattleOrder, DoubleBattleOrder
+from poke_env.player.battle_order import (
+    BattleOrder,
+    DefaultBattleOrder,
+    DoubleBattleOrder,
+)
 from poke_env.player.player_network_interface import PlayerNetwork
 from poke_env.player_configuration import (
     PlayerConfiguration,
     _create_player_configuration_from_player,
 )
-from poke_env.server_configuration import LocalhostServerConfiguration, ServerConfiguration
+from poke_env.server_configuration import (
+    LocalhostServerConfiguration,
+    ServerConfiguration,
+)
 from poke_env.teambuilder.constant_teambuilder import ConstantTeambuilder
 from poke_env.teambuilder.teambuilder import Teambuilder
 

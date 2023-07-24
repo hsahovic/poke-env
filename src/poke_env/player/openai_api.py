@@ -18,7 +18,10 @@ from poke_env.player.battle_order import BattleOrder, ForfeitBattleOrder
 from poke_env.player.internals import POKE_LOOP
 from poke_env.player.player import Player
 from poke_env.player_configuration import PlayerConfiguration
-from poke_env.server_configuration import LocalhostServerConfiguration, ServerConfiguration
+from poke_env.server_configuration import (
+    LocalhostServerConfiguration,
+    ServerConfiguration,
+)
 from poke_env.teambuilder.teambuilder import Teambuilder
 
 ObservationType = TypeVar("ObservationType")
