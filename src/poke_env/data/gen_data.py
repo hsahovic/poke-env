@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 from functools import lru_cache
-from typing import Any, Union
+from typing import Any
 
 import orjson  # pyre-ignore[21]
 
@@ -36,11 +36,11 @@ class GenData:
         ) as f:
             return orjson.loads(f.read())
 
-    def load_natures(self) -> dict[str, dict[str, Union[int, float]]]:
+    def load_natures(self) -> dict[str, dict[str, int | float]]:
         with open(os.path.join(self._static_files_root, "natures.json")) as f:
             return orjson.loads(f.read())
 
-    def load_learnset(self) -> dict[str, dict[str, Union[int, float]]]:
+    def load_learnset(self) -> dict[str, dict[str, int | float]]:
         with open(os.path.join(self._static_files_root, "learnset.json")) as f:
             return orjson.loads(f.read())
 

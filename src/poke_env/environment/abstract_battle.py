@@ -134,7 +134,7 @@ class AbstractBattle(ABC):
         self._teampreview_opponent_team: set[Pokemon] = set()
         self._anybody_inactive: bool = False
         self._reconnected: bool = True
-        self.logger: Logger = logger
+        self.logger: Logger | None = logger
 
         # Turn choice attributes
         self.in_team_preview: bool = False
@@ -415,7 +415,7 @@ class AbstractBattle(ABC):
                     reveal_other_move = True
                 elif override_move in {"Copycat", "Metronome", "Nature Power"}:
                     pass
-                else:
+                elif self.logger is not None:
                     self.logger.warning(
                         "Unmanaged [from]move message received - move %s in cleaned up "
                         "message %s in battle %s turn %d",
@@ -437,7 +437,7 @@ class AbstractBattle(ABC):
                     return
                 elif revealed_ability == "Dancer":
                     return
-                else:
+                elif self.logger is not None:
                     self.logger.warning(
                         "Unmanaged [from]ability: message received - ability %s in "
                         "cleaned up message %s in battle %s turn %d",
@@ -469,7 +469,7 @@ class AbstractBattle(ABC):
                     "p2b:",
                 }:
                     pass
-                else:
+                elif self.logger is not None:
                     self.logger.warning(
                         "Unmanaged move message format received - cleaned up message %s"
                         " in battle %s turn %d",
@@ -479,13 +479,14 @@ class AbstractBattle(ABC):
                     )
             else:
                 pokemon, move, presumed_target = split_message[2:5]
-                self.logger.warning(
-                    "Unmanaged move message format received - cleaned up message %s in "
-                    "battle %s turn %d",
-                    split_message,
-                    self.battle_tag,
-                    self.turn,
-                )
+                if self.logger is not None:
+                    self.logger.warning(
+                        "Unmanaged move message format received - cleaned up message %s in "
+                        "battle %s turn %d",
+                        split_message,
+                        self.battle_tag,
+                        self.turn,
+                    )
 
             # Check if a silent-effect move has occurred (Minimize) and add the effect
 
@@ -699,7 +700,7 @@ class AbstractBattle(ABC):
                 self._rating = rating
             elif username == self.opponent_username:
                 self._opponent_rating = rating
-            else:
+            elif self.logger is not None:
                 self.logger.warning(
                     "Rating information regarding an unrecognized username received. "
                     "Received '%s', while only known players are '%s' and '%s'",
@@ -720,7 +721,7 @@ class AbstractBattle(ABC):
             player, number = split_message[2:4]
             number = int(number)
             self._team_size[player] = number
-        elif split_message[1] in {"message", "-message"}:
+        elif split_message[1] in {"message", "-message"} and self.logger is not None:
             self.logger.info("Received message: %s", split_message[2])
         elif split_message[1] == "-immune":
             if len(split_message) == 4:
@@ -778,7 +779,8 @@ class AbstractBattle(ABC):
             conditions[condition] = self.turn
 
     def _swap(self, pokemon_str: str, slot: str):
-        self.logger.warning("swap method in Battle is not implemented")
+        if self.logger is not None:
+            self.logger.warning("swap method in Battle is not implemented")
 
     @abstractmethod
     def switch(self, pokemon_str: str, details: str, hp_status: str):
@@ -850,6 +852,11 @@ class AbstractBattle(ABC):
     @property
     @abstractmethod
     def can_z_move(self) -> Any:
+        pass
+
+    @property
+    @abstractmethod
+    def can_terastallize(self) -> Any:
         pass
 
     @property

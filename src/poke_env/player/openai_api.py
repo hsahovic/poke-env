@@ -10,10 +10,10 @@ from abc import ABC, abstractmethod
 from logging import Logger
 
 # pyre-ignore-all-errors[34]
-from typing import Any, Awaitable, Callable, TypeVar
+from typing import Any, Awaitable, Callable, TypeVar, Generic
 
 import numpy as np  # pyre-ignore
-from gym.core import Env  # pyre-ignore
+from gym.core import Env, ObsType, ActType  # pyre-ignore
 from gym.spaces import Discrete, Space  # pyre-ignore
 
 from poke_env.environment.abstract_battle import AbstractBattle
@@ -27,8 +27,6 @@ from poke_env.server_configuration import (
 )
 from poke_env.teambuilder.teambuilder import Teambuilder
 
-ObservationType = TypeVar("ObservationType")
-ActionType = TypeVar("ActionType")
 BattleType = TypeVar("BattleType", bound=AbstractBattle)
 
 
@@ -61,11 +59,16 @@ class _AsyncQueue:
         await self.queue.join()
 
 
-class _AsyncPlayer(Player):
+class _AsyncPlayer(Generic[ObsType, ActType], Player):
     _actions: _AsyncQueue
     _observations: _AsyncQueue
 
-    def __init__(self, user_funcs: OpenAIGymEnv, username: str, **kwargs: Any):
+    def __init__(
+        self,
+        user_funcs: OpenAIGymEnv[ObsType, ActType],
+        username: str,
+        **kwargs: Any,
+    ):
         self.__class__.__name__ = username
         super().__init__(**kwargs)
         self.__class__.__name__ = "_AsyncPlayer"
@@ -112,7 +115,11 @@ class _OpenAIGymEnvMetaclass(_EnvMetaclass, _ABCMetaclass):
     pass
 
 
-class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
+class OpenAIGymEnv(
+    Env[ObsType, ActType],
+    ABC,
+    metaclass=_OpenAIGymEnvMetaclass,
+):
     """
     Base class implementing the OpenAI Gym API on the main thread.
     """
@@ -231,7 +238,7 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
 
     @abstractmethod
     def action_to_move(
-        self, action: int, battle: BattleType
+        self, action: int, battle: AbstractBattle
     ) -> BattleOrder:  # pragma: no cover
         """
         Returns the BattleOrder relative to the given action.
@@ -247,9 +254,7 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         pass
 
     @abstractmethod
-    def embed_battle(
-        self, battle: AbstractBattle
-    ) -> ObservationType:  # pragma: no cover
+    def embed_battle(self, battle: AbstractBattle) -> ObsType:  # pragma: no cover
         """
         Returns the embedding of the current battle state in a format compatible with
         the OpenAI gym API.
@@ -262,7 +267,7 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         pass
 
     @abstractmethod
-    def describe_embedding(self) -> Space:  # pyre-ignore  # pragma: no cover
+    def describe_embedding(self) -> Space[ObsType]:  # pyre-ignore  # pragma: no cover
         """
         Returns the description of the embedding. It must return a Space specifying
         low bounds and high bounds.
@@ -301,13 +306,15 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         opponent = self.get_opponent()
         if isinstance(opponent, list):
             opponents = opponent
-            random_opponent = np.random.choice(opponents)
+            random_opponent = np.random.choice(np.array(opponents))
             if not isinstance(random_opponent, Player) and not isinstance(
                 random_opponent, str
             ):
                 raise RuntimeError(
                     f"Expected list[Player] or list[str]. Got {type(opponents)}"
                 )
+        else:
+            random_opponent = opponent
         return random_opponent
 
     def reset(
@@ -316,7 +323,7 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         seed: int | None = None,
         return_info: bool = False,
         options: dict[str, Any] | None = None,
-    ) -> tuple[ObservationType, dict[str, Any]]:
+    ) -> tuple[ObsType, dict[str, Any]]:
         if seed is not None:
             super().reset(seed=seed)  # type: ignore
             self._seed_initialized = True
@@ -357,11 +364,8 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         return {}
 
     def step(
-        self, action: ActionType
-    ) -> (
-        tuple[ObservationType, float, bool, bool, dict[str, Any]]
-        | tuple[ObservationType, float, bool, dict[str, Any]]
-    ):
+        self, action: ActType
+    ) -> tuple[ObsType, float, bool, bool, dict[str, Any]]:
         if not self.current_battle:
             obs, info = self.reset(return_info=True)
             return obs, 0.0, False, False, info
@@ -398,30 +402,31 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         return observation, reward, terminated, truncated, self.get_additional_info()
 
     def render(self, mode: str = "human"):
-        print(
-            "  Turn %4d. | [%s][%3d/%3dhp] %10.10s - %10.10s [%3d%%hp][%s]"
-            % (
-                self.current_battle.turn,
-                "".join(
-                    [
-                        "⦻" if mon.fainted else "●"
-                        for mon in self.current_battle.team.values()
-                    ]
+        if self.current_battle is not None:
+            print(
+                "  Turn %4d. | [%s][%3d/%3dhp] %10.10s - %10.10s [%3d%%hp][%s]"
+                % (
+                    self.current_battle.turn,
+                    "".join(
+                        [
+                            "⦻" if mon.fainted else "●"
+                            for mon in self.current_battle.team.values()
+                        ]
+                    ),
+                    self.current_battle.active_pokemon.current_hp or 0,
+                    self.current_battle.active_pokemon.max_hp or 0,
+                    self.current_battle.active_pokemon.species,
+                    self.current_battle.opponent_active_pokemon.species,
+                    self.current_battle.opponent_active_pokemon.current_hp or 0,
+                    "".join(
+                        [
+                            "⦻" if mon.fainted else "●"
+                            for mon in self.current_battle.opponent_team.values()
+                        ]
+                    ),
                 ),
-                self.current_battle.active_pokemon.current_hp or 0,
-                self.current_battle.active_pokemon.max_hp or 0,
-                self.current_battle.active_pokemon.species,
-                self.current_battle.opponent_active_pokemon.species,
-                self.current_battle.opponent_active_pokemon.current_hp or 0,
-                "".join(
-                    [
-                        "⦻" if mon.fainted else "●"
-                        for mon in self.current_battle.opponent_team.values()
-                    ]
-                ),
-            ),
-            end="\n" if self.current_battle.finished else "\r",
-        )
+                end="\n" if self.current_battle.finished else "\r",
+            )
 
     def close(self, purge: bool = True):  # pragma: no cover
         if self.current_battle is None or self.current_battle.finished:
@@ -484,8 +489,8 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
                     await self.agent.battle_against(opponent, 1)
                 else:
                     await self.agent.send_challenges(opponent, 1)
-                if callback:
-                    callback(copy.deepcopy(self.current_battle))  # pyre-ignore
+                if callback and self.current_battle is not None:
+                    callback(copy.deepcopy(self.current_battle))
         elif n_challenges > 0:
             for _ in range(n_challenges):
                 opponent = self._get_opponent()
@@ -493,8 +498,8 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
                     await self.agent.battle_against(opponent, 1)
                 else:
                     await self.agent.send_challenges(opponent, 1)
-                if callback:
-                    callback(copy.deepcopy(self.current_battle))  # pyre-ignore
+                if callback and self.current_battle is not None:
+                    callback(copy.deepcopy(self.current_battle))
         else:
             raise ValueError(f"Number of challenges must be > 0. Got {n_challenges}")
 
@@ -538,13 +543,13 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
                 )
             for _ in range(n_challenges):
                 await self.agent.ladder(1)
-                if callback:
-                    callback(copy.deepcopy(self.current_battle))  # pyre-ignore
+                if callback and self.current_battle is not None:
+                    callback(copy.deepcopy(self.current_battle))
         else:
             while self._keep_challenging:
                 await self.agent.ladder(1)
-                if callback:
-                    callback(copy.deepcopy(self.current_battle))  # pyre-ignore
+                if callback and self.current_battle is not None:
+                    callback(copy.deepcopy(self.current_battle))
 
     def start_laddering(
         self,
@@ -713,7 +718,7 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         return getattr(self.agent, item)
 
 
-class LegacyOpenAIGymEnv(OpenAIGymEnv, ABC):
+class LegacyOpenAIGymEnv(OpenAIGymEnv[ObsType, ActType], ABC):
     """
     Subclass of OpenAIGymEnv compatible with the old gym API.
     If you need compatibility with the old gym API you should use the
@@ -726,30 +731,22 @@ class LegacyOpenAIGymEnv(OpenAIGymEnv, ABC):
         seed: int | None = None,
         return_info: bool = False,
         options: dict[str, Any] | None = None,
-    ) -> ObservationType | tuple[ObservationType, dict[str, Any]]:
-        obs, info = OpenAIGymEnv.reset(
-            self, seed=seed, return_info=True, options=options
-        )
-        if return_info:
-            return obs, info
-        return obs
+    ) -> tuple[ObsType, dict[str, Any]]:
+        obs, info = super().reset(seed=seed, return_info=True, options=options)
+        return obs, info
 
     def step(
-        self, action: ActionType
-    ) -> tuple[ObservationType, float, bool, dict]:  # pragma: no cover
-        obs, reward, terminated, truncated, info = OpenAIGymEnv.step(self, action)
-        return obs, reward, terminated or truncated, info
+        self, action: ActType
+    ) -> tuple[ObsType, float, bool, bool, dict[str, Any]]:  # pragma: no cover
+        obs, reward, terminated, truncated, info = super().step(action)
+        return obs, reward, terminated, truncated, info
 
 
-class _OpenAIGymEnvWrapper(LegacyOpenAIGymEnv):
-    def __init__(self, environment: OpenAIGymEnv):  # noqa
-        self._wrapped: OpenAIGymEnv = environment
-        self.step = LegacyOpenAIGymEnv.step.__get__(  # noqa # pyre-ignore
-            self._wrapped, self._wrapped.__class__
-        )
-        self.reset = LegacyOpenAIGymEnv.reset.__get__(  # noqa # pyre-ignore
-            self._wrapped, self._wrapped.__class__
-        )
+class _OpenAIGymEnvWrapper(LegacyOpenAIGymEnv[ObsType, ActType]):
+    def __init__(self, environment: OpenAIGymEnv[ObsType, ActType]):
+        self._wrapped = environment
+        self.step = super().step.__get__(self._wrapped, self._wrapped.__class__)
+        self.reset = super().reset.__get__(self._wrapped, self._wrapped.__class__)
         self._instantiated = True
 
     def calc_reward(
@@ -760,7 +757,7 @@ class _OpenAIGymEnvWrapper(LegacyOpenAIGymEnv):
     def action_to_move(self, action: int, battle: AbstractBattle) -> BattleOrder:
         return self._wrapped.action_to_move(action, battle)
 
-    def embed_battle(self, battle: AbstractBattle) -> ObservationType:
+    def embed_battle(self, battle: AbstractBattle) -> ObsType:
         return self._wrapped.embed_battle(battle)
 
     def describe_embedding(self) -> Space[Any]:
@@ -772,7 +769,7 @@ class _OpenAIGymEnvWrapper(LegacyOpenAIGymEnv):
     def get_opponent(self) -> Player | str | list[Player] | list[str]:
         return self._wrapped.get_opponent()
 
-    def __getattr__(self, item):
+    def __getattr__(self, item: str):
         if item == "_instantiated":
             return False
         return getattr(self._wrapped, item)
@@ -783,7 +780,9 @@ class _OpenAIGymEnvWrapper(LegacyOpenAIGymEnv):
         return setattr(self._wrapped, key, value)
 
 
-def wrap_for_old_gym_api(env: OpenAIGymEnv) -> LegacyOpenAIGymEnv:
+def wrap_for_old_gym_api(
+    env: OpenAIGymEnv[ObsType, ActType]
+) -> LegacyOpenAIGymEnv[ObsType, ActType]:
     """
     Wraps an OpenAIGymEnv in order to support the old gym API.
 

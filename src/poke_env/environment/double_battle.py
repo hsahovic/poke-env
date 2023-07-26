@@ -87,11 +87,12 @@ class DoubleBattle(AbstractBattle):
         Args:
             request (dict): parsed json request object
         """
-        self.logger.debug(
-            "Parsing the following request update in battle %s:\n%s",
-            self.battle_tag,
-            request,
-        )
+        if self.logger is not None:
+            self.logger.debug(
+                "Parsing the following request update in battle %s:\n%s",
+                self.battle_tag,
+                request,
+            )
 
         if "wait" in request and request["wait"]:
             self._wait = True
