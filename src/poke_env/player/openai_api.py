@@ -10,10 +10,10 @@ from abc import ABC, abstractmethod
 from logging import Logger
 
 # pyre-ignore-all-errors[34]
-from typing import Any, Awaitable, Callable, TypeVar, Generic
+from typing import Any, Awaitable, Callable, Generic, TypeVar
 
 import numpy as np  # pyre-ignore
-from gym.core import Env, ObsType, ActType  # pyre-ignore
+from gym.core import ActType, Env, ObsType  # pyre-ignore
 from gym.spaces import Discrete, Space  # pyre-ignore
 
 from poke_env.environment.abstract_battle import AbstractBattle
