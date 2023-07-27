@@ -4,8 +4,7 @@ import os
 from functools import lru_cache
 from typing import Any
 
-import orjson  # pyre-ignore[21]
-
+import orjson
 from poke_env.data.normalize import to_id_str
 
 

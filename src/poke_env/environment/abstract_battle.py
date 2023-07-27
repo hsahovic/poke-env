@@ -226,7 +226,7 @@ class AbstractBattle(ABC):
         return team[identifier]
 
     @abstractmethod
-    def clear_all_boosts(self):  # pragma: no cover
+    def clear_all_boosts(self):
         pass
 
     def _check_damage_message_for_item(self, split_message: list[str]):
@@ -607,7 +607,7 @@ class AbstractBattle(ABC):
             if self.player_role is not None and not split_message[2].startswith(
                 self.player_role
             ):
-                self._opponent_can_mega_evolve = False  # pyre-ignore
+                self._opponent_can_mega_evolve = False
             pokemon, megastone = split_message[2:4]
             self.get_pokemon(pokemon).mega_evolve(megastone)
         elif split_message[1] == "-mustrecharge":
@@ -654,7 +654,7 @@ class AbstractBattle(ABC):
             if self._player_role is not None and not split_message[2].startswith(
                 self._player_role
             ):
-                self._opponent_can_mega_z_move = False  # pyre-ignore
+                self._opponent_can_mega_z_move = False
 
             pokemon = split_message[2]
             self.get_pokemon(pokemon).used_z_move()
@@ -921,12 +921,12 @@ class AbstractBattle(ABC):
 
     @property
     @abstractmethod
-    def opponent_can_dynamax(self) -> Any:  # pragma: no cover
+    def opponent_can_dynamax(self) -> Any:
         pass
 
     @opponent_can_dynamax.setter
     @abstractmethod
-    def opponent_can_dynamax(self, value: bool) -> Any:  # pragma: no cover
+    def opponent_can_dynamax(self, value: bool) -> Any:
         pass
 
     @property

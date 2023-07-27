@@ -105,7 +105,7 @@ def _estimate_strength_from_results(
 
 def background_evaluate_player(
     player: Any, n_battles: int = 1000, n_placement_battles: int = 30
-) -> "Future[tuple[float, tuple[float, float]]]":  # pragma: no cover
+) -> "Future[tuple[float, tuple[float, float]]]":
     return asyncio.run_coroutine_threadsafe(
         evaluate_player(player, n_battles, n_placement_battles), POKE_LOOP
     )

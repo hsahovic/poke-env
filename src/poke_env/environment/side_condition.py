@@ -2,8 +2,6 @@
 condition.
 """
 import logging
-
-# pyre-ignore-all-errors[45]
 from enum import Enum, auto, unique
 
 

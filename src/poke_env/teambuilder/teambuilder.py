@@ -21,7 +21,7 @@ class Teambuilder(ABC):
     """
 
     @abstractmethod
-    def yield_team(self) -> str:  # pragma: no cover
+    def yield_team(self) -> str:
         """Returns a packed-format team."""
 
     @staticmethod

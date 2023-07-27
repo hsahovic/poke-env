@@ -209,9 +209,7 @@ class EnvPlayer(OpenAIGymEnv[ObsType, ActType], ABC):
         with self._opponent_lock:
             self._opponent = opponent
 
-    def reset_env(
-        self, opponent: Player | str | None = None, restart: bool = True
-    ):  # pragma: no cover
+    def reset_env(self, opponent: Player | str | None = None, restart: bool = True):
         """
         Resets the environment to an inactive state: it will forfeit all unfinished
         battles, reset the internal battle tracker and optionally change the next
@@ -237,9 +235,7 @@ class Gen4EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
     _ACTION_SPACE = list(range(4 + 6))
     _DEFAULT_BATTLE_FORMAT = "gen4randombattle"
 
-    def action_to_move(
-        self, action: int, battle: AbstractBattle
-    ) -> BattleOrder:  # pyre-ignore
+    def action_to_move(self, action: int, battle: AbstractBattle) -> BattleOrder:
         """Converts actions to move orders.
 
         The conversion is done as follows:
@@ -282,9 +278,7 @@ class Gen6EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
     _ACTION_SPACE = list(range(2 * 4 + 6))
     _DEFAULT_BATTLE_FORMAT = "gen6randombattle"
 
-    def action_to_move(
-        self, action: int, battle: AbstractBattle
-    ) -> BattleOrder:  # pyre-ignore
+    def action_to_move(self, action: int, battle: AbstractBattle) -> BattleOrder:
         """Converts actions to move orders.
 
         The conversion is done as follows:
@@ -334,9 +328,7 @@ class Gen7EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
     _ACTION_SPACE = list(range(3 * 4 + 6))
     _DEFAULT_BATTLE_FORMAT = "gen7randombattle"
 
-    def action_to_move(
-        self, action: int, battle: AbstractBattle
-    ) -> BattleOrder:  # pyre-ignore
+    def action_to_move(self, action: int, battle: AbstractBattle) -> BattleOrder:
         """Converts actions to move orders.
 
         The conversion is done as follows:
@@ -375,9 +367,7 @@ class Gen7EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
             not battle.force_switch
             and battle.can_z_move
             and battle.active_pokemon
-            and 0
-            <= action - 4
-            < len(battle.active_pokemon.available_z_moves)  # pyre-ignore
+            and 0 <= action - 4 < len(battle.active_pokemon.available_z_moves)
         ):
             return self.agent.create_order(
                 battle.active_pokemon.available_z_moves[action - 4], z_move=True
@@ -400,9 +390,7 @@ class Gen8EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
     _ACTION_SPACE = list(range(4 * 4 + 6))
     _DEFAULT_BATTLE_FORMAT = "gen8randombattle"
 
-    def action_to_move(
-        self, action: int, battle: AbstractBattle
-    ) -> BattleOrder:  # pyre-ignore
+    def action_to_move(self, action: int, battle: AbstractBattle) -> BattleOrder:
         """Converts actions to move orders.
 
         The conversion is done as follows:
@@ -447,9 +435,7 @@ class Gen8EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
             not battle.force_switch
             and battle.can_z_move
             and battle.active_pokemon
-            and 0
-            <= action - 4
-            < len(battle.active_pokemon.available_z_moves)  # pyre-ignore
+            and 0 <= action - 4 < len(battle.active_pokemon.available_z_moves)
         ):
             return self.agent.create_order(
                 battle.active_pokemon.available_z_moves[action - 4], z_move=True
@@ -480,9 +466,7 @@ class Gen9EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
     _ACTION_SPACE = list(range(5 * 4 + 6))
     _DEFAULT_BATTLE_FORMAT = "gen9randombattle"
 
-    def action_to_move(
-        self, action: int, battle: AbstractBattle
-    ) -> BattleOrder:  # pyre-ignore
+    def action_to_move(self, action: int, battle: AbstractBattle) -> BattleOrder:
         """Converts actions to move orders.
 
         The conversion is done as follows:
@@ -530,9 +514,7 @@ class Gen9EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
             not battle.force_switch
             and battle.can_z_move
             and battle.active_pokemon
-            and 0
-            <= action - 4
-            < len(battle.active_pokemon.available_z_moves)  # pyre-ignore
+            and 0 <= action - 4 < len(battle.active_pokemon.available_z_moves)
         ):
             return self.agent.create_order(
                 battle.active_pokemon.available_z_moves[action - 4], z_move=True

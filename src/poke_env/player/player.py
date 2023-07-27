@@ -403,7 +403,7 @@ class Player(PlayerNetwork, ABC):
 
     async def _accept_challenges(
         self, opponent: str | list[str] | None, n_challenges: int
-    ) -> None:  # pragma: no cover
+    ) -> None:
         if opponent:
             if isinstance(opponent, list):
                 opponent = [to_id_str(o) for o in opponent]
@@ -431,7 +431,7 @@ class Player(PlayerNetwork, ABC):
     @abstractmethod
     def choose_move(
         self, battle: AbstractBattle
-    ) -> BattleOrder | Awaitable[BattleOrder]:  # pragma: no cover
+    ) -> BattleOrder | Awaitable[BattleOrder]:
         """Abstract method to choose a move in a battle.
 
         :param battle: The battle.
@@ -460,7 +460,7 @@ class Player(PlayerNetwork, ABC):
             can_mega,
             can_z_move,
             can_dynamax,
-            can_tera,
+            can_terastallize,
         ) in zip(
             active_orders,
             battle.active_pokemon,
@@ -469,7 +469,7 @@ class Player(PlayerNetwork, ABC):
             battle.can_mega_evolve,
             battle.can_z_move,
             battle.can_dynamax,
-            battle.can_tera,
+            battle.can_terastallize,
         ):
             if mon:
                 targets = {
@@ -513,7 +513,7 @@ class Player(PlayerNetwork, ABC):
                         ]
                     )
 
-                if can_tera:
+                if can_terastallize:
                     orders.extend(
                         [
                             BattleOrder(move, move_target=target, terastallize=True)

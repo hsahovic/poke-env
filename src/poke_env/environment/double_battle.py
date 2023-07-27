@@ -301,7 +301,7 @@ class DoubleBattle(AbstractBattle):
 
         return targets
 
-    def parse_request(self, request: dict[str, Any]) -> None:  # pragma: no cover
+    def parse_request(self, request: dict[str, Any]) -> None:
         pass
 
     @property
@@ -341,14 +341,6 @@ class DoubleBattle(AbstractBattle):
         return self._available_switches
 
     @property
-    def can_dynamax(self) -> list[bool]:
-        """
-        :return: Whether or not the current active pokemon can dynamax
-        :rtype: list[bool]
-        """
-        return self._can_dynamax
-
-    @property
     def can_mega_evolve(self) -> list[bool]:
         """
         :return: Whether or not either current active pokemon can mega evolve.
@@ -357,20 +349,28 @@ class DoubleBattle(AbstractBattle):
         return self._can_mega_evolve
 
     @property
-    def can_tera(self) -> list[bool | PokemonType]:
-        """
-        :return: Whether or not the current active pokemon can terastallize. If yes, will be a PokemonType.
-        :rtype: list[Union[bool, PokemonType]]
-        """
-        return self._can_tera
-
-    @property
     def can_z_move(self) -> list[bool]:
         """
         :return: Whether or not the current active pokemon can z-move.
         :rtype: list[bool]
         """
         return self._can_z_move
+
+    @property
+    def can_dynamax(self) -> list[bool]:
+        """
+        :return: Whether or not the current active pokemon can dynamax
+        :rtype: list[bool]
+        """
+        return self._can_dynamax
+
+    @property
+    def can_terastallize(self) -> list[bool | PokemonType]:
+        """
+        :return: Whether or not the current active pokemon can terastallize. If yes, will be a PokemonType.
+        :rtype: list[Union[bool, PokemonType]]
+        """
+        return self._can_tera
 
     @property
     def force_switch(self) -> list[bool]:

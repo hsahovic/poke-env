@@ -11,7 +11,7 @@ def __run_loop(loop: asyncio.AbstractEventLoop):
     loop.run_forever()
 
 
-def __stop_loop(loop: asyncio.AbstractEventLoop, thread: Thread):  # pragma: no cover
+def __stop_loop(loop: asyncio.AbstractEventLoop, thread: Thread):
     disable(CRITICAL)
     tasks: list[asyncio.Task[Any]] = []
     for task in asyncio.all_tasks(loop):
@@ -30,7 +30,7 @@ def __stop_loop(loop: asyncio.AbstractEventLoop, thread: Thread):  # pragma: no 
     loop.call_soon_threadsafe(loop.close)
 
 
-def __clear_loop():  # pragma: no cover
+def __clear_loop():
     __stop_loop(POKE_LOOP, _t)
 
 

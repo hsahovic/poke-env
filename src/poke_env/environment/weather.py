@@ -1,6 +1,5 @@
 """This module defines the Weather class, which represents a in-battle weather.
 """
-# pyre-ignore-all-errors[45]
 import logging
 from enum import Enum, auto, unique
 

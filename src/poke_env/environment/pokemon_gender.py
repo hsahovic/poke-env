@@ -1,7 +1,6 @@
 """This module defines the PokemonGender class, which represents the gender of a
 Pokemon.
 """
-# pyre-ignore-all-errors[45]
 from enum import Enum, auto, unique
 
 from poke_env.exceptions import ShowdownException

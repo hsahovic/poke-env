@@ -84,7 +84,7 @@ class PlayerNetwork(ABC):
             )
 
     @staticmethod
-    def _create_class(class_: Any, *args: Any, **kwargs: Any):  # pragma: no cover
+    def _create_class(class_: Any, *args: Any, **kwargs: Any):
         try:
             # Python >= 3.7
             loop = asyncio.get_running_loop()
@@ -322,7 +322,7 @@ class PlayerNetwork(ABC):
         except Exception as e:
             self.logger.exception(e)
 
-    async def stop_listening(self) -> None:  # pragma: no cover
+    async def stop_listening(self) -> None:
         await self._handle_threaded_coroutines(self._stop_listening())
 
     async def _stop_listening(self) -> None:
@@ -331,27 +331,21 @@ class PlayerNetwork(ABC):
         await self._websocket.close()
 
     @abstractmethod
-    async def _handle_battle_message(
-        self, split_messages: list[list[str]]
-    ) -> None:  # pragma: no cover
+    async def _handle_battle_message(self, split_messages: list[list[str]]) -> None:
         """Abstract method.
 
         Implementation should redirect messages to corresponding battles.
         """
 
     @abstractmethod
-    async def _handle_challenge_request(
-        self, split_message: list[str]
-    ) -> None:  # pragma: no cover
+    async def _handle_challenge_request(self, split_message: list[str]) -> None:
         """Abstract method.
 
         Implementation should handle individual challenge.
         """
 
     @abstractmethod
-    async def _update_challenges(
-        self, split_message: list[str]
-    ) -> None:  # pragma: no cover
+    async def _update_challenges(self, split_message: list[str]) -> None:
         """Abstract method.
 
         Implementation should keep track of current challenges.

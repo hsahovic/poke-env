@@ -1,7 +1,5 @@
 """This module defines the Effect class, which represents in-game effects.
 """
-# pyre-ignore-all-errors[45]
-
 import logging
 from enum import Enum, auto, unique
 from typing import Set

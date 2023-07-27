@@ -3,7 +3,7 @@
 
 import math
 
-from poke_env.data import GenData  # noqa: F401
+from poke_env.data import GenData
 
 STATS_TO_IDX = {
     "hp": 0,
