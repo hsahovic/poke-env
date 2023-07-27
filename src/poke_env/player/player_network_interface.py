@@ -5,20 +5,17 @@ import json
 import logging
 from abc import ABC, abstractmethod
 from asyncio import CancelledError, Event, Lock, create_task, sleep
-from asyncio.tasks import Task
 from logging import Logger
 from time import perf_counter
-from typing import Any
+from typing import List, Optional
 
 import requests
-import websockets.client as ws
-from websockets.exceptions import ConnectionClosedOK
+import websockets  # pyre-ignore
 
 from poke_env.exceptions import ShowdownException
 from poke_env.player.internals import POKE_LOOP
 from poke_env.player_configuration import PlayerConfiguration
 from poke_env.server_configuration import ServerConfiguration
-from poke_env.teambuilder import Teambuilder
 
 
 class PlayerNetwork(ABC):
@@ -34,12 +31,12 @@ class PlayerNetwork(ABC):
         self,
         player_configuration: PlayerConfiguration,
         *,
-        avatar: int | None = None,
-        log_level: int | None = None,
+        avatar: Optional[int] = None,
+        log_level: Optional[int] = None,
         server_configuration: ServerConfiguration,
         start_listening: bool = True,
-        ping_interval: float | None = 20.0,
-        ping_timeout: float | None = 20.0,
+        ping_interval: Optional[float] = 20.0,
+        ping_timeout: Optional[float] = 20.0,
     ) -> None:
         """
         :param player_configuration: Player configuration.
@@ -62,7 +59,7 @@ class PlayerNetwork(ABC):
             If None pings will never time out.
         :type ping_timeout: float, optional
         """
-        self._active_tasks: set[Task[None]] = set()
+        self._active_tasks: set = set()
         self._ping_interval = ping_interval
         self._ping_timeout = ping_timeout
         self._authentication_url = server_configuration.authentication_url
@@ -74,17 +71,16 @@ class PlayerNetwork(ABC):
         self._logged_in: Event = self._create_class(Event)
         self._sending_lock = self._create_class(Lock)
 
-        self._websocket: ws.WebSocketClientProtocol
+        self._websocket: websockets.client.WebSocketClientProtocol  # pyre-ignore
         self._logger: Logger = self._create_player_logger(log_level)
-        self._team: Teambuilder | None = None
 
         if start_listening:
-            self._listening_coroutine: Any | None = asyncio.run_coroutine_threadsafe(
+            self._listening_coroutine = asyncio.run_coroutine_threadsafe(
                 self.listen(), POKE_LOOP
             )
 
     @staticmethod
-    def _create_class(class_: Any, *args: Any, **kwargs: Any):
+    def _create_class(cls, *args, **kwargs):  # pragma: no cover
         try:
             # Python >= 3.7
             loop = asyncio.get_running_loop()
@@ -95,18 +91,18 @@ class PlayerNetwork(ABC):
             # asyncio.get_running_loop raised exception so no loop is running
             loop = None
         if loop == POKE_LOOP:
-            return class_(*args, **kwargs)
+            return cls(*args, **kwargs)
         else:
             return asyncio.run_coroutine_threadsafe(
-                PlayerNetwork._create_class_async(class_, *args, **kwargs), POKE_LOOP
+                PlayerNetwork._create_class_async(cls, *args, **kwargs), POKE_LOOP
             ).result()
 
     @staticmethod
-    async def _create_class_async(class_: Any, *args: Any, **kwargs: Any):
-        return class_(*args, **kwargs)
+    async def _create_class_async(cls, *args, **kwargs):
+        return cls(*args, **kwargs)
 
     @staticmethod
-    async def _handle_threaded_coroutines(coro: Any):
+    async def _handle_threaded_coroutines(coro):
         task = asyncio.run_coroutine_threadsafe(coro, POKE_LOOP)
         await asyncio.wrap_future(task)
         return task.result()
@@ -125,7 +121,7 @@ class PlayerNetwork(ABC):
         await self._set_team()
         await self._send_message(f"/challenge {username}, {format_}")
 
-    async def _change_avatar(self, avatar_id: int | None) -> None:
+    async def _change_avatar(self, avatar_id: Optional[int]) -> None:
         """Changes the player's avatar.
 
         :param avatar_id: The new avatar id. If None, nothing happens.
@@ -135,7 +131,7 @@ class PlayerNetwork(ABC):
         if avatar_id is not None:
             await self._send_message(f"/avatar {avatar_id}")
 
-    def _create_player_logger(self, log_level: int | None) -> Logger:
+    def _create_player_logger(self, log_level: Optional[int]) -> Logger:
         """Creates a logger for the player.
 
         Returns a Logger displaying asctime and the player's username before messages.
@@ -226,14 +222,14 @@ class PlayerNetwork(ABC):
             )
             raise exception
 
-    async def _log_in(self, split_message: list[str]) -> None:
+    async def _log_in(self, split_message: List[str]) -> None:
         """Log the player with specified username and password.
 
         Split message contains information sent by the server. This information is
         necessary to log in.
 
         :param split_message: Message received from the server that triggers logging in.
-        :type split_message: list[str]
+        :type split_message: List[str]
         """
         if self._password:
             log_in_request = requests.post(
@@ -255,12 +251,12 @@ class PlayerNetwork(ABC):
 
         await self._change_avatar(self._avatar)
 
-    async def _search_ladder_game(self, format_: str):
+    async def _search_ladder_game(self, format_):
         await self._set_team()
         await self._send_message(f"/search {format_}")
 
     async def _send_message(
-        self, message: str, room: str = "", message_2: str | None = None
+        self, message: str, room: str = "", message_2: Optional[str] = None
     ) -> None:
         """Sends a message to the specified room.
 
@@ -300,7 +296,7 @@ class PlayerNetwork(ABC):
         """Listen to a showdown websocket and dispatch messages to be handled."""
         self.logger.info("Starting listening to showdown websocket")
         try:
-            async with ws.connect(
+            async with websockets.connect(
                 self.websocket_url,
                 max_queue=None,
                 ping_interval=self._ping_interval,
@@ -309,11 +305,11 @@ class PlayerNetwork(ABC):
                 self._websocket = websocket
                 async for message in websocket:
                     self.logger.info("\033[92m\033[1m<<<\033[0m %s", message)
-                    task = create_task(self._handle_message(str(message)))
+                    task = create_task(self._handle_message(message))
                     self._active_tasks.add(task)
                     task.add_done_callback(self._active_tasks.discard)
 
-        except ConnectionClosedOK:
+        except websockets.exceptions.ConnectionClosedOK:
             self.logger.warning(
                 "Websocket connection with %s closed", self.websocket_url
             )
@@ -322,7 +318,7 @@ class PlayerNetwork(ABC):
         except Exception as e:
             self.logger.exception(e)
 
-    async def stop_listening(self) -> None:
+    async def stop_listening(self) -> None:  # pragma: no cover
         await self._handle_threaded_coroutines(self._stop_listening())
 
     async def _stop_listening(self) -> None:
@@ -331,21 +327,27 @@ class PlayerNetwork(ABC):
         await self._websocket.close()
 
     @abstractmethod
-    async def _handle_battle_message(self, split_messages: list[list[str]]) -> None:
+    async def _handle_battle_message(
+        self, split_messages: List[List[str]]
+    ) -> None:  # pragma: no cover
         """Abstract method.
 
         Implementation should redirect messages to corresponding battles.
         """
 
     @abstractmethod
-    async def _handle_challenge_request(self, split_message: list[str]) -> None:
+    async def _handle_challenge_request(
+        self, split_message: List[str]
+    ) -> None:  # pragma: no cover
         """Abstract method.
 
         Implementation should handle individual challenge.
         """
 
     @abstractmethod
-    async def _update_challenges(self, split_message: list[str]) -> None:
+    async def _update_challenges(
+        self, split_message: List[str]
+    ) -> None:  # pragma: no cover
         """Abstract method.
 
         Implementation should keep track of current challenges.
