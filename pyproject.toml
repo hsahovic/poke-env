@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "poke_env"
+version = "0.7.1"
+description = "A python interface for training Reinforcement Learning bots to battle on pokemon showdown."
+readme = "README.md"
+requires-python = ">=3.7.0"
+license = {file = "LICENSE"}
+authors = [
+  {name = "Haris Sahovic", email = "contact@sahovic.fr"}
+]
+classifiers=[
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Games/Entertainment :: Simulation",
+    "Topic :: Games/Entertainment :: Turn Based Strategy",
+    "Topic :: Internet",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+dynamic = ["dependencies"]
+
+[project.urls]
+Documentation = "https://poke-env.readthedocs.io/en/stable/"
+Repository = "https://github.com/hsahovic/poke-env"
+
+[tool.black]
+line-length = 88
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[tool.setuptools.package-data]
+poke_env = [
+    "README.md",
+    "src/poke_env/data/static/*.json",
+    "src/poke_env/data/static/*.html",
+    "src/poke_env/data/static/moves/*.json",
+    "src/poke_env/data/static/pokedex/*.json",
+    "src/poke_env/data/static/typechart/*.json",
+]
