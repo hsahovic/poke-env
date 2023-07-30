@@ -2491,10 +2491,8 @@
             "mirror": 1,
             "protect": 1
         },
-        "mindBlownRecoil": true,
         "name": "Chloroblast",
         "num": 835,
-        "onAfterMove": "onAfterMove",
         "pp": 5,
         "priority": 0,
         "secondary": null,

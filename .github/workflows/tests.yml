@@ -47,7 +47,9 @@ jobs:
           file: coverage.xml
 
       - name: Build package
-        run: python setup.py sdist bdist_wheel
+        run: |
+          pip install build
+          python -m build
 
       - name: Install built package
         run: pip install --force-reinstall dist/*.whl
