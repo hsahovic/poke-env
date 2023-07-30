@@ -1,8 +1,7 @@
 import os
+
 import orjson
-
 from pytest import fixture
-
 
 FIXTURE_DIR = os.path.join("fixture_data")
 

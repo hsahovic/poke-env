@@ -7,9 +7,9 @@ python diagnostic_tools/gen8_random_battles.py <n_battle> <log_level>\
 import asyncio
 import sys
 
-from poke_env.player import RandomPlayer
-
 from tqdm import tqdm
+
+from poke_env.player import RandomPlayer
 
 print("-" * 20, "\n")
 

@@ -1,17 +1,13 @@
 import asyncio
 import unittest
-import pytest
-
-from gym.spaces import Space, Discrete
 from inspect import isawaitable
+from unittest.mock import patch
 
-from poke_env.environment import (
-    AbstractBattle,
-    Battle,
-    Move,
-    Pokemon,
-    Status,
-)
+import pytest
+from gym.spaces import Discrete, Space
+
+from poke_env import PlayerConfiguration, ServerConfiguration
+from poke_env.environment import AbstractBattle, Battle, Move, Pokemon, Status
 from poke_env.player import (
     BattleOrder,
     EnvPlayer,
@@ -24,9 +20,6 @@ from poke_env.player import (
     RandomPlayer,
 )
 from poke_env.player.openai_api import _AsyncPlayer
-from poke_env import PlayerConfiguration, ServerConfiguration
-from unittest.mock import patch
-
 
 player_configuration = PlayerConfiguration("username", "password")
 server_configuration = ServerConfiguration("server.url", "auth.url")

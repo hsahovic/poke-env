@@ -1,7 +1,7 @@
+import pytest
+
 from poke_env.data import GenData
 from poke_env.environment import PokemonType
-
-import pytest
 
 
 def test_number_of_PokemonTypes():

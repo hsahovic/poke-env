@@ -1,8 +1,9 @@
 import asyncio
 
-from poke_env.player import cross_evaluate, RandomPlayer
-from poke_env import LocalhostServerConfiguration, PlayerConfiguration
 from tabulate import tabulate
+
+from poke_env import LocalhostServerConfiguration, PlayerConfiguration
+from poke_env.player import RandomPlayer, cross_evaluate
 
 
 async def main():

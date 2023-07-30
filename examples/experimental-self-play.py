@@ -3,12 +3,13 @@
 # Don't hesitate to open an issue if things seem not to be working
 
 import asyncio
-import numpy as np
-from poke_env.player import cross_evaluate, Gen8EnvSinglePlayer, RandomPlayer
-from tabulate import tabulate
 from threading import Thread
 
+import numpy as np
+from tabulate import tabulate
+
 from poke_env import to_id_str
+from poke_env.player import Gen8EnvSinglePlayer, RandomPlayer, cross_evaluate
 
 
 class RandomGen8EnvPlayer(Gen8EnvSinglePlayer):

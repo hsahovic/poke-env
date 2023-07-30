@@ -2,9 +2,10 @@
 These tests aim to verify that concurrency control is working properly.
 """
 import asyncio
+
 import pytest
 
-from poke_env.player import cross_evaluate, RandomPlayer, SimpleHeuristicsPlayer
+from poke_env.player import RandomPlayer, SimpleHeuristicsPlayer, cross_evaluate
 
 
 class MoveCallTrackingRandomPlayer(RandomPlayer):

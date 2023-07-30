@@ -1,4 +1,4 @@
-from poke_env import to_id_str, compute_raw_stats
+from poke_env import compute_raw_stats, to_id_str
 from poke_env.data import GenData
 from poke_env.player_configuration import _create_player_configuration_from_player
 

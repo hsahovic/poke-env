@@ -1,7 +1,8 @@
-from poke_env.player import RandomPlayer
-from poke_env import PlayerConfiguration
 import asyncio
 import json
+
+from poke_env import PlayerConfiguration
+from poke_env.player import RandomPlayer
 
 with open("msgs.json", "r") as f:
     msgs = json.load(f)

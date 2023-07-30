@@ -1,10 +1,9 @@
+from unittest.mock import MagicMock, patch
+
 import pytest
 
 from poke_env.environment import Battle, DoubleBattle, Move
-from poke_env.player import BattleOrder, cross_evaluate, Player, RandomPlayer
-
-from unittest.mock import MagicMock
-from unittest.mock import patch
+from poke_env.player import BattleOrder, Player, RandomPlayer, cross_evaluate
 
 
 class SimplePlayer(Player):

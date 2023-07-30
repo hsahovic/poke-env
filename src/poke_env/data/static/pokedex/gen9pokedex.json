@@ -11815,7 +11815,7 @@
         "types": [
             "Fighting"
         ],
-        "weightkg": 15
+        "weightkg": 42
     },
     "farigiraf": {
         "abilities": {
@@ -13512,7 +13512,7 @@
             "Mineral"
         ],
         "evoLevel": 38,
-        "heightm": 2.5,
+        "heightm": 2.3,
         "name": "Garganacl",
         "num": 934,
         "prevo": "Naclstack",
@@ -24535,7 +24535,7 @@
         "evos": [
             "Garganacl"
         ],
-        "heightm": 0.5,
+        "heightm": 0.6,
         "name": "Naclstack",
         "num": 933,
         "prevo": "Nacli",
@@ -26006,7 +26006,7 @@
         ],
         "evoCondition": "Use Strong style Barb Barrage 20 times",
         "evoType": "other",
-        "heightm": 0.5,
+        "heightm": 2.5,
         "name": "Overqwil",
         "num": 904,
         "prevo": "Qwilfish-Hisui",
@@ -26014,7 +26014,7 @@
             "Dark",
             "Poison"
         ],
-        "weightkg": 3.9
+        "weightkg": 60.5
     },
     "pachirisu": {
         "abilities": {
@@ -37768,7 +37768,7 @@
             "Fighting",
             "Water"
         ],
-        "weightkg": 88.4
+        "weightkg": 110
     },
     "taurospaldeablaze": {
         "abilities": {
@@ -37798,7 +37798,7 @@
             "Fighting",
             "Fire"
         ],
-        "weightkg": 88.4
+        "weightkg": 85
     },
     "taurospaldeacombat": {
         "abilities": {
@@ -37827,7 +37827,7 @@
         "types": [
             "Fighting"
         ],
-        "weightkg": 88.4
+        "weightkg": 115
     },
     "teddiursa": {
         "abilities": {
@@ -42144,7 +42144,7 @@
             "Poison",
             "Ground"
         ],
-        "weightkg": 8.5
+        "weightkg": 11
     },
     "wormadam": {
         "abilities": {

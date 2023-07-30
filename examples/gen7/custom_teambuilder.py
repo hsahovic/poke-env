@@ -1,8 +1,9 @@
 import asyncio
+
 import numpy as np
 
-from poke_env.player import cross_evaluate, RandomPlayer
 from poke_env import LocalhostServerConfiguration, PlayerConfiguration
+from poke_env.player import RandomPlayer, cross_evaluate
 from poke_env.teambuilder import Teambuilder
 
 

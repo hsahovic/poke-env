@@ -1,8 +1,9 @@
 import asyncio
+
 import numpy as np
 
-from poke_env.player import cross_evaluate, Player, RandomPlayer
 from poke_env import LocalhostServerConfiguration, PlayerConfiguration
+from poke_env.player import Player, RandomPlayer, cross_evaluate
 
 
 class MaxDamagePlayer(Player):
