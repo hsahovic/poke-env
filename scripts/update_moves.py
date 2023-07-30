@@ -1,12 +1,12 @@
-import requests
-import re
 import json
+import re
 
+import requests
 from data_script_utils import (
-    STATIC_DATA_ROOT,
-    fetch_and_clean_ps_data,
     CURRENT_GEN,
     MAX_MOVE_IDX_PER_GEN,
+    STATIC_DATA_ROOT,
+    fetch_and_clean_ps_data,
 )
 
 data_by_gen = {

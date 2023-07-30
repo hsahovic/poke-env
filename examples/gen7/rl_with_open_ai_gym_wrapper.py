@@ -1,15 +1,14 @@
 import numpy as np
 import tensorflow as tf
-
-from poke_env.player import Gen7EnvSinglePlayer, RandomPlayer
-from poke_env import LocalhostServerConfiguration, PlayerConfiguration
-
 from rl.agents.dqn import DQNAgent
-from rl.policy import LinearAnnealedPolicy, EpsGreedyQPolicy
 from rl.memory import SequentialMemory
+from rl.policy import EpsGreedyQPolicy, LinearAnnealedPolicy
 from tensorflow.keras.layers import Dense, Flatten
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
+
+from poke_env import LocalhostServerConfiguration, PlayerConfiguration
+from poke_env.player import Gen7EnvSinglePlayer, RandomPlayer
 
 
 # We define our RL player

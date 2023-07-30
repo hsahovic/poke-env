@@ -1,4 +1,5 @@
 import json
+import os
 from copy import deepcopy
 
 from data_script_utils import (
@@ -7,7 +8,6 @@ from data_script_utils import (
     STATIC_DATA_ROOT,
     fetch_and_clean_ps_data,
 )
-import os
 
 data_by_gen = {
     CURRENT_GEN: fetch_and_clean_ps_data(

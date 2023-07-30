@@ -1,15 +1,13 @@
 import asyncio
 import logging
+from collections import namedtuple
+
 import pytest
 import websockets
+from asynctest.mock import CoroutineMock, PropertyMock, patch
 
-from collections import namedtuple
-from asynctest.mock import CoroutineMock
-from asynctest.mock import patch
-from asynctest.mock import PropertyMock
-from poke_env.player import PlayerNetwork
 from poke_env import PlayerConfiguration, ServerConfiguration
-
+from poke_env.player import PlayerNetwork
 
 player_configuration = PlayerConfiguration("username", "password")
 requests_tuple = namedtuple("requests_tuple", ["text"])

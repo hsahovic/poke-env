@@ -1,3 +1,6 @@
+import pytest
+
+from poke_env import ShowdownException
 from poke_env.environment import (
     Effect,
     Field,
@@ -7,9 +10,6 @@ from poke_env.environment import (
     Status,
     Weather,
 )
-from poke_env import ShowdownException
-
-import pytest
 
 
 def test_effect_str():

@@ -1,6 +1,6 @@
-import pytest
-
 from unittest.mock import MagicMock
+
+import pytest
 
 from poke_env.data import GenData
 from poke_env.environment import (

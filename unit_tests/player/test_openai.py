@@ -1,25 +1,24 @@
 import asyncio
-import pytest
 import sys
-
 from io import StringIO
 from queue import Queue
 from typing import Union
 
+import pytest
 from gym import Space
 
 from poke_env.environment import AbstractBattle, Battle, Pokemon
 from poke_env.player import (
-    ForfeitBattleOrder,
     BattleOrder,
-    OpenAIGymEnv,
+    ForfeitBattleOrder,
     ObservationType,
+    OpenAIGymEnv,
     Player,
 )
 from poke_env.player.openai_api import (
-    _AsyncQueue,
-    _AsyncPlayer,
     LegacyOpenAIGymEnv,
+    _AsyncPlayer,
+    _AsyncQueue,
     wrap_for_old_gym_api,
 )
 

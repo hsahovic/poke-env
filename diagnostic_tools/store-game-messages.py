@@ -1,6 +1,8 @@
-from poke_env.player import RandomPlayer, cross_evaluate
 import asyncio
+
 import orjson
+
+from poke_env.player import RandomPlayer, cross_evaluate
 
 msgs = []
 

@@ -1,11 +1,11 @@
 import asyncio
-import numpy as np
 
-from gym.spaces import Space, Box
+import numpy as np
+from gym.spaces import Box, Space
 from gym.utils.env_checker import check_env
 from rl.agents.dqn import DQNAgent
 from rl.memory import SequentialMemory
-from rl.policy import LinearAnnealedPolicy, EpsGreedyQPolicy
+from rl.policy import EpsGreedyQPolicy, LinearAnnealedPolicy
 from tabulate import tabulate
 from tensorflow.keras.layers import Dense, Flatten
 from tensorflow.keras.models import Sequential
@@ -13,14 +13,14 @@ from tensorflow.keras.optimizers import Adam
 
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.player import (
-    background_evaluate_player,
-    background_cross_evaluate,
     Gen8EnvSinglePlayer,
-    RandomPlayer,
     MaxBasePowerPlayer,
     ObservationType,
-    wrap_for_old_gym_api,
+    RandomPlayer,
     SimpleHeuristicsPlayer,
+    background_cross_evaluate,
+    background_evaluate_player,
+    wrap_for_old_gym_api,
 )
 
 
