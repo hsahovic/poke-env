@@ -104,6 +104,7 @@ class Player(PlayerNetwork, ABC):
         :type team: str or Teambuilder, optional
         """
         if player_configuration is None:
+            print("1")
             player_configuration = self.create_player_configuration()
 
         if server_configuration is None:
@@ -149,13 +150,11 @@ class Player(PlayerNetwork, ABC):
         CONFIGURATION_FROM_PLAYER_COUNTER.update([key])
         print(CONFIGURATION_FROM_PLAYER_COUNTER)
         username = "%s %d" % (key, CONFIGURATION_FROM_PLAYER_COUNTER[key])
-
         if len(username) > 18:
             username = "%s %d" % (
                 key[: 18 - len(username)],
                 CONFIGURATION_FROM_PLAYER_COUNTER[key],
             )
-
         return PlayerConfiguration(username, None)
 
     def _battle_finished_callback(self, battle: AbstractBattle) -> None:

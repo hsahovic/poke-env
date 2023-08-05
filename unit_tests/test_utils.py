@@ -89,6 +89,7 @@ def test_player_configuration_auto_naming():
         def choose_move(self, battle: AbstractBattle) -> BattleOrder:
             return battle.available_moves[0]
 
+    print("2")
     assert ShortPlayer().create_player_configuration().username == "ShortPlayer 1"
     assert ShortPlayer().create_player_configuration().username == "ShortPlayer 2"
     assert (
