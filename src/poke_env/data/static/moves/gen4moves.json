@@ -568,7 +568,7 @@
         "flags": {},
         "name": "Baton Pass",
         "num": 226,
-        "onTryHit": "onTryHit",
+        "onHit": "onHit",
         "pp": 40,
         "priority": 0,
         "secondary": null,
@@ -9269,7 +9269,9 @@
             "onSideStart": "onSideStart"
         },
         "contestType": "Clever",
-        "flags": {},
+        "flags": {
+            "mustpressure": 1
+        },
         "name": "Spikes",
         "num": 191,
         "pp": 20,
@@ -9381,7 +9383,9 @@
             "onSideStart": "onSideStart"
         },
         "contestType": "Cool",
-        "flags": {},
+        "flags": {
+            "mustpressure": 1
+        },
         "name": "Stealth Rock",
         "num": 446,
         "pp": 20,
@@ -10425,7 +10429,9 @@
             "onSideStart": "onSideStart"
         },
         "contestType": "Clever",
-        "flags": {},
+        "flags": {
+            "mustpressure": 1
+        },
         "name": "Toxic Spikes",
         "num": 390,
         "pp": 20,
