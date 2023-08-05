@@ -231,7 +231,7 @@ class Move:
                 return MoveCategory["SPECIAL"]
             else:
                 raise ValueError(
-                    f"Unsupported value for overrideDefensiveStat: {self.entry['overrideDefensiveStat']}"  # noqa
+                    f"Unsupported value for overrideDefensiveStat: {self.entry['overrideDefensiveStat']}"
                 )
         return self.category
 
