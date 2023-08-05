@@ -9,9 +9,10 @@ from gym import Space
 
 from poke_env.environment import AbstractBattle, Battle, Pokemon
 from poke_env.player import (
+    ActType,
     BattleOrder,
     ForfeitBattleOrder,
-    ObservationType,
+    ObsType,
     OpenAIGymEnv,
     Player,
 )
@@ -23,18 +24,20 @@ from poke_env.player.openai_api import (
 )
 
 
-class DummyEnv(OpenAIGymEnv):
+class DummyEnv(OpenAIGymEnv[ObsType, ActType]):
     def __init__(self, *args, **kwargs):
         self.opponent = None
         super().__init__(*args, **kwargs)
 
-    def calc_reward(self, last_battle, current_battle) -> float:
+    def calc_reward(
+        self, last_battle: AbstractBattle, current_battle: AbstractBattle
+    ) -> float:
         return 69.42
 
     def action_to_move(self, action: int, battle: AbstractBattle) -> BattleOrder:
         return ForfeitBattleOrder()
 
-    def embed_battle(self, battle: AbstractBattle) -> ObservationType:
+    def embed_battle(self, battle: AbstractBattle) -> ObsType:
         return [0, 1, 2]
 
     def describe_embedding(self) -> Space:
