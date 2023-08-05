@@ -40,8 +40,8 @@ jobs:
       - name: Run isort
         run: isort --check .
 
-      - name: Run pyre
-        run: pyre check
+      - name: Run pyright
+        run: pyright src/
 
       - name: Build docs
         run: |

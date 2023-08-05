@@ -42,5 +42,9 @@ line-length = 88
 profile = "black"
 multi_line_output = 3
 
+[tool.pyright]
+include = ["src"]
+pythonVersion = "3.7"
+
 [tool.setuptools.dynamic]
 dependencies = { file = ["requirements.txt"] }
