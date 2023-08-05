@@ -1,9 +1,8 @@
 """This module contains objects related to player configuration.
 """
-from collections import Counter
-from typing import Any, NamedTuple, Optional
+from typing import Counter, NamedTuple, Optional
 
-CONFIGURATION_FROM_PLAYER_COUNTER: "Counter[Any]" = Counter()
+CONFIGURATION_FROM_PLAYER_COUNTER: Counter[str] = Counter()
 
 """Player configuration object. Represented with a tuple with two entries: username and
 password."""

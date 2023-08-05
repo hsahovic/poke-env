@@ -89,46 +89,15 @@ def test_player_configuration_auto_naming():
         def choose_move(self, battle: AbstractBattle) -> BattleOrder:
             return battle.available_moves[0]
 
-    print("2")
-    assert ShortPlayer().create_player_configuration().username == "ShortPlayer 1"
-    assert ShortPlayer().create_player_configuration().username == "ShortPlayer 2"
-    assert (
-        VeryLongPlayerClassName().create_player_configuration().username
-        == "VeryLongPlayerCl 1"
-    )
-    assert (
-        VeryLongPlayerClassName().create_player_configuration().username
-        == "VeryLongPlayerCl 2"
-    )
-    assert (
-        VeryLongPlayerClassName().create_player_configuration().username
-        == "VeryLongPlayerCl 3"
-    )
-    assert (
-        VeryLongPlayerClassName().create_player_configuration().username
-        == "VeryLongPlayerCl 4"
-    )
-    assert (
-        VeryLongPlayerClassName().create_player_configuration().username
-        == "VeryLongPlayerCl 5"
-    )
-    assert (
-        VeryLongPlayerClassName().create_player_configuration().username
-        == "VeryLongPlayerCl 6"
-    )
-    assert (
-        VeryLongPlayerClassName().create_player_configuration().username
-        == "VeryLongPlayerCl 7"
-    )
-    assert (
-        VeryLongPlayerClassName().create_player_configuration().username
-        == "VeryLongPlayerCl 8"
-    )
-    assert (
-        VeryLongPlayerClassName().create_player_configuration().username
-        == "VeryLongPlayerCl 9"
-    )
-    assert (
-        VeryLongPlayerClassName().create_player_configuration().username
-        == "VeryLongPlayerC 10"
-    )
+    assert ShortPlayer().username == "ShortPlayer 1"
+    assert ShortPlayer().username == "ShortPlayer 2"
+    assert VeryLongPlayerClassName().username == "VeryLongPlayerCl 1"
+    assert VeryLongPlayerClassName().username == "VeryLongPlayerCl 2"
+    assert VeryLongPlayerClassName().username == "VeryLongPlayerCl 3"
+    assert VeryLongPlayerClassName().username == "VeryLongPlayerCl 4"
+    assert VeryLongPlayerClassName().username == "VeryLongPlayerCl 5"
+    assert VeryLongPlayerClassName().username == "VeryLongPlayerCl 6"
+    assert VeryLongPlayerClassName().username == "VeryLongPlayerCl 7"
+    assert VeryLongPlayerClassName().username == "VeryLongPlayerCl 8"
+    assert VeryLongPlayerClassName().username == "VeryLongPlayerCl 9"
+    assert VeryLongPlayerClassName().username == "VeryLongPlayerC 10"

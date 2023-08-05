@@ -104,8 +104,7 @@ class Player(PlayerNetwork, ABC):
         :type team: str or Teambuilder, optional
         """
         if player_configuration is None:
-            print("1")
-            player_configuration = self.create_player_configuration()
+            player_configuration = self._create_player_configuration()
 
         if server_configuration is None:
             server_configuration = LocalhostServerConfiguration
@@ -144,11 +143,9 @@ class Player(PlayerNetwork, ABC):
 
         self.logger.debug("Player initialisation finished")
 
-    def create_player_configuration(self) -> PlayerConfiguration:
+    def _create_player_configuration(self) -> PlayerConfiguration:
         key = type(self).__name__
-        print(CONFIGURATION_FROM_PLAYER_COUNTER)
         CONFIGURATION_FROM_PLAYER_COUNTER.update([key])
-        print(CONFIGURATION_FROM_PLAYER_COUNTER)
         username = "%s %d" % (key, CONFIGURATION_FROM_PLAYER_COUNTER[key])
         if len(username) > 18:
             username = "%s %d" % (
