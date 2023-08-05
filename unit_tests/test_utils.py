@@ -1,6 +1,7 @@
 from poke_env import compute_raw_stats, to_id_str
 from poke_env.data import GenData
-from poke_env.player_configuration import _create_player_configuration_from_player
+from poke_env.player import Player, BattleOrder
+from poke_env.environment import AbstractBattle
 
 
 def test_amoonguss_raw_stats_match_actual_stats():
@@ -80,57 +81,60 @@ def test_shedinja_raw_stats_match_actual_stats():
 
 
 def test_player_configuration_auto_naming():
-    class ShortPlayer:
-        pass
+    class ShortPlayer(Player):
+        def choose_move(self, battle: AbstractBattle) -> BattleOrder:
+            return battle.available_moves[0]
 
-    class VeryLongPlayerClassName:
-        pass
+
+    class VeryLongPlayerClassName(Player):
+        def choose_move(self, battle: AbstractBattle) -> BattleOrder:
+            return battle.available_moves[0]
 
     assert (
-        _create_player_configuration_from_player(ShortPlayer()).username
+        ShortPlayer().create_player_configuration().username
         == "ShortPlayer 1"
     )
     assert (
-        _create_player_configuration_from_player(ShortPlayer()).username
+        ShortPlayer().create_player_configuration().username
         == "ShortPlayer 2"
     )
     assert (
-        _create_player_configuration_from_player(VeryLongPlayerClassName()).username
+        VeryLongPlayerClassName().create_player_configuration().username
         == "VeryLongPlayerCl 1"
     )
     assert (
-        _create_player_configuration_from_player(VeryLongPlayerClassName()).username
+        VeryLongPlayerClassName().create_player_configuration().username
         == "VeryLongPlayerCl 2"
     )
     assert (
-        _create_player_configuration_from_player(VeryLongPlayerClassName()).username
+        VeryLongPlayerClassName().create_player_configuration().username
         == "VeryLongPlayerCl 3"
     )
     assert (
-        _create_player_configuration_from_player(VeryLongPlayerClassName()).username
+        VeryLongPlayerClassName().create_player_configuration().username
         == "VeryLongPlayerCl 4"
     )
     assert (
-        _create_player_configuration_from_player(VeryLongPlayerClassName()).username
+        VeryLongPlayerClassName().create_player_configuration().username
         == "VeryLongPlayerCl 5"
     )
     assert (
-        _create_player_configuration_from_player(VeryLongPlayerClassName()).username
+        VeryLongPlayerClassName().create_player_configuration().username
         == "VeryLongPlayerCl 6"
     )
     assert (
-        _create_player_configuration_from_player(VeryLongPlayerClassName()).username
+        VeryLongPlayerClassName().create_player_configuration().username
         == "VeryLongPlayerCl 7"
     )
     assert (
-        _create_player_configuration_from_player(VeryLongPlayerClassName()).username
+        VeryLongPlayerClassName().create_player_configuration().username
         == "VeryLongPlayerCl 8"
     )
     assert (
-        _create_player_configuration_from_player(VeryLongPlayerClassName()).username
+        VeryLongPlayerClassName().create_player_configuration().username
         == "VeryLongPlayerCl 9"
     )
     assert (
-        _create_player_configuration_from_player(VeryLongPlayerClassName()).username
+        VeryLongPlayerClassName().create_player_configuration().username
         == "VeryLongPlayerC 10"
     )
