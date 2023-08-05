@@ -145,8 +145,9 @@ class Player(PlayerNetwork, ABC):
 
     def create_player_configuration(self) -> PlayerConfiguration:
         key = type(self).__name__
+        print(CONFIGURATION_FROM_PLAYER_COUNTER)
         CONFIGURATION_FROM_PLAYER_COUNTER.update([key])
-
+        print(CONFIGURATION_FROM_PLAYER_COUNTER)
         username = "%s %d" % (key, CONFIGURATION_FROM_PLAYER_COUNTER[key])
 
         if len(username) > 18:
