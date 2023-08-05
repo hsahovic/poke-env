@@ -144,7 +144,9 @@ class OpenAIGymEnv(
         battle_format: str = "gen8randombattle",
         log_level: Optional[int] = None,
         save_replays: Union[bool, str] = False,
-        server_configuration: Optional[ServerConfiguration] = LocalhostServerConfiguration,
+        server_configuration: Optional[
+            ServerConfiguration
+        ] = LocalhostServerConfiguration,
         start_timer_on_battle_start: bool = False,
         start_listening: bool = True,
         ping_interval: Optional[float] = 20.0,

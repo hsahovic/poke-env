@@ -209,7 +209,9 @@ class EnvPlayer(OpenAIGymEnv[ObsType, ActType], ABC):
         with self._opponent_lock:
             self._opponent = opponent
 
-    def reset_env(self, opponent: Optional[Union[Player, str]] = None, restart: bool = True):
+    def reset_env(
+        self, opponent: Optional[Union[Player, str]] = None, restart: bool = True
+    ):
         """
         Resets the environment to an inactive state: it will forfeit all unfinished
         battles, reset the internal battle tracker and optionally change the next
