@@ -1,20 +1,20 @@
 """This module contains objects related to player configuration.
 """
 from collections import Counter
-from typing import Any, NamedTuple
+from typing import Any, NamedTuple, Optional
 
 from poke_env.player import Player
 
 
 class PlayerConfiguration(NamedTuple):
     username: str
-    password: str | None
+    password: Optional[str]
 
 
 """Player configuration object. Represented with a tuple with two entries: username and
 password."""
 
-_CONFIGURATION_FROM_PLAYER_COUNTER: Counter[Any] = Counter()
+_CONFIGURATION_FROM_PLAYER_COUNTER: "Counter[Any]" = Counter()
 
 
 def create_player_configuration_from_player(player: Player) -> PlayerConfiguration:

@@ -2,6 +2,7 @@
 """
 
 import math
+from typing import List
 
 from poke_env.data import GenData
 
@@ -46,8 +47,8 @@ def _raw_hp(base: int, ev: int, iv: int, level: int) -> int:
 
 
 def compute_raw_stats(
-    species: str, evs: list[int], ivs: list[int], level: int, nature: str, data: GenData
-) -> list[int]:
+    species: str, evs: List[int], ivs: List[int], level: int, nature: str, data: GenData
+) -> List[int]:
     """Converts to raw stats
     :param species: pokemon species
     :param evs: list of pokemon's EVs (size 6)

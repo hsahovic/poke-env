@@ -2,7 +2,7 @@
 """
 from abc import ABC
 from threading import Lock
-from typing import Any
+from typing import Any, Dict, List, Optional, Union
 
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.player.battle_order import BattleOrder, ForfeitBattleOrder
@@ -21,19 +21,19 @@ class EnvPlayer(OpenAIGymEnv[ObsType, ActType], ABC):
 
     def __init__(
         self,
-        opponent: Player | str | None,
-        player_configuration: PlayerConfiguration | None = None,
+        opponent: Optional[Union[Player, str]],
+        player_configuration: Optional[PlayerConfiguration] = None,
         *,
-        avatar: int | None = None,
-        battle_format: str | None = None,
-        log_level: int | None = None,
-        save_replays: bool | str = False,
-        server_configuration: ServerConfiguration | None = None,
+        avatar: Optional[int] = None,
+        battle_format: Optional[str] = None,
+        log_level: Optional[int] = None,
+        save_replays: Union[bool, str] = False,
+        server_configuration: Optional[ServerConfiguration] = None,
         start_listening: bool = True,
         start_timer_on_battle_start: bool = False,
-        ping_interval: float | None = 20.0,
-        ping_timeout: float | None = 20.0,
-        team: str | Teambuilder | None = None,
+        ping_interval: Optional[float] = 20.0,
+        ping_timeout: Optional[float] = 20.0,
+        team: Optional[Union[str, Teambuilder]] = None,
         start_challenging: bool = True,
     ):
         """
@@ -80,7 +80,7 @@ class EnvPlayer(OpenAIGymEnv[ObsType, ActType], ABC):
             or leave it inactive.
         :type start_challenging: bool
         """
-        self._reward_buffer: dict[AbstractBattle, float] = {}
+        self._reward_buffer: Dict[AbstractBattle, float] = {}
         self._opponent_lock = Lock()
         self._opponent = opponent
         b_format = self._DEFAULT_BATTLE_FORMAT
@@ -190,7 +190,7 @@ class EnvPlayer(OpenAIGymEnv[ObsType, ActType], ABC):
     def action_space_size(self) -> int:
         return len(self._ACTION_SPACE)
 
-    def get_opponent(self) -> Player | str | list[Player] | list[str]:
+    def get_opponent(self) -> Union[Player, str, List[Player], List[str]]:
         with self._opponent_lock:
             if self._opponent is None:
                 raise RuntimeError(
@@ -199,7 +199,7 @@ class EnvPlayer(OpenAIGymEnv[ObsType, ActType], ABC):
                 )
             return self._opponent
 
-    def set_opponent(self, opponent: Player | str):
+    def set_opponent(self, opponent: Union[Player, str]):
         """
         Sets the next opponent to the specified opponent.
 
@@ -209,7 +209,7 @@ class EnvPlayer(OpenAIGymEnv[ObsType, ActType], ABC):
         with self._opponent_lock:
             self._opponent = opponent
 
-    def reset_env(self, opponent: Player | str | None = None, restart: bool = True):
+    def reset_env(self, opponent: Optional[Union[Player, str]] = None, restart: bool = True):
         """
         Resets the environment to an inactive state: it will forfeit all unfinished
         battles, reset the internal battle tracker and optionally change the next

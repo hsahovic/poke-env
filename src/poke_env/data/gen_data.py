@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 from functools import lru_cache
-from typing import Any
+from typing import Any, Dict, Union
 
 import orjson
 
@@ -14,7 +14,7 @@ class GenData:
 
     UNKNOWN_ITEM = "unknown_item"
 
-    _gen_data_per_gen: dict[int, GenData] = {}
+    _gen_data_per_gen: Dict[int, GenData] = {}
 
     def __init__(self, gen: int) -> None:
         if gen in self._gen_data_per_gen:
@@ -30,27 +30,27 @@ class GenData:
     def __deepcopy__(self) -> GenData:
         return self
 
-    def load_moves(self, gen: int) -> dict[str, Any]:
+    def load_moves(self, gen: int) -> Dict[str, Any]:
         with open(
             os.path.join(self._static_files_root, "moves", f"gen{gen}moves.json")
         ) as f:
             return orjson.loads(f.read())
 
-    def load_natures(self) -> dict[str, dict[str, int | float]]:
+    def load_natures(self) -> Dict[str, Dict[str, Union[int, float]]]:
         with open(os.path.join(self._static_files_root, "natures.json")) as f:
             return orjson.loads(f.read())
 
-    def load_learnset(self) -> dict[str, dict[str, int | float]]:
+    def load_learnset(self) -> Dict[str, Dict[str, Union[int, float]]]:
         with open(os.path.join(self._static_files_root, "learnset.json")) as f:
             return orjson.loads(f.read())
 
-    def load_pokedex(self, gen: int) -> dict[str, Any]:
+    def load_pokedex(self, gen: int) -> Dict[str, Any]:
         with open(
             os.path.join(self._static_files_root, "pokedex", f"gen{gen}pokedex.json")
         ) as f:
             dex = orjson.loads(f.read())
 
-        other_forms_dex: dict[str, Any] = {}
+        other_forms_dex: Dict[str, Any] = {}
         for value in dex.values():
             if "cosmeticFormes" in value:
                 for other_form in value["cosmeticFormes"]:
@@ -71,7 +71,7 @@ class GenData:
 
         return dex
 
-    def load_type_chart(self, gen: int) -> dict[str, dict[str, float]]:
+    def load_type_chart(self, gen: int) -> Dict[str, Dict[str, float]]:
         with open(
             os.path.join(
                 self._static_files_root, "typechart", f"gen{gen}typechart.json"

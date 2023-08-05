@@ -1,6 +1,8 @@
 """This module defines the TeambuilderPokemon class, which is used as an intermediate
 format to specify pokemon builds in teambuilders custom classes.
 """
+from typing import List, Optional
+
 from poke_env.data import to_id_str
 from poke_env.stats import STATS_TO_IDX
 
@@ -29,21 +31,21 @@ class TeambuilderPokemon:
 
     def __init__(
         self,
-        nickname: str | None = None,
-        species: str | None = None,
-        item: str | None = None,
-        ability: str | None = None,
-        moves: list[str] | None = None,
-        nature: str | None = None,
-        evs: list[str | None] = [None] * 6,
-        gender: str | None = None,
-        ivs: list[str | None] = [None] * 6,
-        shiny: bool | None = None,
-        level: str | None = None,
-        happiness: str | None = None,
-        hiddenpowertype: str | None = None,
-        gmax: bool | None = None,
-        tera_type: str | None = None,
+        nickname: Optional[str] = None,
+        species: Optional[str] = None,
+        item: Optional[str] = None,
+        ability: Optional[str] = None,
+        moves: Optional[List[str]] = None,
+        nature: Optional[str] = None,
+        evs: List[Optional[str]] = [None] * 6,
+        gender: Optional[str] = None,
+        ivs: List[Optional[str]] = [None] * 6,
+        shiny: Optional[bool] = None,
+        level: Optional[str] = None,
+        happiness: Optional[str] = None,
+        hiddenpowertype: Optional[str] = None,
+        gmax: Optional[bool] = None,
+        tera_type: Optional[str] = None,
     ):
         self.nickname = nickname
         self.species = species

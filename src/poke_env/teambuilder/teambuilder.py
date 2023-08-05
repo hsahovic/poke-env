@@ -2,6 +2,7 @@
 Pokemon Showdown teams in the context of communicating with Pokemon Showdown.
 """
 from abc import ABC, abstractmethod
+from typing import List
 
 from poke_env.teambuilder.teambuilder_pokemon import TeambuilderPokemon
 
@@ -25,7 +26,7 @@ class Teambuilder(ABC):
         """Returns a packed-format team."""
 
     @staticmethod
-    def parse_showdown_team(team: str) -> list[TeambuilderPokemon]:
+    def parse_showdown_team(team: str) -> List[TeambuilderPokemon]:
         """Converts a showdown-formatted team string into a list of TeambuilderPokemon
         objects.
 
@@ -38,7 +39,7 @@ class Teambuilder(ABC):
         """
         current_mon = TeambuilderPokemon()
         current_mon_has_been_added = True
-        mons: list[TeambuilderPokemon] = []
+        mons: List[TeambuilderPokemon] = []
 
         for line in team.split("\n"):
             while line and line.startswith(" "):
@@ -120,7 +121,7 @@ class Teambuilder(ABC):
         return mons
 
     @staticmethod
-    def join_team(team: list[TeambuilderPokemon]) -> str:
+    def join_team(team: List[TeambuilderPokemon]) -> str:
         """Converts a list of TeambuilderPokemon objects into the corresponding packed
         showdown team format.
 

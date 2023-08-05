@@ -8,7 +8,18 @@ import copy
 import time
 from abc import ABC, abstractmethod
 from logging import Logger
-from typing import Any, Awaitable, Callable, Generic, TypeVar
+from typing import (
+    Any,
+    Awaitable,
+    Callable,
+    Dict,
+    Generic,
+    List,
+    Optional,
+    Tuple,
+    TypeVar,
+    Union,
+)
 
 import numpy as np
 from gym.core import ActType, Env, ObsType
@@ -72,12 +83,12 @@ class _AsyncPlayer(Generic[ObsType, ActType], Player):
         self.__class__.__name__ = "_AsyncPlayer"
         self.observations = _AsyncQueue(self._create_class(asyncio.Queue, 1))
         self.actions = _AsyncQueue(self._create_class(asyncio.Queue, 1))
-        self.current_battle: AbstractBattle | None = None
+        self.current_battle: Optional[AbstractBattle] = None
         self._user_funcs = user_funcs
 
     def choose_move(
         self, battle: AbstractBattle
-    ) -> BattleOrder | Awaitable[BattleOrder]:
+    ) -> Union[BattleOrder, Awaitable[BattleOrder]]:
         return self._env_move(battle)
 
     async def _env_move(self, battle: AbstractBattle):
@@ -127,18 +138,18 @@ class OpenAIGymEnv(
 
     def __init__(
         self,
-        player_configuration: PlayerConfiguration | None = None,
+        player_configuration: Optional[PlayerConfiguration] = None,
         *,
-        avatar: int | None = None,
+        avatar: Optional[int] = None,
         battle_format: str = "gen8randombattle",
-        log_level: int | None = None,
-        save_replays: bool | str = False,
-        server_configuration: ServerConfiguration | None = LocalhostServerConfiguration,
+        log_level: Optional[int] = None,
+        save_replays: Union[bool, str] = False,
+        server_configuration: Optional[ServerConfiguration] = LocalhostServerConfiguration,
         start_timer_on_battle_start: bool = False,
         start_listening: bool = True,
-        ping_interval: float | None = 20.0,
-        ping_timeout: float | None = 20.0,
-        team: str | Teambuilder | None = None,
+        ping_interval: Optional[float] = 20.0,
+        ping_timeout: Optional[float] = 20.0,
+        team: Optional[Union[str, Teambuilder]] = None,
         start_challenging: bool = False,
     ):
         """
@@ -203,8 +214,8 @@ class OpenAIGymEnv(
         self._observations = self.agent.observations
         self.action_space = Discrete(self.action_space_size())
         self.observation_space = self.describe_embedding()
-        self.current_battle: AbstractBattle | None = None
-        self.last_battle: AbstractBattle | None = None
+        self.current_battle: Optional[AbstractBattle] = None
+        self.last_battle: Optional[AbstractBattle] = None
         self._keep_challenging: bool = False
         self._challenge_task = None
         self._seed_initialized: bool = False
@@ -285,7 +296,7 @@ class OpenAIGymEnv(
     @abstractmethod
     def get_opponent(
         self,
-    ) -> Player | str | list[Player] | list[str]:
+    ) -> Union[Player, str, List[Player], List[str]]:
         """
         Returns the opponent (or list of opponents) that will be challenged
         on the next iteration of the challenge loop. If a list is returned,
@@ -296,16 +307,16 @@ class OpenAIGymEnv(
         """
         pass
 
-    def _get_opponent(self) -> Player | str:
+    def _get_opponent(self) -> Union[Player, str]:
         opponent = self.get_opponent()
         if isinstance(opponent, list):
-            opponents = opponent
-            random_opponent = np.random.choice(np.array(opponents))
+            opponents = np.array(opponent)
+            random_opponent = np.random.choice(opponents)
             if not isinstance(random_opponent, Player) and not isinstance(
                 random_opponent, str
             ):
                 raise RuntimeError(
-                    f"Expected list[Player] or list[str]. Got {type(opponents)}"
+                    f"Expected List[Player] or List[str]. Got {type(opponents)}"
                 )
         else:
             random_opponent = opponent
@@ -314,10 +325,10 @@ class OpenAIGymEnv(
     def reset(
         self,
         *,
-        seed: int | None = None,
+        seed: Optional[int] = None,
         return_info: bool = False,
-        options: dict[str, Any] | None = None,
-    ) -> tuple[ObsType, dict[str, Any]]:
+        options: Optional[Dict[str, Any]] = None,
+    ) -> Tuple[ObsType, Dict[str, Any]]:
         if seed is not None:
             super().reset(seed=seed)  # type: ignore
             self._seed_initialized = True
@@ -347,19 +358,19 @@ class OpenAIGymEnv(
         self.last_battle = copy.deepcopy(battle)
         return self._observations.get(), self.get_additional_info()
 
-    def get_additional_info(self) -> dict[str, Any]:
+    def get_additional_info(self) -> Dict[str, Any]:
         """
         Returns additional info for the reset method.
         Override only if you really need it.
 
-        :return: Additional information as a dict
-        :rtype: dict
+        :return: Additional information as a Dict
+        :rtype: Dict
         """
         return {}
 
     def step(
         self, action: ActType
-    ) -> tuple[ObsType, float, bool, bool, dict[str, Any]]:
+    ) -> Tuple[ObsType, float, bool, bool, Dict[str, Any]]:
         if not self.current_battle:
             obs, info = self.reset(return_info=True)
             return obs, 0.0, False, False, info
@@ -428,7 +439,7 @@ class OpenAIGymEnv(
         )
         closing_task.result()
 
-    def seed(self, seed: int | None = None):
+    def seed(self, seed: Optional[int] = None):
         np.random.seed(seed)
 
     def background_send_challenge(self, username: str):
@@ -469,8 +480,8 @@ class OpenAIGymEnv(
 
     async def _challenge_loop(
         self,
-        n_challenges: int | None = None,
-        callback: Callable[[AbstractBattle], None] | None = None,
+        n_challenges: Optional[int] = None,
+        callback: Optional[Callable[[AbstractBattle], None]] = None,
     ):
         if not n_challenges:
             while self._keep_challenging:
@@ -495,8 +506,8 @@ class OpenAIGymEnv(
 
     def start_challenging(
         self,
-        n_challenges: int | None = None,
-        callback: Callable[[AbstractBattle], None] | None = None,
+        n_challenges: Optional[int] = None,
+        callback: Optional[Callable[[AbstractBattle], None]] = None,
     ):
         """
         Starts the challenge loop.
@@ -523,8 +534,8 @@ class OpenAIGymEnv(
 
     async def _ladder_loop(
         self,
-        n_challenges: int | None = None,
-        callback: Callable[[AbstractBattle], None] | None = None,
+        n_challenges: Optional[int] = None,
+        callback: Optional[Callable[[AbstractBattle], None]] = None,
     ):
         if n_challenges:
             if n_challenges <= 0:
@@ -543,8 +554,8 @@ class OpenAIGymEnv(
 
     def start_laddering(
         self,
-        n_challenges: int | None = None,
-        callback: Callable[[AbstractBattle], None] | None = None,
+        n_challenges: Optional[int] = None,
+        callback: Optional[Callable[[AbstractBattle], None]] = None,
     ):
         """
         Starts the laddering loop.
@@ -608,7 +619,7 @@ class OpenAIGymEnv(
         """Resets the player's inner battle tracker."""
         self.agent.reset_battles()
 
-    def done(self, timeout: int | None = None) -> bool:
+    def done(self, timeout: Optional[int] = None) -> bool:
         """
         Returns True if the task is done or is done after the timeout, false otherwise.
 
@@ -633,7 +644,7 @@ class OpenAIGymEnv(
     # Expose properties of Player class
 
     @property
-    def battles(self) -> dict[str, AbstractBattle]:
+    def battles(self) -> Dict[str, AbstractBattle]:
         return self.agent.battles
 
     @property
@@ -718,16 +729,16 @@ class LegacyOpenAIGymEnv(OpenAIGymEnv[ObsType, ActType], ABC):
     def reset(
         self,
         *,
-        seed: int | None = None,
+        seed: Optional[int] = None,
         return_info: bool = False,
-        options: dict[str, Any] | None = None,
-    ) -> tuple[ObsType, dict[str, Any]]:
+        options: Optional[Dict[str, Any]] = None,
+    ) -> Tuple[ObsType, Dict[str, Any]]:
         obs, info = super().reset(seed=seed, return_info=True, options=options)
         return obs, info
 
     def step(
         self, action: ActType
-    ) -> tuple[ObsType, float, bool, bool, dict[str, Any]]:
+    ) -> Tuple[ObsType, float, bool, bool, Dict[str, Any]]:
         obs, reward, terminated, truncated, info = super().step(action)
         return obs, reward, terminated, truncated, info
 
@@ -756,7 +767,7 @@ class _OpenAIGymEnvWrapper(LegacyOpenAIGymEnv[ObsType, ActType]):
     def action_space_size(self) -> int:
         return self._wrapped.action_space_size()
 
-    def get_opponent(self) -> Player | str | list[Player] | list[str]:
+    def get_opponent(self) -> Union[Player, str, List[Player], List[str]]:
         return self._wrapped.get_opponent()
 
     def __getattr__(self, item: str):

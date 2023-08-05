@@ -3,7 +3,7 @@ import atexit
 import sys
 from logging import CRITICAL, disable
 from threading import Thread
-from typing import Any
+from typing import Any, List
 
 
 def __run_loop(loop: asyncio.AbstractEventLoop):
@@ -13,7 +13,7 @@ def __run_loop(loop: asyncio.AbstractEventLoop):
 
 def __stop_loop(loop: asyncio.AbstractEventLoop, thread: Thread):
     disable(CRITICAL)
-    tasks: list[asyncio.Task[Any]] = []
+    tasks: List[asyncio.Task[Any]] = []
     for task in asyncio.all_tasks(loop):
         task.cancel()
         tasks.append(task)

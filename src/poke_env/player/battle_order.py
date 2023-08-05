@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, List, Optional, Union
 
 from poke_env.environment.double_battle import DoubleBattle
 from poke_env.environment.move import Move
@@ -8,7 +8,7 @@ from poke_env.environment.pokemon import Pokemon
 
 @dataclass
 class BattleOrder:
-    order: Move | Pokemon | None
+    order: Optional[Union[Move, Pokemon]]
     mega: bool = False
     z_move: bool = False
     dynamax: bool = False
@@ -58,8 +58,8 @@ class DefaultBattleOrder(BattleOrder):
 class DoubleBattleOrder(BattleOrder):
     def __init__(
         self,
-        first_order: BattleOrder | None = None,
-        second_order: BattleOrder | None = None,
+        first_order: Optional[BattleOrder] = None,
+        second_order: Optional[BattleOrder] = None,
     ):
         self.first_order = first_order
         self.second_order = second_order
@@ -80,7 +80,7 @@ class DoubleBattleOrder(BattleOrder):
             return self.DEFAULT_ORDER
 
     @staticmethod
-    def join_orders(first_orders: list[BattleOrder], second_orders: list[BattleOrder]):
+    def join_orders(first_orders: List[BattleOrder], second_orders: List[BattleOrder]):
         if first_orders and second_orders:
             orders = [
                 DoubleBattleOrder(first_order=first_order, second_order=second_order)

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from poke_env.data import GenData, to_id_str
 from poke_env.environment.effect import Effect
@@ -51,35 +51,35 @@ class Pokemon:
         self,
         gen: int,
         *,
-        species: str | None = None,
-        request_pokemon: dict[str, Any] | None = None,
-        details: str | None = None,
+        species: Optional[str] = None,
+        request_pokemon: Optional[Dict[str, Any]] = None,
+        details: Optional[str] = None,
     ) -> None:
         # Base data
         self._data = GenData.from_gen(gen)
 
         # Species related attributes
-        self._base_stats: dict[str, int]
+        self._base_stats: Dict[str, int]
         self._heightm: int
-        self._possible_abilities: list[str]
+        self._possible_abilities: List[str]
         self._species: str = ""
         self._type_1: PokemonType
-        self._type_2: PokemonType | None = None
+        self._type_2: Optional[PokemonType] = None
         self._weightkg: int
 
         # Individual related attributes
-        self._ability: str | None = None
+        self._ability: Optional[str] = None
         self._active: bool
-        self._gender: PokemonGender | None = None
+        self._gender: Optional[PokemonGender] = None
         self._level: int = 100
-        self._max_hp: int | None = 0
-        self._moves: dict[str, Move] = {}
-        self._shiny: bool | None = False
+        self._max_hp: Optional[int] = 0
+        self._moves: Dict[str, Move] = {}
+        self._shiny: Optional[bool] = False
 
         # Battle related attributes
 
         self._active: bool = False
-        self._boosts: dict[str, int] = {
+        self._boosts: Dict[str, int] = {
             "accuracy": 0,
             "atk": 0,
             "def": 0,
@@ -88,20 +88,20 @@ class Pokemon:
             "spd": 0,
             "spe": 0,
         }
-        self._current_hp: int | None = 0
-        self._effects: dict[Effect, int] = {}
+        self._current_hp: Optional[int] = 0
+        self._effects: Dict[Effect, int] = {}
         self._first_turn: bool = False
         self._terastallized: bool = False
-        self._terastallized_type: PokemonType | None = None
-        self._item: str | None = self._data.UNKNOWN_ITEM
-        self._last_request: dict[str, Any] | None = {}
+        self._terastallized_type: Optional[PokemonType] = None
+        self._item: Optional[str] = self._data.UNKNOWN_ITEM
+        self._last_request: Optional[Dict[str, Any]] = {}
         self._last_details: str = ""
         self._must_recharge: bool = False
-        self._preparing_move: Move | None = None
+        self._preparing_move: Optional[Move] = None
         self._preparing_target = None
         self._protect_counter: int = 0
         self._revealed: bool = False
-        self._status: Status | None = None
+        self._status: Optional[Status] = None
         self._status_counter: int = 0
 
         if request_pokemon:
@@ -125,7 +125,7 @@ class Pokemon:
             f"[Active: {self._active}, Status: {status_repr}]"
         )
 
-    def _add_move(self, move_id: str, use: bool = False) -> Move | None:
+    def _add_move(self, move_id: str, use: bool = False) -> Optional[Move]:
         """Store the move if applicable."""
         id_ = Move.retrieve_id(move_id)
 
@@ -177,7 +177,7 @@ class Pokemon:
     def copy_boosts(self, mon: Pokemon):
         self._boosts = dict(mon._boosts.items())
 
-    def cure_status(self, status: str | None = None):
+    def cure_status(self, status: Optional[str] = None):
         if status and Status[status.upper()] == self._status:
             self._status = None
             self._status_counter = 0
@@ -264,7 +264,7 @@ class Pokemon:
 
             self._moves = new_moves
 
-    def prepare(self, move_id: str, target: Pokemon | None):
+    def prepare(self, move_id: str, target: Optional[Pokemon]):
         self.moved(move_id, use=False)
 
         move_id = Move.retrieve_id(move_id)
@@ -322,7 +322,7 @@ class Pokemon:
             self._boosts["atk"],
         )
 
-    def switch_in(self, details: str | None = None):
+    def switch_in(self, details: Optional[str] = None):
         self._active = True
 
         if details:
@@ -424,7 +424,7 @@ class Pokemon:
         if species != self._species:
             self._update_from_pokedex(species)
 
-    def update_from_request(self, request_pokemon: dict[str, Any]) -> None:
+    def update_from_request(self, request_pokemon: Dict[str, Any]) -> None:
         self._active = request_pokemon["active"]
 
         if request_pokemon == self._last_request:
@@ -474,10 +474,10 @@ class Pokemon:
 
         self.switch_out()
 
-    def available_moves_from_request(self, request: dict[str, Any]) -> list[Move]:
-        moves: list[Move] = []
+    def available_moves_from_request(self, request: Dict[str, Any]) -> List[Move]:
+        moves: List[Move] = []
 
-        request_moves: list[str] = [
+        request_moves: List[str] = [
             move["id"] for move in request["moves"] if not move.get("disabled", False)
         ]
         for move in request_moves:
@@ -512,7 +512,7 @@ class Pokemon:
                 moves.append(Move(move, gen=self._data.gen))
         return moves
 
-    def damage_multiplier(self, type_or_move: PokemonType | Move) -> float:
+    def damage_multiplier(self, type_or_move: Union[PokemonType, Move]) -> float:
         """
         Returns the damage multiplier associated with a given type or move on this
         pokemon.
@@ -531,7 +531,7 @@ class Pokemon:
         )
 
     @property
-    def ability(self) -> str | None:
+    def ability(self) -> Optional[str]:
         """
         :return: The pokemon's ability. None if unknown.
         :rtype: str, optional
@@ -539,14 +539,14 @@ class Pokemon:
         return self._ability
 
     @ability.setter
-    def ability(self, ability: str | None):
+    def ability(self, ability: Optional[str]):
         if ability is None:
             self._ability = None
         else:
             self._ability = to_id_str(ability)
 
     @property
-    def active(self) -> bool | None:
+    def active(self) -> Optional[bool]:
         """
         :return: Boolean indicating whether the pokemon is active.
         :rtype: bool
@@ -554,16 +554,16 @@ class Pokemon:
         return self._active
 
     @active.setter
-    def active(self, value: bool | None):
+    def active(self, value: Optional[bool]):
         self.active = value
 
     @property
-    def available_z_moves(self) -> list[Move]:
+    def available_z_moves(self) -> List[Move]:
         """
         Caution: this property is not properly tested yet.
 
         :return: The set of moves that pokemon can use as z-moves.
-        :rtype: list[Move]
+        :rtype: List[Move]
         """
         if isinstance(self.item, str) and self.item.endswith("iumz"):
             type_, move = Z_CRYSTAL[self.item]
@@ -578,23 +578,23 @@ class Pokemon:
         return []
 
     @property
-    def base_stats(self) -> dict[str, int]:
+    def base_stats(self) -> Dict[str, int]:
         """
         :return: The pokemon's base stats.
-        :rtype: dict[str, int]
+        :rtype: Dict[str, int]
         """
         return self._base_stats
 
     @property
-    def boosts(self) -> dict[str, int]:
+    def boosts(self) -> Dict[str, int]:
         """
         :return: The pokemon's boosts.
-        :rtype: dict[str, int]
+        :rtype: Dict[str, int]
         """
         return self._boosts
 
     @boosts.setter
-    def boosts(self, value: dict[str, int]):
+    def boosts(self, value: Dict[str, int]):
         self._boosts = value
 
     @property
@@ -618,11 +618,11 @@ class Pokemon:
         return 0
 
     @property
-    def effects(self) -> dict[Effect, int]:
+    def effects(self) -> Dict[Effect, int]:
         """
-        :return: A dict mapping the effects currently affecting the pokemon and the
+        :return: A Dict mapping the effects currently affecting the pokemon and the
             associated counter.
-        :rtype: dict[Effect, int]
+        :rtype: Dict[Effect, int]
         """
         return self._effects
 
@@ -643,7 +643,7 @@ class Pokemon:
         return self._first_turn
 
     @property
-    def gender(self) -> PokemonGender | None:
+    def gender(self) -> Optional[PokemonGender]:
         """
         :return: The pokemon's gender.
         :rtype: PokemonGender, optional
@@ -667,7 +667,7 @@ class Pokemon:
         return Effect.DYNAMAX in self.effects
 
     @property
-    def item(self) -> str | None:
+    def item(self) -> Optional[str]:
         """
         :return: The pokemon's item.
         :rtype: str | None
@@ -675,7 +675,7 @@ class Pokemon:
         return self._item
 
     @item.setter
-    def item(self, item: str | None):
+    def item(self, item: Optional[str]):
         self._item = item
 
     @property
@@ -697,10 +697,10 @@ class Pokemon:
         return self.max_hp
 
     @property
-    def moves(self) -> dict[str, Move]:
+    def moves(self) -> Dict[str, Move]:
         """
         :return: A dictionary of the pokemon's known moves.
-        :rtype: dict[str, Move]
+        :rtype: Dict[str, Move]
         """
         return self._moves
 
@@ -717,7 +717,7 @@ class Pokemon:
         self._must_recharge = value
 
     @property
-    def pokeball(self) -> str | None:
+    def pokeball(self) -> Optional[str]:
         """
         :return: The pokeball in which is the pokemon.
         :rtype: str | None
@@ -726,10 +726,10 @@ class Pokemon:
             return self._last_request.get("pokeball", None)
 
     @property
-    def possible_abilities(self) -> list[str]:
+    def possible_abilities(self) -> List[str]:
         """
         :return: The list of possible abilities for this pokemon.
-        :rtype: list[str]
+        :rtype: List[str]
         """
         return self._possible_abilities
 
@@ -750,7 +750,7 @@ class Pokemon:
         return self._preparing_target
 
     @property
-    def preparing_move(self) -> Move | None:
+    def preparing_move(self) -> Optional[Move]:
         """
         :return: The move being prepared - optional.
         :rtype: Move, optional
@@ -790,10 +790,10 @@ class Pokemon:
         return self._species
 
     @property
-    def stats(self) -> dict[str, int | None] | None:
+    def stats(self) -> Optional[Dict[str, Optional[int]]]:
         """
         :return: The pokemon's stats, as a dictionary.
-        :rtype: dict[str, int | None]
+        :rtype: Dict[str, int | None]
         """
         if self._last_request is not None:
             return self._last_request.get(
@@ -802,7 +802,7 @@ class Pokemon:
             )
 
     @property
-    def status(self) -> Status | None:
+    def status(self) -> Optional[Status]:
         """
         :return: The pokemon's status.
         :rtype: Optional[Status]
@@ -818,7 +818,7 @@ class Pokemon:
         return self._status_counter
 
     @status.setter
-    def status(self, status_str: str | None):
+    def status(self, status_str: Optional[str]):
         status = None if status_str is None else Status[status_str.upper()]
         self._status = status
 
@@ -854,7 +854,7 @@ class Pokemon:
         return self._type_1
 
     @property
-    def type_2(self) -> PokemonType | None:
+    def type_2(self) -> Optional[PokemonType]:
         """
         :return: The pokemon's second type.
         :rtype: Optional[PokemonType]
@@ -864,7 +864,7 @@ class Pokemon:
         return self._type_2
 
     @property
-    def types(self) -> tuple[PokemonType, PokemonType | None]:
+    def types(self) -> Tuple[PokemonType, Optional[PokemonType]]:
         """
         :return: The pokemon's types, as a tuple.
         :rtype: Tuple[PokemonType, Optional[PokemonType]]

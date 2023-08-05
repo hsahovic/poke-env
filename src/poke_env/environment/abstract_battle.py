@@ -1,7 +1,7 @@
 import os
 from abc import ABC, abstractmethod, abstractproperty
 from logging import Logger
-from typing import Any
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 from poke_env.data import GenData, to_id_str
 from poke_env.data.replay_template import REPLAY_TEMPLATE
@@ -113,7 +113,7 @@ class AbstractBattle(ABC):
         battle_tag: str,
         username: str,
         logger: Logger,
-        save_replays: str | bool,
+        save_replays: Union[str, bool],
         gen: int,
     ):
         # Load data
@@ -121,55 +121,55 @@ class AbstractBattle(ABC):
 
         # Utils attributes
         self._battle_tag: str = battle_tag
-        self._format: str | None = None
-        self._max_team_size: int | None = None
-        self._opponent_username: str | None = None
-        self._player_role: str | None = None
+        self._format: Optional[str] = None
+        self._max_team_size: Optional[int] = None
+        self._opponent_username: Optional[str] = None
+        self._player_role: Optional[str] = None
         self._player_username: str = username
-        self._players: list[dict[str, str]] = []
-        self._replay_data: list[list[str]] = []
-        self._save_replays: str | bool = save_replays
-        self._team_size: dict[str, int] = {}
+        self._players: List[Dict[str, str]] = []
+        self._replay_data: List[List[str]] = []
+        self._save_replays: Union[str, bool] = save_replays
+        self._team_size: Dict[str, int] = {}
         self._teampreview: bool = False
-        self._teampreview_opponent_team: set[Pokemon] = set()
+        self._teampreview_opponent_team: Set[Pokemon] = set()
         self._anybody_inactive: bool = False
         self._reconnected: bool = True
-        self.logger: Logger | None = logger
+        self.logger: Optional[Logger] = logger
 
         # Turn choice attributes
         self.in_team_preview: bool = False
         self._move_on_next_request: bool = False
-        self._wait: bool | None = None
+        self._wait: Optional[bool] = None
 
         # Battle state attributes
-        self._dynamax_turn: int | None = None
+        self._dynamax_turn: Optional[int] = None
         self._finished: bool = False
         self._rqid = 0
-        self.rules: list[str] = []
+        self.rules: List[str] = []
         self._turn: int = 0
         self._opponent_can_terrastallize: bool = True
-        self._opponent_dynamax_turn: int | None = None
-        self._opponent_rating: int | None = None
-        self._rating: int | None = None
-        self._won: bool | None = None
+        self._opponent_dynamax_turn: Optional[int] = None
+        self._opponent_rating: Optional[int] = None
+        self._rating: Optional[int] = None
+        self._won: Optional[bool] = None
 
         # In game battle state attributes
-        self._weather: dict[Weather, int] = {}
-        self._fields: dict[Field, int] = {}  # set()
-        self._opponent_side_conditions: dict[SideCondition, int] = {}  # set()
-        self._side_conditions: dict[SideCondition, int] = {}  # set()
+        self._weather: Dict[Weather, int] = {}
+        self._fields: Dict[Field, int] = {}  # set()
+        self._opponent_side_conditions: Dict[SideCondition, int] = {}  # set()
+        self._side_conditions: Dict[SideCondition, int] = {}  # set()
         self._reviving: bool = False
 
         # Pokemon attributes
-        self._team: dict[str, Pokemon] = {}
-        self._opponent_team: dict[str, Pokemon] = {}
+        self._team: Dict[str, Pokemon] = {}
+        self._opponent_team: Dict[str, Pokemon] = {}
 
     def get_pokemon(
         self,
         identifier: str,
         force_self_team: bool = False,
         details: str = "",
-        request: dict[str, Any] | None = None,
+        request: Optional[Dict[str, Any]] = None,
     ) -> Pokemon:
         """Returns the Pokemon object corresponding to given identifier. Can force to
         return object from the player's team if force_self_team is True. If the Pokemon
@@ -200,9 +200,9 @@ class AbstractBattle(ABC):
         is_mine = player_role == self._player_role
 
         if is_mine or force_self_team:
-            team: dict[str, Pokemon] = self._team
+            team: Dict[str, Pokemon] = self._team
         else:
-            team: dict[str, Pokemon] = self._opponent_team
+            team: Dict[str, Pokemon] = self._opponent_team
 
         if self._team_size and len(team) >= self._team_size[player_role]:
             raise ValueError(
@@ -229,7 +229,7 @@ class AbstractBattle(ABC):
     def clear_all_boosts(self):
         pass
 
-    def _check_damage_message_for_item(self, split_message: list[str]):
+    def _check_damage_message_for_item(self, split_message: List[str]):
         # Catches when a side takes damage from the opponent's item
         # The item belongs to the side not taking damage
         # Example:
@@ -252,7 +252,7 @@ class AbstractBattle(ABC):
             pkmn = split_message[2]
             self.get_pokemon(pkmn).item = to_id_str(item)
 
-    def _check_damage_message_for_ability(self, split_message: list[str]):
+    def _check_damage_message_for_ability(self, split_message: List[str]):
         # Catches when a side takes damage from the opponent's ability
         # the item is from the side not taking damage
         # Example:
@@ -266,7 +266,7 @@ class AbstractBattle(ABC):
             pkmn = split_message[5].split("[of]")[-1].strip()
             self.get_pokemon(pkmn).ability = to_id_str(ability)
 
-    def _check_heal_message_for_item(self, split_message: list[str]):
+    def _check_heal_message_for_item(self, split_message: List[str]):
         # Catches when a side heals from it's own item
         # the check for item is not None is necessary because the PS simulator will
         #  show the heal message AFTER a berry has already been consumed
@@ -280,7 +280,7 @@ class AbstractBattle(ABC):
             if pkmn_object.item is not None:
                 pkmn_object.item = to_id_str(item)
 
-    def _check_heal_message_for_ability(self, split_message: list[str]):
+    def _check_heal_message_for_ability(self, split_message: List[str]):
         # Catches when a side heals from it's own ability
         # the "of" component sent by the PS server is a bit misleading
         #   it implies the ability is from the opposite side
@@ -296,7 +296,7 @@ class AbstractBattle(ABC):
         pass
 
     def _end_illusion_on(
-        self, illusionist: str | None, illusioned: Pokemon | None, details: str
+        self, illusionist: Optional[str], illusioned: Optional[Pokemon], details: str
     ):
         if illusionist is None:
             raise ValueError("Cannot end illusion without an active pokemon.")
@@ -371,7 +371,7 @@ class AbstractBattle(ABC):
 
         self._finished = True
 
-    def parse_message(self, split_message: list[str]) -> None:
+    def parse_message(self, split_message: List[str]) -> None:
         if self._save_replays:
             self._replay_data.append(split_message)
 
@@ -750,7 +750,7 @@ class AbstractBattle(ABC):
             raise NotImplementedError(split_message)
 
     @abstractmethod
-    def parse_request(self, request: dict[str, Any]):
+    def parse_request(self, request: Dict[str, Any]):
         pass
 
     def _register_teampreview_pokemon(self, player: str, details: str):
@@ -789,7 +789,7 @@ class AbstractBattle(ABC):
     def tied(self):
         self._finish_battle()
 
-    def _update_team_from_request(self, side: dict[str, Any]) -> None:
+    def _update_team_from_request(self, side: Dict[str, Any]) -> None:
         for pokemon in side["pokemon"]:
             if pokemon["ident"] in self._team:
                 self._team[pokemon["ident"]].update_from_request(pokemon)
@@ -860,7 +860,7 @@ class AbstractBattle(ABC):
         pass
 
     @property
-    def dynamax_turns_left(self) -> int | None:
+    def dynamax_turns_left(self) -> Optional[int]:
         """
         :return: How many turns of dynamax are left. None if dynamax is not active
         :rtype: int, optional
@@ -871,10 +871,10 @@ class AbstractBattle(ABC):
             return max(3 - (self.turn - self._dynamax_turn), 0)
 
     @property
-    def fields(self) -> dict[Field, int]:
+    def fields(self) -> Dict[Field, int]:
         """
-        :return: A dict mapping fields to the turn they have been activated.
-        :rtype: dict[Field, int]
+        :return: A Dict mapping fields to the turn they have been activated.
+        :rtype: Dict[Field, int]
         """
         return self._fields
 
@@ -892,7 +892,7 @@ class AbstractBattle(ABC):
         pass
 
     @property
-    def lost(self) -> bool | None:
+    def lost(self) -> Optional[bool]:
         """
         :return: If the battle is finished, a boolean indicating whether the battle is
             lost. Otherwise None.
@@ -901,7 +901,7 @@ class AbstractBattle(ABC):
         return None if self._won is None else not self._won
 
     @property
-    def max_team_size(self) -> int | None:
+    def max_team_size(self) -> Optional[int]:
         """
         :return: The maximum acceptable size of the team to return in teampreview, if
             applicable.
@@ -930,7 +930,7 @@ class AbstractBattle(ABC):
         pass
 
     @property
-    def opponent_dynamax_turns_left(self) -> int | None:
+    def opponent_dynamax_turns_left(self) -> Optional[int]:
         """
         :return: How many turns of dynamax are left for the opponent's pokemon.
             None if dynamax is not active
@@ -942,7 +942,7 @@ class AbstractBattle(ABC):
             return max(3 - (self.turn - self._opponent_dynamax_turn), 0)
 
     @property
-    def opponent_role(self) -> str | None:
+    def opponent_role(self) -> Optional[str]:
         """
         :return: Opponent's role in given battle. p1/p2
         :rtype: str, optional
@@ -953,7 +953,7 @@ class AbstractBattle(ABC):
             return "p1"
 
     @property
-    def opponent_side_conditions(self) -> dict[SideCondition, int]:
+    def opponent_side_conditions(self) -> Dict[SideCondition, int]:
         """
         :return: The opponent's side conditions. Keys are SideCondition objects, values
             are:
@@ -961,17 +961,17 @@ class AbstractBattle(ABC):
             - the number of layers of the SideCondition if the side condition is
                 stackable
             - the turn where the SideCondition was setup otherwise
-        :rtype: dict[SideCondition, int]
+        :rtype: Dict[SideCondition, int]
         """
         return self._opponent_side_conditions
 
     @property
-    def opponent_team(self) -> dict[str, Pokemon]:
+    def opponent_team(self) -> Dict[str, Pokemon]:
         """
         During teampreview, keys are not definitive: please rely on values.
 
         :return: The opponent's team. Keys are identifiers, values are pokemon objects.
-        :rtype: dict[str, Pokemon]
+        :rtype: Dict[str, Pokemon]
         """
         if self._opponent_team:
             return self._opponent_team
@@ -979,7 +979,7 @@ class AbstractBattle(ABC):
             return {mon.species: mon for mon in self._teampreview_opponent_team}
 
     @property
-    def opponent_username(self) -> str | None:
+    def opponent_username(self) -> Optional[str]:
         """
         :return: The opponent's username, or None if unknown.
         :rtype: str, optional.
@@ -991,7 +991,7 @@ class AbstractBattle(ABC):
         self._opponent_username = value
 
     @property
-    def player_role(self) -> str | None:
+    def player_role(self) -> Optional[str]:
         """
         :return: Player's role in given battle. p1/p2
         :rtype: str, optional
@@ -999,7 +999,7 @@ class AbstractBattle(ABC):
         return self._player_role
 
     @player_role.setter
-    def player_role(self, value: str | None):
+    def player_role(self, value: Optional[str]):
         self._player_role = value
 
     @property
@@ -1015,7 +1015,7 @@ class AbstractBattle(ABC):
         self._player_username = value
 
     @property
-    def players(self) -> tuple[str, str]:
+    def players(self) -> Tuple[str, str]:
         """
         :return: The pair of players' usernames.
         :rtype: Tuple[str, str]
@@ -1023,7 +1023,7 @@ class AbstractBattle(ABC):
         return self._players[0]["username"], self._players[1]["username"]
 
     @players.setter
-    def players(self, players: tuple[str, str]) -> None:
+    def players(self, players: Tuple[str, str]) -> None:
         """Sets the battle player's name:
 
         :param player_1: First player's username.
@@ -1038,7 +1038,7 @@ class AbstractBattle(ABC):
             self._opponent_username = player_2
 
     @property
-    def rating(self) -> int | None:
+    def rating(self) -> Optional[int]:
         """
         Player's rating after the end of the battle, if it was received.
 
@@ -1048,7 +1048,7 @@ class AbstractBattle(ABC):
         return self._rating
 
     @property
-    def opponent_rating(self) -> int | None:
+    def opponent_rating(self) -> Optional[int]:
         """
         Opponent's rating after the end of the battle, if it was received.
 
@@ -1068,7 +1068,7 @@ class AbstractBattle(ABC):
         return self._rqid
 
     @property
-    def side_conditions(self) -> dict[SideCondition, int]:
+    def side_conditions(self) -> Dict[SideCondition, int]:
         """
         :return: The player's side conditions. Keys are SideCondition objects, values
             are:
@@ -1076,20 +1076,20 @@ class AbstractBattle(ABC):
             - the number of layers of the side condition if the side condition is
                 stackable
             - the turn where the SideCondition was setup otherwise
-        :rtype: dict[SideCondition, int]
+        :rtype: Dict[SideCondition, int]
         """
         return self._side_conditions
 
     @property
-    def team(self) -> dict[str, Pokemon]:
+    def team(self) -> Dict[str, Pokemon]:
         """
         :return: The player's team. Keys are identifiers, values are pokemon objects.
-        :rtype: dict[str, Pokemon]
+        :rtype: Dict[str, Pokemon]
         """
         return self._team
 
     @team.setter
-    def team(self, value: dict[str, Pokemon]):
+    def team(self, value: Dict[str, Pokemon]):
         self._team = value
 
     @property
@@ -1140,15 +1140,15 @@ class AbstractBattle(ABC):
         self._turn = turn
 
     @property
-    def weather(self) -> dict[Weather, int]:
+    def weather(self) -> Dict[Weather, int]:
         """
-        :return: A dict mapping the battle's weather (if any) to its starting turn
-        :rtype: dict[Weather, int]
+        :return: A Dict mapping the battle's weather (if any) to its starting turn
+        :rtype: Dict[Weather, int]
         """
         return self._weather
 
     @property
-    def won(self) -> bool | None:
+    def won(self) -> Optional[bool]:
         """
         :return: If the battle is finished, a boolean indicating whether the battle is
             won. Otherwise None.

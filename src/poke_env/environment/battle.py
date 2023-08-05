@@ -1,5 +1,5 @@
 from logging import Logger
-from typing import Any
+from typing import Any, Dict, List, Optional, Union
 
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.move import Move
@@ -14,16 +14,16 @@ class Battle(AbstractBattle):
         username: str,
         logger: Logger,
         gen: int,
-        save_replays: str | bool = False,
+        save_replays: Union[str, bool] = False,
     ):
         super(Battle, self).__init__(battle_tag, username, logger, save_replays, gen)
 
         # Turn choice attributes
-        self._available_moves: list[Move] = []
-        self._available_switches: list[Pokemon] = []
+        self._available_moves: List[Move] = []
+        self._available_switches: List[Pokemon] = []
         self._can_dynamax: bool = False
         self._can_mega_evolve: bool = False
-        self._can_terastallize: PokemonType | None = None
+        self._can_terastallize: Optional[PokemonType] = None
         self._can_z_move: bool = False
         self._opponent_can_dynamax = True
         self._opponent_can_mega_evolve = True
@@ -52,13 +52,13 @@ class Battle(AbstractBattle):
             illusioned=active, illusionist=pokemon_name, details=details
         )
 
-    def parse_request(self, request: dict[str, Any]):
+    def parse_request(self, request: Dict[str, Any]):
         """
         Update the object from a request.
         The player's pokemon are all updated, as well as available moves, switches and
         other related information (z move, mega evolution, forced switch...).
         Args:
-            request (dict): parsed json request object
+            request (Dict): parsed json request object
         """
         if "wait" in request and request["wait"]:
             self._wait = True
@@ -150,7 +150,7 @@ class Battle(AbstractBattle):
         pokemon.set_hp_status(hp_status)
 
     @property
-    def active_pokemon(self) -> Pokemon | None:
+    def active_pokemon(self) -> Optional[Pokemon]:
         """
         :return: The active pokemon
         :rtype: Optional[Pokemon]
@@ -160,26 +160,26 @@ class Battle(AbstractBattle):
                 return pokemon
 
     @property
-    def all_active_pokemons(self) -> list[Pokemon | None]:
+    def all_active_pokemons(self) -> List[Optional[Pokemon]]:
         """
         :return: A list containing all active pokemons and/or Nones.
-        :rtype: list[Optional[Pokemon]]
+        :rtype: List[Optional[Pokemon]]
         """
         return [self.active_pokemon, self.opponent_active_pokemon]
 
     @property
-    def available_moves(self) -> list[Move]:
+    def available_moves(self) -> List[Move]:
         """
         :return: The list of moves the player can use during the current move request.
-        :rtype: list[Move]
+        :rtype: List[Move]
         """
         return self._available_moves
 
     @property
-    def available_switches(self) -> list[Pokemon]:
+    def available_switches(self) -> List[Pokemon]:
         """
         :return: The list of switches the player can do during the current move request.
-        :rtype: list[Pokemon]
+        :rtype: List[Pokemon]
         """
         return self._available_switches
 
@@ -200,7 +200,7 @@ class Battle(AbstractBattle):
         return self._can_mega_evolve
 
     @property
-    def can_terastallize(self) -> PokemonType | None:
+    def can_terastallize(self) -> Optional[PokemonType]:
         """
         :return: None, or the type the active pokemon can terastallize into.
         :rtype: PokemonType, optional
@@ -234,7 +234,7 @@ class Battle(AbstractBattle):
         return self._maybe_trapped
 
     @property
-    def opponent_active_pokemon(self) -> Pokemon | None:
+    def opponent_active_pokemon(self) -> Optional[Pokemon]:
         """
         :return: The opponent active pokemon
         :rtype: Pokemon
