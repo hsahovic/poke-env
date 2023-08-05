@@ -21,7 +21,7 @@ _EVALUATION_RATINGS = {
 
 def background_cross_evaluate(
     players: List[Player], n_challenges: int
-) -> Future[Dict[str, Dict[str, Optional[float]]]]:
+) -> "Future[Dict[str, Dict[str, Optional[float]]]]":
     return asyncio.run_coroutine_threadsafe(
         cross_evaluate(players, n_challenges), POKE_LOOP
     )
