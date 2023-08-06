@@ -4,12 +4,9 @@ format to specify pokemon builds in teambuilders custom classes.
 from typing import List, Optional
 
 from poke_env.data import to_id_str
-from poke_env.stats import STATS_TO_IDX
 
 
 class TeambuilderPokemon:
-    STATS_TO_IDX = STATS_TO_IDX
-
     HP_TO_IVS = {
         "bug": [31, 31, 31, 30, 31, 30],
         "dark": [31, 31, 31, 31, 31, 31],
@@ -37,9 +34,9 @@ class TeambuilderPokemon:
         ability: Optional[str] = None,
         moves: Optional[List[str]] = None,
         nature: Optional[str] = None,
-        evs: List[Optional[str]] = [None] * 6,
+        evs: List[Optional[int]] = [None] * 6,
         gender: Optional[str] = None,
-        ivs: List[Optional[str]] = [None] * 6,
+        ivs: List[Optional[int]] = [None] * 6,
         shiny: Optional[bool] = None,
         level: Optional[str] = None,
         happiness: Optional[str] = None,
@@ -76,7 +73,7 @@ class TeambuilderPokemon:
     @property
     def formatted_evs(self) -> str:
         f_evs = ",".join(
-            [el if el is not None and el != "0" else "" for el in self.evs]
+            [str(el) if el is not None and el != 0 else "" for el in self.evs]
         )
         if f_evs == "," * 5:
             return ""
@@ -85,7 +82,7 @@ class TeambuilderPokemon:
     @property
     def formatted_ivs(self) -> str:
         f_ivs = ",".join(
-            [el if el is not None and el != "31" else "" for el in self.ivs]
+            [str(el) if el is not None and el != 31 else "" for el in self.ivs]
         )
         if f_ivs == "," * 5:
             return ""
@@ -133,6 +130,6 @@ class TeambuilderPokemon:
             move = to_id_str(move)
             if move.startswith("hiddenpower") and all([iv is None for iv in self.ivs]):
                 if len(move) > 11:
-                    self.ivs = [str(iv) for iv in self.HP_TO_IVS[move[11:]]]
-        self.ivs = [iv if iv is not None else "31" for iv in self.ivs]
-        self.evs = [ev if ev is not None else "0" for ev in self.evs]
+                    self.ivs = self.HP_TO_IVS[move[11:]]
+        self.ivs = [iv if iv is not None else 31 for iv in self.ivs]
+        self.evs = [ev if ev is not None else 0 for ev in self.evs]

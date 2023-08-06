@@ -5,6 +5,7 @@ from abc import ABC, abstractmethod
 from typing import List
 
 from poke_env.teambuilder.teambuilder_pokemon import TeambuilderPokemon
+from poke_env.stats import STATS_TO_IDX
 
 
 class Teambuilder(ABC):
@@ -65,8 +66,8 @@ class Teambuilder(ABC):
                     ev = ev.split(" ")
                     n = ev[0]
                     stat = ev[1]
-                    idx = current_mon.STATS_TO_IDX[stat.lower()]
-                    current_mon.evs[idx] = n
+                    idx = STATS_TO_IDX[stat.lower()]
+                    current_mon.evs[idx] = int(n)
             elif line.startswith("IVs: "):
                 ivs = line.replace("IVs: ", "")
                 ivs = ivs.split(" / ")
@@ -74,8 +75,8 @@ class Teambuilder(ABC):
                     iv = iv.split(" ")
                     n = iv[0]
                     stat = iv[1]
-                    idx = current_mon.STATS_TO_IDX[stat.lower()]
-                    current_mon.ivs[idx] = n
+                    idx = STATS_TO_IDX[stat.lower()]
+                    current_mon.ivs[idx] = int(n)
             elif line.startswith("- "):
                 line = line.replace("- ", "").strip()
                 current_mon.moves.append(line)
