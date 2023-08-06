@@ -1,3 +1,4 @@
+include src/poke_env/py.typed
 include README.md
 include src/poke_env/data/static/*.json
 include src/poke_env/data/static/*.html
