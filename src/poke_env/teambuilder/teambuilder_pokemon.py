@@ -72,18 +72,14 @@ class TeambuilderPokemon:
 
     @property
     def formatted_evs(self) -> str:
-        f_evs = ",".join(
-            [str(el) if el is not None and el != 0 else "" for el in self.evs]
-        )
+        f_evs = ",".join([str(el) if el != 0 else "" for el in self.evs])
         if f_evs == "," * 5:
             return ""
         return f_evs
 
     @property
     def formatted_ivs(self) -> str:
-        f_ivs = ",".join(
-            [str(el) if el is not None and el != 31 else "" for el in self.ivs]
-        )
+        f_ivs = ",".join([str(el) if el != 31 else "" for el in self.ivs])
         if f_ivs == "," * 5:
             return ""
         return f_ivs
