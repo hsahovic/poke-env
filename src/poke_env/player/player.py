@@ -353,7 +353,7 @@ class Player(PlayerNetwork, ABC):
         maybe_default_order: bool = False,
     ):
         if maybe_default_order and random.random() < self.DEFAULT_CHOICE_CHANCE:
-            message = self.choose_default_move(battle).message
+            message = self.choose_default_move().message
         elif battle.teampreview:
             if not from_teampreview_request:
                 return
@@ -536,7 +536,7 @@ class Player(PlayerNetwork, ABC):
                 if sum(battle.force_switch) == 1:
                     if orders:
                         return orders[int(random.random() * len(orders))]
-                    return self.choose_default_move(battle)
+                    return self.choose_default_move()
 
         orders = DoubleBattleOrder.join_orders(*active_orders)
 
@@ -582,7 +582,7 @@ class Player(PlayerNetwork, ABC):
         if available_orders:
             return available_orders[int(random.random() * len(available_orders))]
         else:
-            return self.choose_default_move(battle)
+            return self.choose_default_move()
 
     def choose_random_move(self, battle: AbstractBattle) -> BattleOrder:
         """Returns a random legal move from battle.
