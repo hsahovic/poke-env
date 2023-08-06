@@ -63,8 +63,8 @@ def test_simple_heuristics_player_estimate_matchup():
         == -1 + player.SPEED_TIER_COEFICIENT
     )
 
-    dragapult._set_hp("100/100")
-    mamoswine._set_hp("50/100")
+    dragapult.set_hp("100/100")
+    mamoswine.set_hp("50/100")
     assert (
         player._estimate_matchup(dragapult, mamoswine)
         == -1 + player.SPEED_TIER_COEFICIENT + player.HP_FRACTION_COEFICIENT / 2
@@ -94,7 +94,7 @@ def test_simple_heuristics_player_should_dynamax():
     )
     assert player._should_dynamax(battle, 1) is True
 
-    battle.active_pokemon._set_hp("100/100")
+    battle.active_pokemon.set_hp("100/100")
     battle.team["charmander"] = battle.active_pokemon
     assert player._should_dynamax(battle, 4) is True
 
@@ -109,9 +109,9 @@ def test_simple_heuristics_player_should_dynamax():
         True,
     )
     for mon in battle.team.values():
-        mon._set_hp("100/100")
-    battle.active_pokemon._set_hp("100/100")
-    battle.opponent_active_pokemon._set_hp("100/100")
+        mon.set_hp("100/100")
+    battle.active_pokemon.set_hp("100/100")
+    battle.opponent_active_pokemon.set_hp("100/100")
 
     assert player._should_dynamax(battle, 4) is True
 
@@ -139,14 +139,14 @@ def test_simple_heuristics_player_should_switch_out():
     battle.available_switches.append(Pokemon(species="gyarados", gen=8))
     assert player._should_switch_out(battle) is False
 
-    battle.active_pokemon._boost("spa", -3)
+    battle.active_pokemon.boost("spa", -3)
     battle.active_pokemon._last_request["stats"].update({"atk": 10, "spa": 20})
     assert player._should_switch_out(battle) is True
 
     battle.active_pokemon._last_request["stats"].update({"atk": 30, "spa": 20})
     assert player._should_switch_out(battle) is False
 
-    battle.active_pokemon._boost("atk", -3)
+    battle.active_pokemon.boost("atk", -3)
     assert player._should_switch_out(battle) is True
 
     battle = PseudoBattle(
@@ -163,10 +163,10 @@ def test_simple_heuristics_player_stat_estimation():
 
     assert player._stat_estimation(mon, "spe") == 236
 
-    mon._boost("spe", 2)
+    mon.boost("spe", 2)
     assert player._stat_estimation(mon, "spe") == 472
 
-    mon._boost("atk", -1)
+    mon.boost("atk", -1)
     assert player._stat_estimation(mon, "atk") == 136
 
 
@@ -202,7 +202,7 @@ def test_simple_heuristics_player():
         stat: 100 for stat in battle.active_pokemon.base_stats
     }
 
-    battle.available_switches[0]._set_hp("100/100")
+    battle.available_switches[0].set_hp("100/100")
     assert player.choose_move(battle).message == "/choose switch togekiss"
 
     battle.available_moves.append(Move("quickattack", gen=8))
@@ -214,10 +214,10 @@ def test_simple_heuristics_player():
     battle.available_moves.append(Move("dracometeor", gen=8))
     assert player.choose_move(battle).message == "/choose move dracometeor"
 
-    battle.active_pokemon._boost("atk", -3)
-    battle.active_pokemon._boost("spa", -3)
+    battle.active_pokemon.boost("atk", -3)
+    battle.active_pokemon.boost("spa", -3)
     battle.available_switches.append(Pokemon(species="sneasel", gen=8))
-    battle.available_switches[1]._set_hp("100/100")
+    battle.available_switches[1].set_hp("100/100")
     assert player.choose_move(battle).message == "/choose switch sneasel"
 
 
