@@ -270,7 +270,7 @@ class Move:
         elif self._id.startswith("z") and self._id[1:] in self._moves_dict:
             return self._moves_dict[self._id[1:]]
         elif self._id == "recharge":
-            return {"pp": "1", "type": "normal", "category": "Special", "accuracy": "1"}
+            return {"pp": 1, "type": "normal", "category": "Special", "accuracy": 1}
         else:
             raise ValueError("Unknown move: %s" % self._id)
 
