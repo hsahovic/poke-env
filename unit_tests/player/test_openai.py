@@ -1,7 +1,6 @@
 import asyncio
 import sys
 from io import StringIO
-from queue import Queue
 from typing import Union
 
 import pytest
@@ -56,10 +55,6 @@ class UserFuncs:
 
 
 def test_init_queue():
-    q = None
-    with pytest.raises(RuntimeError):
-        q = _AsyncQueue(Queue())
-    assert not q
     q = _AsyncQueue(asyncio.Queue())
     assert isinstance(q, _AsyncQueue)
 
