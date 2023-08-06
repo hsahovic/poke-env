@@ -25,6 +25,8 @@ class TeambuilderPokemon:
         "steel": [31, 31, 31, 31, 31, 30],
         "water": [31, 31, 31, 30, 30, 31],
     }
+    evs: List[Optional[int]]
+    ivs: List[Optional[int]]
 
     def __init__(
         self,
@@ -34,9 +36,9 @@ class TeambuilderPokemon:
         ability: Optional[str] = None,
         moves: Optional[List[str]] = None,
         nature: Optional[str] = None,
-        evs: List[Optional[int]] = [None] * 6,
+        evs: Optional[List[Optional[int]]] = None,
         gender: Optional[str] = None,
-        ivs: List[Optional[int]] = [None] * 6,
+        ivs: Optional[List[Optional[int]]] = None,
         shiny: Optional[bool] = None,
         level: Optional[str] = None,
         happiness: Optional[str] = None,
@@ -56,8 +58,8 @@ class TeambuilderPokemon:
         self.hiddenpowertype = hiddenpowertype
         self.gmax = gmax
         self.tera_type = tera_type
-        self.evs = evs
-        self.ivs = ivs
+        self.evs = evs if evs is not None else [None] * 6
+        self.ivs = ivs if ivs is not None else [None] * 6
 
         if moves is None:
             self.moves = []
@@ -126,6 +128,6 @@ class TeambuilderPokemon:
             move = to_id_str(move)
             if move.startswith("hiddenpower") and all([iv is None for iv in self.ivs]):
                 if len(move) > 11:
-                    self.ivs = self.HP_TO_IVS[move[11:]]
+                    self.ivs = list(self.HP_TO_IVS[move[11:]])
         self.ivs = [iv if iv is not None else 31 for iv in self.ivs]
         self.evs = [ev if ev is not None else 0 for ev in self.evs]
