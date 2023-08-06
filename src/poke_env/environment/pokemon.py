@@ -605,7 +605,7 @@ class Pokemon:
             be on a scale from 0 to 100 or on a pixel scale.
         :rtype: int
         """
-        return self.current_hp
+        return self._current_hp or 0
 
     @property
     def current_hp_fraction(self) -> float:
