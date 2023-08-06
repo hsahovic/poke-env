@@ -819,10 +819,7 @@ class Pokemon:
 
     @status.setter
     def status(self, status: Optional[Union[Status, str]]):
-        if isinstance(status, str):
-            self._status = Status[status.upper()]
-        else:
-            self._status = status
+        self._status = Status[status.upper()] if isinstance(status, str) else status
 
     @property
     def stab_multiplier(self) -> float:
