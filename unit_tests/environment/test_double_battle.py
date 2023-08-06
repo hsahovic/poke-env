@@ -61,7 +61,7 @@ def test_battle_request_parsing_and_interactions(example_doubles_request):
     assert not any(battle.force_switch)
     assert not any(battle.maybe_trapped)
 
-    mr_rime._boosts = {
+    mr_rime.boosts = {
         "accuracy": -2,
         "atk": 1,
         "def": -6,
@@ -70,7 +70,7 @@ def test_battle_request_parsing_and_interactions(example_doubles_request):
         "spd": 2,
         "spe": 3,
     }
-    klinklang._boosts = {
+    klinklang.boosts = {
         "accuracy": -6,
         "atk": 6,
         "def": -1,
@@ -80,7 +80,7 @@ def test_battle_request_parsing_and_interactions(example_doubles_request):
         "spe": 2,
     }
 
-    battle._clear_all_boosts()
+    battle.clear_all_boosts()
 
     cleared_boosts = {
         "accuracy": 0,
@@ -141,7 +141,7 @@ def test_end_illusion():
     battle.switch("p1a: Pelipper", "Pelipper, F", "100/100")
     battle.switch("p1b: Kingdra", "Kingdra, F", "100/100")
 
-    battle._end_illusion("p2a: Zoroark", "Zoroark, M")
+    battle.end_illusion("p2a: Zoroark", "Zoroark, M")
     zoroark = battle.team["p2: Zoroark"]
     celebi = battle.team["p2: Celebi"]
     ferrothorn = battle.team["p2: Ferrothorn"]
