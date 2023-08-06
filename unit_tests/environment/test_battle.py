@@ -420,9 +420,9 @@ def test_battle_request_and_interactions(example_request):
     )
     assert battle.opponent_rating == 1025
 
-    battle._in_team_preview = True
+    battle.in_team_preview = True
     battle.parse_message(["", "start"])
-    assert battle._in_team_preview is False
+    assert battle.in_team_preview is False
 
     with pytest.raises(NotImplementedError) as excinfo:
         msg_type = "bad message type that should raise an exception"
