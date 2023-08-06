@@ -8,7 +8,7 @@ from enum import Enum, auto, unique
 class Weather(Enum):
     """Enumeration, represent a non null weather in a battle."""
 
-    _UNKNOWN = auto()
+    UNKNOWN = auto()
     DESOLATELAND = auto()
     DELTASTREAM = auto()
     HAIL = auto()
@@ -38,10 +38,10 @@ class Weather(Enum):
             return Weather[message.upper()]
         except KeyError:
             logging.getLogger("poke-env").warning(
-                "Unexpected weather '%s' received. Weather._UNKNOWN will be used "
+                "Unexpected weather '%s' received. Weather.UNKNOWN will be used "
                 "instead. If this is unexpected, please open an issue at "
                 "https://github.com/hsahovic/poke-env/issues/ along with this error "
                 "message and a description of your program.",
                 message,
             )
-            return Weather._UNKNOWN
+            return Weather.UNKNOWN

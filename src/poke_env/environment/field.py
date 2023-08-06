@@ -44,7 +44,7 @@ class Field(Enum):
             return Field[message.upper()]
         except KeyError:
             logging.getLogger("poke-env").warning(
-                "Unexpected field '%s' received. Field._UNKNOWN will be used instead. "
+                "Unexpected field '%s' received. Field.UNKNOWN will be used instead. "
                 "If this is unexpected, please open an issue at "
                 "https://github.com/hsahovic/poke-env/issues/ along with this error "
                 "message and a description of your program.",

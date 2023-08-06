@@ -9,7 +9,7 @@ from typing import Set
 class Effect(Enum):
     """Enumeration, represent an effect a Pokemon can be affected by."""
 
-    _UNKNOWN = auto()
+    UNKNOWN = auto()
     AFTER_YOU = auto()
     AFTERMATH = auto()
     AQUA_RING = auto()
@@ -228,13 +228,13 @@ class Effect(Enum):
             return Effect[message]
         except KeyError:
             logging.getLogger("poke-env").warning(
-                "Unexpected effect '%s' received. Effect._UNKNOWN will be used instead. "
+                "Unexpected effect '%s' received. Effect.UNKNOWN will be used instead. "
                 "If this is unexpected, please open an issue at "
                 "https://github.com/hsahovic/poke-env/issues/ along with this error "
                 "message and a description of your program.",
                 message,
             )
-            return Effect._UNKNOWN
+            return Effect.UNKNOWN
 
     @property
     def breaks_protect(self):
