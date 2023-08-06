@@ -7,7 +7,7 @@ def test_battle_request_parsing(example_doubles_request):
     logger = MagicMock()
     battle = DoubleBattle("tag", "username", logger, gen=8)
 
-    battle._parse_request(example_doubles_request)
+    battle.parse_request(example_doubles_request)
     assert len(battle.team) == 6
 
     pokemon_names = set(map(lambda pokemon: pokemon.species, battle.team.values()))
@@ -31,7 +31,7 @@ def test_battle_request_parsing_and_interactions(example_doubles_request):
     logger = MagicMock()
     battle = DoubleBattle("tag", "username", logger, gen=8)
 
-    battle._parse_request(example_doubles_request)
+    battle.parse_request(example_doubles_request)
     mr_rime, klinklang = battle.active_pokemon
     (
         my_first_active,
@@ -96,11 +96,11 @@ def test_battle_request_parsing_and_interactions(example_doubles_request):
     assert klinklang.boosts == cleared_boosts
 
     assert battle.active_pokemon == [mr_rime, klinklang]
-    battle._parse_message(["", "swap", "p1b: Klinklang", ""])
+    battle.parse_message(["", "swap", "p1b: Klinklang", ""])
     assert battle.active_pokemon == [klinklang, mr_rime]
 
-    battle._switch("p2a: Milotic", "Milotic, L50, F", "48/48")
-    battle._switch("p2b: Tyranitar", "Tyranitar, L50, M", "48/48")
+    battle.switch("p2a: Milotic", "Milotic, L50, F", "48/48")
+    battle.switch("p2b: Tyranitar", "Tyranitar, L50, M", "48/48")
 
     milotic, tyranitar = battle.opponent_active_pokemon
     assert milotic.species == "milotic"
@@ -113,15 +113,15 @@ def test_get_possible_showdown_targets(example_doubles_request):
     logger = MagicMock()
     battle = DoubleBattle("tag", "username", logger, gen=8)
 
-    battle._parse_request(example_doubles_request)
+    battle.parse_request(example_doubles_request)
     mr_rime, klinklang = battle.active_pokemon
     psychic = mr_rime.moves["psychic"]
     slackoff = mr_rime.moves["slackoff"]
 
-    battle._switch("p2b: Tyranitar", "Tyranitar, L50, M", "48/48")
+    battle.switch("p2b: Tyranitar", "Tyranitar, L50, M", "48/48")
     assert battle.get_possible_showdown_targets(psychic, mr_rime) == [-2, 2]
 
-    battle._switch("p2a: Milotic", "Milotic, L50, F", "48/48")
+    battle.switch("p2a: Milotic", "Milotic, L50, F", "48/48")
     assert battle.get_possible_showdown_targets(psychic, mr_rime) == [-2, 1, 2]
     assert battle.get_possible_showdown_targets(slackoff, mr_rime) == [0]
     assert battle.get_possible_showdown_targets(psychic, mr_rime, dynamax=True) == [
@@ -134,12 +134,12 @@ def test_get_possible_showdown_targets(example_doubles_request):
 def test_end_illusion():
     logger = MagicMock()
     battle = DoubleBattle("tag", "username", logger, gen=8)
-    battle._player_role = "p2"
+    battle.player_role = "p2"
 
-    battle._switch("p2a: Celebi", "Celebi", "100/100")
-    battle._switch("p2b: Ferrothorn", "Ferrothorn, M", "100/100")
-    battle._switch("p1a: Pelipper", "Pelipper, F", "100/100")
-    battle._switch("p1b: Kingdra", "Kingdra, F", "100/100")
+    battle.switch("p2a: Celebi", "Celebi", "100/100")
+    battle.switch("p2b: Ferrothorn", "Ferrothorn, M", "100/100")
+    battle.switch("p1a: Pelipper", "Pelipper, F", "100/100")
+    battle.switch("p1b: Kingdra", "Kingdra, F", "100/100")
 
     battle._end_illusion("p2a: Zoroark", "Zoroark, M")
     zoroark = battle.team["p2: Zoroark"]
