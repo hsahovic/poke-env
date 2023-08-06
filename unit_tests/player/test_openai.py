@@ -81,10 +81,10 @@ def test_queue():
 def test_async_player():
     player = _AsyncPlayer(UserFuncs(), start_listening=False, username="usr")
     battle = Battle("bat1", player.username, player.logger, gen=8)
-    player._actions.put(-1)
+    player.actions.put(-1)
     order = asyncio.get_event_loop().run_until_complete(player._env_move(battle))
     assert isinstance(order, ForfeitBattleOrder)
-    assert player._observations.get() == "battle"
+    assert player.observations.get() == "battle"
 
 
 def render(battle):
