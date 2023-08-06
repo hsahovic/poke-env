@@ -7,6 +7,7 @@ class ServerConfiguration(NamedTuple):
     server_url: str
     authentication_url: str
 
+
 """Server configuration object. Represented with a tuple with two entries: server url
 and authentication endpoint url."""
 
