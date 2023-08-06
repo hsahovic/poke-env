@@ -70,7 +70,7 @@ class _AsyncQueue:
 
 class _AsyncPlayer(Generic[ObsType, ActType], Player):
     _actions: _AsyncQueue
-    _observations: _AsyncQueue
+    observations: _AsyncQueue
 
     def __init__(
         self,
@@ -97,7 +97,7 @@ class _AsyncPlayer(Generic[ObsType, ActType], Player):
         if not self.current_battle == battle:
             raise RuntimeError("Using different battles for queues")
         battle_to_send = self._user_funcs.embed_battle(battle)
-        await self._observations.async_put(battle_to_send)
+        await self.observations.async_put(battle_to_send)
         action = await self._actions.async_get()
         if action == -1:
             return ForfeitBattleOrder()
@@ -106,7 +106,7 @@ class _AsyncPlayer(Generic[ObsType, ActType], Player):
     def _battle_finished_callback(self, battle: AbstractBattle):
         to_put = self._user_funcs.embed_battle(battle)
         asyncio.run_coroutine_threadsafe(
-            self._observations.async_put(to_put), POKE_LOOP
+            self.observations.async_put(to_put), POKE_LOOP
         )
 
 
