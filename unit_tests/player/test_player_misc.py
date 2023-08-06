@@ -2,7 +2,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from poke_env.environment import Battle, DoubleBattle, Move, AbstractBattle
+from poke_env.environment import AbstractBattle, Battle, DoubleBattle, Move
 from poke_env.player import BattleOrder, Player, RandomPlayer, cross_evaluate
 
 

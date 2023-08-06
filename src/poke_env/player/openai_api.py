@@ -105,9 +105,7 @@ class _AsyncPlayer(Generic[ObsType, ActType], Player):
 
     def _battle_finished_callback(self, battle: AbstractBattle):
         to_put = self._user_funcs.embed_battle(battle)
-        asyncio.run_coroutine_threadsafe(
-            self.observations.async_put(to_put), POKE_LOOP
-        )
+        asyncio.run_coroutine_threadsafe(self.observations.async_put(to_put), POKE_LOOP)
 
 
 class _ABCMetaclass(type(ABC)):
