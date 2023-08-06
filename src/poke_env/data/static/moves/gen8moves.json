@@ -993,7 +993,7 @@
         "flags": {},
         "name": "Baton Pass",
         "num": 226,
-        "onTryHit": "onTryHit",
+        "onHit": "onHit",
         "pp": 40,
         "priority": 0,
         "secondary": null,
