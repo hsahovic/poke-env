@@ -2,12 +2,12 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from poke_env.environment import Battle, DoubleBattle, Move
+from poke_env.environment import Battle, DoubleBattle, Move, AbstractBattle
 from poke_env.player import BattleOrder, Player, RandomPlayer, cross_evaluate
 
 
 class SimplePlayer(Player):
-    def choose_move(self, battle):
+    def choose_move(self, battle: AbstractBattle) -> BattleOrder:
         return self.choose_random_move(battle)
 
     async def _send_message(self, message, room):

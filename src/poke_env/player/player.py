@@ -452,7 +452,7 @@ class Player(PlayerNetwork, ABC):
         """
         pass
 
-    def choose_default_move(self, battle: AbstractBattle) -> DefaultBattleOrder:
+    def choose_default_move(self) -> DefaultBattleOrder:
         """Returns showdown's default move order.
 
         This order will result in the first legal order - according to showdown's
