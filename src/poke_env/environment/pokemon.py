@@ -694,7 +694,7 @@ class Pokemon:
             be on a scale from 0 to 100 or on a pixel scale.
         :rtype: int
         """
-        return self.max_hp
+        return self._max_hp or 0
 
     @property
     def moves(self) -> Dict[str, Move]:
