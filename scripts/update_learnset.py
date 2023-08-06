@@ -1,5 +1,6 @@
-from data_script_utils import STATIC_DATA_ROOT, fetch_and_clean_ps_data
 import os
+
+from data_script_utils import STATIC_DATA_ROOT, fetch_and_clean_ps_data
 
 # Fetch latest version
 data = fetch_and_clean_ps_data(

@@ -6,17 +6,16 @@ python diagnostic_tools/anything_goes_gen_8_battles_and_teams.py <n_battle> <log
     <batch_size>
 """
 import asyncio
-import orjson
-import numpy as np
 import sys
 
+import numpy as np
+import orjson
+from tqdm import tqdm
+
+from poke_env import LocalhostServerConfiguration, PlayerConfiguration, to_id_str
 from poke_env.data import GenData
 from poke_env.player import RandomPlayer
-from poke_env import LocalhostServerConfiguration, PlayerConfiguration
 from poke_env.teambuilder import Teambuilder, TeambuilderPokemon
-from poke_env import to_id_str
-
-from tqdm import tqdm
 
 with open("src/poke_env/data/static/learnset.json") as f:
     movesets = orjson.loads(f.read())

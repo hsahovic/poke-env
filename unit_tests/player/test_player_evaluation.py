@@ -1,8 +1,9 @@
-from poke_env.player import evaluate_player, RandomPlayer
-from poke_env.player.utils import _estimate_strength_from_results
-
 import math
+
 import pytest
+
+from poke_env.player import RandomPlayer, evaluate_player
+from poke_env.player.utils import _estimate_strength_from_results
 
 
 def test_estimate_strength_from_results():

@@ -2,9 +2,7 @@
 PokemonTypes are mainly associated with Pokemons and moves.
 """
 # pyre-ignore-all-errors[45]
-from enum import auto
-from enum import Enum
-from enum import unique
+from enum import Enum, auto, unique
 from typing import Dict, Optional
 
 

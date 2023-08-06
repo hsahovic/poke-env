@@ -8,11 +8,9 @@ version = "0.7.1"
 description = "A python interface for training Reinforcement Learning bots to battle on pokemon showdown."
 readme = "README.md"
 requires-python = ">=3.7.0"
-license = {file = "LICENSE"}
-authors = [
-  {name = "Haris Sahovic", email = "contact@sahovic.fr"}
-]
-classifiers=[
+license = { file = "LICENSE" }
+authors = [{ name = "Haris Sahovic", email = "contact@sahovic.fr" }]
+classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "Intended Audience :: Information Technology",
@@ -40,5 +38,9 @@ Repository = "https://github.com/hsahovic/poke-env"
 [tool.black]
 line-length = 88
 
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
 [tool.setuptools.dynamic]
-dependencies = {file = ["requirements.txt"]}
+dependencies = { file = ["requirements.txt"] }

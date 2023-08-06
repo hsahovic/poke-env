@@ -1,9 +1,8 @@
 """This module defines the Field class, which represents a battle field.
 """
 # pyre-ignore-all-errors[45]
-from enum import Enum, unique, auto
-
 import logging
+from enum import Enum, auto, unique
 
 
 @unique

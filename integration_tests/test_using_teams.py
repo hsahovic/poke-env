@@ -1,7 +1,8 @@
 import asyncio
+
 import pytest
 
-from poke_env.player import cross_evaluate, SimpleHeuristicsPlayer
+from poke_env.player import SimpleHeuristicsPlayer, cross_evaluate
 
 
 async def cross_evaluation(n_battles, format_, teams):

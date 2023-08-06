@@ -1,17 +1,16 @@
 import numpy as np
-
 from gym import Space
 from gym.spaces import Box
 from gym.utils.env_checker import check_env
 
+from poke_env import LocalhostServerConfiguration
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.player import (
-    OpenAIGymEnv,
-    ObservationType,
-    RandomPlayer,
     Gen8EnvSinglePlayer,
+    ObservationType,
+    OpenAIGymEnv,
+    RandomPlayer,
 )
-from poke_env import LocalhostServerConfiguration
 
 
 class TestEnv(OpenAIGymEnv):

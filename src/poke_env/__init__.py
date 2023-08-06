@@ -7,9 +7,9 @@ import poke_env.exceptions as exceptions
 import poke_env.player as player
 import poke_env.player_configuration as player_configuration
 import poke_env.server_configuration as server_configuration
-import poke_env.teambuilder as teambuilder
 import poke_env.stats as stats
-from poke_env.data import to_id_str, gen_data
+import poke_env.teambuilder as teambuilder
+from poke_env.data import gen_data, to_id_str
 from poke_env.exceptions import ShowdownException
 from poke_env.player_configuration import PlayerConfiguration
 from poke_env.server_configuration import (
@@ -17,9 +17,7 @@ from poke_env.server_configuration import (
     ServerConfiguration,
     ShowdownServerConfiguration,
 )
-from poke_env.stats import (
-    compute_raw_stats,
-)
+from poke_env.stats import compute_raw_stats
 
 __logger = logging.getLogger("poke-env")
 __stream_handler = logging.StreamHandler()

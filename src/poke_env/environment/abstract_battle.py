@@ -1,22 +1,13 @@
-from abc import ABC
-from abc import abstractmethod
-from abc import abstractproperty
-
+import os
+from abc import ABC, abstractmethod, abstractproperty
 from logging import Logger
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Set
-from typing import Tuple
-from typing import Union
+from typing import Dict, List, Optional, Set, Tuple, Union
 
 from poke_env.data import _REPLAY_TEMPLATE, GenData, to_id_str
 from poke_env.environment.field import Field
 from poke_env.environment.pokemon import Pokemon
 from poke_env.environment.side_condition import STACKABLE_CONDITIONS, SideCondition
 from poke_env.environment.weather import Weather
-
-import os
 
 
 class AbstractBattle(ABC):

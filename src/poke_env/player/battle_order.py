@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Optional, Union
+
 from poke_env.environment.double_battle import DoubleBattle
 from poke_env.environment.move import Move
 from poke_env.environment.pokemon import Pokemon

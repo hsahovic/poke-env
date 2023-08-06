@@ -1,8 +1,8 @@
 """This module defines a random players baseline
 """
 
-from poke_env.player.player import Player
 from poke_env.player.battle_order import BattleOrder
+from poke_env.player.player import Player
 
 
 class RandomPlayer(Player):

@@ -1,7 +1,8 @@
 import asyncio
 
-from poke_env.player import cross_evaluate, RandomPlayer
 from tabulate import tabulate
+
+from poke_env.player import RandomPlayer, cross_evaluate
 
 
 async def main():

@@ -2,8 +2,9 @@
 Pokemon Showdown teams in the context of communicating with Pokemon Showdown.
 """
 from abc import ABC, abstractmethod
-from poke_env.teambuilder.teambuilder_pokemon import TeambuilderPokemon
 from typing import List
+
+from poke_env.teambuilder.teambuilder_pokemon import TeambuilderPokemon
 
 
 class Teambuilder(ABC):

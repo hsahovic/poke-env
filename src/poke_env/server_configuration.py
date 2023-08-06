@@ -2,7 +2,6 @@
 """
 from collections import namedtuple
 
-
 ServerConfiguration = namedtuple(
     "ServerConfiguration", ["server_url", "authentication_url"]
 )

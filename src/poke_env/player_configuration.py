@@ -1,7 +1,6 @@
 """This module contains objects related to player configuration.
 """
-from collections import namedtuple
-from collections import Counter
+from collections import Counter, namedtuple
 
 PlayerConfiguration = namedtuple("PlayerConfiguration", ["username", "password"])
 """Player configuration object. Represented with a tuple with two entries: username and
