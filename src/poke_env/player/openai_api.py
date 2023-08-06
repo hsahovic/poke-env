@@ -69,7 +69,7 @@ class _AsyncQueue:
 
 
 class _AsyncPlayer(Generic[ObsType, ActType], Player):
-    _actions: _AsyncQueue
+    actions: _AsyncQueue
     observations: _AsyncQueue
 
     def __init__(
@@ -98,7 +98,7 @@ class _AsyncPlayer(Generic[ObsType, ActType], Player):
             raise RuntimeError("Using different battles for queues")
         battle_to_send = self._user_funcs.embed_battle(battle)
         await self.observations.async_put(battle_to_send)
-        action = await self._actions.async_get()
+        action = await self.actions.async_get()
         if action == -1:
             return ForfeitBattleOrder()
         return self._user_funcs.action_to_move(action, battle)
