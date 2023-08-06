@@ -79,7 +79,7 @@ class DoubleBattle(AbstractBattle):
             pokemon_2 = None
         return [pokemon_1, pokemon_2]
 
-    def _parse_request(self, request: Dict[str, Any]):
+    def parse_request(self, request: Dict[str, Any]):
         """
         Update the object from a request.
         The player's pokemon are all updated, as well as available moves, switches and
@@ -300,9 +300,6 @@ class DoubleBattle(AbstractBattle):
         targets = [target for target in targets if target in targets_to_keep]
 
         return targets
-
-    def parse_request(self, request: Dict[str, Any]):
-        pass
 
     @property
     def active_pokemon(self) -> List[Optional[Pokemon]]:
