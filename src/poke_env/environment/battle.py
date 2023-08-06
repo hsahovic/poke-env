@@ -253,7 +253,7 @@ class Battle(AbstractBattle):
         return self._opponent_can_dynamax
 
     @opponent_can_dynamax.setter
-    def opponent_can_dynamax(self, value: bool) -> None:
+    def opponent_can_dynamax(self, value: bool):
         self._opponent_can_dynamax = value
 
     @property
@@ -265,7 +265,7 @@ class Battle(AbstractBattle):
         return self._opponent_can_mega_evolve
 
     @opponent_can_mega_evolve.setter
-    def opponent_can_mega_evolve(self, value: bool) -> None:
+    def opponent_can_mega_evolve(self, value: bool):
         self._opponent_can_mega_evolve = value
 
     @property
@@ -285,7 +285,7 @@ class Battle(AbstractBattle):
         return self._opponent_can_z_move
 
     @opponent_can_z_move.setter
-    def opponent_can_z_move(self, value: bool) -> None:
+    def opponent_can_z_move(self, value: bool):
         self._opponent_can_z_move = value
 
     @property

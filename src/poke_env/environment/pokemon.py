@@ -54,7 +54,7 @@ class Pokemon:
         species: Optional[str] = None,
         request_pokemon: Optional[Dict[str, Any]] = None,
         details: Optional[str] = None,
-    ) -> None:
+    ):
         # Base data
         self._data = GenData.from_gen(gen)
 
@@ -354,7 +354,7 @@ class Pokemon:
         self._current_hp = int(current_hp)
         self._boosts = into.boosts.copy()
 
-    def _update_from_pokedex(self, species: str, store_species: bool = True) -> None:
+    def _update_from_pokedex(self, species: str, store_species: bool = True):
         species = to_id_str(species)
         dex_entry = self._data.pokedex[species]
         if store_species:
@@ -377,7 +377,7 @@ class Pokemon:
         self._heightm = dex_entry["heightm"]
         self._weightkg = dex_entry["weightkg"]
 
-    def _update_from_details(self, details: str) -> None:
+    def _update_from_details(self, details: str):
         if details == self._last_details:
             return
         else:
@@ -424,7 +424,7 @@ class Pokemon:
         if species != self._species:
             self._update_from_pokedex(species)
 
-    def update_from_request(self, request_pokemon: Dict[str, Any]) -> None:
+    def update_from_request(self, request_pokemon: Dict[str, Any]):
         self._active = request_pokemon["active"]
 
         if request_pokemon == self._last_request:
@@ -713,7 +713,7 @@ class Pokemon:
         return self._must_recharge
 
     @must_recharge.setter
-    def must_recharge(self, value: bool) -> None:
+    def must_recharge(self, value: bool):
         self._must_recharge = value
 
     @property

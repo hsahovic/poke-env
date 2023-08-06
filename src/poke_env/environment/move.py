@@ -85,7 +85,7 @@ class Move:
     def __repr__(self) -> str:
         return f"{self._id} (Move object)"
 
-    def use(self) -> None:
+    def use(self):
         self._current_pp -= 1
 
     @staticmethod
@@ -492,7 +492,7 @@ class Move:
         return self._request_target
 
     @request_target.setter
-    def request_target(self, request_target: Optional[str]) -> None:
+    def request_target(self, request_target: Optional[str]):
         """
         :param request_target: Target information received from showdown in a request
             message.

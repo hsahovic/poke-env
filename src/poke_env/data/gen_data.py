@@ -16,7 +16,7 @@ class GenData:
 
     _gen_data_per_gen: Dict[int, GenData] = {}
 
-    def __init__(self, gen: int) -> None:
+    def __init__(self, gen: int):
         if gen in self._gen_data_per_gen:
             raise ValueError(f"GenData for gen {gen} already initialized.")
 

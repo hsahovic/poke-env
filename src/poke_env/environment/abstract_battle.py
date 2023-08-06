@@ -334,7 +334,7 @@ class AbstractBattle(ABC):
 
         self._fields[field] = self.turn
 
-    def _finish_battle(self) -> None:
+    def _finish_battle(self):
         if self._save_replays:
             if self._save_replays is True:
                 folder = "replays"
@@ -371,7 +371,7 @@ class AbstractBattle(ABC):
 
         self._finished = True
 
-    def parse_message(self, split_message: List[str]) -> None:
+    def parse_message(self, split_message: List[str]):
         if self._save_replays:
             self._replay_data.append(split_message)
 
@@ -789,7 +789,7 @@ class AbstractBattle(ABC):
     def tied(self):
         self._finish_battle()
 
-    def _update_team_from_request(self, side: Dict[str, Any]) -> None:
+    def _update_team_from_request(self, side: Dict[str, Any]):
         for pokemon in side["pokemon"]:
             if pokemon["ident"] in self._team:
                 self._team[pokemon["ident"]].update_from_request(pokemon)
@@ -805,7 +805,7 @@ class AbstractBattle(ABC):
             self._won = False
         self._finish_battle()
 
-    def end_turn(self, turn: int) -> None:
+    def end_turn(self, turn: int):
         self.turn = turn
 
         for mon in self.all_active_pokemons:
@@ -1023,7 +1023,7 @@ class AbstractBattle(ABC):
         return self._players[0]["username"], self._players[1]["username"]
 
     @players.setter
-    def players(self, players: Tuple[str, str]) -> None:
+    def players(self, players: Tuple[str, str]):
         """Sets the battle player's name:
 
         :param player_1: First player's username.
@@ -1131,7 +1131,7 @@ class AbstractBattle(ABC):
         return self._turn
 
     @turn.setter
-    def turn(self, turn: int) -> None:
+    def turn(self, turn: int):
         """Sets the current turn counter to given value.
 
         :param turn: Current turn value.
@@ -1166,7 +1166,7 @@ class AbstractBattle(ABC):
         return self._move_on_next_request
 
     @move_on_next_request.setter
-    def move_on_next_request(self, value: bool) -> None:
+    def move_on_next_request(self, value: bool):
         self._move_on_next_request = value
 
     @property

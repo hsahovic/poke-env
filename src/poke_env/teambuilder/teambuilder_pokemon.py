@@ -128,7 +128,7 @@ class TeambuilderPokemon:
             self.formatted_endstring,
         )
 
-    def _prepare_for_formatting(self) -> None:
+    def _prepare_for_formatting(self):
         for move in self.moves:
             move = to_id_str(move)
             if move.startswith("hiddenpower") and all([iv is None for iv in self.ivs]):

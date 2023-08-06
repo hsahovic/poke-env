@@ -154,10 +154,10 @@ class Player(PlayerNetwork, ABC):
             )
         return PlayerConfiguration(username, None)
 
-    def _battle_finished_callback(self, battle: AbstractBattle) -> None:
+    def _battle_finished_callback(self, battle: AbstractBattle):
         pass
 
-    def update_team(self, team: Union[Teambuilder, str]) -> None:
+    def update_team(self, team: Union[Teambuilder, str]):
         """Updates the team used by the player.
 
         :param team: The new team to use.
@@ -229,7 +229,7 @@ class Player(PlayerNetwork, ABC):
             async with self._battle_start_condition:
                 await self._battle_start_condition.wait()
 
-    async def _handle_battle_message(self, split_messages: List[List[str]]) -> None:
+    async def _handle_battle_message(self, split_messages: List[List[str]]):
         """Handles a battle message.
 
         :param split_message: The received battle message.
@@ -366,7 +366,7 @@ class Player(PlayerNetwork, ABC):
 
         await self._send_message(message, battle.battle_tag)
 
-    async def _handle_challenge_request(self, split_message: List[str]) -> None:
+    async def _handle_challenge_request(self, split_message: List[str]):
         """Handles an individual challenge."""
         challenging_player = split_message[2].strip()
 
@@ -375,7 +375,7 @@ class Player(PlayerNetwork, ABC):
                 if split_message[5] == self._format:
                     await self._challenge_queue.put(challenging_player)
 
-    async def _update_challenges(self, split_message: List[str]) -> None:
+    async def _update_challenges(self, split_message: List[str]):
         """Update internal challenge state.
 
         Add corresponding challenges to internal queue of challenges, where they will be
@@ -414,7 +414,7 @@ class Player(PlayerNetwork, ABC):
 
     async def _accept_challenges(
         self, opponent: Optional[Union[str, List[str]]], n_challenges: int
-    ) -> None:
+    ):
         if opponent:
             if isinstance(opponent, list):
                 opponent = [to_id_str(o) for o in opponent]
@@ -630,7 +630,7 @@ class Player(PlayerNetwork, ABC):
             perf_counter() - start_time,
         )
 
-    async def battle_against(self, opponent: "Player", n_battles: int = 1) -> None:
+    async def battle_against(self, opponent: "Player", n_battles: int = 1):
         """Make the player play n_battles against opponent.
 
         This function is a wrapper around send_challenges and accept challenges.
@@ -644,7 +644,7 @@ class Player(PlayerNetwork, ABC):
             self._battle_against(opponent, n_battles)
         )
 
-    async def _battle_against(self, opponent: "Player", n_battles: int) -> None:
+    async def _battle_against(self, opponent: "Player", n_battles: int):
         await asyncio.gather(
             self.send_challenges(
                 to_id_str(opponent.username), n_battles, to_wait=opponent.logged_in
@@ -654,7 +654,7 @@ class Player(PlayerNetwork, ABC):
 
     async def send_challenges(
         self, opponent: str, n_challenges: int, to_wait: Optional[Event] = None
-    ) -> None:
+    ):
         """Make the player send challenges to opponent.
 
         opponent must be a string, corresponding to the name of the player to challenge.
@@ -677,7 +677,7 @@ class Player(PlayerNetwork, ABC):
 
     async def _send_challenges(
         self, opponent: str, n_challenges: int, to_wait: Optional[Event] = None
-    ) -> None:
+    ):
         await self._logged_in.wait()
         self.logger.info("Event logged in received in send challenge")
 
@@ -708,7 +708,7 @@ class Player(PlayerNetwork, ABC):
         random.shuffle(members)
         return "/team " + "".join([str(c) for c in members])
 
-    def reset_battles(self) -> None:
+    def reset_battles(self):
         """Resets the player's inner battle tracker."""
         for battle in list(self._battles.values()):
             if not battle.finished:

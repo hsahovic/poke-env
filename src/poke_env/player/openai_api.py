@@ -103,7 +103,7 @@ class _AsyncPlayer(Generic[ObsType, ActType], Player):
             return ForfeitBattleOrder()
         return self._user_funcs.action_to_move(action, battle)
 
-    def _battle_finished_callback(self, battle: AbstractBattle) -> None:
+    def _battle_finished_callback(self, battle: AbstractBattle):
         to_put = self._user_funcs.embed_battle(battle)
         asyncio.run_coroutine_threadsafe(
             self._observations.async_put(to_put), POKE_LOOP

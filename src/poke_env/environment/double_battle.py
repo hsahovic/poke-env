@@ -301,7 +301,7 @@ class DoubleBattle(AbstractBattle):
 
         return targets
 
-    def parse_request(self, request: Dict[str, Any]) -> None:
+    def parse_request(self, request: Dict[str, Any]):
         pass
 
     @property
