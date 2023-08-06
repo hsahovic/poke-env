@@ -4,6 +4,9 @@ condition.
 import logging
 from enum import Enum, auto, unique
 
+# pyre-ignore-all-errors[45]
+from enum import Enum, auto, unique
+
 
 @unique
 class SideCondition(Enum):

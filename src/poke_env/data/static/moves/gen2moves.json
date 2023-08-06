@@ -265,7 +265,7 @@
         "flags": {},
         "name": "Baton Pass",
         "num": 226,
-        "onTryHit": "onTryHit",
+        "onHit": "onHit",
         "pp": 40,
         "priority": 0,
         "secondary": null,
@@ -5034,7 +5034,9 @@
             "onSwitchIn": "onSwitchIn"
         },
         "contestType": "Clever",
-        "flags": {},
+        "flags": {
+            "mustpressure": 1
+        },
         "name": "Spikes",
         "num": 191,
         "pp": 20,
