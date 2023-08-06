@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 from functools import lru_cache
-from typing import Any, Dict, Union
+from typing import Any, Dict, Optional, Union
 
 import orjson
 
@@ -27,7 +27,7 @@ class GenData:
         self.type_chart = self.load_type_chart(gen)
         self.learnset = self.load_learnset()
 
-    def __deepcopy__(self) -> GenData:
+    def __deepcopy__(self, memodict: Optional[Dict[int, Any]] = None) -> GenData:
         return self
 
     def load_moves(self, gen: int) -> Dict[str, Any]:
