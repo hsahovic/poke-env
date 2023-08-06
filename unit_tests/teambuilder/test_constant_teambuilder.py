@@ -1,3 +1,5 @@
+from typing import Dict, List
+
 from poke_env.teambuilder import ConstantTeambuilder
 
 
@@ -10,7 +12,8 @@ def test_constant_teambuilder_yields_packed(packed_format_teams):
 
 
 def test_constant_teambuilder_yields_showdown(
-    showdown_format_teams, packed_format_teams
+    showdown_format_teams: Dict[str, List[str]],
+    packed_format_teams: Dict[str, List[str]],
 ):
     for format_ in packed_format_teams:
         for showdown_team, packed_team in zip(
