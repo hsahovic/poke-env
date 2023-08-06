@@ -234,9 +234,7 @@ def test_battle_request_and_interactions(example_request):
     battle.parse_message(["", "-clearnegativeboost", "p2: Venusaur"])
     assert mon.boosts["atk"] == 4
 
-    battle.parse_message(
-        ["", "switch", "p2: Necrozma", "Necrozma, L82", "121/293 tox"]
-    )
+    battle.parse_message(["", "switch", "p2: Necrozma", "Necrozma, L82", "121/293 tox"])
     assert mon.boosts["atk"] == 0
     assert mon.level == 82
 
