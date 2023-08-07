@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import asyncio
 import copy
+import random
 import time
 from abc import ABC, abstractmethod
 from logging import Logger
@@ -21,7 +22,6 @@ from typing import (
     Union,
 )
 
-import numpy as np
 from gym.core import ActType, Env, ObsType
 from gym.spaces import Discrete, Space
 
@@ -309,17 +309,9 @@ class OpenAIGymEnv(
 
     def _get_opponent(self) -> Union[Player, str]:
         opponent = self.get_opponent()
-        if isinstance(opponent, list):
-            opponents = np.array(opponent)
-            random_opponent = np.random.choice(opponents)
-            if not isinstance(random_opponent, Player) and not isinstance(
-                random_opponent, str
-            ):
-                raise RuntimeError(
-                    f"Expected List[Player] or List[str]. Got {type(opponents)}"
-                )
-        else:
-            random_opponent = opponent
+        random_opponent = (
+            random.choice(opponent) if isinstance(opponent, list) else opponent
+        )
         return random_opponent
 
     def reset(
@@ -440,7 +432,7 @@ class OpenAIGymEnv(
         closing_task.result()
 
     def seed(self, seed: Optional[int] = None):
-        np.random.seed(seed)
+        random.seed(seed)
 
     def background_send_challenge(self, username: str):
         """
