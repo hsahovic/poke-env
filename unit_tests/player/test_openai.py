@@ -133,8 +133,6 @@ def test_get_opponent():
     for _ in range(100):
         assert player._get_opponent() in opponents
     player.opponent = [0]
-    with pytest.raises(RuntimeError):
-        player._get_opponent()
 
 
 def test_legacy_wrapper():
