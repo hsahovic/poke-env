@@ -127,5 +127,9 @@ class TeambuilderPokemon:
     def _prepare_for_formatting(self):
         for move in self.moves:
             move = to_id_str(move)
-            if move.startswith("hiddenpower") and len(move) > 11 and all([iv == 31 for iv in self.ivs]):
+            if (
+                move.startswith("hiddenpower")
+                and len(move) > 11
+                and all([iv == 31 for iv in self.ivs])
+            ):
                 self.ivs = list(self.HP_TO_IVS[move[11:]])

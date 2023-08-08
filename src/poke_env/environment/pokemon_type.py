@@ -61,7 +61,7 @@ class PokemonType(Enum):
         return damage_multiplier
 
     @staticmethod
-    def from_name(name: str) -> "PokemonType":
+    def from_name(name: str) -> PokemonType:
         """Returns a pokemon type based on its name.
 
         :param name: The name of the pokemon type.

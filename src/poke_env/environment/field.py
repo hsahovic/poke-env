@@ -1,5 +1,7 @@
 """This module defines the Field class, which represents a battle field.
 """
+from __future__ import annotations
+
 import logging
 from enum import Enum, auto, unique
 
@@ -26,7 +28,7 @@ class Field(Enum):
         return f"{self.name} (field) object"
 
     @staticmethod
-    def from_showdown_message(message: str) -> "Field":
+    def from_showdown_message(message: str) -> Field:
         """Returns the Field object corresponding to the message.
 
         :param message: The message to convert.

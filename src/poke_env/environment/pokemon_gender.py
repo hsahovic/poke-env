@@ -1,6 +1,8 @@
 """This module defines the PokemonGender class, which represents the gender of a
 Pokemon.
 """
+from __future__ import annotations
+
 from enum import Enum, auto, unique
 
 from poke_env.exceptions import ShowdownException
@@ -18,7 +20,7 @@ class PokemonGender(Enum):
         return f"{self.name} (pokemon gender) object"
 
     @staticmethod
-    def from_request_details(gender: str) -> "PokemonGender":
+    def from_request_details(gender: str) -> PokemonGender:
         """Returns the PokemonGender object corresponding to the gender received in a
             message.
 

@@ -21,7 +21,7 @@ _EVALUATION_RATINGS = {
 
 def background_cross_evaluate(
     players: List[Player], n_challenges: int
-) -> "Future[Dict[str, Dict[str, Optional[float]]]]":
+) -> Future[Dict[str, Dict[str, Optional[float]]]]:
     return asyncio.run_coroutine_threadsafe(
         cross_evaluate(players, n_challenges), POKE_LOOP
     )
@@ -105,7 +105,7 @@ def _estimate_strength_from_results(
 
 def background_evaluate_player(
     player: Any, n_battles: int = 1000, n_placement_battles: int = 30
-) -> "Future[Tuple[float, Tuple[float, float]]]":
+) -> Future[Tuple[float, Tuple[float, float]]]:
     return asyncio.run_coroutine_threadsafe(
         evaluate_player(player, n_battles, n_placement_battles), POKE_LOOP
     )

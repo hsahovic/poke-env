@@ -1,5 +1,7 @@
 """This module defines the Effect class, which represents in-game effects.
 """
+from __future__ import annotations
+
 import logging
 from enum import Enum, auto, unique
 from typing import Set
@@ -206,7 +208,7 @@ class Effect(Enum):
         return f"{self.name} (effect) object"
 
     @staticmethod
-    def from_showdown_message(message: str) -> "Effect":
+    def from_showdown_message(message: str) -> Effect:
         """Returns the Effect object corresponding to the message.
 
         :param message: The message to convert.
