@@ -25,8 +25,9 @@ class TeambuilderPokemon:
         "steel": [31, 31, 31, 31, 31, 30],
         "water": [31, 31, 31, 30, 30, 31],
     }
-    evs: List[Optional[int]]
-    ivs: List[Optional[int]]
+    evs: List[int]
+    ivs: List[int]
+    moves: List[str]
 
     def __init__(
         self,
@@ -36,12 +37,12 @@ class TeambuilderPokemon:
         ability: Optional[str] = None,
         moves: Optional[List[str]] = None,
         nature: Optional[str] = None,
-        evs: Optional[List[Optional[int]]] = None,
+        evs: Optional[List[int]] = None,
         gender: Optional[str] = None,
-        ivs: Optional[List[Optional[int]]] = None,
+        ivs: Optional[List[int]] = None,
         shiny: Optional[bool] = None,
-        level: Optional[str] = None,
-        happiness: Optional[str] = None,
+        level: Optional[int] = None,
+        happiness: Optional[int] = None,
         hiddenpowertype: Optional[str] = None,
         gmax: Optional[bool] = None,
         tera_type: Optional[str] = None,
@@ -58,8 +59,8 @@ class TeambuilderPokemon:
         self.hiddenpowertype = hiddenpowertype
         self.gmax = gmax
         self.tera_type = tera_type
-        self.evs = evs if evs is not None else [None] * 6
-        self.ivs = ivs if ivs is not None else [None] * 6
+        self.evs = evs if evs is not None else [0] * 6
+        self.ivs = ivs if ivs is not None else [31] * 6
 
         if moves is None:
             self.moves = []
@@ -126,8 +127,5 @@ class TeambuilderPokemon:
     def _prepare_for_formatting(self):
         for move in self.moves:
             move = to_id_str(move)
-            if move.startswith("hiddenpower") and all([iv is None for iv in self.ivs]):
-                if len(move) > 11:
-                    self.ivs = list(self.HP_TO_IVS[move[11:]])
-        self.ivs = [iv if iv is not None else 31 for iv in self.ivs]
-        self.evs = [ev if ev is not None else 0 for ev in self.evs]
+            if move.startswith("hiddenpower") and len(move) > 11 and all([iv == 31 for iv in self.ivs]):
+                self.ivs = list(self.HP_TO_IVS[move[11:]])

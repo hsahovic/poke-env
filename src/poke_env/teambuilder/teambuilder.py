@@ -55,10 +55,10 @@ class Teambuilder(ABC):
                 current_mon.ability = ability.strip()
             elif line.startswith("Level: "):
                 level = line.replace("Level: ", "")
-                current_mon.level = level.strip()
+                current_mon.level = int(level.strip())
             elif line.startswith("Happiness: "):
                 happiness = line.replace("Happiness: ", "")
-                current_mon.happiness = happiness.strip()
+                current_mon.happiness = int(happiness.strip())
             elif line.startswith("EVs: "):
                 evs = line.replace("EVs: ", "")
                 evs = evs.split(" / ")
