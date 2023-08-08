@@ -1,5 +1,6 @@
+from typing import List
+
 from poke_env.environment.abstract_battle import AbstractBattle
-from poke_env.environment.battle import Battle
 from poke_env.environment.double_battle import DoubleBattle
 from poke_env.environment.move_category import MoveCategory
 from poke_env.environment.pokemon import Pokemon
@@ -107,13 +108,10 @@ class SimpleHeuristicsPlayer(Player):
     def choose_move(self, battle: AbstractBattle):
         if isinstance(battle, DoubleBattle):
             return self.choose_random_doubles_move(battle)
-        assert isinstance(battle, Battle)
 
         # Main mons shortcuts
         active = battle.active_pokemon
         opponent = battle.opponent_active_pokemon
-        assert active is not None
-        assert opponent is not None
 
         # Rough estimation of damage ratio
         physical_ratio = self._stat_estimation(active, "atk") / self._stat_estimation(
@@ -187,9 +185,10 @@ class SimpleHeuristicsPlayer(Player):
             )
 
         if battle.available_switches:
+            switches: List[Pokemon] = battle.available_switches
             return self.create_order(
                 max(
-                    battle.available_switches,
+                    switches,
                     key=lambda s: self._estimate_matchup(s, opponent),
                 )
             )
