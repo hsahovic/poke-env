@@ -1,5 +1,5 @@
 import os
-from abc import ABC, abstractmethod, abstractproperty
+from abc import ABC, abstractmethod
 from logging import Logger
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
@@ -817,8 +817,9 @@ class AbstractBattle(ABC):
     def active_pokemon(self) -> Any:
         pass
 
-    @abstractproperty
-    def all_active_pokemons(self) -> Any:
+    @property
+    @abstractmethod
+    def all_active_pokemons(self) -> List[Optional[Pokemon]]:
         pass
 
     @property

@@ -2,7 +2,7 @@
 """
 from abc import ABC
 from threading import Lock
-from typing import Any, Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.player.battle_order import BattleOrder, ForfeitBattleOrder
@@ -16,7 +16,6 @@ from poke_env.teambuilder.teambuilder import Teambuilder
 class EnvPlayer(OpenAIGymEnv[ObsType, ActType], ABC):
     """Player exposing the Open AI Gym Env API."""
 
-    _ACTION_SPACE: Any = None
     _DEFAULT_BATTLE_FORMAT = "gen8randombattle"
 
     def __init__(
@@ -186,9 +185,6 @@ class EnvPlayer(OpenAIGymEnv[ObsType, ActType], ABC):
         self._reward_buffer[battle] = current_value
 
         return to_return
-
-    def action_space_size(self) -> int:
-        return len(self._ACTION_SPACE)
 
     def get_opponent(self) -> Union[Player, str, List[Player], List[str]]:
         with self._opponent_lock:

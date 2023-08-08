@@ -742,7 +742,7 @@ class Pokemon:
         return bool(self._preparing_target) or bool(self._preparing_move)
 
     @property
-    def preparing_target(self) -> Any:
+    def preparing_target(self) -> Optional[Union[bool, Pokemon]]:
         """
         :return: The moves target - optional.
         :rtype: Any

@@ -4,7 +4,7 @@
 import asyncio
 import math
 from concurrent.futures import Future
-from typing import Any, Dict, List, Optional, Tuple, TypeVar
+from typing import Dict, List, Optional, Tuple, TypeVar
 
 from poke_env.data import to_id_str
 from poke_env.player.baselines import MaxBasePowerPlayer, SimpleHeuristicsPlayer
@@ -104,7 +104,7 @@ def _estimate_strength_from_results(
 
 
 def background_evaluate_player(
-    player: Any, n_battles: int = 1000, n_placement_battles: int = 30
+    player: Player, n_battles: int = 1000, n_placement_battles: int = 30
 ) -> Future[Tuple[float, Tuple[float, float]]]:
     return asyncio.run_coroutine_threadsafe(
         evaluate_player(player, n_battles, n_placement_battles), POKE_LOOP
@@ -112,7 +112,7 @@ def background_evaluate_player(
 
 
 async def evaluate_player(
-    player: Any, n_battles: int = 1000, n_placement_battles: int = 30
+    player: Player, n_battles: int = 1000, n_placement_battles: int = 30
 ) -> Tuple[float, Tuple[float, float]]:
     """Estimate player strength.
 

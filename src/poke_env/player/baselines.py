@@ -1,8 +1,8 @@
-from typing import Any
-
 from poke_env.environment.abstract_battle import AbstractBattle
+from poke_env.environment.battle import Battle
 from poke_env.environment.double_battle import DoubleBattle
 from poke_env.environment.move_category import MoveCategory
+from poke_env.environment.pokemon import Pokemon
 from poke_env.environment.side_condition import SideCondition
 from poke_env.player.player import Player
 
@@ -29,7 +29,7 @@ class SimpleHeuristicsPlayer(Player):
     HP_FRACTION_COEFICIENT = 0.4
     SWITCH_OUT_MATCHUP_THRESHOLD = -2
 
-    def _estimate_matchup(self, mon: Any, opponent: Any):
+    def _estimate_matchup(self, mon: Pokemon, opponent: Pokemon):
         score = max([opponent.damage_multiplier(t) for t in mon.types if t is not None])
         score -= max(
             [mon.damage_multiplier(t) for t in opponent.types if t is not None]
@@ -96,7 +96,7 @@ class SimpleHeuristicsPlayer(Player):
                 return True
         return False
 
-    def _stat_estimation(self, mon: Any, stat: str):
+    def _stat_estimation(self, mon: Pokemon, stat: str):
         # Stats boosts value
         if mon.boosts[stat] > 1:
             boost = (2 + mon.boosts[stat]) / 2
@@ -107,10 +107,13 @@ class SimpleHeuristicsPlayer(Player):
     def choose_move(self, battle: AbstractBattle):
         if isinstance(battle, DoubleBattle):
             return self.choose_random_doubles_move(battle)
+        assert isinstance(battle, Battle)
 
         # Main mons shortcuts
         active = battle.active_pokemon
         opponent = battle.opponent_active_pokemon
+        assert active is not None
+        assert opponent is not None
 
         # Rough estimation of damage ratio
         physical_ratio = self._stat_estimation(active, "atk") / self._stat_estimation(
