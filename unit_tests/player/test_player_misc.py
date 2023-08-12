@@ -1,3 +1,4 @@
+from collections import namedtuple
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -9,9 +10,6 @@ from poke_env.player import BattleOrder, Player, RandomPlayer, cross_evaluate
 class SimplePlayer(Player):
     def choose_move(self, battle):
         return self.choose_random_move(battle)
-
-    async def send_message(self, message, room):
-        self._sent_messages = [message, room]
 
 
 class FixedWinRatePlayer:
@@ -29,8 +27,12 @@ class FixedWinRatePlayer:
         return 0.5
 
     @property
-    def logged_in(self):
+    def next_team(self):
         return None
+
+    @property
+    def ps_client(self):
+        return namedtuple("PSClient", "logged_in")(logged_in=None)
 
 
 def test_player_default_order():
@@ -122,13 +124,16 @@ def test_choose_random_move_doubles(pseudo_random, example_doubles_request):
     assert choice.message == "/choose move slackoff dynamax, switch thundurus"
 
 
+@patch("poke_env.ps_client.ps_client.PSClient.send_message")
 @pytest.mark.asyncio
-async def test_start_timer_on_battle_start():
+async def test_start_timer_on_battle_start(send_message_patch):
     # on
     player = SimplePlayer(start_listening=False, start_timer_on_battle_start=True)
 
     await player._create_battle(["", "gen9randombattle", "uuu"])
-    assert player._sent_messages == ["/timer on", "gen9randombattle-uuu"]
+    # assert player._sent_messages == ["/timer on", "gen9randombattle-uuu"]
+
+    send_message_patch.assert_called_with("/timer on", "gen9randombattle-uuu")
 
     # off
     player = SimplePlayer(start_listening=False, start_timer_on_battle_start=False)
@@ -217,21 +222,16 @@ async def return_move():
     return BattleOrder(Move("bite", gen=8))
 
 
+@patch("poke_env.ps_client.ps_client.PSClient.send_message")
 @pytest.mark.asyncio
-async def test_awaitable_move():
+async def test_awaitable_move(send_message_patch):
     player = SimplePlayer(start_listening=False)
     battle = Battle("bat1", player.username, player.logger, 8)
     battle._teampreview = False
-    with patch.object(
-        player, "send_message", new_callable=AsyncMock
-    ) as send_message_mock:
-        with patch.object(
-            player,
-            "choose_move",
-            return_value=BattleOrder(Move("tackle", gen=8)),
-        ):
-            await player._handle_battle_request(battle)
-            send_message_mock.assert_called_with("/choose move tackle", "bat1")
-        with patch.object(player, "choose_move", return_value=return_move()):
-            await player._handle_battle_request(battle)
-            send_message_mock.assert_called_with("/choose move bite", "bat1")
+
+    await player._handle_battle_request(battle)
+
+    send_message_patch.assert_called_with("/choose default", "bat1")
+    with patch.object(player, "choose_move", return_value=return_move()):
+        await player._handle_battle_request(battle)
+        send_message_patch.assert_called_with("/choose move bite", "bat1")
