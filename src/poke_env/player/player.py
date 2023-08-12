@@ -6,6 +6,7 @@ import random
 from abc import ABC, abstractmethod
 from asyncio import Condition, Event, Queue, Semaphore
 from inspect import isawaitable
+from logging import Logger
 from time import perf_counter
 from typing import Awaitable, Dict, List, Optional, Union
 
@@ -37,7 +38,7 @@ from poke_env.teambuilder.constant_teambuilder import ConstantTeambuilder
 from poke_env.teambuilder.teambuilder import Teambuilder
 
 
-class Player(PSClient, ABC):
+class Player(ABC):
     """
     Base class for players.
     """
@@ -111,7 +112,7 @@ class Player(PSClient, ABC):
         if server_configuration is None:
             server_configuration = LocalhostServerConfiguration
 
-        super(Player, self).__init__(
+        self.ps_client = PSClient(
             account_configuration=account_configuration,
             avatar=avatar,
             log_level=log_level,
@@ -120,6 +121,7 @@ class Player(PSClient, ABC):
             ping_interval=ping_interval,
             ping_timeout=ping_timeout,
         )
+        self.ps_client._handle_battle_message = self._handle_battle_message
 
         self._format: str = battle_format
         self._max_concurrent_battles: int = max_concurrent_battles
@@ -386,7 +388,10 @@ class Player(PSClient, ABC):
                 await self._challenge_queue.put(user)
 
     async def accept_challenges(
-        self, opponent: Optional[Union[str, List[str]]], n_challenges: int
+        self,
+        opponent: Optional[Union[str, List[str]]],
+        n_challenges: int,
+        packed_team: Optional[str],
     ) -> None:
         """Let the player wait for challenges from opponent, and accept them.
 
@@ -402,13 +407,21 @@ class Player(PSClient, ABC):
         :type opponent: None, str or list of str
         :param n_challenges: Number of challenges that will be accepted
         :type n_challenges: int
+        :packed_team: Team to use. Defaults to generating a team with the agent's teambuilder.
+        :type packed_team: string, optional.
         """
+        if packed_team is None:
+            packed_team = self.next_team
+
         await handle_threaded_coroutines(
-            self._accept_challenges(opponent, n_challenges)
+            self._accept_challenges(opponent, n_challenges, packed_team)
         )
 
     async def _accept_challenges(
-        self, opponent: Optional[Union[str, List[str]]], n_challenges: int
+        self,
+        opponent: Optional[Union[str, List[str]]],
+        n_challenges: int,
+        packed_team: Optional[str],
     ) -> None:  # pragma: no cover
         if opponent:
             if isinstance(opponent, list):
@@ -429,7 +442,7 @@ class Player(PSClient, ABC):
                     or (opponent == username)
                     or (isinstance(opponent, list) and (username in opponent))
                 ):
-                    await self._accept_challenge(username)
+                    await self._accept_challenge(username, packed_team)
                     await self._battle_semaphore.acquire()
                     break
         await self._battle_count_queue.join()
@@ -612,12 +625,12 @@ class Player(PSClient, ABC):
         await handle_threaded_coroutines(self._ladder(n_games))
 
     async def _ladder(self, n_games):
-        await self._logged_in.wait()
+        await self.ps_client.logged_in.wait()
         start_time = perf_counter()
 
         for _ in range(n_games):
             async with self._battle_start_condition:
-                await self.search_ladder_game(self._format)
+                await self.ps_client.search_ladder_game(self._format, self.next_team)
                 await self._battle_start_condition.wait()
                 while self._battle_count_queue.full():
                     async with self._battle_end_condition:
@@ -685,7 +698,7 @@ class Player(PSClient, ABC):
         start_time = perf_counter()
 
         for _ in range(n_challenges):
-            await self._challenge(opponent, self._format)
+            await self._challenge(opponent, self._format, self.next_team)
             await self._battle_semaphore.acquire()
         await self._battle_count_queue.join()
         self.logger.info(
@@ -804,3 +817,17 @@ class Player(PSClient, ABC):
     @property
     def win_rate(self) -> float:
         return self.n_won_battles / self.n_finished_battles
+
+    @property
+    def logger(self) -> Logger:
+        return self.ps_client.logger
+
+    @property
+    def username(self) -> str:
+        return self.ps_client.username
+
+    @property
+    def next_team(self) -> Optional[str]:
+        if self._team:
+            return self._team.yield_team()
+        return None

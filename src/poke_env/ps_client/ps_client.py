@@ -74,7 +74,7 @@ class PSClient:
         self._logged_in: Event = create_in_poke_loop(Event)
         self._sending_lock = create_in_poke_loop(Lock)
 
-        self._websocket: websockets.client.WebSocketClientProtocol  # pyre-ignore
+        self.websocket: websockets.client.WebSocketClientProtocol  # pyre-ignore
         self._logger: Logger = self._create_logger(log_level)
 
         if start_listening:
@@ -82,18 +82,20 @@ class PSClient:
                 self.listen(), POKE_LOOP
             )
 
-    async def _accept_challenge(self, username: str) -> None:
+    async def _accept_challenge(
+        self, username: str, packed_team: Optional[str]
+    ) -> None:
         assert (
             self.logged_in.is_set()
         ), f"Expected player {self.username} to be logged in."
-        await self.set_team()
+        await self.set_team(packed_team)
         await self.send_message("/accept %s" % username)
 
-    async def _challenge(self, username: str, format_: str):
+    async def _challenge(self, username: str, format_: str, packed_team: Optional[str]):
         assert (
             self.logged_in.is_set()
         ), f"Expected player {self.username} to be logged in."
-        await self.set_team()
+        await self.set_team(packed_team)
         await self.send_message(f"/challenge {username}, {format_}")
 
     def _create_logger(self, log_level: Optional[int]) -> Logger:
@@ -190,7 +192,7 @@ class PSClient:
     async def _stop_listening(self) -> None:
         if self._listening_coroutine is not None:
             self._listening_coroutine.cancel()
-        await self._websocket.close()
+        await self.websocket.close()
 
     async def change_avatar(self, avatar_id: Optional[int]) -> None:
         """Changes the player's avatar.
@@ -212,7 +214,7 @@ class PSClient:
                 ping_interval=self._ping_interval,
                 ping_timeout=self._ping_timeout,
             ) as websocket:
-                self._websocket = websocket
+                self.websocket = websocket
                 async for message in websocket:
                     self.logger.info("\033[92m\033[1m<<<\033[0m %s", message)
                     task = create_task(self._handle_message(message))
@@ -257,8 +259,8 @@ class PSClient:
 
         await self.change_avatar(self._avatar)
 
-    async def search_ladder_game(self, format_):
-        await self.set_team()
+    async def search_ladder_game(self, format_: str, packed_team: Optional[str]):
+        await self.set_team(packed_team)
         await self.send_message(f"/search {format_}")
 
     async def send_message(
@@ -279,12 +281,11 @@ class PSClient:
             to_send = "|".join([room, message, message_2])
         else:
             to_send = "|".join([room, message])
-        await self._websocket.send(to_send)
-        self.logger.info("\033[93m\033[1m>>>\033[0m %s", to_send)
+        await self.websocket.send(to_send)
 
-    async def set_team(self):
-        if self._team is not None:
-            await self.send_message("/utm %s" % self._team.yield_team())
+    async def set_team(self, packed_team: Optional[str]):
+        if packed_team:
+            await self.send_message(f"/utm {packed_team}")
         else:
             await self.send_message("/utm null")
 
