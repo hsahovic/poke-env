@@ -463,7 +463,7 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
                 "'await agent.stop_challenge_loop()' to clear the task."
             )
         self._challenge_task = asyncio.run_coroutine_threadsafe(
-            self.agent.accept_challenges(username, 1), POKE_LOOP
+            self.agent.accept_challenges(username, 1, self.agent.next_team), POKE_LOOP
         )
 
     async def _challenge_loop(
@@ -682,7 +682,7 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         :return: The logged-in event
         :rtype: Event
         """
-        return self.agent.logged_in
+        return self.agent.ps_client.logged_in
 
     @property
     def logger(self) -> Logger:  # pragma: no cover
@@ -711,7 +711,7 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         :return: The websocket url.
         :rtype: str
         """
-        return self.agent.websocket_url
+        return self.agent.ps_client.websocket_url
 
     def __getattr__(self, item):  # pragma: no cover
         return getattr(self.agent, item)

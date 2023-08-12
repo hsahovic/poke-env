@@ -121,7 +121,14 @@ class Player(ABC):
             ping_interval=ping_interval,
             ping_timeout=ping_timeout,
         )
-        self.ps_client._handle_battle_message = self._handle_battle_message
+
+        self.ps_client._handle_battle_message = (  # pyre-ignore
+            self._handle_battle_message
+        )
+        self.ps_client._update_challenges = self._update_challenges  # pyre-ignore
+        self.ps_client._handle_challenge_request = (  # pyre-ignore
+            self._handle_challenge_request
+        )
 
         self._format: str = battle_format
         self._max_concurrent_battles: int = max_concurrent_battles
@@ -209,7 +216,7 @@ class Player(ABC):
                     self._battles[battle_tag] = battle
 
                 if self._start_timer_on_battle_start:
-                    await self.send_message("/timer on", battle.battle_tag)
+                    await self.ps_client.send_message("/timer on", battle.battle_tag)
 
                 return battle
         else:
@@ -361,7 +368,7 @@ class Player(ABC):
                 message = await message
             message = message.message
 
-        await self.send_message(message, battle.battle_tag)
+        await self.ps_client.send_message(message, battle.battle_tag)
 
     async def _handle_challenge_request(self, split_message: List[str]) -> None:
         """Handles an individual challenge."""
@@ -428,7 +435,7 @@ class Player(ABC):
                 opponent = [to_id_str(o) for o in opponent]
             else:
                 opponent = to_id_str(opponent)
-        await self._logged_in.wait()
+        await self.ps_client._logged_in.wait()
         self.logger.debug("Event logged in received in accept_challenge")
 
         for _ in range(n_challenges):
@@ -442,7 +449,7 @@ class Player(ABC):
                     or (opponent == username)
                     or (isinstance(opponent, list) and (username in opponent))
                 ):
-                    await self._accept_challenge(username, packed_team)
+                    await self.ps_client._accept_challenge(username, packed_team)
                     await self._battle_semaphore.acquire()
                     break
         await self._battle_count_queue.join()
@@ -658,9 +665,13 @@ class Player(ABC):
     async def _battle_against(self, opponent: "Player", n_battles: int) -> None:
         await asyncio.gather(
             self.send_challenges(
-                to_id_str(opponent.username), n_battles, to_wait=opponent.logged_in
+                to_id_str(opponent.username),
+                n_battles,
+                to_wait=opponent.ps_client.logged_in,
             ),
-            opponent.accept_challenges(to_id_str(self.username), n_battles),
+            opponent.accept_challenges(
+                to_id_str(self.username), n_battles, opponent.next_team
+            ),
         )
 
     async def send_challenges(
@@ -689,7 +700,7 @@ class Player(ABC):
     async def _send_challenges(
         self, opponent: str, n_challenges: int, to_wait: Optional[Event] = None
     ) -> None:
-        await self._logged_in.wait()
+        await self.ps_client._logged_in.wait()
         self.logger.info("Event logged in received in send challenge")
 
         if to_wait is not None:
@@ -698,7 +709,7 @@ class Player(ABC):
         start_time = perf_counter()
 
         for _ in range(n_challenges):
-            await self._challenge(opponent, self._format, self.next_team)
+            await self.ps_client._challenge(opponent, self._format, self.next_team)
             await self._battle_semaphore.acquire()
         await self._battle_count_queue.join()
         self.logger.info(

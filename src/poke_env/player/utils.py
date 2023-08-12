@@ -39,10 +39,12 @@ async def cross_evaluate(
                 p_1.send_challenges(
                     opponent=to_id_str(p_2.username),
                     n_challenges=n_challenges,
-                    to_wait=p_2.logged_in,
+                    to_wait=p_2.ps_client.logged_in,
                 ),
                 p_2.accept_challenges(
-                    opponent=to_id_str(p_1.username), n_challenges=n_challenges
+                    opponent=to_id_str(p_1.username),
+                    n_challenges=n_challenges,
+                    packed_team=p_2.next_team,
                 ),
             )
             results[p_1.username][p_2.username] = p_1.win_rate  # pyre-ignore
