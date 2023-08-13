@@ -1,10 +1,10 @@
 import asyncio
 import logging
 from collections import namedtuple
+from unittest.mock import AsyncMock, PropertyMock, patch
 
 import pytest
 import websockets
-from asynctest.mock import CoroutineMock, PropertyMock, patch
 
 from poke_env import PlayerConfiguration, ServerConfiguration
 from poke_env.player import PlayerNetwork
@@ -67,8 +67,8 @@ async def test_log_in(post_mock):
         start_listening=False,
     )
 
-    player._send_message = CoroutineMock()
-    player._change_avatar = CoroutineMock()
+    player._send_message = AsyncMock()
+    player._change_avatar = AsyncMock()
 
     await player._log_in(["A", "B", "C", "D"])
 
@@ -86,7 +86,7 @@ async def test_change_avatar():
         start_listening=False,
     )
 
-    player._send_message = CoroutineMock()
+    player._send_message = AsyncMock()
     player._logged_in.set()
 
     await player._change_avatar(8)
@@ -102,7 +102,7 @@ async def test_handle_message():
         server_configuration=server_configuration,
         start_listening=False,
     )
-    player._log_in = CoroutineMock()
+    player._log_in = AsyncMock()
 
     await player._handle_message("|challstr")
     player._log_in.assert_called_once()
@@ -111,17 +111,17 @@ async def test_handle_message():
     await player._handle_message("|updateuser| username")
     assert player._logged_in.is_set() is True
 
-    player._update_challenges = CoroutineMock()
+    player._update_challenges = AsyncMock()
     await player._handle_message("|updatechallenges")
     player._update_challenges.assert_called_once_with(["", "updatechallenges"])
 
-    player._handle_battle_message = CoroutineMock()
+    player._handle_battle_message = AsyncMock()
     await player._handle_message(">battle|thing")
     player._handle_battle_message.assert_called_once_with([[">battle", "thing"]])
 
     await player._handle_message("|updatesearch")
 
-    player._logger.warning = CoroutineMock()
+    player._logger.warning = AsyncMock()
     await player._handle_message("that was unexpected!|")
     player._logger.warning.assert_called_once_with(
         "Unhandled message: %s", "that was unexpected!|"
@@ -139,7 +139,7 @@ async def test_listen():
 
     type(player).websocket_url = PropertyMock(return_value="ws://localhost:8899")
 
-    player._handle_message = CoroutineMock()
+    player._handle_message = AsyncMock()
     semaphore = asyncio.Semaphore()
 
     async def showdown_server_mock(websocket, path):
@@ -168,8 +168,8 @@ async def test_send_message():
         server_configuration=server_configuration,
         start_listening=False,
     )
-    player._websocket = CoroutineMock()
-    player._websocket.send = CoroutineMock()
+    player._websocket = AsyncMock()
+    player._websocket.send = AsyncMock()
 
     await player._send_message("hey", "home")
     player._websocket.send.assert_called_once_with("home|hey")

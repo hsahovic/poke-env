@@ -26,7 +26,7 @@ These steps are not required, but are useful if you are unsure where to start.
 
 First, you should use a python virtual environment. Which flavor of virtual environment you want to use depends on a couple things, including personal habits and your OS of choice. On Windows, [we recommend using `anaconda`](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html). On Mac OS and Linux, [`pyenv` works very well](https://github.com/pyenv/pyenv).
 
-This project supports multiple versions of python 3, starting from version 3.7. You can use any supported version for development, but bear in mind that your work will be tested on all supported versions.
+This project supports multiple versions of python 3, starting from version 3.8. You can use any supported version for development, but bear in mind that your work will be tested on all supported versions.
 
 Once you have created your virtual environment, install dependencies with `pip install -r requirements.txt` and `pip install -r requirements-dev.txt`. You can now setup pre-commits by running `pre-commit install` - the pre-commit configuration on the repo supposes Python 3.10.5, but you can modify it locally to your liking.
 
