@@ -82,11 +82,7 @@ class PlayerNetwork(ABC):
     @staticmethod
     def _create_class(cls, *args, **kwargs):  # pragma: no cover
         try:
-            # Python >= 3.7
             loop = asyncio.get_running_loop()
-        except AttributeError:
-            # Python < 3.7 so get_event_loop won't raise exceptions
-            loop = asyncio.get_event_loop()
         except RuntimeError:
             # asyncio.get_running_loop raised exception so no loop is running
             loop = None

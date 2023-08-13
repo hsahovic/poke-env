@@ -1,4 +1,3 @@
-asynctest
 black==23.3.0
 flake8
 isort==5.9.0
