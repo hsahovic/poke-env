@@ -1,5 +1,5 @@
 from poke_env.player import Player, RandomPlayer
-from poke_env.player_configuration import _CONFIGURATION_FROM_PLAYER_COUNTER
+from poke_env.ps_client.account_configuration import _CONFIGURATION_FROM_PLAYER_COUNTER
 
 
 class CustomPlayer(Player):
@@ -7,7 +7,7 @@ class CustomPlayer(Player):
         return self.choose_random_move(battle)
 
 
-def test_default_player_configuration():
+def test_default_account_configuration():
     _CONFIGURATION_FROM_PLAYER_COUNTER.clear()
 
     usernames = set()
@@ -22,14 +22,14 @@ def test_default_player_configuration():
             assert username
             assert isinstance(username, str)
 
-            assert instance._password is None
+            assert instance.ps_client.account_configuration.password is None
 
 
 def test_default_server_configuration():
     for k in range(5):
         for C in [CustomPlayer, RandomPlayer]:
             instance = C()
-            url = instance.websocket_url
+            url = instance.ps_client.websocket_url
 
             assert url
             assert isinstance(url, str)

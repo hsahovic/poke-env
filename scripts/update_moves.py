@@ -1,7 +1,5 @@
 import json
-import re
 
-import requests
 from data_script_utils import (
     CURRENT_GEN,
     MAX_MOVE_IDX_PER_GEN,

@@ -6,9 +6,9 @@ import math
 from concurrent.futures import Future
 from typing import Dict, List, Optional, Tuple
 
+from poke_env.concurrency import POKE_LOOP
 from poke_env.data import to_id_str
 from poke_env.player.baselines import MaxBasePowerPlayer, SimpleHeuristicsPlayer
-from poke_env.player.internals import POKE_LOOP
 from poke_env.player.player import Player
 from poke_env.player.random_player import RandomPlayer
 
@@ -39,10 +39,12 @@ async def cross_evaluate(
                 p_1.send_challenges(
                     opponent=to_id_str(p_2.username),
                     n_challenges=n_challenges,
-                    to_wait=p_2.logged_in,
+                    to_wait=p_2.ps_client.logged_in,
                 ),
                 p_2.accept_challenges(
-                    opponent=to_id_str(p_1.username), n_challenges=n_challenges
+                    opponent=to_id_str(p_1.username),
+                    n_challenges=n_challenges,
+                    packed_team=p_2.next_team,
                 ),
             )
             results[p_1.username][p_2.username] = p_1.win_rate  # pyre-ignore

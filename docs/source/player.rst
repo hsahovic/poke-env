@@ -40,7 +40,7 @@ Random Player
 Player network interface
 ************************
 
-.. automodule:: poke_env.player.player_network_interface
+.. automodule:: poke_env.ps_client
    :members:
    :undoc-members:
    :show-inheritance:

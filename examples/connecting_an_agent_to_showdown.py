@@ -1,13 +1,13 @@
 import asyncio
 
-from poke_env import PlayerConfiguration, ShowdownServerConfiguration
+from poke_env import AccountConfiguration, ShowdownServerConfiguration
 from poke_env.player import RandomPlayer
 
 
 async def main():
     # We create a random player
     player = RandomPlayer(
-        player_configuration=PlayerConfiguration("bot_username", "bot_password"),
+        account_configuration=AccountConfiguration("bot_username", "bot_password"),
         server_configuration=ShowdownServerConfiguration,
     )
 

@@ -14,7 +14,7 @@ Utils
 Player configuration
 ********************
 
-.. automodule:: poke_env.player_configuration
+.. automodule:: poke_env.ps_client
    :members:
    :undoc-members:
    :show-inheritance:
@@ -22,7 +22,7 @@ Player configuration
 Server configuration
 ********************
 
-.. automodule:: poke_env.server_configuration
+.. automodule:: poke_env.ps_client.server_configuration
    :members:
    :undoc-members:
    :show-inheritance:

@@ -6,7 +6,7 @@ from unittest.mock import patch
 import pytest
 from gym.spaces import Discrete, Space
 
-from poke_env import PlayerConfiguration, ServerConfiguration
+from poke_env import AccountConfiguration, ServerConfiguration
 from poke_env.environment import AbstractBattle, Battle, Move, Pokemon, Status
 from poke_env.player import (
     BattleOrder,
@@ -21,7 +21,7 @@ from poke_env.player import (
 )
 from poke_env.player.openai_api import _AsyncPlayer
 
-player_configuration = PlayerConfiguration("username", "password")
+account_configuration = AccountConfiguration("username", "password")
 server_configuration = ServerConfiguration("server.url", "auth.url")
 
 
@@ -44,7 +44,7 @@ class CustomEnvPlayer(EnvPlayer):
 def test_init():
     gym_env = CustomEnvPlayer(
         None,
-        player_configuration=player_configuration,
+        account_configuration=account_configuration,
         server_configuration=server_configuration,
         start_listening=False,
         battle_format="gen7randombattles",
@@ -68,7 +68,7 @@ class AsyncMock(unittest.mock.MagicMock):
 def test_choose_move(queue_put_mock, queue_get_mock):
     player = CustomEnvPlayer(
         None,
-        player_configuration=player_configuration,
+        account_configuration=account_configuration,
         server_configuration=server_configuration,
         start_listening=False,
         battle_format="gen7randombattles",
@@ -98,7 +98,7 @@ def test_choose_move(queue_put_mock, queue_get_mock):
 def test_reward_computing_helper():
     player = CustomEnvPlayer(
         None,
-        player_configuration=player_configuration,
+        account_configuration=account_configuration,
         server_configuration=server_configuration,
         start_listening=False,
         battle_format="gen7randombattles",

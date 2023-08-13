@@ -2,20 +2,20 @@ import asyncio
 
 from tabulate import tabulate
 
-from poke_env import LocalhostServerConfiguration, PlayerConfiguration
+from poke_env import AccountConfiguration, LocalhostServerConfiguration
 from poke_env.player import RandomPlayer, cross_evaluate
 
 
 async def main():
     # First, we define three player configurations.
-    player_1_configuration = PlayerConfiguration("Player 1", None)
-    player_2_configuration = PlayerConfiguration("Player 2", None)
-    player_3_configuration = PlayerConfiguration("Player 3", None)
+    player_1_configuration = AccountConfiguration("Player 1", None)
+    player_2_configuration = AccountConfiguration("Player 2", None)
+    player_3_configuration = AccountConfiguration("Player 3", None)
 
     # Then, we create the corresponding players.
     players = [
         RandomPlayer(
-            player_configuration=player_config,
+            account_configuration=player_config,
             battle_format="gen7randombattle",
             server_configuration=LocalhostServerConfiguration,
             max_concurrent_battles=10,

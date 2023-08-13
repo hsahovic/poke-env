@@ -2,14 +2,14 @@
 """
 from collections import Counter, namedtuple
 
-PlayerConfiguration = namedtuple("PlayerConfiguration", ["username", "password"])
+AccountConfiguration = namedtuple("AccountConfiguration", ["username", "password"])
 """Player configuration object. Represented with a tuple with two entries: username and
 password."""
 
 _CONFIGURATION_FROM_PLAYER_COUNTER = Counter()
 
 
-def _create_player_configuration_from_player(player) -> PlayerConfiguration:
+def _create_account_configuration_from_player(player) -> AccountConfiguration:
     key = type(player).__name__
     _CONFIGURATION_FROM_PLAYER_COUNTER.update([key])
 
@@ -21,4 +21,4 @@ def _create_player_configuration_from_player(player) -> PlayerConfiguration:
             _CONFIGURATION_FROM_PLAYER_COUNTER[key],
         )
 
-    return PlayerConfiguration(username, None)
+    return AccountConfiguration(username, None)

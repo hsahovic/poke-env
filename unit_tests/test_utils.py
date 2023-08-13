@@ -1,6 +1,5 @@
 from poke_env import compute_raw_stats, to_id_str
 from poke_env.data import GenData
-from poke_env.player_configuration import _create_player_configuration_from_player
 
 
 def test_amoonguss_raw_stats_match_actual_stats():
@@ -77,60 +76,3 @@ def test_shedinja_raw_stats_match_actual_stats():
     actual_stats = [1, 306, 127, 86, 96, 179]
     raw_stats = compute_raw_stats(species, evs, ivs, level, nature, data)
     assert actual_stats == raw_stats
-
-
-def test_player_configuration_auto_naming():
-    class ShortPlayer:
-        pass
-
-    class VeryLongPlayerClassName:
-        pass
-
-    assert (
-        _create_player_configuration_from_player(ShortPlayer()).username
-        == "ShortPlayer 1"
-    )
-    assert (
-        _create_player_configuration_from_player(ShortPlayer()).username
-        == "ShortPlayer 2"
-    )
-    assert (
-        _create_player_configuration_from_player(VeryLongPlayerClassName()).username
-        == "VeryLongPlayerCl 1"
-    )
-    assert (
-        _create_player_configuration_from_player(VeryLongPlayerClassName()).username
-        == "VeryLongPlayerCl 2"
-    )
-    assert (
-        _create_player_configuration_from_player(VeryLongPlayerClassName()).username
-        == "VeryLongPlayerCl 3"
-    )
-    assert (
-        _create_player_configuration_from_player(VeryLongPlayerClassName()).username
-        == "VeryLongPlayerCl 4"
-    )
-    assert (
-        _create_player_configuration_from_player(VeryLongPlayerClassName()).username
-        == "VeryLongPlayerCl 5"
-    )
-    assert (
-        _create_player_configuration_from_player(VeryLongPlayerClassName()).username
-        == "VeryLongPlayerCl 6"
-    )
-    assert (
-        _create_player_configuration_from_player(VeryLongPlayerClassName()).username
-        == "VeryLongPlayerCl 7"
-    )
-    assert (
-        _create_player_configuration_from_player(VeryLongPlayerClassName()).username
-        == "VeryLongPlayerCl 8"
-    )
-    assert (
-        _create_player_configuration_from_player(VeryLongPlayerClassName()).username
-        == "VeryLongPlayerCl 9"
-    )
-    assert (
-        _create_player_configuration_from_player(VeryLongPlayerClassName()).username
-        == "VeryLongPlayerC 10"
-    )
