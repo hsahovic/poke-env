@@ -289,9 +289,7 @@ class PSClient:
     async def stop_listening(self):
         await handle_threaded_coroutines(self._stop_listening())
 
-    async def wait_for_login(
-        self, checking_interval: float = 0.001, wait_for: int = 5
-    ):
+    async def wait_for_login(self, checking_interval: float = 0.001, wait_for: int = 5):
         start = perf_counter()
         while perf_counter() - start < wait_for:
             await sleep(checking_interval)
