@@ -291,7 +291,7 @@ class PSClient:
 
     async def wait_for_login(
         self, checking_interval: float = 0.001, wait_for: int = 5
-    ) -> None:
+    ):
         start = perf_counter()
         while perf_counter() - start < wait_for:
             await sleep(checking_interval)

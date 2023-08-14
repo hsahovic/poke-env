@@ -401,7 +401,7 @@ class Player(ABC):
         opponent: Optional[Union[str, List[str]]],
         n_challenges: int,
         packed_team: Optional[str],
-    ) -> None:
+    ):
         """Let the player wait for challenges from opponent, and accept them.
 
         If opponent is None, every challenge will be accepted. If opponent if a string,
@@ -431,7 +431,7 @@ class Player(ABC):
         opponent: Optional[Union[str, List[str]]],
         n_challenges: int,
         packed_team: Optional[str],
-    ) -> None:
+    ):
         if opponent:
             if isinstance(opponent, list):
                 opponent = [to_id_str(o) for o in opponent]
@@ -696,7 +696,7 @@ class Player(ABC):
 
     async def _send_challenges(
         self, opponent: str, n_challenges: int, to_wait: Optional[Event] = None
-    ) -> None:
+    ):
         await self.ps_client.logged_in.wait()
         self.logger.info("Event logged in received in send challenge")
 
