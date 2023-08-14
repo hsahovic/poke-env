@@ -3,7 +3,6 @@ import sys
 from io import StringIO
 from typing import Union
 
-import pytest
 from gym import Space
 
 from poke_env.environment import AbstractBattle, Battle, Pokemon
