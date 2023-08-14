@@ -135,7 +135,7 @@ class PSClient:
             # Otherwise it is the one-th entry
             if split_messages[0][0].startswith(">battle"):
                 # Battle update
-                await self._handle_battle_message(split_messages)  # pyre-ignore
+                await self._handle_battle_message(split_messages)
             elif split_messages[0][1] == "challstr":
                 # Confirms connection to the server: we can login
                 await self.log_in(split_messages[0])

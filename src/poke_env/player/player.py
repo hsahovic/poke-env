@@ -431,7 +431,7 @@ class Player(ABC):
         opponent: Optional[Union[str, List[str]]],
         n_challenges: int,
         packed_team: Optional[str],
-    ) -> None:  # pragma: no cover
+    ) -> None:
         if opponent:
             if isinstance(opponent, list):
                 opponent = [to_id_str(o) for o in opponent]

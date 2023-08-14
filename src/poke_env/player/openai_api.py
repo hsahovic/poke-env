@@ -196,7 +196,7 @@ class OpenAIGymEnv(
         """
         self.agent = _AsyncPlayer(
             self,
-            username=self.__class__.__name__,  # pyre-ignore
+            username=self.__class__.__name__,
             account_configuration=account_configuration,
             avatar=avatar,
             battle_format=battle_format,
