@@ -5,11 +5,12 @@ import logging
 import poke_env.environment as environment
 import poke_env.exceptions as exceptions
 import poke_env.player as player
+import poke_env.ps_client as ps_client
 import poke_env.stats as stats
 import poke_env.teambuilder as teambuilder
 from poke_env.data import gen_data, to_id_str
 from poke_env.exceptions import ShowdownException
-from poke_env.ps_client import AccountConfiguration, ps_client
+from poke_env.ps_client import AccountConfiguration
 from poke_env.ps_client.server_configuration import (
     LocalhostServerConfiguration,
     ServerConfiguration,
