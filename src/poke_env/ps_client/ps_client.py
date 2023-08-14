@@ -6,10 +6,11 @@ import logging
 from asyncio import CancelledError, Event, Lock, create_task, sleep
 from logging import Logger
 from time import perf_counter
-from typing import List, Optional
+from typing import Any, List, Optional, Set
 
 import requests
-import websockets  # pyre-ignore
+import websockets.client as ws
+from websockets.exceptions import ConnectionClosedOK
 
 from poke_env.concurrency import (
     POKE_LOOP,
@@ -40,7 +41,7 @@ class PSClient:
         start_listening: bool = True,
         ping_interval: Optional[float] = 20.0,
         ping_timeout: Optional[float] = 20.0,
-    ) -> None:
+    ):
         """
         :param account_configuration: Account configuration.
         :type account_configuration: AccountConfiguration
@@ -62,7 +63,7 @@ class PSClient:
             If None pings will never time out.
         :type ping_timeout: float, optional
         """
-        self._active_tasks: set = set()
+        self._active_tasks: Set[Any] = set()
         self._ping_interval = ping_interval
         self._ping_timeout = ping_timeout
 
@@ -74,7 +75,7 @@ class PSClient:
         self._logged_in: Event = create_in_poke_loop(Event)
         self._sending_lock = create_in_poke_loop(Lock)
 
-        self.websocket: websockets.client.WebSocketClientProtocol  # pyre-ignore
+        self.websocket: ws.WebSocketClientProtocol
         self._logger: Logger = self._create_logger(log_level)
 
         if start_listening:
@@ -82,16 +83,14 @@ class PSClient:
                 self.listen(), POKE_LOOP
             )
 
-    async def _accept_challenge(
-        self, username: str, packed_team: Optional[str]
-    ) -> None:
+    async def accept_challenge(self, username: str, packed_team: Optional[str]):
         assert (
             self.logged_in.is_set()
         ), f"Expected player {self.username} to be logged in."
         await self.set_team(packed_team)
         await self.send_message("/accept %s" % username)
 
-    async def _challenge(self, username: str, format_: str, packed_team: Optional[str]):
+    async def challenge(self, username: str, format_: str, packed_team: Optional[str]):
         assert (
             self.logged_in.is_set()
         ), f"Expected player {self.username} to be logged in."
@@ -122,7 +121,7 @@ class PSClient:
         logger.addHandler(stream_handler)
         return logger
 
-    async def _handle_message(self, message: str) -> None:
+    async def _handle_message(self, message: str):
         """Handle received messages.
 
         :param message: The message to parse.
@@ -157,7 +156,7 @@ class PSClient:
                     )
             elif "updatechallenges" in split_messages[0][1]:
                 # Contain information about current challenge
-                await self._update_challenges(split_messages[0])  # pyre-ignore
+                await self._update_challenges(split_messages[0])
             elif split_messages[0][1] == "updatesearch":
                 pass
             elif split_messages[0][1] == "popup":
@@ -170,9 +169,7 @@ class PSClient:
                     len(split_messages) == 1
                 ), f"Expected len({split_messages}) to be 1, got {len(split_messages)}"
                 if split_messages[0][4].startswith("/challenge"):
-                    await self._handle_challenge_request(  # pyre-ignore
-                        split_messages[0]
-                    )
+                    await self._handle_challenge_request(split_messages[0])
                 elif split_messages[0][4].startswith("/text"):
                     self.logger.info("Received pm with text: %s", message)
                 elif split_messages[0][4].startswith("/nonotify"):
@@ -191,12 +188,10 @@ class PSClient:
             )
             raise exception
 
-    async def _stop_listening(self) -> None:
-        if self._listening_coroutine is not None:
-            self._listening_coroutine.cancel()
+    async def _stop_listening(self):
         await self.websocket.close()
 
-    async def change_avatar(self, avatar_id: Optional[int]) -> None:
+    async def change_avatar(self, avatar_id: Optional[int]):
         """Changes the player's avatar.
 
         :param avatar_id: The new avatar id. If None, nothing happens.
@@ -206,11 +201,11 @@ class PSClient:
         if avatar_id is not None:
             await self.send_message(f"/avatar {avatar_id}")
 
-    async def listen(self) -> None:
+    async def listen(self):
         """Listen to a showdown websocket and dispatch messages to be handled."""
         self.logger.info("Starting listening to showdown websocket")
         try:
-            async with websockets.connect(
+            async with ws.connect(
                 self.websocket_url,
                 max_queue=None,
                 ping_interval=self._ping_interval,
@@ -219,11 +214,11 @@ class PSClient:
                 self.websocket = websocket
                 async for message in websocket:
                     self.logger.info("\033[92m\033[1m<<<\033[0m %s", message)
-                    task = create_task(self._handle_message(message))
+                    task = create_task(self._handle_message(str(message)))
                     self._active_tasks.add(task)
                     task.add_done_callback(self._active_tasks.discard)
 
-        except websockets.exceptions.ConnectionClosedOK:
+        except ConnectionClosedOK:
             self.logger.warning(
                 "Websocket connection with %s closed", self.websocket_url
             )
@@ -232,7 +227,7 @@ class PSClient:
         except Exception as e:
             self.logger.exception(e)
 
-    async def log_in(self, split_message: List[str]) -> None:
+    async def log_in(self, split_message: List[str]):
         """Log the player with specified username and password.
 
         Split message contains information sent by the server. This information is
@@ -267,7 +262,7 @@ class PSClient:
 
     async def send_message(
         self, message: str, room: str = "", message_2: Optional[str] = None
-    ) -> None:
+    ):
         """Sends a message to the specified room.
 
         `message_2` can be used to send a sequence of length 2.
@@ -291,7 +286,7 @@ class PSClient:
         else:
             await self.send_message("/utm null")
 
-    async def stop_listening(self) -> None:  # pragma: no cover
+    async def stop_listening(self):
         await handle_threaded_coroutines(self._stop_listening())
 
     async def wait_for_login(
@@ -302,7 +297,7 @@ class PSClient:
             await sleep(checking_interval)
             if self.logged_in:
                 return
-        assert self.logged_in, f"Expected player {self._username} to be logged in."
+        assert self.logged_in, f"Expected player {self.username} to be logged in."
 
     @property
     def account_configuration(self) -> AccountConfiguration:

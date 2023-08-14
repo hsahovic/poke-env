@@ -5,7 +5,6 @@ import asyncio
 import random
 from abc import ABC, abstractmethod
 from asyncio import Condition, Event, Queue, Semaphore
-from inspect import isawaitable
 from logging import Logger
 from time import perf_counter
 from typing import Any, Awaitable, Dict, List, Optional, Union
@@ -27,8 +26,8 @@ from poke_env.player.battle_order import (
 )
 from poke_env.ps_client import PSClient
 from poke_env.ps_client.account_configuration import (
+    CONFIGURATION_FROM_PLAYER_COUNTER,
     AccountConfiguration,
-    _create_account_configuration_from_player,
 )
 from poke_env.ps_client.server_configuration import (
     LocalhostServerConfiguration,
@@ -107,7 +106,7 @@ class Player(ABC):
         :type team: str or Teambuilder, optional
         """
         if account_configuration is None:
-            account_configuration = _create_account_configuration_from_player(self)
+            account_configuration = self._create_account_configuration()
 
         if server_configuration is None:
             server_configuration = LocalhostServerConfiguration
@@ -122,13 +121,9 @@ class Player(ABC):
             ping_timeout=ping_timeout,
         )
 
-        self.ps_client._handle_battle_message = (  # pyre-ignore
-            self._handle_battle_message
-        )
-        self.ps_client._update_challenges = self._update_challenges  # pyre-ignore
-        self.ps_client._handle_challenge_request = (  # pyre-ignore
-            self._handle_challenge_request
-        )
+        self.ps_client._handle_battle_message = self._handle_battle_message
+        self.ps_client._update_challenges = self._update_challenges
+        self.ps_client._handle_challenge_request = self._handle_challenge_request
 
         self._format: str = battle_format
         self._max_concurrent_battles: int = max_concurrent_battles
@@ -139,11 +134,11 @@ class Player(ABC):
         self._battle_semaphore: Semaphore = create_in_poke_loop(Semaphore, 0)
 
         self._battle_start_condition: Condition = create_in_poke_loop(Condition)
-        self._battle_count_queue: Queue = create_in_poke_loop(
+        self._battle_count_queue: Queue[Any] = create_in_poke_loop(
             Queue, max_concurrent_battles
         )
         self._battle_end_condition: Condition = create_in_poke_loop(Condition)
-        self._challenge_queue: Queue = create_in_poke_loop(Queue)
+        self._challenge_queue: Queue[Any] = create_in_poke_loop(Queue)
 
         if isinstance(team, Teambuilder):
             self._team = team
@@ -154,7 +149,7 @@ class Player(ABC):
 
         self.logger.debug("Player initialisation finished")
 
-    def _create_player_configuration(self) -> PlayerConfiguration:
+    def _create_account_configuration(self) -> AccountConfiguration:
         key = type(self).__name__
         CONFIGURATION_FROM_PLAYER_COUNTER.update([key])
         username = "%s %d" % (key, CONFIGURATION_FROM_PLAYER_COUNTER[key])
@@ -163,7 +158,7 @@ class Player(ABC):
                 key[: 18 - len(username)],
                 CONFIGURATION_FROM_PLAYER_COUNTER[key],
             )
-        return PlayerConfiguration(username, None)
+        return AccountConfiguration(username, None)
 
     def _battle_finished_callback(self, battle: AbstractBattle):
         pass
@@ -442,7 +437,7 @@ class Player(ABC):
                 opponent = [to_id_str(o) for o in opponent]
             else:
                 opponent = to_id_str(opponent)
-        await self.ps_client._logged_in.wait()
+        await self.ps_client.logged_in.wait()
         self.logger.debug("Event logged in received in accept_challenge")
 
         for _ in range(n_challenges):
@@ -456,7 +451,7 @@ class Player(ABC):
                     or (opponent == username)
                     or (isinstance(opponent, list) and (username in opponent))
                 ):
-                    await self.ps_client._accept_challenge(username, packed_team)
+                    await self.ps_client.accept_challenge(username, packed_team)
                     await self._battle_semaphore.acquire()
                     break
         await self._battle_count_queue.join()
@@ -633,7 +628,7 @@ class Player(ABC):
         """
         await handle_threaded_coroutines(self._ladder(n_games))
 
-    async def _ladder(self, n_games):
+    async def _ladder(self, n_games: int):
         await self.ps_client.logged_in.wait()
         start_time = perf_counter()
 
@@ -702,7 +697,7 @@ class Player(ABC):
     async def _send_challenges(
         self, opponent: str, n_challenges: int, to_wait: Optional[Event] = None
     ) -> None:
-        await self.ps_client._logged_in.wait()
+        await self.ps_client.logged_in.wait()
         self.logger.info("Event logged in received in send challenge")
 
         if to_wait is not None:
@@ -711,7 +706,7 @@ class Player(ABC):
         start_time = perf_counter()
 
         for _ in range(n_challenges):
-            await self.ps_client._challenge(opponent, self._format, self.next_team)
+            await self.ps_client.challenge(opponent, self._format, self.next_team)
             await self._battle_semaphore.acquire()
         await self._battle_count_queue.join()
         self.logger.info(

@@ -37,11 +37,11 @@ def __clear_loop():
     __stop_loop(POKE_LOOP, _t)
 
 
-async def _create_in_poke_loop_async(cls, *args, **kwargs):
-    return cls(*args, **kwargs)
+async def _create_in_poke_loop_async(cls_: Any, *args: Any, **kwargs: Any) -> Any:
+    return cls_(*args, **kwargs)
 
 
-def create_in_poke_loop(cls, *args, **kwargs):  # pragma: no cover
+def create_in_poke_loop(cls_: Any, *args: Any, **kwargs: Any) -> Any:
     try:
         # Python >= 3.7
         loop = asyncio.get_running_loop()
@@ -52,14 +52,14 @@ def create_in_poke_loop(cls, *args, **kwargs):  # pragma: no cover
         # asyncio.get_running_loop raised exception so no loop is running
         loop = None
     if loop == POKE_LOOP:
-        return cls(*args, **kwargs)
+        return cls_(*args, **kwargs)
     else:
         return asyncio.run_coroutine_threadsafe(
-            _create_in_poke_loop_async(cls, *args, **kwargs), POKE_LOOP
+            _create_in_poke_loop_async(cls_, *args, **kwargs), POKE_LOOP
         ).result()
 
 
-async def handle_threaded_coroutines(coro):
+async def handle_threaded_coroutines(coro: Any):
     task = asyncio.run_coroutine_threadsafe(coro, POKE_LOOP)
     await asyncio.wrap_future(task)
     return task.result()
