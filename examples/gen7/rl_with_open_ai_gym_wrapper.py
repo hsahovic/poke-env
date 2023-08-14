@@ -7,7 +7,7 @@ from tensorflow.keras.layers import Dense, Flatten
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
 
-from poke_env import LocalhostServerConfiguration, PlayerConfiguration
+from poke_env import AccountConfiguration, LocalhostServerConfiguration
 from poke_env.player import Gen7EnvSinglePlayer, RandomPlayer
 
 
@@ -91,19 +91,19 @@ def dqn_evaluation(player, dqn, nb_episodes):
 
 if __name__ == "__main__":
     env_player = SimpleRLPlayer(
-        player_configuration=PlayerConfiguration("RL Player", None),
+        account_configuration=AccountConfiguration("RL Player", None),
         battle_format="gen7randombattle",
         server_configuration=LocalhostServerConfiguration,
     )
 
     opponent = RandomPlayer(
-        player_configuration=PlayerConfiguration("Random player", None),
+        account_configuration=AccountConfiguration("Random player", None),
         battle_format="gen7randombattle",
         server_configuration=LocalhostServerConfiguration,
     )
 
     second_opponent = MaxDamagePlayer(
-        player_configuration=PlayerConfiguration("Max damage player", None),
+        account_configuration=AccountConfiguration("Max damage player", None),
         battle_format="gen7randombattle",
         server_configuration=LocalhostServerConfiguration,
     )

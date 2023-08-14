@@ -3,7 +3,6 @@
 import asyncio
 import json
 import logging
-from abc import ABC, abstractmethod
 from asyncio import CancelledError, Event, Lock, create_task, sleep
 from logging import Logger
 from time import perf_counter
@@ -12,15 +11,19 @@ from typing import List, Optional
 import requests
 import websockets  # pyre-ignore
 
+from poke_env.concurrency import (
+    POKE_LOOP,
+    create_in_poke_loop,
+    handle_threaded_coroutines,
+)
 from poke_env.exceptions import ShowdownException
-from poke_env.player.internals import POKE_LOOP
-from poke_env.player_configuration import PlayerConfiguration
-from poke_env.server_configuration import ServerConfiguration
+from poke_env.ps_client.account_configuration import AccountConfiguration
+from poke_env.ps_client.server_configuration import ServerConfiguration
 
 
-class PlayerNetwork(ABC):
+class PSClient:
     """
-    Network interface of a player.
+    Pokemon Showdown client.
 
     Responsible for communicating with showdown servers. Also implements some higher
     level methods for basic tasks, such as changing avatar and low-level message
@@ -29,7 +32,7 @@ class PlayerNetwork(ABC):
 
     def __init__(
         self,
-        player_configuration: PlayerConfiguration,
+        account_configuration: AccountConfiguration,
         *,
         avatar: Optional[int] = None,
         log_level: Optional[int] = None,
@@ -39,8 +42,8 @@ class PlayerNetwork(ABC):
         ping_timeout: Optional[float] = 20.0,
     ) -> None:
         """
-        :param player_configuration: Player configuration.
-        :type player_configuration: PlayerConfiguration
+        :param account_configuration: Account configuration.
+        :type account_configuration: AccountConfiguration
         :param avatar: Player avatar id. Optional.
         :type avatar: int, optional
         :param log_level: The player's logger level.
@@ -62,86 +65,50 @@ class PlayerNetwork(ABC):
         self._active_tasks: set = set()
         self._ping_interval = ping_interval
         self._ping_timeout = ping_timeout
-        self._authentication_url = server_configuration.authentication_url
+
+        self._server_configuration = server_configuration
+        self._account_configuration = account_configuration
+
         self._avatar = avatar
-        self._password = player_configuration.password
-        self._username = player_configuration.username
-        self._server_url = server_configuration.server_url
 
-        self._logged_in: Event = self._create_class(Event)
-        self._sending_lock = self._create_class(Lock)
+        self._logged_in: Event = create_in_poke_loop(Event)
+        self._sending_lock = create_in_poke_loop(Lock)
 
-        self._websocket: websockets.client.WebSocketClientProtocol  # pyre-ignore
-        self._logger: Logger = self._create_player_logger(log_level)
+        self.websocket: websockets.client.WebSocketClientProtocol  # pyre-ignore
+        self._logger: Logger = self._create_logger(log_level)
 
         if start_listening:
             self._listening_coroutine = asyncio.run_coroutine_threadsafe(
                 self.listen(), POKE_LOOP
             )
 
-    @staticmethod
-    def _create_class(cls, *args, **kwargs):  # pragma: no cover
-        try:
-            # Python >= 3.7
-            loop = asyncio.get_running_loop()
-        except AttributeError:
-            # Python < 3.7 so get_event_loop won't raise exceptions
-            loop = asyncio.get_event_loop()
-        except RuntimeError:
-            # asyncio.get_running_loop raised exception so no loop is running
-            loop = None
-        if loop == POKE_LOOP:
-            return cls(*args, **kwargs)
-        else:
-            return asyncio.run_coroutine_threadsafe(
-                PlayerNetwork._create_class_async(cls, *args, **kwargs), POKE_LOOP
-            ).result()
-
-    @staticmethod
-    async def _create_class_async(cls, *args, **kwargs):
-        return cls(*args, **kwargs)
-
-    @staticmethod
-    async def _handle_threaded_coroutines(coro):
-        task = asyncio.run_coroutine_threadsafe(coro, POKE_LOOP)
-        await asyncio.wrap_future(task)
-        return task.result()
-
-    async def _accept_challenge(self, username: str) -> None:
+    async def _accept_challenge(
+        self, username: str, packed_team: Optional[str]
+    ) -> None:
         assert (
             self.logged_in.is_set()
-        ), f"Expected player {self._username} to be logged in."
-        await self._set_team()
-        await self._send_message("/accept %s" % username)
+        ), f"Expected player {self.username} to be logged in."
+        await self.set_team(packed_team)
+        await self.send_message("/accept %s" % username)
 
-    async def _challenge(self, username: str, format_: str):
+    async def _challenge(self, username: str, format_: str, packed_team: Optional[str]):
         assert (
             self.logged_in.is_set()
-        ), f"Expected player {self._username} to be logged in."
-        await self._set_team()
-        await self._send_message(f"/challenge {username}, {format_}")
+        ), f"Expected player {self.username} to be logged in."
+        await self.set_team(packed_team)
+        await self.send_message(f"/challenge {username}, {format_}")
 
-    async def _change_avatar(self, avatar_id: Optional[int]) -> None:
-        """Changes the player's avatar.
+    def _create_logger(self, log_level: Optional[int]) -> Logger:
+        """Creates a logger for the client.
 
-        :param avatar_id: The new avatar id. If None, nothing happens.
-        :type avatar_id: int
-        """
-        await self._wait_for_login()
-        if avatar_id is not None:
-            await self._send_message(f"/avatar {avatar_id}")
-
-    def _create_player_logger(self, log_level: Optional[int]) -> Logger:
-        """Creates a logger for the player.
-
-        Returns a Logger displaying asctime and the player's username before messages.
+        Returns a Logger displaying asctime and the account's username before messages.
 
         :param log_level: The logger's level.
         :type log_level: int
         :return: The logger.
         :rtype: Logger
         """
-        logger = logging.getLogger(self._username)
+        logger = logging.getLogger(self.username)
 
         stream_handler = logging.StreamHandler()
         if log_level is not None:
@@ -169,14 +136,14 @@ class PlayerNetwork(ABC):
             # Otherwise it is the one-th entry
             if split_messages[0][0].startswith(">battle"):
                 # Battle update
-                await self._handle_battle_message(split_messages)
+                await self._handle_battle_message(split_messages)  # pyre-ignore
             elif split_messages[0][1] == "challstr":
                 # Confirms connection to the server: we can login
-                await self._log_in(split_messages[0])
+                await self.log_in(split_messages[0])
             elif split_messages[0][1] == "updateuser":
                 if split_messages[0][2] in [
-                    " " + self._username,
-                    " " + self._username + "@!",
+                    " " + self.username,
+                    " " + self.username + "@!",
                 ]:
                     # Confirms successful login
                     self.logged_in.set()
@@ -190,7 +157,7 @@ class PlayerNetwork(ABC):
                     )
             elif "updatechallenges" in split_messages[0][1]:
                 # Contain information about current challenge
-                await self._update_challenges(split_messages[0])
+                await self._update_challenges(split_messages[0])  # pyre-ignore
             elif split_messages[0][1] == "updatesearch":
                 pass
             elif split_messages[0][1] == "popup":
@@ -203,7 +170,9 @@ class PlayerNetwork(ABC):
                     len(split_messages) == 1
                 ), f"Expected len({split_messages}) to be 1, got {len(split_messages)}"
                 if split_messages[0][4].startswith("/challenge"):
-                    await self._handle_challenge_request(split_messages[0])
+                    await self._handle_challenge_request(  # pyre-ignore
+                        split_messages[0]
+                    )
                 elif split_messages[0][4].startswith("/text"):
                     self.logger.info("Received pm with text: %s", message)
                 elif split_messages[0][4].startswith("/nonotify"):
@@ -222,7 +191,48 @@ class PlayerNetwork(ABC):
             )
             raise exception
 
-    async def _log_in(self, split_message: List[str]) -> None:
+    async def _stop_listening(self) -> None:
+        if self._listening_coroutine is not None:
+            self._listening_coroutine.cancel()
+        await self.websocket.close()
+
+    async def change_avatar(self, avatar_id: Optional[int]) -> None:
+        """Changes the player's avatar.
+
+        :param avatar_id: The new avatar id. If None, nothing happens.
+        :type avatar_id: int
+        """
+        await self.wait_for_login()
+        if avatar_id is not None:
+            await self.send_message(f"/avatar {avatar_id}")
+
+    async def listen(self) -> None:
+        """Listen to a showdown websocket and dispatch messages to be handled."""
+        self.logger.info("Starting listening to showdown websocket")
+        try:
+            async with websockets.connect(
+                self.websocket_url,
+                max_queue=None,
+                ping_interval=self._ping_interval,
+                ping_timeout=self._ping_timeout,
+            ) as websocket:
+                self.websocket = websocket
+                async for message in websocket:
+                    self.logger.info("\033[92m\033[1m<<<\033[0m %s", message)
+                    task = create_task(self._handle_message(message))
+                    self._active_tasks.add(task)
+                    task.add_done_callback(self._active_tasks.discard)
+
+        except websockets.exceptions.ConnectionClosedOK:
+            self.logger.warning(
+                "Websocket connection with %s closed", self.websocket_url
+            )
+        except (CancelledError, RuntimeError) as e:
+            self.logger.critical("Listen interrupted by %s", e)
+        except Exception as e:
+            self.logger.exception(e)
+
+    async def log_in(self, split_message: List[str]) -> None:
         """Log the player with specified username and password.
 
         Split message contains information sent by the server. This information is
@@ -231,13 +241,13 @@ class PlayerNetwork(ABC):
         :param split_message: Message received from the server that triggers logging in.
         :type split_message: List[str]
         """
-        if self._password:
+        if self.account_configuration.password:
             log_in_request = requests.post(
-                self._authentication_url,
+                self.server_configuration.authentication_url,
                 data={
                     "act": "login",
-                    "name": self._username,
-                    "pass": self._password,
+                    "name": self.account_configuration.username,
+                    "pass": self.account_configuration.password,
                     "challstr": split_message[2] + "%7C" + split_message[3],
                 },
             )
@@ -247,15 +257,15 @@ class PlayerNetwork(ABC):
             self.logger.info("Bypassing authentication request")
             assertion = ""
 
-        await self._send_message(f"/trn {self._username},0,{assertion}")
+        await self.send_message(f"/trn {self.username},0,{assertion}")
 
-        await self._change_avatar(self._avatar)
+        await self.change_avatar(self._avatar)
 
-    async def _search_ladder_game(self, format_):
-        await self._set_team()
-        await self._send_message(f"/search {format_}")
+    async def search_ladder_game(self, format_: str, packed_team: Optional[str]):
+        await self.set_team(packed_team)
+        await self.send_message(f"/search {format_}")
 
-    async def _send_message(
+    async def send_message(
         self, message: str, room: str = "", message_2: Optional[str] = None
     ) -> None:
         """Sends a message to the specified room.
@@ -273,16 +283,18 @@ class PlayerNetwork(ABC):
             to_send = "|".join([room, message, message_2])
         else:
             to_send = "|".join([room, message])
-        await self._websocket.send(to_send)
-        self.logger.info("\033[93m\033[1m>>>\033[0m %s", to_send)
+        await self.websocket.send(to_send)
 
-    async def _set_team(self):
-        if self._team is not None:
-            await self._send_message("/utm %s" % self._team.yield_team())
+    async def set_team(self, packed_team: Optional[str]):
+        if packed_team:
+            await self.send_message(f"/utm {packed_team}")
         else:
-            await self._send_message("/utm null")
+            await self.send_message("/utm null")
 
-    async def _wait_for_login(
+    async def stop_listening(self) -> None:  # pragma: no cover
+        await handle_threaded_coroutines(self._stop_listening())
+
+    async def wait_for_login(
         self, checking_interval: float = 0.001, wait_for: int = 5
     ) -> None:
         start = perf_counter()
@@ -292,66 +304,14 @@ class PlayerNetwork(ABC):
                 return
         assert self.logged_in, f"Expected player {self._username} to be logged in."
 
-    async def listen(self) -> None:
-        """Listen to a showdown websocket and dispatch messages to be handled."""
-        self.logger.info("Starting listening to showdown websocket")
-        try:
-            async with websockets.connect(
-                self.websocket_url,
-                max_queue=None,
-                ping_interval=self._ping_interval,
-                ping_timeout=self._ping_timeout,
-            ) as websocket:
-                self._websocket = websocket
-                async for message in websocket:
-                    self.logger.info("\033[92m\033[1m<<<\033[0m %s", message)
-                    task = create_task(self._handle_message(message))
-                    self._active_tasks.add(task)
-                    task.add_done_callback(self._active_tasks.discard)
+    @property
+    def account_configuration(self) -> AccountConfiguration:
+        """The client's account configuration.
 
-        except websockets.exceptions.ConnectionClosedOK:
-            self.logger.warning(
-                "Websocket connection with %s closed", self.websocket_url
-            )
-        except (CancelledError, RuntimeError) as e:
-            self.logger.critical("Listen interrupted by %s", e)
-        except Exception as e:
-            self.logger.exception(e)
-
-    async def stop_listening(self) -> None:  # pragma: no cover
-        await self._handle_threaded_coroutines(self._stop_listening())
-
-    async def _stop_listening(self) -> None:
-        if self._listening_coroutine is not None:
-            self._listening_coroutine.cancel()
-        await self._websocket.close()
-
-    @abstractmethod
-    async def _handle_battle_message(
-        self, split_messages: List[List[str]]
-    ) -> None:  # pragma: no cover
-        """Abstract method.
-
-        Implementation should redirect messages to corresponding battles.
+        :return: The client's account configuration.
+        :rtype: AccountConfiguration
         """
-
-    @abstractmethod
-    async def _handle_challenge_request(
-        self, split_message: List[str]
-    ) -> None:  # pragma: no cover
-        """Abstract method.
-
-        Implementation should handle individual challenge.
-        """
-
-    @abstractmethod
-    async def _update_challenges(
-        self, split_message: List[str]
-    ) -> None:  # pragma: no cover
-        """Abstract method.
-
-        Implementation should keep track of current challenges.
-        """
+        return self._account_configuration
 
     @property
     def logged_in(self) -> Event:
@@ -372,13 +332,22 @@ class PlayerNetwork(ABC):
         return self._logger
 
     @property
+    def server_configuration(self) -> ServerConfiguration:
+        """The client's server configuration.
+
+        :return: The client's server configuration.
+        :rtype: ServerConfiguration
+        """
+        return self._server_configuration
+
+    @property
     def username(self) -> str:
         """The player's username.
 
         :return: The player's username.
         :rtype: str
         """
-        return self._username
+        return self.account_configuration.username
 
     @property
     def websocket_url(self) -> str:
@@ -389,4 +358,4 @@ class PlayerNetwork(ABC):
         :return: The websocket url.
         :rtype: str
         """
-        return f"ws://{self._server_url}/showdown/websocket"
+        return f"ws://{self.server_configuration.server_url}/showdown/websocket"

@@ -5,11 +5,14 @@ import asyncio
 import random
 from abc import ABC, abstractmethod
 from asyncio import Condition, Event, Queue, Semaphore
+from inspect import isawaitable
+from logging import Logger
 from time import perf_counter
 from typing import Any, Awaitable, Dict, List, Optional, Union
 
 import orjson
 
+from poke_env.concurrency import create_in_poke_loop, handle_threaded_coroutines
 from poke_env.data import GenData, to_id_str
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.battle import Battle
@@ -22,12 +25,12 @@ from poke_env.player.battle_order import (
     DefaultBattleOrder,
     DoubleBattleOrder,
 )
-from poke_env.player.player_network_interface import PlayerNetwork
-from poke_env.player_configuration import (
-    CONFIGURATION_FROM_PLAYER_COUNTER,
-    PlayerConfiguration,
+from poke_env.ps_client import PSClient
+from poke_env.ps_client.account_configuration import (
+    AccountConfiguration,
+    _create_account_configuration_from_player,
 )
-from poke_env.server_configuration import (
+from poke_env.ps_client.server_configuration import (
     LocalhostServerConfiguration,
     ServerConfiguration,
 )
@@ -35,7 +38,7 @@ from poke_env.teambuilder.constant_teambuilder import ConstantTeambuilder
 from poke_env.teambuilder.teambuilder import Teambuilder
 
 
-class Player(PlayerNetwork, ABC):
+class Player(ABC):
     """
     Base class for players.
     """
@@ -48,7 +51,7 @@ class Player(PlayerNetwork, ABC):
 
     def __init__(
         self,
-        player_configuration: Optional[PlayerConfiguration] = None,
+        account_configuration: Optional[AccountConfiguration] = None,
         *,
         avatar: Optional[int] = None,
         battle_format: str = "gen9randombattle",
@@ -63,10 +66,10 @@ class Player(PlayerNetwork, ABC):
         team: Optional[Union[str, Teambuilder]] = None,
     ):
         """
-        :param player_configuration: Player configuration. If empty, defaults to an
+        :param account_configuration: Player configuration. If empty, defaults to an
             automatically generated username with no password. This option must be set
             if the server configuration requires authentication.
-        :type player_configuration: PlayerConfiguration, optional
+        :type account_configuration: AccountConfiguration, optional
         :param avatar: Player avatar id. Optional.
         :type avatar: int, optional
         :param battle_format: Name of the battle format this player plays. Defaults to
@@ -103,14 +106,14 @@ class Player(PlayerNetwork, ABC):
             Defaults to None.
         :type team: str or Teambuilder, optional
         """
-        if player_configuration is None:
-            player_configuration = self._create_player_configuration()
+        if account_configuration is None:
+            account_configuration = _create_account_configuration_from_player(self)
 
         if server_configuration is None:
             server_configuration = LocalhostServerConfiguration
 
-        super(Player, self).__init__(
-            player_configuration=player_configuration,
+        self.ps_client = PSClient(
+            account_configuration=account_configuration,
             avatar=avatar,
             log_level=log_level,
             server_configuration=server_configuration,
@@ -119,20 +122,28 @@ class Player(PlayerNetwork, ABC):
             ping_timeout=ping_timeout,
         )
 
+        self.ps_client._handle_battle_message = (  # pyre-ignore
+            self._handle_battle_message
+        )
+        self.ps_client._update_challenges = self._update_challenges  # pyre-ignore
+        self.ps_client._handle_challenge_request = (  # pyre-ignore
+            self._handle_challenge_request
+        )
+
         self._format: str = battle_format
         self._max_concurrent_battles: int = max_concurrent_battles
         self._save_replays = save_replays
         self._start_timer_on_battle_start: bool = start_timer_on_battle_start
 
         self._battles: Dict[str, AbstractBattle] = {}
-        self._battle_semaphore: Semaphore = self._create_class(Semaphore, 0)
+        self._battle_semaphore: Semaphore = create_in_poke_loop(Semaphore, 0)
 
-        self._battle_start_condition: Condition = self._create_class(Condition)
-        self._battle_count_queue: Queue[Any] = self._create_class(
+        self._battle_start_condition: Condition = create_in_poke_loop(Condition)
+        self._battle_count_queue: Queue = create_in_poke_loop(
             Queue, max_concurrent_battles
         )
-        self._battle_end_condition: Condition = self._create_class(Condition)
-        self._challenge_queue: Queue[Any] = self._create_class(Queue)
+        self._battle_end_condition: Condition = create_in_poke_loop(Condition)
+        self._challenge_queue: Queue = create_in_poke_loop(Queue)
 
         if isinstance(team, Teambuilder):
             self._team = team
@@ -212,7 +223,7 @@ class Player(PlayerNetwork, ABC):
                     self._battles[battle_tag] = battle
 
                 if self._start_timer_on_battle_start:
-                    await self._send_message("/timer on", battle.battle_tag)
+                    await self.ps_client.send_message("/timer on", battle.battle_tag)
 
                 return battle
         else:
@@ -364,7 +375,7 @@ class Player(PlayerNetwork, ABC):
                 message = await message
             message = message.message
 
-        await self._send_message(message, battle.battle_tag)
+        await self.ps_client.send_message(message, battle.battle_tag)
 
     async def _handle_challenge_request(self, split_message: List[str]):
         """Handles an individual challenge."""
@@ -391,8 +402,11 @@ class Player(PlayerNetwork, ABC):
                 await self._challenge_queue.put(user)
 
     async def accept_challenges(
-        self, opponent: Optional[Union[str, List[str]]], n_challenges: int
-    ):
+        self,
+        opponent: Optional[Union[str, List[str]]],
+        n_challenges: int,
+        packed_team: Optional[str],
+    ) -> None:
         """Let the player wait for challenges from opponent, and accept them.
 
         If opponent is None, every challenge will be accepted. If opponent if a string,
@@ -407,20 +421,28 @@ class Player(PlayerNetwork, ABC):
         :type opponent: None, str or list of str
         :param n_challenges: Number of challenges that will be accepted
         :type n_challenges: int
+        :packed_team: Team to use. Defaults to generating a team with the agent's teambuilder.
+        :type packed_team: string, optional.
         """
-        await self._handle_threaded_coroutines(
-            self._accept_challenges(opponent, n_challenges)
+        if packed_team is None:
+            packed_team = self.next_team
+
+        await handle_threaded_coroutines(
+            self._accept_challenges(opponent, n_challenges, packed_team)
         )
 
     async def _accept_challenges(
-        self, opponent: Optional[Union[str, List[str]]], n_challenges: int
-    ):
+        self,
+        opponent: Optional[Union[str, List[str]]],
+        n_challenges: int,
+        packed_team: Optional[str],
+    ) -> None:  # pragma: no cover
         if opponent:
             if isinstance(opponent, list):
                 opponent = [to_id_str(o) for o in opponent]
             else:
                 opponent = to_id_str(opponent)
-        await self._logged_in.wait()
+        await self.ps_client._logged_in.wait()
         self.logger.debug("Event logged in received in accept_challenge")
 
         for _ in range(n_challenges):
@@ -434,7 +456,7 @@ class Player(PlayerNetwork, ABC):
                     or (opponent == username)
                     or (isinstance(opponent, list) and (username in opponent))
                 ):
-                    await self._accept_challenge(username)
+                    await self.ps_client._accept_challenge(username, packed_team)
                     await self._battle_semaphore.acquire()
                     break
         await self._battle_count_queue.join()
@@ -609,15 +631,15 @@ class Player(PlayerNetwork, ABC):
         :param n_games: Number of battles that will be played
         :type n_games: int
         """
-        await self._handle_threaded_coroutines(self._ladder(n_games))
+        await handle_threaded_coroutines(self._ladder(n_games))
 
-    async def _ladder(self, n_games: int):
-        await self._logged_in.wait()
+    async def _ladder(self, n_games):
+        await self.ps_client.logged_in.wait()
         start_time = perf_counter()
 
         for _ in range(n_games):
             async with self._battle_start_condition:
-                await self._search_ladder_game(self._format)
+                await self.ps_client.search_ladder_game(self._format, self.next_team)
                 await self._battle_start_condition.wait()
                 while self._battle_count_queue.full():
                     async with self._battle_end_condition:
@@ -640,16 +662,18 @@ class Player(PlayerNetwork, ABC):
         :param n_battles: The number of games to play. Defaults to 1.
         :type n_battles: int
         """
-        await self._handle_threaded_coroutines(
-            self._battle_against(opponent, n_battles)
-        )
+        await handle_threaded_coroutines(self._battle_against(opponent, n_battles))
 
     async def _battle_against(self, opponent: "Player", n_battles: int):
         await asyncio.gather(
             self.send_challenges(
-                to_id_str(opponent.username), n_battles, to_wait=opponent.logged_in
+                to_id_str(opponent.username),
+                n_battles,
+                to_wait=opponent.ps_client.logged_in,
             ),
-            opponent.accept_challenges(to_id_str(self.username), n_battles),
+            opponent.accept_challenges(
+                to_id_str(self.username), n_battles, opponent.next_team
+            ),
         )
 
     async def send_challenges(
@@ -671,14 +695,14 @@ class Player(PlayerNetwork, ABC):
         :param to_wait: Optional event to wait before launching challenges.
         :type to_wait: Event, optional.
         """
-        await self._handle_threaded_coroutines(
+        await handle_threaded_coroutines(
             self._send_challenges(opponent, n_challenges, to_wait)
         )
 
     async def _send_challenges(
         self, opponent: str, n_challenges: int, to_wait: Optional[Event] = None
-    ):
-        await self._logged_in.wait()
+    ) -> None:
+        await self.ps_client._logged_in.wait()
         self.logger.info("Event logged in received in send challenge")
 
         if to_wait is not None:
@@ -687,7 +711,7 @@ class Player(PlayerNetwork, ABC):
         start_time = perf_counter()
 
         for _ in range(n_challenges):
-            await self._challenge(opponent, self._format)
+            await self.ps_client._challenge(opponent, self._format, self.next_team)
             await self._battle_semaphore.acquire()
         await self._battle_count_queue.join()
         self.logger.info(
@@ -806,3 +830,17 @@ class Player(PlayerNetwork, ABC):
     @property
     def win_rate(self) -> float:
         return self.n_won_battles / self.n_finished_battles
+
+    @property
+    def logger(self) -> Logger:
+        return self.ps_client.logger
+
+    @property
+    def username(self) -> str:
+        return self.ps_client.username
+
+    @property
+    def next_team(self) -> Optional[str]:
+        if self._team:
+            return self._team.yield_team()
+        return None

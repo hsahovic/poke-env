@@ -14,8 +14,8 @@ from tqdm import tqdm
 
 from poke_env import (
     POKEDEX,
+    AccountConfiguration,
     LocalhostServerConfiguration,
-    PlayerConfiguration,
     to_id_str,
 )
 from poke_env.player import RandomPlayer
@@ -89,11 +89,11 @@ class RandomTeambuilder(Teambuilder):
 
 
 async def main():
-    player_1_configuration = PlayerConfiguration("Player 1", None)
-    player_2_configuration = PlayerConfiguration("Player 2", None)
+    player_1_configuration = AccountConfiguration("Player 1", None)
+    player_2_configuration = AccountConfiguration("Player 2", None)
 
     p1 = RandomPlayer(
-        player_configuration=player_1_configuration,
+        account_configuration=player_1_configuration,
         battle_format="gen8doublescustomgame",
         server_configuration=LocalhostServerConfiguration,
         team=RandomTeambuilder(),
@@ -101,7 +101,7 @@ async def main():
         log_level=int(sys.argv[2]),
     )
     p2 = RandomPlayer(
-        player_configuration=player_2_configuration,
+        account_configuration=player_2_configuration,
         battle_format="gen8doublescustomgame",
         server_configuration=LocalhostServerConfiguration,
         team=RandomTeambuilder(),

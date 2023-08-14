@@ -29,7 +29,7 @@ async def simple_cross_evaluation(n_battles, n_concurrent_battles):
     await cross_evaluate(players, n_challenges=n_battles)
 
     for player in players:
-        await player.stop_listening()
+        await player.ps_client.stop_listening()
 
     return players[-1].move_history
 

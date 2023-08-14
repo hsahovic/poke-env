@@ -2,7 +2,7 @@ import asyncio
 
 import numpy as np
 
-from poke_env import LocalhostServerConfiguration, PlayerConfiguration
+from poke_env import AccountConfiguration, LocalhostServerConfiguration
 from poke_env.player import RandomPlayer, cross_evaluate
 from poke_env.teambuilder import Teambuilder
 
@@ -139,19 +139,19 @@ custom_builder = RandomTeamFromPool([team_1, team_2])
 
 async def main():
     # We define two player configurations.
-    player_1_configuration = PlayerConfiguration("Random player 1", None)
-    player_2_configuration = PlayerConfiguration("Random player 2", None)
+    player_1_configuration = AccountConfiguration("Random player 1", None)
+    player_2_configuration = AccountConfiguration("Random player 2", None)
 
     # We create the corresponding players.
     player_1 = RandomPlayer(
-        player_configuration=player_1_configuration,
+        account_configuration=player_1_configuration,
         battle_format="gen7ou",
         server_configuration=LocalhostServerConfiguration,
         team=custom_builder,
         max_concurrent_battles=10,
     )
     player_2 = RandomPlayer(
-        player_configuration=player_2_configuration,
+        account_configuration=player_2_configuration,
         battle_format="gen7ou",
         server_configuration=LocalhostServerConfiguration,
         team=custom_builder,

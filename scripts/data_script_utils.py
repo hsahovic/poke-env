@@ -87,7 +87,7 @@ def fetch_and_clean_ps_data(url: str, deserialize: bool = True):
             return json.loads(data)
         else:
             return data
-    except:
+    except Exception:
         with open("out.json", "w+") as f:
             f.write(data)
         raise Exception

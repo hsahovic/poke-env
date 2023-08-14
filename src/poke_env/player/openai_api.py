@@ -25,12 +25,12 @@ from typing import (
 from gym.core import ActType, Env, ObsType
 from gym.spaces import Discrete, Space
 
+from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.player.battle_order import BattleOrder, ForfeitBattleOrder
-from poke_env.player.internals import POKE_LOOP
 from poke_env.player.player import Player
-from poke_env.player_configuration import PlayerConfiguration
-from poke_env.server_configuration import (
+from poke_env.ps_client import AccountConfiguration
+from poke_env.ps_client.server_configuration import (
     LocalhostServerConfiguration,
     ServerConfiguration,
 )
@@ -81,8 +81,8 @@ class _AsyncPlayer(Generic[ObsType, ActType], Player):
         self.__class__.__name__ = username
         super().__init__(**kwargs)
         self.__class__.__name__ = "_AsyncPlayer"
-        self.observations = _AsyncQueue(self._create_class(asyncio.Queue, 1))
-        self.actions = _AsyncQueue(self._create_class(asyncio.Queue, 1))
+        self.observations = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
+        self.actions = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
         self.current_battle: Optional[AbstractBattle] = None
         self._user_funcs = user_funcs
 
@@ -136,7 +136,7 @@ class OpenAIGymEnv(
 
     def __init__(
         self,
-        player_configuration: Optional[PlayerConfiguration] = None,
+        account_configuration: Optional[AccountConfiguration] = None,
         *,
         avatar: Optional[int] = None,
         battle_format: str = "gen8randombattle",
@@ -153,10 +153,10 @@ class OpenAIGymEnv(
         start_challenging: bool = False,
     ):
         """
-        :param player_configuration: Player configuration. If empty, defaults to an
+        :param account_configuration: Player configuration. If empty, defaults to an
             automatically generated username with no password. This option must be set
             if the server configuration requires authentication.
-        :type player_configuration: PlayerConfiguration, optional
+        :type account_configuration: AccountConfiguration, optional
         :param avatar: Player avatar id. Optional.
         :type avatar: int, optional
         :param battle_format: Name of the battle format this player plays. Defaults to
@@ -196,8 +196,8 @@ class OpenAIGymEnv(
         """
         self.agent = _AsyncPlayer(
             self,
-            username=self.__class__.__name__,
-            player_configuration=player_configuration,
+            username=self.__class__.__name__,  # pyre-ignore
+            account_configuration=account_configuration,
             avatar=avatar,
             battle_format=battle_format,
             log_level=log_level,
@@ -467,7 +467,7 @@ class OpenAIGymEnv(
                 "'await agent.stop_challenge_loop()' to clear the task."
             )
         self._challenge_task = asyncio.run_coroutine_threadsafe(
-            self.agent.accept_challenges(username, 1), POKE_LOOP
+            self.agent.accept_challenges(username, 1, self.agent.next_team), POKE_LOOP
         )
 
     async def _challenge_loop(
@@ -676,7 +676,7 @@ class OpenAIGymEnv(
         :return: The logged-in event
         :rtype: Event
         """
-        return self.agent.logged_in
+        return self.agent.ps_client.logged_in
 
     @property
     def logger(self) -> Logger:
@@ -705,7 +705,7 @@ class OpenAIGymEnv(
         :return: The websocket url.
         :rtype: str
         """
-        return self.agent.websocket_url
+        return self.agent.ps_client.websocket_url
 
     def __getattr__(self, item: str):
         return getattr(self.agent, item)

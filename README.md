@@ -42,7 +42,7 @@ Documentation, detailed examples and starting code can be found [on readthedocs]
 
 ## Installation
 
-This project requires python >= 3.7 and a [Pokemon Showdown](https://github.com/Zarel/Pokemon-Showdown) server.
+This project requires python >= 3.8 and a [Pokemon Showdown](https://github.com/Zarel/Pokemon-Showdown) server.
 
 ```
 pip install poke-env
