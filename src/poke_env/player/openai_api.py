@@ -196,7 +196,7 @@ class OpenAIGymEnv(
         """
         self.agent = _AsyncPlayer(
             self,
-            username=self.__class__.__name__,
+            username=self.__class__.__name__,  # type: ignore
             account_configuration=account_configuration,
             avatar=avatar,
             battle_format=battle_format,
@@ -212,7 +212,7 @@ class OpenAIGymEnv(
         )
         self._actions = self.agent.actions
         self._observations = self.agent.observations
-        self.action_space = Discrete(self.action_space_size())
+        self.action_space = Discrete(self.action_space_size())  # type: ignore
         self.observation_space = self.describe_embedding()
         self.current_battle: Optional[AbstractBattle] = None
         self.last_battle: Optional[AbstractBattle] = None

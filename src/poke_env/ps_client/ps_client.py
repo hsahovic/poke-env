@@ -135,7 +135,7 @@ class PSClient:
             # Otherwise it is the one-th entry
             if split_messages[0][0].startswith(">battle"):
                 # Battle update
-                await self._handle_battle_message(split_messages)
+                await self._handle_battle_message(split_messages)  # type: ignore
             elif split_messages[0][1] == "challstr":
                 # Confirms connection to the server: we can login
                 await self.log_in(split_messages[0])
@@ -156,7 +156,7 @@ class PSClient:
                     )
             elif "updatechallenges" in split_messages[0][1]:
                 # Contain information about current challenge
-                await self._update_challenges(split_messages[0])
+                await self._update_challenges(split_messages[0])  # type: ignore
             elif split_messages[0][1] == "updatesearch":
                 pass
             elif split_messages[0][1] == "popup":
@@ -169,7 +169,7 @@ class PSClient:
                     len(split_messages) == 1
                 ), f"Expected len({split_messages}) to be 1, got {len(split_messages)}"
                 if split_messages[0][4].startswith("/challenge"):
-                    await self._handle_challenge_request(split_messages[0])
+                    await self._handle_challenge_request(split_messages[0])  # type: ignore
                 elif split_messages[0][4].startswith("/text"):
                     self.logger.info("Received pm with text: %s", message)
                 elif split_messages[0][4].startswith("/nonotify"):

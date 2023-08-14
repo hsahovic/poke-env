@@ -38,7 +38,6 @@ __all__ = [
     "env_player",
     "openai_api",
     "player",
-    "ps_client",
     "random_player",
     "utils",
     "ActType",

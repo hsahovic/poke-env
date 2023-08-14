@@ -121,9 +121,9 @@ class Player(ABC):
             ping_timeout=ping_timeout,
         )
 
-        self.ps_client._handle_battle_message = self._handle_battle_message
-        self.ps_client._update_challenges = self._update_challenges
-        self.ps_client._handle_challenge_request = self._handle_challenge_request
+        self.ps_client._handle_battle_message = self._handle_battle_message  # type: ignore
+        self.ps_client._update_challenges = self._update_challenges  # type: ignore
+        self.ps_client._handle_challenge_request = self._handle_challenge_request  # type: ignore
 
         self._format: str = battle_format
         self._max_concurrent_battles: int = max_concurrent_battles
