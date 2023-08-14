@@ -22,4 +22,4 @@ def test_account_configuration_auto_naming():
     assert VeryLongPlayerClassName().username == "VeryLongPlayerCl 7"
     assert VeryLongPlayerClassName().username == "VeryLongPlayerCl 8"
     assert VeryLongPlayerClassName().username == "VeryLongPlayerCl 9"
-    assert VeryLongPlayerClassName().username == "VeryLongPlayerCl 10"
+    assert VeryLongPlayerClassName().username == "VeryLongPlayerC 10"
