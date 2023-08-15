@@ -1,4 +1,38 @@
 {
+    "ababo": {
+        "abilities": {
+            "0": "Pixilate",
+            "1": "Rattled"
+        },
+        "baseStats": {
+            "atk": 35,
+            "def": 27,
+            "hp": 42,
+            "spa": 35,
+            "spd": 35,
+            "spe": 38
+        },
+        "canHatch": true,
+        "color": "White",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "evos": [
+            "Scattervein"
+        ],
+        "gen": 9,
+        "genderRatio": {
+            "F": 0.25,
+            "M": 0.75
+        },
+        "heightm": 0.5,
+        "name": "Ababo",
+        "num": -69,
+        "types": [
+            "Fairy"
+        ],
+        "weightkg": 3.5
+    },
     "abra": {
         "abilities": {
             "0": "Synchronize",
@@ -6035,18 +6069,26 @@
             "atk": 96,
             "def": 87,
             "hp": 90,
-            "spa": 99,
+            "spa": 96,
             "spd": 89,
             "spe": 55
         },
         "color": "Pink",
         "eggGroups": [
-            "Undiscovered"
+            "Monster",
+            "Fairy"
         ],
+        "evoItem": "Fire Stone",
+        "evoType": "useItem",
         "gen": 9,
+        "genderRatio": {
+            "F": 0.25,
+            "M": 0.75
+        },
         "heightm": 1.4,
         "name": "Hemogoblin",
         "num": -71,
+        "prevo": "Scattervein",
         "types": [
             "Fairy",
             "Fire"
@@ -13747,6 +13789,43 @@
             "Steel"
         ],
         "weightkg": 55
+    },
+    "scattervein": {
+        "abilities": {
+            "0": "Pixilate",
+            "1": "Intimidate"
+        },
+        "baseStats": {
+            "atk": 74,
+            "def": 87,
+            "hp": 75,
+            "spa": 62,
+            "spd": 89,
+            "spe": 63
+        },
+        "canHatch": true,
+        "color": "Pink",
+        "eggGroups": [
+            "Monster",
+            "Fairy"
+        ],
+        "evoType": "levelFriendship",
+        "evos": [
+            "Hemogoblin"
+        ],
+        "gen": 9,
+        "genderRatio": {
+            "F": 0.25,
+            "M": 0.75
+        },
+        "heightm": 1.5,
+        "name": "Scattervein",
+        "num": -70,
+        "prevo": "Ababo",
+        "types": [
+            "Fairy"
+        ],
+        "weightkg": 25
     },
     "sceptile": {
         "abilities": {
