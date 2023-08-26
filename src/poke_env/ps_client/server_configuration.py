@@ -4,12 +4,12 @@ from typing import NamedTuple
 
 
 class ServerConfiguration(NamedTuple):
+    """Server configuration object. Represented with a tuple with two entries: server url
+    and authentication endpoint url."""
+
     server_url: str
     authentication_url: str
 
-
-"""Server configuration object. Represented with a tuple with two entries: server url
-and authentication endpoint url."""
 
 LocalhostServerConfiguration = ServerConfiguration(
     "localhost:8000", "https://play.pokemonshowdown.com/action.php?"
