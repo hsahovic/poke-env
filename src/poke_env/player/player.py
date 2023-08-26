@@ -488,7 +488,7 @@ class Player(ABC):
             can_mega,
             can_z_move,
             can_dynamax,
-            can_terastallize,
+            can_tera,
         ) in zip(
             active_orders,
             battle.active_pokemon,
@@ -497,7 +497,7 @@ class Player(ABC):
             battle.can_mega_evolve,
             battle.can_z_move,
             battle.can_dynamax,
-            battle.can_terastallize,
+            battle.can_tera,
         ):
             if mon:
                 targets = {
@@ -541,7 +541,7 @@ class Player(ABC):
                         ]
                     )
 
-                if can_terastallize:
+                if can_tera:
                     orders.extend(
                         [
                             BattleOrder(move, move_target=target, terastallize=True)
@@ -578,7 +578,7 @@ class Player(ABC):
                 [BattleOrder(move, dynamax=True) for move in battle.available_moves]
             )
 
-        if battle.can_terastallize:
+        if battle.can_tera:
             available_orders.extend(
                 [
                     BattleOrder(move, terastallize=True)

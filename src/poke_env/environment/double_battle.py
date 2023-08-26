@@ -362,7 +362,7 @@ class DoubleBattle(AbstractBattle):
         return self._can_dynamax
 
     @property
-    def can_terastallize(self) -> List[Union[bool, PokemonType]]:
+    def can_tera(self) -> List[Union[bool, PokemonType]]:
         """
         :return: Whether or not the current active pokemon can terastallize. If yes, will be a PokemonType.
         :rtype: List[Union[bool, PokemonType]]

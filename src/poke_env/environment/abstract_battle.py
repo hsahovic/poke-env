@@ -68,7 +68,7 @@ class AbstractBattle(ABC):
         "_battle_tag",
         "_can_dynamax",
         "_can_mega_evolve",
-        "_can_terastallize",
+        "_can_tera",
         "_can_z_move",
         "_dynamax_turn",
         "_fields",
@@ -81,7 +81,7 @@ class AbstractBattle(ABC):
         "_move_on_next_request",
         "_opponent_can_dynamax",
         "_opponent_can_mega_evolve",
-        "_opponent_can_terastallize",
+        "_opponent_can_tera",
         "_opponent_can_z_move",
         "_opponent_dynamax_turn",
         "_opponent_rating",
@@ -857,7 +857,7 @@ class AbstractBattle(ABC):
 
     @property
     @abstractmethod
-    def can_terastallize(self) -> Any:
+    def can_tera(self) -> Any:
         pass
 
     @property

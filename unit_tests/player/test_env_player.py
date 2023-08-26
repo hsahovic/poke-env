@@ -354,7 +354,7 @@ def test_action_to_move(z_moves_mock):
                 == "/choose move flamethrower dynamax"
             )
         if has_tera:
-            battle._can_terastallize = True
+            battle._can_tera = True
             assert (
                 p.action_to_move(16, battle).message
                 == "/choose move flamethrower terastallize"

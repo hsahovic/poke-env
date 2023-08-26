@@ -538,7 +538,7 @@ class Gen9EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
                 battle.available_moves[action - 12], dynamax=True
             )
         elif (
-            battle.can_terastallize
+            battle.can_tera
             and 0 <= action - 16 < len(battle.available_moves)
             and not battle.force_switch
         ):

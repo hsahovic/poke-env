@@ -23,12 +23,12 @@ class Battle(AbstractBattle):
         self._available_switches: List[Pokemon] = []
         self._can_dynamax: bool = False
         self._can_mega_evolve: bool = False
-        self._can_terastallize: Optional[PokemonType] = None
+        self._can_tera: Optional[PokemonType] = None
         self._can_z_move: bool = False
         self._opponent_can_dynamax = True
         self._opponent_can_mega_evolve = True
         self._opponent_can_z_move = True
-        self._opponent_can_terastallize: bool = False
+        self._opponent_can_tera: bool = False
         self._force_switch: bool = False
         self._maybe_trapped: bool = False
         self._trapped: bool = False
@@ -72,7 +72,7 @@ class Battle(AbstractBattle):
         self._can_mega_evolve = False
         self._can_z_move = False
         self._can_dynamax = False
-        self._can_terastallize = None
+        self._can_tera = None
         self._maybe_trapped = False
         self._reviving = any(
             [m["reviving"] for m in side.get("pokemon", []) if "reviving" in m]
@@ -113,7 +113,7 @@ class Battle(AbstractBattle):
             if active_request.get("maybeTrapped", False):
                 self._maybe_trapped = True
             if active_request.get("canTerastallize", False):
-                self._can_terastallize = PokemonType.from_name(
+                self._can_tera = PokemonType.from_name(
                     active_request["canTerastallize"]
                 )
 
@@ -200,12 +200,12 @@ class Battle(AbstractBattle):
         return self._can_mega_evolve
 
     @property
-    def can_terastallize(self) -> Optional[PokemonType]:
+    def can_tera(self) -> Optional[PokemonType]:
         """
         :return: None, or the type the active pokemon can terastallize into.
         :rtype: PokemonType, optional
         """
-        return self._can_terastallize
+        return self._can_tera
 
     @property
     def can_z_move(self) -> bool:
@@ -269,12 +269,12 @@ class Battle(AbstractBattle):
         self._opponent_can_mega_evolve = value
 
     @property
-    def opponent_can_terastallize(self) -> bool:
+    def opponent_can_tera(self) -> bool:
         """
         :return: Whether or not opponent's current active pokemon can terastallize
         :rtype: bool
         """
-        return self._opponent_can_terastallize
+        return self._opponent_can_tera
 
     @property
     def opponent_can_z_move(self) -> bool:
