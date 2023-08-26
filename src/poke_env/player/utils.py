@@ -4,7 +4,7 @@
 import asyncio
 import math
 from concurrent.futures import Future
-from typing import Dict, List, Optional, Tuple, TypeVar
+from typing import Dict, List, Optional, Tuple
 
 from poke_env.concurrency import POKE_LOOP
 from poke_env.data import to_id_str
@@ -27,11 +27,8 @@ def background_cross_evaluate(
     )
 
 
-PlayerType = TypeVar("PlayerType", bound=Player)
-
-
 async def cross_evaluate(
-    players: List[PlayerType], n_challenges: int
+    players: List[Player], n_challenges: int
 ) -> Dict[str, Dict[str, Optional[float]]]:
     results: Dict[str, Dict[str, Optional[float]]] = {
         p_1.username: {p_2.username: None for p_2 in players} for p_1 in players
