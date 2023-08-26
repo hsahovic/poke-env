@@ -2303,10 +2303,10 @@
    "zapcannon": ["7V"]
   },
   "eventData": [
-   {"generation": 3, "level": 5, "shiny": 1, "moves": ["thundershock", "charm", "surf"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 5, "shiny": 1, "moves": ["thundershock", "charm", "surf"], "pokeball": "pokeball", "emeraldEventEgg": true},
    {"generation": 3, "level": 5, "shiny": 1, "moves": ["thundershock", "charm", "wish"], "pokeball": "pokeball"},
    {"generation": 3, "level": 5, "shiny": 1, "moves": ["thundershock", "charm", "teeterdance"], "pokeball": "pokeball"},
-   {"generation": 3, "level": 5, "shiny": 1, "moves": ["thundershock", "charm", "followme"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 5, "shiny": 1, "moves": ["thundershock", "charm", "followme"], "pokeball": "pokeball", "emeraldEventEgg": true},
    {"generation": 4, "level": 1, "moves": ["volttackle", "thunderbolt", "grassknot", "return"], "pokeball": "pokeball"},
    {"generation": 4, "level": 30, "shiny": true, "gender": "M", "nature": "Jolly", "moves": ["charge", "volttackle", "endeavor", "endure"], "pokeball": "cherishball"},
    {"generation": 9, "level": 30, "shiny": true, "gender": "M", "nature": "Jolly", "moves": ["charge", "volttackle", "endure", "helpinghand"], "pokeball": "cherishball"}
@@ -5469,7 +5469,7 @@
    "zapcannon": ["7V"]
   },
   "eventData": [
-   {"generation": 3, "level": 5, "shiny": 1, "abilities": ["cutecharm"], "moves": ["sing", "charm", "defensecurl", "tickle"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 5, "shiny": 1, "abilities": ["cutecharm"], "moves": ["sing", "charm", "defensecurl", "tickle"], "pokeball": "pokeball", "emeraldEventEgg": true}
   ]
  },
  "jigglypuff": {
@@ -7775,7 +7775,7 @@
   },
   "eventData": [
    {"generation": 3, "level": 27, "gender": "M", "nature": "Lax", "ivs": {"hp": 31, "atk": 16, "def": 12, "spa": 29, "spd": 31, "spe": 14}, "abilities": ["damp"], "moves": ["tailwhip", "confusion", "disable", "screech"], "pokeball": "pokeball"},
-   {"generation": 3, "level": 5, "shiny": 1, "moves": ["watersport", "scratch", "tailwhip", "mudsport"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 5, "shiny": 1, "moves": ["watersport", "scratch", "tailwhip", "mudsport"], "pokeball": "pokeball", "emeraldEventEgg": true}
   ],
   "encounters": [
    {"generation": 1, "level": 15}
@@ -27019,7 +27019,7 @@
    "tickle": ["3S0"]
   },
   "eventData": [
-   {"generation": 3, "level": 5, "shiny": 1, "moves": ["splash", "charm", "encore", "tickle"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 5, "shiny": 1, "moves": ["splash", "charm", "encore", "tickle"], "pokeball": "pokeball", "emeraldEventEgg": true}
   ]
  },
  "wobbuffet": {
@@ -29486,7 +29486,7 @@
    "whirlpool": ["8M", "7V", "4M"]
   },
   "eventData": [
-   {"generation": 3, "level": 5, "shiny": 1, "moves": ["tackle", "mudsport"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 5, "shiny": 1, "moves": ["tackle", "mudsport"], "pokeball": "pokeball", "emeraldEventEgg": true},
    {"generation": 7, "level": 50, "gender": "F", "nature": "Serious", "abilities": ["hustle"], "moves": ["tackle", "powergem"], "pokeball": "ultraball"}
   ]
  },
@@ -32944,7 +32944,7 @@
   },
   "eventData": [
    {"generation": 3, "level": 5, "shiny": true, "abilities": ["pickup"], "moves": ["tackle", "growl", "tailwhip"], "pokeball": "pokeball"},
-   {"generation": 3, "level": 5, "shiny": 1, "abilities": ["pickup"], "moves": ["tackle", "growl", "tailwhip", "extremespeed"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 5, "shiny": 1, "abilities": ["pickup"], "moves": ["tackle", "growl", "tailwhip", "extremespeed"], "pokeball": "pokeball", "emeraldEventEgg": true}
   ],
   "encounters": [
    {"generation": 3, "level": 2}
@@ -34054,7 +34054,7 @@
    "workup": ["7M", "5M"]
   },
   "eventData": [
-   {"generation": 3, "level": 5, "shiny": 1, "moves": ["peck", "growl", "focusenergy", "featherdance"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 5, "shiny": 1, "moves": ["peck", "growl", "focusenergy", "featherdance"], "pokeball": "pokeball", "emeraldEventEgg": true}
   ],
   "encounters": [
    {"generation": 3, "level": 4}
@@ -34864,7 +34864,7 @@
    "watersport": ["7L14", "6L14", "5L19", "4L19", "3L19"]
   },
   "eventData": [
-   {"generation": 3, "level": 5, "shiny": 1, "moves": ["bubble", "mudsport"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 5, "shiny": 1, "moves": ["bubble", "mudsport"], "pokeball": "pokeball", "emeraldEventEgg": true},
    {"generation": 3, "level": 10, "gender": "M", "moves": ["bubble", "quickattack"], "pokeball": "pokeball"}
   ],
   "encounters": [
@@ -35757,7 +35757,7 @@
    "zenheadbutt": ["8M", "7T", "6T", "5T", "5D", "4T"]
   },
   "eventData": [
-   {"generation": 3, "level": 5, "shiny": 1, "moves": ["pound", "uproar", "teeterdance"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 5, "shiny": 1, "moves": ["pound", "uproar", "teeterdance"], "pokeball": "pokeball", "emeraldEventEgg": true}
   ]
  },
  "loudred": {
@@ -36400,8 +36400,8 @@
    "zenheadbutt": ["7T", "7E", "6T", "6E", "5T", "5E", "4T", "4E"]
   },
   "eventData": [
-   {"generation": 3, "level": 5, "shiny": 1, "abilities": ["cutecharm"], "moves": ["tackle", "growl", "tailwhip", "payday"], "pokeball": "pokeball"},
-   {"generation": 3, "level": 5, "shiny": 1, "abilities": ["cutecharm"], "moves": ["growl", "tackle", "tailwhip", "rollout"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 5, "shiny": 1, "abilities": ["cutecharm"], "moves": ["tackle", "growl", "tailwhip", "payday"], "pokeball": "pokeball", "emeraldEventEgg": true},
+   {"generation": 3, "level": 5, "shiny": 1, "abilities": ["cutecharm"], "moves": ["growl", "tackle", "tailwhip", "rollout"], "pokeball": "pokeball", "emeraldEventEgg": true},
    {"generation": 3, "level": 10, "gender": "M", "abilities": ["cutecharm"], "moves": ["growl", "tackle", "tailwhip", "attract"], "pokeball": "pokeball"}
   ],
   "encounters": [
@@ -37496,7 +37496,7 @@
    "wish": ["7E", "6E", "5E", "4E", "3E"]
   },
   "eventData": [
-   {"generation": 3, "level": 5, "shiny": 1, "moves": ["growl", "thunderwave", "watersport"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 5, "shiny": 1, "moves": ["growl", "thunderwave", "watersport"], "pokeball": "pokeball", "emeraldEventEgg": true},
    {"generation": 3, "level": 10, "gender": "M", "moves": ["growl", "thunderwave", "quickattack"], "pokeball": "pokeball"}
   ]
  },
@@ -37583,7 +37583,7 @@
    "wish": ["7E", "6E", "5E", "4E", "3E"]
   },
   "eventData": [
-   {"generation": 3, "level": 5, "shiny": 1, "moves": ["growl", "thunderwave", "mudsport"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 5, "shiny": 1, "moves": ["growl", "thunderwave", "mudsport"], "pokeball": "pokeball", "emeraldEventEgg": true},
    {"generation": 3, "level": 10, "gender": "M", "moves": ["growl", "thunderwave", "quickattack"], "pokeball": "pokeball"}
   ]
  },
@@ -38859,7 +38859,7 @@
    "zenheadbutt": ["9M", "9E", "7T", "7L26", "7E", "6T", "6L26", "6E", "5T", "5L26", "5E", "4T", "4L26", "4E"]
   },
   "eventData": [
-   {"generation": 3, "level": 5, "shiny": 1, "abilities": ["owntempo"], "moves": ["splash", "uproar"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 5, "shiny": 1, "abilities": ["owntempo"], "moves": ["splash", "uproar"], "pokeball": "pokeball", "emeraldEventEgg": true}
   ]
  },
  "grumpig": {
@@ -39089,7 +39089,7 @@
    "zenheadbutt": ["7T", "6T", "5T", "4T"]
   },
   "eventData": [
-   {"generation": 3, "level": 5, "shiny": 1, "moves": ["tackle", "uproar", "sing"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 5, "shiny": 1, "moves": ["tackle", "uproar", "sing"], "pokeball": "pokeball", "emeraldEventEgg": true}
   ]
  },
  "trapinch": {
@@ -39454,7 +39454,7 @@
    "worryseed": ["7T", "7E", "6T", "6E", "5T", "5E", "4T"]
   },
   "eventData": [
-   {"generation": 3, "level": 5, "shiny": 1, "moves": ["poisonsting", "leer", "absorb", "encore"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 5, "shiny": 1, "moves": ["poisonsting", "leer", "absorb", "encore"], "pokeball": "pokeball", "emeraldEventEgg": true}
   ]
  },
  "cacturne": {
@@ -39655,7 +39655,7 @@
    "uproar": ["8M", "7T", "6T", "5T", "4T"]
   },
   "eventData": [
-   {"generation": 3, "level": 5, "shiny": 1, "moves": ["peck", "growl", "falseswipe"], "pokeball": "pokeball"},
+   {"generation": 3, "level": 5, "shiny": 1, "moves": ["peck", "growl", "falseswipe"], "pokeball": "pokeball", "emeraldEventEgg": true},
    {"generation": 5, "level": 1, "shiny": true, "moves": ["peck", "growl"], "pokeball": "pokeball"},
    {"generation": 6, "level": 1, "isHidden": true, "moves": ["peck", "growl", "hypervoice"], "pokeball": "pokeball"}
   ]
@@ -40462,7 +40462,7 @@
    "xscissor": ["8M", "7M", "6M", "5M", "4M"]
   },
   "eventData": [
-   {"generation": 3, "level": 5, "shiny": 1, "moves": ["bubble", "watersport"], "pokeball": "pokeball"}
+   {"generation": 3, "level": 5, "shiny": 1, "moves": ["bubble", "watersport"], "pokeball": "pokeball", "emeraldEventEgg": true}
   ]
  },
  "crawdaunt": {
@@ -94192,38 +94192,189 @@
    "watergun": ["9L1", "8L1"],
    "waterpulse": ["9M"]
   }
- },
- "hemogoblin": {
+ },"ababo": {
   "learnset": {
-   "bitterblade": ["9L1"],
+   "bodyslam": ["9M"],
    "bulkup": ["9M"],
-   "doubleedge": ["9L1"],
+   "charm": ["9M", "9L20"],
+   "copycat": ["9L1"],
+   "dazzlinggleam": ["9M"],
+   "defensecurl": ["9L4"],
+   "disable": ["9L16"],
+   "disarmingvoice": ["9M", "9L12"],
    "drainingkiss": ["9M"],
    "endure": ["9M"],
-   "explosion": ["9L1"],
-   "extremespeed": ["9L1"],
+   "explosion": ["9E"],
+   "extremespeed": ["9E"],
+   "facade": ["9M"],
+   "flamethrower": ["9M"],
+   "fling": ["9M"],
+   "grassknot": ["9M"],
+   "helpinghand": ["9M"],
+   "hypervoice": ["9M"],
+   "lightscreen": ["9M"],
+   "metronome": ["9M"],
+   "mistyterrain": ["9M"],
+   "playrough": ["9M"],
+   "pound": ["9L1"],
+   "protect": ["9M"],
+   "psychic": ["9M"],
+   "raindance": ["9M"],
+   "rest": ["9M"],
+   "seismictoss": ["9E"],
+   "shadowball": ["9M"],
+   "sleeptalk": ["9M"],
+   "solarbeam": ["9M"],
+   "substitute": ["9M"],
+   "sunnyday": ["9M"],
+   "sweetkiss": ["9L8"],
+   "takedown": ["9M"],
+   "terablast": ["9M"],
+   "trailblaze": ["9M"],
+   "trick": ["9M"],
+   "wildcharge": ["9M"],
+   "wish": ["9E"]
+  }
+ },
+ "scattervein": {
+  "learnset": {
+   "batonpass": ["9M"],
+   "bodyslam": ["9M"],
+   "brutalswing": ["9L12"],
+   "bulkup": ["9M"],
+   "charm": ["9M", "9L1"],
+   "copycat": ["9L1"],
+   "dazzlinggleam": ["9M"],
+   "defensecurl": ["9L1"],
+   "disable": ["9L1"],
+   "disarmingvoice": ["9M", "9L1"],
+   "doubleedge": ["9L44"],
+   "drainingkiss": ["9M"],
+   "echoedvoice": ["9L8"],
+   "endure": ["9M"],
+   "energyball": ["9M"],
+   "explosion": ["9E"],
+   "extremespeed": ["9E"],
    "facade": ["9M"],
    "fireblast": ["9M"],
-   "firelash": ["9L1"],
    "flamethrower": ["9M"],
-   "flareblitz": ["9M"],
+   "fling": ["9M"],
+   "gigaimpact": ["9M"],
+   "grassknot": ["9M"],
+   "heatwave": ["9M"],
    "helpinghand": ["9M"],
-   "knockoff": ["9L1"],
-   "moonblast": ["9L1"],
-   "moonlight": ["9L1"],
+   "hyperbeam": ["9M"],
+   "hypervoice": ["9M"],
+   "imprison": ["9M"],
+   "lifedew": ["9L24"],
+   "lightscreen": ["9M"],
+   "magicalleaf": ["9M"],
+   "metronome": ["9M"],
+   "mistyterrain": ["9M"],
+   "moonblast": ["9L36"],
+   "moonlight": ["9L28"],
+   "playrough": ["9M"],
+   "pound": ["9L1"],
    "protect": ["9M"],
    "psychic": ["9M"],
    "psyshock": ["9M"],
+   "raindance": ["9M"],
    "rest": ["9M"],
+   "safeguard": ["9L32"],
+   "screech": ["9L40"],
+   "seismictoss": ["9E"],
+   "shadowball": ["9M"],
+   "slam": ["9L20"],
    "sleeptalk": ["9M"],
+   "spikes": ["9M"],
+   "solarbeam": ["9M"],
    "substitute": ["9M"],
+   "sunnyday": ["9M"],
+   "sweetkiss": ["9L1"],
+   "tailwhip": ["9L4"],
    "takedown": ["9M"],
    "taunt": ["9M"],
    "terablast": ["9M"],
    "thunder": ["9M"],
    "thunderbolt": ["9M"],
+   "tickle": ["9L16"],
+   "trailblaze": ["9M"],
+   "trick": ["9M"],
    "wildcharge": ["9M"],
    "willowisp": ["9M"],
+   "wish": ["9E"],
+   "wrap": ["9L1"],
+   "zenheadbutt": ["9M"]
+  }
+ },
+ "hemogoblin": {
+  "learnset": {
+   "batonpass": ["9M"],
+   "bitterblade": ["9L0"],
+   "bodyslam": ["9M"],
+   "brutalswing": ["9L1"],
+   "bulkup": ["9M"],
+   "charm": ["9M", "9L1"],
+   "copycat": ["9L1"],
+   "dazzlinggleam": ["9M"],
+   "defensecurl": ["9L1"],
+   "disable": ["9L1"],
+   "disarmingvoice": ["9M", "9L1"],
+   "doubleedge": ["9L1"],
+   "drainingkiss": ["9M"],
+   "echoedvoice": ["9L1"],
+   "endure": ["9M"],
+   "energyball": ["9M"],
+   "facade": ["9M"],
+   "fireblast": ["9M"],
+   "firelash": ["9L1"],
+   "flamethrower": ["9M"],
+   "flareblitz": ["9M"],
+   "fling": ["9M"],
+   "gigaimpact": ["9M"],
+   "grassknot": ["9M"],
+   "heatwave": ["9M"],
+   "helpinghand": ["9M"],
+   "hyperbeam": ["9M"],
+   "hypervoice": ["9M"],
+   "imprison": ["9M"],
+   "lifedew": ["9L1"],
+   "lightscreen": ["9M"],
+   "magicalleaf": ["9M"],
+   "metronome": ["9M"],
+   "mistyterrain": ["9M"],
+   "moonblast": ["9L1"],
+   "moonlight": ["9L1"],
+   "overheat": ["9M"],
+   "playrough": ["9M"],
+   "pound": ["9L1"],
+   "protect": ["9M"],
+   "psychic": ["9M"],
+   "psyshock": ["9M"],
+   "raindance": ["9M"],
+   "rest": ["9M"],
+   "safeguard": ["9L1"],
+   "screech": ["9L1"],
+   "shadowball": ["9M"],
+   "slam": ["9L1"],
+   "sleeptalk": ["9M"],
+   "spikes": ["9M"],
+   "solarbeam": ["9M"],
+   "substitute": ["9M"],
+   "sunnyday": ["9M"],
+   "sweetkiss": ["9L1"],
+   "tailwhip": ["9L1"],
+   "takedown": ["9M"],
+   "taunt": ["9M"],
+   "terablast": ["9M"],
+   "thunder": ["9M"],
+   "thunderbolt": ["9M"],
+   "tickle": ["9L1"],
+   "trailblaze": ["9M"],
+   "trick": ["9M"],
+   "wildcharge": ["9M"],
+   "willowisp": ["9M"],
+   "wrap": ["9L1"],
    "zenheadbutt": ["9M"]
   }
  },
