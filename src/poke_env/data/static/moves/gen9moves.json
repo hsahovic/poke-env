@@ -790,7 +790,6 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": "Past",
         "name": "Aura Wheel",
         "num": 783,
         "onModifyType": "onModifyType",
@@ -1525,6 +1524,23 @@
                 "def": 1
             }
         }
+    },
+    "bloodmoon": {
+        "accuracy": 100,
+        "basePower": 140,
+        "category": "Special",
+        "flags": {
+            "cantusetwice": 1,
+            "mirror": 1,
+            "protect": 1
+        },
+        "name": "Blood Moon",
+        "num": 901,
+        "pp": 5,
+        "priority": 0,
+        "secondary": null,
+        "target": "normal",
+        "type": "Normal"
     },
     "bloomdoom": {
         "accuracy": true,
@@ -2550,7 +2566,6 @@
             "protect": 1,
             "sound": 1
         },
-        "isNonstandard": "Past",
         "name": "Clanging Scales",
         "num": 691,
         "pp": 5,
@@ -2580,7 +2595,6 @@
             "snatch": 1,
             "sound": 1
         },
-        "isNonstandard": "Past",
         "name": "Clangorous Soul",
         "num": 775,
         "onHit": "onHit",
@@ -3450,7 +3464,6 @@
             "protect": 1,
             "reflectable": 1
         },
-        "isNonstandard": "Past",
         "name": "Dark Void",
         "num": 464,
         "onTry": "onTry",
@@ -3874,7 +3887,6 @@
         "flags": {
             "futuremove": 1
         },
-        "isNonstandard": "Past",
         "name": "Doom Desire",
         "num": 353,
         "onTry": "onTry",
@@ -5448,6 +5460,7 @@
         "pp": 5,
         "priority": 0,
         "secondary": null,
+        "selfdestruct": "ifHit",
         "target": "normal",
         "type": "Fighting",
         "zMove": {
@@ -6252,7 +6265,6 @@
             "protect": 1,
             "reflectable": 1
         },
-        "isNonstandard": "Past",
         "name": "Forest's Curse",
         "num": 571,
         "onHit": "onHit",
@@ -6753,17 +6765,14 @@
     "gigatonhammer": {
         "accuracy": 100,
         "basePower": 160,
-        "beforeMoveCallback": "beforeMoveCallback",
         "category": "Physical",
-        "condition": {},
         "flags": {
+            "cantusetwice": 1,
             "mirror": 1,
             "protect": 1
         },
         "name": "Gigaton Hammer",
         "num": 893,
-        "onAfterMove": "onAfterMove",
-        "onDisableMove": "onDisableMove",
         "pp": 5,
         "priority": 0,
         "secondary": null,
@@ -7645,7 +7654,7 @@
     },
     "grassyglide": {
         "accuracy": 100,
-        "basePower": 60,
+        "basePower": 55,
         "category": "Physical",
         "contestType": "Cool",
         "flags": {
@@ -9794,6 +9803,24 @@
         "target": "normal",
         "type": "Steel"
     },
+    "ivycudgel": {
+        "accuracy": 100,
+        "basePower": 100,
+        "category": "Physical",
+        "critRatio": 2,
+        "flags": {
+            "mirror": 1,
+            "protect": 1
+        },
+        "name": "Ivy Cudgel",
+        "num": 904,
+        "onModifyType": "onModifyType",
+        "pp": 10,
+        "priority": 0,
+        "secondary": null,
+        "target": "normal",
+        "type": "Grass"
+    },
     "jawlock": {
         "accuracy": 100,
         "basePower": 80,
@@ -9824,7 +9851,6 @@
             "protect": 1,
             "punch": 1
         },
-        "hasSheerForce": true,
         "name": "Jet Punch",
         "num": 857,
         "pp": 15,
@@ -11022,6 +11048,31 @@
                 "def": 1
             }
         }
+    },
+    "matchagotcha": {
+        "accuracy": 90,
+        "basePower": 80,
+        "category": "Special",
+        "drain": [
+            1,
+            2
+        ],
+        "flags": {
+            "defrost": 1,
+            "mirror": 1,
+            "protect": 1
+        },
+        "name": "Matcha Gotcha",
+        "num": 902,
+        "pp": 15,
+        "priority": 0,
+        "secondary": {
+            "chance": 20,
+            "status": "brn"
+        },
+        "target": "allAdjacentFoes",
+        "thawsTarget": true,
+        "type": "Grass"
     },
     "maxairstream": {
         "accuracy": true,
@@ -13690,6 +13741,7 @@
         "num": 676,
         "onHit": "onHit",
         "onTryHit": "onTryHit",
+        "onTryMove": "onTryMove",
         "pp": 15,
         "priority": 0,
         "secondary": null,
@@ -16024,7 +16076,6 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": "Past",
         "name": "Seed Flare",
         "num": 465,
         "pp": 5,
@@ -18234,7 +18285,6 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": "Past",
         "name": "Strange Steam",
         "num": 790,
         "pp": 10,
@@ -18869,6 +18919,34 @@
             "effect": "clearnegativeboost"
         }
     },
+    "syrupbomb": {
+        "accuracy": 85,
+        "basePower": 60,
+        "category": "Special",
+        "condition": {
+            "duration": 3,
+            "noCopy": true,
+            "onEnd": "onEnd",
+            "onResidual": "onResidual",
+            "onResidualOrder": 14,
+            "onStart": "onStart"
+        },
+        "flags": {
+            "bullet": 1,
+            "mirror": 1,
+            "protect": 1
+        },
+        "name": "Syrup Bomb",
+        "num": 903,
+        "pp": 10,
+        "priority": 0,
+        "secondary": {
+            "chance": 100,
+            "volatileStatus": "syrupbomb"
+        },
+        "target": "normal",
+        "type": "Grass"
+    },
     "tackle": {
         "accuracy": 100,
         "basePower": 40,
@@ -18898,7 +18976,6 @@
         "flags": {
             "snatch": 1
         },
-        "isNonstandard": "Past",
         "name": "Tail Glow",
         "num": 294,
         "pp": 20,
@@ -19023,7 +19100,6 @@
         "flags": {
             "snatch": 1
         },
-        "isNonstandard": "Past",
         "name": "Take Heart",
         "num": 850,
         "onHit": "onHit",
@@ -19264,6 +19340,7 @@
         "num": 851,
         "onModifyMove": "onModifyMove",
         "onModifyType": "onModifyType",
+        "onPrepareHit": "onPrepareHit",
         "pp": 10,
         "priority": 0,
         "secondary": null,
@@ -19784,7 +19861,6 @@
             "protect": 1,
             "reflectable": 1
         },
-        "isNonstandard": "Past",
         "name": "Toxic Thread",
         "num": 672,
         "pp": 20,

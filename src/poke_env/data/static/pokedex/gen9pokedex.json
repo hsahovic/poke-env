@@ -994,7 +994,8 @@
         ],
         "evos": [
             "Flapple",
-            "Appletun"
+            "Appletun",
+            "Dipplin"
         ],
         "heightm": 0.2,
         "name": "Applin",
@@ -4944,7 +4945,7 @@
         "baseStats": {
             "atk": 62,
             "def": 40,
-            "hp": 52,
+            "hp": 50,
             "spa": 62,
             "spd": 40,
             "spe": 50
@@ -9268,6 +9269,37 @@
         ],
         "weightkg": 1
     },
+    "dipplin": {
+        "abilities": {
+            "0": "Supersweet Syrup",
+            "1": "Gluttony",
+            "H": "Sticky Hold"
+        },
+        "baseStats": {
+            "atk": 80,
+            "def": 110,
+            "hp": 80,
+            "spa": 95,
+            "spd": 80,
+            "spe": 40
+        },
+        "color": "Green",
+        "eggGroups": [
+            "Grass",
+            "Dragon"
+        ],
+        "evoItem": "Syrupy Apple",
+        "evoType": "useItem",
+        "heightm": 0.4,
+        "name": "Dipplin",
+        "num": 1011,
+        "prevo": "Applin",
+        "types": [
+            "Grass",
+            "Dragon"
+        ],
+        "weightkg": 4.4
+    },
     "ditto": {
         "abilities": {
             "0": "Limber",
@@ -11261,7 +11293,7 @@
     "empoleon": {
         "abilities": {
             "0": "Torrent",
-            "H": "Defiant"
+            "H": "Competitive"
         },
         "baseStats": {
             "atk": 86,
@@ -12094,6 +12126,33 @@
             "Steel"
         ],
         "weightkg": 110
+    },
+    "fezandipiti": {
+        "abilities": {
+            "0": "Toxic Chain",
+            "H": "Technician"
+        },
+        "baseStats": {
+            "atk": 91,
+            "def": 82,
+            "hp": 88,
+            "spa": 70,
+            "spd": 125,
+            "spe": 99
+        },
+        "color": "Black",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "gender": "M",
+        "heightm": 1.4,
+        "name": "Fezandipiti",
+        "num": 1016,
+        "types": [
+            "Poison",
+            "Fairy"
+        ],
+        "weightkg": 30.1
     },
     "fidgit": {
         "abilities": {
@@ -24440,6 +24499,33 @@
         ],
         "weightkg": 105
     },
+    "munkidori": {
+        "abilities": {
+            "0": "Toxic Chain",
+            "H": "Frisk"
+        },
+        "baseStats": {
+            "atk": 75,
+            "def": 66,
+            "hp": 88,
+            "spa": 130,
+            "spd": 90,
+            "spe": 106
+        },
+        "color": "Black",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "gender": "M",
+        "heightm": 1,
+        "name": "Munkidori",
+        "num": 1015,
+        "types": [
+            "Poison",
+            "Psychic"
+        ],
+        "weightkg": 12.2
+    },
     "munna": {
         "abilities": {
             "0": "Forewarn",
@@ -25582,6 +25668,267 @@
         ],
         "weightkg": 5.4
     },
+    "ogerpon": {
+        "abilities": {
+            "0": "Defiant"
+        },
+        "baseForme": "Teal",
+        "baseStats": {
+            "atk": 120,
+            "def": 84,
+            "hp": 80,
+            "spa": 60,
+            "spd": 96,
+            "spe": 110
+        },
+        "color": "Green",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "forceTeraType": "Grass",
+        "formeOrder": [
+            "Ogerpon",
+            "Ogerpon-Wellspring",
+            "Ogerpon-Hearthflame",
+            "Ogerpon-Cornerstone",
+            "Ogerpon-Teal-Tera",
+            "Ogerpon-Wellspring-Tera",
+            "Ogerpon-Hearthflame-Tera",
+            "Ogerpon-Cornerstone-Tera"
+        ],
+        "gender": "F",
+        "heightm": 1.2,
+        "name": "Ogerpon",
+        "num": 1017,
+        "otherFormes": [
+            "Ogerpon-Wellspring",
+            "Ogerpon-Hearthflame",
+            "Ogerpon-Cornerstone",
+            "Ogerpon-Teal-Tera",
+            "Ogerpon-Wellspring-Tera",
+            "Ogerpon-Hearthflame-Tera",
+            "Ogerpon-Cornerstone-Tera"
+        ],
+        "types": [
+            "Grass"
+        ],
+        "weightkg": 39.8
+    },
+    "ogerponcornerstone": {
+        "abilities": {
+            "0": "Sturdy"
+        },
+        "baseSpecies": "Ogerpon",
+        "baseStats": {
+            "atk": 120,
+            "def": 84,
+            "hp": 80,
+            "spa": 60,
+            "spd": 96,
+            "spe": 110
+        },
+        "changesFrom": "Ogerpon",
+        "color": "Gray",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "forceTeraType": "Rock",
+        "forme": "Cornerstone",
+        "gender": "F",
+        "heightm": 1.2,
+        "name": "Ogerpon-Cornerstone",
+        "num": 1017,
+        "requiredItem": "Cornerstone Mask",
+        "types": [
+            "Grass",
+            "Rock"
+        ],
+        "weightkg": 39.8
+    },
+    "ogerponcornerstonetera": {
+        "abilities": {
+            "0": "Embody Aspect (Cornerstone)"
+        },
+        "baseSpecies": "Ogerpon",
+        "baseStats": {
+            "atk": 120,
+            "def": 84,
+            "hp": 80,
+            "spa": 60,
+            "spd": 96,
+            "spe": 110
+        },
+        "battleOnly": "Ogerpon-Cornerstone",
+        "color": "Gray",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "forceTeraType": "Rock",
+        "forme": "Cornerstone-Tera",
+        "gender": "F",
+        "heightm": 1.2,
+        "name": "Ogerpon-Cornerstone-Tera",
+        "num": 1017,
+        "requiredItem": "Cornerstone Mask",
+        "types": [
+            "Grass",
+            "Rock"
+        ],
+        "weightkg": 39.8
+    },
+    "ogerponhearthflame": {
+        "abilities": {
+            "0": "Mold Breaker"
+        },
+        "baseSpecies": "Ogerpon",
+        "baseStats": {
+            "atk": 120,
+            "def": 84,
+            "hp": 80,
+            "spa": 60,
+            "spd": 96,
+            "spe": 110
+        },
+        "changesFrom": "Ogerpon",
+        "color": "Red",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "forceTeraType": "Fire",
+        "forme": "Hearthflame",
+        "gender": "F",
+        "heightm": 1.2,
+        "name": "Ogerpon-Hearthflame",
+        "num": 1017,
+        "requiredItem": "Hearthflame Mask",
+        "types": [
+            "Grass",
+            "Fire"
+        ],
+        "weightkg": 39.8
+    },
+    "ogerponhearthflametera": {
+        "abilities": {
+            "0": "Embody Aspect (Hearthflame)"
+        },
+        "baseSpecies": "Ogerpon",
+        "baseStats": {
+            "atk": 120,
+            "def": 84,
+            "hp": 80,
+            "spa": 60,
+            "spd": 96,
+            "spe": 110
+        },
+        "battleOnly": "Ogerpon-Hearthflame",
+        "color": "Red",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "forceTeraType": "Fire",
+        "forme": "Hearthflame-Tera",
+        "gender": "F",
+        "heightm": 1.2,
+        "name": "Ogerpon-Hearthflame-Tera",
+        "num": 1017,
+        "requiredItem": "Hearthflame Mask",
+        "types": [
+            "Grass",
+            "Fire"
+        ],
+        "weightkg": 39.8
+    },
+    "ogerpontealtera": {
+        "abilities": {
+            "0": "Embody Aspect (Teal)"
+        },
+        "baseSpecies": "Ogerpon",
+        "baseStats": {
+            "atk": 120,
+            "def": 84,
+            "hp": 80,
+            "spa": 60,
+            "spd": 96,
+            "spe": 110
+        },
+        "battleOnly": "Ogerpon",
+        "color": "Green",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "forceTeraType": "Grass",
+        "forme": "Teal-Tera",
+        "gender": "F",
+        "heightm": 1.2,
+        "name": "Ogerpon-Teal-Tera",
+        "num": 1017,
+        "types": [
+            "Grass"
+        ],
+        "weightkg": 39.8
+    },
+    "ogerponwellspring": {
+        "abilities": {
+            "0": "Water Absorb"
+        },
+        "baseSpecies": "Ogerpon",
+        "baseStats": {
+            "atk": 120,
+            "def": 84,
+            "hp": 80,
+            "spa": 60,
+            "spd": 96,
+            "spe": 110
+        },
+        "changesFrom": "Ogerpon",
+        "color": "Green",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "forceTeraType": "Water",
+        "forme": "Wellspring",
+        "gender": "F",
+        "heightm": 1.2,
+        "name": "Ogerpon-Wellspring",
+        "num": 1017,
+        "requiredItem": "Wellspring Mask",
+        "types": [
+            "Grass",
+            "Water"
+        ],
+        "weightkg": 39.8
+    },
+    "ogerponwellspringtera": {
+        "abilities": {
+            "0": "Embody Aspect (Wellspring)"
+        },
+        "baseSpecies": "Ogerpon",
+        "baseStats": {
+            "atk": 120,
+            "def": 84,
+            "hp": 80,
+            "spa": 60,
+            "spd": 96,
+            "spe": 110
+        },
+        "battleOnly": "Ogerpon-Wellspring",
+        "color": "Green",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "forceTeraType": "Water",
+        "forme": "Wellspring-Tera",
+        "gender": "F",
+        "heightm": 1.2,
+        "name": "Ogerpon-Wellspring-Tera",
+        "num": 1017,
+        "requiredItem": "Wellspring Mask",
+        "types": [
+            "Grass",
+            "Water"
+        ],
+        "weightkg": 39.8
+    },
     "oinkologne": {
         "abilities": {
             "0": "Lingering Aroma",
@@ -25649,6 +25996,33 @@
             "Normal"
         ],
         "weightkg": 120
+    },
+    "okidogi": {
+        "abilities": {
+            "0": "Toxic Chain",
+            "H": "Guard Dog"
+        },
+        "baseStats": {
+            "atk": 128,
+            "def": 115,
+            "hp": 88,
+            "spa": 58,
+            "spd": 86,
+            "spe": 80
+        },
+        "color": "Black",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "gender": "M",
+        "heightm": 1.8,
+        "name": "Okidogi",
+        "num": 1014,
+        "types": [
+            "Poison",
+            "Fighting"
+        ],
+        "weightkg": 92
     },
     "omanyte": {
         "abilities": {
@@ -27934,7 +28308,7 @@
     "piplup": {
         "abilities": {
             "0": "Torrent",
-            "H": "Defiant"
+            "H": "Competitive"
         },
         "baseStats": {
             "atk": 51,
@@ -28700,6 +29074,77 @@
         ],
         "weightkg": 54
     },
+    "poltchageist": {
+        "abilities": {
+            "0": "Hospitality",
+            "H": "Heatproof"
+        },
+        "baseForme": "Counterfeit",
+        "baseStats": {
+            "atk": 45,
+            "def": 45,
+            "hp": 40,
+            "spa": 74,
+            "spd": 54,
+            "spe": 50
+        },
+        "color": "Green",
+        "eggGroups": [
+            "Mineral",
+            "Amorphous"
+        ],
+        "evos": [
+            "Sinistcha"
+        ],
+        "formeOrder": [
+            "Poltchageist",
+            "Poltchageist-Artisan"
+        ],
+        "gender": "N",
+        "heightm": 0.1,
+        "name": "Poltchageist",
+        "num": 1012,
+        "otherFormes": [
+            "Poltchageist-Artisan"
+        ],
+        "types": [
+            "Grass",
+            "Ghost"
+        ],
+        "weightkg": 1.1
+    },
+    "poltchageistartisan": {
+        "abilities": {
+            "0": "Hospitality",
+            "H": "Heatproof"
+        },
+        "baseSpecies": "Poltchageist",
+        "baseStats": {
+            "atk": 45,
+            "def": 45,
+            "hp": 40,
+            "spa": 74,
+            "spd": 54,
+            "spe": 50
+        },
+        "color": "Green",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "evos": [
+            "Sinistcha-Masterpiece"
+        ],
+        "forme": "Artisan",
+        "gender": "N",
+        "heightm": 0.1,
+        "name": "Poltchageist-Artisan",
+        "num": 1012,
+        "types": [
+            "Grass",
+            "Ghost"
+        ],
+        "weightkg": 1.1
+    },
     "polteageist": {
         "abilities": {
             "0": "Weak Armor",
@@ -29058,7 +29503,7 @@
     "prinplup": {
         "abilities": {
             "0": "Torrent",
-            "H": "Defiant"
+            "H": "Competitive"
         },
         "baseStats": {
             "atk": 66,
@@ -33286,7 +33731,7 @@
     "shiftry": {
         "abilities": {
             "0": "Chlorophyll",
-            "1": "Early Bird",
+            "1": "Wind Rider",
             "H": "Pickpocket"
         },
         "baseStats": {
@@ -34231,6 +34676,77 @@
             "Fire"
         ],
         "weightkg": 28
+    },
+    "sinistcha": {
+        "abilities": {
+            "0": "Hospitality",
+            "H": "Heatproof"
+        },
+        "baseForme": "Unremarkable",
+        "baseStats": {
+            "atk": 60,
+            "def": 106,
+            "hp": 71,
+            "spa": 121,
+            "spd": 80,
+            "spe": 70
+        },
+        "color": "Green",
+        "eggGroups": [
+            "Mineral",
+            "Amorphous"
+        ],
+        "evoItem": "Unremarkable Teacup",
+        "evoType": "useItem",
+        "formeOrder": [
+            "Sinistcha",
+            "Sinistcha-Masterpiece"
+        ],
+        "gender": "N",
+        "heightm": 0.2,
+        "name": "Sinistcha",
+        "num": 1013,
+        "otherFormes": [
+            "Sinistcha-Masterpiece"
+        ],
+        "prevo": "Poltchageist",
+        "types": [
+            "Grass",
+            "Ghost"
+        ],
+        "weightkg": 2.2
+    },
+    "sinistchamasterpiece": {
+        "abilities": {
+            "0": "Hospitality",
+            "H": "Heatproof"
+        },
+        "baseSpecies": "Sinistcha",
+        "baseStats": {
+            "atk": 60,
+            "def": 106,
+            "hp": 71,
+            "spa": 121,
+            "spd": 80,
+            "spe": 70
+        },
+        "color": "Green",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "evoItem": "Masterpiece Teacup",
+        "evoType": "useItem",
+        "forme": "Masterpiece",
+        "gender": "N",
+        "heightm": 0.2,
+        "name": "Sinistcha-Masterpiece",
+        "num": 1013,
+        "prevo": "Poltchageist-Artisan",
+        "types": [
+            "Grass",
+            "Ghost"
+        ],
+        "weightkg": 2.2
     },
     "sinistea": {
         "abilities": {
@@ -39928,15 +40444,51 @@
         ],
         "evoCondition": "Peat Block when there's a full moon",
         "evoType": "other",
+        "formeOrder": [
+            "Ursaluna",
+            "Ursaluna-Bloodmoon"
+        ],
         "heightm": 2.4,
         "name": "Ursaluna",
         "num": 901,
+        "otherFormes": [
+            "Ursaluna-Bloodmoon"
+        ],
         "prevo": "Ursaring",
         "types": [
             "Ground",
             "Normal"
         ],
         "weightkg": 290
+    },
+    "ursalunabloodmoon": {
+        "abilities": {
+            "0": "Mind's Eye"
+        },
+        "baseSpecies": "Ursaluna",
+        "baseStats": {
+            "atk": 70,
+            "def": 120,
+            "hp": 113,
+            "spa": 135,
+            "spd": 65,
+            "spe": 52
+        },
+        "color": "Brown",
+        "eggGroups": [
+            "Field"
+        ],
+        "forme": "Bloodmoon",
+        "gen": 9,
+        "gender": "M",
+        "heightm": 2.7,
+        "name": "Ursaluna-Bloodmoon",
+        "num": 901,
+        "types": [
+            "Ground",
+            "Normal"
+        ],
+        "weightkg": 333
     },
     "ursaring": {
         "abilities": {

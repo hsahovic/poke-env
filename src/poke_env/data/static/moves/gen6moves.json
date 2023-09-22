@@ -2694,7 +2694,6 @@
         "flags": {
             "futuremove": 1
         },
-        "isNonstandard": null,
         "name": "Doom Desire",
         "num": 353,
         "onTry": "onTry",
@@ -3908,6 +3907,7 @@
         "pp": 5,
         "priority": 0,
         "secondary": null,
+        "selfdestruct": "ifHit",
         "target": "normal",
         "type": "Fighting",
         "zMove": {
@@ -4546,7 +4546,6 @@
             "protect": 1,
             "reflectable": 1
         },
-        "isNonstandard": null,
         "name": "Forest's Curse",
         "num": 571,
         "onHit": "onHit",
