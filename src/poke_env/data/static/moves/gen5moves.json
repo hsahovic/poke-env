@@ -2449,7 +2449,6 @@
         "flags": {
             "futuremove": 1
         },
-        "isNonstandard": null,
         "name": "Doom Desire",
         "num": 353,
         "onTry": "onTry",
@@ -3456,6 +3455,7 @@
         "pp": 5,
         "priority": 0,
         "secondary": null,
+        "selfdestruct": "ifHit",
         "target": "normal",
         "type": "Fighting",
         "zMove": {

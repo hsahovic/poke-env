@@ -1567,7 +1567,6 @@
         "flags": {
             "futuremove": 1
         },
-        "isNonstandard": null,
         "name": "Doom Desire",
         "num": 353,
         "onTry": "onTry",
