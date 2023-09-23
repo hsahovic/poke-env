@@ -79,7 +79,7 @@ def test_right_gen_move():
     for gen in range(4, 8 + 1):
         mon = Pokemon(species="charizard", gen=gen)
 
-        mon._moved("flamethrower")
+        mon.moved("flamethrower")
         assert "flamethrower" in mon.moves
         flame_thrower = mon.moves["flamethrower"]
         assert flame_thrower._moves_dict == GenData.from_gen(gen).moves

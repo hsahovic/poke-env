@@ -1,6 +1,7 @@
 """This module defines the Field class, which represents a battle field.
 """
-# pyre-ignore-all-errors[45]
+from __future__ import annotations
+
 import logging
 from enum import Enum, auto, unique
 
@@ -9,7 +10,7 @@ from enum import Enum, auto, unique
 class Field(Enum):
     """Enumeration, represent a non null field in a battle."""
 
-    _UNKNOWN = auto()
+    UNKNOWN = auto()
     ELECTRIC_TERRAIN = auto()
     GRASSY_TERRAIN = auto()
     GRAVITY = auto()
@@ -27,7 +28,7 @@ class Field(Enum):
         return f"{self.name} (field) object"
 
     @staticmethod
-    def from_showdown_message(message: str) -> "Field":
+    def from_showdown_message(message: str) -> Field:
         """Returns the Field object corresponding to the message.
 
         :param message: The message to convert.
@@ -45,13 +46,13 @@ class Field(Enum):
             return Field[message.upper()]
         except KeyError:
             logging.getLogger("poke-env").warning(
-                "Unexpected field '%s' received. Field._UNKNOWN will be used instead. "
+                "Unexpected field '%s' received. Field.UNKNOWN will be used instead. "
                 "If this is unexpected, please open an issue at "
                 "https://github.com/hsahovic/poke-env/issues/ along with this error "
                 "message and a description of your program.",
                 message,
             )
-            return Field._UNKNOWN
+            return Field.UNKNOWN
 
     @property
     def is_terrain(self) -> bool:

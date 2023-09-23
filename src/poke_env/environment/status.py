@@ -1,7 +1,6 @@
 """This module defines the Status class, which represents statuses a pokemon can be
 afflicted with.
 """
-# pyre-ignore-all-errors[45]
 from enum import Enum, auto, unique
 
 

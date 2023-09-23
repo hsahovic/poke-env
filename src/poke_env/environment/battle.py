@@ -1,5 +1,5 @@
 from logging import Logger
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.move import Move
@@ -23,22 +23,23 @@ class Battle(AbstractBattle):
         self._available_switches: List[Pokemon] = []
         self._can_dynamax: bool = False
         self._can_mega_evolve: bool = False
-        self._can_terastallize: Optional[PokemonType] = None
+        self._can_tera: Optional[PokemonType] = None
         self._can_z_move: bool = False
         self._opponent_can_dynamax = True
         self._opponent_can_mega_evolve = True
         self._opponent_can_z_move = True
-        self._opponent_can_terastallize: bool = False
+        self._opponent_can_tera: bool = False
         self._force_switch: bool = False
         self._maybe_trapped: bool = False
         self._trapped: bool = False
 
-    def _clear_all_boosts(self):
-        self.active_pokemon._clear_boosts()
+    def clear_all_boosts(self):
+        if self.active_pokemon is not None:
+            self.active_pokemon.clear_boosts()
         if self.opponent_active_pokemon is not None:
-            self.opponent_active_pokemon._clear_boosts()
+            self.opponent_active_pokemon.clear_boosts()
 
-    def _end_illusion(self, pokemon_name: str, details: str):
+    def end_illusion(self, pokemon_name: str, details: str):
         if pokemon_name[:2] == self._player_role:
             active = self.active_pokemon
         else:
@@ -51,13 +52,13 @@ class Battle(AbstractBattle):
             illusioned=active, illusionist=pokemon_name, details=details
         )
 
-    def _parse_request(self, request: Dict) -> None:
+    def parse_request(self, request: Dict[str, Any]):
         """
         Update the object from a request.
         The player's pokemon are all updated, as well as available moves, switches and
         other related information (z move, mega evolution, forced switch...).
         Args:
-            request (dict): parsed json request object
+            request (Dict): parsed json request object
         """
         if "wait" in request and request["wait"]:
             self._wait = True
@@ -71,7 +72,7 @@ class Battle(AbstractBattle):
         self._can_mega_evolve = False
         self._can_z_move = False
         self._can_dynamax = False
-        self._can_terastallize = None
+        self._can_tera = None
         self._maybe_trapped = False
         self._reviving = any(
             [m["reviving"] for m in side.get("pokemon", []) if "reviving" in m]
@@ -112,7 +113,7 @@ class Battle(AbstractBattle):
             if active_request.get("maybeTrapped", False):
                 self._maybe_trapped = True
             if active_request.get("canTerastallize", False):
-                self._can_terastallize = PokemonType.from_name(
+                self._can_tera = PokemonType.from_name(
                     active_request["canTerastallize"]
                 )
 
@@ -133,20 +134,20 @@ class Battle(AbstractBattle):
                     if not pokemon.active:
                         self._available_switches.append(pokemon)
 
-    def _switch(self, pokemon, details, hp_status):
-        identifier = pokemon.split(":")[0][:2]
+    def switch(self, pokemon_str: str, details: str, hp_status: str):
+        identifier = pokemon_str.split(":")[0][:2]
 
         if identifier == self._player_role:
             if self.active_pokemon:
-                self.active_pokemon._switch_out()
+                self.active_pokemon.switch_out()
         else:
             if self.opponent_active_pokemon:
-                self.opponent_active_pokemon._switch_out()
+                self.opponent_active_pokemon.switch_out()
 
-        pokemon = self.get_pokemon(pokemon, details=details)
+        pokemon = self.get_pokemon(pokemon_str, details=details)
 
-        pokemon._switch_in(details=details)
-        pokemon._set_hp_status(hp_status)
+        pokemon.switch_in(details=details)
+        pokemon.set_hp_status(hp_status)
 
     @property
     def active_pokemon(self) -> Optional[Pokemon]:
@@ -199,12 +200,12 @@ class Battle(AbstractBattle):
         return self._can_mega_evolve
 
     @property
-    def can_terastallize(self) -> Optional[PokemonType]:
+    def can_tera(self) -> Optional[PokemonType]:
         """
         :return: None, or the type the active pokemon can terastallize into.
         :rtype: PokemonType, optional
         """
-        return self._can_terastallize
+        return self._can_tera
 
     @property
     def can_z_move(self) -> bool:
@@ -252,7 +253,7 @@ class Battle(AbstractBattle):
         return self._opponent_can_dynamax
 
     @opponent_can_dynamax.setter
-    def opponent_can_dynamax(self, value: bool) -> None:
+    def opponent_can_dynamax(self, value: bool):
         self._opponent_can_dynamax = value
 
     @property
@@ -264,16 +265,16 @@ class Battle(AbstractBattle):
         return self._opponent_can_mega_evolve
 
     @opponent_can_mega_evolve.setter
-    def opponent_can_mega_evolve(self, value: bool) -> None:
+    def opponent_can_mega_evolve(self, value: bool):
         self._opponent_can_mega_evolve = value
 
     @property
-    def opponent_can_terastallize(self) -> bool:
+    def opponent_can_tera(self) -> bool:
         """
         :return: Whether or not opponent's current active pokemon can terastallize
         :rtype: bool
         """
-        return self._opponent_can_terastallize
+        return self._opponent_can_tera
 
     @property
     def opponent_can_z_move(self) -> bool:
@@ -284,7 +285,7 @@ class Battle(AbstractBattle):
         return self._opponent_can_z_move
 
     @opponent_can_z_move.setter
-    def opponent_can_z_move(self, value: bool) -> None:
+    def opponent_can_z_move(self, value: bool):
         self._opponent_can_z_move = value
 
     @property
@@ -297,5 +298,5 @@ class Battle(AbstractBattle):
         return self._trapped
 
     @trapped.setter
-    def trapped(self, value):
+    def trapped(self, value: bool):
         self._trapped = value

@@ -1,9 +1,10 @@
 import os
-from abc import ABC, abstractmethod, abstractproperty
+from abc import ABC, abstractmethod
 from logging import Logger
-from typing import Dict, List, Optional, Set, Tuple, Union
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
-from poke_env.data import _REPLAY_TEMPLATE, GenData, to_id_str
+from poke_env.data import GenData, to_id_str
+from poke_env.data.replay_template import REPLAY_TEMPLATE
 from poke_env.environment.field import Field
 from poke_env.environment.pokemon import Pokemon
 from poke_env.environment.side_condition import STACKABLE_CONDITIONS, SideCondition
@@ -67,20 +68,20 @@ class AbstractBattle(ABC):
         "_battle_tag",
         "_can_dynamax",
         "_can_mega_evolve",
-        "_can_terastallize",
+        "_can_tera",
         "_can_z_move",
         "_dynamax_turn",
         "_fields",
         "_finished",
         "_force_switch",
         "_format",
-        "_in_team_preview",
+        "in_team_preview",
         "_max_team_size",
         "_maybe_trapped",
         "_move_on_next_request",
         "_opponent_can_dynamax",
         "_opponent_can_mega_evolve",
-        "_opponent_can_terastallize",
+        "_opponent_can_tera",
         "_opponent_can_z_move",
         "_opponent_dynamax_turn",
         "_opponent_rating",
@@ -92,7 +93,7 @@ class AbstractBattle(ABC):
         "_players",
         "_rating",
         "_rqid",
-        "_rules",
+        "rules",
         "_reviving",
         "_side_conditions",
         "_team_size",
@@ -125,18 +126,18 @@ class AbstractBattle(ABC):
         self._opponent_username: Optional[str] = None
         self._player_role: Optional[str] = None
         self._player_username: str = username
-        self._players = []
+        self._players: List[Dict[str, str]] = []
         self._replay_data: List[List[str]] = []
-        self._save_replays: Union[bool, str] = save_replays
+        self._save_replays: Union[str, bool] = save_replays
         self._team_size: Dict[str, int] = {}
         self._teampreview: bool = False
         self._teampreview_opponent_team: Set[Pokemon] = set()
         self._anybody_inactive: bool = False
         self._reconnected: bool = True
-        self.logger: Logger = logger
+        self.logger: Optional[Logger] = logger
 
         # Turn choice attributes
-        self._in_team_preview: bool = False
+        self.in_team_preview: bool = False
         self._move_on_next_request: bool = False
         self._wait: Optional[bool] = None
 
@@ -144,7 +145,7 @@ class AbstractBattle(ABC):
         self._dynamax_turn: Optional[int] = None
         self._finished: bool = False
         self._rqid = 0
-        self._rules = []
+        self.rules: List[str] = []
         self._turn: int = 0
         self._opponent_can_terrastallize: bool = True
         self._opponent_dynamax_turn: Optional[int] = None
@@ -168,7 +169,7 @@ class AbstractBattle(ABC):
         identifier: str,
         force_self_team: bool = False,
         details: str = "",
-        request: Optional[dict] = None,
+        request: Optional[Dict[str, Any]] = None,
     ) -> Pokemon:
         """Returns the Pokemon object corresponding to given identifier. Can force to
         return object from the player's team if force_self_team is True. If the Pokemon
@@ -225,7 +226,7 @@ class AbstractBattle(ABC):
         return team[identifier]
 
     @abstractmethod
-    def _clear_all_boosts(self):  # pragma: no cover
+    def clear_all_boosts(self):
         pass
 
     def _check_damage_message_for_item(self, split_message: List[str]):
@@ -291,11 +292,11 @@ class AbstractBattle(ABC):
             self.get_pokemon(pkmn).ability = to_id_str(ability)
 
     @abstractmethod
-    def _end_illusion(self, pokemon_name: str, details: str):  # pragma: no cover
+    def end_illusion(self, pokemon_name: str, details: str):
         pass
 
     def _end_illusion_on(
-        self, illusionist: str, illusioned: Optional[Pokemon], details: str
+        self, illusionist: Optional[str], illusioned: Optional[Pokemon], details: str
     ):
         if illusionist is None:
             raise ValueError("Cannot end illusion without an active pokemon.")
@@ -306,21 +307,23 @@ class AbstractBattle(ABC):
         if illusionist_mon is illusioned:
             return illusionist_mon
 
-        illusionist_mon._switch_in(details=details)
-        illusionist_mon.status = illusioned.status
-        illusionist_mon._set_hp(f"{illusioned.current_hp}/{illusioned.max_hp}")
+        illusionist_mon.switch_in(details=details)
+        illusionist_mon.status = (
+            illusioned.status.name if illusioned.status is not None else None
+        )
+        illusionist_mon.set_hp(f"{illusioned.current_hp}/{illusioned.max_hp}")
 
-        illusioned._was_illusionned()
+        illusioned.was_illusioned()
 
         return illusionist_mon
 
-    def _field_end(self, field):
-        field = Field.from_showdown_message(field)
-        if field is not Field._UNKNOWN:
+    def _field_end(self, field_str: str):
+        field = Field.from_showdown_message(field_str)
+        if field is not Field.UNKNOWN:
             self._fields.pop(field)
 
-    def _field_start(self, field):
-        field = Field.from_showdown_message(field)
+    def field_start(self, field_str: str):
+        field = Field.from_showdown_message(field_str)
 
         if field.is_terrain:
             self._fields = {
@@ -331,7 +334,7 @@ class AbstractBattle(ABC):
 
         self._fields[field] = self.turn
 
-    def _finish_battle(self) -> None:
+    def _finish_battle(self):
         if self._save_replays:
             if self._save_replays is True:
                 folder = "replays"
@@ -348,7 +351,7 @@ class AbstractBattle(ABC):
                 "w+",
                 encoding="utf-8",
             ) as f:
-                formatted_replay = _REPLAY_TEMPLATE
+                formatted_replay = REPLAY_TEMPLATE
 
                 formatted_replay = formatted_replay.replace(
                     "{BATTLE_TAG}", f"{self.battle_tag}"
@@ -368,7 +371,7 @@ class AbstractBattle(ABC):
 
         self._finished = True
 
-    def _parse_message(self, split_message: List[str]) -> None:
+    def parse_message(self, split_message: List[str]):
         if self._save_replays:
             self._replay_data.append(split_message)
 
@@ -376,10 +379,10 @@ class AbstractBattle(ABC):
             return
         elif split_message[1] in ["drag", "switch"]:
             pokemon, details, hp_status = split_message[2:5]
-            self._switch(pokemon, details, hp_status)
+            self.switch(pokemon, details, hp_status)
         elif split_message[1] == "-damage":
             pokemon, hp_status = split_message[2:4]
-            self.get_pokemon(pokemon)._damage(hp_status)
+            self.get_pokemon(pokemon).damage(hp_status)
             self._check_damage_message_for_item(split_message)
             self._check_damage_message_for_ability(split_message)
         elif split_message[1] == "move":
@@ -412,7 +415,7 @@ class AbstractBattle(ABC):
                     reveal_other_move = True
                 elif override_move in {"Copycat", "Metronome", "Nature Power"}:
                     pass
-                else:
+                elif self.logger is not None:
                     self.logger.warning(
                         "Unmanaged [from]move message received - move %s in cleaned up "
                         "message %s in battle %s turn %d",
@@ -434,7 +437,7 @@ class AbstractBattle(ABC):
                     return
                 elif revealed_ability == "Dancer":
                     return
-                else:
+                elif self.logger is not None:
                     self.logger.warning(
                         "Unmanaged [from]ability: message received - ability %s in "
                         "cleaned up message %s in battle %s turn %d",
@@ -466,7 +469,7 @@ class AbstractBattle(ABC):
                     "p2b:",
                 }:
                     pass
-                else:
+                elif self.logger is not None:
                     self.logger.warning(
                         "Unmanaged move message format received - cleaned up message %s"
                         " in battle %s turn %d",
@@ -476,42 +479,41 @@ class AbstractBattle(ABC):
                     )
             else:
                 pokemon, move, presumed_target = split_message[2:5]
-                self.logger.warning(
-                    "Unmanaged move message format received - cleaned up message %s in "
-                    "battle %s turn %d",
-                    split_message,
-                    self.battle_tag,
-                    self.turn,
-                )
+                if self.logger is not None:
+                    self.logger.warning(
+                        "Unmanaged move message format received - cleaned up message %s in "
+                        "battle %s turn %d",
+                        split_message,
+                        self.battle_tag,
+                        self.turn,
+                    )
 
             # Check if a silent-effect move has occurred (Minimize) and add the effect
 
             if move.upper().strip() == "MINIMIZE":
                 temp_pokemon = self.get_pokemon(pokemon)
-                temp_pokemon._start_effect("MINIMIZE")
+                temp_pokemon.start_effect("MINIMIZE")
 
             if override_move:
                 # Moves that can trigger this branch results in two `move` messages being sent.
                 # We're setting use=False in the one (with the override) in order to prevent two pps from being used
                 # incorrectly.
-                self.get_pokemon(pokemon)._moved(
-                    override_move, failed=failed, use=False
-                )
+                self.get_pokemon(pokemon).moved(override_move, failed=failed, use=False)
             if override_move is None or reveal_other_move:
-                self.get_pokemon(pokemon)._moved(move, failed=failed, use=False)
+                self.get_pokemon(pokemon).moved(move, failed=failed, use=False)
         elif split_message[1] == "cant":
             pokemon, _ = split_message[2:4]
-            self.get_pokemon(pokemon)._cant_move()
+            self.get_pokemon(pokemon).cant_move()
         elif split_message[1] == "turn":
             self.end_turn(int(split_message[2]))
         elif split_message[1] == "-heal":
             pokemon, hp_status = split_message[2:4]
-            self.get_pokemon(pokemon)._heal(hp_status)
+            self.get_pokemon(pokemon).heal(hp_status)
             self._check_heal_message_for_ability(split_message)
             self._check_heal_message_for_item(split_message)
         elif split_message[1] == "-boost":
             pokemon, stat, amount = split_message[2:5]
-            self.get_pokemon(pokemon)._boost(stat, int(amount))
+            self.get_pokemon(pokemon).boost(stat, int(amount))
         elif split_message[1] == "-weather":
             weather = split_message[2]
             if weather == "none":
@@ -521,17 +523,17 @@ class AbstractBattle(ABC):
                 self._weather = {Weather.from_showdown_message(weather): self.turn}
         elif split_message[1] == "faint":
             pokemon = split_message[2]
-            self.get_pokemon(pokemon)._faint()
+            self.get_pokemon(pokemon).faint()
         elif split_message[1] == "-unboost":
             pokemon, stat, amount = split_message[2:5]
-            self.get_pokemon(pokemon)._boost(stat, -int(amount))
+            self.get_pokemon(pokemon).boost(stat, -int(amount))
         elif split_message[1] == "-ability":
             pokemon, ability = split_message[2:4]
             self.get_pokemon(pokemon).ability = ability
         elif split_message[1] == "-start":
             pokemon, effect = split_message[2:4]
             pokemon = self.get_pokemon(pokemon)
-            pokemon._start_effect(effect)
+            pokemon.start_effect(effect)
 
             if pokemon.is_dynamaxed:
                 if pokemon in set(self.team.values()) and self._dynamax_turn is None:
@@ -546,66 +548,68 @@ class AbstractBattle(ABC):
         elif split_message[1] == "-activate":
             target, effect = split_message[2:4]
             if target:
-                self.get_pokemon(target)._start_effect(effect)
+                self.get_pokemon(target).start_effect(effect)
         elif split_message[1] == "-status":
             pokemon, status = split_message[2:4]
             self.get_pokemon(pokemon).status = status
         elif split_message[1] == "rule":
-            self._rules.append(split_message[2])
+            self.rules.append(split_message[2])
 
         elif split_message[1] == "-clearallboost":
-            self._clear_all_boosts()
+            self.clear_all_boosts()
         elif split_message[1] == "-clearboost":
             pokemon = split_message[2]
-            self.get_pokemon(pokemon)._clear_boosts()
+            self.get_pokemon(pokemon).clear_boosts()
         elif split_message[1] == "-clearnegativeboost":
             pokemon = split_message[2]
-            self.get_pokemon(pokemon)._clear_negative_boosts()
+            self.get_pokemon(pokemon).clear_negative_boosts()
         elif split_message[1] == "-clearpositiveboost":
             pokemon = split_message[2]
-            self.get_pokemon(pokemon)._clear_positive_boosts()
+            self.get_pokemon(pokemon).clear_positive_boosts()
         elif split_message[1] == "-copyboost":
             source, target = split_message[2:4]
-            self.get_pokemon(target)._copy_boosts(self.get_pokemon(source))
+            self.get_pokemon(target).copy_boosts(self.get_pokemon(source))
         elif split_message[1] == "-curestatus":
             pokemon, status = split_message[2:4]
-            self.get_pokemon(pokemon)._cure_status(status)
+            self.get_pokemon(pokemon).cure_status(status)
         elif split_message[1] == "-cureteam":
             pokemon = split_message[2]
             team = (
                 self.team if pokemon[:2] == self._player_role else self._opponent_team
             )
             for mon in team.values():
-                mon._cure_status()
+                mon.cure_status()
         elif split_message[1] == "-end":
             pokemon, effect = split_message[2:4]
-            self.get_pokemon(pokemon)._end_effect(effect)
+            self.get_pokemon(pokemon).end_effect(effect)
         elif split_message[1] == "-endability":
             pokemon = split_message[2]
             self.get_pokemon(pokemon).ability = None
         elif split_message[1] == "-enditem":
             pokemon, item = split_message[2:4]
-            self.get_pokemon(pokemon)._end_item(item)
+            self.get_pokemon(pokemon).end_item(item)
         elif split_message[1] == "-fieldend":
             condition = split_message[2]
             self._field_end(condition)
         elif split_message[1] == "-fieldstart":
             condition = split_message[2]
-            self._field_start(condition)
+            self.field_start(condition)
         elif split_message[1] in ["-formechange", "detailschange"]:
             pokemon, species = split_message[2:4]
-            self.get_pokemon(pokemon)._forme_change(species)
+            self.get_pokemon(pokemon).forme_change(species)
         elif split_message[1] == "-invertboost":
             pokemon = split_message[2]
-            self.get_pokemon(pokemon)._invert_boosts()
+            self.get_pokemon(pokemon).invert_boosts()
         elif split_message[1] == "-item":
             pokemon, item = split_message[2:4]
             self.get_pokemon(pokemon).item = to_id_str(item)
         elif split_message[1] == "-mega":
-            if not split_message[2].startswith(self._player_role):  # pyre-ignore
-                self._opponent_can_mega_evolve = False  # pyre-ignore
+            if self.player_role is not None and not split_message[2].startswith(
+                self.player_role
+            ):
+                self._opponent_can_mega_evolve = False
             pokemon, megastone = split_message[2:4]
-            self.get_pokemon(pokemon)._mega_evolve(megastone)
+            self.get_pokemon(pokemon).mega_evolve(megastone)
         elif split_message[1] == "-mustrecharge":
             pokemon = split_message[2]
             self.get_pokemon(pokemon).must_recharge = True
@@ -614,23 +618,23 @@ class AbstractBattle(ABC):
                 attacker, move, defender = split_message[2:5]
                 defender = self.get_pokemon(defender)
                 if to_id_str(move) == "skydrop":
-                    defender._start_effect("Sky Drop")
+                    defender.start_effect("Sky Drop")
             except ValueError:
                 attacker, move = split_message[2:4]
                 defender = None
-            self.get_pokemon(attacker)._prepare(move, defender)
+            self.get_pokemon(attacker).prepare(move, defender)
         elif split_message[1] == "-primal":
             pokemon = split_message[2]
-            self.get_pokemon(pokemon)._primal()
+            self.get_pokemon(pokemon).primal()
         elif split_message[1] == "-setboost":
             pokemon, stat, amount = split_message[2:5]
-            self.get_pokemon(pokemon)._set_boost(stat, int(amount))
+            self.get_pokemon(pokemon).set_boost(stat, int(amount))
         elif split_message[1] == "-sethp":
             pokemon, hp_status = split_message[2:4]
-            self.get_pokemon(pokemon)._set_hp(hp_status)
+            self.get_pokemon(pokemon).set_hp(hp_status)
         elif split_message[1] == "-sideend":
             side, condition = split_message[2:4]
-            self._side_end(side, condition)
+            self.side_end(side, condition)
         elif split_message[1] == "-sidestart":
             side, condition = split_message[2:4]
             self._side_start(side, condition)
@@ -639,23 +643,25 @@ class AbstractBattle(ABC):
             source = self.get_pokemon(source)
             target = self.get_pokemon(target)
             for stat in stats.split(", "):
-                source._boosts[stat], target._boosts[stat] = (
-                    target._boosts[stat],
-                    source._boosts[stat],
+                source.boosts[stat], target.boosts[stat] = (
+                    target.boosts[stat],
+                    source.boosts[stat],
                 )
         elif split_message[1] == "-transform":
             pokemon, into = split_message[2:4]
-            self.get_pokemon(pokemon)._transform(self.get_pokemon(into))
+            self.get_pokemon(pokemon).transform(self.get_pokemon(into))
         elif split_message[1] == "-zpower":
-            if not split_message[2].startswith(self._player_role):  # pyre-ignore
-                self._opponent_can_mega_z_move = False  # pyre-ignore
+            if self._player_role is not None and not split_message[2].startswith(
+                self._player_role
+            ):
+                self._opponent_can_mega_z_move = False
 
             pokemon = split_message[2]
-            self.get_pokemon(pokemon)._used_z_move()
+            self.get_pokemon(pokemon).used_z_move()
         elif split_message[1] == "clearpoke":
-            self._in_team_preview = True
+            self.in_team_preview = True
             for mon in self.team.values():
-                mon._clear_active()
+                mon.clear_active()
         elif split_message[1] == "gen":
             self._format = split_message[2]
         elif split_message[1] == "inactive":
@@ -694,7 +700,7 @@ class AbstractBattle(ABC):
                 self._rating = rating
             elif username == self.opponent_username:
                 self._opponent_rating = rating
-            else:
+            elif self.logger is not None:
                 self.logger.warning(
                     "Rating information regarding an unrecognized username received. "
                     "Received '%s', while only known players are '%s' and '%s'",
@@ -705,17 +711,17 @@ class AbstractBattle(ABC):
         elif split_message[1] == "replace":
             pokemon = split_message[2]
             details = split_message[3]
-            self._end_illusion(pokemon, details)
+            self.end_illusion(pokemon, details)
         elif split_message[1] == "start":
-            self._in_team_preview = False
+            self.in_team_preview = False
         elif split_message[1] == "swap":
             pokemon, position = split_message[2:4]
-            self._swap(pokemon, position)
+            self._swap(pokemon, position)  # type: ignore
         elif split_message[1] == "teamsize":
             player, number = split_message[2:4]
             number = int(number)
             self._team_size[player] = number
-        elif split_message[1] in {"message", "-message"}:
+        elif split_message[1] in {"message", "-message"} and self.logger is not None:
             self.logger.info("Received message: %s", split_message[2])
         elif split_message[1] == "-immune":
             if len(split_message) == 4:
@@ -735,7 +741,7 @@ class AbstractBattle(ABC):
         elif split_message[1] == "-terastallize":
             pokemon, type_ = split_message[2:]
             pokemon = self.get_pokemon(pokemon)
-            pokemon._terastallize(type_)
+            pokemon.terastallize(type_)
 
             if pokemon.terastallized:
                 if pokemon in set(self.opponent_team.values()):
@@ -744,7 +750,7 @@ class AbstractBattle(ABC):
             raise NotImplementedError(split_message)
 
     @abstractmethod
-    def _parse_request(self, request: Dict) -> None:  # pragma: no cover
+    def parse_request(self, request: Dict[str, Any]):
         pass
 
     def _register_teampreview_pokemon(self, player: str, details: str):
@@ -752,76 +758,78 @@ class AbstractBattle(ABC):
             mon = Pokemon(details=details, gen=self._data.gen)
             self._teampreview_opponent_team.add(mon)
 
-    def _side_end(self, side, condition):
+    def side_end(self, side: str, condition_str: str):
         if side[:2] == self._player_role:
             conditions = self.side_conditions
         else:
             conditions = self.opponent_side_conditions
-        condition = SideCondition.from_showdown_message(condition)
-        if condition is not SideCondition._UNKNOWN:
+        condition = SideCondition.from_showdown_message(condition_str)
+        if condition is not SideCondition.UNKNOWN:
             conditions.pop(condition)
 
-    def _side_start(self, side, condition):
+    def _side_start(self, side: str, condition_str: str):
         if side[:2] == self._player_role:
             conditions = self.side_conditions
         else:
             conditions = self.opponent_side_conditions
-        condition = SideCondition.from_showdown_message(condition)
+        condition = SideCondition.from_showdown_message(condition_str)
         if condition in STACKABLE_CONDITIONS:
             conditions[condition] = conditions.get(condition, 0) + 1
         elif condition not in conditions:
             conditions[condition] = self.turn
 
-    def _swap(self, *args, **kwargs):
-        self.logger.warning("swap method in Battle is not implemented")
+    def _swap(self, pokemon_str: str, slot: str):
+        if self.logger is not None:
+            self.logger.warning("swap method in Battle is not implemented")
 
     @abstractmethod
-    def _switch(self, pokemon, details, hp_status):  # pragma: no cover
+    def switch(self, pokemon_str: str, details: str, hp_status: str):
         pass
 
-    def _tied(self):
+    def tied(self):
         self._finish_battle()
 
-    def _update_team_from_request(self, side: Dict) -> None:
+    def _update_team_from_request(self, side: Dict[str, Any]):
         for pokemon in side["pokemon"]:
             if pokemon["ident"] in self._team:
-                self._team[pokemon["ident"]]._update_from_request(pokemon)
+                self._team[pokemon["ident"]].update_from_request(pokemon)
             else:
                 self.get_pokemon(
                     pokemon["ident"], force_self_team=True, request=pokemon
                 )
 
-    def _won_by(self, player_name: str):
+    def won_by(self, player_name: str):
         if player_name == self._player_username:
             self._won = True
         else:
             self._won = False
         self._finish_battle()
 
-    def end_turn(self, turn: int) -> None:
+    def end_turn(self, turn: int):
         self.turn = turn
 
         for mon in self.all_active_pokemons:
             if mon:
-                mon._end_turn()
+                mon.end_turn()
 
     @property
     @abstractmethod
-    def active_pokemon(self):  # pragma: no cover
-        pass
-
-    @abstractproperty
-    def all_active_pokemons(self):  # pragma: no cover
+    def active_pokemon(self) -> Any:
         pass
 
     @property
     @abstractmethod
-    def available_moves(self):  # pragma: no cover
+    def all_active_pokemons(self) -> List[Optional[Pokemon]]:
         pass
 
     @property
     @abstractmethod
-    def available_switches(self) -> List[Pokemon]:  # pragma: no cover
+    def available_moves(self) -> Any:
+        pass
+
+    @property
+    @abstractmethod
+    def available_switches(self) -> Any:
         pass
 
     @property
@@ -834,17 +842,22 @@ class AbstractBattle(ABC):
 
     @property
     @abstractmethod
-    def can_dynamax(self) -> bool:  # pragma: no cover
+    def can_dynamax(self) -> Any:
         pass
 
     @property
     @abstractmethod
-    def can_mega_evolve(self):  # pragma: no cover
+    def can_mega_evolve(self) -> Any:
         pass
 
     @property
     @abstractmethod
-    def can_z_move(self):  # pragma: no cover
+    def can_z_move(self) -> Any:
+        pass
+
+    @property
+    @abstractmethod
+    def can_tera(self) -> Any:
         pass
 
     @property
@@ -861,7 +874,7 @@ class AbstractBattle(ABC):
     @property
     def fields(self) -> Dict[Field, int]:
         """
-        :return: A dict mapping fields to the turn they have been activated.
+        :return: A Dict mapping fields to the turn they have been activated.
         :rtype: Dict[Field, int]
         """
         return self._fields
@@ -876,7 +889,7 @@ class AbstractBattle(ABC):
 
     @property
     @abstractmethod
-    def force_switch(self):  # pragma: no cover
+    def force_switch(self) -> Any:
         pass
 
     @property
@@ -899,22 +912,22 @@ class AbstractBattle(ABC):
 
     @property
     @abstractmethod
-    def maybe_trapped(self):  # pragma: no cover
+    def maybe_trapped(self) -> Any:
         pass
 
     @property
     @abstractmethod
-    def opponent_active_pokemon(self):  # pragma: no cover
+    def opponent_active_pokemon(self) -> Any:
         pass
 
     @property
     @abstractmethod
-    def opponent_can_dynamax(self) -> bool:  # pragma: no cover
+    def opponent_can_dynamax(self) -> Any:
         pass
 
     @opponent_can_dynamax.setter
     @abstractmethod
-    def opponent_can_dynamax(self, value) -> None:  # pragma: no cover
+    def opponent_can_dynamax(self, value: bool) -> Any:
         pass
 
     @property
@@ -922,7 +935,7 @@ class AbstractBattle(ABC):
         """
         :return: How many turns of dynamax are left for the opponent's pokemon.
             None if dynamax is not active
-        :rtype: Optional[int]
+        :rtype: int | None
         """
         if self._opponent_dynamax_turn is not None and any(
             map(lambda pokemon: pokemon.is_dynamaxed, self._opponent_team.values())
@@ -974,6 +987,10 @@ class AbstractBattle(ABC):
         """
         return self._opponent_username
 
+    @opponent_username.setter
+    def opponent_username(self, value: str):
+        self._opponent_username = value
+
     @property
     def player_role(self) -> Optional[str]:
         """
@@ -981,6 +998,10 @@ class AbstractBattle(ABC):
         :rtype: str, optional
         """
         return self._player_role
+
+    @player_role.setter
+    def player_role(self, value: Optional[str]):
+        self._player_role = value
 
     @property
     def player_username(self) -> str:
@@ -990,16 +1011,20 @@ class AbstractBattle(ABC):
         """
         return self._player_username
 
+    @player_username.setter
+    def player_username(self, value: str):
+        self._player_username = value
+
     @property
     def players(self) -> Tuple[str, str]:
         """
         :return: The pair of players' usernames.
         :rtype: Tuple[str, str]
         """
-        return self._players
+        return self._players[0]["username"], self._players[1]["username"]
 
     @players.setter
-    def players(self, players: Tuple[str, str]) -> None:
+    def players(self, players: Tuple[str, str]):
         """Sets the battle player's name:
 
         :param player_1: First player's username.
@@ -1064,15 +1089,18 @@ class AbstractBattle(ABC):
         """
         return self._team
 
+    @team.setter
+    def team(self, value: Dict[str, Pokemon]):
+        self._team = value
+
     @property
     def team_size(self) -> int:
         """
         :return: The number of Pokemon in the player's team.
         :rtype: int
         """
-        role = self._player_role
-        if role is not None:
-            return self._team_size[role]
+        if self._player_role is not None:
+            return self._team_size[self._player_role]
         raise ValueError(
             "Team size cannot be inferred without an assigned player role."
         )
@@ -1087,12 +1115,12 @@ class AbstractBattle(ABC):
 
     @property
     @abstractmethod
-    def trapped(self):  # pragma: no cover
+    def trapped(self) -> Any:
         pass
 
     @trapped.setter
     @abstractmethod
-    def trapped(self, value):  # pragma: no cover
+    def trapped(self, value: Any):
         pass
 
     @property
@@ -1104,7 +1132,7 @@ class AbstractBattle(ABC):
         return self._turn
 
     @turn.setter
-    def turn(self, turn: int) -> None:
+    def turn(self, turn: int):
         """Sets the current turn counter to given value.
 
         :param turn: Current turn value.
@@ -1115,7 +1143,7 @@ class AbstractBattle(ABC):
     @property
     def weather(self) -> Dict[Weather, int]:
         """
-        :return: A dict mapping the battle's weather (if any) to its starting turn
+        :return: A Dict mapping the battle's weather (if any) to its starting turn
         :rtype: Dict[Weather, int]
         """
         return self._weather
@@ -1139,7 +1167,7 @@ class AbstractBattle(ABC):
         return self._move_on_next_request
 
     @move_on_next_request.setter
-    def move_on_next_request(self, value) -> None:
+    def move_on_next_request(self, value: bool):
         self._move_on_next_request = value
 
     @property

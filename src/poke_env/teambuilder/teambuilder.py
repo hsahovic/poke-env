@@ -4,6 +4,7 @@ Pokemon Showdown teams in the context of communicating with Pokemon Showdown.
 from abc import ABC, abstractmethod
 from typing import List
 
+from poke_env.stats import STATS_TO_IDX
 from poke_env.teambuilder.teambuilder_pokemon import TeambuilderPokemon
 
 
@@ -22,7 +23,7 @@ class Teambuilder(ABC):
     """
 
     @abstractmethod
-    def yield_team(self) -> str:  # pragma: no cover
+    def yield_team(self) -> str:
         """Returns a packed-format team."""
 
     @staticmethod
@@ -39,7 +40,7 @@ class Teambuilder(ABC):
         """
         current_mon = TeambuilderPokemon()
         current_mon_has_been_added = True
-        mons = []
+        mons: List[TeambuilderPokemon] = []
 
         for line in team.split("\n"):
             while line and line.startswith(" "):
@@ -54,10 +55,10 @@ class Teambuilder(ABC):
                 current_mon.ability = ability.strip()
             elif line.startswith("Level: "):
                 level = line.replace("Level: ", "")
-                current_mon.level = level.strip()
+                current_mon.level = int(level.strip())
             elif line.startswith("Happiness: "):
                 happiness = line.replace("Happiness: ", "")
-                current_mon.happiness = happiness.strip()
+                current_mon.happiness = int(happiness.strip())
             elif line.startswith("EVs: "):
                 evs = line.replace("EVs: ", "")
                 evs = evs.split(" / ")
@@ -65,8 +66,8 @@ class Teambuilder(ABC):
                     ev = ev.split(" ")
                     n = ev[0]
                     stat = ev[1]
-                    idx = current_mon.STATS_TO_IDX[stat.lower()]
-                    current_mon.evs[idx] = n
+                    idx = STATS_TO_IDX[stat.lower()]
+                    current_mon.evs[idx] = int(n)
             elif line.startswith("IVs: "):
                 ivs = line.replace("IVs: ", "")
                 ivs = ivs.split(" / ")
@@ -74,8 +75,8 @@ class Teambuilder(ABC):
                     iv = iv.split(" ")
                     n = iv[0]
                     stat = iv[1]
-                    idx = current_mon.STATS_TO_IDX[stat.lower()]
-                    current_mon.ivs[idx] = n
+                    idx = STATS_TO_IDX[stat.lower()]
+                    current_mon.ivs[idx] = int(n)
             elif line.startswith("- "):
                 line = line.replace("- ", "").strip()
                 current_mon.moves.append(line)

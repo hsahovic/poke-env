@@ -19,8 +19,8 @@ from poke_env.player.env_player import (
     Gen9EnvSinglePlayer,
 )
 from poke_env.player.openai_api import (
-    ActionType,
-    ObservationType,
+    ActType,
+    ObsType,
     OpenAIGymEnv,
     wrap_for_old_gym_api,
 )
@@ -38,11 +38,10 @@ __all__ = [
     "env_player",
     "openai_api",
     "player",
-    "ps_client",
     "random_player",
     "utils",
-    "ActionType",
-    "ObservationType",
+    "ActType",
+    "ObsType",
     "wrap_for_old_gym_api",
     "EnvPlayer",
     "ForfeitBattleOrder",

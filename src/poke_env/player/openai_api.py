@@ -1,17 +1,29 @@
 """This module defines a player class with the OpenAI API on the main thread.
 For a black-box implementation consider using the module env_player.
 """
-# pyre-ignore-all-errors[34]
+from __future__ import annotations
+
 import asyncio
 import copy
+import random
 import time
 from abc import ABC, abstractmethod
 from logging import Logger
-from typing import Awaitable, Callable, Dict, List, Optional, Tuple, TypeVar, Union
+from typing import (
+    Any,
+    Awaitable,
+    Callable,
+    Dict,
+    Generic,
+    List,
+    Optional,
+    Tuple,
+    TypeVar,
+    Union,
+)
 
-import numpy as np  # pyre-ignore
-from gym.core import Env  # pyre-ignore
-from gym.spaces import Discrete, Space  # pyre-ignore
+from gym.core import ActType, Env, ObsType
+from gym.spaces import Discrete, Space
 
 from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
 from poke_env.environment.abstract_battle import AbstractBattle
@@ -24,14 +36,11 @@ from poke_env.ps_client.server_configuration import (
 )
 from poke_env.teambuilder.teambuilder import Teambuilder
 
-ObservationType = TypeVar("ObservationType")
-ActionType = TypeVar("ActionType")
+BattleType = TypeVar("BattleType", bound=AbstractBattle)
 
 
 class _AsyncQueue:
-    def __init__(self, queue: asyncio.Queue):
-        if not isinstance(queue, asyncio.Queue):
-            raise RuntimeError(f"Expected asyncio.Queue, got {type(queue)}")
+    def __init__(self, queue: asyncio.Queue[Any]):
         self.queue = queue
 
     async def async_get(self):
@@ -41,10 +50,10 @@ class _AsyncQueue:
         res = asyncio.run_coroutine_threadsafe(self.queue.get(), POKE_LOOP)
         return res.result()
 
-    async def async_put(self, item):
+    async def async_put(self, item: Any):
         await self.queue.put(item)
 
-    def put(self, item):
+    def put(self, item: Any):
         task = asyncio.run_coroutine_threadsafe(self.queue.put(item), POKE_LOOP)
         task.result()
 
@@ -59,15 +68,23 @@ class _AsyncQueue:
         await self.queue.join()
 
 
-class _AsyncPlayer(Player):
-    def __init__(self, user_funcs, username, **kwargs):
+class _AsyncPlayer(Generic[ObsType, ActType], Player):
+    actions: _AsyncQueue
+    observations: _AsyncQueue
+
+    def __init__(
+        self,
+        user_funcs: OpenAIGymEnv[ObsType, ActType],
+        username: str,
+        **kwargs: Any,
+    ):
         self.__class__.__name__ = username
         super().__init__(**kwargs)
         self.__class__.__name__ = "_AsyncPlayer"
-        self._observations = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
-        self._actions = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
+        self.observations = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
+        self.actions = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
         self.current_battle: Optional[AbstractBattle] = None
-        self._user_funcs: OpenAIGymEnv = user_funcs
+        self._user_funcs = user_funcs
 
     def choose_move(
         self, battle: AbstractBattle
@@ -77,29 +94,25 @@ class _AsyncPlayer(Player):
     async def _env_move(self, battle: AbstractBattle):
         if not self.current_battle or self.current_battle.finished:
             self.current_battle = battle
-        if not self.current_battle == battle:  # pragma: no cover
+        if not self.current_battle == battle:
             raise RuntimeError("Using different battles for queues")
         battle_to_send = self._user_funcs.embed_battle(battle)
-        await self._observations.async_put(battle_to_send)
-        action = await self._actions.async_get()
+        await self.observations.async_put(battle_to_send)
+        action = await self.actions.async_get()
         if action == -1:
             return ForfeitBattleOrder()
         return self._user_funcs.action_to_move(action, battle)
 
-    def _battle_finished_callback(
-        self, battle: AbstractBattle
-    ) -> None:  # pragma: no cover
+    def _battle_finished_callback(self, battle: AbstractBattle):
         to_put = self._user_funcs.embed_battle(battle)
-        asyncio.run_coroutine_threadsafe(
-            self._observations.async_put(to_put), POKE_LOOP
-        )
+        asyncio.run_coroutine_threadsafe(self.observations.async_put(to_put), POKE_LOOP)
 
 
-class _ABCMetaclass(type(ABC)):  # pyre-ignore
+class _ABCMetaclass(type(ABC)):
     pass
 
 
-class _EnvMetaclass(type(Env)):  # pyre-ignore
+class _EnvMetaclass(type(Env)):
     pass
 
 
@@ -107,7 +120,11 @@ class _OpenAIGymEnvMetaclass(_EnvMetaclass, _ABCMetaclass):
     pass
 
 
-class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
+class OpenAIGymEnv(
+    Env[ObsType, ActType],
+    ABC,
+    metaclass=_OpenAIGymEnvMetaclass,
+):
     """
     Base class implementing the OpenAI Gym API on the main thread.
     """
@@ -179,7 +196,7 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         """
         self.agent = _AsyncPlayer(
             self,
-            username=self.__class__.__name__,  # pyre-ignore
+            username=self.__class__.__name__,  # type: ignore
             account_configuration=account_configuration,
             avatar=avatar,
             battle_format=battle_format,
@@ -193,9 +210,9 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
             ping_timeout=ping_timeout,
             team=team,
         )
-        self._actions = self.agent._actions
-        self._observations = self.agent._observations
-        self.action_space = Discrete(self.action_space_size())
+        self._actions = self.agent.actions
+        self._observations = self.agent.observations
+        self.action_space = Discrete(self.action_space_size())  # type: ignore
         self.observation_space = self.describe_embedding()
         self.current_battle: Optional[AbstractBattle] = None
         self.last_battle: Optional[AbstractBattle] = None
@@ -211,7 +228,7 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
     @abstractmethod
     def calc_reward(
         self, last_battle: AbstractBattle, current_battle: AbstractBattle
-    ) -> float:  # pragma: no cover
+    ) -> float:
         """
         Returns the reward for the current battle state. The battle state in the previous
         turn is given as well and can be used for comparisons.
@@ -227,9 +244,7 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         pass
 
     @abstractmethod
-    def action_to_move(
-        self, action: int, battle: AbstractBattle
-    ) -> BattleOrder:  # pragma: no cover
+    def action_to_move(self, action: int, battle: AbstractBattle) -> BattleOrder:
         """
         Returns the BattleOrder relative to the given action.
 
@@ -244,9 +259,7 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         pass
 
     @abstractmethod
-    def embed_battle(
-        self, battle: AbstractBattle
-    ) -> ObservationType:  # pragma: no cover
+    def embed_battle(self, battle: AbstractBattle) -> ObsType:
         """
         Returns the embedding of the current battle state in a format compatible with
         the OpenAI gym API.
@@ -259,7 +272,7 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         pass
 
     @abstractmethod
-    def describe_embedding(self) -> Space:  # pyre-ignore  # pragma: no cover
+    def describe_embedding(self) -> Space[ObsType]:
         """
         Returns the description of the embedding. It must return a Space specifying
         low bounds and high bounds.
@@ -270,7 +283,7 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         pass
 
     @abstractmethod
-    def action_space_size(self) -> int:  # pragma: no cover
+    def action_space_size(self) -> int:
         """
         Returns the size of the action space. Given size x, the action space goes
         from 0 to x - 1.
@@ -283,7 +296,7 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
     @abstractmethod
     def get_opponent(
         self,
-    ) -> Union[Player, str, List[Player], List[str]]:  # pragma: no cover
+    ) -> Union[Player, str, List[Player], List[str]]:
         """
         Returns the opponent (or list of opponents) that will be challenged
         on the next iteration of the challenge loop. If a list is returned,
@@ -296,26 +309,23 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
 
     def _get_opponent(self) -> Union[Player, str]:
         opponent = self.get_opponent()
-        if isinstance(opponent, list):
-            opponent = np.random.choice(opponent)
-            if not isinstance(opponent, Player) and not isinstance(opponent, str):
-                raise RuntimeError(
-                    f"Expected List[Player] or List[str]. Got List[{type(opponent)}]"
-                )
-        return opponent
+        random_opponent = (
+            random.choice(opponent) if isinstance(opponent, list) else opponent
+        )
+        return random_opponent
 
     def reset(
         self,
         *,
         seed: Optional[int] = None,
         return_info: bool = False,
-        options: Optional[dict] = None,
-    ) -> Union[ObservationType, Tuple[ObservationType, dict]]:  # pragma: no cover
+        options: Optional[Dict[str, Any]] = None,
+    ) -> Tuple[ObsType, Dict[str, Any]]:
         if seed is not None:
-            super().reset(seed=seed)  # pyre-ignore
+            super().reset(seed=seed)  # type: ignore
             self._seed_initialized = True
         elif not self._seed_initialized:
-            super().reset(seed=int(time.time()))
+            super().reset(seed=int(time.time()))  # type: ignore
             self._seed_initialized = True
         if not self.agent.current_battle:
             count = self._INIT_RETRIES
@@ -336,52 +346,45 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
             time.sleep(0.01)
         self.current_battle = self.agent.current_battle
         battle = copy.copy(self.current_battle)
-        battle.logger = None  # pyre-ignore
+        battle.logger = None
         self.last_battle = copy.deepcopy(battle)
         return self._observations.get(), self.get_additional_info()
 
-    def get_additional_info(self) -> dict:
+    def get_additional_info(self) -> Dict[str, Any]:
         """
         Returns additional info for the reset method.
         Override only if you really need it.
 
-        :return: Additional information as a dict
-        :rtype: dict
+        :return: Additional information as a Dict
+        :rtype: Dict
         """
         return {}
 
     def step(
-        self, action: ActionType
-    ) -> Union[
-        Tuple[ObservationType, float, bool, bool, dict],
-        Tuple[ObservationType, float, bool, dict],
-    ]:  # pragma: no cover
+        self, action: ActType
+    ) -> Tuple[ObsType, float, bool, bool, Dict[str, Any]]:
         if not self.current_battle:
             obs, info = self.reset(return_info=True)
             return obs, 0.0, False, False, info
         if self.current_battle.finished:
             raise RuntimeError("Battle is already finished, call reset")
         battle = copy.copy(self.current_battle)
-        battle.logger = None  # pyre-ignore
+        battle.logger = None
         self.last_battle = copy.deepcopy(battle)
         self._actions.put(action)
         observation = self._observations.get()
-        reward = self.calc_reward(self.last_battle, self.current_battle)  # pyre-ignore
+        reward = self.calc_reward(self.last_battle, self.current_battle)
         terminated = False
         truncated = False
-        if self.current_battle.finished:  # pyre-ignore
-            size = self.current_battle.team_size  # pyre-ignore
+        if self.current_battle.finished:
+            size = self.current_battle.team_size
             remaining_mons = size - len(
-                [
-                    mon
-                    for mon in self.current_battle.team.values()  # pyre-ignore
-                    if mon.fainted
-                ]
+                [mon for mon in self.current_battle.team.values() if mon.fainted]
             )
             remaining_opponent_mons = size - len(
                 [
                     mon
-                    for mon in self.current_battle.opponent_team.values()  # pyre-ignore
+                    for mon in self.current_battle.opponent_team.values()
                     if mon.fainted
                 ]
             )
@@ -391,33 +394,34 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
                 truncated = True
         return observation, reward, terminated, truncated, self.get_additional_info()
 
-    def render(self, mode="human"):
-        print(
-            "  Turn %4d. | [%s][%3d/%3dhp] %10.10s - %10.10s [%3d%%hp][%s]"
-            % (
-                self.current_battle.turn,
-                "".join(
-                    [
-                        "⦻" if mon.fainted else "●"
-                        for mon in self.current_battle.team.values()
-                    ]
+    def render(self, mode: str = "human"):
+        if self.current_battle is not None:
+            print(
+                "  Turn %4d. | [%s][%3d/%3dhp] %10.10s - %10.10s [%3d%%hp][%s]"
+                % (
+                    self.current_battle.turn,
+                    "".join(
+                        [
+                            "⦻" if mon.fainted else "●"
+                            for mon in self.current_battle.team.values()
+                        ]
+                    ),
+                    self.current_battle.active_pokemon.current_hp or 0,
+                    self.current_battle.active_pokemon.max_hp or 0,
+                    self.current_battle.active_pokemon.species,
+                    self.current_battle.opponent_active_pokemon.species,
+                    self.current_battle.opponent_active_pokemon.current_hp or 0,
+                    "".join(
+                        [
+                            "⦻" if mon.fainted else "●"
+                            for mon in self.current_battle.opponent_team.values()
+                        ]
+                    ),
                 ),
-                self.current_battle.active_pokemon.current_hp or 0,
-                self.current_battle.active_pokemon.max_hp or 0,
-                self.current_battle.active_pokemon.species,
-                self.current_battle.opponent_active_pokemon.species,
-                self.current_battle.opponent_active_pokemon.current_hp or 0,
-                "".join(
-                    [
-                        "⦻" if mon.fainted else "●"
-                        for mon in self.current_battle.opponent_team.values()
-                    ]
-                ),
-            ),
-            end="\n" if self.current_battle.finished else "\r",
-        )
+                end="\n" if self.current_battle.finished else "\r",
+            )
 
-    def close(self, purge: bool = True):  # pragma: no cover
+    def close(self, purge: bool = True):
         if self.current_battle is None or self.current_battle.finished:
             time.sleep(1)
             if self.current_battle != self.agent.current_battle:
@@ -427,10 +431,10 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         )
         closing_task.result()
 
-    def seed(self, seed=None):  # pragma: no cover
-        np.random.seed(seed)
+    def seed(self, seed: Optional[int] = None):
+        random.seed(seed)
 
-    def background_send_challenge(self, username: str):  # pragma: no cover
+    def background_send_challenge(self, username: str):
         """
         Sends a single challenge specified player. The function immediately returns
         to allow use of the OpenAI gym API.
@@ -448,7 +452,7 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
             self.agent.send_challenges(username, 1), POKE_LOOP
         )
 
-    def background_accept_challenge(self, username: str):  # pragma: no cover
+    def background_accept_challenge(self, username: str):
         """
         Accepts a single challenge specified player. The function immediately returns
         to allow use of the OpenAI gym API.
@@ -470,35 +474,25 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         self,
         n_challenges: Optional[int] = None,
         callback: Optional[Callable[[AbstractBattle], None]] = None,
-    ):  # pragma: no cover
+    ):
         if not n_challenges:
             while self._keep_challenging:
                 opponent = self._get_opponent()
                 if isinstance(opponent, Player):
                     await self.agent.battle_against(opponent, 1)
-                elif isinstance(opponent, str):
-                    await self.agent.send_challenges(opponent, 1)
                 else:
-                    raise ValueError(
-                        f"Expected opponent of type List[Player] or string. "
-                        f"Got {type(opponent)}"
-                    )
-                if callback:
-                    callback(copy.deepcopy(self.current_battle))  # pyre-ignore
+                    await self.agent.send_challenges(opponent, 1)
+                if callback and self.current_battle is not None:
+                    callback(copy.deepcopy(self.current_battle))
         elif n_challenges > 0:
             for _ in range(n_challenges):
                 opponent = self._get_opponent()
                 if isinstance(opponent, Player):
                     await self.agent.battle_against(opponent, 1)
-                elif isinstance(opponent, str):
-                    await self.agent.send_challenges(opponent, 1)
                 else:
-                    raise ValueError(
-                        f"Expected opponent of type List[Player] or string. "
-                        f"Got {type(opponent)}"
-                    )
-                if callback:
-                    callback(copy.deepcopy(self.current_battle))  # pyre-ignore
+                    await self.agent.send_challenges(opponent, 1)
+                if callback and self.current_battle is not None:
+                    callback(copy.deepcopy(self.current_battle))
         else:
             raise ValueError(f"Number of challenges must be > 0. Got {n_challenges}")
 
@@ -506,7 +500,7 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         self,
         n_challenges: Optional[int] = None,
         callback: Optional[Callable[[AbstractBattle], None]] = None,
-    ):  # pragma: no cover
+    ):
         """
         Starts the challenge loop.
 
@@ -534,7 +528,7 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         self,
         n_challenges: Optional[int] = None,
         callback: Optional[Callable[[AbstractBattle], None]] = None,
-    ):  # pragma: no cover
+    ):
         if n_challenges:
             if n_challenges <= 0:
                 raise ValueError(
@@ -542,19 +536,19 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
                 )
             for _ in range(n_challenges):
                 await self.agent.ladder(1)
-                if callback:
-                    callback(copy.deepcopy(self.current_battle))  # pyre-ignore
+                if callback and self.current_battle is not None:
+                    callback(copy.deepcopy(self.current_battle))
         else:
             while self._keep_challenging:
                 await self.agent.ladder(1)
-                if callback:
-                    callback(copy.deepcopy(self.current_battle))  # pyre-ignore
+                if callback and self.current_battle is not None:
+                    callback(copy.deepcopy(self.current_battle))
 
     def start_laddering(
         self,
         n_challenges: Optional[int] = None,
         callback: Optional[Callable[[AbstractBattle], None]] = None,
-    ):  # pragma: no cover
+    ):
         """
         Starts the laddering loop.
 
@@ -580,7 +574,7 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
 
     async def _stop_challenge_loop(
         self, force: bool = True, wait: bool = True, purge: bool = False
-    ):  # pragma: no cover
+    ):
         self._keep_challenging = False
 
         if force:
@@ -613,11 +607,11 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         if purge:
             self.agent.reset_battles()
 
-    def reset_battles(self):  # pragma: no cover
+    def reset_battles(self):
         """Resets the player's inner battle tracker."""
         self.agent.reset_battles()
 
-    def done(self, timeout: Optional[int] = None) -> bool:  # pragma: no cover
+    def done(self, timeout: Optional[int] = None) -> bool:
         """
         Returns True if the task is done or is done after the timeout, false otherwise.
 
@@ -642,41 +636,41 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
     # Expose properties of Player class
 
     @property
-    def battles(self) -> Dict[str, AbstractBattle]:  # pragma: no cover
+    def battles(self) -> Dict[str, AbstractBattle]:
         return self.agent.battles
 
     @property
-    def format(self) -> str:  # pragma: no cover
+    def format(self) -> str:
         return self.agent.format
 
     @property
-    def format_is_doubles(self) -> bool:  # pragma: no cover
+    def format_is_doubles(self) -> bool:
         return self.agent.format_is_doubles
 
     @property
-    def n_finished_battles(self) -> int:  # pragma: no cover
+    def n_finished_battles(self) -> int:
         return self.agent.n_finished_battles
 
     @property
-    def n_lost_battles(self) -> int:  # pragma: no cover
+    def n_lost_battles(self) -> int:
         return self.agent.n_lost_battles
 
     @property
-    def n_tied_battles(self) -> int:  # pragma: no cover
+    def n_tied_battles(self) -> int:
         return self.agent.n_tied_battles
 
     @property
-    def n_won_battles(self) -> int:  # pragma: no cover
+    def n_won_battles(self) -> int:
         return self.agent.n_won_battles
 
     @property
-    def win_rate(self) -> float:  # pragma: no cover
+    def win_rate(self) -> float:
         return self.agent.win_rate
 
     # Expose properties of Player Network Interface Class
 
     @property
-    def logged_in(self) -> asyncio.Event:  # pragma: no cover
+    def logged_in(self) -> asyncio.Event:
         """Event object associated with user login.
 
         :return: The logged-in event
@@ -685,7 +679,7 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         return self.agent.ps_client.logged_in
 
     @property
-    def logger(self) -> Logger:  # pragma: no cover
+    def logger(self) -> Logger:
         """Logger associated with the player.
 
         :return: The logger.
@@ -694,7 +688,7 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         return self.agent.logger
 
     @property
-    def username(self) -> str:  # pragma: no cover
+    def username(self) -> str:
         """The player's username.
 
         :return: The player's username.
@@ -703,7 +697,7 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         return self.agent.username
 
     @property
-    def websocket_url(self) -> str:  # pragma: no cover
+    def websocket_url(self) -> str:
         """The websocket url.
 
         It is derived from the server url.
@@ -713,11 +707,11 @@ class OpenAIGymEnv(Env, ABC, metaclass=_OpenAIGymEnvMetaclass):  # pyre-ignore
         """
         return self.agent.ps_client.websocket_url
 
-    def __getattr__(self, item):  # pragma: no cover
+    def __getattr__(self, item: str):
         return getattr(self.agent, item)
 
 
-class LegacyOpenAIGymEnv(OpenAIGymEnv, ABC):
+class LegacyOpenAIGymEnv(OpenAIGymEnv[ObsType, ActType], ABC):
     """
     Subclass of OpenAIGymEnv compatible with the old gym API.
     If you need compatibility with the old gym API you should use the
@@ -729,31 +723,23 @@ class LegacyOpenAIGymEnv(OpenAIGymEnv, ABC):
         *,
         seed: Optional[int] = None,
         return_info: bool = False,
-        options: Optional[dict] = None,
-    ) -> Union[ObservationType, Tuple[ObservationType, dict]]:  # pragma: no cover
-        obs, info = OpenAIGymEnv.reset(
-            self, seed=seed, return_info=True, options=options
-        )
-        if return_info:
-            return obs, info
-        return obs
+        options: Optional[Dict[str, Any]] = None,
+    ) -> Tuple[ObsType, Dict[str, Any]]:
+        obs, info = super().reset(seed=seed, return_info=True, options=options)
+        return obs, info
 
     def step(
-        self, action: ActionType
-    ) -> Tuple[ObservationType, float, bool, dict]:  # pragma: no cover
-        obs, reward, terminated, truncated, info = OpenAIGymEnv.step(self, action)
-        return obs, reward, terminated or truncated, info
+        self, action: ActType
+    ) -> Tuple[ObsType, float, bool, bool, Dict[str, Any]]:
+        obs, reward, terminated, truncated, info = super().step(action)
+        return obs, reward, terminated, truncated, info
 
 
-class _OpenAIGymEnvWrapper(LegacyOpenAIGymEnv):
-    def __init__(self, environment: OpenAIGymEnv):  # noqa
-        self._wrapped: OpenAIGymEnv = environment
-        self.step = LegacyOpenAIGymEnv.step.__get__(  # noqa # pyre-ignore
-            self._wrapped, self._wrapped.__class__
-        )
-        self.reset = LegacyOpenAIGymEnv.reset.__get__(  # noqa # pyre-ignore
-            self._wrapped, self._wrapped.__class__
-        )
+class _OpenAIGymEnvWrapper(LegacyOpenAIGymEnv[ObsType, ActType]):
+    def __init__(self, environment: OpenAIGymEnv[ObsType, ActType]):
+        self._wrapped = environment
+        self.step = super().step.__get__(self._wrapped, self._wrapped.__class__)
+        self.reset = super().reset.__get__(self._wrapped, self._wrapped.__class__)
         self._instantiated = True
 
     def calc_reward(
@@ -764,10 +750,10 @@ class _OpenAIGymEnvWrapper(LegacyOpenAIGymEnv):
     def action_to_move(self, action: int, battle: AbstractBattle) -> BattleOrder:
         return self._wrapped.action_to_move(action, battle)
 
-    def embed_battle(self, battle: AbstractBattle) -> ObservationType:
+    def embed_battle(self, battle: AbstractBattle) -> ObsType:
         return self._wrapped.embed_battle(battle)
 
-    def describe_embedding(self) -> Space:
+    def describe_embedding(self) -> Space[ObsType]:
         return self._wrapped.describe_embedding()
 
     def action_space_size(self) -> int:
@@ -776,18 +762,20 @@ class _OpenAIGymEnvWrapper(LegacyOpenAIGymEnv):
     def get_opponent(self) -> Union[Player, str, List[Player], List[str]]:
         return self._wrapped.get_opponent()
 
-    def __getattr__(self, item):
+    def __getattr__(self, item: str):
         if item == "_instantiated":
             return False
         return getattr(self._wrapped, item)
 
-    def __setattr__(self, key, value):
+    def __setattr__(self, key: str, value: Any):
         if not self._instantiated:
             return super().__setattr__(key, value)
         return setattr(self._wrapped, key, value)
 
 
-def wrap_for_old_gym_api(env: OpenAIGymEnv) -> LegacyOpenAIGymEnv:
+def wrap_for_old_gym_api(
+    env: OpenAIGymEnv[ObsType, ActType]
+) -> LegacyOpenAIGymEnv[ObsType, ActType]:
     """
     Wraps an OpenAIGymEnv in order to support the old gym API.
 
@@ -797,4 +785,4 @@ def wrap_for_old_gym_api(env: OpenAIGymEnv) -> LegacyOpenAIGymEnv:
     :return: The wrapped environment
     :rtype: OpenAIGymEnv
     """
-    return _OpenAIGymEnvWrapper(env)  # pyre-ignore
+    return _OpenAIGymEnvWrapper(env)

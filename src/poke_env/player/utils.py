@@ -21,7 +21,7 @@ _EVALUATION_RATINGS = {
 
 def background_cross_evaluate(
     players: List[Player], n_challenges: int
-) -> "Future[Dict[str, Dict[str, Optional[float]]]]":  # pragma: no cover
+) -> "Future[Dict[str, Dict[str, Optional[float]]]]":
     return asyncio.run_coroutine_threadsafe(
         cross_evaluate(players, n_challenges), POKE_LOOP
     )
@@ -30,7 +30,9 @@ def background_cross_evaluate(
 async def cross_evaluate(
     players: List[Player], n_challenges: int
 ) -> Dict[str, Dict[str, Optional[float]]]:
-    results = {p_1.username: {p_2.username: None for p_2 in players} for p_1 in players}
+    results: Dict[str, Dict[str, Optional[float]]] = {
+        p_1.username: {p_2.username: None for p_2 in players} for p_1 in players
+    }
     for i, p_1 in enumerate(players):
         for j, p_2 in enumerate(players):
             if j <= i:
@@ -47,12 +49,12 @@ async def cross_evaluate(
                     packed_team=p_2.next_team,
                 ),
             )
-            results[p_1.username][p_2.username] = p_1.win_rate  # pyre-ignore
-            results[p_2.username][p_1.username] = p_2.win_rate  # pyre-ignore
+            results[p_1.username][p_2.username] = p_1.win_rate
+            results[p_2.username][p_1.username] = p_2.win_rate
 
             p_1.reset_battles()
             p_2.reset_battles()
-    return results  # pyre-ignore
+    return results
 
 
 def _estimate_strength_from_results(
@@ -101,15 +103,15 @@ def _estimate_strength_from_results(
 
 
 def background_evaluate_player(
-    player, n_battles: int = 1000, n_placement_battles: int = 30
-) -> "Future[Tuple[float, Tuple[float, float]]]":  # pragma: no cover
+    player: Player, n_battles: int = 1000, n_placement_battles: int = 30
+) -> "Future[Tuple[float, Tuple[float, float]]]":
     return asyncio.run_coroutine_threadsafe(
         evaluate_player(player, n_battles, n_placement_battles), POKE_LOOP
     )
 
 
 async def evaluate_player(
-    player, n_battles: int = 1000, n_placement_battles: int = 30
+    player: Player, n_battles: int = 1000, n_placement_battles: int = 30
 ) -> Tuple[float, Tuple[float, float]]:
     """Estimate player strength.
 

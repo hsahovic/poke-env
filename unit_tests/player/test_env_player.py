@@ -270,8 +270,6 @@ def test_get_opponent():
 def test_set_opponent():
     player = CustomEnvPlayer(None, start_listening=False)
     assert player._opponent is None
-    with pytest.raises(RuntimeError):
-        player.set_opponent(0)
     dummy_player = RandomPlayer()
     player.set_opponent(dummy_player)
     assert player._opponent == dummy_player
@@ -356,7 +354,7 @@ def test_action_to_move(z_moves_mock):
                 == "/choose move flamethrower dynamax"
             )
         if has_tera:
-            battle._can_terastallize = True
+            battle._can_tera = True
             assert (
                 p.action_to_move(16, battle).message
                 == "/choose move flamethrower terastallize"

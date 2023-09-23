@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional, Union
+from typing import Any, List, Optional, Union
 
 from poke_env.environment.double_battle import DoubleBattle
 from poke_env.environment.move import Move
@@ -26,7 +26,7 @@ class BattleOrder:
             if self.order.id == "recharge":
                 return "/choose move 1"
 
-            message = f"/choose move {self.order.id}"  # pyre-ignore
+            message = f"/choose move {self.order.id}"
             if self.mega:
                 message += " mega"
             elif self.z_move:
@@ -39,12 +39,14 @@ class BattleOrder:
             if self.move_target != DoubleBattle.EMPTY_TARGET_POSITION:
                 message += f" {self.move_target}"
             return message
+        elif isinstance(self.order, Pokemon):
+            return f"/choose switch {self.order.species}"
         else:
-            return f"/choose switch {self.order.species}"  # pyre-ignore
+            return ""
 
 
 class DefaultBattleOrder(BattleOrder):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any):
         pass
 
     @property
@@ -68,7 +70,7 @@ class DoubleBattleOrder(BattleOrder):
             return (
                 self.first_order.message
                 + ", "
-                + self.second_order.message.replace("/choose ", "")  # pyre-ignore
+                + self.second_order.message.replace("/choose ", "")
             )
         elif self.first_order:
             return self.first_order.message + ", default"
@@ -78,7 +80,7 @@ class DoubleBattleOrder(BattleOrder):
             return self.DEFAULT_ORDER
 
     @staticmethod
-    def join_orders(first_orders, second_orders):
+    def join_orders(first_orders: List[BattleOrder], second_orders: List[BattleOrder]):
         if first_orders and second_orders:
             orders = [
                 DoubleBattleOrder(first_order=first_order, second_order=second_order)
@@ -100,7 +102,7 @@ class DoubleBattleOrder(BattleOrder):
 
 
 class ForfeitBattleOrder(BattleOrder):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any):
         pass
 
     @property

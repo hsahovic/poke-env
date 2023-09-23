@@ -1,8 +1,10 @@
+from __future__ import annotations
+
 import os
 from functools import lru_cache
-from typing import Any, Dict, Union
+from typing import Any, Dict, Optional, Union
 
-import orjson  # pyre-ignore[21]
+import orjson
 
 from poke_env.data.normalize import to_id_str
 
@@ -12,9 +14,9 @@ class GenData:
 
     UNKNOWN_ITEM = "unknown_item"
 
-    _gen_data_per_gen = {}
+    _gen_data_per_gen: Dict[int, GenData] = {}
 
-    def __init__(self, gen: int) -> None:
+    def __init__(self, gen: int):
         if gen in self._gen_data_per_gen:
             raise ValueError(f"GenData for gen {gen} already initialized.")
 
@@ -25,7 +27,7 @@ class GenData:
         self.type_chart = self.load_type_chart(gen)
         self.learnset = self.load_learnset()
 
-    def __deepcopy__(self, memodict=None) -> "GenData":
+    def __deepcopy__(self, memodict: Optional[Dict[int, Any]] = None) -> GenData:
         return self
 
     def load_moves(self, gen: int) -> Dict[str, Any]:
@@ -49,7 +51,7 @@ class GenData:
             dex = orjson.loads(f.read())
 
         other_forms_dex: Dict[str, Any] = {}
-        for key, value in dex.items():
+        for value in dex.values():
             if "cosmeticFormes" in value:
                 for other_form in value["cosmeticFormes"]:
                     other_forms_dex[to_id_str(other_form)] = value
@@ -113,7 +115,7 @@ class GenData:
 
     @classmethod
     @lru_cache(None)
-    def from_gen(cls, gen: int) -> "GenData":
+    def from_gen(cls, gen: int) -> GenData:
         gen_data = GenData(gen)
         cls._gen_data_per_gen[gen] = gen_data
 
@@ -121,6 +123,6 @@ class GenData:
 
     @classmethod
     @lru_cache(None)
-    def from_format(cls, format: str) -> "GenData":
+    def from_format(cls, format: str) -> GenData:
         gen = int(format[3])  # Update when Gen 10 comes
         return cls.from_gen(gen)

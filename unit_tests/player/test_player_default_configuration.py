@@ -1,5 +1,5 @@
 from poke_env.player import Player, RandomPlayer
-from poke_env.ps_client.account_configuration import _CONFIGURATION_FROM_PLAYER_COUNTER
+from poke_env.ps_client.account_configuration import CONFIGURATION_FROM_PLAYER_COUNTER
 
 
 class CustomPlayer(Player):
@@ -7,8 +7,8 @@ class CustomPlayer(Player):
         return self.choose_random_move(battle)
 
 
-def test_default_account_configuration():
-    _CONFIGURATION_FROM_PLAYER_COUNTER.clear()
+def test_default_player_configuration():
+    CONFIGURATION_FROM_PLAYER_COUNTER.clear()
 
     usernames = set()
 

@@ -3,6 +3,7 @@ import atexit
 import sys
 from logging import CRITICAL, disable
 from threading import Thread
+from typing import Any, List
 
 
 def __run_loop(loop: asyncio.AbstractEventLoop):
@@ -10,14 +11,10 @@ def __run_loop(loop: asyncio.AbstractEventLoop):
     loop.run_forever()
 
 
-def __stop_loop(loop: asyncio.AbstractEventLoop, thread: Thread):  # pragma: no cover
+def __stop_loop(loop: asyncio.AbstractEventLoop, thread: Thread):
     disable(CRITICAL)
-    tasks = []
-    if py_ver.major == 3 and py_ver.minor >= 7:
-        caller = asyncio
-    else:
-        caller = asyncio.Task
-    for task in caller.all_tasks(loop):
+    tasks: List[asyncio.Task[Any]] = []
+    for task in asyncio.all_tasks(loop):
         task.cancel()
         tasks.append(task)
 
@@ -36,15 +33,15 @@ def __stop_loop(loop: asyncio.AbstractEventLoop, thread: Thread):  # pragma: no 
     loop.call_soon_threadsafe(loop.close)
 
 
-def __clear_loop():  # pragma: no cover
+def __clear_loop():
     __stop_loop(POKE_LOOP, _t)
 
 
-async def _create_in_poke_loop_async(cls, *args, **kwargs):
-    return cls(*args, **kwargs)
+async def _create_in_poke_loop_async(cls_: Any, *args: Any, **kwargs: Any) -> Any:
+    return cls_(*args, **kwargs)
 
 
-def create_in_poke_loop(cls, *args, **kwargs):  # pragma: no cover
+def create_in_poke_loop(cls_: Any, *args: Any, **kwargs: Any) -> Any:
     try:
         # Python >= 3.7
         loop = asyncio.get_running_loop()
@@ -55,14 +52,14 @@ def create_in_poke_loop(cls, *args, **kwargs):  # pragma: no cover
         # asyncio.get_running_loop raised exception so no loop is running
         loop = None
     if loop == POKE_LOOP:
-        return cls(*args, **kwargs)
+        return cls_(*args, **kwargs)
     else:
         return asyncio.run_coroutine_threadsafe(
-            _create_in_poke_loop_async(cls, *args, **kwargs), POKE_LOOP
+            _create_in_poke_loop_async(cls_, *args, **kwargs), POKE_LOOP
         ).result()
 
 
-async def handle_threaded_coroutines(coro):
+async def handle_threaded_coroutines(coro: Any):
     task = asyncio.run_coroutine_threadsafe(coro, POKE_LOOP)
     await asyncio.wrap_future(task)
     return task.result()

@@ -1,12 +1,15 @@
 """This module contains objects related to server configuration.
 """
-from collections import namedtuple
+from typing import NamedTuple
 
-ServerConfiguration = namedtuple(
-    "ServerConfiguration", ["server_url", "authentication_url"]
-)
-"""Server configuration object. Represented with a tuple with two entries: server url
-and authentication endpoint url."""
+
+class ServerConfiguration(NamedTuple):
+    """Server configuration object. Represented with a tuple with two entries: server url
+    and authentication endpoint url."""
+
+    server_url: str
+    authentication_url: str
+
 
 LocalhostServerConfiguration = ServerConfiguration(
     "localhost:8000", "https://play.pokemonshowdown.com/action.php?"

@@ -108,8 +108,6 @@ venv.bak/
 *.code-workspace
 .vscode*
 
-.pyre/*
-
 # Mac os
 *.DS_Store
 

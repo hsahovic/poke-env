@@ -5,4 +5,4 @@ with open(
         os.path.dirname(os.path.realpath(__file__)), "static", "replay_template.html"
     )
 ) as f:
-    _REPLAY_TEMPLATE = f.read()
+    REPLAY_TEMPLATE = f.read()

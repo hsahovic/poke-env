@@ -1,17 +1,16 @@
 import asyncio
 import sys
 from io import StringIO
-from queue import Queue
 from typing import Union
 
-import pytest
 from gym import Space
 
 from poke_env.environment import AbstractBattle, Battle, Pokemon
 from poke_env.player import (
+    ActType,
     BattleOrder,
     ForfeitBattleOrder,
-    ObservationType,
+    ObsType,
     OpenAIGymEnv,
     Player,
 )
@@ -23,18 +22,20 @@ from poke_env.player.openai_api import (
 )
 
 
-class DummyEnv(OpenAIGymEnv):
+class DummyEnv(OpenAIGymEnv[ObsType, ActType]):
     def __init__(self, *args, **kwargs):
         self.opponent = None
         super().__init__(*args, **kwargs)
 
-    def calc_reward(self, last_battle, current_battle) -> float:
+    def calc_reward(
+        self, last_battle: AbstractBattle, current_battle: AbstractBattle
+    ) -> float:
         return 69.42
 
     def action_to_move(self, action: int, battle: AbstractBattle) -> BattleOrder:
         return ForfeitBattleOrder()
 
-    def embed_battle(self, battle: AbstractBattle) -> ObservationType:
+    def embed_battle(self, battle: AbstractBattle) -> ObsType:
         return [0, 1, 2]
 
     def describe_embedding(self) -> Space:
@@ -53,10 +54,6 @@ class UserFuncs:
 
 
 def test_init_queue():
-    q = None
-    with pytest.raises(RuntimeError):
-        q = _AsyncQueue(Queue())
-    assert not q
     q = _AsyncQueue(asyncio.Queue())
     assert isinstance(q, _AsyncQueue)
 
@@ -83,10 +80,10 @@ def test_queue():
 def test_async_player():
     player = _AsyncPlayer(UserFuncs(), start_listening=False, username="usr")
     battle = Battle("bat1", player.username, player.logger, gen=8)
-    player._actions.put(-1)
+    player.actions.put(-1)
     order = asyncio.get_event_loop().run_until_complete(player._env_move(battle))
     assert isinstance(order, ForfeitBattleOrder)
-    assert player._observations.get() == "battle"
+    assert player.observations.get() == "battle"
 
 
 def render(battle):
@@ -135,8 +132,6 @@ def test_get_opponent():
     for _ in range(100):
         assert player._get_opponent() in opponents
     player.opponent = [0]
-    with pytest.raises(RuntimeError):
-        player._get_opponent()
 
 
 def test_legacy_wrapper():

@@ -1,5 +1,5 @@
 from logging import Logger
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.move import SPECIAL_MOVES, Move
@@ -48,13 +48,13 @@ class DoubleBattle(AbstractBattle):
         # Other
         self._move_to_pokemon_id: Dict[Move, str] = {}
 
-    def _clear_all_boosts(self):
+    def clear_all_boosts(self):
         for active_pokemon_group in (self.active_pokemon, self.opponent_active_pokemon):
             for active_pokemon in active_pokemon_group:
                 if active_pokemon is not None:
-                    active_pokemon._clear_boosts()
+                    active_pokemon.clear_boosts()
 
-    def _end_illusion(self, pokemon_name: str, details: str):
+    def end_illusion(self, pokemon_name: str, details: str):
         player_identifier = pokemon_name[:2]
         pokemon_identifier = pokemon_name[:3]
         if player_identifier == self._player_role:
@@ -79,19 +79,20 @@ class DoubleBattle(AbstractBattle):
             pokemon_2 = None
         return [pokemon_1, pokemon_2]
 
-    def _parse_request(self, request: Dict) -> None:
+    def parse_request(self, request: Dict[str, Any]):
         """
         Update the object from a request.
         The player's pokemon are all updated, as well as available moves, switches and
         other related information (z move, mega evolution, forced switch...).
         Args:
-            request (dict): parsed json request object
+            request (Dict): parsed json request object
         """
-        self.logger.debug(
-            "Parsing the following request update in battle %s:\n%s",
-            self.battle_tag,
-            request,
-        )
+        if self.logger is not None:
+            self.logger.debug(
+                "Parsing the following request update in battle %s:\n%s",
+                self.battle_tag,
+                request,
+            )
 
         if "wait" in request and request["wait"]:
             self._wait = True
@@ -174,8 +175,8 @@ class DoubleBattle(AbstractBattle):
                         if not pokemon.active and not pokemon.fainted:
                             self._available_switches[pokemon_index].append(pokemon)
 
-    def _switch(self, pokemon, details, hp_status):
-        pokemon_identifier = pokemon.split(":")[0][:3]
+    def switch(self, pokemon_str: str, details: str, hp_status: str):
+        pokemon_identifier = pokemon_str.split(":")[0][:3]
         player_identifier = pokemon_identifier[:2]
         team = (
             self._active_pokemon
@@ -184,14 +185,14 @@ class DoubleBattle(AbstractBattle):
         )
         pokemon_out = team.pop(pokemon_identifier, None)
         if pokemon_out is not None:
-            pokemon_out._switch_out()
-        pokemon_in = self.get_pokemon(pokemon, details=details)
-        pokemon_in._switch_in()
-        pokemon_in._set_hp_status(hp_status)
+            pokemon_out.switch_out()
+        pokemon_in = self.get_pokemon(pokemon_str, details=details)
+        pokemon_in.switch_in()
+        pokemon_in.set_hp_status(hp_status)
         team[pokemon_identifier] = pokemon_in
 
-    def _swap(self, pokemon, slot):
-        player_identifier = pokemon.split(":")[0][:2]
+    def _swap(self, pokemon_str: str, slot: str):
+        player_identifier = pokemon_str.split(":")[0][:2]
         team = (
             self._active_pokemon
             if player_identifier == self.player_role
@@ -206,7 +207,7 @@ class DoubleBattle(AbstractBattle):
         slot_a_mon = team[slot_a]
         slot_b_mon = team[slot_b]
 
-        pokemon = self.get_pokemon(pokemon)
+        pokemon = self.get_pokemon(pokemon_str)
 
         if (slot == "0" and pokemon == slot_a_mon) or (
             slot == "1" and pokemon == slot_b_mon
@@ -216,7 +217,7 @@ class DoubleBattle(AbstractBattle):
             team[slot_a], team[slot_b] = team[slot_b], team[slot_a]
 
     def get_possible_showdown_targets(
-        self, move: Move, pokemon: Pokemon, dynamax=False
+        self, move: Move, pokemon: Pokemon, dynamax: bool = False
     ) -> List[int]:
         """
         Given move of an ALLY Pokemon, returns a list of possible Pokemon Showdown
@@ -337,14 +338,6 @@ class DoubleBattle(AbstractBattle):
         return self._available_switches
 
     @property
-    def can_dynamax(self) -> List[bool]:
-        """
-        :return: Whether or not the current active pokemon can dynamax
-        :rtype: List[bool]
-        """
-        return self._can_dynamax
-
-    @property
     def can_mega_evolve(self) -> List[bool]:
         """
         :return: Whether or not either current active pokemon can mega evolve.
@@ -353,20 +346,28 @@ class DoubleBattle(AbstractBattle):
         return self._can_mega_evolve
 
     @property
-    def can_tera(self) -> List[Union[bool, PokemonType]]:
-        """
-        :return: Whether or not the current active pokemon can terastallize. If yes, will be a PokemonType.
-        :rtype: List[Union[bool, PokemonType]]
-        """
-        return self._can_tera
-
-    @property
     def can_z_move(self) -> List[bool]:
         """
         :return: Whether or not the current active pokemon can z-move.
         :rtype: List[bool]
         """
         return self._can_z_move
+
+    @property
+    def can_dynamax(self) -> List[bool]:
+        """
+        :return: Whether or not the current active pokemon can dynamax
+        :rtype: List[bool]
+        """
+        return self._can_dynamax
+
+    @property
+    def can_tera(self) -> List[Union[bool, PokemonType]]:
+        """
+        :return: Whether or not the current active pokemon can terastallize. If yes, will be a PokemonType.
+        :rtype: List[Union[bool, PokemonType]]
+        """
+        return self._can_tera
 
     @property
     def force_switch(self) -> List[bool]:
@@ -409,7 +410,7 @@ class DoubleBattle(AbstractBattle):
         return self._opponent_can_dynamax
 
     @opponent_can_dynamax.setter
-    def opponent_can_dynamax(self, value: Union[bool, List[bool]]) -> None:
+    def opponent_can_dynamax(self, value: Union[bool, List[bool]]):
         if isinstance(value, bool):
             self._opponent_can_dynamax = [value, value]
         else:
@@ -424,7 +425,7 @@ class DoubleBattle(AbstractBattle):
         return self._opponent_can_mega_evolve
 
     @opponent_can_mega_evolve.setter
-    def opponent_can_mega_evolve(self, value: Union[bool, List[bool]]) -> None:
+    def opponent_can_mega_evolve(self, value: Union[bool, List[bool]]):
         if isinstance(value, bool):
             self._opponent_can_mega_evolve = [value, value]
         else:
@@ -439,7 +440,7 @@ class DoubleBattle(AbstractBattle):
         return self._opponent_can_z_move
 
     @opponent_can_z_move.setter
-    def opponent_can_z_move(self, value: Union[bool, List[bool]]) -> None:
+    def opponent_can_z_move(self, value: Union[bool, List[bool]]):
         if isinstance(value, bool):
             self._opponent_can_z_move = [value, value]
         else:

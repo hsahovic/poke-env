@@ -1,3 +1,5 @@
+from typing import Dict, List
+
 from poke_env.teambuilder import ConstantTeambuilder
 
 
@@ -10,7 +12,8 @@ def test_constant_teambuilder_yields_packed(packed_format_teams):
 
 
 def test_constant_teambuilder_yields_showdown(
-    showdown_format_teams, packed_format_teams
+    showdown_format_teams: Dict[str, List[str]],
+    packed_format_teams: Dict[str, List[str]],
 ):
     for format_ in packed_format_teams:
         for showdown_team, packed_team in zip(
@@ -74,6 +77,6 @@ EVs: 252 HP / 126 Def / 126 SpD / 4 Spe
 - Poison Jab
 """
 
-    packed_team = "Flareon|||flashfire|flareblitz,superpower,doubleedge,irontail|Hardy|252,,126,,126,4|||||]Ninetales|||flashfire|flamethrower,extrasensory,calmmind,darkpulse||252,,126,,126,4||,0,,,,|||]Arcanine|||flashfire|flareblitz,wildcharge,facade,crunch||252,,126,,126,4|||||]Heatmor|||flashfire|flareblitz,bodyslam,nightslash,stompingtantrum||252,,126,,126,4|||||]Typhlosion|||flashfire|flamethrower,extrasensory,flareblitz,earthquake||252,,126,,126,4|||||]Rapidash|||flashfire|flareblitz,wildcharge,drillrun,poisonjab||252,,126,,126,4|||||"  # noqa: E501
+    packed_team = "Flareon|||flashfire|flareblitz,superpower,doubleedge,irontail|Hardy|252,,126,,126,4|||||]Ninetales|||flashfire|flamethrower,extrasensory,calmmind,darkpulse||252,,126,,126,4||,0,,,,|||]Arcanine|||flashfire|flareblitz,wildcharge,facade,crunch||252,,126,,126,4|||||]Heatmor|||flashfire|flareblitz,bodyslam,nightslash,stompingtantrum||252,,126,,126,4|||||]Typhlosion|||flashfire|flamethrower,extrasensory,flareblitz,earthquake||252,,126,,126,4|||||]Rapidash|||flashfire|flareblitz,wildcharge,drillrun,poisonjab||252,,126,,126,4|||||"
 
     assert ConstantTeambuilder(team).yield_team() == packed_team

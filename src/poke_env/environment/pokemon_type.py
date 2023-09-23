@@ -1,7 +1,8 @@
 """This module defines the PokemonType class, which represents a Pokemon type.
 PokemonTypes are mainly associated with Pokemons and moves.
 """
-# pyre-ignore-all-errors[45]
+from __future__ import annotations
+
 from enum import Enum, auto, unique
 from typing import Dict, Optional
 
@@ -38,10 +39,10 @@ class PokemonType(Enum):
 
     def damage_multiplier(
         self,
-        type_1: "PokemonType",
-        type_2: Optional["PokemonType"] = None,
+        type_1: PokemonType,
+        type_2: Optional[PokemonType] = None,
         *,
-        type_chart: Dict["PokemonType", Dict["PokemonType", float]],
+        type_chart: Dict[str, Dict[str, float]],
     ) -> float:
         """Computes the damage multiplier from this type on a pokemon with types `type_1`
         and, optionally, `type_2`.
@@ -60,7 +61,7 @@ class PokemonType(Enum):
         return damage_multiplier
 
     @staticmethod
-    def from_name(name: str) -> "PokemonType":
+    def from_name(name: str) -> PokemonType:
         """Returns a pokemon type based on its name.
 
         :param name: The name of the pokemon type.

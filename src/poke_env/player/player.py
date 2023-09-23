@@ -5,12 +5,11 @@ import asyncio
 import random
 from abc import ABC, abstractmethod
 from asyncio import Condition, Event, Queue, Semaphore
-from inspect import isawaitable
 from logging import Logger
 from time import perf_counter
-from typing import Awaitable, Dict, List, Optional, Union
+from typing import Any, Awaitable, Dict, List, Optional, Union
 
-import orjson  # pyre-ignore
+import orjson
 
 from poke_env.concurrency import create_in_poke_loop, handle_threaded_coroutines
 from poke_env.data import GenData, to_id_str
@@ -27,8 +26,8 @@ from poke_env.player.battle_order import (
 )
 from poke_env.ps_client import PSClient
 from poke_env.ps_client.account_configuration import (
+    CONFIGURATION_FROM_PLAYER_COUNTER,
     AccountConfiguration,
-    _create_account_configuration_from_player,
 )
 from poke_env.ps_client.server_configuration import (
     LocalhostServerConfiguration,
@@ -64,7 +63,7 @@ class Player(ABC):
         ping_interval: Optional[float] = 20.0,
         ping_timeout: Optional[float] = 20.0,
         team: Optional[Union[str, Teambuilder]] = None,
-    ) -> None:
+    ):
         """
         :param account_configuration: Player configuration. If empty, defaults to an
             automatically generated username with no password. This option must be set
@@ -107,7 +106,7 @@ class Player(ABC):
         :type team: str or Teambuilder, optional
         """
         if account_configuration is None:
-            account_configuration = _create_account_configuration_from_player(self)
+            account_configuration = self._create_account_configuration()
 
         if server_configuration is None:
             server_configuration = LocalhostServerConfiguration
@@ -122,13 +121,9 @@ class Player(ABC):
             ping_timeout=ping_timeout,
         )
 
-        self.ps_client._handle_battle_message = (  # pyre-ignore
-            self._handle_battle_message
-        )
-        self.ps_client._update_challenges = self._update_challenges  # pyre-ignore
-        self.ps_client._handle_challenge_request = (  # pyre-ignore
-            self._handle_challenge_request
-        )
+        self.ps_client._handle_battle_message = self._handle_battle_message  # type: ignore
+        self.ps_client._update_challenges = self._update_challenges  # type: ignore
+        self.ps_client._handle_challenge_request = self._handle_challenge_request  # type: ignore
 
         self._format: str = battle_format
         self._max_concurrent_battles: int = max_concurrent_battles
@@ -139,11 +134,11 @@ class Player(ABC):
         self._battle_semaphore: Semaphore = create_in_poke_loop(Semaphore, 0)
 
         self._battle_start_condition: Condition = create_in_poke_loop(Condition)
-        self._battle_count_queue: Queue = create_in_poke_loop(
+        self._battle_count_queue: Queue[Any] = create_in_poke_loop(
             Queue, max_concurrent_battles
         )
         self._battle_end_condition: Condition = create_in_poke_loop(Condition)
-        self._challenge_queue: Queue = create_in_poke_loop(Queue)
+        self._challenge_queue: Queue[Any] = create_in_poke_loop(Queue)
 
         if isinstance(team, Teambuilder):
             self._team = team
@@ -154,10 +149,21 @@ class Player(ABC):
 
         self.logger.debug("Player initialisation finished")
 
-    def _battle_finished_callback(self, battle: AbstractBattle) -> None:
+    def _create_account_configuration(self) -> AccountConfiguration:
+        key = type(self).__name__
+        CONFIGURATION_FROM_PLAYER_COUNTER.update([key])
+        username = "%s %d" % (key, CONFIGURATION_FROM_PLAYER_COUNTER[key])
+        if len(username) > 18:
+            username = "%s %d" % (
+                key[: 18 - len(username)],
+                CONFIGURATION_FROM_PLAYER_COUNTER[key],
+            )
+        return AccountConfiguration(username, None)
+
+    def _battle_finished_callback(self, battle: AbstractBattle):
         pass
 
-    def update_team(self, team) -> None:
+    def update_team(self, team: Union[Teambuilder, str]):
         """Updates the team used by the player.
 
         :param team: The new team to use.
@@ -165,12 +171,8 @@ class Player(ABC):
         """
         if isinstance(team, Teambuilder):
             self._team = team
-        elif isinstance(team, str):
-            self._team = ConstantTeambuilder(team)
         else:
-            raise TypeError(
-                "Team must be a showdown team string or a Teambuilder object."
-            )
+            self._team = ConstantTeambuilder(team)
 
     async def _create_battle(self, split_message: List[str]) -> AbstractBattle:
         """Returns battle object corresponding to received message.
@@ -202,13 +204,13 @@ class Player(ABC):
                         battle_tag=battle_tag,
                         username=self.username,
                         logger=self.logger,
-                        save_replays=self._save_replays,
                         gen=gen,
+                        save_replays=self._save_replays,
                     )
 
                 await self._battle_count_queue.put(None)
                 if battle_tag in self._battles:
-                    self._battle_count_queue.get()
+                    await self._battle_count_queue.get()
                     return self._battles[battle_tag]
                 async with self._battle_start_condition:
                     self._battle_semaphore.release()
@@ -233,7 +235,7 @@ class Player(ABC):
             async with self._battle_start_condition:
                 await self._battle_start_condition.wait()
 
-    async def _handle_battle_message(self, split_messages: List[List[str]]) -> None:
+    async def _handle_battle_message(self, split_messages: List[List[str]]):
         """Handles a battle message.
 
         :param split_message: The received battle message.
@@ -258,15 +260,15 @@ class Player(ABC):
             elif split_message[1] == "request":
                 if split_message[2]:
                     request = orjson.loads(split_message[2])
-                    battle._parse_request(request)
+                    battle.parse_request(request)
                     if battle.move_on_next_request:
                         await self._handle_battle_request(battle)
                         battle.move_on_next_request = False
             elif split_message[1] == "win" or split_message[1] == "tie":
                 if split_message[1] == "win":
-                    battle._won_by(split_message[2])
+                    battle.won_by(split_message[2])
                 else:
-                    battle._tied()
+                    battle.tied()
                 await self._battle_count_queue.get()
                 self._battle_count_queue.task_done()
                 self._battle_finished_callback(battle)
@@ -340,37 +342,37 @@ class Player(ABC):
                 else:
                     self.logger.critical("Unexpected error message: %s", split_message)
             elif split_message[1] == "turn":
-                battle._parse_message(split_message)
+                battle.parse_message(split_message)
                 await self._handle_battle_request(battle)
             elif split_message[1] == "teampreview":
-                battle._parse_message(split_message)
+                battle.parse_message(split_message)
                 await self._handle_battle_request(battle, from_teampreview_request=True)
             elif split_message[1] == "bigerror":
                 self.logger.warning("Received 'bigerror' message: %s", split_message)
             else:
-                battle._parse_message(split_message)
+                battle.parse_message(split_message)
 
     async def _handle_battle_request(
         self,
         battle: AbstractBattle,
         from_teampreview_request: bool = False,
-        maybe_default_order=False,
+        maybe_default_order: bool = False,
     ):
         if maybe_default_order and random.random() < self.DEFAULT_CHOICE_CHANCE:
-            message = self.choose_default_move(battle).message
+            message = self.choose_default_move().message
         elif battle.teampreview:
             if not from_teampreview_request:
                 return
             message = self.teampreview(battle)
         else:
             message = self.choose_move(battle)
-            if isawaitable(message):
+            if isinstance(message, Awaitable):
                 message = await message
             message = message.message
 
         await self.ps_client.send_message(message, battle.battle_tag)
 
-    async def _handle_challenge_request(self, split_message: List[str]) -> None:
+    async def _handle_challenge_request(self, split_message: List[str]):
         """Handles an individual challenge."""
         challenging_player = split_message[2].strip()
 
@@ -379,7 +381,7 @@ class Player(ABC):
                 if split_message[5] == self._format:
                     await self._challenge_queue.put(challenging_player)
 
-    async def _update_challenges(self, split_message: List[str]) -> None:
+    async def _update_challenges(self, split_message: List[str]):
         """Update internal challenge state.
 
         Add corresponding challenges to internal queue of challenges, where they will be
@@ -399,7 +401,7 @@ class Player(ABC):
         opponent: Optional[Union[str, List[str]]],
         n_challenges: int,
         packed_team: Optional[str],
-    ) -> None:
+    ):
         """Let the player wait for challenges from opponent, and accept them.
 
         If opponent is None, every challenge will be accepted. If opponent if a string,
@@ -429,13 +431,13 @@ class Player(ABC):
         opponent: Optional[Union[str, List[str]]],
         n_challenges: int,
         packed_team: Optional[str],
-    ) -> None:  # pragma: no cover
+    ):
         if opponent:
             if isinstance(opponent, list):
                 opponent = [to_id_str(o) for o in opponent]
             else:
                 opponent = to_id_str(opponent)
-        await self.ps_client._logged_in.wait()
+        await self.ps_client.logged_in.wait()
         self.logger.debug("Event logged in received in accept_challenge")
 
         for _ in range(n_challenges):
@@ -449,7 +451,7 @@ class Player(ABC):
                     or (opponent == username)
                     or (isinstance(opponent, list) and (username in opponent))
                 ):
-                    await self.ps_client._accept_challenge(username, packed_team)
+                    await self.ps_client.accept_challenge(username, packed_team)
                     await self._battle_semaphore.acquire()
                     break
         await self._battle_count_queue.join()
@@ -457,7 +459,7 @@ class Player(ABC):
     @abstractmethod
     def choose_move(
         self, battle: AbstractBattle
-    ) -> Union[BattleOrder, Awaitable[BattleOrder]]:  # pragma: no cover
+    ) -> Union[BattleOrder, Awaitable[BattleOrder]]:
         """Abstract method to choose a move in a battle.
 
         :param battle: The battle.
@@ -467,7 +469,7 @@ class Player(ABC):
         """
         pass
 
-    def choose_default_move(self, *args, **kwargs) -> DefaultBattleOrder:
+    def choose_default_move(self) -> DefaultBattleOrder:
         """Returns showdown's default move order.
 
         This order will result in the first legal order - according to showdown's
@@ -476,31 +478,26 @@ class Player(ABC):
         return DefaultBattleOrder()
 
     def choose_random_doubles_move(self, battle: DoubleBattle) -> BattleOrder:
-        active_orders = [[], []]
+        active_orders: List[List[BattleOrder]] = [[], []]
 
         for (
-            idx,
-            (
-                orders,
-                mon,
-                switches,
-                moves,
-                can_mega,
-                can_z_move,
-                can_dynamax,
-                can_tera,
-            ),
-        ) in enumerate(
-            zip(
-                active_orders,
-                battle.active_pokemon,
-                battle.available_switches,
-                battle.available_moves,
-                battle.can_mega_evolve,
-                battle.can_z_move,
-                battle.can_dynamax,
-                battle.can_tera,
-            )
+            orders,
+            mon,
+            switches,
+            moves,
+            can_mega,
+            can_z_move,
+            can_dynamax,
+            can_tera,
+        ) in zip(
+            active_orders,
+            battle.active_pokemon,
+            battle.available_switches,
+            battle.available_moves,
+            battle.can_mega_evolve,
+            battle.can_z_move,
+            battle.can_dynamax,
+            battle.can_tera,
         ):
             if mon:
                 targets = {
@@ -581,7 +578,7 @@ class Player(ABC):
                 [BattleOrder(move, dynamax=True) for move in battle.available_moves]
             )
 
-        if battle.can_terastallize:
+        if battle.can_tera:
             available_orders.extend(
                 [
                     BattleOrder(move, terastallize=True)
@@ -602,7 +599,7 @@ class Player(ABC):
         if available_orders:
             return available_orders[int(random.random() * len(available_orders))]
         else:
-            return self.choose_default_move(battle)
+            return self.choose_default_move()
 
     def choose_random_move(self, battle: AbstractBattle) -> BattleOrder:
         """Returns a random legal move from battle.
@@ -621,7 +618,7 @@ class Player(ABC):
                 "battle should be Battle or DoubleBattle. Received %d" % (type(battle))
             )
 
-    async def ladder(self, n_games):
+    async def ladder(self, n_games: int):
         """Make the player play games on the ladder.
 
         n_games defines how many battles will be played.
@@ -631,7 +628,7 @@ class Player(ABC):
         """
         await handle_threaded_coroutines(self._ladder(n_games))
 
-    async def _ladder(self, n_games):
+    async def _ladder(self, n_games: int):
         await self.ps_client.logged_in.wait()
         start_time = perf_counter()
 
@@ -650,7 +647,7 @@ class Player(ABC):
             perf_counter() - start_time,
         )
 
-    async def battle_against(self, opponent: "Player", n_battles: int = 1) -> None:
+    async def battle_against(self, opponent: "Player", n_battles: int = 1):
         """Make the player play n_battles against opponent.
 
         This function is a wrapper around send_challenges and accept challenges.
@@ -662,7 +659,7 @@ class Player(ABC):
         """
         await handle_threaded_coroutines(self._battle_against(opponent, n_battles))
 
-    async def _battle_against(self, opponent: "Player", n_battles: int) -> None:
+    async def _battle_against(self, opponent: "Player", n_battles: int):
         await asyncio.gather(
             self.send_challenges(
                 to_id_str(opponent.username),
@@ -676,7 +673,7 @@ class Player(ABC):
 
     async def send_challenges(
         self, opponent: str, n_challenges: int, to_wait: Optional[Event] = None
-    ) -> None:
+    ):
         """Make the player send challenges to opponent.
 
         opponent must be a string, corresponding to the name of the player to challenge.
@@ -699,8 +696,8 @@ class Player(ABC):
 
     async def _send_challenges(
         self, opponent: str, n_challenges: int, to_wait: Optional[Event] = None
-    ) -> None:
-        await self.ps_client._logged_in.wait()
+    ):
+        await self.ps_client.logged_in.wait()
         self.logger.info("Event logged in received in send challenge")
 
         if to_wait is not None:
@@ -709,7 +706,7 @@ class Player(ABC):
         start_time = perf_counter()
 
         for _ in range(n_challenges):
-            await self.ps_client._challenge(opponent, self._format, self.next_team)
+            await self.ps_client.challenge(opponent, self._format, self.next_team)
             await self._battle_semaphore.acquire()
         await self._battle_count_queue.join()
         self.logger.info(
@@ -730,7 +727,7 @@ class Player(ABC):
         random.shuffle(members)
         return "/team " + "".join([str(c) for c in members])
 
-    def reset_battles(self) -> None:
+    def reset_battles(self):
         """Resets the player's inner battle tracker."""
         for battle in list(self._battles.values()):
             if not battle.finished:

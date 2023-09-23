@@ -2,8 +2,6 @@
 condition.
 """
 import logging
-
-# pyre-ignore-all-errors[45]
 from enum import Enum, auto, unique
 
 
@@ -11,7 +9,7 @@ from enum import Enum, auto, unique
 class SideCondition(Enum):
     """Enumeration, represent a in-battle side condition."""
 
-    _UNKNOWN = auto()
+    UNKNOWN = auto()
     AURORA_VEIL = auto()
     FIRE_PLEDGE = auto()
     G_MAX_CANNONADE = auto()
@@ -36,7 +34,7 @@ class SideCondition(Enum):
         return f"{self.name} (side condition) object"
 
     @staticmethod
-    def from_showdown_message(message):
+    def from_showdown_message(message: str):
         """Returns the SideCondition object corresponding to the message.
 
         :param message: The message to convert.
@@ -52,13 +50,13 @@ class SideCondition(Enum):
             return SideCondition[message.upper()]
         except KeyError:
             logging.getLogger("poke-env").warning(
-                "Unexpected side condition '%s' received. SideCondition._UNKNOWN will be"
+                "Unexpected side condition '%s' received. SideCondition.UNKNOWN will be"
                 " used instead. If this is unexpected, please open an issue at "
                 "https://github.com/hsahovic/poke-env/issues/ along with this error "
                 "message and a description of your program.",
                 message,
             )
-            return SideCondition._UNKNOWN
+            return SideCondition.UNKNOWN
 
 
 # SideCondition -> Max useful stack level

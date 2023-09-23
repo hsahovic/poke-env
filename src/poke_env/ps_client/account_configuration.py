@@ -1,24 +1,13 @@
 """This module contains objects related to player configuration.
 """
-from collections import Counter, namedtuple
+from typing import Counter, NamedTuple, Optional
 
-AccountConfiguration = namedtuple("AccountConfiguration", ["username", "password"])
-"""Player configuration object. Represented with a tuple with two entries: username and
-password."""
-
-_CONFIGURATION_FROM_PLAYER_COUNTER = Counter()
+CONFIGURATION_FROM_PLAYER_COUNTER: Counter[str] = Counter()
 
 
-def _create_account_configuration_from_player(player) -> AccountConfiguration:
-    key = type(player).__name__
-    _CONFIGURATION_FROM_PLAYER_COUNTER.update([key])
+class AccountConfiguration(NamedTuple):
+    """Player configuration object. Represented with a tuple with two entries: username and
+    password."""
 
-    username = "%s %d" % (key, _CONFIGURATION_FROM_PLAYER_COUNTER[key])
-
-    if len(username) > 18:
-        username = "%s %d" % (
-            key[: 18 - len(username)],
-            _CONFIGURATION_FROM_PLAYER_COUNTER[key],
-        )
-
-    return AccountConfiguration(username, None)
+    username: str
+    password: Optional[str]

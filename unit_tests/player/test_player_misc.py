@@ -3,12 +3,12 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from poke_env.environment import Battle, DoubleBattle, Move
+from poke_env.environment import AbstractBattle, Battle, DoubleBattle, Move
 from poke_env.player import BattleOrder, Player, RandomPlayer, cross_evaluate
 
 
 class SimplePlayer(Player):
-    def choose_move(self, battle):
+    def choose_move(self, battle: AbstractBattle) -> BattleOrder:
         return self.choose_random_move(battle)
 
 
@@ -92,8 +92,8 @@ def test_choose_random_move_doubles(pseudo_random, example_doubles_request):
     logger = MagicMock()
     battle = DoubleBattle("tag", "username", logger, 8)
     player = RandomPlayer()
-    battle._parse_request(example_doubles_request)
-    battle._switch("p2a: Tyranitar", "Tyranitar, L50, M", "48/48")
+    battle.parse_request(example_doubles_request)
+    battle.switch("p2a: Tyranitar", "Tyranitar, L50, M", "48/48")
 
     pseudo_random.side_effect = lambda: 0
     choice = player.choose_random_move(battle)
@@ -109,7 +109,7 @@ def test_choose_random_move_doubles(pseudo_random, example_doubles_request):
     choice = player.choose_random_move(battle)
     assert choice.message == "/choose move slackoff dynamax, switch thundurus"
 
-    battle._switch("p2b: Excadrill", "Excadrill, L50, M", "48/48")
+    battle.switch("p2b: Excadrill", "Excadrill, L50, M", "48/48")
 
     pseudo_random.side_effect = lambda: 0
     choice = player.choose_random_move(battle)

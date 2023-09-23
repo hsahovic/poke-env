@@ -5,6 +5,7 @@ import logging
 import poke_env.environment as environment
 import poke_env.exceptions as exceptions
 import poke_env.player as player
+import poke_env.ps_client as ps_client
 import poke_env.stats as stats
 import poke_env.teambuilder as teambuilder
 from poke_env.data import gen_data, to_id_str
@@ -27,21 +28,15 @@ logging.addLevelName(25, "PS_ERROR")
 __all__ = [
     "AccountConfiguration",
     "LocalhostServerConfiguration",
-    "MOVES",
-    "NATURES",
-    "POKEDEX",
     "ServerConfiguration",
     "ShowdownException",
     "ShowdownServerConfiguration",
-    "UNKNOWN_ITEM",
     "compute_raw_stats",
     "environment",
     "exceptions",
     "gen_data",
     "player",
-    "player_configuration",
     "ps_client",
-    "server_configuration",
     "stats",
     "teambuilder",
     "to_id_str",

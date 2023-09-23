@@ -1,6 +1,6 @@
 """This module defines the Effect class, which represents in-game effects.
 """
-# pyre-ignore-all-errors[45]
+from __future__ import annotations
 
 import logging
 from enum import Enum, auto, unique
@@ -11,7 +11,7 @@ from typing import Set
 class Effect(Enum):
     """Enumeration, represent an effect a Pokemon can be affected by."""
 
-    _UNKNOWN = auto()
+    UNKNOWN = auto()
     AFTER_YOU = auto()
     AFTERMATH = auto()
     AQUA_RING = auto()
@@ -208,7 +208,7 @@ class Effect(Enum):
         return f"{self.name} (effect) object"
 
     @staticmethod
-    def from_showdown_message(message: str) -> "Effect":
+    def from_showdown_message(message: str) -> Effect:
         """Returns the Effect object corresponding to the message.
 
         :param message: The message to convert.
@@ -230,13 +230,13 @@ class Effect(Enum):
             return Effect[message]
         except KeyError:
             logging.getLogger("poke-env").warning(
-                "Unexpected effect '%s' received. Effect._UNKNOWN will be used instead. "
+                "Unexpected effect '%s' received. Effect.UNKNOWN will be used instead. "
                 "If this is unexpected, please open an issue at "
                 "https://github.com/hsahovic/poke-env/issues/ along with this error "
                 "message and a description of your program.",
                 message,
             )
-            return Effect._UNKNOWN
+            return Effect.UNKNOWN
 
     @property
     def breaks_protect(self):
