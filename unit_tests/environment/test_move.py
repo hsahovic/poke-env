@@ -71,6 +71,29 @@ def test_category():
         assert isinstance(move.category, MoveCategory)
 
 
+def test_category_pre_gen4():
+    for gen in range(1, 10):
+        flame_thrower = Move("flamethrower", gen=gen)
+        fire_punch = Move("firepunch", gen=gen)
+
+        hyper_beam = Move("hyperbeam", gen=gen)
+        headbutt = Move("headbutt", gen=gen)
+
+        assert flame_thrower.category == MoveCategory["SPECIAL"]
+
+        if gen <= 3:
+            assert fire_punch.category == MoveCategory["SPECIAL"]
+        else:
+            assert fire_punch.category == MoveCategory["PHYSICAL"]
+
+        assert headbutt.category == MoveCategory["PHYSICAL"]
+
+        if gen <= 3:
+            assert hyper_beam.category == MoveCategory["PHYSICAL"]
+        else:
+            assert hyper_beam.category == MoveCategory["SPECIAL"]
+
+
 def test_crit_ratio():
     aeroblast = Move("aeroblast", gen=8)
     flame_thrower = Move("flamethrower", gen=8)
