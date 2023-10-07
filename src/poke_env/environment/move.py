@@ -433,8 +433,9 @@ class Move:
         """
         if "multihit" in self.entry:
             if isinstance(self.entry["multihit"], list):
-                multihit_val: List[int] = self.entry["multihit"]
-                return tuple(multihit_val)
+                assert len(self.entry["multihit"]) == 2
+                min_hits, max_hits = self.entry["multihit"]
+                return min_hits, max_hits
             else:
                 return self.entry["multihit"], self.entry["multihit"]
         return 1, 1

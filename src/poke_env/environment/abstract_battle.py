@@ -63,6 +63,7 @@ class AbstractBattle(ABC):
     }
 
     __slots__ = (
+        "_anybody_inactive",
         "_available_moves",
         "_available_switches",
         "_battle_tag",
@@ -70,6 +71,7 @@ class AbstractBattle(ABC):
         "_can_mega_evolve",
         "_can_tera",
         "_can_z_move",
+        "_data",
         "_dynamax_turn",
         "_fields",
         "_finished",
@@ -81,7 +83,7 @@ class AbstractBattle(ABC):
         "_move_on_next_request",
         "_opponent_can_dynamax",
         "_opponent_can_mega_evolve",
-        "_opponent_can_tera",
+        "_opponent_can_terrastallize",
         "_opponent_can_z_move",
         "_opponent_dynamax_turn",
         "_opponent_rating",
@@ -92,9 +94,12 @@ class AbstractBattle(ABC):
         "_player_username",
         "_players",
         "_rating",
+        "_reconnected",
+        "_replay_data",
         "_rqid",
         "rules",
         "_reviving",
+        "_save_replays",
         "_side_conditions",
         "_team_size",
         "_team",
@@ -654,7 +659,7 @@ class AbstractBattle(ABC):
             if self._player_role is not None and not split_message[2].startswith(
                 self._player_role
             ):
-                self._opponent_can_mega_z_move = False
+                self._opponent_can_z_move = False
 
             pokemon = split_message[2]
             self.get_pokemon(pokemon).used_z_move()
