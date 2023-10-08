@@ -8,8 +8,14 @@ def test_types_correspond_to_type_chart_entries():
     type_chart = GenData.from_gen(8).type_chart
 
     for type_1 in list(PokemonType):
+        if type_1 == PokemonType.THREE_QUESTION_MARKS:
+            continue
+
         assert type_1.name in type_chart
         for type_2 in list(PokemonType):
+            if type_2 == PokemonType.THREE_QUESTION_MARKS:
+                continue
+
             assert type_2.name in type_chart
 
     for type_ in type_chart.keys():

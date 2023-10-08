@@ -688,7 +688,7 @@ class Move:
         :return: Move type.
         :rtype: PokemonType
         """
-        return PokemonType[self.entry["type"].upper()]
+        return PokemonType.from_name(self.entry["type"])
 
     @property
     def use_target_offensive(self) -> bool:
