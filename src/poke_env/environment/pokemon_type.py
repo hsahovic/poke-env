@@ -33,6 +33,7 @@ class PokemonType(Enum):
     ROCK = auto()
     STEEL = auto()
     WATER = auto()
+    THREE_QUESTION_MARKS = auto()
 
     def __str__(self) -> str:
         return f"{self.name} (pokemon type) object"
@@ -55,6 +56,12 @@ class PokemonType(Enum):
             and, optionally, `type_2`.
         :rtype: float
         """
+        if (
+            self == PokemonType.THREE_QUESTION_MARKS
+            or type_1 == PokemonType.THREE_QUESTION_MARKS
+        ):
+            return 1
+
         damage_multiplier = type_chart[type_1.name][self.name]
         if type_2 is not None:
             return damage_multiplier * type_chart[type_2.name][self.name]
@@ -69,4 +76,6 @@ class PokemonType(Enum):
         :return: The corresponding type object.
         :rtype: PokemonType
         """
+        if name == "???":
+            return PokemonType.THREE_QUESTION_MARKS
         return PokemonType[name.upper()]

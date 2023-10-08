@@ -773,3 +773,13 @@ def test_deepcopy_empty_move():
     assert copy_move.id == move.id
     assert copy_move.base_power == 0
     assert copy_move.is_empty
+
+
+def test_three_question_marks_move():
+    for gen in range(2, 5):
+        move = Move("curse", gen=gen)
+        assert move.type == PokemonType.THREE_QUESTION_MARKS
+
+    for gen in range(5, 9):
+        move = Move("curse", gen=gen)
+        assert move.type == PokemonType.GHOST
