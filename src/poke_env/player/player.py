@@ -57,6 +57,7 @@ class Player(ABC):
         log_level: Optional[int] = None,
         max_concurrent_battles: int = 1,
         save_replays: Union[bool, str] = False,
+        replay_folder: str = "replays",
         server_configuration: Optional[ServerConfiguration] = None,
         start_timer_on_battle_start: bool = False,
         start_listening: bool = True,
@@ -83,6 +84,8 @@ class Player(ABC):
             True will lead to replays being saved in a potentially new /replay folder,
             or a string representing a folder where replays will be saved.
         :type save_replays: bool or str
+        :param replay_folder: Folder where replays will be saved. Defaults to "replays".
+        :type replay_folder: str
         :param server_configuration: Server configuration. Defaults to Localhost Server
             Configuration.
         :type server_configuration: ServerConfiguration, optional
@@ -128,6 +131,7 @@ class Player(ABC):
         self._format: str = battle_format
         self._max_concurrent_battles: int = max_concurrent_battles
         self._save_replays = save_replays
+        self._replay_folder = replay_folder
         self._start_timer_on_battle_start: bool = start_timer_on_battle_start
 
         self._battles: Dict[str, AbstractBattle] = {}
@@ -206,6 +210,7 @@ class Player(ABC):
                         logger=self.logger,
                         gen=gen,
                         save_replays=self._save_replays,
+                        replay_folder=self._replay_folder,
                     )
 
                 await self._battle_count_queue.put(None)

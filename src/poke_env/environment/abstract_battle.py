@@ -114,6 +114,7 @@ class AbstractBattle(ABC):
         username: str,
         logger: Logger,
         save_replays: Union[str, bool],
+        replay_folder: str,
         gen: int,
     ):
         # Load data
@@ -129,6 +130,7 @@ class AbstractBattle(ABC):
         self._players: List[Dict[str, str]] = []
         self._replay_data: List[List[str]] = []
         self._save_replays: Union[str, bool] = save_replays
+        self._replay_folder = replay_folder
         self._team_size: Dict[str, int] = {}
         self._teampreview: bool = False
         self._teampreview_opponent_team: Set[Pokemon] = set()
@@ -337,7 +339,7 @@ class AbstractBattle(ABC):
     def _finish_battle(self):
         if self._save_replays:
             if self._save_replays is True:
-                folder = "replays"
+                folder = self._replay_folder
             else:
                 folder = str(self._save_replays)
 
