@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 from asyncio import Condition, Event, Queue, Semaphore
 from logging import Logger
 from time import perf_counter
-from typing import Any, Awaitable, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 import orjson
 
@@ -366,8 +366,6 @@ class Player(ABC):
             message = self.teampreview(battle)
         else:
             message = self.choose_move(battle)
-            if isinstance(message, Awaitable):
-                message = await message
             message = message.message
 
         await self.ps_client.send_message(message, battle.battle_tag)
@@ -457,17 +455,43 @@ class Player(ABC):
         await self._battle_count_queue.join()
 
     @abstractmethod
-    def choose_move(
-        self, battle: AbstractBattle
-    ) -> Union[BattleOrder, Awaitable[BattleOrder]]:
-        """Abstract method to choose a move in a battle.
+    def choose_singles_move(self, battle: Battle) -> BattleOrder:
+        """Abstract method to choose a move in a singles battle.
+
+        :param battle: The battle.
+        :type battle: Battle
+        :return: The move order.
+        :rtype: BattleOrder
+        """
+        pass
+
+    @abstractmethod
+    def choose_doubles_move(self, battle: DoubleBattle) -> BattleOrder:
+        """Abstract method to choose a move in a doubles battle.
+
+        :param battle: The battle.
+        :type battle: DoubleBattle
+        :return: The move order.
+        :rtype: BattleOrder
+        """
+        pass
+
+    def choose_move(self, battle: AbstractBattle) -> BattleOrder:
+        """Choose a move in a battle.
 
         :param battle: The battle.
         :type battle: AbstractBattle
         :return: The move order.
-        :rtype: str
+        :rtype: BattleOrder
         """
-        pass
+        if isinstance(battle, Battle):
+            return self.choose_singles_move(battle)
+        elif isinstance(battle, DoubleBattle):
+            return self.choose_doubles_move(battle)
+        else:
+            raise ValueError(
+                "battle should be Battle or DoubleBattle. Received %d" % (type(battle))
+            )
 
     def choose_default_move(self) -> DefaultBattleOrder:
         """Returns showdown's default move order.

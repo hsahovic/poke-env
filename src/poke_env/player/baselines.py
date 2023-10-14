@@ -1,19 +1,24 @@
 from typing import List
 
 from poke_env.environment.abstract_battle import AbstractBattle
+from poke_env.environment.battle import Battle
 from poke_env.environment.double_battle import DoubleBattle
 from poke_env.environment.move_category import MoveCategory
 from poke_env.environment.pokemon import Pokemon
 from poke_env.environment.side_condition import SideCondition
+from poke_env.player.battle_order import BattleOrder
 from poke_env.player.player import Player
 
 
 class MaxBasePowerPlayer(Player):
-    def choose_move(self, battle: AbstractBattle):
+    def choose_singles_move(self, battle: Battle) -> BattleOrder:
         if battle.available_moves:
             best_move = max(battle.available_moves, key=lambda move: move.base_power)
             return self.create_order(best_move)
         return self.choose_random_move(battle)
+
+    def choose_doubles_move(self, battle: DoubleBattle) -> BattleOrder:
+        return self.choose_random_doubles_move(battle)
 
 
 class SimpleHeuristicsPlayer(Player):
@@ -105,13 +110,12 @@ class SimpleHeuristicsPlayer(Player):
             boost = 2 / (2 - mon.boosts[stat])
         return ((2 * mon.base_stats[stat] + 31) + 5) * boost
 
-    def choose_move(self, battle: AbstractBattle):
-        if isinstance(battle, DoubleBattle):
-            return self.choose_random_doubles_move(battle)
-
+    def choose_singles_move(self, battle: Battle) -> BattleOrder:
         # Main mons shortcuts
         active = battle.active_pokemon
         opponent = battle.opponent_active_pokemon
+        assert active is not None
+        assert opponent is not None
 
         # Rough estimation of damage ratio
         physical_ratio = self._stat_estimation(active, "atk") / self._stat_estimation(
@@ -194,3 +198,6 @@ class SimpleHeuristicsPlayer(Player):
             )
 
         return self.choose_random_move(battle)
+
+    def choose_doubles_move(self, battle: DoubleBattle) -> BattleOrder:
+        return self.choose_random_doubles_move(battle)
