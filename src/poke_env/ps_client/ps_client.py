@@ -165,19 +165,23 @@ class PSClient:
                 self.logger.critical("Error message received: %s", message)
                 raise ShowdownException("Error message received: %s", message)
             elif split_messages[0][1] == "pm":
-                assert (
-                    len(split_messages) == 1
-                ), f"Expected len({split_messages}) to be 1, got {len(split_messages)}"
-                if split_messages[0][4].startswith("/challenge"):
-                    await self._handle_challenge_request(split_messages[0])  # type: ignore
-                elif split_messages[0][4].startswith("/text"):
-                    self.logger.info("Received pm with text: %s", message)
-                elif split_messages[0][4].startswith("/nonotify"):
-                    self.logger.info("Received pm: %s", message)
-                elif split_messages[0][4].startswith("/log"):
+                if len(split_messages) == 1:
+                    if split_messages[0][4].startswith("/challenge"):
+                        await self._handle_challenge_request(split_messages[0])  # type: ignore
+                    elif split_messages[0][4].startswith("/text"):
+                        self.logger.info("Received pm with text: %s", message)
+                    elif split_messages[0][4].startswith("/nonotify"):
+                        self.logger.info("Received pm: %s", message)
+                    elif split_messages[0][4].startswith("/log"):
+                        self.logger.info("Received pm: %s", message)
+                    else:
+                        self.logger.warning("Received pm: %s", message)
+                elif len(split_messages) == 2:
                     self.logger.info("Received pm: %s", message)
                 else:
-                    self.logger.warning("Received pm: %s", message)
+                    raise ValueError(
+                        f"Expected len({split_messages}) to be 1 or 2, got {len(split_messages)}"
+                    )
             else:
                 self.logger.warning("Unhandled message: %s", message)
         except CancelledError as e:
