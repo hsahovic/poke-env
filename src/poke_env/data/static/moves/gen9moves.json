@@ -18924,7 +18924,7 @@
         "basePower": 60,
         "category": "Special",
         "condition": {
-            "duration": 3,
+            "duration": 4,
             "noCopy": true,
             "onEnd": "onEnd",
             "onResidual": "onResidual",
