@@ -11296,7 +11296,8 @@
         "contestType": "Beautiful",
         "flags": {
             "mirror": 1,
-            "protect": 1
+            "protect": 1,
+            "slicing": 1
         },
         "isNonstandard": null,
         "name": "Secret Sword",
