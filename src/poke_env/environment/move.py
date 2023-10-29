@@ -48,6 +48,26 @@ class Move:
         "beforeMoveCallback",
     ]
 
+    _MOVE_CATEGORY_PER_TYPE_PRE_SPLIT = {
+        PokemonType.BUG: MoveCategory.PHYSICAL,
+        PokemonType.DARK: MoveCategory.SPECIAL,
+        PokemonType.DRAGON: MoveCategory.SPECIAL,
+        PokemonType.ELECTRIC: MoveCategory.SPECIAL,
+        PokemonType.FIGHTING: MoveCategory.PHYSICAL,
+        PokemonType.FIRE: MoveCategory.SPECIAL,
+        PokemonType.FLYING: MoveCategory.PHYSICAL,
+        PokemonType.GHOST: MoveCategory.PHYSICAL,
+        PokemonType.GRASS: MoveCategory.SPECIAL,
+        PokemonType.GROUND: MoveCategory.PHYSICAL,
+        PokemonType.ICE: MoveCategory.SPECIAL,
+        PokemonType.NORMAL: MoveCategory.PHYSICAL,
+        PokemonType.POISON: MoveCategory.PHYSICAL,
+        PokemonType.PSYCHIC: MoveCategory.SPECIAL,
+        PokemonType.ROCK: MoveCategory.PHYSICAL,
+        PokemonType.STEEL: MoveCategory.PHYSICAL,
+        PokemonType.WATER: MoveCategory.SPECIAL,
+    }
+
     __slots__ = (
         "_id",
         "_base_power_override",
@@ -172,6 +192,12 @@ class Move:
         """
         if "category" not in self.entry:
             print(self, self.entry)
+
+        if self._gen <= 3 and self.entry["category"].upper() in {
+            "PHYSICAL",
+            "SPECIAL",
+        }:
+            return self._MOVE_CATEGORY_PER_TYPE_PRE_SPLIT[self.type]
         return MoveCategory[self.entry["category"].upper()]
 
     @property
@@ -433,8 +459,9 @@ class Move:
         """
         if "multihit" in self.entry:
             if isinstance(self.entry["multihit"], list):
-                multihit_val: List[int] = self.entry["multihit"]
-                return tuple(multihit_val)
+                assert len(self.entry["multihit"]) == 2
+                min_hits, max_hits = self.entry["multihit"]
+                return min_hits, max_hits
             else:
                 return self.entry["multihit"], self.entry["multihit"]
         return 1, 1
@@ -661,7 +688,7 @@ class Move:
         :return: Move type.
         :rtype: PokemonType
         """
-        return PokemonType[self.entry["type"].upper()]
+        return PokemonType.from_name(self.entry["type"])
 
     @property
     def use_target_offensive(self) -> bool:

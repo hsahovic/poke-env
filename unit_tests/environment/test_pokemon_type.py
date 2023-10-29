@@ -5,7 +5,7 @@ from poke_env.environment import PokemonType
 
 
 def test_number_of_PokemonTypes():
-    assert len(list(PokemonType)) == 18
+    assert len(list(PokemonType)) == 19
 
 
 def test_existence_of_some_PokemonTypes():
@@ -150,3 +150,21 @@ def test_damage_multiplier_compensating_double_PokemonType():
 def test_types_str():
     assert str(PokemonType.WATER) == "WATER (pokemon type) object"
     assert str(PokemonType.NORMAL) == "NORMAL (pokemon type) object"
+
+
+def test_three_question_marks_damage_multiplier():
+    for type in PokemonType:
+        for gen in range(1, 5):
+            assert (
+                PokemonType.THREE_QUESTION_MARKS.damage_multiplier(
+                    type, type_chart=GenData.from_gen(gen).type_chart
+                )
+                == 1
+            )
+            assert (
+                type.damage_multiplier(
+                    PokemonType.THREE_QUESTION_MARKS,
+                    type_chart=GenData.from_gen(gen).type_chart,
+                )
+                == 1
+            )

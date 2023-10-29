@@ -1,8 +1,8 @@
-black==23.9.1
+black==23.10.0
 flake8
 isort==5.12.0
 pre-commit
-pyright==1.1.324
+pyright==1.1.331
 pytest
 pytest-asyncio
 pytest-cov
