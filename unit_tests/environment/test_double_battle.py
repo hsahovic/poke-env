@@ -148,3 +148,116 @@ def test_end_illusion():
     assert zoroark in battle.active_pokemon
     assert ferrothorn in battle.active_pokemon
     assert celebi not in battle.active_pokemon
+
+
+def test_one_mon_left_in_double_battles_results_in_available_move_in_the_correct_slot():
+    request = {
+        "active": [
+            {
+                "moves": [
+                    {
+                        "move": "Ally Switch",
+                        "id": "allyswitch",
+                        "pp": 18,
+                        "maxpp": 24,
+                        "target": "self",
+                        "disabled": False,
+                    }
+                ]
+            },
+            {
+                "moves": [
+                    {
+                        "move": "Recover",
+                        "id": "recover",
+                        "pp": 4,
+                        "maxpp": 8,
+                        "target": "self",
+                        "disabled": False,
+                    },
+                    {
+                        "move": "Haze",
+                        "id": "haze",
+                        "pp": 46,
+                        "maxpp": 48,
+                        "target": "all",
+                        "disabled": False,
+                    },
+                ]
+            },
+        ],
+        "side": {
+            "name": "DisplayPlayer 1",
+            "id": "p1",
+            "pokemon": [
+                {
+                    "ident": "p1: Cresselia",
+                    "details": "Cresselia, F",
+                    "condition": "0 fnt",
+                    "active": True,
+                    "stats": {
+                        "atk": 145,
+                        "def": 350,
+                        "spa": 167,
+                        "spd": 277,
+                        "spe": 206,
+                    },
+                    "moves": ["allyswitch"],
+                    "baseAbility": "levitate",
+                    "item": "rockyhelmet",
+                    "pokeball": "pokeball",
+                    "ability": "levitate",
+                    "commanding": False,
+                    "reviving": False,
+                    "teraType": "Psychic",
+                    "terastallized": "",
+                },
+                {
+                    "ident": "p1: Milotic",
+                    "details": "Milotic, F",
+                    "condition": "386/394",
+                    "active": True,
+                    "stats": {
+                        "atk": 112,
+                        "def": 194,
+                        "spa": 236,
+                        "spd": 383,
+                        "spe": 199,
+                    },
+                    "moves": ["recover", "haze"],
+                    "baseAbility": "marvelscale",
+                    "item": "leftovers",
+                    "pokeball": "pokeball",
+                    "ability": "marvelscale",
+                    "commanding": False,
+                    "reviving": False,
+                    "teraType": "Water",
+                    "terastallized": "Water",
+                },
+            ],
+        },
+        "rqid": 16,
+    }
+
+    battle = DoubleBattle("tag", "username", MagicMock(), gen=9)
+    battle.parse_message(["", "player", "p1", "username", "102", ""])
+    battle.parse_message(["", "player", "p2", "username2", "102", ""])
+
+    battle.parse_message(["", "switch", "p1a: Milotic", "Milotic, F", "394/394"])
+    battle.parse_message(["", "switch", "p1b: Cresselia", "Cresselia, F", "444/444"])
+    battle.parse_message(["", "switch", "p2a: Vaporeon", "Vaporeon, F", "100/100"])
+    battle.parse_message(["", "switch", "p2b: Pelipper", "Pelipper, M", "100/100"])
+    battle.parse_message(["", "turn", "1"])
+
+    battle.parse_request(request)
+    battle.parse_message(
+        ["", "swap", "p1b: Cresselia", "0", "[from] move: Ally Switch"]
+    )
+
+    print(battle.available_moves)
+    print(battle.active_pokemon)
+
+    assert battle.available_moves[0] == []
+    assert [m.id for m in battle.available_moves[1]] == ["recover", "haze"]
+    assert battle.active_pokemon[0] is None
+    assert battle.active_pokemon[1].species == "milotic"
