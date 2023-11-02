@@ -578,6 +578,17 @@ class Pokemon:
         return []
 
     @property
+    def base_species(self) -> str:
+        """
+        :return: The pokemon's base species.
+        :rtype: str
+        """
+        dex_entry = self._data.pokedex[self._species]
+        if "baseSpecies" in dex_entry:
+            return to_id_str(dex_entry["baseSpecies"])
+        return self._species
+
+    @property
     def base_stats(self) -> Dict[str, int]:
         """
         :return: The pokemon's base stats.

@@ -143,6 +143,33 @@ class DoubleBattle(AbstractBattle):
                         self._active_pokemon[f"{self.player_role}a"] = active_pokemon
                     elif f"{self.player_role}b" not in self._active_pokemon:
                         self._active_pokemon[f"{self.player_role}b"] = active_pokemon
+                    elif (
+                        active_pokemon_number == 0
+                        and self._active_pokemon[f"{self.player_role}a"].fainted
+                        and self._active_pokemon[f"{self.player_role}b"]
+                        == active_pokemon
+                    ):
+                        (
+                            self._active_pokemon[f"{self.player_role}a"],
+                            self._active_pokemon[f"{self.player_role}b"],
+                        ) = (
+                            self._active_pokemon[f"{self.player_role}b"],
+                            self._active_pokemon[f"{self.player_role}a"],
+                        )
+                    elif (
+                        active_pokemon_number == 1
+                        and self._active_pokemon[f"{self.player_role}b"].fainted
+                        and not active_pokemon.fainted
+                        and self._active_pokemon[f"{self.player_role}a"]
+                        == active_pokemon
+                    ):
+                        (
+                            self._active_pokemon[f"{self.player_role}a"],
+                            self._active_pokemon[f"{self.player_role}b"],
+                        ) = (
+                            self._active_pokemon[f"{self.player_role}b"],
+                            self._active_pokemon[f"{self.player_role}a"],
+                        )
 
                 if active_pokemon.fainted:
                     continue
@@ -193,7 +220,7 @@ class DoubleBattle(AbstractBattle):
 
     def _swap(self, pokemon_str: str, slot: str):
         player_identifier = pokemon_str.split(":")[0][:2]
-        team = (
+        active = (
             self._active_pokemon
             if player_identifier == self.player_role
             else self._opponent_active_pokemon
@@ -201,11 +228,11 @@ class DoubleBattle(AbstractBattle):
         slot_a = f"{player_identifier}a"
         slot_b = f"{player_identifier}b"
 
-        if team[slot_a].fainted or team[slot_b].fainted:
+        if active[slot_a].fainted or active[slot_b].fainted:
             return
 
-        slot_a_mon = team[slot_a]
-        slot_b_mon = team[slot_b]
+        slot_a_mon = active[slot_a]
+        slot_b_mon = active[slot_b]
 
         pokemon = self.get_pokemon(pokemon_str)
 
@@ -214,7 +241,7 @@ class DoubleBattle(AbstractBattle):
         ):
             pass
         else:
-            team[slot_a], team[slot_b] = team[slot_b], team[slot_a]
+            active[slot_a], active[slot_b] = active[slot_b], active[slot_a]
 
     def get_possible_showdown_targets(
         self, move: Move, pokemon: Pokemon, dynamax: bool = False

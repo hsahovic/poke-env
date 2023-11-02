@@ -150,3 +150,19 @@ def test_pokemon_boosts():
     mon.clear_negative_boosts()
     assert mon.boosts["accuracy"] == 0
     assert mon.boosts["spd"] == 2
+
+
+def test_pokemon_base_species():
+    charizard = Pokemon(species="charizard", gen=8)
+    mega_charizard_x = Pokemon(species="charizardmegax", gen=8)
+    mega_charizard_y = Pokemon(species="charizardmegay", gen=8)
+
+    assert charizard.base_species == "charizard"
+    assert mega_charizard_x.base_species == "charizard"
+    assert mega_charizard_y.base_species == "charizard"
+
+    arceus = Pokemon(species="arceus", gen=8)
+    acreus_bug = Pokemon(species="arceusbug", gen=8)
+
+    assert arceus.base_species == "arceus"
+    assert acreus_bug.base_species == "arceus"
