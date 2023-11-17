@@ -3395,7 +3395,7 @@
             "F": 0.125,
             "M": 0.875
         },
-        "heightm": 1.6,
+        "heightm": 25,
         "name": "Blastoise-Gmax",
         "num": 9,
         "types": [
@@ -5917,7 +5917,7 @@
             "F": 0.125,
             "M": 0.875
         },
-        "heightm": 3,
+        "heightm": 27,
         "name": "Cinderace-Gmax",
         "num": 815,
         "types": [
@@ -16179,7 +16179,7 @@
             "F": 0.125,
             "M": 0.875
         },
-        "heightm": 3,
+        "heightm": 40,
         "name": "Inteleon-Gmax",
         "num": 818,
         "types": [
@@ -28327,7 +28327,7 @@
             "F": 0.125,
             "M": 0.875
         },
-        "heightm": 3,
+        "heightm": 28,
         "name": "Rillaboom-Gmax",
         "num": 812,
         "types": [
@@ -36646,7 +36646,7 @@
             "F": 0.125,
             "M": 0.875
         },
-        "heightm": 3,
+        "heightm": 29,
         "name": "Urshifu-Gmax",
         "num": 892,
         "types": [
@@ -36714,14 +36714,14 @@
             "F": 0.125,
             "M": 0.875
         },
-        "heightm": 1.9,
+        "heightm": 26,
         "name": "Urshifu-Rapid-Strike-Gmax",
         "num": 892,
         "types": [
             "Fighting",
             "Water"
         ],
-        "weightkg": 105
+        "weightkg": 0
     },
     "uxie": {
         "abilities": {
@@ -37093,7 +37093,7 @@
             "F": 0.125,
             "M": 0.875
         },
-        "heightm": 2,
+        "heightm": 24,
         "name": "Venusaur-Gmax",
         "num": 3,
         "types": [
