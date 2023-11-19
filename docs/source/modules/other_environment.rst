@@ -1,7 +1,7 @@
 .. _other_environment:
 
-Other environment objects
-=========================
+Other objects
+=============
 
 Effect
 ******
@@ -71,6 +71,11 @@ Z Crystal
 *********
 
 .. automodule:: poke_env.environment.z_crystal
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: poke_env.stats
    :members:
    :undoc-members:
    :show-inheritance:

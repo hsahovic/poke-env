@@ -52,13 +52,14 @@ class Battle(AbstractBattle):
             illusioned=active, illusionist=pokemon_name, details=details
         )
 
-    def parse_request(self, request: Dict[str, Any]):
+    def parse_request(self, request: Dict[str, Any]) -> None:
         """
         Update the object from a request.
         The player's pokemon are all updated, as well as available moves, switches and
         other related information (z move, mega evolution, forced switch...).
-        Args:
-            request (Dict): parsed json request object
+
+        :param request: Parsed JSON request object.
+        :type request: dict
         """
         if "wait" in request and request["wait"]:
             self._wait = True

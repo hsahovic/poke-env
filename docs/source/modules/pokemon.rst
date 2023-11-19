@@ -1,6 +1,6 @@
 .. _pokemon:
 
-The pokemon object
+The pokémon object
 ==================
 
 

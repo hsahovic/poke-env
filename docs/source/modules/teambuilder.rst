@@ -1,7 +1,7 @@
 .. _teambuilder:
 
-The teambuilder object and related classes
-==========================================
+Teambuilder: Parse, manage and generate showdown teams
+======================================================
 
 .. contents:: :local:
 
