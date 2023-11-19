@@ -2946,7 +2946,7 @@
             "F": 0.125,
             "M": 0.875
         },
-        "heightm": 1.6,
+        "heightm": 25,
         "name": "Blastoise-Gmax",
         "num": 9,
         "types": [
@@ -29639,7 +29639,7 @@
             "F": 0.125,
             "M": 0.875
         },
-        "heightm": 2,
+        "heightm": 24,
         "name": "Venusaur-Gmax",
         "num": 3,
         "types": [
