@@ -31,6 +31,11 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Download Pandoc
+        run: |
+          wget https://github.com/jgm/pandoc/releases/download/3.1.9/pandoc-3.1.9-linux-amd64.tar.gz
+          tar xvzf pandoc-3.1.9-linux-amd64.tar.gz --strip-components 2 -C /usr/local/bin
+
       - name: Run black
         run: black --check src/ unit_tests/ integration_tests/
 
