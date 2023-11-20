@@ -37,10 +37,3 @@ Random Player
    :undoc-members:
    :show-inheritance:
 
-Player network interface
-************************
-
-.. automodule:: poke_env.ps_client
-   :members:
-   :undoc-members:
-   :show-inheritance:

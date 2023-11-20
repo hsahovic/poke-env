@@ -363,6 +363,13 @@ class OpenAIGymEnv(
     def step(
         self, action: ActType
     ) -> Tuple[ObsType, float, bool, bool, Dict[str, Any]]:
+        """
+        Execute the specified action in the environment.
+
+        :param ActType action: The action to be executed.
+        :return: A tuple containing the new observation, reward, termination flag, truncation flag, and info dictionary.
+        :rtype: Tuple[ObsType, float, bool, bool, Dict[str, Any]]
+        """
         if not self.current_battle:
             obs, info = self.reset(return_info=True)
             return obs, 0.0, False, False, info
@@ -731,6 +738,13 @@ class LegacyOpenAIGymEnv(OpenAIGymEnv[ObsType, ActType], ABC):
     def step(
         self, action: ActType
     ) -> Tuple[ObsType, float, bool, bool, Dict[str, Any]]:
+        """
+        Execute the specified action in the environment.
+
+        :param ActType action: The action to be executed.
+        :return: A tuple containing the new observation, reward, termination flag, truncation flag, and info dictionary.
+        :rtype: Tuple[ObsType, float, bool, bool, Dict[str, Any]]
+        """
         obs, reward, terminated, truncated, info = super().step(action)
         return obs, reward, terminated, truncated, info
 
