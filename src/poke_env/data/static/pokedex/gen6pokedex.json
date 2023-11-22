@@ -5651,6 +5651,33 @@
         ],
         "weightkg": 32.8
     },
+    "cresceidon": {
+        "abilities": {
+            "0": "Multiscale",
+            "1": "Rough Skin"
+        },
+        "baseStats": {
+            "atk": 32,
+            "def": 111,
+            "hp": 80,
+            "spa": 88,
+            "spd": 99,
+            "spe": 125
+        },
+        "color": "Blue",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "gen": 9,
+        "heightm": 10,
+        "name": "Cresceidon",
+        "num": -72,
+        "types": [
+            "Water",
+            "Fairy"
+        ],
+        "weightkg": 999.9
+    },
     "cresselia": {
         "abilities": {
             "0": "Levitate"
@@ -22933,8 +22960,8 @@
     },
     "revenankh": {
         "abilities": {
-            "0": "Shed Skin",
-            "1": "Air Lock"
+            "0": "Air Lock",
+            "H": "Shed Skin"
         },
         "baseStats": {
             "atk": 105,
