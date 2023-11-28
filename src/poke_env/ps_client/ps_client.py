@@ -46,9 +46,9 @@ class PSClient:
         """
         :param account_configuration: Account configuration.
         :type account_configuration: AccountConfiguration
-        :param avatar: Player avatar id. Optional.
+        :param avatar: Account avatar name. Optional.
         :type avatar: int, optional
-        :param log_level: The player's logger level.
+        :param log_level: The client's logger level.
         :type log_level: int. Defaults to logging's default level.
         :param server_configuration: Server configuration.
         :type server_configuration: ServerConfiguration
@@ -87,14 +87,14 @@ class PSClient:
     async def accept_challenge(self, username: str, packed_team: Optional[str]):
         assert (
             self.logged_in.is_set()
-        ), f"Expected player {self.username} to be logged in."
+        ), f"Expected {self.username} to be logged in."
         await self.set_team(packed_team)
         await self.send_message("/accept %s" % username)
 
     async def challenge(self, username: str, format_: str, packed_team: Optional[str]):
         assert (
             self.logged_in.is_set()
-        ), f"Expected player {self.username} to be logged in."
+        ), f"Expected {self.username} to be logged in."
         await self.set_team(packed_team)
         await self.send_message(f"/challenge {username}, {format_}")
 
@@ -197,7 +197,7 @@ class PSClient:
         await self.websocket.close()
 
     async def change_avatar(self, avatar_id: Optional[int]):
-        """Changes the player's avatar.
+        """Changes the account's avatar.
 
         :param avatar_id: The new avatar id. If None, nothing happens.
         :type avatar_id: int
@@ -233,7 +233,7 @@ class PSClient:
             self.logger.exception(e)
 
     async def log_in(self, split_message: List[str]):
-        """Log the player with specified username and password.
+        """Log in with specified username and password.
 
         Split message contains information sent by the server. This information is
         necessary to log in.
@@ -283,6 +283,7 @@ class PSClient:
             to_send = "|".join([room, message, message_2])
         else:
             to_send = "|".join([room, message])
+        self.logger.info("\033[93m\033[1m>>>\033[0m %s", to_send)
         await self.websocket.send(to_send)
 
     async def set_team(self, packed_team: Optional[str]):
@@ -300,7 +301,7 @@ class PSClient:
             await sleep(checking_interval)
             if self.logged_in:
                 return
-        assert self.logged_in, f"Expected player {self.username} to be logged in."
+        assert self.logged_in, f"Expected {self.username} to be logged in."
 
     @property
     def account_configuration(self) -> AccountConfiguration:
@@ -322,7 +323,7 @@ class PSClient:
 
     @property
     def logger(self) -> Logger:
-        """Logger associated with the player.
+        """Logger associated with the client.
 
         :return: The logger.
         :rtype: Logger
@@ -340,9 +341,9 @@ class PSClient:
 
     @property
     def username(self) -> str:
-        """The player's username.
+        """The account's username.
 
-        :return: The player's username.
+        :return: The account's username.
         :rtype: str
         """
         return self.account_configuration.username
