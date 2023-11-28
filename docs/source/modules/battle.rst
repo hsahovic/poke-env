@@ -1,6 +1,6 @@
 .. _battle:
 
-Battle objects
+The Battle object
 ==============
 
 .. automodule:: poke_env.environment.abstract_battle
