@@ -36,7 +36,7 @@ class PSClient:
         self,
         account_configuration: AccountConfiguration,
         *,
-        avatar: Optional[int] = None,
+        avatar: Optional[str] = None,
         log_level: Optional[int] = None,
         server_configuration: ServerConfiguration,
         start_listening: bool = True,
@@ -47,7 +47,7 @@ class PSClient:
         :param account_configuration: Account configuration.
         :type account_configuration: AccountConfiguration
         :param avatar: Account avatar name. Optional.
-        :type avatar: int, optional
+        :type avatar: str, optional
         :param log_level: The client's logger level.
         :type log_level: int. Defaults to logging's default level.
         :param server_configuration: Server configuration.
@@ -85,16 +85,12 @@ class PSClient:
             )
 
     async def accept_challenge(self, username: str, packed_team: Optional[str]):
-        assert (
-            self.logged_in.is_set()
-        ), f"Expected {self.username} to be logged in."
+        assert self.logged_in.is_set(), f"Expected {self.username} to be logged in."
         await self.set_team(packed_team)
         await self.send_message("/accept %s" % username)
 
     async def challenge(self, username: str, format_: str, packed_team: Optional[str]):
-        assert (
-            self.logged_in.is_set()
-        ), f"Expected {self.username} to be logged in."
+        assert self.logged_in.is_set(), f"Expected {self.username} to be logged in."
         await self.set_team(packed_team)
         await self.send_message(f"/challenge {username}, {format_}")
 
@@ -196,15 +192,15 @@ class PSClient:
     async def _stop_listening(self):
         await self.websocket.close()
 
-    async def change_avatar(self, avatar_id: Optional[int]):
+    async def change_avatar(self, avatar_name: Optional[str]):
         """Changes the account's avatar.
 
-        :param avatar_id: The new avatar id. If None, nothing happens.
-        :type avatar_id: int
+        :param avatar_name: The new avatar name. If None, nothing happens.
+        :type avatar_name: int
         """
         await self.wait_for_login()
-        if avatar_id is not None:
-            await self.send_message(f"/avatar {avatar_id}")
+        if avatar_name is not None:
+            await self.send_message(f"/avatar {avatar_name}")
 
     async def listen(self):
         """Listen to a showdown websocket and dispatch messages to be handled."""

@@ -52,7 +52,7 @@ class Player(ABC):
         self,
         account_configuration: Optional[AccountConfiguration] = None,
         *,
-        avatar: Optional[int] = None,
+        avatar: Optional[str] = None,
         battle_format: str = "gen9randombattle",
         log_level: Optional[int] = None,
         max_concurrent_battles: int = 1,
@@ -69,8 +69,8 @@ class Player(ABC):
             automatically generated username with no password. This option must be set
             if the server configuration requires authentication.
         :type account_configuration: AccountConfiguration, optional
-        :param avatar: Player avatar id. Optional.
-        :type avatar: int, optional
+        :param avatar: Player avatar name. Optional.
+        :type avatar: str, optional
         :param battle_format: Name of the battle format this player plays. Defaults to
             gen8randombattle.
         :type battle_format: str
