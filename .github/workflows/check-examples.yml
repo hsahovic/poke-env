@@ -1,0 +1,104 @@
+name: Check examples run
+on:
+  push:
+    branches:
+      - "master"
+  pull_request:
+    branches:
+      - "master"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+
+      # Setup Python (faster than using Python container)
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install Python Kernel
+        run: |
+          pip install ipykernel
+          python -m ipykernel install --user --name python3
+
+      - name: Install dev dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Build package
+        run: |
+          pip install build
+          python -m build
+
+      - name: Install built package
+        run: pip install --force-reinstall dist/*.whl
+
+      - name: Remove source
+        run: rm -rf ./src
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Checkout PS
+        uses: actions/checkout@v4
+        with:
+          repository: smogon/pokemon-showdown
+          path: pokemon-showdown
+          submodules: recursive
+
+      - name: Get last showdown commit hash
+        id: showdown-hash
+        run: |
+          cd pokemon-showdown/
+          export hash=`git log -1 --pretty=format:%H`
+          echo "hash=$hash" >> $GITHUB_OUTPUT
+
+      - name: Restore server cache
+        uses: actions/cache@v3
+        with:
+          path: pokemon-showdown/node_modules
+          key: showdown-python${{ matrix.version }}-${{ steps.showdown-hash.outputs.hash }}
+          restore-keys: showdown-python${{ matrix.version }}-
+
+      - name: Install PS dependencies & setup config
+        run: |
+            cd pokemon-showdown
+            npm install
+            cp config/config-example.js config/config.js
+            sed  -i 's/backdoor = true/backdoor = false/g' config/config.js
+            sed  -i 's/simulatorprocesses = 1/simulatorprocesses = 2/g' config/config.js
+            sed  -i 's/.workers = 1 = 1/.workers = 2/g' config/config.js
+
+      - name: Start PS
+        run: cd pokemon-showdown;node pokemon-showdown start --no-security --max-old-space-size=3000 &
+
+      - name: Wait for server to be up
+        run: |
+            until $(curl --output /dev/null --silent --head --fail http://localhost:8000); do
+              sleep .01
+            done
+            sleep 1
+
+      - name: Run example notebooks
+        run: |
+            for notebook in $(find examples -name '*.ipynb'); do
+              jupyter nbconvert --to notebook --execute "$notebook" --output temp.ipynb
+              if [ $? -ne 0 ]; then
+              echo "Execution of $notebook failed"
+              exit 1
+              fi
+              rm examples/temp.ipynb
+            done
