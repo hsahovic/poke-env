@@ -1,6 +1,6 @@
 black==23.11.0
 flake8
-isort==5.12.0
+isort==5.13.0
 nbsphinx
 pre-commit
 pyright==1.1.339
