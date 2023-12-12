@@ -76,7 +76,7 @@ class _AsyncPlayer(Generic[ObsType, ActType], Player):
     def choose_move(self, battle: AbstractBattle) -> Awaitable[BattleOrder]:
         return self._env_move(battle)
 
-    async def _env_move(self, battle: AbstractBattle):
+    async def _env_move(self, battle: AbstractBattle) -> BattleOrder:
         if not self.current_battle or self.current_battle.finished:
             self.current_battle = battle
         if not self.current_battle == battle:
