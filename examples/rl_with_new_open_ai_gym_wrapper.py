@@ -1,8 +1,8 @@
 import asyncio
 
 import numpy as np
-from gym.spaces import Box, Space
-from gym.utils.env_checker import check_env
+from gymnasium.spaces import Box, Space
+from gymnasium.utils.env_checker import check_env
 from rl.agents.dqn import DQNAgent
 from rl.memory import SequentialMemory
 from rl.policy import EpsGreedyQPolicy, LinearAnnealedPolicy

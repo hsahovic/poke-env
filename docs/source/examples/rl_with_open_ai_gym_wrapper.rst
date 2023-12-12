@@ -54,7 +54,7 @@ Our player will play the ``gen8randombattle`` format. We can therefore inherit f
 .. code-block:: python
 
         import numpy as np
-    from gym.spaces import Space, Box
+    from gymnasium.spaces import Space, Box
     from poke_env.player import Gen8EnvSinglePlayer
 
     class SimpleRLPlayer(Gen8EnvSinglePlayer):
@@ -113,7 +113,7 @@ Now that our custom class is defined, we can instantiate our RL player and test 
 .. code-block:: python
 
     ...
-    from gym.utils.env_checker import check_env
+    from gymnasium.utils.env_checker import check_env
     from poke_env.player import RandomPlayer
 
     opponent = RandomPlayer(battle_format="gen8randombattle")
