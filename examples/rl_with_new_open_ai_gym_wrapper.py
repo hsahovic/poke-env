@@ -20,7 +20,6 @@ from poke_env.player import (
     SimpleHeuristicsPlayer,
     background_cross_evaluate,
     background_evaluate_player,
-    wrap_for_old_gym_api,
 )
 
 
@@ -86,12 +85,10 @@ async def main():
     train_env = SimpleRLPlayer(
         battle_format="gen8randombattle", opponent=opponent, start_challenging=True
     )
-    train_env = wrap_for_old_gym_api(train_env)
     opponent = RandomPlayer(battle_format="gen8randombattle")
     eval_env = SimpleRLPlayer(
         battle_format="gen8randombattle", opponent=opponent, start_challenging=True
     )
-    eval_env = wrap_for_old_gym_api(eval_env)
 
     # Compute dimensions
     n_action = train_env.action_space.n

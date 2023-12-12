@@ -22,7 +22,6 @@ from poke_env.player.openai_api import (
     ActType,
     ObsType,
     OpenAIGymEnv,
-    wrap_for_old_gym_api,
 )
 from poke_env.player.player import Player
 from poke_env.player.random_player import RandomPlayer
@@ -42,7 +41,6 @@ __all__ = [
     "utils",
     "ActType",
     "ObsType",
-    "wrap_for_old_gym_api",
     "EnvPlayer",
     "ForfeitBattleOrder",
     "Gen4EnvSinglePlayer",

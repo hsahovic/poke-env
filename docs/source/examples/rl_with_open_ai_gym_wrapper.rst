@@ -139,21 +139,17 @@ In this case, we want them to start challenging right away:
 .. code-block:: python
 
     ...
-    from poke_env.player import RandomPlayer, wrap_for_old_gym_api
+    from poke_env.player import RandomPlayer
 
     opponent = RandomPlayer(battle_format="gen8randombattle")
     train_env = SimpleRLPlayer(
         battle_format="gen8randombattle", opponent=opponent, start_challenging=True
     )
-    train_env = wrap_for_old_gym_api(train_env)
     opponent = RandomPlayer(battle_format="gen8randombattle")
     eval_env = SimpleRLPlayer(
         battle_format="gen8randombattle", opponent=opponent, start_challenging=True
     )
-    eval_env = wrap_for_old_gym_api(eval_env)
     ...
-
-The function ``wrap_for_old_gym_api`` wraps the environment to make it compatible with the old gym API, as the keras-rl2 library does not support the new one.
 
 Creating a DQN with keras-rl
 ****************************
