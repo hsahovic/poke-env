@@ -9,21 +9,10 @@ import random
 import time
 from abc import ABC, abstractmethod
 from logging import Logger
-from typing import (
-    Any,
-    Awaitable,
-    Callable,
-    Dict,
-    Generic,
-    List,
-    Optional,
-    Tuple,
-    TypeVar,
-    Union,
-)
+from typing import Any, Awaitable, Callable, Dict, Generic, List, Optional, Tuple, Union
 
-from gym.core import ActType, Env, ObsType
-from gym.spaces import Discrete, Space
+from gymnasium.core import ActType, Env, ObsType
+from gymnasium.spaces import Discrete, Space
 
 from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
 from poke_env.environment.abstract_battle import AbstractBattle
@@ -35,8 +24,6 @@ from poke_env.ps_client.server_configuration import (
     ServerConfiguration,
 )
 from poke_env.teambuilder.teambuilder import Teambuilder
-
-BattleType = TypeVar("BattleType", bound=AbstractBattle)
 
 
 class _AsyncQueue:

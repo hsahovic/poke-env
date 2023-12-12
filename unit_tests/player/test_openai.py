@@ -3,7 +3,7 @@ import sys
 from io import StringIO
 from typing import Union
 
-from gym import Space
+from gymnasium import Space
 
 from poke_env.environment import AbstractBattle, Battle, Pokemon
 from poke_env.player import (

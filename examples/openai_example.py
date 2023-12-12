@@ -1,7 +1,7 @@
 import numpy as np
-from gym import Space
-from gym.spaces import Box
-from gym.utils.env_checker import check_env
+from gymnasium import Space
+from gymnasium.spaces import Box
+from gymnasium.utils.env_checker import check_env
 
 from poke_env import LocalhostServerConfiguration
 from poke_env.environment.abstract_battle import AbstractBattle
