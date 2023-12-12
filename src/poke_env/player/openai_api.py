@@ -73,9 +73,7 @@ class _AsyncPlayer(Generic[ObsType, ActType], Player):
         self.current_battle: Optional[AbstractBattle] = None
         self._user_funcs = user_funcs
 
-    def choose_move(
-        self, battle: AbstractBattle
-    ) -> Union[BattleOrder, Awaitable[BattleOrder]]:
+    def choose_move(self, battle: AbstractBattle) -> Awaitable[BattleOrder]:
         return self._env_move(battle)
 
     async def _env_move(self, battle: AbstractBattle):
