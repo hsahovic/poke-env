@@ -3,7 +3,7 @@ import sys
 from io import StringIO
 from typing import Union
 
-from gym import Space
+from gymnasium import Space
 
 from poke_env.environment import AbstractBattle, Battle, Pokemon
 from poke_env.player import (
@@ -14,12 +14,7 @@ from poke_env.player import (
     OpenAIGymEnv,
     Player,
 )
-from poke_env.player.openai_api import (
-    LegacyOpenAIGymEnv,
-    _AsyncPlayer,
-    _AsyncQueue,
-    wrap_for_old_gym_api,
-)
+from poke_env.player.openai_api import _AsyncPlayer, _AsyncQueue
 
 
 class DummyEnv(OpenAIGymEnv[ObsType, ActType]):
@@ -132,54 +127,3 @@ def test_get_opponent():
     for _ in range(100):
         assert player._get_opponent() in opponents
     player.opponent = [0]
-
-
-def test_legacy_wrapper():
-    dummy = DummyEnv(start_listening=False)
-    wrapped = wrap_for_old_gym_api(dummy)
-    assert dummy.reset.__func__ is OpenAIGymEnv.reset
-    assert dummy.step.__func__ is OpenAIGymEnv.step
-    assert wrapped.reset.__func__ is LegacyOpenAIGymEnv.reset
-    assert wrapped.step.__func__ is LegacyOpenAIGymEnv.step
-    assert id(dummy._keep_challenging) == id(wrapped._keep_challenging)
-    wrapped._keep_challenging = True
-    assert id(dummy._keep_challenging) == id(wrapped._keep_challenging)
-    dummy._keep_challenging = False
-    assert id(dummy._keep_challenging) == id(wrapped._keep_challenging)
-
-
-def test_legacy_wrapper_calc_reward():
-    dummy = DummyEnv(start_listening=False)
-    wrapped = wrap_for_old_gym_api(dummy)
-    assert wrapped.calc_reward(None, None) == 69.42
-
-
-def test_legacy_wrapper_action_to_move():
-    dummy = DummyEnv(start_listening=False)
-    wrapped = wrap_for_old_gym_api(dummy)
-    assert isinstance(wrapped.action_to_move(2, None), ForfeitBattleOrder)
-
-
-def test_legacy_wrapper_embed_battle():
-    dummy = DummyEnv(start_listening=False)
-    wrapped = wrap_for_old_gym_api(dummy)
-    assert wrapped.embed_battle(None) == [0, 1, 2]
-
-
-def test_legacy_wrapper_describe_embedding():
-    dummy = DummyEnv(start_listening=False)
-    wrapped = wrap_for_old_gym_api(dummy)
-    assert wrapped.describe_embedding() == "Space"
-
-
-def test_legacy_wrapper_action_space_size():
-    dummy = DummyEnv(start_listening=False)
-    wrapped = wrap_for_old_gym_api(dummy)
-    assert wrapped.action_space_size() == 1
-
-
-def test_legacy_wrapper_get_opponent():
-    dummy = DummyEnv(start_listening=False)
-    dummy.opponent = "Opponent"
-    wrapped = wrap_for_old_gym_api(dummy)
-    assert wrapped.get_opponent() == "Opponent"

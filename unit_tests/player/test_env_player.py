@@ -4,7 +4,7 @@ from inspect import isawaitable
 from unittest.mock import patch
 
 import pytest
-from gym.spaces import Discrete, Space
+from gymnasium.spaces import Discrete, Space
 
 from poke_env import AccountConfiguration, ServerConfiguration
 from poke_env.environment import AbstractBattle, Battle, Move, Pokemon, Status

@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
-from gym.spaces import Box, Space
-from gym.utils.env_checker import check_env
+from gymnasium.spaces import Box, Space
+from gymnasium.utils.env_checker import check_env
 
 from poke_env.player import (
     Gen4EnvSinglePlayer,

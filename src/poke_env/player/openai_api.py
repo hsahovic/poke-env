@@ -9,21 +9,10 @@ import random
 import time
 from abc import ABC, abstractmethod
 from logging import Logger
-from typing import (
-    Any,
-    Awaitable,
-    Callable,
-    Dict,
-    Generic,
-    List,
-    Optional,
-    Tuple,
-    TypeVar,
-    Union,
-)
+from typing import Any, Awaitable, Callable, Dict, Generic, List, Optional, Tuple, Union
 
-from gym.core import ActType, Env, ObsType
-from gym.spaces import Discrete, Space
+from gymnasium.core import ActType, Env, ObsType
+from gymnasium.spaces import Discrete, Space
 
 from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
 from poke_env.environment.abstract_battle import AbstractBattle
@@ -35,8 +24,6 @@ from poke_env.ps_client.server_configuration import (
     ServerConfiguration,
 )
 from poke_env.teambuilder.teambuilder import Teambuilder
-
-BattleType = TypeVar("BattleType", bound=AbstractBattle)
 
 
 class _AsyncQueue:
@@ -86,12 +73,10 @@ class _AsyncPlayer(Generic[ObsType, ActType], Player):
         self.current_battle: Optional[AbstractBattle] = None
         self._user_funcs = user_funcs
 
-    def choose_move(
-        self, battle: AbstractBattle
-    ) -> Union[BattleOrder, Awaitable[BattleOrder]]:
+    def choose_move(self, battle: AbstractBattle) -> Awaitable[BattleOrder]:
         return self._env_move(battle)
 
-    async def _env_move(self, battle: AbstractBattle):
+    async def _env_move(self, battle: AbstractBattle) -> BattleOrder:
         if not self.current_battle or self.current_battle.finished:
             self.current_battle = battle
         if not self.current_battle == battle:
@@ -716,87 +701,3 @@ class OpenAIGymEnv(
 
     def __getattr__(self, item: str):
         return getattr(self.agent, item)
-
-
-class LegacyOpenAIGymEnv(OpenAIGymEnv[ObsType, ActType], ABC):
-    """
-    Subclass of OpenAIGymEnv compatible with the old gym API.
-    If you need compatibility with the old gym API you should use the
-    `wrap_for_old_gym_api` function.
-    """
-
-    def reset(
-        self,
-        *,
-        seed: Optional[int] = None,
-        return_info: bool = False,
-        options: Optional[Dict[str, Any]] = None,
-    ) -> Tuple[ObsType, Dict[str, Any]]:
-        obs, info = super().reset(seed=seed, return_info=True, options=options)
-        return obs, info
-
-    def step(
-        self, action: ActType
-    ) -> Tuple[ObsType, float, bool, bool, Dict[str, Any]]:
-        """
-        Execute the specified action in the environment.
-
-        :param ActType action: The action to be executed.
-        :return: A tuple containing the new observation, reward, termination flag, truncation flag, and info dictionary.
-        :rtype: Tuple[ObsType, float, bool, bool, Dict[str, Any]]
-        """
-        obs, reward, terminated, truncated, info = super().step(action)
-        return obs, reward, terminated, truncated, info
-
-
-class _OpenAIGymEnvWrapper(LegacyOpenAIGymEnv[ObsType, ActType]):
-    def __init__(self, environment: OpenAIGymEnv[ObsType, ActType]):
-        self._wrapped = environment
-        self.step = super().step.__get__(self._wrapped, self._wrapped.__class__)
-        self.reset = super().reset.__get__(self._wrapped, self._wrapped.__class__)
-        self._instantiated = True
-
-    def calc_reward(
-        self, last_battle: AbstractBattle, current_battle: AbstractBattle
-    ) -> float:
-        return self._wrapped.calc_reward(last_battle, current_battle)
-
-    def action_to_move(self, action: int, battle: AbstractBattle) -> BattleOrder:
-        return self._wrapped.action_to_move(action, battle)
-
-    def embed_battle(self, battle: AbstractBattle) -> ObsType:
-        return self._wrapped.embed_battle(battle)
-
-    def describe_embedding(self) -> Space[ObsType]:
-        return self._wrapped.describe_embedding()
-
-    def action_space_size(self) -> int:
-        return self._wrapped.action_space_size()
-
-    def get_opponent(self) -> Union[Player, str, List[Player], List[str]]:
-        return self._wrapped.get_opponent()
-
-    def __getattr__(self, item: str):
-        if item == "_instantiated":
-            return False
-        return getattr(self._wrapped, item)
-
-    def __setattr__(self, key: str, value: Any):
-        if not self._instantiated:
-            return super().__setattr__(key, value)
-        return setattr(self._wrapped, key, value)
-
-
-def wrap_for_old_gym_api(
-    env: OpenAIGymEnv[ObsType, ActType]
-) -> LegacyOpenAIGymEnv[ObsType, ActType]:
-    """
-    Wraps an OpenAIGymEnv in order to support the old gym API.
-
-    :param env: the environment to wrap.
-    :type env: OpenAIGymEnv
-
-    :return: The wrapped environment
-    :rtype: OpenAIGymEnv
-    """
-    return _OpenAIGymEnvWrapper(env)

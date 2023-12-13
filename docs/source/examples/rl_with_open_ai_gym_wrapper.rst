@@ -54,7 +54,7 @@ Our player will play the ``gen8randombattle`` format. We can therefore inherit f
 .. code-block:: python
 
         import numpy as np
-    from gym.spaces import Space, Box
+    from gymnasium.spaces import Space, Box
     from poke_env.player import Gen8EnvSinglePlayer
 
     class SimpleRLPlayer(Gen8EnvSinglePlayer):
@@ -113,7 +113,7 @@ Now that our custom class is defined, we can instantiate our RL player and test 
 .. code-block:: python
 
     ...
-    from gym.utils.env_checker import check_env
+    from gymnasium.utils.env_checker import check_env
     from poke_env.player import RandomPlayer
 
     opponent = RandomPlayer(battle_format="gen8randombattle")
@@ -139,21 +139,17 @@ In this case, we want them to start challenging right away:
 .. code-block:: python
 
     ...
-    from poke_env.player import RandomPlayer, wrap_for_old_gym_api
+    from poke_env.player import RandomPlayer
 
     opponent = RandomPlayer(battle_format="gen8randombattle")
     train_env = SimpleRLPlayer(
         battle_format="gen8randombattle", opponent=opponent, start_challenging=True
     )
-    train_env = wrap_for_old_gym_api(train_env)
     opponent = RandomPlayer(battle_format="gen8randombattle")
     eval_env = SimpleRLPlayer(
         battle_format="gen8randombattle", opponent=opponent, start_challenging=True
     )
-    eval_env = wrap_for_old_gym_api(eval_env)
     ...
-
-The function ``wrap_for_old_gym_api`` wraps the environment to make it compatible with the old gym API, as the keras-rl2 library does not support the new one.
 
 Creating a DQN with keras-rl
 ****************************
