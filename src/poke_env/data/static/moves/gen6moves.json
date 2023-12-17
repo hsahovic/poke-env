@@ -155,9 +155,9 @@
         "flags": {
             "distance": 1,
             "mirror": 1,
-            "protect": 1
+            "protect": 1,
+            "wind": 1
         },
-        "isNonstandard": null,
         "name": "Aeroblast",
         "num": 177,
         "pp": 5,
@@ -1007,7 +1007,6 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
         "name": "Blue Flare",
         "num": 551,
         "pp": 5,
@@ -1051,7 +1050,6 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
         "name": "Bolt Strike",
         "num": 550,
         "pp": 5,
@@ -1904,7 +1902,6 @@
         "flags": {
             "snatch": 1
         },
-        "isNonstandard": null,
         "name": "Conversion",
         "num": 160,
         "onHit": "onHit",
@@ -1931,7 +1928,6 @@
         "flags": {
             "bypasssub": 1
         },
-        "isNonstandard": null,
         "name": "Conversion 2",
         "num": 176,
         "onHit": "onHit",
@@ -1980,7 +1976,6 @@
         "flags": {
             "snatch": 1
         },
-        "isNonstandard": null,
         "name": "Cosmic Power",
         "num": 322,
         "pp": 20,
@@ -2244,7 +2239,6 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
         "maxMove": {
             "basePower": 140
         },
@@ -2341,6 +2335,7 @@
         },
         "isNonstandard": null,
         "name": "Dark Void",
+        "noSketch": false,
         "num": 464,
         "onTry": "onTry",
         "pp": 10,
@@ -4616,7 +4611,6 @@
             "nosleeptalk": 1,
             "protect": 1
         },
-        "isNonstandard": null,
         "name": "Freeze Shock",
         "num": 553,
         "onTryMove": "onTryMove",
@@ -4776,7 +4770,6 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
         "name": "Fusion Bolt",
         "num": 559,
         "onBasePower": "onBasePower",
@@ -4796,7 +4789,6 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
         "name": "Fusion Flare",
         "num": 558,
         "onBasePower": "onBasePower",
@@ -4968,7 +4960,6 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
         "name": "Glaciate",
         "num": 549,
         "pp": 10,
@@ -5568,7 +5559,6 @@
             "snatch": 1,
             "sound": 1
         },
-        "isNonstandard": null,
         "name": "Heal Bell",
         "num": 215,
         "onHit": "onHit",
@@ -6490,6 +6480,7 @@
         },
         "isNonstandard": null,
         "name": "Hyperspace Fury",
+        "noSketch": false,
         "num": 621,
         "onTry": "onTry",
         "pp": 5,
@@ -6628,7 +6619,6 @@
             "nosleeptalk": 1,
             "protect": 1
         },
-        "isNonstandard": null,
         "name": "Ice Burn",
         "num": 554,
         "onTryMove": "onTryMove",
@@ -7575,7 +7565,6 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
         "name": "Luster Purge",
         "num": 295,
         "pp": 5,
@@ -8471,7 +8460,6 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
         "name": "Mist Ball",
         "num": 296,
         "pp": 5,
@@ -10842,7 +10830,6 @@
             "protect": 1,
             "recharge": 1
         },
-        "isNonstandard": null,
         "name": "Rock Wrecker",
         "num": 439,
         "pp": 5,
@@ -11018,7 +11005,6 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
         "name": "Sacred Fire",
         "num": 221,
         "pp": 5,
@@ -11698,7 +11684,6 @@
             "protect": 1,
             "reflectable": 1
         },
-        "isNonstandard": null,
         "name": "Simple Beam",
         "num": 493,
         "onHit": "onHit",
@@ -13870,7 +13855,6 @@
             "protect": 1,
             "reflectable": 1
         },
-        "isNonstandard": null,
         "name": "Topsy-Turvy",
         "num": 576,
         "onHit": "onHit",
@@ -14121,7 +14105,6 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
         "maxMove": {
             "basePower": 80
         },
