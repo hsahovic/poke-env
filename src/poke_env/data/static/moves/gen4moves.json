@@ -113,9 +113,9 @@
         "flags": {
             "distance": 1,
             "mirror": 1,
-            "protect": 1
+            "protect": 1,
+            "wind": 1
         },
-        "isNonstandard": null,
         "name": "Aeroblast",
         "num": 177,
         "pp": 5,
@@ -1468,7 +1468,6 @@
         "category": "Status",
         "contestType": "Beautiful",
         "flags": {},
-        "isNonstandard": null,
         "name": "Conversion",
         "num": 160,
         "onHit": "onHit",
@@ -1495,7 +1494,6 @@
         "flags": {
             "bypasssub": 1
         },
-        "isNonstandard": null,
         "name": "Conversion 2",
         "num": 176,
         "onHit": "onHit",
@@ -1544,7 +1542,6 @@
         "flags": {
             "snatch": 1
         },
-        "isNonstandard": null,
         "name": "Cosmic Power",
         "num": 322,
         "pp": 20,
@@ -1759,7 +1756,6 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
         "maxMove": {
             "basePower": 140
         },
@@ -1855,6 +1851,7 @@
         },
         "isNonstandard": null,
         "name": "Dark Void",
+        "noSketch": false,
         "num": 464,
         "onTry": "onTry",
         "pp": 10,
@@ -4108,7 +4105,6 @@
             "snatch": 1,
             "sound": 1
         },
-        "isNonstandard": null,
         "name": "Heal Bell",
         "num": 215,
         "onHit": "onHit",
@@ -5570,7 +5566,6 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
         "name": "Luster Purge",
         "num": 295,
         "pp": 5,
@@ -6326,7 +6321,6 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
         "name": "Mist Ball",
         "num": 296,
         "pp": 5,
@@ -8012,7 +8006,6 @@
             "protect": 1,
             "recharge": 1
         },
-        "isNonstandard": null,
         "name": "Rock Wrecker",
         "num": 439,
         "pp": 5,
@@ -8143,7 +8136,6 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
         "name": "Sacred Fire",
         "num": 221,
         "pp": 5,
@@ -10555,7 +10547,6 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
         "maxMove": {
             "basePower": 80
         },

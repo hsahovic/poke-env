@@ -508,7 +508,6 @@
         "category": "Status",
         "contestType": "Beautiful",
         "flags": {},
-        "isNonstandard": null,
         "name": "Conversion",
         "num": 160,
         "onHit": "onHit",
