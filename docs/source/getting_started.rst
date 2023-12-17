@@ -43,7 +43,7 @@ Agents in ``poke-env`` are instances of the ``Player`` class. Explore the follow
 - Advanced agent: :ref:`max_damage_player`
 - RL agent: :ref:`rl_with_open_ai_gym_wrapper`
 - Using teams: :ref:`ou_max_player`
-- Custom team builder: :ref:`using_custom_teambuilder`
+- Custom team builder: :ref:`using_a_custom_teambuilder`
 
 Configuring Showdown Players
 ============================
