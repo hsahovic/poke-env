@@ -1816,6 +1816,37 @@
         ],
         "weightkg": 320
     },
+    "archaludon": {
+        "abilities": {
+            "0": "Stamina",
+            "1": "Sturdy",
+            "H": "Stalwart"
+        },
+        "baseStats": {
+            "atk": 105,
+            "def": 130,
+            "hp": 90,
+            "spa": 125,
+            "spd": 65,
+            "spe": 85
+        },
+        "color": "White",
+        "eggGroups": [
+            "Mineral",
+            "Dragon"
+        ],
+        "evoItem": "Metal Alloy",
+        "evoType": "useItem",
+        "heightm": 2,
+        "name": "Archaludon",
+        "num": 1018,
+        "prevo": "Duraludon",
+        "types": [
+            "Steel",
+            "Dragon"
+        ],
+        "weightkg": 60
+    },
     "archen": {
         "abilities": {
             "0": "Defeatist"
@@ -9317,6 +9348,9 @@
         ],
         "evoItem": "Syrupy Apple",
         "evoType": "useItem",
+        "evos": [
+            "Hydrapple"
+        ],
         "heightm": 0.4,
         "name": "Dipplin",
         "num": 1011,
@@ -10464,6 +10498,9 @@
         "eggGroups": [
             "Mineral",
             "Dragon"
+        ],
+        "evos": [
+            "Archaludon"
         ],
         "heightm": 1.8,
         "name": "Duraludon",
@@ -15113,6 +15150,35 @@
         ],
         "weightkg": 18
     },
+    "gougingfire": {
+        "abilities": {
+            "0": "Protosynthesis"
+        },
+        "baseStats": {
+            "atk": 115,
+            "def": 121,
+            "hp": 105,
+            "spa": 65,
+            "spd": 93,
+            "spe": 91
+        },
+        "color": "Brown",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "gender": "N",
+        "heightm": 3.5,
+        "name": "Gouging Fire",
+        "num": 1020,
+        "tags": [
+            "Paradox"
+        ],
+        "types": [
+            "Fire",
+            "Dragon"
+        ],
+        "weightkg": 590
+    },
     "gourgeist": {
         "abilities": {
             "0": "Pickup",
@@ -17339,6 +17405,37 @@
         ],
         "weightkg": 27
     },
+    "hydrapple": {
+        "abilities": {
+            "0": "Supersweet Syrup",
+            "1": "Regenerator",
+            "H": "Sticky Hold"
+        },
+        "baseStats": {
+            "atk": 80,
+            "def": 110,
+            "hp": 106,
+            "spa": 120,
+            "spd": 80,
+            "spe": 44
+        },
+        "color": "Green",
+        "eggGroups": [
+            "Grass",
+            "Dragon"
+        ],
+        "evoMove": "Dragon Cheer",
+        "evoType": "levelMove",
+        "heightm": 1.8,
+        "name": "Hydrapple",
+        "num": 1019,
+        "prevo": "Dipplin",
+        "types": [
+            "Grass",
+            "Dragon"
+        ],
+        "weightkg": 93
+    },
     "hydreigon": {
         "abilities": {
             "0": "Levitate"
@@ -17717,6 +17814,35 @@
         ],
         "weightkg": 0
     },
+    "ironboulder": {
+        "abilities": {
+            "0": "Quark Drive"
+        },
+        "baseStats": {
+            "atk": 120,
+            "def": 80,
+            "hp": 90,
+            "spa": 68,
+            "spd": 108,
+            "spe": 124
+        },
+        "color": "Gray",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "gender": "N",
+        "heightm": 1.5,
+        "name": "Iron Boulder",
+        "num": 1022,
+        "tags": [
+            "Paradox"
+        ],
+        "types": [
+            "Rock",
+            "Psychic"
+        ],
+        "weightkg": 162.5
+    },
     "ironbundle": {
         "abilities": {
             "0": "Quark Drive"
@@ -17745,6 +17871,35 @@
             "Water"
         ],
         "weightkg": 11
+    },
+    "ironcrown": {
+        "abilities": {
+            "0": "Quark Drive"
+        },
+        "baseStats": {
+            "atk": 72,
+            "def": 100,
+            "hp": 90,
+            "spa": 122,
+            "spd": 108,
+            "spe": 98
+        },
+        "color": "Blue",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "gender": "N",
+        "heightm": 1.6,
+        "name": "Iron Crown",
+        "num": 1023,
+        "tags": [
+            "Paradox"
+        ],
+        "types": [
+            "Steel",
+            "Psychic"
+        ],
+        "weightkg": 156
     },
     "ironhands": {
         "abilities": {
@@ -27101,6 +27256,35 @@
         ],
         "weightkg": 10.2
     },
+    "pecharunt": {
+        "abilities": {
+            "0": "Poison Puppeteer"
+        },
+        "baseStats": {
+            "atk": 88,
+            "def": 160,
+            "hp": 88,
+            "spa": 88,
+            "spd": 88,
+            "spe": 88
+        },
+        "color": "Purple",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "gender": "N",
+        "heightm": 0.3,
+        "name": "Pecharunt",
+        "num": 1024,
+        "tags": [
+            "Mythical"
+        ],
+        "types": [
+            "Poison",
+            "Ghost"
+        ],
+        "weightkg": 0.3
+    },
     "pelipper": {
         "abilities": {
             "0": "Keen Eye",
@@ -30332,6 +30516,35 @@
             "Psychic"
         ],
         "weightkg": 3.5
+    },
+    "ragingbolt": {
+        "abilities": {
+            "0": "Protosynthesis"
+        },
+        "baseStats": {
+            "atk": 73,
+            "def": 91,
+            "hp": 125,
+            "spa": 137,
+            "spd": 89,
+            "spe": 75
+        },
+        "color": "Yellow",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "gender": "N",
+        "heightm": 5.2,
+        "name": "Raging Bolt",
+        "num": 1021,
+        "tags": [
+            "Paradox"
+        ],
+        "types": [
+            "Electric",
+            "Dragon"
+        ],
+        "weightkg": 480
     },
     "raichu": {
         "abilities": {
@@ -38573,6 +38786,105 @@
             "Fire"
         ],
         "weightkg": 9.9
+    },
+    "terapagos": {
+        "abilities": {
+            "0": "Tera Shift"
+        },
+        "baseStats": {
+            "atk": 65,
+            "def": 85,
+            "hp": 90,
+            "spa": 65,
+            "spd": 85,
+            "spe": 60
+        },
+        "color": "Blue",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "forceTeraType": "Stellar",
+        "formeOrder": [
+            "Terapagos",
+            "Terapagos-Terastal",
+            "Terapagos-Stellar"
+        ],
+        "heightm": 0.2,
+        "name": "Terapagos",
+        "num": 1024,
+        "otherFormes": [
+            "Terapagos-Terastal",
+            "Terapagos-Stellar"
+        ],
+        "tags": [
+            "Restricted Legendary"
+        ],
+        "types": [
+            "Normal"
+        ],
+        "weightkg": 6.5
+    },
+    "terapagosstellar": {
+        "abilities": {
+            "0": "Teraform Zero"
+        },
+        "baseSpecies": "Terapagos",
+        "baseStats": {
+            "atk": 105,
+            "def": 110,
+            "hp": 160,
+            "spa": 130,
+            "spd": 110,
+            "spe": 85
+        },
+        "battleOnly": "Terapagos",
+        "color": "Blue",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "forceTeraType": "Stellar",
+        "forme": "Stellar",
+        "heightm": 1.7,
+        "name": "Terapagos-Stellar",
+        "num": 1024,
+        "tags": [
+            "Restricted Legendary"
+        ],
+        "types": [
+            "Normal"
+        ],
+        "weightkg": 77
+    },
+    "terapagosterastal": {
+        "abilities": {
+            "0": "Tera Shell"
+        },
+        "baseSpecies": "Terapagos",
+        "baseStats": {
+            "atk": 95,
+            "def": 110,
+            "hp": 95,
+            "spa": 105,
+            "spd": 110,
+            "spe": 85
+        },
+        "battleOnly": "Terapagos",
+        "color": "Blue",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "forceTeraType": "Stellar",
+        "forme": "Terastal",
+        "heightm": 0.3,
+        "name": "Terapagos-Terastal",
+        "num": 1024,
+        "tags": [
+            "Restricted Legendary"
+        ],
+        "types": [
+            "Normal"
+        ],
+        "weightkg": 16
     },
     "terrakion": {
         "abilities": {

@@ -9641,6 +9641,9 @@
             "Mineral",
             "Dragon"
         ],
+        "evos": [
+            "Archaludon"
+        ],
         "heightm": 1.8,
         "name": "Duraludon",
         "num": 884,

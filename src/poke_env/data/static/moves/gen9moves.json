@@ -206,9 +206,9 @@
         "flags": {
             "distance": 1,
             "mirror": 1,
-            "protect": 1
+            "protect": 1,
+            "wind": 1
         },
-        "isNonstandard": "Past",
         "name": "Aeroblast",
         "num": 177,
         "pp": 5,
@@ -319,6 +319,27 @@
         "secondary": null,
         "target": "normal",
         "type": "Fighting"
+    },
+    "alluringvoice": {
+        "accuracy": 100,
+        "basePower": 80,
+        "category": "Special",
+        "flags": {
+            "bypasssub": 1,
+            "mirror": 1,
+            "protect": 1,
+            "sound": 1
+        },
+        "name": "Alluring Voice",
+        "num": 914,
+        "pp": 10,
+        "priority": 0,
+        "secondary": {
+            "chance": 100,
+            "onHit": "onHit"
+        },
+        "target": "normal",
+        "type": "Fairy"
     },
     "allyswitch": {
         "accuracy": true,
@@ -1115,7 +1136,6 @@
             "nosleeptalk": 1,
             "protect": 1
         },
-        "isNonstandard": "Past",
         "name": "Beak Blast",
         "num": 690,
         "onAfterMove": "onAfterMove",
@@ -1339,6 +1359,7 @@
         ],
         "flags": {
             "contact": 1,
+            "heal": 1,
             "mirror": 1,
             "protect": 1,
             "slicing": 1
@@ -1447,6 +1468,7 @@
         },
         "isNonstandard": "Unobtainable",
         "name": "Blazing Torque",
+        "noSketch": true,
         "num": 896,
         "pp": 10,
         "priority": 0,
@@ -1567,7 +1589,6 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": "Past",
         "name": "Blue Flare",
         "num": 551,
         "pp": 5,
@@ -1648,7 +1669,6 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": "Past",
         "name": "Bolt Strike",
         "num": 550,
         "pp": 5,
@@ -2120,6 +2140,33 @@
         "zMove": {
             "basePower": 140
         }
+    },
+    "burningbulwark": {
+        "accuracy": true,
+        "basePower": 0,
+        "category": "Status",
+        "condition": {
+            "duration": 1,
+            "onHit": "onHit",
+            "onStart": "onStart",
+            "onTryHit": "onTryHit",
+            "onTryHitPriority": 3
+        },
+        "flags": {
+            "failcopycat": 1,
+            "noassist": 1
+        },
+        "name": "Burning Bulwark",
+        "num": 908,
+        "onHit": "onHit",
+        "onPrepareHit": "onPrepareHit",
+        "pp": 10,
+        "priority": 4,
+        "secondary": null,
+        "stallingMove": true,
+        "target": "self",
+        "type": "Fire",
+        "volatileStatus": "burningbulwark"
     },
     "burningjealousy": {
         "accuracy": 100,
@@ -2755,6 +2802,7 @@
         },
         "isNonstandard": "Unobtainable",
         "name": "Combat Torque",
+        "noSketch": true,
         "num": 899,
         "pp": 10,
         "priority": 0,
@@ -2933,7 +2981,6 @@
         "flags": {
             "snatch": 1
         },
-        "isNonstandard": "Past",
         "name": "Conversion",
         "num": 160,
         "onHit": "onHit",
@@ -2960,7 +3007,6 @@
         "flags": {
             "bypasssub": 1
         },
-        "isNonstandard": "Past",
         "name": "Conversion 2",
         "num": 176,
         "onHit": "onHit",
@@ -3349,7 +3395,6 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": "Past",
         "maxMove": {
             "basePower": 140
         },
@@ -3465,6 +3510,7 @@
             "reflectable": 1
         },
         "name": "Dark Void",
+        "noSketch": true,
         "num": 464,
         "onTry": "onTry",
         "pp": 10,
@@ -3505,7 +3551,6 @@
         "flags": {
             "allyanim": 1
         },
-        "isNonstandard": "Past",
         "name": "Decorate",
         "num": 777,
         "pp": 15,
@@ -4128,6 +4173,27 @@
         "target": "normal",
         "type": "Dragon"
     },
+    "dragoncheer": {
+        "accuracy": true,
+        "basePower": 0,
+        "category": "Status",
+        "condition": {
+            "onModifyCritRatio": "onModifyCritRatio",
+            "onStart": "onStart"
+        },
+        "flags": {
+            "allyanim": 1,
+            "bypasssub": 1
+        },
+        "name": "Dragon Cheer",
+        "num": 913,
+        "pp": 15,
+        "priority": 0,
+        "secondary": null,
+        "target": "adjacentAlly",
+        "type": "Dragon",
+        "volatileStatus": "dragoncheer"
+    },
     "dragonclaw": {
         "accuracy": 100,
         "basePower": 80,
@@ -4219,7 +4285,6 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": "Past",
         "name": "Dragon Hammer",
         "num": 692,
         "pp": 15,
@@ -4761,6 +4826,25 @@
         "num": 879,
         "onBasePower": "onBasePower",
         "pp": 5,
+        "priority": 0,
+        "secondary": null,
+        "target": "normal",
+        "type": "Electric"
+    },
+    "electroshot": {
+        "accuracy": 100,
+        "basePower": 130,
+        "category": "Special",
+        "flags": {
+            "charge": 1,
+            "mirror": 1,
+            "protect": 1
+        },
+        "hasSheerForce": true,
+        "name": "Electro Shot",
+        "num": 905,
+        "onTryMove": "onTryMove",
+        "pp": 10,
         "priority": 0,
         "secondary": null,
         "target": "normal",
@@ -5378,6 +5462,23 @@
         "target": "normal",
         "type": "Bug"
     },
+    "ficklebeam": {
+        "accuracy": 100,
+        "basePower": 80,
+        "category": "Special",
+        "flags": {
+            "mirror": 1,
+            "protect": 1
+        },
+        "name": "Fickle Beam",
+        "num": 907,
+        "onBasePower": "onBasePower",
+        "pp": 5,
+        "priority": 0,
+        "secondary": null,
+        "target": "normal",
+        "type": "Dragon"
+    },
     "fierydance": {
         "accuracy": 100,
         "basePower": 80,
@@ -5986,7 +6087,6 @@
             "protect": 1,
             "reflectable": 1
         },
-        "isNonstandard": "Past",
         "name": "Floral Healing",
         "num": 666,
         "onHit": "onHit",
@@ -6335,7 +6435,6 @@
             "nosleeptalk": 1,
             "protect": 1
         },
-        "isNonstandard": "Past",
         "name": "Freeze Shock",
         "num": 553,
         "onTryMove": "onTryMove",
@@ -6533,7 +6632,6 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": "Past",
         "name": "Fusion Bolt",
         "num": 559,
         "onBasePower": "onBasePower",
@@ -6553,7 +6651,6 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": "Past",
         "name": "Fusion Flare",
         "num": 558,
         "onBasePower": "onBasePower",
@@ -6820,7 +6917,6 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": "Past",
         "name": "Glaciate",
         "num": 549,
         "pp": 10,
@@ -8092,6 +8188,24 @@
             }
         }
     },
+    "hardpress": {
+        "accuracy": 100,
+        "basePower": 0,
+        "basePowerCallback": "basePowerCallback",
+        "category": "Physical",
+        "flags": {
+            "contact": 1,
+            "mirror": 1,
+            "protect": 1
+        },
+        "name": "Hard Press",
+        "num": 912,
+        "pp": 10,
+        "priority": 0,
+        "secondary": null,
+        "target": "normal",
+        "type": "Steel"
+    },
     "haze": {
         "accuracy": true,
         "basePower": 0,
@@ -9201,6 +9315,7 @@
             "mirror": 1
         },
         "name": "Hyperspace Fury",
+        "noSketch": true,
         "num": 621,
         "onTry": "onTry",
         "pp": 5,
@@ -9338,7 +9453,6 @@
             "nosleeptalk": 1,
             "protect": 1
         },
-        "isNonstandard": "Past",
         "name": "Ice Burn",
         "num": 554,
         "onTryMove": "onTryMove",
@@ -10695,14 +10809,13 @@
     },
     "lusterpurge": {
         "accuracy": 100,
-        "basePower": 70,
+        "basePower": 95,
         "category": "Special",
         "contestType": "Clever",
         "flags": {
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": "Past",
         "name": "Luster Purge",
         "num": 295,
         "pp": 5,
@@ -10768,6 +10881,7 @@
         },
         "isNonstandard": "Unobtainable",
         "name": "Magical Torque",
+        "noSketch": true,
         "num": 900,
         "pp": 10,
         "priority": 0,
@@ -11016,6 +11130,26 @@
         "target": "normal",
         "type": "Dark"
     },
+    "malignantchain": {
+        "accuracy": 100,
+        "basePower": 100,
+        "category": "Special",
+        "flags": {
+            "mirror": 1,
+            "protect": 1
+        },
+        "isNonstandard": "Unobtainable",
+        "name": "Malignant Chain",
+        "num": 919,
+        "pp": 5,
+        "priority": 0,
+        "secondary": {
+            "chance": 50,
+            "status": "tox"
+        },
+        "target": "normal",
+        "type": "Poison"
+    },
     "matblock": {
         "accuracy": true,
         "basePower": 0,
@@ -11060,6 +11194,7 @@
         ],
         "flags": {
             "defrost": 1,
+            "heal": 1,
             "mirror": 1,
             "protect": 1
         },
@@ -11913,6 +12048,7 @@
             "Surging Strikes",
             "Switcheroo",
             "Techno Blast",
+            "Tera Starstorm",
             "Thief",
             "Thousand Arrows",
             "Thousand Waves",
@@ -11935,6 +12071,23 @@
         "secondary": null,
         "target": "self",
         "type": "Normal"
+    },
+    "mightycleave": {
+        "accuracy": 100,
+        "basePower": 95,
+        "category": "Physical",
+        "flags": {
+            "contact": 1,
+            "mirror": 1,
+            "slicing": 1
+        },
+        "name": "Mighty Cleave",
+        "num": 910,
+        "pp": 5,
+        "priority": 0,
+        "secondary": null,
+        "target": "normal",
+        "type": "Rock"
     },
     "milkdrink": {
         "accuracy": true,
@@ -12207,7 +12360,7 @@
     },
     "mistball": {
         "accuracy": 100,
-        "basePower": 70,
+        "basePower": 95,
         "category": "Special",
         "contestType": "Clever",
         "flags": {
@@ -12215,7 +12368,6 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": "Past",
         "name": "Mist Ball",
         "num": 296,
         "pp": 5,
@@ -12313,7 +12465,6 @@
             "protect": 1
         },
         "ignoreAbility": true,
-        "isNonstandard": "Past",
         "name": "Moongeist Beam",
         "num": 714,
         "pp": 5,
@@ -12890,6 +13041,7 @@
         },
         "isNonstandard": "Unobtainable",
         "name": "Noxious Torque",
+        "noSketch": true,
         "num": 898,
         "pp": 10,
         "priority": 0,
@@ -13447,7 +13599,6 @@
             "protect": 1
         },
         "ignoreAbility": true,
-        "isNonstandard": "Past",
         "name": "Photon Geyser",
         "num": 722,
         "onModifyMove": "onModifyMove",
@@ -14112,7 +14263,6 @@
             "protect": 1,
             "recharge": 1
         },
-        "isNonstandard": "Past",
         "name": "Prismatic Laser",
         "num": 711,
         "pp": 10,
@@ -14235,6 +14385,27 @@
         "target": "normal",
         "type": "Psychic"
     },
+    "psychicnoise": {
+        "accuracy": 100,
+        "basePower": 75,
+        "category": "Special",
+        "flags": {
+            "bypasssub": 1,
+            "mirror": 1,
+            "protect": 1,
+            "sound": 1
+        },
+        "name": "Psychic Noise",
+        "num": 917,
+        "pp": 10,
+        "priority": 0,
+        "secondary": {
+            "chance": 100,
+            "volatileStatus": "healblock"
+        },
+        "target": "normal",
+        "type": "Psychic"
+    },
     "psychicterrain": {
         "accuracy": true,
         "basePower": 0,
@@ -14278,7 +14449,6 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": "Past",
         "name": "Psycho Boost",
         "num": 354,
         "pp": 5,
@@ -15164,9 +15334,12 @@
         "condition": {
             "duration": 1
         },
-        "flags": {},
+        "flags": {
+            "heal": 1
+        },
         "name": "Revival Blessing",
         "noPPBoosts": true,
+        "noSketch": true,
         "num": 863,
         "onTryHit": "onTryHit",
         "pp": 1,
@@ -15411,7 +15584,6 @@
             "protect": 1,
             "recharge": 1
         },
-        "isNonstandard": "Past",
         "name": "Rock Wrecker",
         "num": 439,
         "pp": 5,
@@ -15605,7 +15777,6 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": "Past",
         "name": "Sacred Fire",
         "num": 221,
         "pp": 5,
@@ -16041,7 +16212,6 @@
             "protect": 1,
             "slicing": 1
         },
-        "isNonstandard": "Past",
         "name": "Secret Sword",
         "num": 548,
         "overrideDefensiveStat": "def",
@@ -16710,7 +16880,6 @@
             "noassist": 1,
             "nosleeptalk": 1
         },
-        "isNonstandard": "Past",
         "name": "Sketch",
         "noPPBoosts": true,
         "noSketch": true,
@@ -17489,7 +17658,6 @@
             "protect": 1,
             "sound": 1
         },
-        "isNonstandard": "Past",
         "name": "Sparkling Aria",
         "num": 664,
         "onAfterMove": "onAfterMove",
@@ -18578,7 +18746,6 @@
             "protect": 1
         },
         "ignoreAbility": true,
-        "isNonstandard": "Past",
         "name": "Sunsteel Strike",
         "num": 713,
         "pp": 5,
@@ -18586,6 +18753,25 @@
         "secondary": null,
         "target": "normal",
         "type": "Steel"
+    },
+    "supercellslam": {
+        "accuracy": 95,
+        "basePower": 100,
+        "category": "Physical",
+        "flags": {
+            "contact": 1,
+            "mirror": 1,
+            "protect": 1
+        },
+        "hasCrashDamage": true,
+        "name": "Supercell Slam",
+        "num": 916,
+        "onMoveFail": "onMoveFail",
+        "pp": 15,
+        "priority": 0,
+        "secondary": null,
+        "target": "normal",
+        "type": "Electric"
     },
     "superfang": {
         "accuracy": 90,
@@ -18948,6 +19134,31 @@
         },
         "target": "normal",
         "type": "Grass"
+    },
+    "tachyoncutter": {
+        "accuracy": true,
+        "basePower": 50,
+        "category": "Special",
+        "contestType": "Clever",
+        "flags": {
+            "mirror": 1,
+            "protect": 1,
+            "slicing": 1
+        },
+        "maxMove": {
+            "basePower": 140
+        },
+        "multihit": 2,
+        "name": "Tachyon Cutter",
+        "num": 911,
+        "pp": 10,
+        "priority": 0,
+        "secondary": null,
+        "target": "normal",
+        "type": "Steel",
+        "zMove": {
+            "basePower": 180
+        }
     },
     "tackle": {
         "accuracy": 100,
@@ -19329,9 +19540,28 @@
             "effect": "heal"
         }
     },
+    "temperflare": {
+        "accuracy": 100,
+        "basePower": 75,
+        "basePowerCallback": "basePowerCallback",
+        "category": "Physical",
+        "flags": {
+            "contact": 1,
+            "mirror": 1,
+            "protect": 1
+        },
+        "name": "Temper Flare",
+        "num": 915,
+        "pp": 10,
+        "priority": 0,
+        "secondary": null,
+        "target": "normal",
+        "type": "Fire"
+    },
     "terablast": {
         "accuracy": 100,
         "basePower": 80,
+        "basePowerCallback": "basePowerCallback",
         "category": "Special",
         "flags": {
             "mirror": 1,
@@ -19344,6 +19574,28 @@
         "onModifyType": "onModifyType",
         "onPrepareHit": "onPrepareHit",
         "pp": 10,
+        "priority": 0,
+        "secondary": null,
+        "target": "normal",
+        "type": "Normal"
+    },
+    "terastarstorm": {
+        "accuracy": 100,
+        "basePower": 120,
+        "category": "Special",
+        "flags": {
+            "failcopycat": 1,
+            "failmimic": 1,
+            "mirror": 1,
+            "noassist": 1,
+            "protect": 1
+        },
+        "name": "Tera Starstorm",
+        "noSketch": true,
+        "num": 906,
+        "onModifyMove": "onModifyMove",
+        "onModifyType": "onModifyType",
+        "pp": 5,
         "priority": 0,
         "secondary": null,
         "target": "normal",
@@ -19555,6 +19807,24 @@
         "type": "Electric",
         "volatileStatus": "partiallytrapped"
     },
+    "thunderclap": {
+        "accuracy": 100,
+        "basePower": 70,
+        "category": "Special",
+        "contestType": "Clever",
+        "flags": {
+            "mirror": 1,
+            "protect": 1
+        },
+        "name": "Thunderclap",
+        "num": 909,
+        "onTry": "onTry",
+        "pp": 5,
+        "priority": 1,
+        "secondary": null,
+        "target": "normal",
+        "type": "Electric"
+    },
     "thunderfang": {
         "accuracy": 95,
         "basePower": 65,
@@ -19725,7 +19995,6 @@
             "protect": 1,
             "reflectable": 1
         },
-        "isNonstandard": "Past",
         "name": "Topsy-Turvy",
         "num": 576,
         "onHit": "onHit",
@@ -20118,7 +20387,6 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": "Past",
         "maxMove": {
             "basePower": 80
         },
@@ -20264,6 +20532,27 @@
         },
         "target": "allAdjacentFoes",
         "type": "Dragon"
+    },
+    "upperhand": {
+        "accuracy": 100,
+        "basePower": 65,
+        "category": "Physical",
+        "flags": {
+            "contact": 1,
+            "mirror": 1,
+            "protect": 1
+        },
+        "name": "Upper Hand",
+        "num": 918,
+        "onTryHit": "onTryHit",
+        "pp": 15,
+        "priority": 3,
+        "secondary": {
+            "chance": 100,
+            "volatileStatus": "flinch"
+        },
+        "target": "normal",
+        "type": "Fighting"
     },
     "uproar": {
         "accuracy": 100,
@@ -20857,6 +21146,7 @@
         },
         "isNonstandard": "Unobtainable",
         "name": "Wicked Torque",
+        "noSketch": true,
         "num": 897,
         "pp": 10,
         "priority": 0,
