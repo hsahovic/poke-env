@@ -2113,6 +2113,7 @@
             "protect": 1,
             "slicing": 1
         },
+        "isNonstandard": null,
         "name": "Cut",
         "num": 15,
         "pp": 30,
@@ -12734,6 +12735,7 @@
             "mirror": 1,
             "protect": 1
         },
+        "isNonstandard": null,
         "name": "V-create",
         "num": 557,
         "pp": 5,

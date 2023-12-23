@@ -1809,6 +1809,7 @@
             "protect": 1,
             "slicing": 1
         },
+        "isNonstandard": null,
         "name": "Cut",
         "num": 15,
         "pp": 30,
