@@ -2198,6 +2198,7 @@
             "mirror": 1,
             "protect": 1
         },
+        "isNonstandard": "Unobtainable",
         "name": "Burn Up",
         "num": 682,
         "onTryMove": "onTryMove",
@@ -3095,6 +3096,7 @@
             "protect": 1,
             "reflectable": 1
         },
+        "isNonstandard": "Unobtainable",
         "name": "Corrosive Gas",
         "num": 810,
         "onHit": "onHit",
@@ -3449,6 +3451,7 @@
             "protect": 1,
             "slicing": 1
         },
+        "isNonstandard": "Unobtainable",
         "name": "Cut",
         "num": 15,
         "pp": 30,
@@ -8992,6 +8995,7 @@
             "mirror": 1,
             "protect": 1
         },
+        "isNonstandard": "Unobtainable",
         "name": "Hold Back",
         "num": 610,
         "onDamage": "onDamage",
@@ -9015,6 +9019,7 @@
             "noassist": 1,
             "nosleeptalk": 1
         },
+        "isNonstandard": "Unobtainable",
         "name": "Hold Hands",
         "num": 607,
         "pp": 40,
@@ -20635,6 +20640,7 @@
             "mirror": 1,
             "protect": 1
         },
+        "isNonstandard": "Unobtainable",
         "name": "V-create",
         "num": 557,
         "pp": 5,
