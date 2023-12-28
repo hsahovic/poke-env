@@ -400,7 +400,7 @@ class Player(ABC):
         self,
         opponent: Optional[Union[str, List[str]]],
         n_challenges: int,
-        packed_team: Optional[str],
+        packed_team: Optional[str] = None,
     ):
         """Let the player wait for challenges from opponent, and accept them.
 
@@ -422,6 +422,8 @@ class Player(ABC):
         if packed_team is None:
             packed_team = self.next_team
 
+        import logging
+        logging.warning("AAAHHH in accept_challenges")
         await handle_threaded_coroutines(
             self._accept_challenges(opponent, n_challenges, packed_team)
         )
@@ -432,6 +434,8 @@ class Player(ABC):
         n_challenges: int,
         packed_team: Optional[str],
     ):
+        import logging
+        logging.warning("AAAHHH in _accept_challenges")
         if opponent:
             if isinstance(opponent, list):
                 opponent = [to_id_str(o) for o in opponent]
