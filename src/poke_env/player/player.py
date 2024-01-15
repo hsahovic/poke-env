@@ -422,8 +422,6 @@ class Player(ABC):
         if packed_team is None:
             packed_team = self.next_team
 
-        import logging
-
         await handle_threaded_coroutines(
             self._accept_challenges(opponent, n_challenges, packed_team)
         )
@@ -434,8 +432,6 @@ class Player(ABC):
         n_challenges: int,
         packed_team: Optional[str],
     ):
-        import logging
-
         if opponent:
             if isinstance(opponent, list):
                 opponent = [to_id_str(o) for o in opponent]
