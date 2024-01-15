@@ -423,6 +423,7 @@ class Player(ABC):
             packed_team = self.next_team
 
         import logging
+
         logging.warning("AAAHHH in accept_challenges")
         await handle_threaded_coroutines(
             self._accept_challenges(opponent, n_challenges, packed_team)
@@ -435,6 +436,7 @@ class Player(ABC):
         packed_team: Optional[str],
     ):
         import logging
+
         logging.warning("AAAHHH in _accept_challenges")
         if opponent:
             if isinstance(opponent, list):
