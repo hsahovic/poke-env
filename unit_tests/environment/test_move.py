@@ -161,8 +161,9 @@ def test_flags():
     flame_thrower = Move("flamethrower", gen=8)
     sludge_bomb = Move("sludgebomb", gen=8)
 
-    assert flame_thrower.flags == {"protect", "mirror"}
-    assert sludge_bomb.flags == {"bullet", "protect", "mirror"}
+    print(flame_thrower.flags)
+    assert flame_thrower.flags == {"metronome", "protect", "mirror"}
+    assert sludge_bomb.flags == {"bullet", "metronome", "protect", "mirror"}
     for move in move_generator():
         assert isinstance(move.flags, set)
 
