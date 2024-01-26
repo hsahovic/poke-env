@@ -7112,7 +7112,8 @@
     "cresceidon": {
         "abilities": {
             "0": "Multiscale",
-            "1": "Rough Skin"
+            "1": "Rough Skin",
+            "H": "Water Veil"
         },
         "baseStats": {
             "atk": 32,
@@ -7120,11 +7121,12 @@
             "hp": 80,
             "spa": 88,
             "spd": 99,
-            "spe": 125
+            "spe": 124
         },
         "color": "Blue",
         "eggGroups": [
-            "Undiscovered"
+            "Amorphous",
+            "Water 3"
         ],
         "gen": 9,
         "heightm": 10,
