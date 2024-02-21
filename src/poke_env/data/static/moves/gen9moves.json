@@ -359,6 +359,12 @@
         "accuracy": true,
         "basePower": 0,
         "category": "Status",
+        "condition": {
+            "counterMax": 729,
+            "duration": 2,
+            "onRestart": "onRestart",
+            "onStart": "onStart"
+        },
         "contestType": "Clever",
         "flags": {
             "metronome": 1
@@ -367,11 +373,9 @@
         "num": 502,
         "onHit": "onHit",
         "onPrepareHit": "onPrepareHit",
-        "onTryHit": "onTryHit",
         "pp": 15,
         "priority": 2,
         "secondary": null,
-        "stallingMove": true,
         "target": "self",
         "type": "Psychic",
         "zMove": {
