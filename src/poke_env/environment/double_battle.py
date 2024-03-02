@@ -178,9 +178,9 @@ class DoubleBattle(AbstractBattle):
                 if active_request.get("trapped"):
                     self._trapped[active_pokemon_number] = True
 
-                self._available_moves[
-                    active_pokemon_number
-                ] = active_pokemon.available_moves_from_request(active_request)
+                self._available_moves[active_pokemon_number] = (
+                    active_pokemon.available_moves_from_request(active_request)
+                )
 
                 if active_request.get("canMegaEvo", False):
                     self._can_mega_evolve[active_pokemon_number] = True

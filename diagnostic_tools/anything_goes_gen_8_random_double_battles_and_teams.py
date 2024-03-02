@@ -5,6 +5,7 @@ usage:
 python diagnostic_tools/anything_goes_gen_8_double_battles_and_teams.py <n_battle>
 <log_level> <batch_size>
 """
+
 import asyncio
 import sys
 

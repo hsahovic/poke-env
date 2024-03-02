@@ -1,5 +1,6 @@
 """This module contains objects related to player configuration.
 """
+
 from typing import Counter, NamedTuple, Optional
 
 CONFIGURATION_FROM_PLAYER_COUNTER: Counter[str] = Counter()

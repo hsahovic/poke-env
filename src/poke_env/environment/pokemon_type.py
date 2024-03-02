@@ -1,6 +1,7 @@
 """This module defines the PokemonType class, which represents a Pokemon type.
 PokemonTypes are mainly associated with Pokemons and moves.
 """
+
 from __future__ import annotations
 
 from enum import Enum, auto, unique

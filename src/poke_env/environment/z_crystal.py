@@ -1,6 +1,7 @@
 """This module contains objects related ot z-crystal management. It should not be used
 directly.
 """
+
 from typing import Dict, Optional, Tuple
 
 from poke_env.environment.pokemon_type import PokemonType

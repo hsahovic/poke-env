@@ -1,6 +1,7 @@
 """This module defines the PokemonGender class, which represents the gender of a
 Pokemon.
 """
+
 from __future__ import annotations
 
 from enum import Enum, auto, unique

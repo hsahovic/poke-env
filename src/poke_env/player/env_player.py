@@ -1,5 +1,6 @@
 """This module defines a player class exposing the Open AI Gym API with utility functions.
 """
+
 from abc import ABC
 from threading import Lock
 from typing import Dict, List, Optional, Union

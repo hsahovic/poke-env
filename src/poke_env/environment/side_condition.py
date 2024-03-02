@@ -1,6 +1,7 @@
 """This module defines the SideCondition class, which represents a in-battle side
 condition.
 """
+
 import logging
 from enum import Enum, auto, unique
 
