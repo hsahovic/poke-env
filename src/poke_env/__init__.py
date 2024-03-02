@@ -1,5 +1,6 @@
 """poke_env module init.
 """
+
 import logging
 
 import poke_env.environment as environment

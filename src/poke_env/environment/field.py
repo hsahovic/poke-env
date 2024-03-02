@@ -1,5 +1,6 @@
 """This module defines the Field class, which represents a battle field.
 """
+
 from __future__ import annotations
 
 import logging

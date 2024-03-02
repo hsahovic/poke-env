@@ -1,6 +1,7 @@
 """This module defines the Status class, which represents statuses a pokemon can be
 afflicted with.
 """
+
 from enum import Enum, auto, unique
 
 

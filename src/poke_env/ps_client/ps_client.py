@@ -1,5 +1,6 @@
 """This module defines a base class for communicating with showdown servers.
 """
+
 import asyncio
 import json
 import logging
