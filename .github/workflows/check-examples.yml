@@ -1,4 +1,4 @@
-name: Run tests
+name: Check examples run
 on:
   push:
     branches:
@@ -15,36 +15,26 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
-    strategy:
-      matrix:
-        version: ['3.8', '3.9', '3.10', '3.11']
-
     steps:
       - name: Checkout repository code
         uses: actions/checkout@v4
 
       # Setup Python (faster than using Python container)
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.version }}
+          python-version: 3.11
+
+      - name: Install Python Kernel
+        run: |
+          pip install ipykernel
+          python -m ipykernel install --user --name python3
 
       - name: Install dev dependencies
         run: pip install -r requirements-dev.txt
 
       - name: Install dependencies
         run: pip install -r requirements.txt
-
-      - name: Run tests
-        run: PYTHONPATH=src pytest -x --cov=src/poke_env unit_tests/
-
-      - name: Convert coverage to XML
-        run: coverage xml
-
-      - name: Upload coverage report to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          file: coverage.xml
 
       - name: Build package
         run: |
@@ -56,9 +46,6 @@ jobs:
 
       - name: Remove source
         run: rm -rf ./src
-
-      - name: Run package-based tests
-        run: pytest -x unit_tests/
 
       - name: Setup node
         uses: actions/setup-node@v4
@@ -80,7 +67,7 @@ jobs:
           echo "hash=$hash" >> $GITHUB_OUTPUT
 
       - name: Restore server cache
-        uses: actions/cache@v4
+        uses: actions/cache@v3
         with:
           path: pokemon-showdown/node_modules
           key: showdown-python${{ matrix.version }}-${{ steps.showdown-hash.outputs.hash }}
@@ -105,5 +92,13 @@ jobs:
             done
             sleep 1
 
-      - name: Run integration tests
-        run: pytest -x integration_tests/
+      - name: Run example notebooks
+        run: |
+            for notebook in $(find examples -name '*.ipynb'); do
+              jupyter nbconvert --to notebook --execute "$notebook" --output temp.ipynb
+              if [ $? -ne 0 ]; then
+              echo "Execution of $notebook failed"
+              exit 1
+              fi
+              rm examples/temp.ipynb
+            done
