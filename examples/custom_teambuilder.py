@@ -35,14 +35,14 @@ IVs: 0 Atk
 - Protect
 - Wish
 
-Cinderace (M) @ Life Orb
-Ability: Blaze
+Excadrill (M) @ Life Orb
+Ability: Sand Rush
 EVs: 252 Atk / 4 SpD / 252 Spe
 Jolly Nature
-- Pyro Ball
-- Sucker Punch
-- U-turn
-- High Jump Kick
+- Earthquake
+- Iron Head
+- Rock Slide
+- Rapid Spin
 
 Toxtricity (M) @ Throat Spray
 Ability: Punk Rock
@@ -93,7 +93,7 @@ IVs: 0 Atk
 - Thunder
 - Energy Ball
 
-Cloyster @ King's Rock
+Cloyster @ Focus Sash
 Ability: Skill Link
 EVs: 252 Atk / 4 SpD / 252 Spe
 Adamant Nature
@@ -120,7 +120,7 @@ Adamant Nature
 - Earthquake
 - Rapid Spin
 
-Cinccino @ King's Rock
+Cinccino @ Life Orb
 Ability: Skill Link
 EVs: 252 Atk / 4 Def / 252 Spe
 Jolly Nature
