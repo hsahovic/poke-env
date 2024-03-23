@@ -79,7 +79,7 @@ class Battle(AbstractBattle):
             [m["reviving"] for m in side.get("pokemon", []) if "reviving" in m]
         )
         self._trapped = False
-        self._force_switch = request.get("forceSwitch", False)
+        self._force_switch = request.get("forceSwitch", [False])[0]
 
         if self._force_switch:
             self._move_on_next_request = True
