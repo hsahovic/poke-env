@@ -211,7 +211,7 @@
         "priority": 0,
         "secondary": null,
         "target": "self",
-        "type": "???",
+        "type": "Normal",
         "volatileStatus": "bide"
     },
     "bind": {
@@ -2447,7 +2447,7 @@
             "metronome": 1,
             "snatch": 1
         },
-        "heal": null,
+        "heal": [1, 2],
         "name": "Recover",
         "num": 105,
         "onHit": "onHit",
@@ -2983,7 +2983,7 @@
             "metronome": 1,
             "snatch": 1
         },
-        "heal": null,
+        "heal": [1, 2],
         "name": "Soft-Boiled",
         "num": 135,
         "onHit": "onHit",
