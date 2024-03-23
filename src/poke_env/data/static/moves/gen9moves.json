@@ -21072,7 +21072,7 @@
         },
         "name": "Upper Hand",
         "num": 918,
-        "onTryHit": "onTryHit",
+        "onTry": "onTry",
         "pp": 15,
         "priority": 3,
         "secondary": {

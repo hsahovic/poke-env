@@ -586,7 +586,7 @@
             "spe": 64
         },
         "changesFrom": "Alcremie",
-        "color": "White",
+        "color": "Yellow",
         "eggGroups": [
             "Fairy",
             "Amorphous"
@@ -1925,7 +1925,7 @@
             "spd": 65,
             "spe": 62
         },
-        "color": "Gray",
+        "color": "Blue",
         "eggGroups": [
             "Dragon",
             "Mineral"
@@ -3069,7 +3069,7 @@
             "spd": 86,
             "spe": 87
         },
-        "color": "Gray",
+        "color": "Blue",
         "eggGroups": [
             "Dragon",
             "Mineral"
@@ -4390,7 +4390,7 @@
             "spd": 99,
             "spe": 55
         },
-        "color": "Gray",
+        "color": "White",
         "eggGroups": [
             "Undiscovered"
         ],
@@ -5548,7 +5548,7 @@
             "spd": 100,
             "spe": 85
         },
-        "color": "Blue",
+        "color": "Purple",
         "eggGroups": [
             "Human-Like"
         ],
@@ -9150,7 +9150,7 @@
             "spe": 90
         },
         "changesFrom": "Dialga",
-        "color": "White",
+        "color": "Blue",
         "eggGroups": [
             "Undiscovered"
         ],
@@ -14169,7 +14169,7 @@
             "spd": 70,
             "spe": 10
         },
-        "color": "Brown",
+        "color": "Red",
         "eggGroups": [
             "Undiscovered"
         ],
@@ -14205,7 +14205,7 @@
             "spd": 45,
             "spe": 80
         },
-        "color": "Blue",
+        "color": "Gray",
         "eggGroups": [
             "Undiscovered"
         ],
@@ -17993,7 +17993,7 @@
             "spd": 110,
             "spe": 110
         },
-        "color": "Yellow",
+        "color": "White",
         "eggGroups": [
             "Undiscovered"
         ],
@@ -23937,7 +23937,7 @@
             "spd": 115,
             "spe": 135
         },
-        "color": "Blue",
+        "color": "Purple",
         "eggGroups": [
             "Undiscovered"
         ],
@@ -26056,7 +26056,7 @@
             "spe": 110
         },
         "changesFrom": "Ogerpon",
-        "color": "Green",
+        "color": "Blue",
         "eggGroups": [
             "Undiscovered"
         ],
@@ -26087,7 +26087,7 @@
             "spe": 110
         },
         "battleOnly": "Ogerpon-Wellspring",
-        "color": "Green",
+        "color": "Blue",
         "eggGroups": [
             "Undiscovered"
         ],
@@ -26593,7 +26593,7 @@
             "spd": 65,
             "spe": 85
         },
-        "color": "Gray",
+        "color": "Black",
         "eggGroups": [
             "Water 2"
         ],
@@ -31668,7 +31668,7 @@
             "spd": 101,
             "spe": 119
         },
-        "color": "Green",
+        "color": "Blue",
         "eggGroups": [
             "Undiscovered"
         ],
@@ -35516,7 +35516,7 @@
             "spd": 105,
             "spe": 81
         },
-        "color": "Red",
+        "color": "White",
         "eggGroups": [
             "Undiscovered"
         ],
@@ -36143,7 +36143,7 @@
             "spd": 80,
             "spe": 120
         },
-        "color": "Purple",
+        "color": "Blue",
         "eggGroups": [
             "Field"
         ],
@@ -38508,7 +38508,7 @@
             "spd": 95,
             "spe": 82
         },
-        "color": "Pink",
+        "color": "Red",
         "cosmeticFormes": [
             "Tatsugiri-Droopy",
             "Tatsugiri-Stretchy"
@@ -43310,7 +43310,7 @@
             "spd": 75,
             "spe": 65
         },
-        "color": "White",
+        "color": "Gray",
         "eggGroups": [
             "Field"
         ],
