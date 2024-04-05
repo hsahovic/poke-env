@@ -3586,7 +3586,7 @@
         "name": "Blacephalon",
         "num": 806,
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Fire",
@@ -4707,7 +4707,7 @@
         "name": "Buzzwole",
         "num": 794,
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Bug",
@@ -5467,7 +5467,7 @@
         "name": "Celesteela",
         "num": 797,
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Steel",
@@ -12214,6 +12214,9 @@
         "heightm": 1.4,
         "name": "Fezandipiti",
         "num": 1016,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Poison",
             "Fairy"
@@ -16239,7 +16242,7 @@
         "name": "Guzzlord",
         "num": 799,
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Dark",
@@ -18687,7 +18690,7 @@
         "name": "Kartana",
         "num": 798,
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Grass",
@@ -24695,6 +24698,9 @@
         "heightm": 1,
         "name": "Munkidori",
         "num": 1015,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Poison",
             "Psychic"
@@ -24873,7 +24879,7 @@
         "num": 804,
         "prevo": "Poipole",
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Poison",
@@ -25375,7 +25381,7 @@
         "name": "Nihilego",
         "num": 793,
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Rock",
@@ -25884,6 +25890,9 @@
             "Ogerpon-Hearthflame-Tera",
             "Ogerpon-Cornerstone-Tera"
         ],
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Grass"
         ],
@@ -26193,6 +26202,9 @@
         "heightm": 1.8,
         "name": "Okidogi",
         "num": 1014,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Poison",
             "Fighting"
@@ -27512,7 +27524,7 @@
         "name": "Pheromosa",
         "num": 795,
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Bug",
@@ -28653,7 +28665,7 @@
         "name": "Poipole",
         "num": 803,
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Poison"
@@ -37066,7 +37078,7 @@
         "name": "Stakataka",
         "num": 805,
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Rock",
@@ -38837,9 +38849,6 @@
         "heightm": 1.7,
         "name": "Terapagos-Stellar",
         "num": 1024,
-        "tags": [
-            "Restricted Legendary"
-        ],
         "types": [
             "Normal"
         ],
@@ -38868,9 +38877,6 @@
         "heightm": 0.3,
         "name": "Terapagos-Terastal",
         "num": 1024,
-        "tags": [
-            "Restricted Legendary"
-        ],
         "types": [
             "Normal"
         ],
@@ -43439,7 +43445,7 @@
         "name": "Xurkitree",
         "num": 796,
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Electric"
