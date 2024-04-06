@@ -744,8 +744,9 @@ class AbstractBattle(ABC):
             player, number = split_message[2:4]
             number = int(number)
             self._team_size[player] = number
-        elif split_message[1] in {"message", "-message"} and self.logger is not None:
-            self.logger.info("Received message: %s", split_message[2])
+        elif split_message[1] in {"message", "-message"}:
+            if self.logger is not None:
+                self.logger.info("Received message: %s", split_message[2])
         elif split_message[1] == "-immune":
             if len(split_message) == 4:
                 mon, cause = split_message[2:]
