@@ -182,6 +182,7 @@ class Effect(Enum):
     TAUNT = auto()
     TELEKINESIS = auto()
     TELEPATHY = auto()
+    TERA_SHELL = auto()
     TIDY_UP = auto()
     TOXIC_DEBRIS = auto()
     THERMAL_EXCHANGE = auto()
