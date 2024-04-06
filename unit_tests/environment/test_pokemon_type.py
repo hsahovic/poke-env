@@ -5,7 +5,7 @@ from poke_env.environment import PokemonType
 
 
 def test_number_of_PokemonTypes():
-    assert len(list(PokemonType)) == 19
+    assert len(list(PokemonType)) == 20
 
 
 def test_existence_of_some_PokemonTypes():
