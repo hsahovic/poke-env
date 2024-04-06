@@ -679,6 +679,13 @@ class AbstractBattle(ABC):
         elif split_message[1] == "player":
             if len(split_message) == 6:
                 player, username, avatar, rating = split_message[2:6]
+            elif len(split_message) == 5:
+                player, username, avatar = split_message[2:5]
+                rating = None
+            elif len(split_message) == 4:
+                if split_message[-1] != "":
+                    raise RuntimeError(f"Invalid player message: {split_message}")
+                return
             else:
                 if not self._anybody_inactive:
                     if self._reconnected:
