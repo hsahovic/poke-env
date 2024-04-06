@@ -35,6 +35,7 @@ class PokemonType(Enum):
     STEEL = auto()
     WATER = auto()
     THREE_QUESTION_MARKS = auto()
+    STELLAR = auto()
 
     def __str__(self) -> str:
         return f"{self.name} (pokemon type) object"
