@@ -695,14 +695,24 @@ class AbstractBattle(ABC):
                 return
             if username == self._player_username:
                 self._player_role = player
-            return self._players.append(
-                {
-                    "username": username,
-                    "player": player,
-                    "avatar": avatar,
-                    "rating": rating,
-                }
-            )
+            if rating is not None:
+                return self._players.append(
+                    {
+                        "username": username,
+                        "player": player,
+                        "avatar": avatar,
+                        "rating": rating,
+                    }
+                )
+            else:
+                return self._players.append(
+                    {
+                        "username": username,
+                        "player": player,
+                        "avatar": avatar,
+                    }
+                )
+
         elif split_message[1] == "poke":
             player, details = split_message[2:4]
             self._register_teampreview_pokemon(player, details)
