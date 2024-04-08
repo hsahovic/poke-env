@@ -4,6 +4,7 @@
 from poke_env.concurrency import POKE_LOOP
 from poke_env.player import env_player, openai_api, player, random_player, utils
 from poke_env.player.baselines import MaxBasePowerPlayer, SimpleHeuristicsPlayer
+from poke_env.player.doubles_baselines import DoublesMaxBasePowerPlayer
 from poke_env.player.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
@@ -60,4 +61,5 @@ __all__ = [
     "DoubleBattleOrder",
     "MaxBasePowerPlayer",
     "SimpleHeuristicsPlayer",
+    "DoublesMaxBasePowerPlayer",
 ]
