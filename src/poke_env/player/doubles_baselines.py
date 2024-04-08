@@ -18,8 +18,8 @@ class DoublesMaxBasePowerPlayer(Player):
                 if battle.active_pokemon[i] and battle.available_moves[i]:
 
                     # picks move by highest BP, takes into account spread damage modifier and hitting both targets
-                    best_move_lambda_key = (
-                        lambda move: move.base_power
+                    best_move_lambda_key = lambda move: (
+                        move.base_power
                         if move.target == "normal"
                         else move.base_power * 0.75 * 2
                     )
