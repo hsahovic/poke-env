@@ -109,6 +109,9 @@ class DoubleBattle(AbstractBattle):
         self._trapped = [False, False]
         self._can_tera = [False, False]
         self._force_switch = request.get("forceSwitch", [False, False])
+        self._reviving = any(
+            [mon.get("reviving") for mon in request["side"]["pokemon"]]
+        )
 
         if any(self._force_switch):
             self._move_on_next_request = True
@@ -200,7 +203,13 @@ class DoubleBattle(AbstractBattle):
                 for pokemon in side["pokemon"]:
                     if pokemon:
                         pokemon = self._team[pokemon["ident"]]
-                        if not pokemon.active and not pokemon.fainted:
+                        if (
+                            not self.reviving
+                            and not pokemon.active
+                            and not pokemon.fainted
+                        ):
+                            self._available_switches[pokemon_index].append(pokemon)
+                        if self.reviving and not pokemon.active and pokemon.fainted:
                             self._available_switches[pokemon_index].append(pokemon)
 
     def switch(self, pokemon_str: str, details: str, hp_status: str):
@@ -486,3 +495,11 @@ class DoubleBattle(AbstractBattle):
     @trapped.setter
     def trapped(self, value: List[bool]):
         self._trapped = value
+
+    @property
+    def reviving(self) -> bool:
+        """
+        :return: Whether or not any of the player's Pokemon is reviving.
+        :rtype: bool
+        """
+        return self._reviving

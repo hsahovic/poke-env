@@ -176,6 +176,7 @@ class Effect(Enum):
     SUBSTITUTE = auto()
     SUCTION_CUPS = auto()
     SUPREME_OVERLORD = auto()
+    SYRUP_BOMB = auto()
     SWEET_VEIL = auto()
     SYMBIOSIS = auto()
     SYNCHRONIZE = auto()
