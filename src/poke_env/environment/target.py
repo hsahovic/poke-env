@@ -3,7 +3,12 @@ targets a move can have
 """
 
 import logging
+# from poke_env.environment.double_battle import DoubleBattle
+# from poke_env.environment.pokemon import Pokemon
+import re
 from enum import Enum, unique, auto
+from typing import Optional
+
 
 # This is an enum for all the targets you can have
 @unique
@@ -11,20 +16,19 @@ class Target(Enum):
     """Enumeration, representing targets for each move
     in a battle."""
 
-    UNKNOWN = auto()
-    ADJACENTALLY = auto()
-    ADJACENTALLYORSELF = auto()
-    ADJACENTFOE = auto()
+    ADJACENT_ALLY = auto()
+    ADJACENT_ALLY_OR_SELF = auto()
+    ADJACENT_FOE = auto()
     ALL = auto()
-    ALLADJACENT = auto()
-    ALLADJACENTFOES = auto()
+    ALL_ADJACENT = auto()
+    ALL_ADJACENT_FOES = auto()
     ALLIES = auto()
-    ALLYSIDE = auto()
-    ALLYTEAM = auto()
+    ALLY_SIDE = auto()
+    ALLY_TEAM = auto()
     ANY = auto()
-    FOESIDE = auto()
+    FOE_SIDE = auto()
     NORMAL = auto()
-    RANDOMNORMAL = auto()
+    RANDOM_NORMAL = auto()
     SCRIPTED = auto()
     SELF = auto()
 
@@ -45,13 +49,15 @@ class Target(Enum):
         message = message.replace("-", "_")
 
         try:
-            return Target[message.upper()]
+            # Converts Camel Case targets to readable targets above
+            tokens = re.sub('([A-Z]+)', r' \1', message).split()
+            return Target['_'.join(tokens).upper()]
         except KeyError:
-            logging.getLogger("poke-env").warning(
-                "Unexpected Target '%s' received. Target.UNKNOWN will be used "
-                "instead. If this is unexpected, please open an issue at "
-                "https://github.com/hsahovic/poke-env/issues/ along with this error "
-                "message and a description of your program.",
+            logging.getLogger("poke-env").error(
+                "Unexpected Target '%s' received. If this is unexpected, please"
+                "open an issue at https://github.com/hsahovic/poke-env/issues/"
+                "along with this error message and a description of your "
+                "program.",
                 message,
             )
-            return Target.UNKNOWN
+            raise KeyError

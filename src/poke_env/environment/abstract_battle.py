@@ -751,6 +751,8 @@ class AbstractBattle(ABC):
             if pokemon.terastallized:
                 if pokemon in set(self.opponent_team.values()):
                     self._opponent_can_terrastallize = False
+        elif split_message[1] == "uhtml":
+            x=1
         else:
             raise NotImplementedError(split_message)
 

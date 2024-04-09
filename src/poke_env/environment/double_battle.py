@@ -6,6 +6,7 @@ from poke_env.environment.move import SPECIAL_MOVES, Move
 from poke_env.environment.move_category import MoveCategory
 from poke_env.environment.pokemon import Pokemon
 from poke_env.environment.pokemon_type import PokemonType
+from poke_env.environment.target import Target
 
 
 class DoubleBattle(AbstractBattle):
@@ -328,6 +329,33 @@ class DoubleBattle(AbstractBattle):
         targets = [target for target in targets if target in targets_to_keep]
 
         return targets
+
+    def to_showdown_target(self, move: Move, target_mon: Pokemon) -> Optional[int]:
+        """Returns the correct Showdown target of the Pokemon to be targeted.
+        It will return nothing if no target is needed or if the target_mon is not
+        an active pokemon
+
+        :param move: the move to be used against the target_mon
+        :type move: Move
+        :param target_mon: the Pokemon that is to be targeted
+        :type target_mon: as implemented in poke-env
+        :return: The corresponding showdown target if needed, otherwise nothing
+        :rtype: int
+        """
+
+        if order.move.target in (Target.ANY, Target.NORMAL):
+            if target_mon == self.active_pokemon[0]:
+                return self.POKEMON_1_POSITION
+            elif target_mon == self.active_pokemon[1]:
+                return self.POKEMON_2_POSITION
+            elif target_mon in self.opponent_active_pokemon[0]:
+                return self.OPPONENT_1_POSITION
+            else:
+                return self.OPPONENT_2_POSITION
+
+        # No need to return a target for each of the other target types
+        else:
+            return
 
     @property
     def active_pokemon(self) -> List[Optional[Pokemon]]:
