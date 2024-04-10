@@ -231,11 +231,11 @@ class Move:
         return self.entry.get("damage", 0)
 
     @property
-    def deduced_target(self) -> Optional[str]:
+    def deduced_target(self) -> Optional[Target]:
         """
         :return: Move deduced target, based on Move.target and showdown's request
             messages.
-        :rtype: str, optional
+        :rtype: Optional[Target]
         """
         if self.id in SPECIAL_MOVES:
             return self.target
@@ -512,19 +512,19 @@ class Move:
         return 0.0
 
     @property
-    def request_target(self) -> Optional[str]:
+    def request_target(self) -> Optional[Target]:
         """
         :return: Target information sent by showdown in a request message, if any.
-        :rtype: str, optional
+        :rtype: Optional[Target]
         """
         return self._request_target
 
     @request_target.setter
-    def request_target(self, request_target: Optional[str]):
+    def request_target(self, request_target: str):
         """
         :param request_target: Target information received from showdown in a request
             message.
-        "type request_target: Target, optional
+        :type request_target: str
         """
         self._request_target = Target.from_showdown_message(request_target)
 
@@ -639,10 +639,10 @@ class Move:
         return self.entry.get("stealsBoosts", False)
 
     @property
-    def target(self) -> str:
+    def target(self) -> Optional[Target]:
         """
         :return: Target of the move
-        :rtype: str
+        :rtype: Optional[Target]
         """
         if "target" in self.entry:
             return Target.from_showdown_message(self.entry["target"])
