@@ -3,6 +3,7 @@ targets a move can have
 """
 
 import logging
+
 # from poke_env.environment.double_battle import DoubleBattle
 # from poke_env.environment.pokemon import Pokemon
 import re
@@ -50,8 +51,8 @@ class Target(Enum):
 
         try:
             # Converts Camel Case targets to readable targets above
-            tokens = re.sub('([A-Z]+)', r' \1', message).split()
-            return Target['_'.join(tokens).upper()]
+            tokens = re.sub("([A-Z]+)", r" \1", message).split()
+            return Target["_".join(tokens).upper()]
         except KeyError:
             logging.getLogger("poke-env").error(
                 "Unexpected Target '%s' received. If this is unexpected, please"

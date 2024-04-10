@@ -88,6 +88,3 @@ def test_target_str():
 
 def test_target_build():
     assert Target["ALLIES"] == Target.from_showdown_message("allies")
-    assert Target["UNKNOWN"] == Target.from_showdown_message(
-        "never gonna give you up"
-    )

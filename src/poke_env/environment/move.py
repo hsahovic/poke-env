@@ -524,9 +524,9 @@ class Move:
         """
         :param request_target: Target information received from showdown in a request
             message.
-        "type request_target: str, optional
+        "type request_target: Target, optional
         """
-        self._request_target = request_target
+        self._request_target = Target.from_showdown_message(request_target)
 
     @staticmethod
     @lru_cache(maxsize=4096)
@@ -645,7 +645,7 @@ class Move:
         :rtype: str
         """
         if "target" in self.entry:
-            return Target[self.entry["target"].upper()]
+            return Target.from_showdown_message(self.entry["target"])
         return None
 
     @property

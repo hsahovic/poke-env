@@ -287,29 +287,41 @@ class DoubleBattle(AbstractBattle):
             return [self.EMPTY_TARGET_POSITION]
         else:
             targets = {
-                "adjacentAlly": [ally_position],
-                "adjacentAllyOrSelf": [ally_position, self_position],
-                "adjacentFoe": [self.OPPONENT_1_POSITION, self.OPPONENT_2_POSITION],
-                "all": [self.EMPTY_TARGET_POSITION],
-                "allAdjacent": [self.EMPTY_TARGET_POSITION],
-                "allAdjacentFoes": [self.EMPTY_TARGET_POSITION],
-                "allies": [self.EMPTY_TARGET_POSITION],
-                "allySide": [self.EMPTY_TARGET_POSITION],
-                "allyTeam": [self.EMPTY_TARGET_POSITION],
-                "any": [
+                Target.from_showdown_message("adjacentAlly"): [ally_position],
+                Target.from_showdown_message("adjacentAllyOrSelf"): [
+                    ally_position,
+                    self_position,
+                ],
+                Target.from_showdown_message("adjacentFoe"): [
+                    self.OPPONENT_1_POSITION,
+                    self.OPPONENT_2_POSITION,
+                ],
+                Target.from_showdown_message("all"): [self.EMPTY_TARGET_POSITION],
+                Target.from_showdown_message("allAdjacent"): [
+                    self.EMPTY_TARGET_POSITION
+                ],
+                Target.from_showdown_message("allAdjacentFoes"): [
+                    self.EMPTY_TARGET_POSITION
+                ],
+                Target.from_showdown_message("allies"): [self.EMPTY_TARGET_POSITION],
+                Target.from_showdown_message("allySide"): [self.EMPTY_TARGET_POSITION],
+                Target.from_showdown_message("allyTeam"): [self.EMPTY_TARGET_POSITION],
+                Target.from_showdown_message("any"): [
                     ally_position,
                     self.OPPONENT_1_POSITION,
                     self.OPPONENT_2_POSITION,
                 ],
-                "foeSide": [self.EMPTY_TARGET_POSITION],
-                "normal": [
+                Target.from_showdown_message("foeSide"): [self.EMPTY_TARGET_POSITION],
+                Target.from_showdown_message("normal"): [
                     ally_position,
                     self.OPPONENT_1_POSITION,
                     self.OPPONENT_2_POSITION,
                 ],
-                "randomNormal": [self.EMPTY_TARGET_POSITION],
-                "scripted": [self.EMPTY_TARGET_POSITION],
-                "self": [self.EMPTY_TARGET_POSITION],
+                Target.from_showdown_message("randomNormal"): [
+                    self.EMPTY_TARGET_POSITION
+                ],
+                Target.from_showdown_message("scripted"): [self.EMPTY_TARGET_POSITION],
+                Target.from_showdown_message("self"): [self.EMPTY_TARGET_POSITION],
                 self.EMPTY_TARGET_POSITION: [self.EMPTY_TARGET_POSITION],
                 None: [self.OPPONENT_1_POSITION, self.OPPONENT_2_POSITION],
             }[move.deduced_target]
@@ -330,16 +342,16 @@ class DoubleBattle(AbstractBattle):
 
         return targets
 
-    def to_showdown_target(self, move: Move, target_mon: Pokemon) -> Optional[int]:
+    def to_showdown_target(self, move: Move, target_mon: Pokemon) -> int:
         """Returns the correct Showdown target of the Pokemon to be targeted.
-        It will return nothing if no target is needed or if the target_mon is not
-        an active pokemon
+        It will return 0 if no target is needed or if the target_mon is not
+        an active pokemon; this is meaningless in showdown
 
         :param move: the move to be used against the target_mon
         :type move: Move
         :param target_mon: the Pokemon that is to be targeted
         :type target_mon: as implemented in poke-env
-        :return: The corresponding showdown target if needed, otherwise nothing
+        :return: The corresponding showdown target if needed, otherwise 0
         :rtype: int
         """
 
@@ -355,7 +367,7 @@ class DoubleBattle(AbstractBattle):
 
         # No need to return a target for each of the other target types
         else:
-            return
+            return self.EMPTY_TARGET_POSITION
 
     @property
     def active_pokemon(self) -> List[Optional[Pokemon]]:
