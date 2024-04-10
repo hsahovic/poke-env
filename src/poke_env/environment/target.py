@@ -8,7 +8,6 @@ import logging
 # from poke_env.environment.pokemon import Pokemon
 import re
 from enum import Enum, unique, auto
-from typing import Optional
 
 
 # This is an enum for all the targets you can have

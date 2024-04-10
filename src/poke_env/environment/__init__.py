@@ -47,6 +47,7 @@ __all__ = [
     "STACKABLE_CONDITIONS",
     "SideCondition",
     "Status",
+    "Target",
     "Weather",
     "Z_CRYSTAL",
     "abstract_battle",
