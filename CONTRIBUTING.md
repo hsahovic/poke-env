@@ -12,7 +12,7 @@ To be accepted, your PR must:
 
 - Implement changes that were discussed.
 - Pass tests. We use the following tests:
-    - Your code must be linted using `black`
+    - Your code must be linted using `black` and `isort`
     - Type hints must be consistent, as judged py `pyre`
     - Unit tests, found in `/unit_tests`
     - Integration tests, found in `/integration_tests`
@@ -28,11 +28,11 @@ First, you should use a python virtual environment. Which flavor of virtual envi
 
 This project supports multiple versions of python 3, starting from version 3.8. You can use any supported version for development, but bear in mind that your work will be tested on all supported versions.
 
-Once you have created your virtual environment, install dependencies with `pip install -r requirements.txt` and `pip install -r requirements-dev.txt`. You can now setup pre-commits by running `pre-commit install` - the pre-commit configuration on the repo supposes Python 3.10.5, but you can modify it locally to your liking.
+Once you have created your virtual environment, install dependencies with `pip install -r requirements.txt` and `pip install -r requirements-dev.txt`. You can now setup pre-commits by running `pre-commit install` - the pre-commit configuration on the repo by defaults assumes Python 3.10.5, but you can modify it locally to your liking.
 
 ## Locally testing your commits
 
-First, make sure your code is black-formatted by running `black .`.
+First, make sure your code is black and isort formatted by running `black .` and `isort .`.
 
 To run tests locally, you can run:
 
