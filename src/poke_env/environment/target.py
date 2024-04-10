@@ -7,7 +7,7 @@ import logging
 # from poke_env.environment.double_battle import DoubleBattle
 # from poke_env.environment.pokemon import Pokemon
 import re
-from enum import Enum, unique, auto
+from enum import Enum, auto, unique
 
 
 # This is an enum for all the targets you can have
