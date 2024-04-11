@@ -131,6 +131,22 @@ def test_get_possible_showdown_targets(example_doubles_request):
     assert battle.get_possible_showdown_targets(slackoff, mr_rime, dynamax=True) == [0]
 
 
+def test_to_showdown_target(example_doubles_request):
+    logger = MagicMock()
+    battle = DoubleBattle("tag", "username", logger, gen=8)
+
+    battle.parse_request(example_doubles_request)
+    mr_rime, klinklang = battle.active_pokemon
+    opp1, opp2 = battle.opponent_active_pokemon
+    psychic = mr_rime.moves["psychic"]
+    slackoff = mr_rime.moves["slackoff"]
+
+    assert battle.to_showdown_target(psychic, klinklang) == -2
+    assert battle.to_showdown_target(psychic, opp1) == 0
+    assert battle.to_showdown_target(slackoff, mr_rime) == 0
+    assert battle.to_showdown_target(slackoff, None) == 0
+
+
 def test_end_illusion():
     logger = MagicMock()
     battle = DoubleBattle("tag", "username", logger, gen=8)

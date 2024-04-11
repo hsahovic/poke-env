@@ -8,6 +8,7 @@ from poke_env.environment import (
     MoveCategory,
     PokemonType,
     Status,
+    Target,
     Weather,
 )
 
@@ -460,11 +461,11 @@ def test_target():
     flame_thrower = Move("flamethrower", gen=8)
     earthquake = Move("earthquake", gen=8)
 
-    assert earthquake.target == "allAdjacent"
-    assert flame_thrower.target == "normal"
+    assert earthquake.target == Target.ALL_ADJACENT
+    assert flame_thrower.target == Target.NORMAL
 
     for move in move_generator():
-        assert isinstance(move.target, str)
+        assert isinstance(move.target, Target)
 
 
 def test_terrain():

@@ -11,6 +11,7 @@ from poke_env.environment import (
     pokemon_type,
     side_condition,
     status,
+    target,
     weather,
     z_crystal,
 )
@@ -26,6 +27,7 @@ from poke_env.environment.pokemon_gender import PokemonGender
 from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.side_condition import STACKABLE_CONDITIONS, SideCondition
 from poke_env.environment.status import Status
+from poke_env.environment.target import Target
 from poke_env.environment.weather import Weather
 from poke_env.environment.z_crystal import Z_CRYSTAL
 
@@ -45,6 +47,7 @@ __all__ = [
     "STACKABLE_CONDITIONS",
     "SideCondition",
     "Status",
+    "Target",
     "Weather",
     "Z_CRYSTAL",
     "abstract_battle",
@@ -59,6 +62,7 @@ __all__ = [
     "pokemon_type",
     "side_condition",
     "status",
+    "target",
     "weather",
     "z_crystal",
 ]
