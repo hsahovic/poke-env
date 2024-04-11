@@ -56,6 +56,7 @@ class Player(ABC):
         battle_format: str = "gen9randombattle",
         log_level: Optional[int] = None,
         max_concurrent_battles: int = 1,
+        open_team_sheet: bool = False,
         save_replays: Union[bool, str] = False,
         server_configuration: Optional[ServerConfiguration] = None,
         start_timer_on_battle_start: bool = False,
@@ -79,6 +80,9 @@ class Player(ABC):
         :param max_concurrent_battles: Maximum number of battles this player will play
             concurrently. If 0, no limit will be applied. Defaults to 1.
         :type max_concurrent_battles: int
+        :param open_team_sheet: Boolean to define whether we want to accept or reject open team
+            sheet requests
+        :type team: bool
         :param save_replays: Whether to save battle replays. Can be a boolean, where
             True will lead to replays being saved in a potentially new /replay folder,
             or a string representing a folder where replays will be saved.
@@ -129,6 +133,7 @@ class Player(ABC):
         self._max_concurrent_battles: int = max_concurrent_battles
         self._save_replays = save_replays
         self._start_timer_on_battle_start: bool = start_timer_on_battle_start
+        self._open_team_sheet: bool = open_team_sheet
 
         self._battles: Dict[str, AbstractBattle] = {}
         self._battle_semaphore: Semaphore = create_in_poke_loop(Semaphore, 0)
@@ -349,6 +354,9 @@ class Player(ABC):
                 await self._handle_battle_request(battle, from_teampreview_request=True)
             elif split_message[1] == "bigerror":
                 self.logger.warning("Received 'bigerror' message: %s", split_message)
+            elif split_message[1] == "uhtml":
+                if split_message[2] == "otsrequest":
+                    await self._handle_ots_request(battle.battle_tag)
             else:
                 battle.parse_message(split_message)
 
@@ -380,6 +388,13 @@ class Player(ABC):
             if len(split_message) >= 6:
                 if split_message[5] == self._format:
                     await self._challenge_queue.put(challenging_player)
+
+    async def _handle_ots_request(self, battle_tag: str):
+        """Handles an Open Team Sheet request."""
+        if self.open_team_sheet:
+            await self.ps_client.send_message("/acceptopenteamsheets", room=battle_tag)
+        else:
+            await self.ps_client.send_message("/rejectopenteamsheets", room=battle_tag)
 
     async def _update_challenges(self, split_message: List[str]):
         """Update internal challenge state.
@@ -821,6 +836,10 @@ class Player(ABC):
     @property
     def n_won_battles(self) -> int:
         return len([None for b in self._battles.values() if b.won])
+
+    @property
+    def open_team_sheet(self) -> bool:
+        return self._open_team_sheet
 
     @property
     def win_rate(self) -> float:

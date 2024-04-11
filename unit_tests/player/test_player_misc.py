@@ -39,6 +39,10 @@ def test_player_default_order():
     assert SimplePlayer().choose_default_move().message == "/choose default"
 
 
+def test_open_team_sheet():
+    assert SimplePlayer(open_team_sheet=True).open_team_sheet
+
+
 def test_random_teampreview():
     player = SimplePlayer()
     logger = MagicMock()
@@ -235,3 +239,15 @@ async def test_awaitable_move(send_message_patch):
     with patch.object(player, "choose_move", return_value=return_move()):
         await player._handle_battle_request(battle)
         send_message_patch.assert_called_with("/choose move bite", "bat1")
+
+
+@patch("poke_env.ps_client.ps_client.PSClient.send_message")
+@pytest.mark.asyncio
+async def test_handle_ots_request(send_message_patch):
+    player = SimplePlayer(start_listening=False, open_team_sheet=True)
+    battle = Battle("bat1", player.username, player.logger, 8)
+    battle._teampreview = False
+
+    await player._handle_ots_request(battle.battle_tag)
+
+    send_message_patch.assert_called_with("/acceptopenteamsheets", room="bat1")
