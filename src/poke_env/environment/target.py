@@ -4,8 +4,6 @@ targets a move can have
 
 import logging
 
-# from poke_env.environment.double_battle import DoubleBattle
-# from poke_env.environment.pokemon import Pokemon
 import re
 from enum import Enum, auto, unique
 
