@@ -355,7 +355,11 @@ class DoubleBattle(AbstractBattle):
         :rtype: int
         """
 
-        if move.target and move.target in (Target.ANY, Target.NORMAL) and target_mon is not None:
+        if (
+            move.target
+            and move.target in (Target.ANY, Target.NORMAL)
+            and target_mon is not None
+        ):
             if target_mon == self.active_pokemon[0]:
                 return self.POKEMON_1_POSITION
             elif target_mon == self.active_pokemon[1]:
