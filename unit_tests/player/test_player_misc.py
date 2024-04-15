@@ -40,7 +40,9 @@ def test_player_default_order():
 
 
 def test_open_team_sheet():
-    assert SimplePlayer(open_team_sheet=True).open_team_sheet
+    assert SimplePlayer(accept_open_team_sheet=True).accept_open_team_sheet
+    assert not SimplePlayer(accept_open_team_sheet=False).accept_open_team_sheet
+    assert not SimplePlayer().accept_open_team_sheet
 
 
 def test_random_teampreview():
@@ -244,7 +246,7 @@ async def test_awaitable_move(send_message_patch):
 @patch("poke_env.ps_client.ps_client.PSClient.send_message")
 @pytest.mark.asyncio
 async def test_handle_ots_request(send_message_patch):
-    player = SimplePlayer(start_listening=False, open_team_sheet=True)
+    player = SimplePlayer(start_listening=False, accept_open_team_sheet=True)
     battle = Battle("bat1", player.username, player.logger, 8)
     battle._teampreview = False
 
