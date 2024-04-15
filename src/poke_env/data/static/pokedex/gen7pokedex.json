@@ -11772,6 +11772,7 @@
         "eggGroups": [
             "Dragon"
         ],
+        "evoCondition": "during rain",
         "evoLevel": 50,
         "formeOrder": [
             "Goodra",
@@ -11808,6 +11809,7 @@
         "eggGroups": [
             "Dragon"
         ],
+        "evoCondition": "during rain",
         "evoLevel": 50,
         "forme": "Hisui",
         "heightm": 1.7,

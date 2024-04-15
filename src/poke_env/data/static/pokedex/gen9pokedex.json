@@ -14920,6 +14920,7 @@
         "eggGroups": [
             "Dragon"
         ],
+        "evoCondition": "during rain",
         "evoLevel": 50,
         "formeOrder": [
             "Goodra",
@@ -14956,6 +14957,7 @@
         "eggGroups": [
             "Dragon"
         ],
+        "evoCondition": "during rain",
         "evoLevel": 50,
         "forme": "Hisui",
         "heightm": 1.7,
@@ -19113,7 +19115,7 @@
             "Bug"
         ],
         "evoCondition": "Black Augurite",
-        "evoType": "other",
+        "evoType": "useItem",
         "heightm": 1.8,
         "name": "Kleavor",
         "num": 900,
