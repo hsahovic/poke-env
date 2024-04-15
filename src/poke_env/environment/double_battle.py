@@ -366,7 +366,7 @@ class DoubleBattle(AbstractBattle):
 
         if (
             move.target
-            and move.target in (Target.ANY, Target.NORMAL)
+            and move.target in (Target.ANY, Target.NORMAL, Target.ADJACENT_FOE)
             and target_mon is not None
         ):
             if target_mon == self.active_pokemon[0]:

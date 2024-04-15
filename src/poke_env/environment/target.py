@@ -3,7 +3,6 @@ targets a move can have
 """
 
 import logging
-
 import re
 from enum import Enum, auto, unique
 
