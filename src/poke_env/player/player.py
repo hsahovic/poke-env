@@ -494,6 +494,29 @@ class Player(ABC):
     def choose_random_doubles_move(self, battle: DoubleBattle) -> BattleOrder:
         active_orders: List[List[BattleOrder]] = [[], []]
 
+        if any(battle.force_switch):
+            first_order = None
+            second_order = None
+
+            if battle.force_switch[0] and battle.available_switches[0]:
+                first_switch_in = random.choice(battle.available_switches[0])
+                first_order = BattleOrder(first_switch_in)
+            else:
+                first_switch_in = None
+
+            if battle.force_switch[1] and battle.available_switches[1]:
+                available_switches = [
+                    s for s in battle.available_switches[1] if s != first_switch_in
+                ]
+
+                if available_switches:
+                    second_switch_in = random.choice(available_switches)
+                    second_order = BattleOrder(second_switch_in)
+
+            if first_order and second_order:
+                return DoubleBattleOrder(first_order, second_order)
+            return DoubleBattleOrder(first_order or second_order, None)
+
         for (
             orders,
             mon,
@@ -513,61 +536,57 @@ class Player(ABC):
             battle.can_dynamax,
             battle.can_tera,
         ):
-            if mon:
-                targets = {
-                    move: battle.get_possible_showdown_targets(move, mon)
+            if not mon:
+                continue
+
+            targets = {
+                move: battle.get_possible_showdown_targets(move, mon) for move in moves
+            }
+            orders.extend(
+                [
+                    BattleOrder(move, move_target=target)
                     for move in moves
-                }
+                    for target in targets[move]
+                ]
+            )
+            orders.extend([BattleOrder(switch) for switch in switches])
+
+            if can_mega:
                 orders.extend(
                     [
-                        BattleOrder(move, move_target=target)
+                        BattleOrder(move, move_target=target, mega=True)
                         for move in moves
                         for target in targets[move]
                     ]
                 )
-                orders.extend([BattleOrder(switch) for switch in switches])
+            if can_z_move:
+                available_z_moves = set(mon.available_z_moves)
+                orders.extend(
+                    [
+                        BattleOrder(move, move_target=target, z_move=True)
+                        for move in moves
+                        for target in targets[move]
+                        if move in available_z_moves
+                    ]
+                )
 
-                if can_mega:
-                    orders.extend(
-                        [
-                            BattleOrder(move, move_target=target, mega=True)
-                            for move in moves
-                            for target in targets[move]
-                        ]
-                    )
-                if can_z_move:
-                    available_z_moves = set(mon.available_z_moves)
-                    orders.extend(
-                        [
-                            BattleOrder(move, move_target=target, z_move=True)
-                            for move in moves
-                            for target in targets[move]
-                            if move in available_z_moves
-                        ]
-                    )
+            if can_dynamax:
+                orders.extend(
+                    [
+                        BattleOrder(move, move_target=target, dynamax=True)
+                        for move in moves
+                        for target in targets[move]
+                    ]
+                )
 
-                if can_dynamax:
-                    orders.extend(
-                        [
-                            BattleOrder(move, move_target=target, dynamax=True)
-                            for move in moves
-                            for target in targets[move]
-                        ]
-                    )
-
-                if can_tera:
-                    orders.extend(
-                        [
-                            BattleOrder(move, move_target=target, terastallize=True)
-                            for move in moves
-                            for target in targets[move]
-                        ]
-                    )
-
-                if sum(battle.force_switch) == 1:
-                    if orders:
-                        return orders[int(random.random() * len(orders))]
-                    return self.choose_default_move()
+            if can_tera:
+                orders.extend(
+                    [
+                        BattleOrder(move, move_target=target, terastallize=True)
+                        for move in moves
+                        for target in targets[move]
+                    ]
+                )
 
         orders = DoubleBattleOrder.join_orders(*active_orders)
 
@@ -623,10 +642,10 @@ class Player(ABC):
         :return: Move order
         :rtype: str
         """
-        if isinstance(battle, Battle):
-            return self.choose_random_singles_move(battle)
-        elif isinstance(battle, DoubleBattle):
+        if isinstance(battle, DoubleBattle):
             return self.choose_random_doubles_move(battle)
+        elif isinstance(battle, Battle):
+            return self.choose_random_singles_move(battle)
         else:
             raise ValueError(
                 "battle should be Battle or DoubleBattle. Received %d" % (type(battle))
