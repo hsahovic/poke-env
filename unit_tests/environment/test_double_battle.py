@@ -270,9 +270,6 @@ def test_one_mon_left_in_double_battles_results_in_available_move_in_the_correct
         ["", "swap", "p1b: Cresselia", "0", "[from] move: Ally Switch"]
     )
 
-    print(battle.available_moves)
-    print(battle.active_pokemon)
-
     assert battle.available_moves[0] == []
     assert [m.id for m in battle.available_moves[1]] == ["recover", "haze"]
     assert battle.active_pokemon[0] is None

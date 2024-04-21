@@ -162,7 +162,6 @@ def test_flags():
     flame_thrower = Move("flamethrower", gen=8)
     sludge_bomb = Move("sludgebomb", gen=8)
 
-    print(flame_thrower.flags)
     assert flame_thrower.flags == {"metronome", "protect", "mirror"}
     assert sludge_bomb.flags == {"bullet", "metronome", "protect", "mirror"}
     for move in move_generator():
@@ -343,8 +342,6 @@ def test_secondary():
     assert acid_armor.secondary == []
 
     for move in move_generator():
-        if move.secondary:
-            print(move.id, move.secondary)
         assert isinstance(move.secondary, list)
         for secondary in move.secondary:
             assert isinstance(secondary, dict)
@@ -714,7 +711,6 @@ def test_dynamax_moves_base_power():
     }
 
     for move_name, bp in move_to_dynamax_power.items():
-        print("Expecting", move_name, "to have", bp, "base power once dynamaxed")
         move = Move(move_name, gen=8)
         dynamaxed = move.dynamaxed
         assert dynamaxed == move.dynamaxed == move._dynamaxed_move  # testing caching

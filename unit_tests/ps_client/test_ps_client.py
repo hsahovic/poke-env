@@ -161,14 +161,8 @@ async def test_send_message():
     client.websocket = AsyncMock()
     client.websocket.send = AsyncMock()
 
-    print("b4")
-    print(client.send_message)
-    res = await client.send_message("hey", "home")
-    print("after")
-    print(res)
+    await client.send_message("hey", "home")
 
-    print(client.websocket)
-    print(client.websocket.send)
     client.websocket.send.assert_called_once_with("home|hey")
 
     await client.send_message("hey", "home", "hey again")

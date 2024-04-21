@@ -191,9 +191,6 @@ class Move:
         :return: The move category.
         :rtype: MoveCategory
         """
-        if "category" not in self.entry:
-            print(self, self.entry)
-
         if self._gen <= 3 and self.entry["category"].upper() in {
             "PHYSICAL",
             "SPECIAL",
