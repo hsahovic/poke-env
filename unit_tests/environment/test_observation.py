@@ -47,7 +47,6 @@ def test_observation(example_request):
     battle.parse_message(["", "turn", "3"])
     battle.parse_message(["", "-weather", "SunnyDay"])
 
-
     # Check Observations
     assert 2 in battle.observations
     assert 3 not in battle.observations
