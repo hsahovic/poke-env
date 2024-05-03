@@ -6,6 +6,7 @@ from typing import Any, Dict, List, Optional, Set, Tuple, Union
 from poke_env.data import GenData, to_id_str
 from poke_env.data.replay_template import REPLAY_TEMPLATE
 from poke_env.environment.field import Field
+from poke_env.environment.observation import Observation
 from poke_env.environment.pokemon import Pokemon
 from poke_env.environment.side_condition import STACKABLE_CONDITIONS, SideCondition
 from poke_env.environment.weather import Weather
@@ -72,6 +73,7 @@ class AbstractBattle(ABC):
         "_can_mega_evolve",
         "_can_tera",
         "_can_z_move",
+        "_current_observation",
         "_data",
         "_dynamax_turn",
         "_fields",
@@ -82,6 +84,7 @@ class AbstractBattle(ABC):
         "_max_team_size",
         "_maybe_trapped",
         "_move_on_next_request",
+        "_observations",
         "_opponent_can_dynamax",
         "_opponent_can_mega_evolve",
         "_opponent_can_terrastallize",
@@ -169,6 +172,10 @@ class AbstractBattle(ABC):
         # Pokemon attributes
         self._team: Dict[str, Pokemon] = {}
         self._opponent_team: Dict[str, Pokemon] = {}
+
+        # Initialize Observations
+        self._observations: Dict[int, Observation] = {}
+        self._current_observation: Observation = Observation()
 
     def get_pokemon(
         self,
@@ -381,6 +388,8 @@ class AbstractBattle(ABC):
         if self._save_replays:
             self._replay_data.append(split_message)
 
+        self._current_observation.events.append(split_message)
+
         if split_message[1] in self.MESSAGES_TO_IGNORE:
             return
         elif split_message[1] in ["drag", "switch"]:
@@ -512,6 +521,23 @@ class AbstractBattle(ABC):
             self.get_pokemon(pokemon).cant_move()
         elif split_message[1] == "turn":
             self.end_turn(int(split_message[2]))
+
+            # At end of turn/beginning of next, record the battle state
+            self._current_observation.side_conditions = self.side_conditions
+            self._current_observation.opponent_side_conditions = (
+                self.opponent_side_conditions
+            )
+            self._current_observation.weather = self.weather
+            self._current_observation.fields = self.fields
+            self._current_observation.active_pokemon = self.active_pokemon
+            self._current_observation.opponent_active_pokemon = (
+                self.opponent_active_pokemon
+            )
+            self._current_observation.opponent_team = self.opponent_team
+
+            self.observations[self.turn] = self._current_observation
+            print(self.turn, ": ", self._current_observation)
+            self._current_observation = Observation()
         elif split_message[1] == "-heal":
             pokemon, hp_status = split_message[2:4]
             self.get_pokemon(pokemon).heal(hp_status)
@@ -938,6 +964,14 @@ class AbstractBattle(ABC):
     @abstractmethod
     def maybe_trapped(self) -> Any:
         pass
+
+    @property
+    def observations(self) -> Dict[int, Observation]:
+        """
+        :return: Observations of the battle so far, by turn
+        :rtype: Dict[int, Observation]
+        """
+        return self._observations
 
     @property
     @abstractmethod
