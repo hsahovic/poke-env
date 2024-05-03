@@ -140,11 +140,13 @@ def test_to_showdown_target(example_doubles_request):
     opp1, opp2 = battle.opponent_active_pokemon
     psychic = mr_rime.moves["psychic"]
     slackoff = mr_rime.moves["slackoff"]
+    dynamax_psychic = psychic.dynamaxed
 
     assert battle.to_showdown_target(psychic, klinklang) == -2
     assert battle.to_showdown_target(psychic, opp1) == 0
     assert battle.to_showdown_target(slackoff, mr_rime) == 0
     assert battle.to_showdown_target(slackoff, None) == 0
+    assert battle.to_showdown_target(dynamax_psychic, klinklang) == -2
 
 
 def test_end_illusion():
