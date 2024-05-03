@@ -348,6 +348,10 @@ class AbstractBattle(ABC):
         self._fields[field] = self.turn
 
     def _finish_battle(self):
+
+        # Recording the battle state and save events as we finish up
+        self.observations[self.turn] = self._current_observation
+
         if self._save_replays:
             if self._save_replays is True:
                 folder = "replays"
@@ -520,9 +524,14 @@ class AbstractBattle(ABC):
             pokemon, _ = split_message[2:4]
             self.get_pokemon(pokemon).cant_move()
         elif split_message[1] == "turn":
+
+            # Saving the beginning-of-turn battle state and events as we go into the turn
+            self.observations[self.turn] = self._current_observation
+
             self.end_turn(int(split_message[2]))
 
-            # At end of turn/beginning of next, record the battle state
+            # Create New Observation and record battle state going into the next turn
+            self._current_observation = Observation()
             self._current_observation.side_conditions = self.side_conditions
             self._current_observation.opponent_side_conditions = (
                 self.opponent_side_conditions
@@ -534,10 +543,6 @@ class AbstractBattle(ABC):
                 self.opponent_active_pokemon
             )
             self._current_observation.opponent_team = self.opponent_team
-
-            self.observations[self.turn] = self._current_observation
-            print(self.turn, ": ", self._current_observation)
-            self._current_observation = Observation()
         elif split_message[1] == "-heal":
             pokemon, hp_status = split_message[2:4]
             self.get_pokemon(pokemon).heal(hp_status)
@@ -968,7 +973,9 @@ class AbstractBattle(ABC):
     @property
     def observations(self) -> Dict[int, Observation]:
         """
-        :return: Observations of the battle so far, by turn
+        :return: Observations of the battle on a turn, where the key is the turn number.
+            The Observation stores the battle state at the beginning of the turn,
+            and all the events that transpired on that turn.
         :rtype: Dict[int, Observation]
         """
         return self._observations

@@ -1,5 +1,4 @@
-"""This module defines the Observation class, which stores what an agent can observe
-at the end of each turn.
+"""This module defines the Observation class, which stores the state of the battle
 """
 
 from dataclasses import dataclass, field
