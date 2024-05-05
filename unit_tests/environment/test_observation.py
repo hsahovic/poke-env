@@ -25,6 +25,7 @@ def test_observation(example_request):
 
     battle.parse_message(["", "-weather", "Sandstorm"])
     battle.parse_message(["", "-fieldstart", "move: Grassy Terrain"])
+    battle.parse_message(["", "-fieldstart", "move: Magic Room"])
     battle.parse_message(["", "-sidestart", "p2: RandomPlayer 3", "move: Tailwind"])
     battle.parse_message(["", "-sidestart", "p1: EliteFurretAI", "move: Tailwind"])
     battle.parse_message(["", "-sidestart", "p1: EliteFurretAI", "move: Reflect"])
@@ -47,14 +48,18 @@ def test_observation(example_request):
     battle.parse_message(["", "turn", "3"])
     battle.parse_message(["", "-weather", "SunnyDay"])
 
-    # Check Observations
+    # Check Observations and all attributes
+    # TODO: check all observation attributes
     assert 2 in battle.observations
     assert 3 not in battle.observations
+    assert SideCondition.TAILWIND in battle.observations[2].opponent_side_conditions
+    assert SideCondition.TAILWIND in battle.observations[2].side_conditions
+    assert SideCondition.REFLECT in battle.observations[2].opponent_side_conditions
     assert Weather.SANDSTORM not in battle.observations[1].weather
     assert Weather.SANDSTORM in battle.observations[2].weather
     assert Field.GRASSY_TERRAIN in battle.observations[2].fields
-    assert SideCondition.TAILWIND in battle.observations[2].opponent_side_conditions
-    assert SideCondition.REFLECT in battle.observations[2].opponent_side_conditions
+    assert Field.MAGIC_ROOM in battle.observations[2].fields
+    assert mon.species == battle.observations[2].active_pokemon.species
 
     # Test whether we store the last turn
     battle.tied()

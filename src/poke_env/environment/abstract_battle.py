@@ -1,5 +1,6 @@
 import os
 from abc import ABC, abstractmethod
+from copy import copy
 from logging import Logger
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
@@ -380,7 +381,11 @@ class AbstractBattle(ABC):
                     "{OPPONENT_USERNAME}", f"{self._opponent_username}"
                 )
                 replay_log = f">{self.battle_tag}" + "\n".join(
-                    ["|".join(split_message) for split_message in self._replay_data]
+                    [
+                        "|".join(split_message)
+                        for turn in sorted(self._observations.keys())
+                        for split_message in self._observations[turn].events
+                    ]
                 )
                 formatted_replay = formatted_replay.replace("{REPLAY_LOG}", replay_log)
 
@@ -389,9 +394,6 @@ class AbstractBattle(ABC):
         self._finished = True
 
     def parse_message(self, split_message: List[str]):
-        if self._save_replays:
-            self._replay_data.append(split_message)
-
         self._current_observation.events.append(split_message)
 
         if split_message[1] in self.MESSAGES_TO_IGNORE:
@@ -524,25 +526,21 @@ class AbstractBattle(ABC):
             pokemon, _ = split_message[2:4]
             self.get_pokemon(pokemon).cant_move()
         elif split_message[1] == "turn":
-
             # Saving the beginning-of-turn battle state and events as we go into the turn
             self.observations[self.turn] = self._current_observation
 
             self.end_turn(int(split_message[2]))
 
             # Create New Observation and record battle state going into the next turn
-            self._current_observation = Observation()
-            self._current_observation.side_conditions = self.side_conditions
-            self._current_observation.opponent_side_conditions = (
-                self.opponent_side_conditions
+            self._current_observation = Observation(
+                side_conditions=copy(self.side_conditions),
+                opponent_side_conditions=copy(self.opponent_side_conditions),
+                weather=copy(self.weather),
+                fields=copy(self.fields),
+                active_pokemon=copy(self.active_pokemon),
+                opponent_active_pokemon=copy(self.opponent_active_pokemon),
+                opponent_team=copy(self.opponent_team),
             )
-            self._current_observation.weather = self.weather
-            self._current_observation.fields = self.fields
-            self._current_observation.active_pokemon = self.active_pokemon
-            self._current_observation.opponent_active_pokemon = (
-                self.opponent_active_pokemon
-            )
-            self._current_observation.opponent_team = self.opponent_team
         elif split_message[1] == "-heal":
             pokemon, hp_status = split_message[2:4]
             self.get_pokemon(pokemon).heal(hp_status)

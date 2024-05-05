@@ -12,7 +12,6 @@ from poke_env.environment.weather import Weather
 
 @dataclass
 class Observation:
-
     side_conditions: Dict[SideCondition, int] = field(default_factory=dict)
     opponent_side_conditions: Dict[SideCondition, int] = field(default_factory=dict)
 
