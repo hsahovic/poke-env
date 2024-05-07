@@ -1,6 +1,6 @@
 import os
 from abc import ABC, abstractmethod
-from copy import copy
+from copy import deepcopy
 from logging import Logger
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
@@ -533,13 +533,13 @@ class AbstractBattle(ABC):
 
             # Create New Observation and record battle state going into the next turn
             self._current_observation = Observation(
-                side_conditions=copy(self.side_conditions),
-                opponent_side_conditions=copy(self.opponent_side_conditions),
-                weather=copy(self.weather),
-                fields=copy(self.fields),
-                active_pokemon=copy(self.active_pokemon),
-                opponent_active_pokemon=copy(self.opponent_active_pokemon),
-                opponent_team=copy(self.opponent_team),
+                side_conditions=deepcopy(self.side_conditions),
+                opponent_side_conditions=deepcopy(self.opponent_side_conditions),
+                weather=deepcopy(self.weather),
+                fields=deepcopy(self.fields),
+                active_pokemon=deepcopy(self.active_pokemon),
+                opponent_active_pokemon=deepcopy(self.opponent_active_pokemon),
+                opponent_team=deepcopy(self.opponent_team),
             )
         elif split_message[1] == "-heal":
             pokemon, hp_status = split_message[2:4]
