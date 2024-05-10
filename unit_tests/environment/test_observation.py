@@ -62,8 +62,9 @@ def test_observation(example_request):
     assert Weather.SANDSTORM not in battle.observations[3].weather
 
 
-# TODO: test observedPokemon
 def test_observed_pokemon(example_request):
+    assert ObservedPokemon.from_pokemon(None) is None
+
     logger = MagicMock()
     battle = Battle("tag", "username", logger, gen=8)
 

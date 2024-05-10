@@ -15,7 +15,6 @@ from poke_env.environment.pokemon_type import PokemonType
 
 @dataclass
 class ObservedPokemon:
-
     species: str
     level: int
     stats: Optional[Mapping[str, Union[List[int], int, None]]] = None

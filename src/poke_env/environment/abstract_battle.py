@@ -349,7 +349,6 @@ class AbstractBattle(ABC):
         self._fields[field] = self.turn
 
     def _finish_battle(self):
-
         # Recording the battle state and save events as we finish up
         self.observations[self.turn] = self._current_observation
 
