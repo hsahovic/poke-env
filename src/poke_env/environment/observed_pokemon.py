@@ -5,7 +5,7 @@ what we have observed about a pokemon throughout a battle
 import sys
 from copy import copy
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Mapping, Optional, Union
 
 from poke_env.environment.move import Move
 from poke_env.environment.pokemon import Pokemon
@@ -18,7 +18,7 @@ class ObservedPokemon:
 
     species: str
     level: int
-    stats: Dict[str, Union[int, List[str]]] = None
+    stats: Optional[Mapping[str, Union[List[int], int, None]]] = None
     moves: Dict[str, Move] = field(default_factory=dict)
     ability: Optional[str] = ""
     item: Optional[str] = None

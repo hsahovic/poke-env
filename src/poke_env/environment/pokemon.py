@@ -854,7 +854,7 @@ class Pokemon:
         return self._terastallized
 
     @property
-    def tera_type(self) -> Optional[bool]:
+    def tera_type(self) -> Optional[PokemonType]:
         """
         :return: The Tera Type of the Pokemon, None if unnown
         :rtype: Optional[PokemonType]

@@ -24,6 +24,6 @@ class Observation:
     ] = None
 
     # The opponent's team that has been exposed to the player, for VGC
-    opponent_team: Dict[str, ObservedPokemon] = field(default_factory=dict)
+    opponent_team: Dict[str, Optional[ObservedPokemon]] = field(default_factory=dict)
 
     events: List[List[str]] = field(default_factory=list)
