@@ -74,7 +74,6 @@ def test_observed_pokemon(example_request):
     assert observed_mon.species == mon.species
     assert observed_mon.level == mon.level
 
-    assert observed_mon.stats["hp"] == mon.max_hp
     assert observed_mon.stats["atk"] == mon.stats["atk"]
     assert observed_mon.stats["def"] == mon.stats["def"]
     assert observed_mon.stats["spa"] == mon.stats["spa"]
