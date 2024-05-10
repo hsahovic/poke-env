@@ -7,6 +7,7 @@ from poke_env.environment import (
     move,
     move_category,
     observation,
+    observed_pokemon,
     pokemon,
     pokemon_gender,
     pokemon_type,
@@ -24,6 +25,7 @@ from poke_env.environment.field import Field
 from poke_env.environment.move import SPECIAL_MOVES, EmptyMove, Move
 from poke_env.environment.move_category import MoveCategory
 from poke_env.environment.observation import Observation
+from poke_env.environment.observed_pokemon import ObservedPokemon
 from poke_env.environment.pokemon import Pokemon
 from poke_env.environment.pokemon_gender import PokemonGender
 from poke_env.environment.pokemon_type import PokemonType
@@ -43,6 +45,7 @@ __all__ = [
     "Move",
     "MoveCategory",
     "Observation",
+    "ObservedPokemon",
     "Pokemon",
     "PokemonGender",
     "PokemonType",
@@ -61,6 +64,7 @@ __all__ = [
     "move",
     "move_category",
     "observation",
+    "observed_pokemon",
     "pokemon",
     "pokemon_gender",
     "pokemon_type",

@@ -1,6 +1,13 @@
 from unittest.mock import MagicMock
 
-from poke_env.environment import Battle, Field, Observation, SideCondition, Weather
+from poke_env.environment import (
+    Battle,
+    Field,
+    Observation,
+    ObservedPokemon,
+    SideCondition,
+    Weather,
+)
 
 
 def test_observation(example_request):
@@ -49,6 +56,41 @@ def test_observation(example_request):
     assert Field.GRASSY_TERRAIN in battle.observations[2].fields
     assert Field.MAGIC_ROOM in battle.observations[2].fields
     assert mon.species == battle.observations[2].active_pokemon.species
+    assert mon != battle.observations[2].active_pokemon
 
     assert ["", "-weather", "SunnyDay"] in battle.observations[3].events
     assert Weather.SANDSTORM not in battle.observations[3].weather
+
+
+# TODO: test observedPokemon
+def test_observed_pokemon(example_request):
+    logger = MagicMock()
+    battle = Battle("tag", "username", logger, gen=8)
+
+    battle.parse_request(example_request)
+    mon = battle.active_pokemon
+    observed_mon = ObservedPokemon.from_pokemon(mon)
+
+    assert observed_mon.species == mon.species
+    assert observed_mon.level == mon.level
+
+    assert observed_mon.stats["hp"] == mon.max_hp
+    assert observed_mon.stats["atk"] == mon.stats["atk"]
+    assert observed_mon.stats["def"] == mon.stats["def"]
+    assert observed_mon.stats["spa"] == mon.stats["spa"]
+    assert observed_mon.stats["spd"] == mon.stats["spd"]
+    assert observed_mon.stats["spe"] == mon.stats["spe"]
+
+    # Test that we're copying the moves correctly
+    assert list(observed_mon.moves.keys())[0] == list(mon.moves.keys())[0]
+    mon.moves["leechseed"].use()
+    assert (
+        observed_mon.moves["leechseed"].current_pp
+        == mon.moves["leechseed"].current_pp + 1
+    )
+
+    assert observed_mon.ability == mon.ability
+    assert observed_mon.item == mon.item
+    assert str(observed_mon.gender) == str(mon.gender)
+    assert observed_mon.tera_type == mon.tera_type
+    assert observed_mon.shiny == mon.shiny

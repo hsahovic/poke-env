@@ -1,6 +1,5 @@
 import os
 from abc import ABC, abstractmethod
-from copy import deepcopy
 from logging import Logger
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
@@ -8,6 +7,7 @@ from poke_env.data import GenData, to_id_str
 from poke_env.data.replay_template import REPLAY_TEMPLATE
 from poke_env.environment.field import Field
 from poke_env.environment.observation import Observation
+from poke_env.environment.observed_pokemon import ObservedPokemon
 from poke_env.environment.pokemon import Pokemon
 from poke_env.environment.side_condition import STACKABLE_CONDITIONS, SideCondition
 from poke_env.environment.weather import Weather
@@ -531,15 +531,35 @@ class AbstractBattle(ABC):
 
             self.end_turn(int(split_message[2]))
 
-            # Create New Observation and record battle state going into the next turn
+            opp_active_mon, active_mon = None, None
+            if isinstance(self.opponent_active_pokemon, Pokemon):
+                opp_active_mon = ObservedPokemon.from_pokemon(
+                    self.opponent_active_pokemon
+                )
+                active_mon = ObservedPokemon.from_pokemon(self.active_pokemon)
+            else:
+                opp_active_mon = [
+                    ObservedPokemon.from_pokemon(mon)
+                    for mon in self.opponent_active_pokemon
+                ]
+                active_mon = [
+                    ObservedPokemon.from_pokemon(mon) for mon in self.active_pokemon
+                ]
+
+            # Create new Observation and record battle state going into the next turn
             self._current_observation = Observation(
-                side_conditions=deepcopy(self.side_conditions),
-                opponent_side_conditions=deepcopy(self.opponent_side_conditions),
-                weather=deepcopy(self.weather),
-                fields=deepcopy(self.fields),
-                active_pokemon=deepcopy(self.active_pokemon),
-                opponent_active_pokemon=deepcopy(self.opponent_active_pokemon),
-                opponent_team=deepcopy(self.opponent_team),
+                side_conditions={k: v for (k, v) in self.side_conditions.items()},
+                opponent_side_conditions={
+                    k: v for (k, v) in self.opponent_side_conditions.items()
+                },
+                weather={k: v for (k, v) in self.weather.items()},
+                fields={k: v for (k, v) in self.fields.items()},
+                active_pokemon=active_mon,
+                opponent_active_pokemon=opp_active_mon,
+                opponent_team={
+                    species: ObservedPokemon.from_pokemon(mon)
+                    for (species, mon) in self.opponent_team.items()
+                },
             )
         elif split_message[1] == "-heal":
             pokemon, hp_status = split_message[2:4]

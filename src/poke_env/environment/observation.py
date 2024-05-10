@@ -2,10 +2,10 @@
 """
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Union
+from typing import Dict, List, Optional, Union
 
 from poke_env.environment.field import Field
-from poke_env.environment.pokemon import Pokemon
+from poke_env.environment.observed_pokemon import ObservedPokemon
 from poke_env.environment.side_condition import SideCondition
 from poke_env.environment.weather import Weather
 
@@ -18,10 +18,12 @@ class Observation:
     weather: Dict[Weather, int] = field(default_factory=dict)
     fields: Dict[Field, int] = field(default_factory=dict)
 
-    active_pokemon: Union[Pokemon, List[Pokemon], None] = None
-    opponent_active_pokemon: Union[Pokemon, List[Pokemon], None] = None
+    active_pokemon: Union[ObservedPokemon, List[Optional[ObservedPokemon]], None] = None
+    opponent_active_pokemon: Union[
+        ObservedPokemon, List[Optional[ObservedPokemon]], None
+    ] = None
 
     # The opponent's team that has been exposed to the player, for VGC
-    opponent_team: Dict[str, Pokemon] = field(default_factory=dict)
+    opponent_team: Dict[str, ObservedPokemon] = field(default_factory=dict)
 
     events: List[List[str]] = field(default_factory=list)
