@@ -351,7 +351,7 @@ class DoubleBattle(AbstractBattle):
 
         return targets
 
-    def to_showdown_target(self, move: Move, target_mon: Pokemon) -> int:
+    def to_showdown_target(self, move: Move, target_mon: Optional[Pokemon]) -> int:
         """Returns the correct Showdown target of the Pokemon to be targeted.
         It will return 0 if no target is needed or if the target_mon is not
         an active pokemon; this is meaningless in showdown
@@ -366,7 +366,7 @@ class DoubleBattle(AbstractBattle):
 
         if (
             move.target
-            and move.target in (Target.ANY, Target.NORMAL)
+            and move.target in (Target.ANY, Target.NORMAL, Target.ADJACENT_FOE)
             and target_mon is not None
         ):
             if target_mon == self.active_pokemon[0]:
