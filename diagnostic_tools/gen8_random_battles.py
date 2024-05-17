@@ -4,6 +4,7 @@ usage:
 python diagnostic_tools/gen8_random_battles.py <n_battle> <log_level>\
     <batch_size>
 """
+
 import asyncio
 import sys
 

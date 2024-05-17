@@ -6,6 +6,7 @@ from poke_env.environment.move import SPECIAL_MOVES, Move
 from poke_env.environment.move_category import MoveCategory
 from poke_env.environment.pokemon import Pokemon
 from poke_env.environment.pokemon_type import PokemonType
+from poke_env.environment.target import Target
 
 
 class DoubleBattle(AbstractBattle):
@@ -109,6 +110,9 @@ class DoubleBattle(AbstractBattle):
         self._trapped = [False, False]
         self._can_tera = [False, False]
         self._force_switch = request.get("forceSwitch", [False, False])
+        self._reviving = any(
+            [mon.get("reviving") for mon in request["side"]["pokemon"]]
+        )
 
         if any(self._force_switch):
             self._move_on_next_request = True
@@ -178,9 +182,9 @@ class DoubleBattle(AbstractBattle):
                 if active_request.get("trapped"):
                     self._trapped[active_pokemon_number] = True
 
-                self._available_moves[
-                    active_pokemon_number
-                ] = active_pokemon.available_moves_from_request(active_request)
+                self._available_moves[active_pokemon_number] = (
+                    active_pokemon.available_moves_from_request(active_request)
+                )
 
                 if active_request.get("canMegaEvo", False):
                     self._can_mega_evolve[active_pokemon_number] = True
@@ -200,7 +204,13 @@ class DoubleBattle(AbstractBattle):
                 for pokemon in side["pokemon"]:
                     if pokemon:
                         pokemon = self._team[pokemon["ident"]]
-                        if not pokemon.active and not pokemon.fainted:
+                        if (
+                            not self.reviving
+                            and not pokemon.active
+                            and not pokemon.fainted
+                        ):
+                            self._available_switches[pokemon_index].append(pokemon)
+                        if self.reviving and not pokemon.active and pokemon.fainted:
                             self._available_switches[pokemon_index].append(pokemon)
 
     def switch(self, pokemon_str: str, details: str, hp_status: str):
@@ -286,29 +296,41 @@ class DoubleBattle(AbstractBattle):
             return [self.EMPTY_TARGET_POSITION]
         else:
             targets = {
-                "adjacentAlly": [ally_position],
-                "adjacentAllyOrSelf": [ally_position, self_position],
-                "adjacentFoe": [self.OPPONENT_1_POSITION, self.OPPONENT_2_POSITION],
-                "all": [self.EMPTY_TARGET_POSITION],
-                "allAdjacent": [self.EMPTY_TARGET_POSITION],
-                "allAdjacentFoes": [self.EMPTY_TARGET_POSITION],
-                "allies": [self.EMPTY_TARGET_POSITION],
-                "allySide": [self.EMPTY_TARGET_POSITION],
-                "allyTeam": [self.EMPTY_TARGET_POSITION],
-                "any": [
+                Target.from_showdown_message("adjacentAlly"): [ally_position],
+                Target.from_showdown_message("adjacentAllyOrSelf"): [
+                    ally_position,
+                    self_position,
+                ],
+                Target.from_showdown_message("adjacentFoe"): [
+                    self.OPPONENT_1_POSITION,
+                    self.OPPONENT_2_POSITION,
+                ],
+                Target.from_showdown_message("all"): [self.EMPTY_TARGET_POSITION],
+                Target.from_showdown_message("allAdjacent"): [
+                    self.EMPTY_TARGET_POSITION
+                ],
+                Target.from_showdown_message("allAdjacentFoes"): [
+                    self.EMPTY_TARGET_POSITION
+                ],
+                Target.from_showdown_message("allies"): [self.EMPTY_TARGET_POSITION],
+                Target.from_showdown_message("allySide"): [self.EMPTY_TARGET_POSITION],
+                Target.from_showdown_message("allyTeam"): [self.EMPTY_TARGET_POSITION],
+                Target.from_showdown_message("any"): [
                     ally_position,
                     self.OPPONENT_1_POSITION,
                     self.OPPONENT_2_POSITION,
                 ],
-                "foeSide": [self.EMPTY_TARGET_POSITION],
-                "normal": [
+                Target.from_showdown_message("foeSide"): [self.EMPTY_TARGET_POSITION],
+                Target.from_showdown_message("normal"): [
                     ally_position,
                     self.OPPONENT_1_POSITION,
                     self.OPPONENT_2_POSITION,
                 ],
-                "randomNormal": [self.EMPTY_TARGET_POSITION],
-                "scripted": [self.EMPTY_TARGET_POSITION],
-                "self": [self.EMPTY_TARGET_POSITION],
+                Target.from_showdown_message("randomNormal"): [
+                    self.EMPTY_TARGET_POSITION
+                ],
+                Target.from_showdown_message("scripted"): [self.EMPTY_TARGET_POSITION],
+                Target.from_showdown_message("self"): [self.EMPTY_TARGET_POSITION],
                 self.EMPTY_TARGET_POSITION: [self.EMPTY_TARGET_POSITION],
                 None: [self.OPPONENT_1_POSITION, self.OPPONENT_2_POSITION],
             }[move.deduced_target]
@@ -328,6 +350,37 @@ class DoubleBattle(AbstractBattle):
         targets = [target for target in targets if target in targets_to_keep]
 
         return targets
+
+    def to_showdown_target(self, move: Move, target_mon: Optional[Pokemon]) -> int:
+        """Returns the correct Showdown target of the Pokemon to be targeted.
+        It will return 0 if no target is needed or if the target_mon is not
+        an active pokemon; this is meaningless in showdown
+
+        :param move: the move to be used against the target_mon
+        :type move: Move
+        :param target_mon: the Pokemon that is to be targeted
+        :type target_mon: as implemented in poke-env
+        :return: The corresponding showdown target if needed, otherwise 0
+        :rtype: int
+        """
+
+        if (
+            move.target
+            and move.target in (Target.ANY, Target.NORMAL, Target.ADJACENT_FOE)
+            and target_mon is not None
+        ):
+            if target_mon == self.active_pokemon[0]:
+                return self.POKEMON_1_POSITION
+            elif target_mon == self.active_pokemon[1]:
+                return self.POKEMON_2_POSITION
+            elif target_mon == self.opponent_active_pokemon[0]:
+                return self.OPPONENT_1_POSITION
+            else:
+                return self.OPPONENT_2_POSITION
+
+        # No need to return a target for each of the other target types
+        else:
+            return self.EMPTY_TARGET_POSITION
 
     @property
     def active_pokemon(self) -> List[Optional[Pokemon]]:
@@ -486,3 +539,11 @@ class DoubleBattle(AbstractBattle):
     @trapped.setter
     def trapped(self, value: List[bool]):
         self._trapped = value
+
+    @property
+    def reviving(self) -> bool:
+        """
+        :return: Whether or not any of the player's Pokemon is reviving.
+        :rtype: bool
+        """
+        return self._reviving

@@ -1,4 +1,4 @@
-from poke_env.environment import Move, Pokemon, PokemonType
+from poke_env.environment import Move, Pokemon, PokemonGender, PokemonType
 
 
 def test_pokemon_moves():
@@ -166,3 +166,21 @@ def test_pokemon_base_species():
 
     assert arceus.base_species == "arceus"
     assert acreus_bug.base_species == "arceus"
+
+
+def test_tera_type():
+    charizard = Pokemon(species="charizard", gen=8)
+    assert charizard.tera_type is None
+    charizard.terastallize("bug")
+    assert charizard.tera_type == PokemonType.BUG
+
+
+def test_details():
+    details = "furret, L100, F, tera:normal, shiny"
+    furret = Pokemon(species="furret", gen=8, details=details)
+
+    assert furret.species == "furret"
+    assert furret.level == 100
+    assert furret.shiny
+    assert furret.gender == PokemonGender.FEMALE
+    assert furret.tera_type == PokemonType.NORMAL

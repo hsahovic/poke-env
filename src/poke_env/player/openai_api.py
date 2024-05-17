@@ -1,6 +1,7 @@
 """This module defines a player class with the OpenAI API on the main thread.
 For a black-box implementation consider using the module env_player.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -329,9 +330,8 @@ class OpenAIGymEnv(
         while self.current_battle == self.agent.current_battle:
             time.sleep(0.01)
         self.current_battle = self.agent.current_battle
-        battle = copy.copy(self.current_battle)
-        battle.logger = None
-        self.last_battle = copy.deepcopy(battle)
+        self.current_battle.logger = None
+        self.last_battle = self.current_battle
         return self._observations.get(), self.get_additional_info()
 
     def get_additional_info(self) -> Dict[str, Any]:
@@ -361,7 +361,7 @@ class OpenAIGymEnv(
             raise RuntimeError("Battle is already finished, call reset")
         battle = copy.copy(self.current_battle)
         battle.logger = None
-        self.last_battle = copy.deepcopy(battle)
+        self.last_battle = battle
         self._actions.put(action)
         observation = self._observations.get()
         reward = self.calc_reward(self.last_battle, self.current_battle)
@@ -525,12 +525,12 @@ class OpenAIGymEnv(
             for _ in range(n_challenges):
                 await self.agent.ladder(1)
                 if callback and self.current_battle is not None:
-                    callback(copy.deepcopy(self.current_battle))
+                    callback(self.current_battle)
         else:
             while self._keep_challenging:
                 await self.agent.ladder(1)
                 if callback and self.current_battle is not None:
-                    callback(copy.deepcopy(self.current_battle))
+                    callback(self.current_battle)
 
     def start_laddering(
         self,

@@ -1,6 +1,7 @@
 """This module defines the ConstantTeambuilder class, which is a subclass of
 ShowdownTeamBuilder that yields a constant team.
 """
+
 from poke_env.teambuilder.teambuilder import Teambuilder
 
 

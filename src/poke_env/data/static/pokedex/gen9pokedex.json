@@ -586,7 +586,7 @@
             "spe": 64
         },
         "changesFrom": "Alcremie",
-        "color": "White",
+        "color": "Yellow",
         "eggGroups": [
             "Fairy",
             "Amorphous"
@@ -1925,7 +1925,7 @@
             "spd": 65,
             "spe": 62
         },
-        "color": "Gray",
+        "color": "Blue",
         "eggGroups": [
             "Dragon",
             "Mineral"
@@ -3069,7 +3069,7 @@
             "spd": 86,
             "spe": 87
         },
-        "color": "Gray",
+        "color": "Blue",
         "eggGroups": [
             "Dragon",
             "Mineral"
@@ -3586,7 +3586,7 @@
         "name": "Blacephalon",
         "num": 806,
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Fire",
@@ -4390,7 +4390,7 @@
             "spd": 99,
             "spe": 55
         },
-        "color": "Gray",
+        "color": "White",
         "eggGroups": [
             "Undiscovered"
         ],
@@ -4707,7 +4707,7 @@
         "name": "Buzzwole",
         "num": 794,
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Bug",
@@ -5467,7 +5467,7 @@
         "name": "Celesteela",
         "num": 797,
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Steel",
@@ -5548,7 +5548,7 @@
             "spd": 100,
             "spe": 85
         },
-        "color": "Blue",
+        "color": "Purple",
         "eggGroups": [
             "Human-Like"
         ],
@@ -7723,7 +7723,8 @@
     "cresceidon": {
         "abilities": {
             "0": "Multiscale",
-            "1": "Rough Skin"
+            "1": "Rough Skin",
+            "H": "Water Veil"
         },
         "baseStats": {
             "atk": 32,
@@ -7731,11 +7732,12 @@
             "hp": 80,
             "spa": 88,
             "spd": 99,
-            "spe": 125
+            "spe": 124
         },
         "color": "Blue",
         "eggGroups": [
-            "Undiscovered"
+            "Amorphous",
+            "Water 3"
         ],
         "gen": 9,
         "heightm": 10,
@@ -9148,7 +9150,7 @@
             "spe": 90
         },
         "changesFrom": "Dialga",
-        "color": "White",
+        "color": "Blue",
         "eggGroups": [
             "Undiscovered"
         ],
@@ -12212,6 +12214,9 @@
         "heightm": 1.4,
         "name": "Fezandipiti",
         "num": 1016,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Poison",
             "Fairy"
@@ -14167,7 +14172,7 @@
             "spd": 70,
             "spe": 10
         },
-        "color": "Brown",
+        "color": "Red",
         "eggGroups": [
             "Undiscovered"
         ],
@@ -14203,7 +14208,7 @@
             "spd": 45,
             "spe": 80
         },
-        "color": "Blue",
+        "color": "Gray",
         "eggGroups": [
             "Undiscovered"
         ],
@@ -14915,6 +14920,7 @@
         "eggGroups": [
             "Dragon"
         ],
+        "evoCondition": "during rain",
         "evoLevel": 50,
         "formeOrder": [
             "Goodra",
@@ -14951,6 +14957,7 @@
         "eggGroups": [
             "Dragon"
         ],
+        "evoCondition": "during rain",
         "evoLevel": 50,
         "forme": "Hisui",
         "heightm": 1.7,
@@ -16237,7 +16244,7 @@
         "name": "Guzzlord",
         "num": 799,
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Dark",
@@ -17991,7 +17998,7 @@
             "spd": 110,
             "spe": 110
         },
-        "color": "Yellow",
+        "color": "White",
         "eggGroups": [
             "Undiscovered"
         ],
@@ -18685,7 +18692,7 @@
         "name": "Kartana",
         "num": 798,
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Grass",
@@ -19108,7 +19115,7 @@
             "Bug"
         ],
         "evoCondition": "Black Augurite",
-        "evoType": "other",
+        "evoType": "useItem",
         "heightm": 1.8,
         "name": "Kleavor",
         "num": 900,
@@ -23935,7 +23942,7 @@
             "spd": 115,
             "spe": 135
         },
-        "color": "Blue",
+        "color": "Purple",
         "eggGroups": [
             "Undiscovered"
         ],
@@ -24693,6 +24700,9 @@
         "heightm": 1,
         "name": "Munkidori",
         "num": 1015,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Poison",
             "Psychic"
@@ -24871,7 +24881,7 @@
         "num": 804,
         "prevo": "Poipole",
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Poison",
@@ -25373,7 +25383,7 @@
         "name": "Nihilego",
         "num": 793,
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Rock",
@@ -25882,6 +25892,9 @@
             "Ogerpon-Hearthflame-Tera",
             "Ogerpon-Cornerstone-Tera"
         ],
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Grass"
         ],
@@ -26054,7 +26067,7 @@
             "spe": 110
         },
         "changesFrom": "Ogerpon",
-        "color": "Green",
+        "color": "Blue",
         "eggGroups": [
             "Undiscovered"
         ],
@@ -26085,7 +26098,7 @@
             "spe": 110
         },
         "battleOnly": "Ogerpon-Wellspring",
-        "color": "Green",
+        "color": "Blue",
         "eggGroups": [
             "Undiscovered"
         ],
@@ -26191,6 +26204,9 @@
         "heightm": 1.8,
         "name": "Okidogi",
         "num": 1014,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Poison",
             "Fighting"
@@ -26591,7 +26607,7 @@
             "spd": 65,
             "spe": 85
         },
-        "color": "Gray",
+        "color": "Black",
         "eggGroups": [
             "Water 2"
         ],
@@ -27510,7 +27526,7 @@
         "name": "Pheromosa",
         "num": 795,
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Bug",
@@ -28651,7 +28667,7 @@
         "name": "Poipole",
         "num": 803,
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Poison"
@@ -31666,7 +31682,7 @@
             "spd": 101,
             "spe": 119
         },
-        "color": "Green",
+        "color": "Blue",
         "eggGroups": [
             "Undiscovered"
         ],
@@ -35514,7 +35530,7 @@
             "spd": 105,
             "spe": 81
         },
-        "color": "Red",
+        "color": "White",
         "eggGroups": [
             "Undiscovered"
         ],
@@ -36141,7 +36157,7 @@
             "spd": 80,
             "spe": 120
         },
-        "color": "Purple",
+        "color": "Blue",
         "eggGroups": [
             "Field"
         ],
@@ -37064,7 +37080,7 @@
         "name": "Stakataka",
         "num": 805,
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Rock",
@@ -38506,7 +38522,7 @@
             "spd": 95,
             "spe": 82
         },
-        "color": "Pink",
+        "color": "Red",
         "cosmeticFormes": [
             "Tatsugiri-Droopy",
             "Tatsugiri-Stretchy"
@@ -38835,9 +38851,6 @@
         "heightm": 1.7,
         "name": "Terapagos-Stellar",
         "num": 1024,
-        "tags": [
-            "Restricted Legendary"
-        ],
         "types": [
             "Normal"
         ],
@@ -38866,9 +38879,6 @@
         "heightm": 0.3,
         "name": "Terapagos-Terastal",
         "num": 1024,
-        "tags": [
-            "Restricted Legendary"
-        ],
         "types": [
             "Normal"
         ],
@@ -43308,7 +43318,7 @@
             "spd": 75,
             "spe": 65
         },
-        "color": "White",
+        "color": "Gray",
         "eggGroups": [
             "Field"
         ],
@@ -43437,7 +43447,7 @@
         "name": "Xurkitree",
         "num": 796,
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Electric"

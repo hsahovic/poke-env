@@ -854,6 +854,14 @@ class Pokemon:
         return self._terastallized
 
     @property
+    def tera_type(self) -> Optional[PokemonType]:
+        """
+        :return: The Tera Type of the Pokemon, None if unnown
+        :rtype: Optional[PokemonType]
+        """
+        return self._terastallized_type
+
+    @property
     def type_1(self) -> PokemonType:
         """
         :return: The pokemon's first type.

@@ -586,7 +586,7 @@
             "spe": 64
         },
         "changesFrom": "Alcremie",
-        "color": "White",
+        "color": "Yellow",
         "eggGroups": [
             "Fairy",
             "Amorphous"
@@ -3322,7 +3322,7 @@
         "name": "Blacephalon",
         "num": 806,
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Fire",
@@ -4329,7 +4329,7 @@
         "name": "Buzzwole",
         "num": 794,
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Bug",
@@ -5060,7 +5060,7 @@
         "name": "Celesteela",
         "num": 797,
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Steel",
@@ -7112,7 +7112,8 @@
     "cresceidon": {
         "abilities": {
             "0": "Multiscale",
-            "1": "Rough Skin"
+            "1": "Rough Skin",
+            "H": "Water Veil"
         },
         "baseStats": {
             "atk": 32,
@@ -7120,11 +7121,12 @@
             "hp": 80,
             "spa": 88,
             "spd": 99,
-            "spe": 125
+            "spe": 124
         },
         "color": "Blue",
         "eggGroups": [
-            "Undiscovered"
+            "Amorphous",
+            "Water 3"
         ],
         "gen": 9,
         "heightm": 10,
@@ -8449,7 +8451,7 @@
             "spe": 90
         },
         "changesFrom": "Dialga",
-        "color": "White",
+        "color": "Blue",
         "eggGroups": [
             "Undiscovered"
         ],
@@ -13492,6 +13494,7 @@
         "eggGroups": [
             "Dragon"
         ],
+        "evoCondition": "during rain",
         "evoLevel": 50,
         "formeOrder": [
             "Goodra",
@@ -13528,6 +13531,7 @@
         "eggGroups": [
             "Dragon"
         ],
+        "evoCondition": "during rain",
         "evoLevel": 50,
         "forme": "Hisui",
         "heightm": 1.7,
@@ -14702,7 +14706,7 @@
         "name": "Guzzlord",
         "num": 799,
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Dark",
@@ -16807,7 +16811,7 @@
         "name": "Kartana",
         "num": 798,
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Grass",
@@ -22522,7 +22526,7 @@
         "num": 804,
         "prevo": "Poipole",
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Poison",
@@ -23024,7 +23028,7 @@
         "name": "Nihilego",
         "num": 793,
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Rock",
@@ -24538,7 +24542,7 @@
         "name": "Pheromosa",
         "num": 795,
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Bug",
@@ -25679,7 +25683,7 @@
         "name": "Poipole",
         "num": 803,
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Poison"
@@ -33293,7 +33297,7 @@
         "name": "Stakataka",
         "num": 805,
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Rock",
@@ -38965,7 +38969,7 @@
         "name": "Xurkitree",
         "num": 796,
         "tags": [
-            "Sub-Legendary"
+            "Ultra Beast"
         ],
         "types": [
             "Electric"

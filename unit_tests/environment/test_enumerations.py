@@ -8,6 +8,7 @@ from poke_env.environment import (
     PokemonGender,
     SideCondition,
     Status,
+    Target,
     Weather,
 )
 
@@ -79,3 +80,11 @@ def test_side_condition_build():
 def test_weather_str():
     assert str(Weather["HAIL"])
     assert Weather["UNKNOWN"] == Weather.from_showdown_message("hehehe")
+
+
+def test_target_str():
+    assert str(Target["ALL"])
+
+
+def test_target_build():
+    assert Target["ALLIES"] == Target.from_showdown_message("allies")

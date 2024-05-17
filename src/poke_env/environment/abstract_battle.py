@@ -6,6 +6,8 @@ from typing import Any, Dict, List, Optional, Set, Tuple, Union
 from poke_env.data import GenData, to_id_str
 from poke_env.data.replay_template import REPLAY_TEMPLATE
 from poke_env.environment.field import Field
+from poke_env.environment.observation import Observation
+from poke_env.environment.observed_pokemon import ObservedPokemon
 from poke_env.environment.pokemon import Pokemon
 from poke_env.environment.side_condition import STACKABLE_CONDITIONS, SideCondition
 from poke_env.environment.weather import Weather
@@ -14,44 +16,44 @@ from poke_env.environment.weather import Weather
 class AbstractBattle(ABC):
     MESSAGES_TO_IGNORE = {
         "-anim",
-        "-burst",
         "-block",
+        "-burst",
         "-center",
-        "-crit",
         "-combine",
+        "-crit",
         "-fail",
         "-fieldactivate",
         "-hint",
         "-hitcount",
-        "-ohko",
         "-miss",
         "-notarget",
         "-nothing",
+        "-ohko",
         "-resisted",
         "-singlemove",
         "-singleturn",
         "-supereffective",
         "-waiting",
         "-zbroken",
+        "J",
+        "L",
         "askreg",
-        "debug",
-        "chat",
         "c",
+        "chat",
         "crit",
+        "debug",
         "deinit",
         "gametype",
         "gen",
         "html",
-        "init",
         "immune",
-        "join",
+        "init",
         "j",
-        "J",
-        "leave",
+        "join",
         "l",
-        "L",
-        "name",
+        "leave",
         "n",
+        "name",
         "rated",
         "resisted",
         "split",
@@ -59,6 +61,7 @@ class AbstractBattle(ABC):
         "teampreview",
         "tier",
         "upkeep",
+        "uhtml",
         "zbroken",
     }
 
@@ -71,6 +74,7 @@ class AbstractBattle(ABC):
         "_can_mega_evolve",
         "_can_tera",
         "_can_z_move",
+        "_current_observation",
         "_data",
         "_dynamax_turn",
         "_fields",
@@ -81,6 +85,7 @@ class AbstractBattle(ABC):
         "_max_team_size",
         "_maybe_trapped",
         "_move_on_next_request",
+        "_observations",
         "_opponent_can_dynamax",
         "_opponent_can_mega_evolve",
         "_opponent_can_terrastallize",
@@ -168,6 +173,10 @@ class AbstractBattle(ABC):
         # Pokemon attributes
         self._team: Dict[str, Pokemon] = {}
         self._opponent_team: Dict[str, Pokemon] = {}
+
+        # Initialize Observations
+        self._observations: Dict[int, Observation] = {}
+        self._current_observation: Observation = Observation()
 
     def get_pokemon(
         self,
@@ -340,6 +349,9 @@ class AbstractBattle(ABC):
         self._fields[field] = self.turn
 
     def _finish_battle(self):
+        # Recording the battle state and save events as we finish up
+        self.observations[self.turn] = self._current_observation
+
         if self._save_replays:
             if self._save_replays is True:
                 folder = "replays"
@@ -368,7 +380,11 @@ class AbstractBattle(ABC):
                     "{OPPONENT_USERNAME}", f"{self._opponent_username}"
                 )
                 replay_log = f">{self.battle_tag}" + "\n".join(
-                    ["|".join(split_message) for split_message in self._replay_data]
+                    [
+                        "|".join(split_message)
+                        for turn in sorted(self._observations.keys())
+                        for split_message in self._observations[turn].events
+                    ]
                 )
                 formatted_replay = formatted_replay.replace("{REPLAY_LOG}", replay_log)
 
@@ -377,8 +393,7 @@ class AbstractBattle(ABC):
         self._finished = True
 
     def parse_message(self, split_message: List[str]):
-        if self._save_replays:
-            self._replay_data.append(split_message)
+        self._current_observation.events.append(split_message)
 
         if split_message[1] in self.MESSAGES_TO_IGNORE:
             return
@@ -510,7 +525,41 @@ class AbstractBattle(ABC):
             pokemon, _ = split_message[2:4]
             self.get_pokemon(pokemon).cant_move()
         elif split_message[1] == "turn":
+            # Saving the beginning-of-turn battle state and events as we go into the turn
+            self.observations[self.turn] = self._current_observation
+
             self.end_turn(int(split_message[2]))
+
+            opp_active_mon, active_mon = None, None
+            if isinstance(self.opponent_active_pokemon, Pokemon):
+                opp_active_mon = ObservedPokemon.from_pokemon(
+                    self.opponent_active_pokemon
+                )
+                active_mon = ObservedPokemon.from_pokemon(self.active_pokemon)
+            else:
+                opp_active_mon = [
+                    ObservedPokemon.from_pokemon(mon)
+                    for mon in self.opponent_active_pokemon
+                ]
+                active_mon = [
+                    ObservedPokemon.from_pokemon(mon) for mon in self.active_pokemon
+                ]
+
+            # Create new Observation and record battle state going into the next turn
+            self._current_observation = Observation(
+                side_conditions={k: v for (k, v) in self.side_conditions.items()},
+                opponent_side_conditions={
+                    k: v for (k, v) in self.opponent_side_conditions.items()
+                },
+                weather={k: v for (k, v) in self.weather.items()},
+                fields={k: v for (k, v) in self.fields.items()},
+                active_pokemon=active_mon,
+                opponent_active_pokemon=opp_active_mon,
+                opponent_team={
+                    species: ObservedPokemon.from_pokemon(mon)
+                    for (species, mon) in self.opponent_team.items()
+                },
+            )
         elif split_message[1] == "-heal":
             pokemon, hp_status = split_message[2:4]
             self.get_pokemon(pokemon).heal(hp_status)
@@ -678,6 +727,13 @@ class AbstractBattle(ABC):
         elif split_message[1] == "player":
             if len(split_message) == 6:
                 player, username, avatar, rating = split_message[2:6]
+            elif len(split_message) == 5:
+                player, username, avatar = split_message[2:5]
+                rating = None
+            elif len(split_message) == 4:
+                if split_message[-1] != "":
+                    raise RuntimeError(f"Invalid player message: {split_message}")
+                return
             else:
                 if not self._anybody_inactive:
                     if self._reconnected:
@@ -687,14 +743,24 @@ class AbstractBattle(ABC):
                 return
             if username == self._player_username:
                 self._player_role = player
-            return self._players.append(
-                {
-                    "username": username,
-                    "player": player,
-                    "avatar": avatar,
-                    "rating": rating,
-                }
-            )
+            if rating is not None:
+                return self._players.append(
+                    {
+                        "username": username,
+                        "player": player,
+                        "avatar": avatar,
+                        "rating": rating,
+                    }
+                )
+            else:
+                return self._players.append(
+                    {
+                        "username": username,
+                        "player": player,
+                        "avatar": avatar,
+                    }
+                )
+
         elif split_message[1] == "poke":
             player, details = split_message[2:4]
             self._register_teampreview_pokemon(player, details)
@@ -726,8 +792,9 @@ class AbstractBattle(ABC):
             player, number = split_message[2:4]
             number = int(number)
             self._team_size[player] = number
-        elif split_message[1] in {"message", "-message"} and self.logger is not None:
-            self.logger.info("Received message: %s", split_message[2])
+        elif split_message[1] in {"message", "-message"}:
+            if self.logger is not None:
+                self.logger.info("Received message: %s", split_message[2])
         elif split_message[1] == "-immune":
             if len(split_message) == 4:
                 mon, cause = split_message[2:]
@@ -919,6 +986,16 @@ class AbstractBattle(ABC):
     @abstractmethod
     def maybe_trapped(self) -> Any:
         pass
+
+    @property
+    def observations(self) -> Dict[int, Observation]:
+        """
+        :return: Observations of the battle on a turn, where the key is the turn number.
+            The Observation stores the battle state at the beginning of the turn,
+            and all the events that transpired on that turn.
+        :rtype: Dict[int, Observation]
+        """
+        return self._observations
 
     @property
     @abstractmethod

@@ -7,6 +7,7 @@ from poke_env.environment.field import Field
 from poke_env.environment.move_category import MoveCategory
 from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.status import Status
+from poke_env.environment.target import Target
 from poke_env.environment.weather import Weather
 
 SPECIAL_MOVES: Set[str] = {"struggle", "recharge"}
@@ -190,9 +191,6 @@ class Move:
         :return: The move category.
         :rtype: MoveCategory
         """
-        if "category" not in self.entry:
-            print(self, self.entry)
-
         if self._gen <= 3 and self.entry["category"].upper() in {
             "PHYSICAL",
             "SPECIAL",
@@ -230,11 +228,11 @@ class Move:
         return self.entry.get("damage", 0)
 
     @property
-    def deduced_target(self) -> Optional[str]:
+    def deduced_target(self) -> Optional[Target]:
         """
         :return: Move deduced target, based on Move.target and showdown's request
             messages.
-        :rtype: str, optional
+        :rtype: Optional[Target]
         """
         if self.id in SPECIAL_MOVES:
             return self.target
@@ -511,21 +509,21 @@ class Move:
         return 0.0
 
     @property
-    def request_target(self) -> Optional[str]:
+    def request_target(self) -> Optional[Target]:
         """
         :return: Target information sent by showdown in a request message, if any.
-        :rtype: str, optional
+        :rtype: Optional[Target]
         """
         return self._request_target
 
     @request_target.setter
-    def request_target(self, request_target: Optional[str]):
+    def request_target(self, request_target: str):
         """
         :param request_target: Target information received from showdown in a request
             message.
-        "type request_target: str, optional
+        :type request_target: str
         """
-        self._request_target = request_target
+        self._request_target = Target.from_showdown_message(request_target)
 
     @staticmethod
     @lru_cache(maxsize=4096)
@@ -638,30 +636,14 @@ class Move:
         return self.entry.get("stealsBoosts", False)
 
     @property
-    def target(self) -> str:
+    def target(self) -> Optional[Target]:
         """
-        :return: Move target. Possible targets (copied from PS codebase):
-
-            * adjacentAlly - Only relevant to Doubles or Triples, the move only
-              targets an ally of the user.
-            * adjacentAllyOrSelf - The move can target the user or its ally.
-            * adjacentFoe - The move can target a foe, but not (in Triples)
-              a distant foe.
-            * all - The move targets the field or all Pokémon at once.
-            * allAdjacent - The move is a spread move that also hits the user's ally.
-            * allAdjacentFoes - The move is a spread move.
-            * allies - The move affects all active Pokémon on the user's team.
-            * allySide - The move adds a side condition on the user's side.
-            * allyTeam - The move affects all unfainted Pokémon on the user's team.
-            * any - The move can hit any other active Pokémon, not just those adjacent.
-            * foeSide - The move adds a side condition on the foe's side.
-            * normal - The move can hit one adjacent Pokémon of your choice.
-            * randomNormal - The move targets an adjacent foe at random.
-            * scripted - The move targets the foe that damaged the user.
-            * self - The move affects the user of the move.
-        :rtype: str
+        :return: Target of the move
+        :rtype: Optional[Target]
         """
-        return self.entry["target"]
+        if "target" in self.entry:
+            return Target.from_showdown_message(self.entry["target"])
+        return None
 
     @property
     def terrain(self) -> Optional[Field]:

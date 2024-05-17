@@ -131,6 +131,24 @@ def test_get_possible_showdown_targets(example_doubles_request):
     assert battle.get_possible_showdown_targets(slackoff, mr_rime, dynamax=True) == [0]
 
 
+def test_to_showdown_target(example_doubles_request):
+    logger = MagicMock()
+    battle = DoubleBattle("tag", "username", logger, gen=8)
+
+    battle.parse_request(example_doubles_request)
+    mr_rime, klinklang = battle.active_pokemon
+    opp1, opp2 = battle.opponent_active_pokemon
+    psychic = mr_rime.moves["psychic"]
+    slackoff = mr_rime.moves["slackoff"]
+    dynamax_psychic = psychic.dynamaxed
+
+    assert battle.to_showdown_target(psychic, klinklang) == -2
+    assert battle.to_showdown_target(psychic, opp1) == 0
+    assert battle.to_showdown_target(slackoff, mr_rime) == 0
+    assert battle.to_showdown_target(slackoff, None) == 0
+    assert battle.to_showdown_target(dynamax_psychic, klinklang) == -2
+
+
 def test_end_illusion():
     logger = MagicMock()
     battle = DoubleBattle("tag", "username", logger, gen=8)
@@ -253,9 +271,6 @@ def test_one_mon_left_in_double_battles_results_in_available_move_in_the_correct
     battle.parse_message(
         ["", "swap", "p1b: Cresselia", "0", "[from] move: Ally Switch"]
     )
-
-    print(battle.available_moves)
-    print(battle.active_pokemon)
 
     assert battle.available_moves[0] == []
     assert [m.id for m in battle.available_moves[1]] == ["recover", "haze"]

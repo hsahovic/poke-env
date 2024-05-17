@@ -1,5 +1,6 @@
 """This module defines the Effect class, which represents in-game effects.
 """
+
 from __future__ import annotations
 
 import logging
@@ -54,6 +55,7 @@ class Effect(Enum):
     FALLEN5 = auto()
     FAIRY_LOCK = auto()
     FEINT = auto()
+    FICKLE_BEAM = auto()
     FIRE_SPIN = auto()
     FLASH_FIRE = auto()
     FLOWER_VEIL = auto()
@@ -174,6 +176,7 @@ class Effect(Enum):
     SUBSTITUTE = auto()
     SUCTION_CUPS = auto()
     SUPREME_OVERLORD = auto()
+    SYRUP_BOMB = auto()
     SWEET_VEIL = auto()
     SYMBIOSIS = auto()
     SYNCHRONIZE = auto()
@@ -181,6 +184,8 @@ class Effect(Enum):
     TAUNT = auto()
     TELEKINESIS = auto()
     TELEPATHY = auto()
+    TERA_SHELL = auto()
+    TERA_SHIFT = auto()
     TIDY_UP = auto()
     TOXIC_DEBRIS = auto()
     THERMAL_EXCHANGE = auto()

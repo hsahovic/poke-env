@@ -8,6 +8,7 @@ from poke_env.environment import (
     MoveCategory,
     PokemonType,
     Status,
+    Target,
     Weather,
 )
 
@@ -161,8 +162,8 @@ def test_flags():
     flame_thrower = Move("flamethrower", gen=8)
     sludge_bomb = Move("sludgebomb", gen=8)
 
-    assert flame_thrower.flags == {"protect", "mirror"}
-    assert sludge_bomb.flags == {"bullet", "protect", "mirror"}
+    assert flame_thrower.flags == {"metronome", "protect", "mirror"}
+    assert sludge_bomb.flags == {"bullet", "metronome", "protect", "mirror"}
     for move in move_generator():
         assert isinstance(move.flags, set)
 
@@ -341,8 +342,6 @@ def test_secondary():
     assert acid_armor.secondary == []
 
     for move in move_generator():
-        if move.secondary:
-            print(move.id, move.secondary)
         assert isinstance(move.secondary, list)
         for secondary in move.secondary:
             assert isinstance(secondary, dict)
@@ -459,11 +458,11 @@ def test_target():
     flame_thrower = Move("flamethrower", gen=8)
     earthquake = Move("earthquake", gen=8)
 
-    assert earthquake.target == "allAdjacent"
-    assert flame_thrower.target == "normal"
+    assert earthquake.target == Target.ALL_ADJACENT
+    assert flame_thrower.target == Target.NORMAL
 
     for move in move_generator():
-        assert isinstance(move.target, str)
+        assert isinstance(move.target, Target)
 
 
 def test_terrain():
@@ -712,7 +711,6 @@ def test_dynamax_moves_base_power():
     }
 
     for move_name, bp in move_to_dynamax_power.items():
-        print("Expecting", move_name, "to have", bp, "base power once dynamaxed")
         move = Move(move_name, gen=8)
         dynamaxed = move.dynamaxed
         assert dynamaxed == move.dynamaxed == move._dynamaxed_move  # testing caching
