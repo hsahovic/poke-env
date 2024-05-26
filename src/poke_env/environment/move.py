@@ -8,6 +8,7 @@ from poke_env.environment.move_category import MoveCategory
 from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.status import Status
 from poke_env.environment.target import Target
+from poke_env.environment.volatile_status import VolatileStatus
 from poke_env.environment.weather import Weather
 
 SPECIAL_MOVES: Set[str] = {"struggle", "recharge"}
@@ -681,12 +682,15 @@ class Move:
         return self.entry.get("overrideOffensivePokemon", False) == "target"
 
     @property
-    def volatile_status(self) -> Optional[str]:
+    def volatile_status(self) -> Optional[VolatileStatus]:
         """
         :return: Volatile status inflicted by the move.
         :rtype: str | None
         """
-        return self.entry.get("volatileStatus", None)
+        volatile_status = self.entry.get("volatileStatus", None)
+        if volatile_status is not None:
+            return VolatileStatus.from_name(volatile_status)
+        return volatile_status
 
     @property
     def weather(self) -> Optional[Weather]:
