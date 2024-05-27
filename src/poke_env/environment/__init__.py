@@ -14,6 +14,7 @@ from poke_env.environment import (
     side_condition,
     status,
     target,
+    volatile_status,
     weather,
     z_crystal,
 )
@@ -32,6 +33,7 @@ from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.side_condition import STACKABLE_CONDITIONS, SideCondition
 from poke_env.environment.status import Status
 from poke_env.environment.target import Target
+from poke_env.environment.volatile_status import VolatileStatus
 from poke_env.environment.weather import Weather
 from poke_env.environment.z_crystal import Z_CRYSTAL
 
@@ -54,6 +56,7 @@ __all__ = [
     "SideCondition",
     "Status",
     "Target",
+    "VolatileStatus",
     "Weather",
     "Z_CRYSTAL",
     "abstract_battle",
@@ -71,6 +74,7 @@ __all__ = [
     "side_condition",
     "status",
     "target",
+    "volatile_status",
     "weather",
     "z_crystal",
 ]

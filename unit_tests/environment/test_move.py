@@ -9,6 +9,7 @@ from poke_env.environment import (
     PokemonType,
     Status,
     Target,
+    VolatileStatus,
     Weather,
 )
 
@@ -513,11 +514,14 @@ def test_volatile_status():
     flame_thrower = Move("flamethrower", gen=8)
     heal_block = Move("healblock", gen=8)
 
-    assert heal_block.volatile_status == "healblock"
+    assert heal_block.volatile_status == VolatileStatus.HEALBLOCK
     assert flame_thrower.volatile_status is None
 
     for move in move_generator():
-        assert isinstance(move.volatile_status, str) or move.volatile_status is None
+        assert (
+            isinstance(move.volatile_status, VolatileStatus)
+            or move.volatile_status is None
+        )
 
 
 def test_weather():
