@@ -19597,7 +19597,8 @@
             "onEnd": "onEnd",
             "onResidual": "onResidual",
             "onResidualOrder": 14,
-            "onStart": "onStart"
+            "onStart": "onStart",
+            "onUpdate": "onUpdate"
         },
         "flags": {
             "bullet": 1,
