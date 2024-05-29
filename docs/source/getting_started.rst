@@ -96,5 +96,5 @@ For custom servers, create a ``ServerConfiguration`` object with the server URL 
 .. code-block:: python
 
     from poke_env import Player, ServerConfiguration
-    custom_config = ServerConfiguration("my.custom.host:5432", "authentication-endpoint.com/action.php?")
+    custom_config = ServerConfiguration("ws://my.custom.host:5432/showdown/websocket", "authentication-endpoint.com/action.php?")
     player = Player(server_configuration=custom_config)
