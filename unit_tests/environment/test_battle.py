@@ -162,7 +162,7 @@ def test_battle_request_parsing(example_request):
     battle = Battle("tag", "username", logger, gen=8)
 
     battle.parse_request(example_request)
-    assert battle.force_switch == False
+    assert battle.force_switch is False
 
     mon = battle.active_pokemon
 
@@ -204,7 +204,7 @@ def test_battle_request_parsing_with_force_switch(force_switch_example_request):
 
     battle.parse_request(force_switch_example_request)
 
-    assert battle.force_switch == True
+    assert battle.force_switch is True
 
 
 def test_battle_request_and_interactions(example_request):
