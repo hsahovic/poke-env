@@ -1,0 +1,145 @@
+{
+    "forceSwitch": [
+        true
+    ],
+    "side": {
+        "name": "RandomPlayer 1",
+        "id": "p1",
+        "pokemon": [
+            {
+                "ident": "p1: Glaceon",
+                "details": "Glaceon, L88, M",
+                "condition": "0 fnt",
+                "active": true,
+                "stats": {
+                    "atk": 113,
+                    "def": 244,
+                    "spa": 278,
+                    "spd": 217,
+                    "spe": 165
+                },
+                "moves": [
+                    "protect",
+                    "wish",
+                    "hiddenpowerground",
+                    "icebeam"
+                ],
+                "baseAbility": "snowcloak",
+                "item": "leftovers",
+                "pokeball": "pokeball"
+            },
+            {
+                "ident": "p1: Hitmonchan",
+                "details": "Hitmonchan, L87, M",
+                "condition": "229/229",
+                "active": false,
+                "stats": {
+                    "atk": 232,
+                    "def": 187,
+                    "spa": 111,
+                    "spd": 241,
+                    "spe": 182
+                },
+                "moves": [
+                    "rapidspin",
+                    "stoneedge",
+                    "icepunch",
+                    "drainpunch"
+                ],
+                "baseAbility": "ironfist",
+                "item": "leftovers",
+                "pokeball": "pokeball"
+            },
+            {
+                "ident": "p1: Raikou",
+                "details": "Raikou, L76",
+                "condition": "262/262",
+                "active": false,
+                "stats": {
+                    "atk": 135,
+                    "def": 157,
+                    "spa": 219,
+                    "spd": 196,
+                    "spe": 219
+                },
+                "moves": [
+                    "aurasphere",
+                    "thunderbolt",
+                    "hiddenpowerice",
+                    "calmmind"
+                ],
+                "baseAbility": "pressure",
+                "item": "lifeorb",
+                "pokeball": "pokeball"
+            },
+            {
+                "ident": "p1: Gyarados",
+                "details": "Gyarados, L78, F",
+                "condition": "276/276",
+                "active": false,
+                "stats": {
+                    "atk": 240,
+                    "def": 168,
+                    "spa": 139,
+                    "spd": 201,
+                    "spe": 171
+                },
+                "moves": [
+                    "dragondance",
+                    "earthquake",
+                    "substitute",
+                    "waterfall"
+                ],
+                "baseAbility": "intimidate",
+                "item": "leftovers",
+                "pokeball": "pokeball"
+            },
+            {
+                "ident": "p1: Magmortar",
+                "details": "Magmortar, L83, M",
+                "condition": "129/260",
+                "active": false,
+                "stats": {
+                    "atk": 162,
+                    "def": 159,
+                    "spa": 255,
+                    "spd": 205,
+                    "spe": 185
+                },
+                "moves": [
+                    "fireblast",
+                    "thunderbolt",
+                    "focusblast",
+                    "substitute"
+                ],
+                "baseAbility": "flamebody",
+                "item": "leftovers",
+                "pokeball": "pokeball"
+            },
+            {
+                "ident": "p1: Meganium",
+                "details": "Meganium, L90, M",
+                "condition": "52/290",
+                "active": false,
+                "stats": {
+                    "atk": 152,
+                    "def": 231,
+                    "spa": 201,
+                    "spd": 231,
+                    "spe": 195
+                },
+                "moves": [
+                    "energyball",
+                    "aromatherapy",
+                    "synthesis",
+                    "leechseed"
+                ],
+                "baseAbility": "overgrow",
+                "item": "leftovers",
+                "pokeball": "pokeball"
+            }
+        ]
+    },
+    "noCancel": true,
+    "rqid": 20
+}
