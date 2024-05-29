@@ -353,4 +353,4 @@ class PSClient:
         :return: The websocket url.
         :rtype: str
         """
-        return f"ws://{self.server_configuration.server_url}/showdown/websocket"
+        return self.server_configuration.websocket_url
