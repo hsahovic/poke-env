@@ -11,7 +11,9 @@ from poke_env.player import PSClient
 
 account_configuration = AccountConfiguration("username", "password")
 requests_tuple = namedtuple("requests_tuple", ["text"])
-server_configuration = ServerConfiguration("ws://server.url/showdown/websocket", "auth.url")
+server_configuration = ServerConfiguration(
+    "ws://server.url/showdown/websocket", "auth.url"
+)
 
 
 def test_init_and_properties():
