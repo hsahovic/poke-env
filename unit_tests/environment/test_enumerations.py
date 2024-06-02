@@ -23,6 +23,29 @@ def test_effect_build():
     assert Effect["CUSTAP_BERRY"] == Effect.from_showdown_message("item: custap berry")
     assert Effect["UNKNOWN"] == Effect.from_showdown_message("i don't know")
 
+    assert Effect["HEAL_BLOCK"] == Effect.from_data("healblock")
+
+    assert Effect["FEINT"].breaks_protect
+    assert not Effect["HEAL_BLOCK"].breaks_protect
+
+    assert Effect["HEAL_BLOCK"].is_turn_countable
+    assert not Effect["FEINT"].is_turn_countable
+
+    assert Effect["RAGE"].is_action_countable
+    assert not Effect["HEAL_BLOCK"].is_action_countable
+
+    assert Effect["FLINCH"].is_volatile_status
+    assert not Effect["TERA_SHELL"].is_volatile_status
+
+    assert Effect["TERA_SHELL"].is_from_ability
+    assert not Effect["HEAL_BLOCK"].is_from_ability
+
+    assert Effect["CUSTAP_BERRY"].is_from_item
+    assert not Effect["HEAL_BLOCK"].is_from_item
+
+    assert Effect["OCTOLOCK"].is_from_move
+    assert not Effect["TERA_SHELL"].is_from_move
+
 
 def test_field_str():
     assert str(Field["ELECTRIC_TERRAIN"])

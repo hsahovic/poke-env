@@ -3,6 +3,7 @@ from functools import lru_cache
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 from poke_env.data import GenData, to_id_str
+from poke_env.environment.effect import Effect
 from poke_env.environment.field import Field
 from poke_env.environment.move_category import MoveCategory
 from poke_env.environment.pokemon_type import PokemonType
@@ -681,12 +682,19 @@ class Move:
         return self.entry.get("overrideOffensivePokemon", False) == "target"
 
     @property
-    def volatile_status(self) -> Optional[str]:
+    def volatile_status(self) -> Optional[Effect]:
         """
         :return: Volatile status inflicted by the move.
-        :rtype: str | None
+        :rtype: Effect | None
         """
-        return self.entry.get("volatileStatus", None)
+        vs = self.entry.get("volatileStatus", None)
+        if vs is not None:
+            vs = Effect.from_data(vs)
+        elif self.secondary:
+            for s in self.secondary:
+                if "volatileStatus" in s:
+                    vs = Effect.from_data(s.get("volatileStatus", ""))
+        return vs
 
     @property
     def weather(self) -> Optional[Weather]:
