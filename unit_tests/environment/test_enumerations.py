@@ -1,9 +1,11 @@
 import pytest
 
 from poke_env import ShowdownException
+from poke_env.data import GenData
 from poke_env.environment import (
     Effect,
     Field,
+    Move,
     MoveCategory,
     PokemonGender,
     SideCondition,
@@ -11,6 +13,12 @@ from poke_env.environment import (
     Target,
     Weather,
 )
+
+
+def move_generator():
+    for move in GenData.from_gen(9).moves:
+        yield Move(move, gen=9)
+        yield Move("z" + move, gen=9)
 
 
 def test_effect_str():
@@ -22,6 +30,64 @@ def test_effect_build():
     assert Effect["MUMMY"] == Effect.from_showdown_message("ability: mummy")
     assert Effect["CUSTAP_BERRY"] == Effect.from_showdown_message("item: custap berry")
     assert Effect["UNKNOWN"] == Effect.from_showdown_message("i don't know")
+
+    assert Effect["HEAL_BLOCK"] == Effect.from_data("healblock")
+
+    assert Effect["FEINT"].breaks_protect
+    assert not Effect["HEAL_BLOCK"].breaks_protect
+
+    assert Effect["HEAL_BLOCK"].is_turn_countable
+    assert not Effect["FEINT"].is_turn_countable
+
+    assert Effect["RAGE"].is_action_countable
+    assert not Effect["HEAL_BLOCK"].is_action_countable
+
+    assert Effect["FLINCH"].is_volatile_status
+    assert not Effect["TERA_SHELL"].is_volatile_status
+
+    assert Effect["TERA_SHELL"].is_from_ability
+    assert not Effect["HEAL_BLOCK"].is_from_ability
+
+    assert Effect["CUSTAP_BERRY"].is_from_item
+    assert not Effect["HEAL_BLOCK"].is_from_item
+
+    assert Effect["OCTOLOCK"].is_from_move
+    assert not Effect["TERA_SHELL"].is_from_move
+
+    assert Effect.from_data("i dont know") == Effect.UNKNOWN
+
+    # By going through all moves, we know we have an Effect for every Volatile Status
+    # Simultaneously, store all Volatile Statuses we see to ensure we have one for each
+    volatile_statuses = set()
+    for move in move_generator():
+        if move.volatile_status:
+            volatile_statuses.add(move.volatile_status)
+
+    assert volatile_statuses == set(
+        filter(lambda x: x.is_volatile_status, list(Effect))
+    )
+
+    # These Effects aren't directly from moves, items or abilities
+    no_effects = [
+        Effect.FALLEN,
+        Effect.FALLEN1,
+        Effect.FALLEN2,
+        Effect.FALLEN3,
+        Effect.FALLEN4,
+        Effect.FALLEN5,
+        Effect.UNKNOWN,
+        Effect.DYNAMAX,
+    ]
+
+    # Test we have good coverage of Effects
+    for effect in list(Effect):
+        if effect not in no_effects:
+            assert (
+                effect.is_volatile_status
+                or effect.is_from_ability
+                or effect.is_from_item
+                or effect.is_from_move
+            )
 
 
 def test_field_str():

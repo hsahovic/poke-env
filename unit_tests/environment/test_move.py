@@ -2,6 +2,7 @@ import copy
 
 from poke_env.data import GenData
 from poke_env.environment import (
+    Effect,
     EmptyMove,
     Field,
     Move,
@@ -338,6 +339,7 @@ def test_secondary():
     acid_armor = Move("acidarmor", gen=8)
 
     assert fake_out.secondary == [{"chance": 100, "volatileStatus": "flinch"}]
+    assert fake_out.volatile_status == Effect.FLINCH
     assert flame_thrower.secondary == [{"chance": 10, "status": "brn"}]
     assert acid_armor.secondary == []
 
@@ -510,14 +512,16 @@ def test_use_target_offensive():
 
 
 def test_volatile_status():
+    fake_out = Move("fakeout", gen=8)
     flame_thrower = Move("flamethrower", gen=8)
     heal_block = Move("healblock", gen=8)
 
-    assert heal_block.volatile_status == "healblock"
+    assert fake_out.volatile_status == Effect.FLINCH
+    assert heal_block.volatile_status == Effect.HEAL_BLOCK
     assert flame_thrower.volatile_status is None
 
     for move in move_generator():
-        assert isinstance(move.volatile_status, str) or move.volatile_status is None
+        assert isinstance(move.volatile_status, Effect) or move.volatile_status is None
 
 
 def test_weather():
