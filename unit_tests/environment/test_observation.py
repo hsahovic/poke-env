@@ -21,7 +21,7 @@ def test_observation(example_request):
     mon = battle.active_pokemon
     battle._opponent_team = {mon.species: mon}
 
-    # Observations encode each turn encode, and encode specifically the state of the
+    # Observations encode each turn, and encode specifically the state of the
     # battle at the beginning of each turn, and the events that happened on that turn
     battle.parse_message(["", "turn", "1"])
     battle.parse_message(["", "-weather", "Sandstorm"])

@@ -694,6 +694,11 @@ class Move:
             for s in self.secondary:
                 if "volatileStatus" in s:
                     vs = Effect.from_data(s.get("volatileStatus", ""))
+        elif self.entry.get("self", None):
+            if "volatileStatus" in self.entry.get("self", {}):
+                vs = Effect.from_data(
+                    self.entry.get("self", {}).get("volatileStatus", "")
+                )
         return vs
 
     @property
