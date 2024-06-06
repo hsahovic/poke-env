@@ -39,7 +39,7 @@ def raw_team_data():
 def example_request():
     with open(os.path.join(FIXTURE_DIR, "example_request.json")) as f:
         return orjson.loads(f.read())
-    
+
 
 @fixture
 def force_switch_example_request():
