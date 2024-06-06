@@ -718,8 +718,6 @@ class AbstractBattle(ABC):
             for mon in self.team.values():
                 mon.clear_active()
         elif split_message[1] == "gen":
-            print(self._gen)
-            print(split_message[2])
             if self._gen != int(split_message[2]):
                 err = f"Battle Initiated with gen {self._gen} but got: {split_message}"
                 raise RuntimeError(err)
