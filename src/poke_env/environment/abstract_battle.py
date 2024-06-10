@@ -1,4 +1,5 @@
 import os
+import re
 from abc import ABC, abstractmethod
 from logging import Logger
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
@@ -44,7 +45,6 @@ class AbstractBattle(ABC):
         "debug",
         "deinit",
         "gametype",
-        "gen",
         "html",
         "immune",
         "init",
@@ -59,7 +59,6 @@ class AbstractBattle(ABC):
         "split",
         "supereffective",
         "teampreview",
-        "tier",
         "upkeep",
         "uhtml",
         "zbroken",
@@ -81,6 +80,7 @@ class AbstractBattle(ABC):
         "_finished",
         "_force_switch",
         "_format",
+        "_gen",
         "in_team_preview",
         "_max_team_size",
         "_maybe_trapped",
@@ -131,6 +131,7 @@ class AbstractBattle(ABC):
 
         # Utils attributes
         self._battle_tag: str = battle_tag
+        self._gen: int = gen
         self._format: Optional[str] = None
         self._max_team_size: Optional[int] = None
         self._opponent_username: Optional[str] = None
@@ -717,7 +718,11 @@ class AbstractBattle(ABC):
             for mon in self.team.values():
                 mon.clear_active()
         elif split_message[1] == "gen":
-            self._format = split_message[2]
+            if self._gen != int(split_message[2]):
+                err = f"Battle Initiated with gen {self._gen} but got: {split_message}"
+                raise RuntimeError(err)
+        elif split_message[1] == "tier":
+            self._format = re.sub("[^a-z0-9]+", "", split_message[2].lower())
         elif split_message[1] == "inactive":
             if "disconnected" in split_message[2]:
                 self._anybody_inactive = True
@@ -963,6 +968,23 @@ class AbstractBattle(ABC):
     @abstractmethod
     def force_switch(self) -> Any:
         pass
+
+    @property
+    def format(self) -> Optional[str]:
+        """
+        :return: The format of the battle, in accordance with Showdown protocol
+        :rtype: Optional[str]
+        """
+        return self._format
+
+    @property
+    def gen(self) -> int:
+        """
+        :return: The generation of the battle; will be the parameter with which the
+            the battle was initiated
+        :rtype: int
+        """
+        return self._gen
 
     @property
     def lost(self) -> Optional[bool]:

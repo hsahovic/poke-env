@@ -1,5 +1,7 @@
 from unittest.mock import MagicMock
 
+import pytest
+
 from poke_env.environment import DoubleBattle, Pokemon
 
 
@@ -276,3 +278,32 @@ def test_one_mon_left_in_double_battles_results_in_available_move_in_the_correct
     assert [m.id for m in battle.available_moves[1]] == ["recover", "haze"]
     assert battle.active_pokemon[0] is None
     assert battle.active_pokemon[1].species == "milotic"
+
+
+def test_gen_and_format(example_doubles_logs):
+    battle = DoubleBattle("tag", "username", MagicMock(), gen=8)
+    battle.player_role = "p1"
+
+    with pytest.raises(RuntimeError):
+        for split_message in example_doubles_logs:
+            if split_message[1] == "win":
+                battle.won_by(split_message[2])
+            elif split_message[1] == "tie":
+                battle.tied()
+            else:
+                battle.parse_message(split_message)
+
+    battle = DoubleBattle("tag", "username", MagicMock(), gen=6)
+    battle.player_role = "p1"
+
+    for split_message in example_doubles_logs:
+        if split_message[1] == "win":
+            battle.won_by(split_message[2])
+        elif split_message[1] == "tie":
+            battle.tied()
+        else:
+            battle.parse_message(split_message)
+
+    assert battle.gen == 6
+    assert battle.battle_tag == "tag"
+    assert battle.format == "gen6doublesou"

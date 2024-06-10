@@ -39,7 +39,7 @@ def raw_team_data():
 def example_request():
     with open(os.path.join(FIXTURE_DIR, "example_request.json")) as f:
         return orjson.loads(f.read())
-    
+
 
 @fixture
 def force_switch_example_request():
@@ -51,3 +51,9 @@ def force_switch_example_request():
 def example_doubles_request():
     with open(os.path.join(FIXTURE_DIR, "example_doubles_request.json")) as f:
         return orjson.loads(f.read())
+
+
+@fixture
+def example_doubles_logs():
+    with open(os.path.join(FIXTURE_DIR, "example_doubles_logs.txt")) as f:
+        return list(map(lambda x: x.split("|"), orjson.loads(f.read())))
