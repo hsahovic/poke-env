@@ -1,4 +1,5 @@
 import copy
+import itertools
 
 from poke_env.data import GenData
 from poke_env.environment import (
@@ -8,16 +9,17 @@ from poke_env.environment import (
     Move,
     MoveCategory,
     PokemonType,
+    SideCondition,
     Status,
     Target,
     Weather,
 )
 
 
-def move_generator():
-    for move in GenData.from_gen(8).moves:
-        yield Move(move, gen=8)
-        yield Move("z" + move, gen=8)
+def move_generator(gen=8):
+    for move in GenData.from_gen(gen).moves:
+        yield Move(move, gen=gen)
+        yield Move("z" + move, gen=gen)
 
 
 def test_accuracy():
@@ -390,11 +392,38 @@ def test_side_condition():
     flame_thrower = Move("flamethrower", gen=8)
     quick_guard = Move("quickguard", gen=8)
 
-    assert quick_guard.side_condition == "quickguard"
+    assert quick_guard.side_condition == SideCondition.QUICK_GUARD
     assert flame_thrower.side_condition is None
 
-    for move in move_generator():
-        assert isinstance(move.side_condition, str) or move.side_condition is None
+    assert SideCondition.from_data("i dont know") == SideCondition.UNKNOWN
+    assert SideCondition.from_showdown_message("i dont know") == SideCondition.UNKNOWN
+
+    # Make sure we know every move that has a SideCondition is one we know
+    side_conditions = set()
+    for move in itertools.chain(move_generator(8), move_generator(9)):
+        if move.side_condition:
+            assert move.side_condition != SideCondition.UNKNOWN
+            side_conditions.add(move.side_condition)
+
+    # SideConditions that don't exist in moves data
+    to_exclude = set(
+        [
+            SideCondition.FIRE_PLEDGE,
+            SideCondition.WATER_PLEDGE,
+            SideCondition.GRASS_PLEDGE,
+            SideCondition.UNKNOWN,
+            SideCondition.G_MAX_WILDFIRE,
+            SideCondition.G_MAX_VOLCALITH,
+            SideCondition.G_MAX_VINE_LASH,
+            SideCondition.G_MAX_STEELSURGE,
+            SideCondition.G_MAX_CANNONADE,
+        ]
+    )
+
+    # Make sure we don't have any SideConditions that don't exist in moves data
+    assert side_conditions == set(
+        list(filter(lambda x: x not in to_exclude, SideCondition))
+    )
 
 
 def test_sleep_usable():

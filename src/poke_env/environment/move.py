@@ -7,6 +7,7 @@ from poke_env.environment.effect import Effect
 from poke_env.environment.field import Field
 from poke_env.environment.move_category import MoveCategory
 from poke_env.environment.pokemon_type import PokemonType
+from poke_env.environment.side_condition import SideCondition
 from poke_env.environment.status import Status
 from poke_env.environment.target import Target
 from poke_env.environment.weather import Weather
@@ -20,11 +21,13 @@ _PROTECT_MOVES = {
     "spikyshield",
     "kingsshield",
     "banefulbunker",
+    "burningbulwark",
     "obstruct",
     "maxguard",
+    "silktrap",
 }
 _SIDE_PROTECT_MOVES = {"wideguard", "quickguard", "matblock"}
-_PROTECT_COUNTER_MOVES = _PROTECT_MOVES | _SIDE_PROTECT_MOVES
+_PROTECT_COUNTER_MOVES = _PROTECT_MOVES | {"wideguard", "quickguard", "endure"}
 
 
 class Move:
@@ -587,12 +590,15 @@ class Move:
         return self.entry.get("selfSwitch", False)
 
     @property
-    def side_condition(self) -> Optional[str]:
+    def side_condition(self) -> Optional[SideCondition]:
         """
         :return: Side condition inflicted by the move.
-        :rtype: str | None
+        :rtype: SideCondition | None
         """
-        return self.entry.get("sideCondition", None)
+        sc = self.entry.get("sideCondition", None)
+        if sc is not None:
+            sc = SideCondition.from_data(sc)
+        return sc
 
     @property
     def sleep_usable(self) -> bool:
