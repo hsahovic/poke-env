@@ -21,18 +21,16 @@ class ObservedPokemon:
     level: int
 
     ability: Optional[str] = None
-    boosts: Dict[str, int] = (
-        field(
-            default_factory=lambda: {
-                "accuracy": 0,
-                "atk": 0,
-                "def": 0,
-                "evasion": 0,
-                "spa": 0,
-                "spd": 0,
-                "spe": 0,
-            }
-        )
+    boosts: Dict[str, int] = field(
+        default_factory=lambda: {
+            "accuracy": 0,
+            "atk": 0,
+            "def": 0,
+            "evasion": 0,
+            "spa": 0,
+            "spd": 0,
+            "spe": 0,
+        }
     )
     current_hp_fraction: float = 1.0
     effects: Dict[Effect, int] = field(default_factory=dict)
