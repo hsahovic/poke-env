@@ -2,6 +2,7 @@ from unittest.mock import MagicMock
 
 from poke_env.environment import (
     Battle,
+    Effect,
     Field,
     Observation,
     ObservedPokemon,
@@ -73,13 +74,39 @@ def test_observed_pokemon(example_request):
     observed_mon = ObservedPokemon.from_pokemon(mon)
 
     assert observed_mon.species == mon.species
-    assert observed_mon.level == mon.level
+
+    assert observed_mon.ability == mon.ability
+    assert observed_mon.boosts["accuracy"] == mon.boosts["accuracy"]
+    assert observed_mon.boosts["atk"] == mon.boosts["atk"]
+    assert observed_mon.boosts["def"] == mon.boosts["def"]
+    assert observed_mon.boosts["evasion"] == mon.boosts["evasion"]
+    assert observed_mon.boosts["spa"] == mon.boosts["spa"]
+    assert observed_mon.boosts["spd"] == mon.boosts["spd"]
+    assert observed_mon.boosts["spe"] == mon.boosts["spe"]
+
+    observed_mon.boosts["accuracy"] = 10
+    assert mon.boosts["accuracy"] != 10
+
+    assert observed_mon.current_hp_fraction == mon.current_hp_fraction
+
+    for effect in observed_mon.effects:
+        assert observed_mon.effects[effect] == mon.effects[effect]
+
+    observed_mon.effects[Effect.ZERO_TO_HERO] = 1
+    assert Effect.ZERO_TO_HERO not in mon.effects
+
+    assert observed_mon.is_dynamaxed == mon.is_dynamaxed
+    assert observed_mon.is_terastallized == mon.is_terastallized
+    assert observed_mon.item == mon.item
+    assert observed_mon.gender == mon.gender
 
     assert observed_mon.stats["atk"] == mon.stats["atk"]
     assert observed_mon.stats["def"] == mon.stats["def"]
     assert observed_mon.stats["spa"] == mon.stats["spa"]
     assert observed_mon.stats["spd"] == mon.stats["spd"]
     assert observed_mon.stats["spe"] == mon.stats["spe"]
+
+    assert observed_mon.level == mon.level
 
     # Test that we're copying the moves correctly
     assert list(observed_mon.moves.keys())[0] == list(mon.moves.keys())[0]
@@ -89,8 +116,6 @@ def test_observed_pokemon(example_request):
         == mon.moves["leechseed"].current_pp + 1
     )
 
-    assert observed_mon.ability == mon.ability
-    assert observed_mon.item == mon.item
-    assert str(observed_mon.gender) == str(mon.gender)
     assert observed_mon.tera_type == mon.tera_type
     assert observed_mon.shiny == mon.shiny
+    assert observed_mon.status == mon.status

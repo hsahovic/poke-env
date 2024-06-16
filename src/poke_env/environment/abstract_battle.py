@@ -820,7 +820,7 @@ class AbstractBattle(ABC):
             pokemon = self.get_pokemon(pokemon)
             pokemon.terastallize(type_)
 
-            if pokemon.terastallized:
+            if pokemon.is_terastallized:
                 if pokemon in set(self.opponent_team.values()):
                     self._opponent_can_terrastallize = False
         else:
