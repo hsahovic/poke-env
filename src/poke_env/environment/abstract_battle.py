@@ -555,10 +555,14 @@ class AbstractBattle(ABC):
                 weather={k: v for (k, v) in self.weather.items()},
                 fields={k: v for (k, v) in self.fields.items()},
                 active_pokemon=active_mon,
+                team={
+                    ident: ObservedPokemon.from_pokemon(mon)
+                    for (ident, mon) in self.team.items()
+                },
                 opponent_active_pokemon=opp_active_mon,
                 opponent_team={
-                    species: ObservedPokemon.from_pokemon(mon)
-                    for (species, mon) in self.opponent_team.items()
+                    ident: ObservedPokemon.from_pokemon(mon)
+                    for (ident, mon) in self.opponent_team.items()
                 },
             )
         elif split_message[1] == "-heal":

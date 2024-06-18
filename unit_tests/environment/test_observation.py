@@ -45,6 +45,7 @@ def test_observation(example_request):
         "p1: EliteFurretAI",
         "move: Reflect",
     ] in battle.observations[1].events
+    assert len(battle.observations[1].team) == 6
     assert mon.species == battle.observations[1].active_pokemon.species
     assert mon.species == battle.observations[1].opponent_active_pokemon.species
     assert battle.observations[1].opponent_team[mon.species].species == mon.species
@@ -61,6 +62,8 @@ def test_observation(example_request):
 
     assert ["", "-weather", "SunnyDay"] in battle.observations[3].events
     assert Weather.SANDSTORM not in battle.observations[3].weather
+
+    assert battle.observations[3].team != battle.observations[2].team
 
 
 def test_observed_pokemon(example_request):
