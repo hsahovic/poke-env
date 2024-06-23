@@ -597,6 +597,7 @@
     "assist": {
         "accuracy": true,
         "basePower": 0,
+        "callsMove": true,
         "category": "Status",
         "contestType": "Cute",
         "flags": {
@@ -2813,6 +2814,7 @@
     "copycat": {
         "accuracy": true,
         "basePower": 0,
+        "callsMove": true,
         "category": "Status",
         "contestType": "Cute",
         "flags": {
@@ -11200,6 +11202,7 @@
     "mefirst": {
         "accuracy": true,
         "basePower": 0,
+        "callsMove": true,
         "category": "Status",
         "condition": {
             "duration": 1,
@@ -11508,6 +11511,7 @@
     "metronome": {
         "accuracy": true,
         "basePower": 0,
+        "callsMove": true,
         "category": "Status",
         "contestType": "Cute",
         "flags": {
@@ -11724,6 +11728,7 @@
     "mirrormove": {
         "accuracy": true,
         "basePower": 0,
+        "callsMove": true,
         "category": "Status",
         "contestType": "Clever",
         "flags": {
@@ -12239,6 +12244,7 @@
     "naturepower": {
         "accuracy": true,
         "basePower": 0,
+        "callsMove": true,
         "category": "Status",
         "contestType": "Beautiful",
         "flags": {
@@ -16464,6 +16470,7 @@
     "sleeptalk": {
         "accuracy": true,
         "basePower": 0,
+        "callsMove": true,
         "category": "Status",
         "contestType": "Cute",
         "flags": {
