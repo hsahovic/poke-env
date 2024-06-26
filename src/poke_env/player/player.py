@@ -680,7 +680,9 @@ class Player(ABC):
             perf_counter() - start_time,
         )
 
-    async def battle_against(self, opponent: "Player", n_battles: int = 1) -> Tuple[int, int]:
+    async def battle_against(
+        self, opponent: "Player", n_battles: int = 1
+    ) -> Tuple[float, float]:
         """Make the player play n_battles against opponent.
 
         This function is a wrapper around send_challenges and accept challenges.
@@ -690,9 +692,13 @@ class Player(ABC):
         :param n_battles: The number of games to play. Defaults to 1.
         :type n_battles: int
         """
-        return await handle_threaded_coroutines(self._battle_against(opponent, n_battles))
+        return await handle_threaded_coroutines(
+            self._battle_against(opponent, n_battles)
+        )
 
-    async def _battle_against(self, opponent: "Player", n_battles: int) -> Tuple[int, int]:
+    async def _battle_against(
+        self, opponent: "Player", n_battles: int
+    ) -> Tuple[float, float]:
         await asyncio.gather(
             self.send_challenges(
                 to_id_str(opponent.username),
@@ -708,7 +714,6 @@ class Player(ABC):
         self.reset_battles()
         opponent.reset_battles()
         return win_rate, opp_win_rate
-
 
     async def send_challenges(
         self, opponent: str, n_challenges: int, to_wait: Optional[Event] = None
