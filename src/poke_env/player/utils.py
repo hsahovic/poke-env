@@ -31,15 +31,29 @@ async def cross_evaluate(
     players: List[Player], n_challenges: int
 ) -> Dict[str, Dict[str, Optional[float]]]:
     results: Dict[str, Dict[str, Optional[float]]] = {
-        p1.username: {p2.username: None for p2 in players} for p1 in players
+        p_1.username: {p_2.username: None for p_2 in players} for p_1 in players
     }
-    for i, p1 in enumerate(players):
-        for j, p2 in enumerate(players):
+    for i, p_1 in enumerate(players):
+        for j, p_2 in enumerate(players):
             if j <= i:
                 continue
-            p1_win_rate, p2_win_rate = await p1.battle_against(p2)
-            results[p1.username][p2.username] = p1_win_rate
-            results[p2.username][p1.username] = p2_win_rate
+            await asyncio.gather(
+                p_1.send_challenges(
+                    opponent=to_id_str(p_2.username),
+                    n_challenges=n_challenges,
+                    to_wait=p_2.ps_client.logged_in,
+                ),
+                p_2.accept_challenges(
+                    opponent=to_id_str(p_1.username),
+                    n_challenges=n_challenges,
+                    packed_team=p_2.next_team,
+                ),
+            )
+            results[p_1.username][p_2.username] = p_1.win_rate
+            results[p_2.username][p_1.username] = p_2.win_rate
+
+            p_1.reset_battles()
+            p_2.reset_battles()
     return results
 
 
