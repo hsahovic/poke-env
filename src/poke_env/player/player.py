@@ -701,6 +701,7 @@ class Player(ABC):
         for opponent in opponents:
             win_rate, _ = await self.battle_against(opponent, n_battles)
             results[opponent.username] = win_rate
+        return results
 
     async def battle_against(
         self, opponent: "Player", n_battles: int = 1
