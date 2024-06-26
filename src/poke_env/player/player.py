@@ -681,6 +681,28 @@ class Player(ABC):
         )
 
     async def battle_against(
+        self, opponents: List["Player"], n_battles: int = 1
+    ) -> Dict[str, float]:
+        """Make the player play n_battles against opponents.
+
+        :param opponents: The list of opponents to play against.
+        :type opponents: List[Player]
+        :param n_battles: The number of games to play. Defaults to 1.
+        :type n_battles: int
+        """
+        return await handle_threaded_coroutines(
+            self._battle_against(opponents, n_battles)
+        )
+
+    async def _battle_against(
+        self, opponents: List["Player"], n_battles: int
+    ) -> Dict[str, float]:
+        results: Dict[str, float] = {}
+        for opponent in opponents:
+            win_rate, _ = await self.battle_against(opponent, n_battles)
+            results[opponent.username] = win_rate
+
+    async def battle_against(
         self, opponent: "Player", n_battles: int = 1
     ) -> Tuple[float, float]:
         """Make the player play n_battles against opponent.
