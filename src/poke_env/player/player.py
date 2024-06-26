@@ -680,7 +680,7 @@ class Player(ABC):
             perf_counter() - start_time,
         )
 
-    async def battle_against(
+    async def battle_against_multi(
         self, opponents: List["Player"], n_battles: int = 1
     ) -> Dict[str, float]:
         """Make the player play n_battles against opponents.
@@ -691,10 +691,10 @@ class Player(ABC):
         :type n_battles: int
         """
         return await handle_threaded_coroutines(
-            self._battle_against(opponents, n_battles)
+            self._battle_against_multi(opponents, n_battles)
         )
 
-    async def _battle_against(
+    async def _battle_against_multi(
         self, opponents: List["Player"], n_battles: int
     ) -> Dict[str, float]:
         results: Dict[str, float] = {}
