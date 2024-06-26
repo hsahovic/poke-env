@@ -12,7 +12,7 @@ class SimplePlayer(Player):
 
 
 class FixedWinRatePlayer:
-    def battle_against(self, opponent, n_battles=1):
+    async def battle_against(self, opponent, n_battles=1):
         return self.win_rate, opponent.win_rate
 
     @property
