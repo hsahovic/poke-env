@@ -254,6 +254,7 @@
     "assist": {
         "accuracy": true,
         "basePower": 0,
+        "callsMove": true,
         "category": "Status",
         "contestType": "Cute",
         "flags": {
@@ -4607,6 +4608,7 @@
     "metronome": {
         "accuracy": true,
         "basePower": 0,
+        "callsMove": true,
         "category": "Status",
         "contestType": "Cute",
         "flags": {
@@ -4764,6 +4766,7 @@
     "mirrormove": {
         "accuracy": true,
         "basePower": 0,
+        "callsMove": true,
         "category": "Status",
         "contestType": "Clever",
         "flags": {
@@ -4959,7 +4962,6 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "noCopy": true,
             "onAnyBasePower": "onAnyBasePower",
             "onAnyBasePowerPriority": 3,
             "onStart": "onStart"
@@ -4988,6 +4990,7 @@
     "naturepower": {
         "accuracy": 95,
         "basePower": 0,
+        "callsMove": true,
         "category": "Status",
         "contestType": "Beautiful",
         "flags": {
@@ -6950,6 +6953,7 @@
     "sleeptalk": {
         "accuracy": true,
         "basePower": 0,
+        "callsMove": true,
         "category": "Status",
         "contestType": "Cute",
         "flags": {
@@ -8660,7 +8664,6 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "noCopy": true,
             "onAnyBasePower": "onAnyBasePower",
             "onAnyBasePowerPriority": 3,
             "onStart": "onStart"

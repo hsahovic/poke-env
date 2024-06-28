@@ -7191,6 +7191,7 @@
         ],
         "gender": "M",
         "heightm": 0.5,
+        "mother": "nidoranf",
         "name": "Nidoran-M",
         "num": 32,
         "types": [
