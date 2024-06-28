@@ -555,10 +555,14 @@ class AbstractBattle(ABC):
                 weather={k: v for (k, v) in self.weather.items()},
                 fields={k: v for (k, v) in self.fields.items()},
                 active_pokemon=active_mon,
+                team={
+                    ident: ObservedPokemon.from_pokemon(mon)
+                    for (ident, mon) in self.team.items()
+                },
                 opponent_active_pokemon=opp_active_mon,
                 opponent_team={
-                    species: ObservedPokemon.from_pokemon(mon)
-                    for (species, mon) in self.opponent_team.items()
+                    ident: ObservedPokemon.from_pokemon(mon)
+                    for (ident, mon) in self.opponent_team.items()
                 },
             )
         elif split_message[1] == "-heal":
@@ -820,7 +824,7 @@ class AbstractBattle(ABC):
             pokemon = self.get_pokemon(pokemon)
             pokemon.terastallize(type_)
 
-            if pokemon.terastallized:
+            if pokemon.is_terastallized:
                 if pokemon in set(self.opponent_team.values()):
                     self._opponent_can_terrastallize = False
         else:
