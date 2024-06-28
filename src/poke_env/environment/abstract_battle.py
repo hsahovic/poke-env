@@ -1222,6 +1222,14 @@ class AbstractBattle(ABC):
         return self._teampreview
 
     @property
+    def teampreview_opponent_team(self) -> Set[Pokemon]:
+        """
+        :return: The opponent's team during teampreview.
+        :rtype: Set[Pokemon]
+        """
+        return self._teampreview_opponent_team
+
+    @property
     @abstractmethod
     def trapped(self) -> Any:
         pass

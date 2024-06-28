@@ -698,3 +698,40 @@ def test_field_terrain_interactions():
 
     battle.field_start("psychicterrain")
     assert battle.fields == {Field.GRAVITY: 2, Field.PSYCHIC_TERRAIN: 3}
+
+
+def test_teampreview_opponent_team():
+    teampreview_message = """|player|p2|SimpleHeuristics 1|102|
+|teamsize|p1|6
+|teamsize|p2|6
+|gen|9
+|tier|[Gen 9] VGC 2024 Reg G
+|rule|Species Clause: Limit one of each Pokémon
+|rule|Item Clause: Limit one of each item
+|clearpoke
+|poke|p1|Tornadus, L50, M|
+|poke|p1|Kyogre, L50|
+|poke|p1|Incineroar, L50, M|
+|poke|p1|Archaludon, L50, M|
+|poke|p1|Amoonguss, L50, F|
+|poke|p1|Urshifu-*, L50, M|
+|poke|p2|Tornadus, L50, M|
+|poke|p2|Kyogre, L50|
+|poke|p2|Incineroar, L50, M|
+|poke|p2|Archaludon, L50, M|
+|poke|p2|Amoonguss, L50, M|
+|poke|p2|Urshifu-*, L50, F|
+|teampreview|4"""
+    battle = Battle("tag", "username", MagicMock(), gen=9)
+
+    for line in teampreview_message.split("\n"):
+        battle.parse_message(line.split("|"))
+
+    assert {mon.species for mon in battle.teampreview_opponent_team} == {
+        "tornadus",
+        "kyogre",
+        "incineroar",
+        "archaludon",
+        "amoonguss",
+        "urshifu",
+    }
