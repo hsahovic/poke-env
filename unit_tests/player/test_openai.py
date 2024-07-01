@@ -27,7 +27,8 @@ class DummyEnv(OpenAIGymEnv[ObsType, ActType]):
     ) -> float:
         return 69.42
 
-    def action_to_move(self, action: int, battle: AbstractBattle) -> BattleOrder:
+    @staticmethod
+    def action_to_move(action: int, battle: AbstractBattle) -> BattleOrder:
         return ForfeitBattleOrder()
 
     def embed_battle(self, battle: AbstractBattle) -> ObsType:
