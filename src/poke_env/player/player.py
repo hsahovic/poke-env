@@ -483,7 +483,8 @@ class Player(ABC):
         """
         pass
 
-    def choose_default_move(self) -> DefaultBattleOrder:
+    @staticmethod
+    def choose_default_move() -> DefaultBattleOrder:
         """Returns showdown's default move order.
 
         This order will result in the first legal order - according to showdown's
@@ -491,7 +492,8 @@ class Player(ABC):
         """
         return DefaultBattleOrder()
 
-    def choose_random_doubles_move(self, battle: DoubleBattle) -> BattleOrder:
+    @staticmethod
+    def choose_random_doubles_move(battle: DoubleBattle) -> BattleOrder:
         active_orders: List[List[BattleOrder]] = [[], []]
 
         if any(battle.force_switch):
@@ -595,7 +597,8 @@ class Player(ABC):
         else:
             return DefaultBattleOrder()
 
-    def choose_random_singles_move(self, battle: Battle) -> BattleOrder:
+    @staticmethod
+    def choose_random_singles_move(battle: Battle) -> BattleOrder:
         available_orders = [BattleOrder(move) for move in battle.available_moves]
         available_orders.extend(
             [BattleOrder(switch) for switch in battle.available_switches]
@@ -632,9 +635,10 @@ class Player(ABC):
         if available_orders:
             return available_orders[int(random.random() * len(available_orders))]
         else:
-            return self.choose_default_move()
+            return Player.choose_default_move()
 
-    def choose_random_move(self, battle: AbstractBattle) -> BattleOrder:
+    @staticmethod
+    def choose_random_move(battle: AbstractBattle) -> BattleOrder:
         """Returns a random legal move from battle.
 
         :param battle: The battle in which to move.
@@ -643,9 +647,9 @@ class Player(ABC):
         :rtype: str
         """
         if isinstance(battle, DoubleBattle):
-            return self.choose_random_doubles_move(battle)
+            return Player.choose_random_doubles_move(battle)
         elif isinstance(battle, Battle):
-            return self.choose_random_singles_move(battle)
+            return Player.choose_random_singles_move(battle)
         else:
             raise ValueError(
                 "battle should be Battle or DoubleBattle. Received %d" % (type(battle))
