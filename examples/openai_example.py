@@ -9,6 +9,7 @@ from poke_env.player import (
     Gen8EnvSinglePlayer,
     ObservationType,
     OpenAIGymEnv,
+    Player,
     RandomPlayer,
 )
 
@@ -34,8 +35,9 @@ class TestEnv(OpenAIGymEnv):
             dtype=np.float64,
         )
 
-    def action_to_move(self, action, battle):
-        return self.agent.choose_random_move(battle)
+    @staticmethod
+    def action_to_move(action, battle):
+        return Player.choose_random_move(battle)
 
     def calc_reward(self, last_battle, current_battle):
         return 0.25
