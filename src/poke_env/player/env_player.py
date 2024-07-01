@@ -238,7 +238,8 @@ class Gen4EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
     _ACTION_SPACE = list(range(4 + 6))
     _DEFAULT_BATTLE_FORMAT = "gen4randombattle"
 
-    def action_to_move(self, action: int, battle: AbstractBattle) -> BattleOrder:
+    @staticmethod
+    def action_to_move(action: int, battle: AbstractBattle) -> BattleOrder:
         """Converts actions to move orders.
 
         The conversion is done as follows:
@@ -266,11 +267,11 @@ class Gen4EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
             and action < len(battle.available_moves)
             and not battle.force_switch
         ):
-            return self.agent.create_order(battle.available_moves[action])
+            return Player.create_order(battle.available_moves[action])
         elif 0 <= action - 4 < len(battle.available_switches):
-            return self.agent.create_order(battle.available_switches[action - 4])
+            return Player.create_order(battle.available_switches[action - 4])
         else:
-            return self.agent.choose_random_move(battle)
+            return Player.choose_random_move(battle)
 
 
 class Gen5EnvSinglePlayer(Gen4EnvSinglePlayer[ObsType, ActType], ABC):
@@ -281,7 +282,8 @@ class Gen6EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
     _ACTION_SPACE = list(range(2 * 4 + 6))
     _DEFAULT_BATTLE_FORMAT = "gen6randombattle"
 
-    def action_to_move(self, action: int, battle: AbstractBattle) -> BattleOrder:
+    @staticmethod
+    def action_to_move(action: int, battle: AbstractBattle) -> BattleOrder:
         """Converts actions to move orders.
 
         The conversion is done as follows:
@@ -312,26 +314,27 @@ class Gen6EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
             and action < len(battle.available_moves)
             and not battle.force_switch
         ):
-            return self.agent.create_order(battle.available_moves[action])
+            return Player.create_order(battle.available_moves[action])
         elif (
             battle.can_mega_evolve
             and 0 <= action - 4 < len(battle.available_moves)
             and not battle.force_switch
         ):
-            return self.agent.create_order(
+            return Player.create_order(
                 battle.available_moves[action - 4], mega=True
             )
         elif 0 <= action - 8 < len(battle.available_switches):
-            return self.agent.create_order(battle.available_switches[action - 8])
+            return Player.create_order(battle.available_switches[action - 8])
         else:
-            return self.agent.choose_random_move(battle)
+            return Player.choose_random_move(battle)
 
 
 class Gen7EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
     _ACTION_SPACE = list(range(3 * 4 + 6))
     _DEFAULT_BATTLE_FORMAT = "gen7randombattle"
 
-    def action_to_move(self, action: int, battle: AbstractBattle) -> BattleOrder:
+    @staticmethod
+    def action_to_move(action: int, battle: AbstractBattle) -> BattleOrder:
         """Converts actions to move orders.
 
         The conversion is done as follows:
@@ -365,14 +368,14 @@ class Gen7EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
             and action < len(battle.available_moves)
             and not battle.force_switch
         ):
-            return self.agent.create_order(battle.available_moves[action])
+            return Player.create_order(battle.available_moves[action])
         elif (
             not battle.force_switch
             and battle.can_z_move
             and battle.active_pokemon
             and 0 <= action - 4 < len(battle.active_pokemon.available_z_moves)
         ):
-            return self.agent.create_order(
+            return Player.create_order(
                 battle.active_pokemon.available_z_moves[action - 4], z_move=True
             )
         elif (
@@ -380,20 +383,21 @@ class Gen7EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
             and 0 <= action - 8 < len(battle.available_moves)
             and not battle.force_switch
         ):
-            return self.agent.create_order(
+            return Player.create_order(
                 battle.available_moves[action - 8], mega=True
             )
         elif 0 <= action - 12 < len(battle.available_switches):
-            return self.agent.create_order(battle.available_switches[action - 12])
+            return Player.create_order(battle.available_switches[action - 12])
         else:
-            return self.agent.choose_random_move(battle)
+            return Player.choose_random_move(battle)
 
 
 class Gen8EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
     _ACTION_SPACE = list(range(4 * 4 + 6))
     _DEFAULT_BATTLE_FORMAT = "gen8randombattle"
 
-    def action_to_move(self, action: int, battle: AbstractBattle) -> BattleOrder:
+    @staticmethod
+    def action_to_move(action: int, battle: AbstractBattle) -> BattleOrder:
         """Converts actions to move orders.
 
         The conversion is done as follows:
@@ -433,14 +437,14 @@ class Gen8EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
             and action < len(battle.available_moves)
             and not battle.force_switch
         ):
-            return self.agent.create_order(battle.available_moves[action])
+            return Player.create_order(battle.available_moves[action])
         elif (
             not battle.force_switch
             and battle.can_z_move
             and battle.active_pokemon
             and 0 <= action - 4 < len(battle.active_pokemon.available_z_moves)
         ):
-            return self.agent.create_order(
+            return Player.create_order(
                 battle.active_pokemon.available_z_moves[action - 4], z_move=True
             )
         elif (
@@ -448,7 +452,7 @@ class Gen8EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
             and 0 <= action - 8 < len(battle.available_moves)
             and not battle.force_switch
         ):
-            return self.agent.create_order(
+            return Player.create_order(
                 battle.available_moves[action - 8], mega=True
             )
         elif (
@@ -456,20 +460,21 @@ class Gen8EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
             and 0 <= action - 12 < len(battle.available_moves)
             and not battle.force_switch
         ):
-            return self.agent.create_order(
+            return Player.create_order(
                 battle.available_moves[action - 12], dynamax=True
             )
         elif 0 <= action - 16 < len(battle.available_switches):
-            return self.agent.create_order(battle.available_switches[action - 16])
+            return Player.create_order(battle.available_switches[action - 16])
         else:
-            return self.agent.choose_random_move(battle)
+            return Player.choose_random_move(battle)
 
 
 class Gen9EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
     _ACTION_SPACE = list(range(5 * 4 + 6))
     _DEFAULT_BATTLE_FORMAT = "gen9randombattle"
 
-    def action_to_move(self, action: int, battle: AbstractBattle) -> BattleOrder:
+    @staticmethod
+    def action_to_move(action: int, battle: AbstractBattle) -> BattleOrder:
         """Converts actions to move orders.
 
         The conversion is done as follows:
@@ -512,14 +517,14 @@ class Gen9EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
             and action < len(battle.available_moves)
             and not battle.force_switch
         ):
-            return self.agent.create_order(battle.available_moves[action])
+            return Player.create_order(battle.available_moves[action])
         elif (
             not battle.force_switch
             and battle.can_z_move
             and battle.active_pokemon
             and 0 <= action - 4 < len(battle.active_pokemon.available_z_moves)
         ):
-            return self.agent.create_order(
+            return Player.create_order(
                 battle.active_pokemon.available_z_moves[action - 4], z_move=True
             )
         elif (
@@ -527,7 +532,7 @@ class Gen9EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
             and 0 <= action - 8 < len(battle.available_moves)
             and not battle.force_switch
         ):
-            return self.agent.create_order(
+            return Player.create_order(
                 battle.available_moves[action - 8], mega=True
             )
         elif (
@@ -535,7 +540,7 @@ class Gen9EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
             and 0 <= action - 12 < len(battle.available_moves)
             and not battle.force_switch
         ):
-            return self.agent.create_order(
+            return Player.create_order(
                 battle.available_moves[action - 12], dynamax=True
             )
         elif (
@@ -543,10 +548,10 @@ class Gen9EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
             and 0 <= action - 16 < len(battle.available_moves)
             and not battle.force_switch
         ):
-            return self.agent.create_order(
+            return Player.create_order(
                 battle.available_moves[action - 16], terastallize=True
             )
         elif 0 <= action - 20 < len(battle.available_switches):
-            return self.agent.create_order(battle.available_switches[action - 20])
+            return Player.create_order(battle.available_switches[action - 20])
         else:
-            return self.agent.choose_random_move(battle)
+            return Player.choose_random_move(battle)
