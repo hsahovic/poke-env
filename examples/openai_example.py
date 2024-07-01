@@ -9,8 +9,8 @@ from poke_env.player import (
     Gen8EnvSinglePlayer,
     ObservationType,
     OpenAIGymEnv,
-    RandomPlayer,
     Player,
+    RandomPlayer,
 )
 
 
