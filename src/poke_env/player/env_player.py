@@ -320,9 +320,7 @@ class Gen6EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
             and 0 <= action - 4 < len(battle.available_moves)
             and not battle.force_switch
         ):
-            return Player.create_order(
-                battle.available_moves[action - 4], mega=True
-            )
+            return Player.create_order(battle.available_moves[action - 4], mega=True)
         elif 0 <= action - 8 < len(battle.available_switches):
             return Player.create_order(battle.available_switches[action - 8])
         else:
@@ -383,9 +381,7 @@ class Gen7EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
             and 0 <= action - 8 < len(battle.available_moves)
             and not battle.force_switch
         ):
-            return Player.create_order(
-                battle.available_moves[action - 8], mega=True
-            )
+            return Player.create_order(battle.available_moves[action - 8], mega=True)
         elif 0 <= action - 12 < len(battle.available_switches):
             return Player.create_order(battle.available_switches[action - 12])
         else:
@@ -452,9 +448,7 @@ class Gen8EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
             and 0 <= action - 8 < len(battle.available_moves)
             and not battle.force_switch
         ):
-            return Player.create_order(
-                battle.available_moves[action - 8], mega=True
-            )
+            return Player.create_order(battle.available_moves[action - 8], mega=True)
         elif (
             battle.can_dynamax
             and 0 <= action - 12 < len(battle.available_moves)
@@ -532,9 +526,7 @@ class Gen9EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
             and 0 <= action - 8 < len(battle.available_moves)
             and not battle.force_switch
         ):
-            return Player.create_order(
-                battle.available_moves[action - 8], mega=True
-            )
+            return Player.create_order(battle.available_moves[action - 8], mega=True)
         elif (
             battle.can_dynamax
             and 0 <= action - 12 < len(battle.available_moves)

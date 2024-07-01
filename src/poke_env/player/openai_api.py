@@ -229,8 +229,8 @@ class OpenAIGymEnv(
         """
         pass
 
-    @abstractmethod
     @staticmethod
+    @abstractmethod
     def action_to_move(action: int, battle: AbstractBattle) -> BattleOrder:
         """
         Returns the BattleOrder relative to the given action.
