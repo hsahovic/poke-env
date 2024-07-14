@@ -11,7 +11,7 @@ class SimplePlayer(Player):
         return self.choose_random_move(battle)
 
 
-class FixedWinRatePlayer:
+class FixedWinRatePlayer(Player):
     async def battle_against(self, opponent, n_battles=1):
         return self.win_rate, opponent.win_rate
 
