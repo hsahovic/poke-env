@@ -62,7 +62,7 @@ class AbstractBattle(ABC):
         "upkeep",
         "uhtml",
         "zbroken",
-        ""
+        "",
     }
 
     __slots__ = (
