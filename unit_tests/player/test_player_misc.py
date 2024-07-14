@@ -1,3 +1,4 @@
+from collections import namedtuple
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -18,13 +19,27 @@ class FixedWinRatePlayer(Player):
 
     def choose_move(self, battle: AbstractBattle) -> BattleOrder:
         return self.choose_random_move(battle)
-
+    
     async def battle_against(self, opponent, n_battles=1):
         return self.win_rate, opponent.win_rate
+
+    async def send_challenges(self, *args, **kwargs):
+        pass
+
+    def reset_battles(self):
+        pass
 
     @property
     def win_rate(self):
         return 0.5
+    
+    @property
+    def next_team(self):
+        return None
+
+    @property
+    def ps_client(self):
+        return namedtuple("PSClient", "logged_in")(logged_in=None)
 
 
 def test_player_default_order():
