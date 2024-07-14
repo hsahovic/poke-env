@@ -19,7 +19,7 @@ class FixedWinRatePlayer(Player):
 
     def choose_move(self, battle: AbstractBattle) -> BattleOrder:
         return self.choose_random_move(battle)
-    
+
     async def accept_challenges(self, *args, **kwargs):
         pass
 
