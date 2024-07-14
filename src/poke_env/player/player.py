@@ -700,7 +700,7 @@ class Player(ABC):
 
     async def _battle_against_multi(
         self, opponents: List["Player"], n_battles: int
-    ) -> Dict[str, float]:
+    ) -> Dict[str, Tuple[float, float]]:
         results: Dict[str, Tuple[float, float]] = {}
         for opponent in opponents:
             win_rate, lose_rate = await self.battle_against(opponent, n_battles)
