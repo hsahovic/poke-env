@@ -33,11 +33,11 @@ async def cross_evaluate(
         p1.username: {p2.username: None for p2 in players} for p1 in players
     }
     for i, p1 in enumerate(players):
-        results[p1][p1] = None
+        results[p1.username][p1.username] = None
         r = await p1.battle_against_multi(players[i + 1 :], n_challenges)
         for p2, (win_rate, lose_rate) in r.items():
-            results[p1][p2] = win_rate
-            results[p2][p1] = lose_rate
+            results[p1.username][p2] = win_rate
+            results[p2][p1.username] = lose_rate
     return results
 
 
