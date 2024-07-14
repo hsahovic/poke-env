@@ -2,6 +2,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+from poke_env import AccountConfiguration
 from poke_env.environment import AbstractBattle, Battle, DoubleBattle, Move
 from poke_env.player import BattleOrder, Player, RandomPlayer, cross_evaluate
 
@@ -12,6 +13,9 @@ class SimplePlayer(Player):
 
 
 class FixedWinRatePlayer(Player):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
     def choose_move(self, battle: AbstractBattle) -> BattleOrder:
         return self.choose_random_move(battle)
 
@@ -195,11 +199,9 @@ async def test_basic_challenge_handling():
 
 @pytest.mark.asyncio
 async def test_cross_evaluate():
-    p1 = FixedWinRatePlayer()
-    p2 = FixedWinRatePlayer()
+    p1 = FixedWinRatePlayer(account_configuration=AccountConfiguration("p1", None))
+    p2 = FixedWinRatePlayer(account_configuration=AccountConfiguration("p2", None))
 
-    p1.username = "p1"
-    p2.username = "p2"
     cross_evaluation = await cross_evaluate([p1, p2], 10)
     assert cross_evaluation == {
         "p1": {"p1": None, "p2": 0.5},
