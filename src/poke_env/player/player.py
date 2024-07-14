@@ -42,7 +42,7 @@ class Player(ABC):
     Base class for players.
     """
 
-    MESSAGES_TO_IGNORE = {"", "t:", "expire", "uhtmlchange"}
+    MESSAGES_TO_IGNORE = {"t:", "expire", "uhtmlchange"}
 
     # When an error resulting from an invalid choice is made, the next order has this
     # chance of being showdown's default order to prevent infinite loops
@@ -260,6 +260,8 @@ class Player(ABC):
         for split_message in split_messages[1:]:
             if len(split_message) <= 1:
                 continue
+            elif split_message[1] == "":
+                battle.parse_message(split_message)
             elif split_message[1] in self.MESSAGES_TO_IGNORE:
                 pass
             elif split_message[1] == "request":
