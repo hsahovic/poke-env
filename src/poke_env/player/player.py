@@ -736,11 +736,7 @@ class Player(ABC):
                 to_id_str(self.username), n_battles, opponent.next_team
             ),
         )
-        win_rate = self.win_rate
-        opp_win_rate = opponent.win_rate
-        self.reset_battles()
-        opponent.reset_battles()
-        return win_rate, opp_win_rate
+        return self.win_rate, opponent.win_rate
 
     async def send_challenges(
         self, opponent: str, n_challenges: int, to_wait: Optional[Event] = None
