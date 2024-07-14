@@ -218,7 +218,7 @@ class Effect(Enum):
     TRAPPED = auto()
     TRICK = auto()
     TYPEADD = auto()
-    TYPE_CHANGE = auto()
+    TYPECHANGE = auto()
     UPROAR = auto()
     VITAL_SPIRIT = auto()
     WANDERING_SPIRIT = auto()
