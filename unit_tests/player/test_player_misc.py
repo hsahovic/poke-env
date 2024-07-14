@@ -32,7 +32,7 @@ class FixedWinRatePlayer(Player):
     @property
     def win_rate(self):
         return 0.5
-    
+
     @property
     def next_team(self):
         return None
