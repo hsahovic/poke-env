@@ -37,10 +37,6 @@ class FixedWinRatePlayer(Player):
     def next_team(self):
         return None
 
-    @property
-    def ps_client(self):
-        return namedtuple("PSClient", "logged_in")(logged_in=None)
-
 
 def test_player_default_order():
     assert SimplePlayer().choose_default_move().message == "/choose default"
