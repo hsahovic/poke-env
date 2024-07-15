@@ -705,6 +705,8 @@ class Player(ABC):
         for opponent in opponents:
             win_rate, lose_rate = await self.battle_against(opponent, n_battles)
             results[opponent.username] = (win_rate, lose_rate)
+            self.reset_battles()
+            opponent.reset_battles()
         return results
 
     async def battle_against(
