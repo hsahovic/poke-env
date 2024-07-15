@@ -678,6 +678,14 @@ class Pokemon:
         return Effect.DYNAMAX in self.effects
 
     @property
+    def is_terastallized(self) -> bool:
+        """
+        :return: Whether the pokemon is currently terastallized
+        :rtype: bool
+        """
+        return self._terastallized
+
+    @property
     def item(self) -> Optional[str]:
         """
         :return: The pokemon's item.
@@ -844,14 +852,6 @@ class Pokemon:
         ):
             return 2
         return 1
-
-    @property
-    def terastallized(self) -> bool:
-        """
-        :return: Whether the pokemon is currently terastallized
-        :rtype: bool
-        """
-        return self._terastallized
 
     @property
     def tera_type(self) -> Optional[PokemonType]:

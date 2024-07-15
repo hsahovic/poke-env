@@ -10151,6 +10151,7 @@
         ],
         "gender": "M",
         "heightm": 0.5,
+        "mother": "nidoranf",
         "name": "Nidoran-M",
         "num": 32,
         "types": [
@@ -17506,6 +17507,7 @@
         ],
         "gender": "M",
         "heightm": 0.7,
+        "mother": "illumise",
         "name": "Volbeat",
         "num": 313,
         "types": [

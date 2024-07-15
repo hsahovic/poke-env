@@ -23,6 +23,9 @@ class Observation:
         ObservedPokemon, List[Optional[ObservedPokemon]], None
     ] = None
 
+    # The player's team, so we can track states of mons throughout the battle
+    team: Dict[str, Optional[ObservedPokemon]] = field(default_factory=dict)
+
     # The opponent's team that has been exposed to the player, for VGC
     opponent_team: Dict[str, Optional[ObservedPokemon]] = field(default_factory=dict)
 

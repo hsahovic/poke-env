@@ -1936,6 +1936,7 @@
     "metronome": {
         "accuracy": true,
         "basePower": 0,
+        "callsMove": true,
         "category": "Status",
         "contestType": "Cute",
         "flags": {
@@ -2007,6 +2008,7 @@
     "mirrormove": {
         "accuracy": true,
         "basePower": 0,
+        "callsMove": true,
         "category": "Status",
         "contestType": "Clever",
         "flags": {
