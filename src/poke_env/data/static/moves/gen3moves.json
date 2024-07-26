@@ -6735,12 +6735,12 @@
             "bypasssub": 1,
             "failencore": 1,
             "failmimic": 1,
-            "noassist": 1
+            "noassist": 1,
+            "nosketch": 1
         },
         "isNonstandard": null,
         "name": "Sketch",
         "noPPBoosts": true,
-        "noSketch": true,
         "num": 166,
         "onHit": "onHit",
         "pp": 1,
@@ -7539,11 +7539,11 @@
             "failencore": 1,
             "failmimic": 1,
             "noassist": 1,
+            "nosketch": 1,
             "protect": 1
         },
         "name": "Struggle",
         "noPPBoosts": true,
-        "noSketch": true,
         "num": 165,
         "onModifyMove": "onModifyMove",
         "pp": 1,
