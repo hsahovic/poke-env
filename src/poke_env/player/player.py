@@ -73,7 +73,7 @@ class Player(ABC):
         :param avatar: Player avatar name. Optional.
         :type avatar: str, optional
         :param battle_format: Name of the battle format this player plays. Defaults to
-            gen8randombattle.
+            gen9randombattle.
         :type battle_format: str
         :param log_level: The player's logger level.
         :type log_level: int. Defaults to logging's default level.
@@ -211,6 +211,15 @@ class Player(ABC):
                         logger=self.logger,
                         gen=gen,
                         save_replays=self._save_replays,
+                    )
+
+                # Add our team as teampreview_team, as part of battle initialisation
+                if isinstance(self._team, ConstantTeambuilder):
+                    battle.teampreview_team = set(
+                        [
+                            Pokemon(gen=gen, teambuilder=tb_mon)
+                            for tb_mon in self._team.team
+                        ]
                     )
 
                 await self._battle_count_queue.put(None)

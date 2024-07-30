@@ -56,6 +56,7 @@ class AbstractBattle(ABC):
         "name",
         "rated",
         "resisted",
+        "sentchoice",
         "split",
         "supereffective",
         "teampreview",
@@ -109,6 +110,7 @@ class AbstractBattle(ABC):
         "_side_conditions",
         "_team_size",
         "_team",
+        "_teampreview_team",
         "_teampreview_opponent_team",
         "_teampreview",
         "_trapped",
@@ -143,6 +145,7 @@ class AbstractBattle(ABC):
         self._save_replays: Union[str, bool] = save_replays
         self._team_size: Dict[str, int] = {}
         self._teampreview: bool = False
+        self._teampreview_team: Set[Pokemon] = set()
         self._teampreview_opponent_team: Set[Pokemon] = set()
         self._anybody_inactive: bool = False
         self._reconnected: bool = True
@@ -1173,7 +1176,7 @@ class AbstractBattle(ABC):
         Should not be used.
 
         :return: The last request's rqid.
-        :rtype: Tuple[str, str]
+        :rtype: int
         """
         return self._rqid
 
@@ -1221,6 +1224,18 @@ class AbstractBattle(ABC):
         :rtype: bool
         """
         return self._teampreview
+
+    @property
+    def teampreview_team(self) -> Set[Pokemon]:
+        """
+        :return: The player's team during teampreview.
+        :rtype: Set[Pokemon]
+        """
+        return self._teampreview_team
+
+    @teampreview_team.setter
+    def teampreview_team(self, value: Set[Pokemon]):
+        self._teampreview_team = value
 
     @property
     def teampreview_opponent_team(self) -> Set[Pokemon]:
