@@ -199,9 +199,12 @@ class AbstractBattle(ABC):
         :type identifier: str
         :param force_self_team: Wheter to force returning a Pokemon from the player's
             team. Defaults to False.
-        :type details: str, optional
+        :type force_self_team: bool
         :param details: Detailled information about the pokemon. Defaults to ''.
-        :type force_self_team: bool, optional, defaults to False
+        :type details: str, defaults to ''
+        :param request: Detailled information about the pokemon from a request.
+            Defaults to None.
+        :type request: Dict, optional, defaults to None
         :return: The corresponding pokemon object.
         :rtype: Pokemon
         :raises ValueError: If the team has too many pokemons, as determined by the

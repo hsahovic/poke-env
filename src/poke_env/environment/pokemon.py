@@ -784,7 +784,6 @@ class Pokemon:
     def must_recharge(self, value: bool):
         self._must_recharge = value
 
-    # TODO: implement
     @property
     def name(self) -> str:
         """
