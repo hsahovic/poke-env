@@ -703,13 +703,15 @@ class Player(ABC):
     ) -> Dict[str, Tuple[float, float]]:
         results: Dict[str, Tuple[float, float]] = {}
         for opponent in opponents:
-            win_rate, lose_rate = await self.battle_against(opponent, n_battles)
-            results[opponent.username] = (win_rate, lose_rate)
+            await self.battle_against(opponent, n_battles)
+            results[opponent.username] = (self.win_rate, opponent.win_rate)
+            self.reset_battles()
+            opponent.reset_battles()
         return results
 
     async def battle_against(
         self, opponent: "Player", n_battles: int = 1
-    ) -> Tuple[float, float]:
+    ):
         """Make the player play n_battles against opponent.
 
         This function is a wrapper around send_challenges and accept challenges.
@@ -719,13 +721,13 @@ class Player(ABC):
         :param n_battles: The number of games to play. Defaults to 1.
         :type n_battles: int
         """
-        return await handle_threaded_coroutines(
+        await handle_threaded_coroutines(
             self._battle_against(opponent, n_battles)
         )
 
     async def _battle_against(
         self, opponent: "Player", n_battles: int
-    ) -> Tuple[float, float]:
+    ):
         await asyncio.gather(
             self.send_challenges(
                 to_id_str(opponent.username),
@@ -736,11 +738,6 @@ class Player(ABC):
                 to_id_str(self.username), n_battles, opponent.next_team
             ),
         )
-        win_rate = self.win_rate
-        opp_win_rate = opponent.win_rate
-        self.reset_battles()
-        opponent.reset_battles()
-        return win_rate, opp_win_rate
 
     async def send_challenges(
         self, opponent: str, n_challenges: int, to_wait: Optional[Event] = None
