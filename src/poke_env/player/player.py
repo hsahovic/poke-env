@@ -709,9 +709,7 @@ class Player(ABC):
             opponent.reset_battles()
         return results
 
-    async def battle_against(
-        self, opponent: "Player", n_battles: int = 1
-    ):
+    async def battle_against(self, opponent: "Player", n_battles: int = 1):
         """Make the player play n_battles against opponent.
 
         This function is a wrapper around send_challenges and accept challenges.
@@ -721,13 +719,9 @@ class Player(ABC):
         :param n_battles: The number of games to play. Defaults to 1.
         :type n_battles: int
         """
-        await handle_threaded_coroutines(
-            self._battle_against(opponent, n_battles)
-        )
+        await handle_threaded_coroutines(self._battle_against(opponent, n_battles))
 
-    async def _battle_against(
-        self, opponent: "Player", n_battles: int
-    ):
+    async def _battle_against(self, opponent: "Player", n_battles: int):
         await asyncio.gather(
             self.send_challenges(
                 to_id_str(opponent.username),
