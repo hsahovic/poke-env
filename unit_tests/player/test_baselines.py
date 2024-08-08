@@ -128,9 +128,7 @@ def test_simple_heuristics_player_should_switch_out():
         Pokemon(species="charmander", gen=8),
         [],
     )
-    battle.active_pokemon._last_request["stats"] = {
-        stat: 0 for stat in battle.active_pokemon.base_stats
-    }
+    battle.active_pokemon.stats = {stat: 0 for stat in battle.active_pokemon.base_stats}
     assert player._should_switch_out(battle) is False
 
     battle.available_switches.append(Pokemon(species="venusaur", gen=8))
@@ -140,10 +138,10 @@ def test_simple_heuristics_player_should_switch_out():
     assert player._should_switch_out(battle) is False
 
     battle.active_pokemon.boost("spa", -3)
-    battle.active_pokemon._last_request["stats"].update({"atk": 10, "spa": 20})
+    battle.active_pokemon.stats.update({"atk": 10, "spa": 20})
     assert player._should_switch_out(battle) is True
 
-    battle.active_pokemon._last_request["stats"].update({"atk": 30, "spa": 20})
+    battle.active_pokemon.stats.update({"atk": 30, "spa": 20})
     assert player._should_switch_out(battle) is False
 
     battle.active_pokemon.boost("atk", -3)
@@ -198,7 +196,7 @@ def test_simple_heuristics_player():
         set(),
         set(),
     )
-    battle.active_pokemon._last_request["stats"] = {
+    battle.active_pokemon.stats = {
         stat: 100 for stat in battle.active_pokemon.base_stats
     }
 

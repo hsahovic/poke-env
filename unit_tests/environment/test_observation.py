@@ -35,6 +35,7 @@ def test_observation(example_request):
     battle.parse_message(["", "-weather", "RainyDay"])
     battle.parse_message(["", "turn", "3"])
     battle.parse_message(["", "-weather", "SunnyDay"])
+    battle.parse_message(["", ""])
     battle.tied()
 
     # Check all attributes of Observation, as well as if it updates the battle states
@@ -64,6 +65,7 @@ def test_observation(example_request):
     assert Weather.SANDSTORM not in battle.observations[3].weather
 
     assert battle.observations[3].team != battle.observations[2].team
+    assert ["", ""] in battle.observations[3].events
 
 
 def test_observed_pokemon(example_request):

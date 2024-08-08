@@ -168,7 +168,14 @@ def test_battle_request_parsing(example_request):
 
     assert mon.species == "venusaur"
     assert mon.current_hp_fraction == 139 / 265
-    assert mon.stats == {"atk": 139, "def": 183, "spa": 211, "spd": 211, "spe": 178}
+    assert mon.stats == {
+        "hp": 265,
+        "atk": 139,
+        "def": 183,
+        "spa": 211,
+        "spd": 211,
+        "spe": 178,
+    }
 
     moves = mon.moves
     assert (

@@ -1,4 +1,8 @@
-"""This module defines the Observation class, which stores the state of the battle
+"""This module defines the Observation class, which stores the state of the battle.
+It is updated whenever a new event is received and processed from showdown. Each observation
+records a turn. Each property is the state of the battle at the beginning of the turn, and
+the events are ones that occurred that turn. In this way, you can instanciate a new battle
+with the Observations' properties, and then recreate that turn with the events property.
 """
 
 from dataclasses import dataclass, field
