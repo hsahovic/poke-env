@@ -1,2 +1,2 @@
-tensorflow<2.16
+tensorflow<2.18
 keras-rl2
