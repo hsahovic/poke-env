@@ -211,6 +211,7 @@ class PSClient:
                 max_queue=None,
                 ping_interval=self._ping_interval,
                 ping_timeout=self._ping_timeout,
+                open_timeout=None,
             ) as websocket:
                 self.websocket = websocket
                 async for message in websocket:
