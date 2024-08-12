@@ -1460,10 +1460,10 @@
             "metronome": 1,
             "mirror": 1,
             "noparentalbond": 1,
+            "nosketch": 1,
             "protect": 1
         },
         "name": "Explosion",
-        "noSketch": true,
         "num": 153,
         "pp": 5,
         "priority": 0,
@@ -3238,10 +3238,10 @@
         "category": "Status",
         "contestType": "Cute",
         "flags": {
-            "failencore": 1
+            "failencore": 1,
+            "nosketch": 1
         },
         "name": "Metronome",
-        "noSketch": true,
         "num": 118,
         "onHit": "onHit",
         "pp": 10,
@@ -3285,10 +3285,10 @@
             "bypasssub": 1,
             "failencore": 1,
             "noassist": 1,
+            "nosketch": 1,
             "protect": 1
         },
         "name": "Mimic",
-        "noSketch": true,
         "num": 102,
         "onHit": "onHit",
         "pp": 10,
@@ -3387,11 +3387,11 @@
         "contestType": "Clever",
         "flags": {
             "failencore": 1,
-            "metronome": 1
+            "metronome": 1,
+            "nosketch": 1
         },
         "isNonstandard": null,
         "name": "Mirror Move",
-        "noSketch": true,
         "num": 119,
         "onHit": "onHit",
         "onTryHit": "onTryHit",
@@ -4663,10 +4663,10 @@
             "metronome": 1,
             "mirror": 1,
             "noparentalbond": 1,
+            "nosketch": 1,
             "protect": 1
         },
         "name": "Self-Destruct",
-        "noSketch": true,
         "num": 120,
         "pp": 5,
         "priority": 0,
@@ -4783,12 +4783,12 @@
         "flags": {
             "bypasssub": 1,
             "failencore": 1,
-            "noassist": 1
+            "noassist": 1,
+            "nosketch": 1
         },
         "isNonstandard": null,
         "name": "Sketch",
         "noPPBoosts": true,
-        "noSketch": true,
         "num": 166,
         "onHit": "onHit",
         "pp": 1,
@@ -4932,10 +4932,10 @@
         "contestType": "Cute",
         "flags": {
             "failencore": 1,
+            "nosketch": 1,
             "nosleeptalk": 1
         },
         "name": "Sleep Talk",
-        "noSketch": true,
         "num": 214,
         "onHit": "onHit",
         "onTry": "onTry",
@@ -5411,11 +5411,11 @@
             "failencore": 1,
             "failmimic": 1,
             "noassist": 1,
+            "nosketch": 1,
             "protect": 1
         },
         "name": "Struggle",
         "noPPBoosts": true,
-        "noSketch": true,
         "num": 165,
         "onModifyMove": "onModifyMove",
         "pp": 1,
@@ -6036,10 +6036,10 @@
         "flags": {
             "bypasssub": 1,
             "failencore": 1,
-            "metronome": 1
+            "metronome": 1,
+            "nosketch": 1
         },
         "name": "Transform",
-        "noSketch": true,
         "num": 144,
         "onHit": "onHit",
         "pp": 10,
