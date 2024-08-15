@@ -3,7 +3,8 @@
 
 from abc import ABC
 from threading import Lock
-from typing import Dict, List, Optional, Union
+from typing import List, Optional, Union
+from weakref import WeakKeyDictionary
 
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.player.battle_order import BattleOrder, ForfeitBattleOrder
@@ -81,7 +82,7 @@ class EnvPlayer(OpenAIGymEnv[ObsType, ActType], ABC):
             or leave it inactive.
         :type start_challenging: bool
         """
-        self._reward_buffer: Dict[AbstractBattle, float] = {}
+        self._reward_buffer: WeakKeyDictionary[AbstractBattle, float] = WeakKeyDictionary()
         self._opponent_lock = Lock()
         self._opponent = opponent
         b_format = self._DEFAULT_BATTLE_FORMAT
