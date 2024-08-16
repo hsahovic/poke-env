@@ -161,6 +161,7 @@ class Effect(Enum):
     QUARKDRIVESPE = auto()
     QUASH = auto()
     QUICK_CLAW = auto()
+    QUICK_DRAW = auto()
     QUICK_GUARD = auto()
     RAGE = auto()
     RAGE_POWDER = auto()
@@ -838,6 +839,7 @@ _FROM_DATA: Dict[str, Effect] = {
     "QUARKDRIVESPE": Effect.QUARKDRIVESPE,
     "QUASH": Effect.QUASH,
     "QUICKCLAW": Effect.QUICK_CLAW,
+    "QUICKDRAW": Effect.QUICK_DRAW,
     "QUICKGUARD": Effect.QUICK_GUARD,
     "RAGE": Effect.RAGE,
     "RAGEPOWDER": Effect.RAGE_POWDER,
