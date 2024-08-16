@@ -395,6 +395,7 @@ _FROM_ABILITY_EFFECTS: Set[Effect] = {
     Effect.QUARKDRIVESPA,
     Effect.QUARKDRIVESPD,
     Effect.QUARKDRIVESPE,
+    Effect.QUICK_DRAW,
     Effect.RIPEN,
     Effect.ROUGH_SKIN,
     Effect.SCREEN_CLEANER,
