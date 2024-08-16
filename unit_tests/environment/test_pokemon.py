@@ -209,6 +209,18 @@ def test_teambuilder(showdown_format_teams):
     assert mon.stats["hp"] == _raw_hp(mon.base_stats["hp"], 4, 31, 50)
     assert mon.stats["atk"] == _raw_stat(mon.base_stats["atk"], 156, 31, 50, 1.1)
 
+    tb_mons = Teambuilder.parse_showdown_team(
+        "Weezing-Galar\nAbility: Neutralizing Gas\nLevel: 50\n- Clear Smog"
+    )
+    mon = Pokemon(9, teambuilder=tb_mons[0])
+    assert mon
+    assert mon.name == "Weezing-Galar"
+    assert mon.level == 50
+    assert mon.ability == "neutralizinggas"
+    assert mon.item is None
+    assert list(mon.moves.keys()) == ["clearsmog"]
+    assert mon.tera_type is None
+
 
 def test_name():
     charizard = Pokemon(species="charizard", gen=8)

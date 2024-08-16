@@ -488,7 +488,7 @@ class Pokemon:
         if tb.level:
             self._level = tb.level
         self._ability = to_id_str(tb.ability)
-        self._item = to_id_str(tb.item)
+        self._item = to_id_str(tb.item) if tb.item else None
         if tb.gender:
             self._gender = PokemonGender.from_request_details(tb.gender)
         self._shiny = tb.shiny
