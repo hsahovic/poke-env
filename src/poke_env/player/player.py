@@ -433,9 +433,6 @@ class Player(ABC):
         :packed_team: Team to use. Defaults to generating a team with the agent's teambuilder.
         :type packed_team: string, optional.
         """
-        if packed_team is None:
-            packed_team = self.next_team
-
         await handle_threaded_coroutines(
             self._accept_challenges(opponent, n_challenges, packed_team)
         )
@@ -455,6 +452,7 @@ class Player(ABC):
         self.logger.debug("Event logged in received in accept_challenge")
 
         for _ in range(n_challenges):
+            team = packed_team or self.next_team
             while True:
                 username = to_id_str(await self._challenge_queue.get())
                 self.logger.debug(
@@ -465,7 +463,7 @@ class Player(ABC):
                     or (opponent == username)
                     or (isinstance(opponent, list) and (username in opponent))
                 ):
-                    await self.ps_client.accept_challenge(username, packed_team)
+                    await self.ps_client.accept_challenge(username, team)
                     await self._battle_semaphore.acquire()
                     break
         await self._battle_count_queue.join()
@@ -728,9 +726,7 @@ class Player(ABC):
                 n_battles,
                 to_wait=opponent.ps_client.logged_in,
             ),
-            opponent.accept_challenges(
-                to_id_str(self.username), n_battles, opponent.next_team
-            ),
+            opponent.accept_challenges(to_id_str(self.username), n_battles),
         )
 
     async def send_challenges(
