@@ -56,12 +56,14 @@ class AbstractBattle(ABC):
         "name",
         "rated",
         "resisted",
+        "sentchoice",
         "split",
         "supereffective",
         "teampreview",
         "upkeep",
         "uhtml",
         "zbroken",
+        "",
         "inactiveoff",
     }
 
@@ -109,6 +111,7 @@ class AbstractBattle(ABC):
         "_side_conditions",
         "_team_size",
         "_team",
+        "_teampreview_team",
         "_teampreview_opponent_team",
         "_teampreview",
         "_trapped",
@@ -143,6 +146,7 @@ class AbstractBattle(ABC):
         self._save_replays: Union[str, bool] = save_replays
         self._team_size: Dict[str, int] = {}
         self._teampreview: bool = False
+        self._teampreview_team: Set[Pokemon] = set()
         self._teampreview_opponent_team: Set[Pokemon] = set()
         self._anybody_inactive: bool = False
         self._reconnected: bool = True
@@ -196,9 +200,12 @@ class AbstractBattle(ABC):
         :type identifier: str
         :param force_self_team: Wheter to force returning a Pokemon from the player's
             team. Defaults to False.
-        :type details: str, optional
+        :type force_self_team: bool
         :param details: Detailled information about the pokemon. Defaults to ''.
-        :type force_self_team: bool, optional, defaults to False
+        :type details: str, defaults to ''
+        :param request: Detailled information about the pokemon from a request.
+            Defaults to None.
+        :type request: Dict, optional, defaults to None
         :return: The corresponding pokemon object.
         :rtype: Pokemon
         :raises ValueError: If the team has too many pokemons, as determined by the
@@ -1173,7 +1180,7 @@ class AbstractBattle(ABC):
         Should not be used.
 
         :return: The last request's rqid.
-        :rtype: Tuple[str, str]
+        :rtype: int
         """
         return self._rqid
 
@@ -1221,6 +1228,18 @@ class AbstractBattle(ABC):
         :rtype: bool
         """
         return self._teampreview
+
+    @property
+    def teampreview_team(self) -> Set[Pokemon]:
+        """
+        :return: The player's team during teampreview.
+        :rtype: Set[Pokemon]
+        """
+        return self._teampreview_team
+
+    @teampreview_team.setter
+    def teampreview_team(self, value: Set[Pokemon]):
+        self._teampreview_team = value
 
     @property
     def teampreview_opponent_team(self) -> Set[Pokemon]:

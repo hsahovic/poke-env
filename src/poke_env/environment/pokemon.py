@@ -9,6 +9,8 @@ from poke_env.environment.pokemon_gender import PokemonGender
 from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.status import Status
 from poke_env.environment.z_crystal import Z_CRYSTAL
+from poke_env.stats import compute_raw_stats
+from poke_env.teambuilder.teambuilder_pokemon import TeambuilderPokemon
 
 
 class Pokemon:
@@ -36,6 +38,7 @@ class Pokemon:
         "_preparing_target",
         "_protect_counter",
         "_shiny",
+        "_stats",
         "_revealed",
         "_species",
         "_status",
@@ -54,6 +57,7 @@ class Pokemon:
         species: Optional[str] = None,
         request_pokemon: Optional[Dict[str, Any]] = None,
         details: Optional[str] = None,
+        teambuilder: Optional[TeambuilderPokemon] = None,
     ):
         # Base data
         self._data = GenData.from_gen(gen)
@@ -101,6 +105,14 @@ class Pokemon:
         self._preparing_target = None
         self._protect_counter: int = 0
         self._revealed: bool = False
+        self._stats: Dict[str, Optional[int]] = {
+            "hp": None,
+            "atk": None,
+            "def": None,
+            "spa": None,
+            "spd": None,
+            "spe": None,
+        }
         self._status: Optional[Status] = None
         self._status_counter: int = 0
 
@@ -110,6 +122,8 @@ class Pokemon:
             self._update_from_details(details)
         elif species:
             self._update_from_pokedex(species)
+        elif teambuilder:
+            self._update_from_teambuilder(teambuilder)
 
     def __repr__(self) -> str:
         return self.__str__()
@@ -291,7 +305,8 @@ class Pokemon:
     def set_hp(self, hp_status: str):
         self.set_hp_status(hp_status)
 
-    def set_hp_status(self, hp_status: str):
+    # Param `store` dictates whether we should store the HP as a mon's stats
+    def set_hp_status(self, hp_status: str, store=False):
         if hp_status == "0 fnt":
             self.faint()
             return
@@ -305,6 +320,9 @@ class Pokemon:
         hp = "".join([c for c in hp if c in "0123456789/"]).split("/")
         self._current_hp = int(hp[0])
         self._max_hp = int(hp[1])
+
+        if store:
+            self._stats["hp"] = self._max_hp
 
     def start_effect(self, effect_str: str):
         effect = Effect.from_showdown_message(effect_str)
@@ -438,7 +456,7 @@ class Pokemon:
         self._last_request = request_pokemon
 
         condition = request_pokemon["condition"]
-        self.set_hp_status(condition)
+        self.set_hp_status(condition, store=True)
 
         self._item = request_pokemon["item"]
 
@@ -457,6 +475,37 @@ class Pokemon:
                 for move_id, move in self._moves.items()
                 if move_id in moves_to_keep
             }
+
+        if "stats" in request_pokemon:
+            for stat in request_pokemon["stats"]:
+                self._stats[stat] = request_pokemon["stats"][stat]
+
+    def _update_from_teambuilder(self, tb: TeambuilderPokemon):
+        if tb.nickname and not tb.species:
+            self._update_from_pokedex(tb.nickname)
+        elif tb.nickname and tb.species:
+            self._update_from_pokedex(tb.species)
+        if tb.level:
+            self._level = tb.level
+        self._ability = to_id_str(tb.ability)
+        self._item = to_id_str(tb.item) if tb.item else None
+        if tb.gender:
+            self._gender = PokemonGender.from_request_details(tb.gender)
+        self._shiny = tb.shiny
+        if tb.tera_type:
+            self._terastallized_type = PokemonType.from_name(tb.tera_type)
+        self._moves = {}
+        for move_str in tb.moves:
+            move = Move(Move.retrieve_id(move_str), gen=self._data.gen)
+            self._moves[move.id] = move
+
+        if tb.level and tb.nature:
+            self._stats = {}
+            stats = compute_raw_stats(
+                self._species, tb.evs, tb.ivs, tb.level, tb.nature.lower(), self._data
+            )
+            for stat, val in zip(["hp", "atk", "def", "spa", "spd", "spe"], stats):
+                self._stats[stat] = val
 
     def used_z_move(self):
         self._item = None
@@ -736,6 +785,15 @@ class Pokemon:
         self._must_recharge = value
 
     @property
+    def name(self) -> str:
+        """
+        :return: A string of the pokemon's name, as it appears in Showdown
+        :rtype: name
+        """
+        dex_entry = self._data.pokedex[self._species]
+        return dex_entry["name"]
+
+    @property
     def pokeball(self) -> Optional[str]:
         """
         :return: The pokeball in which is the pokemon.
@@ -809,16 +867,16 @@ class Pokemon:
         return self._species
 
     @property
-    def stats(self) -> Optional[Dict[str, Optional[int]]]:
+    def stats(self) -> Dict[str, Optional[int]]:
         """
         :return: The pokemon's stats, as a dictionary.
         :rtype: Dict[str, int | None]
         """
-        if self._last_request is not None:
-            return self._last_request.get(
-                "stats",
-                {"atk": None, "def": None, "spa": None, "spd": None, "spe": None},
-            )
+        return self._stats
+
+    @stats.setter
+    def stats(self, stats: Dict[str, Optional[int]]):
+        self._stats = stats
 
     @property
     def status(self) -> Optional[Status]:

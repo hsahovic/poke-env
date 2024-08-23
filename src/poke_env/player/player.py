@@ -42,7 +42,7 @@ class Player(ABC):
     Base class for players.
     """
 
-    MESSAGES_TO_IGNORE = {"", "t:", "expire", "uhtmlchange"}
+    MESSAGES_TO_IGNORE = {"t:", "expire", "uhtmlchange"}
 
     # When an error resulting from an invalid choice is made, the next order has this
     # chance of being showdown's default order to prevent infinite loops
@@ -73,7 +73,7 @@ class Player(ABC):
         :param avatar: Player avatar name. Optional.
         :type avatar: str, optional
         :param battle_format: Name of the battle format this player plays. Defaults to
-            gen8randombattle.
+            gen9randombattle.
         :type battle_format: str
         :param log_level: The player's logger level.
         :type log_level: int. Defaults to logging's default level.
@@ -213,6 +213,15 @@ class Player(ABC):
                         save_replays=self._save_replays,
                     )
 
+                # Add our team as teampreview_team, as part of battle initialisation
+                if isinstance(self._team, ConstantTeambuilder):
+                    battle.teampreview_team = set(
+                        [
+                            Pokemon(gen=gen, teambuilder=tb_mon)
+                            for tb_mon in self._team.team
+                        ]
+                    )
+
                 await self._battle_count_queue.put(None)
                 if battle_tag in self._battles:
                     await self._battle_count_queue.get()
@@ -260,6 +269,8 @@ class Player(ABC):
         for split_message in split_messages[1:]:
             if len(split_message) <= 1:
                 continue
+            elif split_message[1] == "":
+                battle.parse_message(split_message)
             elif split_message[1] in self.MESSAGES_TO_IGNORE:
                 pass
             elif split_message[1] == "request":
