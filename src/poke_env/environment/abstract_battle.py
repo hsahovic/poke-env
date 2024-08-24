@@ -47,6 +47,7 @@ class AbstractBattle(ABC):
         "gametype",
         "html",
         "immune",
+        "inactiveoff",
         "init",
         "j",
         "join",
@@ -64,7 +65,6 @@ class AbstractBattle(ABC):
         "uhtml",
         "zbroken",
         "",
-        "inactiveoff",
     }
 
     __slots__ = (

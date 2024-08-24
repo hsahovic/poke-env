@@ -7,6 +7,7 @@ from poke_env.environment import (
     Field,
     Move,
     MoveCategory,
+    Pokemon,
     PokemonGender,
     SideCondition,
     Status,
@@ -88,6 +89,36 @@ def test_effect_build():
                 or effect.is_from_item
                 or effect.is_from_move
             )
+
+
+def test_effect_end():
+    furret = Pokemon(gen=9, species="furret")
+    furret._effects = {
+        Effect.GLAIVE_RUSH: 1,
+        Effect.CHARGE: 1,
+        Effect.QUASH: 1,
+        Effect.MUMMY: 1,
+    }
+    furret.moved("followme")
+
+    assert Effect.GLAIVE_RUSH not in furret.effects
+    assert Effect.CHARGE in furret.effects
+
+    furret.moved("zapcannon")
+    assert Effect.CHARGE not in furret.effects
+
+    # Test end on turn
+    furret.end_turn()
+    assert Effect.QUASH not in furret.effects
+
+    # Test end on switch
+    furret.switch_out()
+    assert Effect.MUMMY not in furret.effects
+
+    # Test the definition of Volatile Status
+    for effect in list(Effect):
+        if effect.is_volatile_status:
+            assert effect.ends_on_switch
 
 
 def test_field_str():
