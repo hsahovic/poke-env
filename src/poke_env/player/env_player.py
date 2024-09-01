@@ -82,7 +82,9 @@ class EnvPlayer(OpenAIGymEnv[ObsType, ActType], ABC):
             or leave it inactive.
         :type start_challenging: bool
         """
-        self._reward_buffer: WeakKeyDictionary[AbstractBattle, float] = WeakKeyDictionary()
+        self._reward_buffer: WeakKeyDictionary[AbstractBattle, float] = (
+            WeakKeyDictionary()
+        )
         self._opponent_lock = Lock()
         self._opponent = opponent
         b_format = self._DEFAULT_BATTLE_FORMAT
