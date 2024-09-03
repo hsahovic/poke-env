@@ -120,6 +120,11 @@ def test_effect_end():
         if effect.is_volatile_status:
             assert effect.ends_on_switch
 
+    furret.switch_in()
+    furret.start_effect("feint")
+    furret.faint()
+    assert furret.effects == {}
+
 
 def test_field_str():
     assert str(Field["ELECTRIC_TERRAIN"])

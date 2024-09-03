@@ -32,7 +32,6 @@ class AbstractBattle(ABC):
         "-ohko",
         "-resisted",
         "-singlemove",
-        "-singleturn",
         "-supereffective",
         "-waiting",
         "-zbroken",
@@ -705,6 +704,9 @@ class AbstractBattle(ABC):
         elif split_message[1] == "-sidestart":
             side, condition = split_message[2:4]
             self._side_start(side, condition)
+        elif split_message[1] in ["-singleturn", "-singlemove"]:
+            pokemon, effect = split_message[2:4]
+            self.get_pokemon(pokemon).start_effect(effect.replace("move: ", ""))
         elif split_message[1] == "-swapboost":
             source, target, stats = split_message[2:5]
             source = self.get_pokemon(source)

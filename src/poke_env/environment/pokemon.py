@@ -225,6 +225,7 @@ class Pokemon:
     def faint(self):
         self._current_hp = 0
         self._status = Status.FNT
+        self._effects = {}
 
     def forme_change(self, species: str):
         species = species.split(",")[0]
