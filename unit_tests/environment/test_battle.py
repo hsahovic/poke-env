@@ -324,6 +324,11 @@ def test_battle_request_and_interactions(example_request):
     for stat, boost in battle.opponent_active_pokemon.boosts.items():
         assert boost == -boosts_before_invertion[stat]
 
+    battle.parse_message(["", "-singleturn", "p1: Tyranitar", "move: Rage Powder"])
+    assert Effect.RAGE_POWDER in battle.opponent_active_pokemon.effects
+    battle.end_turn(1)
+    assert Effect.RAGE_POWDER not in battle.opponent_active_pokemon.effects
+
     battle.parse_message(
         [
             "",
