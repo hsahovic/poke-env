@@ -1,4 +1,6 @@
 from poke_env.environment import Move, Pokemon, PokemonGender, PokemonType
+from poke_env.stats import _raw_hp, _raw_stat
+from poke_env.teambuilder.teambuilder import Teambuilder
 
 
 def test_pokemon_moves():
@@ -184,3 +186,83 @@ def test_details():
     assert furret.shiny
     assert furret.gender == PokemonGender.FEMALE
     assert furret.tera_type == PokemonType.NORMAL
+
+
+def test_teambuilder(showdown_format_teams):
+    tb_mons = Teambuilder.parse_showdown_team(
+        showdown_format_teams["gen9vgc2024regg"][0]
+    )
+    mon = Pokemon(9, teambuilder=tb_mons[0])
+
+    assert mon
+    assert mon.name == "Iron Hands"
+    assert mon.level == 50
+    assert mon.ability == "quarkdrive"
+    assert mon.item == "assaultvest"
+    assert list(mon.moves.keys()) == [
+        "fakeout",
+        "drainpunch",
+        "wildcharge",
+        "heavyslam",
+    ]
+    assert mon.tera_type == PokemonType.WATER
+    assert mon.stats["hp"] == _raw_hp(mon.base_stats["hp"], 4, 31, 50)
+    assert mon.stats["atk"] == _raw_stat(mon.base_stats["atk"], 156, 31, 50, 1.1)
+
+    tb_mons = Teambuilder.parse_showdown_team(
+        "Weezing-Galar\nAbility: Neutralizing Gas\nLevel: 50\n- Clear Smog"
+    )
+    mon = Pokemon(9, teambuilder=tb_mons[0])
+    assert mon
+    assert mon.name == "Weezing-Galar"
+    assert mon.level == 50
+    assert mon.ability == "neutralizinggas"
+    assert mon.item is None
+    assert list(mon.moves.keys()) == ["clearsmog"]
+    assert mon.tera_type is None
+
+
+def test_name():
+    charizard = Pokemon(species="charizard", gen=8)
+    assert charizard.name == "Charizard"
+
+    chiyu = Pokemon(species="chiyu", gen=9)
+    assert chiyu.name == "Chi-Yu"
+
+
+def test_stats(example_request, showdown_format_teams):
+    request_mons = example_request["side"]["pokemon"]
+    tb_mons = Teambuilder.parse_showdown_team(
+        showdown_format_teams["gen9vgc2024regg"][0]
+    )
+
+    species_mon = Pokemon(9, species="furret")
+    request_mon = Pokemon(9, request_pokemon=request_mons[0])
+    tb_mon = Pokemon(9, teambuilder=tb_mons[0])
+
+    assert species_mon.stats == {
+        "hp": None,
+        "atk": None,
+        "def": None,
+        "spa": None,
+        "spd": None,
+        "spe": None,
+    }
+
+    assert request_mon.stats == {
+        "hp": 265,
+        "atk": 139,
+        "def": 183,
+        "spa": 211,
+        "spd": 211,
+        "spe": 178,
+    }
+
+    assert tb_mon.stats == {
+        "hp": 230,
+        "atk": 198,
+        "def": 129,
+        "spa": 63,
+        "spd": 120,
+        "spe": 82,
+    }

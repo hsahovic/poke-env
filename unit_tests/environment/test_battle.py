@@ -168,7 +168,14 @@ def test_battle_request_parsing(example_request):
 
     assert mon.species == "venusaur"
     assert mon.current_hp_fraction == 139 / 265
-    assert mon.stats == {"atk": 139, "def": 183, "spa": 211, "spd": 211, "spe": 178}
+    assert mon.stats == {
+        "hp": 265,
+        "atk": 139,
+        "def": 183,
+        "spa": 211,
+        "spd": 211,
+        "spe": 178,
+    }
 
     moves = mon.moves
     assert (
@@ -316,6 +323,11 @@ def test_battle_request_and_interactions(example_request):
     battle.parse_message(["", "-invertboost", "p1: Tyranitar"])
     for stat, boost in battle.opponent_active_pokemon.boosts.items():
         assert boost == -boosts_before_invertion[stat]
+
+    battle.parse_message(["", "-singleturn", "p1: Tyranitar", "move: Rage Powder"])
+    assert Effect.RAGE_POWDER in battle.opponent_active_pokemon.effects
+    battle.end_turn(1)
+    assert Effect.RAGE_POWDER not in battle.opponent_active_pokemon.effects
 
     battle.parse_message(
         [

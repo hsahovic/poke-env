@@ -19038,15 +19038,15 @@
         "abilities": {
             "0": "Frisk",
             "1": "Limber",
-            "H": "Iron Fist"
+            "H": "Trace"
         },
         "baseStats": {
-            "atk": 103,
+            "atk": 117,
             "def": 85,
             "hp": 80,
             "spa": 55,
             "spd": 80,
-            "spe": 110
+            "spe": 128
         },
         "color": "Gray",
         "eggGroups": [

@@ -161,6 +161,7 @@ class Effect(Enum):
     QUARKDRIVESPE = auto()
     QUASH = auto()
     QUICK_CLAW = auto()
+    QUICK_DRAW = auto()
     QUICK_GUARD = auto()
     RAGE = auto()
     RAGE_POWDER = auto()
@@ -299,6 +300,22 @@ class Effect(Enum):
         return self in _PROTECT_BREAKING_EFFECTS
 
     @property
+    def ends_on_switch(self) -> bool:
+        """
+        :return: Whether this effect ends when the pokemon switches out.
+        :rtype: bool
+        """
+        return self.is_volatile_status or self in _ENDS_ON_SWITCH_EFFECTS
+
+    @property
+    def ends_on_turn(self) -> bool:
+        """
+        :return: Whether this effect ends at the end of the turn.
+        :rtype: bool
+        """
+        return self in _ENDS_ON_TURN_EFFECTS
+
+    @property
     def is_turn_countable(self) -> bool:
         """
         :return: Whether it is useful to keep track of the number of turns this effect
@@ -394,6 +411,7 @@ _FROM_ABILITY_EFFECTS: Set[Effect] = {
     Effect.QUARKDRIVESPA,
     Effect.QUARKDRIVESPD,
     Effect.QUARKDRIVESPE,
+    Effect.QUICK_DRAW,
     Effect.RIPEN,
     Effect.ROUGH_SKIN,
     Effect.SCREEN_CLEANER,
@@ -686,6 +704,42 @@ _TURN_COUNTER_EFFECTS: Set[Effect] = {
     Effect.WRAP,
 }
 
+_ENDS_ON_MOVE_EFFECTS = {
+    Effect.GLAIVE_RUSH,
+    Effect.CHARGE,
+}
+
+_ENDS_ON_SWITCH_EFFECTS = {
+    Effect.MIND_READER,
+    Effect.MUMMY,
+    Effect.SPEED_SWAP,
+}
+
+_ENDS_ON_TURN_EFFECTS = {
+    Effect.AFTER_YOU,
+    Effect.BANEFUL_BUNKER,
+    Effect.BURNING_BULWARK,
+    Effect.CRAFTY_SHIELD,
+    Effect.FEINT,
+    Effect.FLINCH,
+    Effect.FOLLOW_ME,
+    Effect.KINGS_SHIELD,
+    Effect.CUSTAP_BERRY,
+    Effect.MIND_READER,
+    Effect.MAGIC_COAT,
+    Effect.OBSTRUCT,
+    Effect.PROTECT,
+    Effect.QUASH,
+    Effect.QUICK_CLAW,
+    Effect.QUICK_DRAW,
+    Effect.QUICK_GUARD,
+    Effect.RAGE_POWDER,
+    Effect.ROOST,
+    Effect.SPIKY_SHIELD,
+    Effect.SPOTLIGHT,
+    Effect.WIDE_GUARD,
+}
+
 _ACTION_COUNTER_EFFECTS: Set[Effect] = {Effect.RAGE, Effect.STOCKPILE}
 
 _FROM_DATA: Dict[str, Effect] = {
@@ -838,6 +892,7 @@ _FROM_DATA: Dict[str, Effect] = {
     "QUARKDRIVESPE": Effect.QUARKDRIVESPE,
     "QUASH": Effect.QUASH,
     "QUICKCLAW": Effect.QUICK_CLAW,
+    "QUICKDRAW": Effect.QUICK_DRAW,
     "QUICKGUARD": Effect.QUICK_GUARD,
     "RAGE": Effect.RAGE,
     "RAGEPOWDER": Effect.RAGE_POWDER,

@@ -3,8 +3,9 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from poke_env import AccountConfiguration
-from poke_env.environment import AbstractBattle, Battle, DoubleBattle, Move
+from poke_env.environment import AbstractBattle, Battle, DoubleBattle, Move, PokemonType
 from poke_env.player import BattleOrder, Player, RandomPlayer, cross_evaluate
+from poke_env.stats import _raw_hp, _raw_stat
 
 
 class SimplePlayer(Player):
@@ -253,3 +254,37 @@ async def test_handle_ots_request(send_message_patch):
     await player._handle_ots_request(battle.battle_tag)
 
     send_message_patch.assert_called_with("/acceptopenteamsheets", room="bat1")
+
+
+@pytest.mark.asyncio
+async def test_create_teampreview_team(showdown_format_teams):
+    player = SimplePlayer(
+        battle_format="gen9vgc2024regg",
+        team=showdown_format_teams["gen9vgc2024regg"][0],
+    )
+
+    battle = await player._create_battle(["", "gen9vgc2024regg", "uuu"])
+
+    assert len(battle.teampreview_team) == 6
+
+    mon = None
+    for teampreview_mon in battle.teampreview_team:
+        if teampreview_mon.species == "ironhands":
+            mon = teampreview_mon
+
+    assert mon
+    assert mon.name == "Iron Hands"
+    assert mon.level == 50
+    assert mon.ability == "quarkdrive"
+    assert mon.item == "assaultvest"
+    assert list(mon.moves.keys()) == [
+        "fakeout",
+        "drainpunch",
+        "wildcharge",
+        "heavyslam",
+    ]
+    assert mon.tera_type == PokemonType.WATER
+    assert mon.stats["hp"] == _raw_hp(mon.base_stats["hp"], 4, 31, 50)
+    assert mon.stats["atk"] == _raw_stat(mon.base_stats["atk"], 156, 31, 50, 1.1)
+
+    assert any(map(lambda x: x.species == "fluttermane", battle.teampreview_team))
