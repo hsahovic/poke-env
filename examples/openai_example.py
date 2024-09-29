@@ -35,8 +35,7 @@ class TestEnv(OpenAIGymEnv):
             dtype=np.float64,
         )
 
-    @staticmethod
-    def action_to_move(action, battle):
+    def action_to_move(self, action, battle):
         return Player.choose_random_move(battle)
 
     def calc_reward(self, last_battle, current_battle):
