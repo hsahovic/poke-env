@@ -327,7 +327,7 @@ class Gen6EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
         elif 0 <= action - 8 < len(battle.available_switches):
             return self.agent.create_order(battle.available_switches[action - 8])
         else:
-            return Player.choose_random_move(battle)
+            return self.agent.choose_random_move(battle)
 
 
 class Gen7EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
@@ -387,7 +387,7 @@ class Gen7EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
         elif 0 <= action - 12 < len(battle.available_switches):
             return self.agent.create_order(battle.available_switches[action - 12])
         else:
-            return Player.choose_random_move(battle)
+            return self.agent.choose_random_move(battle)
 
 
 class Gen8EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
@@ -461,7 +461,7 @@ class Gen8EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
         elif 0 <= action - 16 < len(battle.available_switches):
             return self.agent.create_order(battle.available_switches[action - 16])
         else:
-            return Player.choose_random_move(battle)
+            return self.agent.choose_random_move(battle)
 
 
 class Gen9EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
@@ -546,4 +546,4 @@ class Gen9EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
         elif 0 <= action - 20 < len(battle.available_switches):
             return self.agent.create_order(battle.available_switches[action - 20])
         else:
-            return Player.choose_random_move(battle)
+            return self.agent.choose_random_move(battle)
