@@ -275,7 +275,7 @@ class Gen4EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
         elif 0 <= action - 4 < len(battle.available_switches):
             return self.agent.create_order(battle.available_switches[action - 4])
         else:
-            return Player.choose_random_move(battle)
+            return self.agent.choose_random_move(battle)
 
 
 class Gen5EnvSinglePlayer(Gen4EnvSinglePlayer[ObsType, ActType], ABC):
