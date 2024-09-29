@@ -29,9 +29,8 @@ class CustomEnvPlayer(EnvPlayer):
     def calc_reward(self, last_battle, current_battle) -> float:
         pass
 
-    @staticmethod
-    def action_to_move(action: int, battle: AbstractBattle) -> BattleOrder:
-        return Gen7EnvSinglePlayer.action_to_move(action, battle)
+    def action_to_move(self, action: int, battle: AbstractBattle) -> BattleOrder:
+        return Gen7EnvSinglePlayer.action_to_move(self, action, battle)
 
     def describe_embedding(self) -> Space:
         pass
