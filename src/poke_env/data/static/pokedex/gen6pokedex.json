@@ -4924,7 +4924,9 @@
     },
     "chuggalong": {
         "abilities": {
-            "0": "Armor Tail"
+            "0": "Armor Tail",
+            "1": "White Smoke",
+            "H": "Slow Start"
         },
         "baseStats": {
             "atk": 43,
@@ -4932,11 +4934,12 @@
             "hp": 45,
             "spa": 120,
             "spd": 110,
-            "spe": 115
+            "spe": 108
         },
         "color": "Black",
         "eggGroups": [
-            "Undiscovered"
+            "Dragon",
+            "Mineral"
         ],
         "gen": 9,
         "heightm": 6.2,
