@@ -75,9 +75,9 @@ class DoubleBattleOrder(BattleOrder):
         elif self.first_order:
             return self.first_order.message + ", pass"
         elif self.second_order:
-            return self.second_order.message + ", pass"
+            return "pass, " + self.second_order.message
         else:
-            return self.DEFAULT_ORDER
+            return "pass, pass"
 
     @staticmethod
     def join_orders(first_orders: List[BattleOrder], second_orders: List[BattleOrder]):
