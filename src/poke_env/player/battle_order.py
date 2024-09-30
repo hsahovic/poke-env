@@ -77,7 +77,7 @@ class DoubleBattleOrder(BattleOrder):
         elif self.second_order:
             return "/choose pass, " + self.second_order.message.replace("/choose ", "")
         else:
-            return "pass, pass"
+            return "/choose pass, pass"
 
     @staticmethod
     def join_orders(first_orders: List[BattleOrder], second_orders: List[BattleOrder]):
