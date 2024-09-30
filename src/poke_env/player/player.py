@@ -526,7 +526,10 @@ class Player(ABC):
 
             if first_order and second_order:
                 return DoubleBattleOrder(first_order, second_order)
-            return DoubleBattleOrder(first_order or second_order, None)
+            return DoubleBattleOrder(
+                first_order or second_order or DefaultBattleOrder(),
+                DefaultBattleOrder()
+            )
 
         for (
             orders,
