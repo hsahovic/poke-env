@@ -73,9 +73,9 @@ class DoubleBattleOrder(BattleOrder):
                 + self.second_order.message.replace("/choose ", "")
             )
         elif self.first_order:
-            return self.first_order.message + ", default"
+            return self.first_order.message + ", pass"
         elif self.second_order:
-            return self.second_order.message + ", default"
+            return self.second_order.message + ", pass"
         else:
             return self.DEFAULT_ORDER
 
