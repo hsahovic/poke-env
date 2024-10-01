@@ -528,7 +528,7 @@ class Player(ABC):
                 return DoubleBattleOrder(first_order, second_order)
             return DoubleBattleOrder(
                 first_order or second_order or DefaultBattleOrder(),
-                DefaultBattleOrder()
+                DefaultBattleOrder(),
             )
 
         for (

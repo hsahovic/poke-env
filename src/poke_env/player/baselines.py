@@ -84,7 +84,9 @@ class MaxBasePowerPlayer(Player):
             orders.append(BattleOrder(best_move, move_target=target))
 
         if orders[0] or orders[1]:
-            return DoubleBattleOrder(orders[0], orders[1])
+            return DoubleBattleOrder(
+                orders[0] or DefaultBattleOrder(), orders[1] or DefaultBattleOrder()
+            )
 
         return self.choose_random_move(battle)
 
