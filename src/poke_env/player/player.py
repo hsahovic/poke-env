@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 from asyncio import Condition, Event, Queue, Semaphore
 from logging import Logger
 from time import perf_counter
-from typing import Any, Awaitable, Dict, List, Optional, Union
+from typing import Any, Awaitable, Dict, List, Optional, Tuple, Union
 
 import orjson
 
@@ -444,9 +444,6 @@ class Player(ABC):
         :packed_team: Team to use. Defaults to generating a team with the agent's teambuilder.
         :type packed_team: string, optional.
         """
-        if packed_team is None:
-            packed_team = self.next_team
-
         await handle_threaded_coroutines(
             self._accept_challenges(opponent, n_challenges, packed_team)
         )
@@ -466,6 +463,7 @@ class Player(ABC):
         self.logger.debug("Event logged in received in accept_challenge")
 
         for _ in range(n_challenges):
+            team = packed_team or self.next_team
             while True:
                 username = to_id_str(await self._challenge_queue.get())
                 self.logger.debug(
@@ -476,7 +474,7 @@ class Player(ABC):
                     or (opponent == username)
                     or (isinstance(opponent, list) and (username in opponent))
                 ):
-                    await self.ps_client.accept_challenge(username, packed_team)
+                    await self.ps_client.accept_challenge(username, team)
                     await self._battle_semaphore.acquire()
                     break
         await self._battle_count_queue.join()
@@ -494,7 +492,8 @@ class Player(ABC):
         """
         pass
 
-    def choose_default_move(self) -> DefaultBattleOrder:
+    @staticmethod
+    def choose_default_move() -> DefaultBattleOrder:
         """Returns showdown's default move order.
 
         This order will result in the first legal order - according to showdown's
@@ -502,7 +501,8 @@ class Player(ABC):
         """
         return DefaultBattleOrder()
 
-    def choose_random_doubles_move(self, battle: DoubleBattle) -> BattleOrder:
+    @staticmethod
+    def choose_random_doubles_move(battle: DoubleBattle) -> BattleOrder:
         active_orders: List[List[BattleOrder]] = [[], []]
 
         if any(battle.force_switch):
@@ -606,7 +606,8 @@ class Player(ABC):
         else:
             return DefaultBattleOrder()
 
-    def choose_random_singles_move(self, battle: Battle) -> BattleOrder:
+    @staticmethod
+    def choose_random_singles_move(battle: Battle) -> BattleOrder:
         available_orders = [BattleOrder(move) for move in battle.available_moves]
         available_orders.extend(
             [BattleOrder(switch) for switch in battle.available_switches]
@@ -643,9 +644,10 @@ class Player(ABC):
         if available_orders:
             return available_orders[int(random.random() * len(available_orders))]
         else:
-            return self.choose_default_move()
+            return Player.choose_default_move()
 
-    def choose_random_move(self, battle: AbstractBattle) -> BattleOrder:
+    @staticmethod
+    def choose_random_move(battle: AbstractBattle) -> BattleOrder:
         """Returns a random legal move from battle.
 
         :param battle: The battle in which to move.
@@ -654,9 +656,9 @@ class Player(ABC):
         :rtype: str
         """
         if isinstance(battle, DoubleBattle):
-            return self.choose_random_doubles_move(battle)
+            return Player.choose_random_doubles_move(battle)
         elif isinstance(battle, Battle):
-            return self.choose_random_singles_move(battle)
+            return Player.choose_random_singles_move(battle)
         else:
             raise ValueError(
                 "battle should be Battle or DoubleBattle. Received %d" % (type(battle))
@@ -691,6 +693,31 @@ class Player(ABC):
             perf_counter() - start_time,
         )
 
+    async def battle_against_multi(
+        self, opponents: List["Player"], n_battles: int = 1
+    ) -> Dict[str, Tuple[float, float]]:
+        """Make the player play n_battles against opponents.
+
+        :param opponents: The list of opponents to play against.
+        :type opponents: List[Player]
+        :param n_battles: The number of games to play. Defaults to 1.
+        :type n_battles: int
+        """
+        return await handle_threaded_coroutines(
+            self._battle_against_multi(opponents, n_battles)
+        )
+
+    async def _battle_against_multi(
+        self, opponents: List["Player"], n_battles: int
+    ) -> Dict[str, Tuple[float, float]]:
+        results: Dict[str, Tuple[float, float]] = {}
+        for opponent in opponents:
+            await self.battle_against(opponent, n_battles)
+            results[opponent.username] = (self.win_rate, opponent.win_rate)
+            self.reset_battles()
+            opponent.reset_battles()
+        return results
+
     async def battle_against(self, opponent: "Player", n_battles: int = 1):
         """Make the player play n_battles against opponent.
 
@@ -710,9 +737,7 @@ class Player(ABC):
                 n_battles,
                 to_wait=opponent.ps_client.logged_in,
             ),
-            opponent.accept_challenges(
-                to_id_str(self.username), n_battles, opponent.next_team
-            ),
+            opponent.accept_challenges(to_id_str(self.username), n_battles),
         )
 
     async def send_challenges(

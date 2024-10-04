@@ -219,7 +219,7 @@ class Effect(Enum):
     TRAPPED = auto()
     TRICK = auto()
     TYPEADD = auto()
-    TYPE_CHANGE = auto()
+    TYPECHANGE = auto()
     UPROAR = auto()
     VITAL_SPIRIT = auto()
     WANDERING_SPIRIT = auto()
@@ -587,7 +587,7 @@ _FROM_MOVE_EFFECTS: Set[Effect] = {
     Effect.TRAPPED,
     Effect.TRICK,
     Effect.TYPEADD,
-    Effect.TYPE_CHANGE,
+    Effect.TYPECHANGE,
     Effect.UPROAR,
     Effect.WHIRLPOOL,
     Effect.WIDE_GUARD,
@@ -950,7 +950,7 @@ _FROM_DATA: Dict[str, Effect] = {
     "TRAPPED": Effect.TRAPPED,
     "TRICK": Effect.TRICK,
     "TYPEADD": Effect.TYPEADD,
-    "TYPECHANGE": Effect.TYPE_CHANGE,
+    "TYPECHANGE": Effect.TYPECHANGE,
     "UPROAR": Effect.UPROAR,
     "VITALSPIRIT": Effect.VITAL_SPIRIT,
     "WANDERINGSPIRIT": Effect.WANDERING_SPIRIT,
