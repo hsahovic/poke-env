@@ -200,7 +200,7 @@ class OpenAIGymEnv(
         )
         self._actions = self.agent.actions
         self._observations = self.agent.observations
-        self.action_space = Discrete(self.action_space_size())  # type: ignore
+        self.action_space = self.describe_action()
         self.observation_space = self.describe_embedding()
         self.current_battle: Optional[AbstractBattle] = None
         self.last_battle: Optional[AbstractBattle] = None
@@ -271,14 +271,7 @@ class OpenAIGymEnv(
         pass
 
     @abstractmethod
-    def action_space_size(self) -> int:
-        """
-        Returns the size of the action space. Given size x, the action space goes
-        from 0 to x - 1.
-
-        :return: The action space size.
-        :rtype: int
-        """
+    def describe_action(self) -> Space[ActType]:
         pass
 
     @abstractmethod
