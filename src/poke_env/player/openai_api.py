@@ -17,7 +17,7 @@ from gymnasium.spaces import Discrete, Space
 
 from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
 from poke_env.environment.abstract_battle import AbstractBattle
-from poke_env.player.battle_order import BattleOrder, ForfeitBattleOrder
+from poke_env.player.battle_order import BattleOrder
 from poke_env.player.player import Player
 from poke_env.ps_client import AccountConfiguration
 from poke_env.ps_client.server_configuration import (
@@ -85,8 +85,6 @@ class _AsyncPlayer(Generic[ObsType, ActType], Player):
         battle_to_send = self._user_funcs.embed_battle(battle)
         await self.observations.async_put(battle_to_send)
         action = await self.actions.async_get()
-        if action == -1:
-            return ForfeitBattleOrder()
         return self._user_funcs.action_to_move(action, battle)
 
     def _battle_finished_callback(self, battle: AbstractBattle):
