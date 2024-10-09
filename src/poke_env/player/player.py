@@ -234,6 +234,11 @@ class Player(ABC):
                 if self._start_timer_on_battle_start:
                     await self.ps_client.send_message("/timer on", battle.battle_tag)
 
+                if self.accept_open_team_sheet:
+                    await self.ps_client.send_message("/acceptopenteamsheets", room=battle_tag)
+                else:
+                    await self.ps_client.send_message("/rejectopenteamsheets", room=battle_tag)
+
                 return battle
         else:
             self.logger.critical(
@@ -365,8 +370,6 @@ class Player(ABC):
                 await self._handle_battle_request(battle, from_teampreview_request=True)
             elif split_message[1] == "bigerror":
                 self.logger.warning("Received 'bigerror' message: %s", split_message)
-            elif split_message[1] == "uhtml" and split_message[2] == "otsrequest":
-                await self._handle_ots_request(battle.battle_tag)
             else:
                 battle.parse_message(split_message)
 
@@ -398,13 +401,6 @@ class Player(ABC):
             if len(split_message) >= 6:
                 if split_message[5] == self._format:
                     await self._challenge_queue.put(challenging_player)
-
-    async def _handle_ots_request(self, battle_tag: str):
-        """Handles an Open Team Sheet request."""
-        if self.accept_open_team_sheet:
-            await self.ps_client.send_message("/acceptopenteamsheets", room=battle_tag)
-        else:
-            await self.ps_client.send_message("/rejectopenteamsheets", room=battle_tag)
 
     async def _update_challenges(self, split_message: List[str]):
         """Update internal challenge state.
