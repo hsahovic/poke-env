@@ -18,6 +18,8 @@ from poke_env.environment.battle import Battle
 from poke_env.environment.double_battle import DoubleBattle
 from poke_env.environment.move import Move
 from poke_env.environment.pokemon import Pokemon
+from poke_env.environment.pokemon_gender import PokemonGender
+from poke_env.environment.pokemon_type import PokemonType
 from poke_env.exceptions import ShowdownException
 from poke_env.player.battle_order import (
     BattleOrder,
