@@ -295,7 +295,7 @@ class Player(ABC):
                         pokemon._item = to_id_str(message_dict[pokemon.name][1])
                         pokemon._ability = to_id_str(message_dict[pokemon.name][2])
                         pokemon._moves = {to_id_str(name): Move(to_id_str(name), battle.gen) for name in message_dict[pokemon.name][3].split(",")}
-                        pokemon._gender = PokemonGender.from_request_details(message_dict[pokemon.name[6]])
+                        pokemon._gender = PokemonGender.from_request_details(message_dict[pokemon.name][6])
                         pokemon._level = int(message_dict[pokemon.name][9])
                         pokemon._terastallized_type = PokemonType.from_name(message_dict[pokemon.name][10].split(",")[-1])
             elif split_message[1] == "win" or split_message[1] == "tie":
