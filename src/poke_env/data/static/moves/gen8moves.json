@@ -17354,6 +17354,7 @@
         "category": "Status",
         "condition": {
             "duration": 1,
+            "noCopy": true,
             "onFoeRedirectTarget": "onFoeRedirectTarget",
             "onFoeRedirectTargetPriority": 2,
             "onStart": "onStart"
