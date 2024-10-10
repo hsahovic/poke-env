@@ -236,10 +236,11 @@ class Player(ABC):
                 if self._start_timer_on_battle_start:
                     await self.ps_client.send_message("/timer on", battle.battle_tag)
 
-                if self.accept_open_team_sheet:
-                    await self.ps_client.send_message("/acceptopenteamsheets", room=battle_tag)
-                else:
-                    await self.ps_client.send_message("/rejectopenteamsheets", room=battle_tag)
+                if "vgc" in self.format:
+                    if self.accept_open_team_sheet:
+                        await self.ps_client.send_message("/acceptopenteamsheets", room=battle_tag)
+                    else:
+                        await self.ps_client.send_message("/rejectopenteamsheets", room=battle_tag)
 
                 return battle
         else:
