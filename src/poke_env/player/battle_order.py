@@ -95,14 +95,9 @@ class DoubleBattleOrder(BattleOrder):
             if orders:
                 return orders
         elif first_orders:
-            return [
-                DoubleBattleOrder(order, None) for order in first_orders
-            ]
+            return [DoubleBattleOrder(order, None) for order in first_orders]
         elif second_orders:
-            return [
-                DoubleBattleOrder(None, order)
-                for order in second_orders
-            ]
+            return [DoubleBattleOrder(None, order) for order in second_orders]
         return [DefaultBattleOrder()]
 
 
