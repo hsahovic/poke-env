@@ -298,20 +298,17 @@ class Player(ABC):
                         m.split("|") for m in "|".join(split_message[3:]).split("]")
                     ]
                     message_dict = {m[0]: m[1:] for m in split_pokemon_messages}
-                    for pokemon in battle.opponent_team.values():
+                    for mon in battle.teampreview_opponent_team:
+                        identifier = f"{battle.opponent_role}: {mon.base_species.capitalize()}"
+                        if identifier not in battle._opponent_team:
+                            battle._opponent_team[identifier] = Pokemon(mon._data.gen, species=mon.species)
+                        pokemon = battle._opponent_team[identifier]
                         pokemon._item = to_id_str(message_dict[pokemon.name][1])
                         pokemon._ability = to_id_str(message_dict[pokemon.name][2])
-                        pokemon._moves = {
-                            to_id_str(name): Move(to_id_str(name), battle.gen)
-                            for name in message_dict[pokemon.name][3].split(",")
-                        }
-                        pokemon._gender = PokemonGender.from_request_details(
-                            message_dict[pokemon.name][6] or "N"
-                        )
+                        pokemon._moves = {to_id_str(name): Move(to_id_str(name), battle.gen) for name in message_dict[pokemon.name][3].split(",")}
+                        pokemon._gender = PokemonGender.from_request_details(message_dict[pokemon.name][6] or "N")
                         pokemon._level = int(message_dict[pokemon.name][9])
-                        pokemon._terastallized_type = PokemonType.from_name(
-                            message_dict[pokemon.name][10].split(",")[-1]
-                        )
+                        pokemon._terastallized_type = PokemonType.from_name(message_dict[pokemon.name][10].split(",")[-1])
             elif split_message[1] == "win" or split_message[1] == "tie":
                 if split_message[1] == "win":
                     battle.won_by(split_message[2])
