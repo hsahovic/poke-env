@@ -30,6 +30,7 @@ class Effect(Enum):
     CELEBRATE = auto()
     CHARGE = auto()
     CLAMP = auto()
+    COMMANDER = auto()
     CONFUSION = auto()
     COURT_CHANGE = auto()
     CRAFTY_SHIELD = auto()
