@@ -409,6 +409,8 @@ class Player(ABC):
             if not from_teampreview_request:
                 return
             message = self.teampreview(battle)
+            if isinstance(message, Awaitable):
+                message = await message
         else:
             message = self.choose_move(battle)
             if isinstance(message, Awaitable):
@@ -823,7 +825,7 @@ class Player(ABC):
                 )
         self._battles = {}
 
-    def teampreview(self, battle: AbstractBattle) -> str:
+    def teampreview(self, battle: AbstractBattle) -> Union[str, Awaitable[str]]:
         """Returns a teampreview order for the given battle.
 
         This order must be of the form /team TEAM, where TEAM is a string defining the

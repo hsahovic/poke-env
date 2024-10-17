@@ -77,7 +77,10 @@ class _AsyncPlayer(Generic[ObsType, ActType], Player):
     def choose_move(self, battle: AbstractBattle) -> Awaitable[BattleOrder]:
         return self._env_move(battle)
 
-    async def _env_move(self, battle: AbstractBattle) -> BattleOrder:
+    def teampreview(self, battle: AbstractBattle) -> Awaitable[str]:
+        return self._env_move(battle)
+
+    async def _env_move(self, battle: AbstractBattle) -> BattleOrder | str:
         if not self.current_battle or self.current_battle.finished:
             self.current_battle = battle
         if not self.current_battle == battle:
@@ -230,7 +233,7 @@ class OpenAIGymEnv(
         pass
 
     @abstractmethod
-    def action_to_move(self, action: ActType, battle: AbstractBattle) -> BattleOrder:
+    def action_to_move(self, action: ActType, battle: AbstractBattle) -> BattleOrder | str:
         """
         Returns the BattleOrder relative to the given action.
 
