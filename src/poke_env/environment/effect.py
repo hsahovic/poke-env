@@ -762,6 +762,7 @@ _FROM_DATA: Dict[str, Effect] = {
     "CELEBRATE": Effect.CELEBRATE,
     "CHARGE": Effect.CHARGE,
     "CLAMP": Effect.CLAMP,
+    "COMMANDER": Effect.COMMANDER,
     "CONFUSION": Effect.CONFUSION,
     "COURTCHANGE": Effect.COURT_CHANGE,
     "CRAFTYSHIELD": Effect.CRAFTY_SHIELD,
