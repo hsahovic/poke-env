@@ -84,6 +84,7 @@ class _AsyncPlayer(Generic[ObsType, ActType], Player):
         return self._teampreview(battle)
 
     async def _teampreview(self, battle: AbstractBattle) -> str:
+        self.current_battle = battle
         if isinstance(battle, Battle):
             return self.random_teampreview(battle)
         elif isinstance(battle, DoubleBattle):
@@ -95,19 +96,20 @@ class _AsyncPlayer(Generic[ObsType, ActType], Player):
             )
             assert isinstance(pokemon1, Pokemon)
             assert isinstance(pokemon2, Pokemon)
-            action1 = list(battle.team.keys()).index(pokemon1.name)
-            action2 = list(battle.team.keys()).index(pokemon2.name)
-            battle.switch(
-                pokemon1.name,
-                pokemon1._last_details,
+            action1 = [p.name for p in battle.team.values()].index(pokemon1.name) + 1
+            action2 = [p.name for p in battle.team.values()].index(pokemon2.name) + 1
+            battle2 = copy.deepcopy(battle)
+            battle2.switch(
+                f"{battle2.player_role}a: {pokemon1.base_species.capitalize()}",
+                "",
                 f"{pokemon1.current_hp}/{pokemon1.max_hp}",
             )
-            battle.switch(
-                pokemon2.name,
-                pokemon2._last_details,
+            battle2.switch(
+                f"{battle2.player_role}b: {pokemon2.base_species.capitalize()}",
+                "",
                 f"{pokemon2.current_hp}/{pokemon2.max_hp}",
             )
-            order2 = await self._env_move(battle)
+            order2 = await self._env_move(battle2)
             assert isinstance(order2, DoubleBattleOrder)
             pokemon3 = None if order2.first_order is None else order2.first_order.order
             pokemon4 = (
@@ -115,8 +117,8 @@ class _AsyncPlayer(Generic[ObsType, ActType], Player):
             )
             assert isinstance(pokemon3, Pokemon)
             assert isinstance(pokemon4, Pokemon)
-            action3 = list(battle.team.keys()).index(pokemon3.name)
-            action4 = list(battle.team.keys()).index(pokemon4.name)
+            action3 = [p.name for p in battle2.team.values()].index(pokemon3.name) + 1
+            action4 = [p.name for p in battle2.team.values()].index(pokemon4.name) + 1
             return f"/team {action1}{action2}{action3}{action4}"
         else:
             raise TypeError()
@@ -124,8 +126,6 @@ class _AsyncPlayer(Generic[ObsType, ActType], Player):
     async def _env_move(self, battle: AbstractBattle) -> BattleOrder:
         if not self.current_battle or self.current_battle.finished:
             self.current_battle = battle
-        if not self.current_battle == battle:
-            raise RuntimeError("Using different battles for queues")
         battle_to_send = self._user_funcs.embed_battle(battle)
         await self.observations.async_put(battle_to_send)
         action = await self.actions.async_get()
