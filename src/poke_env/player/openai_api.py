@@ -13,11 +13,14 @@ from logging import Logger
 from typing import Any, Awaitable, Callable, Dict, Generic, List, Optional, Tuple, Union
 
 from gymnasium.core import ActType, Env, ObsType
-from gymnasium.spaces import Discrete, Space
+from gymnasium.spaces import Space
 
 from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
 from poke_env.environment.abstract_battle import AbstractBattle
-from poke_env.player.battle_order import BattleOrder
+from poke_env.environment.battle import Battle
+from poke_env.environment.double_battle import DoubleBattle
+from poke_env.environment.pokemon import Pokemon
+from poke_env.player.battle_order import BattleOrder, DoubleBattleOrder
 from poke_env.player.player import Player
 from poke_env.ps_client import AccountConfiguration
 from poke_env.ps_client.server_configuration import (
@@ -78,9 +81,47 @@ class _AsyncPlayer(Generic[ObsType, ActType], Player):
         return self._env_move(battle)
 
     def teampreview(self, battle: AbstractBattle) -> Awaitable[str]:
-        return self._env_move(battle)
+        return self._teampreview(battle)
 
-    async def _env_move(self, battle: AbstractBattle) -> BattleOrder | str:
+    async def _teampreview(self, battle: AbstractBattle) -> str:
+        if isinstance(battle, Battle):
+            return self.random_teampreview(battle)
+        elif isinstance(battle, DoubleBattle):
+            order1 = await self._env_move(battle)
+            assert isinstance(order1, DoubleBattleOrder)
+            pokemon1 = None if order1.first_order is None else order1.first_order.order
+            pokemon2 = (
+                None if order1.second_order is None else order1.second_order.order
+            )
+            assert isinstance(pokemon1, Pokemon)
+            assert isinstance(pokemon2, Pokemon)
+            action1 = list(battle.team.keys()).index(pokemon1.name)
+            action2 = list(battle.team.keys()).index(pokemon2.name)
+            battle.switch(
+                pokemon1.name,
+                pokemon1._last_details,
+                f"{pokemon1.current_hp}/{pokemon1.max_hp}",
+            )
+            battle.switch(
+                pokemon2.name,
+                pokemon2._last_details,
+                f"{pokemon2.current_hp}/{pokemon2.max_hp}",
+            )
+            order2 = await self._env_move(battle)
+            assert isinstance(order2, DoubleBattleOrder)
+            pokemon3 = None if order2.first_order is None else order2.first_order.order
+            pokemon4 = (
+                None if order2.second_order is None else order2.second_order.order
+            )
+            assert isinstance(pokemon3, Pokemon)
+            assert isinstance(pokemon4, Pokemon)
+            action3 = list(battle.team.keys()).index(pokemon3.name)
+            action4 = list(battle.team.keys()).index(pokemon4.name)
+            return f"/team {action1}{action2}{action3}{action4}"
+        else:
+            raise TypeError()
+
+    async def _env_move(self, battle: AbstractBattle) -> BattleOrder:
         if not self.current_battle or self.current_battle.finished:
             self.current_battle = battle
         if not self.current_battle == battle:
@@ -233,7 +274,7 @@ class OpenAIGymEnv(
         pass
 
     @abstractmethod
-    def action_to_move(self, action: ActType, battle: AbstractBattle) -> BattleOrder | str:
+    def action_to_move(self, action: ActType, battle: AbstractBattle) -> BattleOrder:
         """
         Returns the BattleOrder relative to the given action.
 
