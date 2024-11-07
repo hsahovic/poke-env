@@ -288,6 +288,9 @@ class Player(ABC):
             elif split_message[1] == "request":
                 if split_message[2]:
                     request = orjson.loads(split_message[2])
+                    if "teamPreview" in request and request["teamPreview"]:
+                        for p in request["side"]["pokemon"]:
+                            p["active"] = False
                     battle.parse_request(request)
                     if battle.move_on_next_request:
                         await self._handle_battle_request(battle)
@@ -419,6 +422,7 @@ class Player(ABC):
         elif battle.teampreview:
             if not from_teampreview_request:
                 return
+            print()
             message = self.teampreview(battle)
             if isinstance(message, Awaitable):
                 message = await message
