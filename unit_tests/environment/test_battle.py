@@ -330,6 +330,11 @@ def test_battle_request_and_interactions(example_request):
     assert Effect.RAGE_POWDER not in battle.opponent_active_pokemon.effects
 
     battle.parse_message(
+        ["", "-singlemove", "p1: Tyranitar", "Glaive Rush", "[silent]"]
+    )
+    assert Effect.GLAIVE_RUSH in battle.opponent_active_pokemon.effects
+
+    battle.parse_message(
         [
             "",
             "-item",
