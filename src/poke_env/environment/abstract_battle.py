@@ -84,6 +84,7 @@ class AbstractBattle(ABC):
         "_format",
         "_gen",
         "in_team_preview",
+        "_last_request",
         "_max_team_size",
         "_maybe_trapped",
         "_move_on_next_request",
@@ -103,7 +104,6 @@ class AbstractBattle(ABC):
         "_rating",
         "_reconnected",
         "_replay_data",
-        "_rqid",
         "rules",
         "_reviving",
         "_save_replays",
@@ -159,7 +159,7 @@ class AbstractBattle(ABC):
         # Battle state attributes
         self._dynamax_turn: Optional[int] = None
         self._finished: bool = False
-        self._rqid = 0
+        self._last_request: Dict[str, Any] = {}
         self.rules: List[str] = []
         self._turn: int = 0
         self._opponent_can_terrastallize: bool = True
@@ -1001,6 +1001,17 @@ class AbstractBattle(ABC):
         return self._gen
 
     @property
+    def last_request(self) -> Dict[str, Any]:
+        """
+        The last request received from the server. This allows players to track
+            rqid and also maintain parallel battle copies for search/inference
+
+        :return: The last request.
+        :rtype: Dict[str, Any]
+        """
+        return self._last_request
+
+    @property
     def lost(self) -> Optional[bool]:
         """
         :return: If the battle is finished, a boolean indicating whether the battle is
@@ -1175,16 +1186,6 @@ class AbstractBattle(ABC):
         :rtype: int, optional
         """
         return self._opponent_rating
-
-    @property
-    def rqid(self) -> int:
-        """
-        Should not be used.
-
-        :return: The last request's rqid.
-        :rtype: int
-        """
-        return self._rqid
 
     @property
     def side_conditions(self) -> Dict[SideCondition, int]:
