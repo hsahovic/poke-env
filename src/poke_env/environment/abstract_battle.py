@@ -308,10 +308,15 @@ class AbstractBattle(ABC):
         #   it implies the ability is from the opposite side
         # Example:
         #   |-heal|p2a: Quagsire|100/100|[from] ability: Water Absorb|[of] p1a: Genesect
+        #   |-heal|p2b: Excadrill|100/100|from] ability: Hospitality|[of] p2a: Sinistcha
         if len(split_message) == 6 and split_message[4].startswith("[from] ability:"):
-            ability = split_message[4].split("ability:")[-1]
-            pkmn = split_message[2]
-            self.get_pokemon(pkmn).ability = to_id_str(ability)
+            ability = to_id_str(split_message[4].split("ability:")[-1])
+            if ability == "hospitality":
+                pkmn = split_message[5].replace("[of] ", "").strip()
+                self.get_pokemon(pkmn).ability = ability
+            else:
+                pkmn = split_message[2]
+                self.get_pokemon(pkmn).ability = ability
 
     @abstractmethod
     def end_illusion(self, pokemon_name: str, details: str):
