@@ -323,6 +323,8 @@ class Player(ABC):
                         pokemon._terastallized_type = PokemonType.from_name(
                             message_dict[pokemon.name][10].split(",")[-1]
                         )
+                if all([p.moves for p in list(battle.team.values()) + list(battle.opponent_team.values())]):
+                    await self._handle_battle_request(battle, from_teampreview_request=True)
             elif split_message[1] == "win" or split_message[1] == "tie":
                 if split_message[1] == "win":
                     battle.won_by(split_message[2])
@@ -404,8 +406,9 @@ class Player(ABC):
                 battle.parse_message(split_message)
                 await self._handle_battle_request(battle)
             elif split_message[1] == "teampreview":
-                battle.parse_message(split_message)
-                await self._handle_battle_request(battle, from_teampreview_request=True)
+                if not self.accept_open_team_sheet:
+                    battle.parse_message(split_message)
+                    await self._handle_battle_request(battle, from_teampreview_request=True)
             elif split_message[1] == "bigerror":
                 self.logger.warning("Received 'bigerror' message: %s", split_message)
             else:
