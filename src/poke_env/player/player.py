@@ -406,8 +406,8 @@ class Player(ABC):
                 battle.parse_message(split_message)
                 await self._handle_battle_request(battle)
             elif split_message[1] == "teampreview":
+                battle.parse_message(split_message)
                 if not self.accept_open_team_sheet:
-                    battle.parse_message(split_message)
                     await self._handle_battle_request(battle, from_teampreview_request=True)
             elif split_message[1] == "bigerror":
                 self.logger.warning("Received 'bigerror' message: %s", split_message)
