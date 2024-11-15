@@ -443,6 +443,8 @@ class AbstractBattle(ABC):
                     reveal_other_move = True
                 elif override_move in {"Copycat", "Metronome", "Nature Power"}:
                     pass
+                elif override_move in {"Grass Pledge", "Water Pledge", "Fire Pledge"}:
+                    override_move = None
                 elif self.logger is not None:
                     self.logger.warning(
                         "Unmanaged [from]move message received - move %s in cleaned up "
