@@ -219,6 +219,7 @@ class AbstractBattle(ABC):
             return self._opponent_team[identifier]
 
         player_role = identifier[:2]
+        name = identifier[3:].strip()
         is_mine = player_role == self._player_role
 
         if is_mine or force_self_team:
@@ -238,12 +239,14 @@ class AbstractBattle(ABC):
             )
 
         if request:
-            team[identifier] = Pokemon(request_pokemon=request, gen=self._data.gen)
+            team[identifier] = Pokemon(
+                request_pokemon=request, name=name, gen=self._data.gen
+            )
         elif details:
-            team[identifier] = Pokemon(details=details, gen=self._data.gen)
+            team[identifier] = Pokemon(details=details, name=name, gen=self._data.gen)
         else:
             species = identifier[4:]
-            team[identifier] = Pokemon(species=species, gen=self._data.gen)
+            team[identifier] = Pokemon(species=species, name=name, gen=self._data.gen)
 
         return team[identifier]
 
