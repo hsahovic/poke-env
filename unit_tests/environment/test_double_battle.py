@@ -2,7 +2,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from poke_env.environment import DoubleBattle, Pokemon
+from poke_env.environment import DoubleBattle, Move, Pokemon
 
 
 def test_battle_request_parsing(example_doubles_request):
@@ -131,6 +131,13 @@ def test_get_possible_showdown_targets(example_doubles_request):
         2,
     ]
     assert battle.get_possible_showdown_targets(slackoff, mr_rime, dynamax=True) == [0]
+
+    # Override last request with terastarstorm for Mr. Rime
+    terastarstorm = Move("terastarstorm", gen=9)
+    battle._available_moves = [[terastarstorm], []]
+    assert battle.get_possible_showdown_targets(terastarstorm, mr_rime) == [-2, 1, 2]
+    mr_rime.terastallize("stellar")
+    assert battle.get_possible_showdown_targets(terastarstorm, mr_rime) == [0]
 
 
 def test_to_showdown_target(example_doubles_request):
