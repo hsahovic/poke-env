@@ -952,6 +952,16 @@ class AbstractBattle(ABC):
         pass
 
     @property
+    def current_observation(self) -> Observation:
+        """
+        :return: The current observation of the current turn in the Battle.
+            Most useful for when a force_switch triggers in the middle of a
+            turn, and our player has to return an action.
+        :rtype: Observation
+        """
+        return self._current_observation
+
+    @property
     def dynamax_turns_left(self) -> Optional[int]:
         """
         :return: How many turns of dynamax are left. None if dynamax is not active

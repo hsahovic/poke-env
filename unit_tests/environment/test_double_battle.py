@@ -110,6 +110,9 @@ def test_battle_request_parsing_and_interactions(example_doubles_request):
 
     assert all(battle.opponent_can_dynamax)
 
+    assert battle.current_observation
+    assert battle.current_observation.events[0] == ["", "swap", "p1b: Klinklang", ""]
+
 
 def test_get_possible_showdown_targets(example_doubles_request):
     logger = MagicMock()
