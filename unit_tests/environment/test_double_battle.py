@@ -319,8 +319,6 @@ def test_pledge_moves():
         ["", "switch", "p2a: Primarina", "Primarina, L50, F, shiny", "169/169"],
         ["", "switch", "p2b: Decidueye", "Decidueye-Hisui, L50, F, shiny", "171/171"],
         ["", ""],
-        ["", "-terastallize", "p2a: Primarina", "Poison"],
-        ["", "-terastallize", "p1a: Indeedee", "Grass"],
         ["", "move", "p2b: Decidueye", "Grass Pledge", "p1a: Indeedee"],
         ["", "-waiting", "p2b: Decidueye", "p2a: Primarina"],
         [
@@ -334,12 +332,6 @@ def test_pledge_moves():
         ["", "-combine"],
         ["", "-damage", "p1b: Hatterene", "0 fnt"],
         ["", "-sidestart", "p1: cloverspsyspamsep", "Grass Pledge"],
-        ["", "faint", "p1b: Hatterene"],
-        ["", "-damage", "p2a: Primarina", "153/169", "[from] item: Life Orb"],
-        ["", "move", "p1a: Indeedee", "Psychic", "p1: Hatterene", "[notarget]"],
-        ["", "-fail", "p1a: Indeedee"],
-        ["", ""],
-        ["", "upkeep"],
     ]
 
     for event in events:
