@@ -690,7 +690,7 @@ class AbstractBattle(ABC):
                     defender_mon.start_effect("Sky Drop")
             except ValueError:
                 attacker, move = split_message[2:4]
-                defender = None
+                defender_mon = None
             self.get_pokemon(attacker).prepare(move, defender_mon)
         elif split_message[1] == "-primal":
             pokemon = split_message[2]
