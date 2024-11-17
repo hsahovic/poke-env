@@ -73,7 +73,6 @@ class Pokemon:
 
         # Individual related attributes
         self._ability: Optional[str] = None
-        self._active: bool
         self._gender: Optional[PokemonGender] = None
         self._level: int = 100
         self._max_hp: Optional[int] = 0
@@ -102,7 +101,7 @@ class Pokemon:
         self._last_details: str = ""
         self._must_recharge: bool = False
         self._preparing_move: Optional[Move] = None
-        self._preparing_target = None
+        self._preparing_target: Optional[bool | Pokemon] = None
         self._protect_counter: int = 0
         self._revealed: bool = False
         self._stats: Dict[str, Optional[int]] = {
@@ -144,7 +143,7 @@ class Pokemon:
         id_ = Move.retrieve_id(move_id)
 
         if not Move.should_be_stored(id_, self._data.gen):
-            return
+            return None
 
         if id_ not in self._moves:
             move = Move(move_id=id_, raw_id=move_id, gen=self._data.gen)
@@ -273,11 +272,11 @@ class Pokemon:
                     move_id: m for move_id, m in self._moves.items() if m is move
                 }
 
-            for move in self._moves:
+            for move_name in self._moves:
                 if len(new_moves) == 4:
                     break
-                elif move not in new_moves:
-                    new_moves[move] = self._moves[move]
+                elif move_name not in new_moves:
+                    new_moves[move_name] = self._moves[move_name]
 
             self._moves = new_moves
 
@@ -334,9 +333,9 @@ class Pokemon:
         else:
             hp = hp_status
 
-        hp = "".join([c for c in hp if c in "0123456789/"]).split("/")
-        self._current_hp = int(hp[0])
-        self._max_hp = int(hp[1])
+        current_hp, max_hp = "".join([c for c in hp if c in "0123456789/"]).split("/")
+        self._current_hp = int(current_hp)
+        self._max_hp = int(max_hp)
 
         if store:
             self._stats["hp"] = self._max_hp
@@ -822,6 +821,7 @@ class Pokemon:
         """
         if self._last_request is not None:
             return self._last_request.get("pokeball", None)
+        return None
 
     @property
     def possible_abilities(self) -> List[str]:
@@ -915,7 +915,7 @@ class Pokemon:
         """
         return self._status_counter
 
-    @status.setter
+    @status.setter  # type: ignore
     def status(self, status: Optional[Union[Status, str]]):
         self._status = Status[status.upper()] if isinstance(status, str) else status
 
