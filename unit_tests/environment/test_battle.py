@@ -552,7 +552,6 @@ def test_battle_request_and_interactions(example_request):
         ]
     )
     assert battle.active_pokemon.ability == "waterabsorb"
-    battle.active_pokemon._ability = None
 
     battle.active_pokemon.item = GenData.UNKNOWN_ITEM
     battle.parse_message(
@@ -573,6 +572,73 @@ def test_battle_request_and_interactions(example_request):
         ["", "-heal", "p1a: Groudon", "200/265", "[from] item: Sitrus Berry"]
     )
     assert battle.opponent_active_pokemon.item is None
+
+    # Test temporary types and abilities
+    battle.active_pokemon._ability = "prismarmor"
+    battle.opponent_active_pokemon._ability = "desolateland"
+    battle.parse_message(
+        ["", "move", "p2a: Necrozma", "Worry Seed", "p1a: Groudon"]
+    )
+    battle.parse_message(
+        ["", "-endability", "p1a: Groudon", "Desolate Land", "[from] move: Worry Seed"]
+    )
+    battle.parse_message(
+        ["", "-ability", "p1a: Groudon", "Insomnia", "[from] move: Worry Seed"]
+    )
+    assert battle.opponent_active_pokemon.ability == "insomnia"
+    groudon = battle.opponent_active_pokemon
+    groudon.switch_out()
+    groudon.switch_in()
+    assert groudon.ability == "desolateland"
+
+    battle.parse_message(
+        ["", "move", "p1a: Groudon", "Skill Swap", "p2a: Necrozma"]
+    )
+    battle.parse_message(
+        ["", "-activate", "p1a: Groudon", "move: Skill Swap", "Prism Armor", "Desolate Land", "[of] p2a: Glimmora"]
+    )
+    assert battle.opponent_active_pokemon.ability == "prismarmor"
+    assert battle.active_pokemon.ability == "desolateland"
+    groudon.switch_in()
+    groudon.switch_out()
+    assert groudon.ability == "desolateland"
+
+    pawmot = battle.opponent_active_pokemon
+    assert pawmot.type_1 == PokemonType.ELECTRIC
+    assert pawmot.type_2 == PokemonType.FIGHTING
+    assert pawmot.types == [PokemonType.ELECTRIC, PokemonType.FIGHTING]
+    battle.parse_message(["", "switch", "p1: Pawmot", "Pawmot, L82", "100/100"])
+    battle.parse_message(
+        ["", "move", "p1a: Pawmot", "Double Shock", "p2a: Necrozma"]
+    )
+    battle.parse_message(["", "-damage", "p2a: Necrozma", "87/100"])
+    battle.parse_message(
+        ["", "-start", "p1a: Pawmot", "typechange", "???/Fighting", "[from] move: Double Shock"]
+    )
+    
+    assert pawmot.type_1 == PokemonType.THREE_QUESTION_MARKS
+    assert pawmot.type_2 == PokemonType.FIGHTING
+    assert pawmot.types == [PokemonType.THREE_QUESTION_MARKS, PokemonType.FIGHTING]
+    pawmot.switch_out()
+    pawmot.switch_in()
+    assert pawmot.type_1 == PokemonType.ELECTRIC
+    assert pawmot.type_2 == PokemonType.FIGHTING
+    assert pawmot.types == [PokemonType.ELECTRIC, PokemonType.FIGHTING]
+
+    battle.parse_message(
+        ["", "move", "p2a: Necrozma", "Soak", "p1a: Pawmot"]
+    )
+    battle.parse_message(
+        ["", "-start", "p1a: Pawmot", "typechange", "Water"]
+    )
+    assert pawmot.type_1 == PokemonType.WATER
+    assert pawmot.type_2 == None
+    assert pawmot.types == [PokemonType.THREE_QUESTION_MARKS]
+    pawmot.switch_out()
+    pawmot.switch_in()
+    assert pawmot.type_1 == PokemonType.ELECTRIC
+    assert pawmot.type_2 == PokemonType.FIGHTING
+    assert pawmot.types == [PokemonType.ELECTRIC, PokemonType.FIGHTING]
 
 
 def test_end_illusion():

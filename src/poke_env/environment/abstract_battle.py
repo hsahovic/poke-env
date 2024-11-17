@@ -611,10 +611,14 @@ class AbstractBattle(ABC):
         elif event[1] == "-ability":
             pokemon, ability = event[2:4]
             self.get_pokemon(pokemon).ability = ability
-        elif event[1] == "-start":
+        elif split_message[1] == "-start":
             pokemon, effect = event[2:4]
-            pokemon = self.get_pokemon(pokemon)  # type: ignore
-            pokemon.start_effect(effect)  # type: ignore
+            pokemon = self.get_pokemon(pokemon)
+
+            if effect == "typechange":
+                pokemon.start_effect(effect, details=event[4])
+            else:
+                pokemon.start_effect(effect)
 
             if pokemon.is_dynamaxed:  # type: ignore
                 if pokemon in set(self.team.values()) and self._dynamax_turn is None:
@@ -628,7 +632,9 @@ class AbstractBattle(ABC):
                     self.opponent_can_dynamax = False
         elif event[1] == "-activate":
             target, effect = event[2:4]
-            if target:
+            if target and effect == "move: Skill Swap":
+                self.get_pokemon(target).start_effect(effect, event[4:6])
+            else:
                 self.get_pokemon(target).start_effect(effect)
         elif event[1] == "-status":
             pokemon, status = event[2:4]
