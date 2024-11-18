@@ -114,6 +114,40 @@ def test_battle_request_parsing_and_interactions(example_doubles_request):
     assert battle.current_observation.events[0] == ["", "swap", "p1b: Klinklang", ""]
 
 
+def test_check_heal_message_for_ability():
+    logger = MagicMock()
+    battle = DoubleBattle("tag", "username", logger, gen=8)
+    battle.player_role = "p1"
+
+    # Add two active opponent pokemon
+    battle.parse_message(["", "switch", "p2a: Furret", "Furret, L50, F", "100/100"])
+    battle.parse_message(["", "switch", "p2b: Sentret", "Sentret, L50, F", "100/100"])
+
+    battle.parse_message(
+        [
+            "",
+            "-heal",
+            "p2a: Furret",
+            "100/100",
+            "[from] ability: Water Absorb",
+            "[of] p2b: Sentret",
+        ]
+    )
+    assert battle.opponent_team["p2: Furret"].ability == "waterabsorb"
+
+    battle.parse_message(
+        [
+            "",
+            "-heal",
+            "p2b: Furret",
+            "100/100",
+            "[from] ability: Hospitality",
+            "[of] p2a: Sentret",
+        ]
+    )
+    assert battle.opponent_team["p2: Sentret"].ability == "hospitality"
+
+
 def test_get_possible_showdown_targets(example_doubles_request):
     logger = MagicMock()
     battle = DoubleBattle("tag", "username", logger, gen=8)
