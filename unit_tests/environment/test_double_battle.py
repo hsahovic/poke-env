@@ -319,3 +319,35 @@ def test_gen_and_format(example_doubles_logs):
     assert battle.gen == 6
     assert battle.battle_tag == "tag"
     assert battle.format == "gen6doublesou"
+
+
+def test_pledge_moves():
+    battle = DoubleBattle("tag", "username", MagicMock(), gen=8)
+    battle.player_role = "p2"
+
+    events = [
+        ["", "switch", "p1a: Indeedee", "Indeedee-F, L50, F", "100/100"],
+        ["", "switch", "p1b: Hatterene", "Hatterene, L50, F", "100/100"],
+        ["", "switch", "p2a: Primarina", "Primarina, L50, F, shiny", "169/169"],
+        ["", "switch", "p2b: Decidueye", "Decidueye-Hisui, L50, F, shiny", "171/171"],
+        ["", ""],
+        ["", "move", "p2b: Decidueye", "Grass Pledge", "p1a: Indeedee"],
+        ["", "-waiting", "p2b: Decidueye", "p2a: Primarina"],
+        [
+            "",
+            "move",
+            "p2a: Primarina",
+            "Water Pledge",
+            "p1b: Hatterene",
+            "[from]move: Grass Pledge",
+        ],
+        ["", "-combine"],
+        ["", "-damage", "p1b: Hatterene", "0 fnt"],
+        ["", "-sidestart", "p1: cloverspsyspamsep", "Grass Pledge"],
+    ]
+
+    for event in events:
+        battle.parse_message(event)
+
+    assert "grasspledge" not in battle.team["p2: Primarina"].moves
+    assert "waterpledge" in battle.team["p2: Primarina"].moves
