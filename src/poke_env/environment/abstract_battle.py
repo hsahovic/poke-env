@@ -31,7 +31,6 @@ class AbstractBattle(ABC):
         "-nothing",
         "-ohko",
         "-resisted",
-        "-singlemove",
         "-supereffective",
         "-waiting",
         "-zbroken",
