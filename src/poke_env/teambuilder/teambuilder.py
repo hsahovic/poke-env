@@ -62,20 +62,16 @@ class Teambuilder(ABC):
                 current_mon.happiness = int(happiness.strip())
             elif line.startswith("EVs: "):
                 evs = line.replace("EVs: ", "")
-                evs = evs.split(" / ")
-                for ev in evs:
-                    ev = ev.split(" ")
-                    n = ev[0]
-                    stat = ev[1]
+                split_evs = evs.split(" / ")
+                for ev in split_evs:
+                    n, stat = ev.split(" ")[:2]
                     idx = STATS_TO_IDX[stat.lower()]
                     current_mon.evs[idx] = int(n)
             elif line.startswith("IVs: "):
                 ivs = line.replace("IVs: ", "")
-                ivs = ivs.split(" / ")
-                for iv in ivs:
-                    iv = iv.split(" ")
-                    n = iv[0]
-                    stat = iv[1]
+                ivs_split = ivs.split(" / ")
+                for iv in ivs_split:
+                    n, stat = iv.split(" ")[:2]
                     idx = STATS_TO_IDX[stat.lower()]
                     current_mon.ivs[idx] = int(n)
             elif line.startswith("- "):

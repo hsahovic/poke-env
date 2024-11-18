@@ -163,6 +163,9 @@ class AbstractBattle(ABC):
         self.rules: List[str] = []
         self._turn: int = 0
         self._opponent_can_terrastallize: bool = True
+        self._opponent_can_mega_evolve: Union[bool, List[bool]] = True
+        self._opponent_can_z_move: Union[bool, List[bool]] = True
+
         self._opponent_dynamax_turn: Optional[int] = None
         self._opponent_rating: Optional[int] = None
         self._rating: Optional[int] = None
@@ -224,7 +227,7 @@ class AbstractBattle(ABC):
         if is_mine or force_self_team:
             team: Dict[str, Pokemon] = self._team
         else:
-            team: Dict[str, Pokemon] = self._opponent_team
+            team: Dict[str, Pokemon] = self._opponent_team  # type: ignore
 
         if self._team_size and len(team) >= self._team_size[player_role]:
             raise ValueError(
@@ -330,8 +333,8 @@ class AbstractBattle(ABC):
             return illusionist_mon
 
         illusionist_mon.switch_in(details=details)
-        illusionist_mon.status = (
-            illusioned.status.name if illusioned.status is not None else None
+        illusionist_mon.status = (  # type: ignore
+            illusioned.status if illusioned.status is not None else None
         )
         illusionist_mon.set_hp(f"{illusioned.current_hp}/{illusioned.max_hp}")
 
@@ -598,10 +601,10 @@ class AbstractBattle(ABC):
             self.get_pokemon(pokemon).ability = ability
         elif split_message[1] == "-start":
             pokemon, effect = split_message[2:4]
-            pokemon = self.get_pokemon(pokemon)
-            pokemon.start_effect(effect)
+            pokemon = self.get_pokemon(pokemon)  # type: ignore
+            pokemon.start_effect(effect)  # type: ignore
 
-            if pokemon.is_dynamaxed:
+            if pokemon.is_dynamaxed:  # type: ignore
                 if pokemon in set(self.team.values()) and self._dynamax_turn is None:
                     self._dynamax_turn = self.turn
                 # self._can_dynamax value is set via _parse_request()
@@ -617,7 +620,7 @@ class AbstractBattle(ABC):
                 self.get_pokemon(target).start_effect(effect)
         elif split_message[1] == "-status":
             pokemon, status = split_message[2:4]
-            self.get_pokemon(pokemon).status = status
+            self.get_pokemon(pokemon).status = status  # type: ignore
         elif split_message[1] == "rule":
             self.rules.append(split_message[2])
 
@@ -682,13 +685,13 @@ class AbstractBattle(ABC):
         elif split_message[1] == "-prepare":
             try:
                 attacker, move, defender = split_message[2:5]
-                defender = self.get_pokemon(defender)
+                defender_mon = self.get_pokemon(defender)
                 if to_id_str(move) == "skydrop":
-                    defender.start_effect("Sky Drop")
+                    defender_mon.start_effect("Sky Drop")
             except ValueError:
                 attacker, move = split_message[2:4]
-                defender = None
-            self.get_pokemon(attacker).prepare(move, defender)
+                defender_mon = None
+            self.get_pokemon(attacker).prepare(move, defender_mon)
         elif split_message[1] == "-primal":
             pokemon = split_message[2]
             self.get_pokemon(pokemon).primal()
@@ -709,12 +712,12 @@ class AbstractBattle(ABC):
             self.get_pokemon(pokemon).start_effect(effect.replace("move: ", ""))
         elif split_message[1] == "-swapboost":
             source, target, stats = split_message[2:5]
-            source = self.get_pokemon(source)
-            target = self.get_pokemon(target)
+            source_mon = self.get_pokemon(source)
+            target_mon = self.get_pokemon(target)
             for stat in stats.split(", "):
-                source.boosts[stat], target.boosts[stat] = (
-                    target.boosts[stat],
-                    source.boosts[stat],
+                source_mon.boosts[stat], target_mon.boosts[stat] = (
+                    target_mon.boosts[stat],
+                    source_mon.boosts[stat],
                 )
         elif split_message[1] == "-transform":
             pokemon, into = split_message[2:4]
@@ -785,11 +788,11 @@ class AbstractBattle(ABC):
             self._register_teampreview_pokemon(player, details)
         elif split_message[1] == "raw":
             username, rating_info = split_message[2].split("'s rating: ")
-            rating = int(rating_info[:4])
+            rating_int = int(rating_info[:4])
             if username == self.player_username:
-                self._rating = rating
+                self._rating = rating_int
             elif username == self.opponent_username:
-                self._opponent_rating = rating
+                self._opponent_rating = rating_int
             elif self.logger is not None:
                 self.logger.warning(
                     "Rating information regarding an unrecognized username received. "
@@ -809,18 +812,17 @@ class AbstractBattle(ABC):
             self._swap(pokemon, position)  # type: ignore
         elif split_message[1] == "teamsize":
             player, number = split_message[2:4]
-            number = int(number)
-            self._team_size[player] = number
+            self._team_size[player] = int(number)
         elif split_message[1] in {"message", "-message"}:
             if self.logger is not None:
                 self.logger.info("Received message: %s", split_message[2])
         elif split_message[1] == "-immune":
             if len(split_message) == 4:
-                mon, cause = split_message[2:]
+                mon, cause = split_message[2:]  # type: ignore
 
                 if cause.startswith("[from] ability:"):
                     ability = cause.replace("[from] ability:", "")
-                    self.get_pokemon(mon).ability = to_id_str(ability)
+                    self.get_pokemon(mon).ability = to_id_str(ability)  # type: ignore
         elif split_message[1] == "-swapsideconditions":
             self._side_conditions, self._opponent_side_conditions = (
                 self._opponent_side_conditions,
@@ -831,10 +833,10 @@ class AbstractBattle(ABC):
             self.players = player_1, player_2
         elif split_message[1] == "-terastallize":
             pokemon, type_ = split_message[2:]
-            pokemon = self.get_pokemon(pokemon)
-            pokemon.terastallize(type_)
+            pokemon = self.get_pokemon(pokemon)  # type: ignore
+            pokemon.terastallize(type_)  # type: ignore
 
-            if pokemon.is_terastallized:
+            if pokemon.is_terastallized:  # type: ignore
                 if pokemon in set(self.opponent_team.values()):
                     self._opponent_can_terrastallize = False
         else:
@@ -961,6 +963,7 @@ class AbstractBattle(ABC):
             map(lambda pokemon: pokemon.is_dynamaxed, self._team.values())
         ):
             return max(3 - (self.turn - self._dynamax_turn), 0)
+        return None
 
     @property
     def fields(self) -> Dict[Field, int]:
@@ -1059,6 +1062,7 @@ class AbstractBattle(ABC):
             map(lambda pokemon: pokemon.is_dynamaxed, self._opponent_team.values())
         ):
             return max(3 - (self.turn - self._opponent_dynamax_turn), 0)
+        return None
 
     @property
     def opponent_role(self) -> Optional[str]:
@@ -1070,6 +1074,7 @@ class AbstractBattle(ABC):
             return "p2"
         if self.player_role == "p2":
             return "p1"
+        return None
 
     @property
     def opponent_side_conditions(self) -> Dict[SideCondition, int]:

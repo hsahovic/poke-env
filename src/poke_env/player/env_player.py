@@ -161,7 +161,7 @@ class EnvPlayer(OpenAIGymEnv[ObsType, ActType], ABC):
         """
         if battle not in self._reward_buffer:
             self._reward_buffer[battle] = starting_value
-        current_value = 0
+        current_value = 0.0
 
         for mon in battle.team.values():
             current_value += mon.current_hp_fraction * hp_value
