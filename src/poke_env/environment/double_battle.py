@@ -293,6 +293,8 @@ class DoubleBattle(AbstractBattle):
             PokemonType.GHOST not in pokemon.types
         ):  # fixing target for Curse
             return [self.EMPTY_TARGET_POSITION]
+        elif move.id == "terastarstorm" and pokemon.type_1 == PokemonType.STELLAR:
+            targets = [self.EMPTY_TARGET_POSITION]
         else:
             targets = {
                 Target.from_showdown_message("adjacentAlly"): [ally_position],
