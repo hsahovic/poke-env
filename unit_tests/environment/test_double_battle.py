@@ -45,7 +45,7 @@ def test_battle_request_parsing_and_interactions(example_doubles_request):
     assert their_first_active is None and their_second_active is None
     assert isinstance(mr_rime, Pokemon)
     assert isinstance(klinklang, Pokemon)
-    assert battle.get_pokemon("p1: Mr. Rime") == mr_rime
+    assert battle.get_pokemon("p1: Nickname") == mr_rime
     assert battle.get_pokemon("p1: Klinklang") == klinklang
 
     assert set(battle.available_moves[0]) == set(
