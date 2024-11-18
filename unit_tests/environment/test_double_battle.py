@@ -270,6 +270,8 @@ def test_one_mon_left_in_double_battles_results_in_available_move_in_the_correct
     battle.parse_message(["", "turn", "1"])
 
     battle.parse_request(request)
+    assert battle.last_request == request
+
     battle.parse_message(
         ["", "swap", "p1b: Cresselia", "0", "[from] move: Ally Switch"]
     )
