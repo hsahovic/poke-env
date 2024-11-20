@@ -167,7 +167,7 @@ async def evaluate_player(
     "battles to perform to evaluate the player."
 
     # Initial placement battles
-    baselines = [p(max_concurrent_battles=n_battles) for p in _EVALUATION_RATINGS]
+    baselines = [p(max_concurrent_battles=n_battles) for p in _EVALUATION_RATINGS]  # type: ignore
 
     for p in baselines:
         await p.battle_against(player, n_placement_battles)

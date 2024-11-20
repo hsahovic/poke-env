@@ -2,7 +2,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from poke_env.environment import DoubleBattle, Pokemon
+from poke_env.environment import DoubleBattle, Move, Pokemon
 
 
 def test_battle_request_parsing(example_doubles_request):
@@ -45,7 +45,7 @@ def test_battle_request_parsing_and_interactions(example_doubles_request):
     assert their_first_active is None and their_second_active is None
     assert isinstance(mr_rime, Pokemon)
     assert isinstance(klinklang, Pokemon)
-    assert battle.get_pokemon("p1: Mr. Rime") == mr_rime
+    assert battle.get_pokemon("p1: Nickname") == mr_rime
     assert battle.get_pokemon("p1: Klinklang") == klinklang
 
     assert set(battle.available_moves[0]) == set(
@@ -110,6 +110,43 @@ def test_battle_request_parsing_and_interactions(example_doubles_request):
 
     assert all(battle.opponent_can_dynamax)
 
+    assert battle.current_observation
+    assert battle.current_observation.events[0] == ["", "swap", "p1b: Klinklang", ""]
+
+
+def test_check_heal_message_for_ability():
+    logger = MagicMock()
+    battle = DoubleBattle("tag", "username", logger, gen=8)
+    battle.player_role = "p1"
+
+    # Add two active opponent pokemon
+    battle.parse_message(["", "switch", "p2a: Furret", "Furret, L50, F", "100/100"])
+    battle.parse_message(["", "switch", "p2b: Sentret", "Sentret, L50, F", "100/100"])
+
+    battle.parse_message(
+        [
+            "",
+            "-heal",
+            "p2a: Furret",
+            "100/100",
+            "[from] ability: Water Absorb",
+            "[of] p2b: Sentret",
+        ]
+    )
+    assert battle.opponent_team["p2: Furret"].ability == "waterabsorb"
+
+    battle.parse_message(
+        [
+            "",
+            "-heal",
+            "p2b: Furret",
+            "100/100",
+            "[from] ability: Hospitality",
+            "[of] p2a: Sentret",
+        ]
+    )
+    assert battle.opponent_team["p2: Sentret"].ability == "hospitality"
+
 
 def test_get_possible_showdown_targets(example_doubles_request):
     logger = MagicMock()
@@ -131,6 +168,13 @@ def test_get_possible_showdown_targets(example_doubles_request):
         2,
     ]
     assert battle.get_possible_showdown_targets(slackoff, mr_rime, dynamax=True) == [0]
+
+    # Override last request with terastarstorm for Mr. Rime
+    terastarstorm = Move("terastarstorm", gen=9)
+    battle._available_moves = [[terastarstorm], []]
+    assert battle.get_possible_showdown_targets(terastarstorm, mr_rime) == [-2, 1, 2]
+    mr_rime.terastallize("stellar")
+    assert battle.get_possible_showdown_targets(terastarstorm, mr_rime) == [0]
 
 
 def test_to_showdown_target(example_doubles_request):
@@ -270,6 +314,8 @@ def test_one_mon_left_in_double_battles_results_in_available_move_in_the_correct
     battle.parse_message(["", "turn", "1"])
 
     battle.parse_request(request)
+    assert battle.last_request == request
+
     battle.parse_message(
         ["", "swap", "p1b: Cresselia", "0", "[from] move: Ally Switch"]
     )
@@ -307,3 +353,35 @@ def test_gen_and_format(example_doubles_logs):
     assert battle.gen == 6
     assert battle.battle_tag == "tag"
     assert battle.format == "gen6doublesou"
+
+
+def test_pledge_moves():
+    battle = DoubleBattle("tag", "username", MagicMock(), gen=8)
+    battle.player_role = "p2"
+
+    events = [
+        ["", "switch", "p1a: Indeedee", "Indeedee-F, L50, F", "100/100"],
+        ["", "switch", "p1b: Hatterene", "Hatterene, L50, F", "100/100"],
+        ["", "switch", "p2a: Primarina", "Primarina, L50, F, shiny", "169/169"],
+        ["", "switch", "p2b: Decidueye", "Decidueye-Hisui, L50, F, shiny", "171/171"],
+        ["", ""],
+        ["", "move", "p2b: Decidueye", "Grass Pledge", "p1a: Indeedee"],
+        ["", "-waiting", "p2b: Decidueye", "p2a: Primarina"],
+        [
+            "",
+            "move",
+            "p2a: Primarina",
+            "Water Pledge",
+            "p1b: Hatterene",
+            "[from]move: Grass Pledge",
+        ],
+        ["", "-combine"],
+        ["", "-damage", "p1b: Hatterene", "0 fnt"],
+        ["", "-sidestart", "p1: cloverspsyspamsep", "Grass Pledge"],
+    ]
+
+    for event in events:
+        battle.parse_message(event)
+
+    assert "grasspledge" not in battle.team["p2: Primarina"].moves
+    assert "waterpledge" in battle.team["p2: Primarina"].moves

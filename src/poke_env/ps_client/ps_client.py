@@ -11,6 +11,7 @@ from typing import Any, List, Optional, Set
 
 import requests
 import websockets.client as ws
+from websockets.client import WebSocketClientProtocol
 from websockets.exceptions import ConnectionClosedOK
 
 from poke_env.concurrency import (
@@ -76,7 +77,7 @@ class PSClient:
         self._logged_in: Event = create_in_poke_loop(Event)
         self._sending_lock = create_in_poke_loop(Lock)
 
-        self.websocket: ws.WebSocketClientProtocol
+        self.websocket: WebSocketClientProtocol
         self._logger: Logger = self._create_logger(log_level)
 
         if start_listening:
