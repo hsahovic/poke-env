@@ -311,24 +311,31 @@ def test_stats(example_request, showdown_format_teams):
 
 def test_temporary():
     furret = Pokemon(species="furret", gen=8)
+    furret._ability = "adaptability"
+
     assert furret.types == [PokemonType.NORMAL]
-    assert furret.stab_multiplier == 1.5
+    assert furret.stab_multiplier == 2
+
     furret.start_effect("typechange", "???/Fighting")
     furret.start_effect("move: Skill Swap", ["Levitate", "Adaptability"])
+
     assert furret.types == [PokemonType.THREE_QUESTION_MARKS, PokemonType.FIGHTING]
     assert furret.ability == "levitate"
-    assert furret.damage_multiplier(PokemonType.PSYCHIC) == 2
+    assert furret.damage_multiplier(PokemonType.PSYCHIC) == 1
     assert furret.stab_multiplier == 1.5
+
+    furret.start_effect("typechange", "Fighting")
+    assert furret.damage_multiplier(PokemonType.PSYCHIC) == 2
+
+    furret.switch_out()
+    furret.switch_in()
+
+    assert furret.ability == "adaptability"
 
     furret.terastallize("dragon")
     assert furret.type_1 == PokemonType.DRAGON
-    assert furret.types == [PokemonType.DRAGON]
-    assert furret.stab_multiplier == 1.5
+    assert furret.type_2 is None
     assert furret.damage_multiplier(PokemonType.ICE) == 2
 
     furret.switch_out()
-    assert furret.types == [PokemonType.NORMAL]
-    assert furret.ability == "adaptability"
-    assert furret.stab_multiplier == 2
-
-    assert furret.damage_multiplier(PokemonType.NORMAL) == 1
+    assert furret.types == [PokemonType.DRAGON]

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Union
 
 from poke_env.data import GenData, to_id_str
 from poke_env.environment.effect import Effect
@@ -226,12 +226,24 @@ class Pokemon:
         # both get two Effects added to the mon, but only have one protocol
         # message when the Effect ends
         elif effect == Effect.QUARK_DRIVE:
-            for effect in [Effect.QUARKDRIVEATK, Effect.QUARKDRIVEDEF, Effect.QUARKDRIVESPA, Effect.QUARKDRIVESPD, Effect.QUARKDRIVESPE]:
+            for effect in [
+                Effect.QUARKDRIVEATK,
+                Effect.QUARKDRIVEDEF,
+                Effect.QUARKDRIVESPA,
+                Effect.QUARKDRIVESPD,
+                Effect.QUARKDRIVESPE,
+            ]:
                 if effect in self._effects:
                     self._effects.pop(effect)
 
         elif effect == Effect.PROTOSYNTHESIS:
-            for effect in [Effect.PROTOSYNTHESISATK, Effect.PROTOSYNTHESISDEF, Effect.PROTOSYNTHESISSPA, Effect.PROTOSYNTHESISSPD, Effect.PROTOSYNTHESISSPE]:
+            for effect in [
+                Effect.PROTOSYNTHESISATK,
+                Effect.PROTOSYNTHESISDEF,
+                Effect.PROTOSYNTHESISSPA,
+                Effect.PROTOSYNTHESISSPD,
+                Effect.PROTOSYNTHESISSPE,
+            ]:
                 if effect in self._effects:
                     self._effects.pop(effect)
 
@@ -370,6 +382,12 @@ class Pokemon:
         if store:
             self._stats["hp"] = self._max_hp
 
+    def set_temporary_ability(self, ability: Optional[str]):
+        if ability is not None:
+            self._temporary_ability = to_id_str(ability)
+        else:
+            self._temporary_ability = None
+
     def start_effect(self, effect_str: str, details: Optional[Any] = None):
         effect = Effect.from_showdown_message(effect_str)
         if effect not in self._effects:
@@ -380,13 +398,12 @@ class Pokemon:
         if effect.breaks_protect:
             self._protect_counter = 0
 
-        # |-start|p1a: Pelipper|typechange|Water
         if effect == Effect.TYPECHANGE and details:
+            self._temporary_types = []
             for type_ in details.split("/"):
                 self._temporary_types.append(PokemonType.from_name(type_))
-        # |-activate|p2a: Indeedee|move: Skill Swap|Sand Rush|Pressure|[of] p1b: Sandslash
         elif effect == Effect.SKILL_SWAP and details:
-            self._temporary_ability = to_id_str(details[0])
+            self.set_temporary_ability(details[0])
 
             # Skill Swap reveals a mon's ability
             if self.ability is None:
@@ -647,7 +664,6 @@ class Pokemon:
         :return: The damage multiplier associated with given type on the pokemon.
         :rtype: float
         """
-        # TODO: change to think about temporary types
         if isinstance(type_or_move, Move):
             type_or_move = type_or_move.type
         return type_or_move.damage_multiplier(
@@ -989,10 +1005,14 @@ class Pokemon:
         :rtype: float
         """
         # https://bulbapedia.bulbagarden.net/wiki/Terastal_phenomenon#Effects
-        if self._terastallized and (
-            self.tera_type in (self._type_1, self._type_2)
-            or self.tera_type in self._temporary_types
-        ) and self.ability == "adaptability":
+        if (
+            self._terastallized
+            and (
+                self.tera_type in (self._type_1, self._type_2)
+                or self.tera_type in self._temporary_types
+            )
+            and self.ability == "adaptability"
+        ):
             return 2.25
         elif self._terastallized and (
             self.tera_type in (self._type_1, self._type_2)
@@ -1029,7 +1049,7 @@ class Pokemon:
         :return: The pokemon's second type.
         :rtype: Optional[PokemonType]
         """
-        if self._terastallized:
+        if self._terastallized or len(self._temporary_types) == 1:
             return None
         elif len(self._temporary_types) > 1:
             return self._temporary_types[1]
@@ -1040,7 +1060,7 @@ class Pokemon:
         """
         :return: The pokemon's types. Not a Tuple because moves can add types
             and also remove types, and override them too.
-        :rtype: List[PokemonType]
+        :rtype: Tuple[PokemonType]
         """
         if len(self._temporary_types) > 0:
             return self._temporary_types
