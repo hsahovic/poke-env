@@ -94,22 +94,9 @@ class _AsyncPlayer(Generic[ObsType, ActType], Player):
         asyncio.run_coroutine_threadsafe(self.observations.async_put(to_put), POKE_LOOP)
 
 
-class _ABCMetaclass(type(ABC)):
-    pass
-
-
-class _EnvMetaclass(type(Env)):
-    pass
-
-
-class _OpenAIGymEnvMetaclass(_EnvMetaclass, _ABCMetaclass):
-    pass
-
-
 class OpenAIGymEnv(
     Env[ObsType, ActType],
     ABC,
-    metaclass=_OpenAIGymEnvMetaclass,
 ):
     """
     Base class implementing the OpenAI Gym API on the main thread.
@@ -300,7 +287,7 @@ class OpenAIGymEnv(
         random_opponent = (
             random.choice(opponent) if isinstance(opponent, list) else opponent
         )
-        return random_opponent
+        return random_opponent  # type: ignore
 
     def reset(
         self,

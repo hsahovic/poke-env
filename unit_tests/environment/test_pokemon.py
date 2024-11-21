@@ -1,4 +1,6 @@
-from poke_env.environment import Move, Pokemon, PokemonGender, PokemonType
+from unittest.mock import MagicMock
+
+from poke_env.environment import DoubleBattle, Move, Pokemon, PokemonGender, PokemonType
 from poke_env.stats import _raw_hp, _raw_stat
 from poke_env.teambuilder.teambuilder import Teambuilder
 
@@ -214,20 +216,59 @@ def test_teambuilder(showdown_format_teams):
     )
     mon = Pokemon(9, teambuilder=tb_mons[0])
     assert mon
-    assert mon.name == "Weezing-Galar"
+    assert mon.name == "Weezing"
     assert mon.level == 50
     assert mon.ability == "neutralizinggas"
     assert mon.item is None
     assert list(mon.moves.keys()) == ["clearsmog"]
     assert mon.tera_type is None
+    assert mon.stats == {
+        "hp": 140,
+        "atk": 110,
+        "def": 140,
+        "spa": 105,
+        "spd": 90,
+        "spe": 80,
+    }
 
 
-def test_name():
+def test_name(example_doubles_request):
     charizard = Pokemon(species="charizard", gen=8)
     assert charizard.name == "Charizard"
 
     chiyu = Pokemon(species="chiyu", gen=9)
     assert chiyu.name == "Chi-Yu"
+
+    furret = Pokemon(species="furret", name="Nickname", gen=9)
+    assert furret.name == "Nickname"
+
+    calyrexshadow = Pokemon(species="calyrexshadow", gen=9)
+    assert calyrexshadow.name == "Calyrex"
+
+    zamazenta = Pokemon(species="zamazentacrowned", gen=9)
+    assert zamazenta.name == "Zamazenta"
+
+    logger = MagicMock()
+    battle = DoubleBattle("tag", "username", logger, gen=8)
+    battle.parse_request(example_doubles_request)
+
+    mon = battle.team["p1: Nickname"]
+    assert mon.name == "Nickname"
+    assert mon.species == "mrrime"
+
+    tb_mons = Teambuilder.parse_showdown_team(
+        "Weezing-Galar\nAbility: Neutralizing Gas\nLevel: 50\n- Clear Smog"
+    )
+    mon = Pokemon(9, teambuilder=tb_mons[0])
+    assert mon.species == "weezinggalar"
+    assert mon.name == "Weezing"
+
+    tb_mons = Teambuilder.parse_showdown_team(
+        "Nickname (Zamazenta-Crowned)\nAbility: Dauntless Shield\nLevel: 50\n- Behemoth Bash"
+    )
+    mon = Pokemon(9, teambuilder=tb_mons[0])
+    assert mon.species == "zamazentacrowned"
+    assert mon.name == "Nickname"
 
 
 def test_stats(example_request, showdown_format_teams):

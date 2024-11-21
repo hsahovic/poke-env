@@ -96,8 +96,7 @@ class Move:
 
             if base_power:
                 try:
-                    base_power = int(base_power)
-                    self._base_power_override = base_power
+                    self._base_power_override = int(base_power)
                 except ValueError:
                     pass
 

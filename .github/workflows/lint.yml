@@ -45,8 +45,8 @@ jobs:
       - name: Run isort
         run: isort --check .
 
-      - name: Run pyright
-        run: pyright src/
+      - name: Run mypy
+        run: mypy src
 
       - name: Build docs
         run: |

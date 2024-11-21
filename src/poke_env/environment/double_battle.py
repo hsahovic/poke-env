@@ -117,8 +117,7 @@ class DoubleBattle(AbstractBattle):
         if any(self._force_switch):
             self._move_on_next_request = True
 
-        if request["rqid"]:
-            self._rqid = max(self._rqid, request["rqid"])
+        self._last_request = request
 
         if request.get("teamPreview", False):
             self._teampreview = True
@@ -294,6 +293,8 @@ class DoubleBattle(AbstractBattle):
             PokemonType.GHOST not in pokemon.types
         ):  # fixing target for Curse
             return [self.EMPTY_TARGET_POSITION]
+        elif move.id == "terastarstorm" and pokemon.type_1 == PokemonType.STELLAR:
+            targets = [self.EMPTY_TARGET_POSITION]
         else:
             targets = {
                 Target.from_showdown_message("adjacentAlly"): [ally_position],
