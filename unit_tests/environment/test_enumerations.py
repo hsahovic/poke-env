@@ -55,6 +55,9 @@ def test_effect_build():
     assert Effect["OCTOLOCK"].is_from_move
     assert not Effect["TERA_SHELL"].is_from_move
 
+    assert Effect["DESTINY_BOND"].ends_on_move
+    assert not Effect["HEAL_BLOCK"].ends_on_move
+
     assert Effect.from_data("i dont know") == Effect.UNKNOWN
 
     # By going through all moves, we know we have an Effect for every Volatile Status

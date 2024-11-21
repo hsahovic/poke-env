@@ -29,7 +29,7 @@ class MaxBasePowerPlayer(Player):
         return self.choose_random_move(battle)
 
     def choose_doubles_move(self, battle: DoubleBattle):
-        orders = []
+        orders: List[BattleOrder] = []
         switched_in = None
 
         if any(battle.force_switch):
