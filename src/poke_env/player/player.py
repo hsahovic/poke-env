@@ -306,7 +306,9 @@ class Player(ABC):
                         )
                         if identifier not in battle._opponent_team:
                             battle._opponent_team[identifier] = Pokemon(
-                                mon._data.gen, species=mon.species
+                                mon._data.gen,
+                                species=mon.species,
+                                name=mon._data.pokedex[mon.species]["name"],
                             )
                         pokemon = battle._opponent_team[identifier]
                         pokemon._item = to_id_str(message_dict[pokemon.name][1])
@@ -322,8 +324,16 @@ class Player(ABC):
                         pokemon._terastallized_type = PokemonType.from_name(
                             message_dict[pokemon.name][10].split(",")[-1]
                         )
-                if all([p.moves for p in list(battle.team.values()) + list(battle.opponent_team.values())]):
-                    await self._handle_battle_request(battle, from_teampreview_request=True)
+                if all(
+                    [
+                        p.moves
+                        for p in list(battle.team.values())
+                        + list(battle.opponent_team.values())
+                    ]
+                ):
+                    await self._handle_battle_request(
+                        battle, from_teampreview_request=True
+                    )
             elif split_message[1] == "win" or split_message[1] == "tie":
                 if split_message[1] == "win":
                     battle.won_by(split_message[2])
@@ -407,7 +417,9 @@ class Player(ABC):
             elif split_message[1] == "teampreview":
                 battle.parse_message(split_message)
                 if not self.accept_open_team_sheet:
-                    await self._handle_battle_request(battle, from_teampreview_request=True)
+                    await self._handle_battle_request(
+                        battle, from_teampreview_request=True
+                    )
             elif split_message[1] == "bigerror":
                 self.logger.warning("Received 'bigerror' message: %s", split_message)
             else:
