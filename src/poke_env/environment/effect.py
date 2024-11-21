@@ -98,6 +98,7 @@ class Effect(Enum):
     INGRAIN = auto()
     INNARDS_OUT = auto()
     INSOMNIA = auto()
+    INSTRUCT = auto()
     IRON_BARBS = auto()
     KINGS_SHIELD = auto()
     LASER_FOCUS = auto()
@@ -301,6 +302,14 @@ class Effect(Enum):
         return self in _PROTECT_BREAKING_EFFECTS
 
     @property
+    def ends_on_move(self) -> bool:
+        """
+        :return: Whether this effect ends when a pokemon moves.
+        :rtype: bool
+        """
+        return self in _ENDS_ON_MOVE_EFFECTS
+
+    @property
     def ends_on_switch(self) -> bool:
         """
         :return: Whether this effect ends when the pokemon switches out.
@@ -372,6 +381,7 @@ _FROM_ABILITY_EFFECTS: Set[Effect] = {
     Effect.AROMA_VEIL,
     Effect.BAD_DREAMS,
     Effect.BATTLE_BOND,
+    Effect.COMMANDER,
     Effect.CUD_CHEW,
     Effect.DANCER,
     Effect.DISGUISE,
@@ -513,6 +523,7 @@ _FROM_MOVE_EFFECTS: Set[Effect] = {
     Effect.INFESTATION,
     Effect.INGRAIN,
     Effect.INSOMNIA,
+    Effect.INSTRUCT,
     Effect.KINGS_SHIELD,
     Effect.LASER_FOCUS,
     Effect.LEECH_SEED,
@@ -708,12 +719,23 @@ _TURN_COUNTER_EFFECTS: Set[Effect] = {
 _ENDS_ON_MOVE_EFFECTS = {
     Effect.GLAIVE_RUSH,
     Effect.CHARGE,
+    Effect.DANCER,
+    Effect.GRUDGE,
+    Effect.DESTINY_BOND,
+    Effect.RAGE,
+    Effect.INSTRUCT,
 }
 
 _ENDS_ON_SWITCH_EFFECTS = {
     Effect.MIND_READER,
     Effect.MUMMY,
     Effect.SPEED_SWAP,
+    Effect.TYPECHANGE,
+    Effect.SKILL_SWAP,
+    Effect.PERISH0,
+    Effect.PERISH1,
+    Effect.PERISH2,
+    Effect.PERISH3,
 }
 
 _ENDS_ON_TURN_EFFECTS = {
@@ -739,6 +761,7 @@ _ENDS_ON_TURN_EFFECTS = {
     Effect.SPIKY_SHIELD,
     Effect.SPOTLIGHT,
     Effect.WIDE_GUARD,
+    Effect.INSTRUCT,
 }
 
 _ACTION_COUNTER_EFFECTS: Set[Effect] = {Effect.RAGE, Effect.STOCKPILE}
@@ -829,6 +852,7 @@ _FROM_DATA: Dict[str, Effect] = {
     "INFESTATION": Effect.INFESTATION,
     "INGRAIN": Effect.INGRAIN,
     "INNARDSOUT": Effect.INNARDS_OUT,
+    "INSTRUCT": Effect.INSTRUCT,
     "INSOMNIA": Effect.INSOMNIA,
     "IRONBARBS": Effect.IRON_BARBS,
     "KINGSSHIELD": Effect.KINGS_SHIELD,

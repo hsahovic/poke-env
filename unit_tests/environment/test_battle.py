@@ -330,6 +330,11 @@ def test_battle_request_and_interactions(example_request):
     assert Effect.RAGE_POWDER not in battle.opponent_active_pokemon.effects
 
     battle.parse_message(
+        ["", "-singlemove", "p1: Tyranitar", "Glaive Rush", "[silent]"]
+    )
+    assert Effect.GLAIVE_RUSH in battle.opponent_active_pokemon.effects
+
+    battle.parse_message(
         [
             "",
             "-item",
@@ -420,6 +425,11 @@ def test_battle_request_and_interactions(example_request):
         ["", "move", "p1: Groudon", "Precipice Blades", "p2: Necrozma"]
     )
     assert "precipiceblades" in battle.opponent_active_pokemon.moves
+
+    event = ["", "move", "p1: Groudon", "Teeter Dance", "[from]ability: Dancer"]
+    battle.parse_message(event)
+    assert "teeterdance" not in battle.opponent_active_pokemon.moves
+    assert event == ["", "move", "p1: Groudon", "Teeter Dance", "[from]ability: Dancer"]
 
     battle._player_username = "ray"
     battle._opponent_username = "wolfe"

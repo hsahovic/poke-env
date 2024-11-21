@@ -146,13 +146,12 @@ class Player(ABC):
         )
         self._battle_end_condition: Condition = create_in_poke_loop(Condition)
         self._challenge_queue: Queue[Any] = create_in_poke_loop(Queue)
+        self._team: Optional[Teambuilder] = None
 
         if isinstance(team, Teambuilder):
             self._team = team
         elif isinstance(team, str):
             self._team = ConstantTeambuilder(team)
-        else:
-            self._team = None
 
         self.logger.debug("Player initialisation finished")
 
@@ -199,7 +198,7 @@ class Player(ABC):
             else:
                 gen = GenData.from_format(self._format).gen
                 if self.format_is_doubles:
-                    battle = DoubleBattle(
+                    battle: AbstractBattle = DoubleBattle(
                         battle_tag=battle_tag,
                         username=self.username,
                         logger=self.logger,
@@ -429,10 +428,10 @@ class Player(ABC):
             if isinstance(message, Awaitable):
                 message = await message
         else:
-            message = self.choose_move(battle)
-            if isinstance(message, Awaitable):
-                message = await message
-            message = message.message
+            choice = self.choose_move(battle)
+            if isinstance(choice, Awaitable):
+                choice = await choice
+            message = choice.message
 
         await self.ps_client.send_message(message, battle.battle_tag)
 
@@ -698,7 +697,7 @@ class Player(ABC):
             return Player.choose_random_singles_move(battle)
         else:
             raise ValueError(
-                "battle should be Battle or DoubleBattle. Received %d" % (type(battle))
+                f"battle should be Battle or DoubleBattle. Received {type(battle)}"
             )
 
     async def ladder(self, n_games: int):

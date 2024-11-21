@@ -59,7 +59,9 @@ class ObservedPokemon:
         if mon is None:
             return None
 
-        stats = ObservedPokemon.initial_stats()
+        stats: Optional[Mapping[str, Union[List[int], int, None]]] = (
+            ObservedPokemon.initial_stats()
+        )
         if mon.stats is not None:
             stats = {k: v for (k, v) in mon.stats.items()}
 

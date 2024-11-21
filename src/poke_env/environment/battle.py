@@ -84,8 +84,7 @@ class Battle(AbstractBattle):
         if self._force_switch:
             self._move_on_next_request = True
 
-        if request["rqid"]:
-            self._rqid = max(self._rqid, request["rqid"])
+        self._last_request = request
 
         if request.get("teamPreview", False):
             self._teampreview = True
@@ -159,6 +158,7 @@ class Battle(AbstractBattle):
         for pokemon in self.team.values():
             if pokemon.active:
                 return pokemon
+        return None
 
     @property
     def all_active_pokemons(self) -> List[Optional[Pokemon]]:
@@ -258,7 +258,7 @@ class Battle(AbstractBattle):
         self._opponent_can_dynamax = value
 
     @property
-    def opponent_can_mega_evolve(self) -> bool:
+    def opponent_can_mega_evolve(self) -> Union[bool, List[bool]]:
         """
         :return: Whether or not opponent's current active pokemon can mega-evolve
         :rtype: bool
@@ -278,7 +278,7 @@ class Battle(AbstractBattle):
         return self._opponent_can_tera
 
     @property
-    def opponent_can_z_move(self) -> bool:
+    def opponent_can_z_move(self) -> Union[bool, List[bool]]:
         """
         :return: Whether or not opponent's current active pokemon can z-move
         :rtype: bool
