@@ -616,12 +616,12 @@ class AbstractBattle(ABC):
                 self.get_pokemon(pokemon).ability = ability
         elif split_message[1] == "-start":
             pokemon, effect = event[2:4]
-            pokemon = self.get_pokemon(pokemon)
+            pokemon = self.get_pokemon(pokemon)  # type: ignore
 
             if effect == "typechange":
-                pokemon.start_effect(effect, details=event[4])
+                pokemon.start_effect(effect, details=event[4])  # type: ignore
             else:
-                pokemon.start_effect(effect)
+                pokemon.start_effect(effect)  # type: ignore
 
             if pokemon.is_dynamaxed:  # type: ignore
                 if pokemon in set(self.team.values()) and self._dynamax_turn is None:
