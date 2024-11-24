@@ -676,10 +676,7 @@ class AbstractBattle(ABC):
             self.get_pokemon(pokemon).end_effect(effect)
         elif event[1] == "-endability":
             pokemon = event[2]
-            if len(event) > 4 and event[4].startswith("[from] move:"):
-                self.get_pokemon(pokemon).set_temporary_ability(None)
-            else:
-                self.get_pokemon(pokemon).ability = None
+            self.get_pokemon(pokemon).set_temporary_ability(None)
         elif event[1] == "-enditem":
             pokemon, item = event[2:4]
             self.get_pokemon(pokemon).end_item(item)

@@ -539,7 +539,12 @@ def test_battle_request_and_interactions(example_request):
         ]
     )
     assert battle.opponent_active_pokemon.ability == "waterabsorb"
-    battle.opponent_active_pokemon._ability = None
+    necrozma = battle.active_pokemon
+    groudon = battle.opponent_active_pokemon
+
+    necrozma.switch_out()
+    groudon.switch_in()
+    groudon._ability = None
 
     battle.parse_message(
         [
@@ -551,40 +556,42 @@ def test_battle_request_and_interactions(example_request):
             "[of] p1a: Groudon",
         ]
     )
-    assert battle.active_pokemon.ability == "waterabsorb"
+    assert necrozma.ability == "waterabsorb"
 
-    battle.active_pokemon.item = GenData.UNKNOWN_ITEM
+    necrozma.item = GenData.UNKNOWN_ITEM
     battle.parse_message(
         ["", "-heal", "p2a: Necrozma", "200/265", "[from] item: Leftovers"]
     )
-    assert battle.active_pokemon.item == "leftovers"
-    battle.active_pokemon.item = None
+    assert necrozma.item == "leftovers"
+    necrozma.item = None
 
-    battle.opponent_active_pokemon.item = GenData.UNKNOWN_ITEM
+    groudon.item = GenData.UNKNOWN_ITEM
     battle.parse_message(
         ["", "-heal", "p1a: Groudon", "200/265", "[from] item: Leftovers"]
     )
-    assert battle.opponent_active_pokemon.item == "leftovers"
-    battle.opponent_active_pokemon.item = None
+    assert groudon.item == "leftovers"
+    groudon.item = None
 
-    battle.opponent_active_pokemon.item = None
+    groudon.item = None
     battle.parse_message(
         ["", "-heal", "p1a: Groudon", "200/265", "[from] item: Sitrus Berry"]
     )
-    assert battle.opponent_active_pokemon.item is None
+    assert groudon.item is None
 
     # Test temporary types and abilities
-    battle.active_pokemon._ability = "prismarmor"
-    battle.opponent_active_pokemon._ability = "desolateland"
+
+    necrozma._ability = "prismarmor"
+    groudon._ability = "desolateland"
     battle.parse_message(["", "move", "p2a: Necrozma", "Worry Seed", "p1a: Groudon"])
+    assert groudon.ability == "desolateland"
     battle.parse_message(
         ["", "-endability", "p1a: Groudon", "Desolate Land", "[from] move: Worry Seed"]
     )
+    assert groudon.ability is None
     battle.parse_message(
         ["", "-ability", "p1a: Groudon", "Insomnia", "[from] move: Worry Seed"]
     )
-    assert battle.opponent_active_pokemon.ability == "insomnia"
-    groudon = battle.opponent_active_pokemon
+    assert groudon.ability == "insomnia"
     groudon.switch_out()
     groudon.switch_in()
     assert groudon.ability == "desolateland"
@@ -601,8 +608,8 @@ def test_battle_request_and_interactions(example_request):
             "[of] p2a: Necrozma",
         ]
     )
-    assert battle.opponent_active_pokemon.ability == "prismarmor"
-    assert battle.active_pokemon.ability == "desolateland"
+    assert groudon.ability == "prismarmor"
+    assert necrozma.ability == "desolateland"
     groudon.switch_in()
     groudon.switch_out()
     assert groudon.ability == "desolateland"

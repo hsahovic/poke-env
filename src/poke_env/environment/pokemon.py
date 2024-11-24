@@ -12,6 +12,8 @@ from poke_env.environment.z_crystal import Z_CRYSTAL
 from poke_env.stats import compute_raw_stats
 from poke_env.teambuilder.teambuilder_pokemon import TeambuilderPokemon
 
+_NO_ABILITY = "NO_ABILITY"
+
 
 class Pokemon:
     __slots__ = (
@@ -386,7 +388,7 @@ class Pokemon:
         if ability is not None:
             self._temporary_ability = to_id_str(ability)
         else:
-            self._temporary_ability = None
+            self._temporary_ability = _NO_ABILITY
 
     def start_effect(self, effect_str: str, details: Optional[Any] = None):
         effect = Effect.from_showdown_message(effect_str)
@@ -673,10 +675,12 @@ class Pokemon:
     @property
     def ability(self) -> Optional[str]:
         """
-        :return: The pokemon's ability. None if unknown.
+        :return: The pokemon's ability. None if unknown or removed.
         :rtype: str, optional
         """
-        if self._temporary_ability is not None:
+        if self._temporary_ability == _NO_ABILITY:
+            return None
+        elif self._temporary_ability is not None:
             return self._temporary_ability
         else:
             return self._ability
