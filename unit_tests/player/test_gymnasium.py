@@ -10,14 +10,14 @@ from poke_env.player import (
     ActType,
     BattleOrder,
     ForfeitBattleOrder,
+    GymnasiumEnv,
     ObsType,
-    OpenAIGymEnv,
     Player,
 )
-from poke_env.player.openai_api import _AsyncPlayer, _AsyncQueue
+from poke_env.player.gymnasium_api import _AsyncPlayer, _AsyncQueue
 
 
-class DummyEnv(OpenAIGymEnv[ObsType, ActType]):
+class DummyEnv(GymnasiumEnv[ObsType, ActType]):
     def __init__(self, *args, **kwargs):
         self.opponent = None
         super().__init__(*args, **kwargs)
