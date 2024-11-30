@@ -21,10 +21,10 @@ Player
    :undoc-members:
    :show-inheritance:
 
-OpenAIGymEnv
+GymnasiumEnv
 ************
 
-.. automodule:: poke_env.player.openai_api
+.. automodule:: poke_env.player.gymnasium_api
    :members:
    :undoc-members:
    :show-inheritance:
