@@ -235,7 +235,7 @@ class Player(ABC):
                 if self._start_timer_on_battle_start:
                     await self.ps_client.send_message("/timer on", battle.battle_tag)
 
-                if "vgc" in self.format:
+                if hasattr(self.ps_client, "websocket") and "vgc" in self.format:
                     if self.accept_open_team_sheet:
                         await self.ps_client.send_message(
                             "/acceptopenteamsheets", room=battle_tag
@@ -295,22 +295,32 @@ class Player(ABC):
                         await self._handle_battle_request(battle)
                         battle.move_on_next_request = False
             elif split_message[1] == "showteam":
-                if split_message[2] == battle.opponent_role:
+                if not battle.team or split_message[2] == battle.opponent_role:
                     split_pokemon_messages = [
                         m.split("|") for m in "|".join(split_message[3:]).split("]")
                     ]
                     message_dict = {m[0]: m[1:] for m in split_pokemon_messages}
-                    for mon in battle.teampreview_opponent_team:
-                        identifier = (
-                            f"{battle.opponent_role}: {mon.base_species.capitalize()}"
-                        )
-                        if identifier not in battle._opponent_team:
-                            battle._opponent_team[identifier] = Pokemon(
+                    role = split_message[2]
+                    teampreview_team = (
+                        battle.teampreview_team
+                        if role == battle.player_role
+                        else battle.teampreview_opponent_team
+                    )
+                    team = (
+                        battle._team
+                        if role == battle.player_role
+                        else battle._opponent_team
+                    )
+                    for mon in teampreview_team:
+                        # print(role, team)
+                        identifier = f"{role}: {mon.base_species.capitalize()}"
+                        if identifier not in team:
+                            team[identifier] = Pokemon(
                                 mon._data.gen,
                                 species=mon.species,
                                 name=mon._data.pokedex[mon.species]["name"],
                             )
-                        pokemon = battle._opponent_team[identifier]
+                        pokemon = team[identifier]
                         pokemon._item = to_id_str(message_dict[pokemon.name][1])
                         pokemon._ability = to_id_str(message_dict[pokemon.name][2])
                         pokemon._moves = {
@@ -324,12 +334,16 @@ class Player(ABC):
                         pokemon._terastallized_type = PokemonType.from_name(
                             message_dict[pokemon.name][10].split(",")[-1]
                         )
-                if all(
-                    [
-                        p.moves
-                        for p in list(battle.team.values())
-                        + list(battle.opponent_team.values())
-                    ]
+                if (
+                    battle.team
+                    and battle.opponent_team
+                    and all(
+                        [
+                            p.moves
+                            for p in list(battle.team.values())
+                            + list(battle.opponent_team.values())
+                        ]
+                    )
                 ):
                     await self._handle_battle_request(
                         battle, from_teampreview_request=True
@@ -445,7 +459,8 @@ class Player(ABC):
                 choice = await choice
             message = choice.message
 
-        await self.ps_client.send_message(message, battle.battle_tag)
+        if hasattr(self.ps_client, "websocket"):
+            await self.ps_client.send_message(message, battle.battle_tag)
 
     async def _handle_challenge_request(self, split_message: List[str]):
         """Handles an individual challenge."""

@@ -859,9 +859,11 @@ class AbstractBattle(ABC):
         pass
 
     def _register_teampreview_pokemon(self, player: str, details: str):
+        mon = Pokemon(details=details, gen=self._data.gen)
         if player != self._player_role:
-            mon = Pokemon(details=details, gen=self._data.gen)
             self._teampreview_opponent_team.add(mon)
+        elif mon.name not in [p.name for p in self.teampreview_team]:
+            self._teampreview_team.add(mon)
 
     def side_end(self, side: str, condition_str: str):
         if side[:2] == self._player_role:
