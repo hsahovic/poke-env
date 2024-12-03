@@ -10598,6 +10598,34 @@
         ],
         "weightkg": 4
     },
+    "shox": {
+        "abilities": {
+            "0": "Electromorphosis",
+            "1": "Sticky Hold"
+        },
+        "baseStats": {
+            "atk": 73,
+            "def": 81,
+            "hp": 136,
+            "spa": 90,
+            "spd": 98,
+            "spe": 56
+        },
+        "color": "Black",
+        "eggGroups": [
+            "Dragon",
+            "Mineral"
+        ],
+        "gen": 9,
+        "heightm": 6.2,
+        "name": "Shox",
+        "num": -77,
+        "types": [
+            "Electric",
+            "Normal"
+        ],
+        "weightkg": 201.6
+    },
     "shuckle": {
         "abilities": {
             "0": "Sturdy",
