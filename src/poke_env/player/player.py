@@ -312,27 +312,30 @@ class Player(ABC):
                         else battle._opponent_team
                     )
                     for mon in teampreview_team:
-                        # print(role, team)
-                        identifier = f"{role}: {mon.base_species.capitalize()}"
+                        form = mon._last_details.split(', ')[0]
+                        if form.endswith("-*"):
+                            form = [k for k in message_dict.keys() if k.startswith(form[:-2])][0]
+                        identifier = f"{role}: {form}"
                         if identifier not in team:
                             team[identifier] = Pokemon(
                                 mon._data.gen,
                                 species=mon.species,
                                 name=mon._data.pokedex[mon.species]["name"],
+                                details=mon._last_details,
                             )
                         pokemon = team[identifier]
-                        pokemon._item = to_id_str(message_dict[pokemon.name][1])
-                        pokemon._ability = to_id_str(message_dict[pokemon.name][2])
+                        pokemon._item = to_id_str(message_dict[identifier[4:]][1])
+                        pokemon._ability = to_id_str(message_dict[identifier[4:]][2])
                         pokemon._moves = {
                             to_id_str(name): Move(to_id_str(name), battle.gen)
-                            for name in message_dict[pokemon.name][3].split(",")
+                            for name in message_dict[identifier[4:]][3].split(",")
                         }
                         pokemon._gender = PokemonGender.from_request_details(
-                            message_dict[pokemon.name][6] or "N"
+                            message_dict[identifier[4:]][6] or "N"
                         )
-                        pokemon._level = int(message_dict[pokemon.name][9])
+                        pokemon._level = int(message_dict[identifier[4:]][9])
                         pokemon._terastallized_type = PokemonType.from_name(
-                            message_dict[pokemon.name][10].split(",")[-1]
+                            message_dict[identifier[4:]][10].split(",")[-1]
                         )
                 if (
                     battle.team

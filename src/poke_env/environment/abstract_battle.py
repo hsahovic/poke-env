@@ -215,6 +215,14 @@ class AbstractBattle(ABC):
         if identifier[3] != " ":
             identifier = identifier[:2] + identifier[3:]
 
+        base_identifier = identifier[:4] + details.split(",")[0]
+        if base_identifier in self._team:
+            self._team[identifier] = self._team.pop(base_identifier)
+            self._team[identifier]._name = identifier[4:]
+        elif base_identifier in self._opponent_team:
+            self._opponent_team[identifier] = self._opponent_team.pop(base_identifier)
+            self._opponent_team[identifier]._name = identifier[4:]
+
         if identifier in self._team:
             return self._team[identifier]
         elif identifier in self._opponent_team:
@@ -726,6 +734,8 @@ class AbstractBattle(ABC):
             source, target, stats = event[2:5]
             source_mon = self.get_pokemon(source)
             target_mon = self.get_pokemon(target)
+            if "[from]" in stats:
+                stats = "accuracy, atk, def, evasion, spa, spd, spe"
             for stat in stats.split(", "):
                 source_mon.boosts[stat], target_mon.boosts[stat] = (
                     target_mon.boosts[stat],
@@ -799,20 +809,21 @@ class AbstractBattle(ABC):
             player, details = event[2:4]
             self._register_teampreview_pokemon(player, details)
         elif event[1] == "raw":
-            username, rating_info = event[2].split("'s rating: ")
-            rating_int = int(rating_info[:4])
-            if username == self.player_username:
-                self._rating = rating_int
-            elif username == self.opponent_username:
-                self._opponent_rating = rating_int
-            elif self.logger is not None:
-                self.logger.warning(
-                    "Rating information regarding an unrecognized username received. "
-                    "Received '%s', while only known players are '%s' and '%s'",
-                    username,
-                    self.player_username,
-                    self.opponent_username,
-                )
+            if "'s rating: " in event[2]:
+                username, rating_info = event[2].split("'s rating: ")
+                rating_int = int(rating_info[:4])
+                if username == self.player_username:
+                    self._rating = rating_int
+                elif username == self.opponent_username:
+                    self._opponent_rating = rating_int
+                elif self.logger is not None:
+                    self.logger.warning(
+                        "Rating information regarding an unrecognized username received. "
+                        "Received '%s', while only known players are '%s' and '%s'",
+                        username,
+                        self.player_username,
+                        self.opponent_username,
+                    )
         elif event[1] == "replace":
             pokemon = event[2]
             details = event[3]
@@ -843,6 +854,8 @@ class AbstractBattle(ABC):
         elif event[1] == "title":
             player_1, player_2 = event[2].split(" vs. ")
             self.players = player_1, player_2
+        elif event[1] == "badge":
+            pass
         elif event[1] == "-terastallize":
             pokemon, type_ = event[2:]
             pokemon = self.get_pokemon(pokemon)  # type: ignore

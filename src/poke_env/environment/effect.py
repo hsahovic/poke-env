@@ -67,6 +67,7 @@ class Effect(Enum):
     FLOWER_VEIL = auto()
     FOCUS_BAND = auto()
     FOCUS_ENERGY = auto()
+    FOCUS_PUNCH = auto()
     FOLLOW_ME = auto()
     FORESIGHT = auto()
     FOREWARN = auto()
@@ -822,6 +823,7 @@ _FROM_DATA: Dict[str, Effect] = {
     "FLOWERVEIL": Effect.FLOWER_VEIL,
     "FOCUSBAND": Effect.FOCUS_BAND,
     "FOCUSENERGY": Effect.FOCUS_ENERGY,
+    "FOCUSPUNCH": Effect.FOCUS_PUNCH,
     "FOLLOWME": Effect.FOLLOW_ME,
     "FORESIGHT": Effect.FORESIGHT,
     "FOREWARN": Effect.FOREWARN,

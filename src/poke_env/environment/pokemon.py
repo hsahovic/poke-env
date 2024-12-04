@@ -233,11 +233,14 @@ class Pokemon:
         self._effects = {}
 
     def forme_change(self, species: str):
+        self._last_details = species
         species = species.split(",")[0]
         self._update_from_pokedex(species, store_species=False)
 
     def heal(self, hp_status: str):
         self.set_hp_status(hp_status)
+        if self.fainted:
+            self._status = None
 
     def invert_boosts(self):
         self._boosts = {k: -v for k, v in self._boosts.items()}
@@ -397,6 +400,9 @@ class Pokemon:
         self._update_from_pokedex(into.species, store_species=False)
         self._current_hp = int(current_hp)
         self._boosts = into.boosts.copy()
+        self._moves = {m.id: Move(m.id, m._gen) for m in into.moves.values()}
+        for m in self._moves.values():
+            m._current_pp = 5
 
     def _update_from_pokedex(self, species: str, store_species: bool = True):
         species = to_id_str(species)
