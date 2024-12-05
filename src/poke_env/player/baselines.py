@@ -1,5 +1,5 @@
 import random
-from typing import List
+from typing import List, Optional
 
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.double_battle import DoubleBattle
@@ -29,7 +29,7 @@ class MaxBasePowerPlayer(Player):
         return self.choose_random_move(battle)
 
     def choose_doubles_move(self, battle: DoubleBattle):
-        orders: List[BattleOrder] = []
+        orders: List[Optional[BattleOrder]] = []
         switched_in = None
 
         if any(battle.force_switch):
@@ -51,7 +51,7 @@ class MaxBasePowerPlayer(Player):
             switches = [s for s in switches if s != switched_in]
 
             if not mon or mon.fainted:
-                orders.append(DefaultBattleOrder())
+                orders.append(None)
                 continue
             elif not moves and switches:
                 mon_to_switch_in = random.choice(switches)
