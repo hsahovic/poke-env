@@ -73,11 +73,11 @@ class DoubleBattleOrder(BattleOrder):
                 + self.second_order.message.replace("/choose ", "")
             )
         elif self.first_order:
-            return self.first_order.message + ", default"
+            return self.first_order.message + ", pass"
         elif self.second_order:
-            return self.second_order.message + ", default"
+            return "/choose pass, " + self.second_order.message.replace("/choose ", "")
         else:
-            return self.DEFAULT_ORDER
+            return "/choose pass, pass"
 
     @staticmethod
     def join_orders(first_orders: List[BattleOrder], second_orders: List[BattleOrder]):
@@ -95,9 +95,9 @@ class DoubleBattleOrder(BattleOrder):
             if orders:
                 return orders
         elif first_orders:
-            return [DoubleBattleOrder(first_order=order) for order in first_orders]
+            return [DoubleBattleOrder(order, None) for order in first_orders]
         elif second_orders:
-            return [DoubleBattleOrder(first_order=order) for order in second_orders]
+            return [DoubleBattleOrder(None, order) for order in second_orders]
         return [DefaultBattleOrder()]
 
 
