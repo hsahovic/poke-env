@@ -618,11 +618,18 @@ class AbstractBattle(ABC):
             self.get_pokemon(pokemon).boost(stat, -int(amount))
         elif event[1] == "-ability":
             pokemon, ability = event[2:4]
-            self.get_pokemon(pokemon).ability = ability
-        elif event[1] == "-start":
+            if len(event) > 4 and event[4].startswith("[from] move:"):
+                self.get_pokemon(pokemon).set_temporary_ability(ability)
+            else:
+                self.get_pokemon(pokemon).ability = ability
+        elif split_message[1] == "-start":
             pokemon, effect = event[2:4]
             pokemon = self.get_pokemon(pokemon)  # type: ignore
-            pokemon.start_effect(effect)  # type: ignore
+
+            if effect == "typechange":
+                pokemon.start_effect(effect, details=event[4])  # type: ignore
+            else:
+                pokemon.start_effect(effect)  # type: ignore
 
             if pokemon.is_dynamaxed:  # type: ignore
                 if pokemon in set(self.team.values()) and self._dynamax_turn is None:
@@ -636,7 +643,11 @@ class AbstractBattle(ABC):
                     self.opponent_can_dynamax = False
         elif event[1] == "-activate":
             target, effect = event[2:4]
-            if target:
+            if target and effect == "move: Skill Swap":
+                self.get_pokemon(target).start_effect(effect, event[4:6])
+                actor = event[6].replace("[of] ", "")
+                self.get_pokemon(actor).set_temporary_ability(event[5])
+            else:
                 self.get_pokemon(target).start_effect(effect)
         elif event[1] == "-status":
             pokemon, status = event[2:4]
@@ -673,7 +684,7 @@ class AbstractBattle(ABC):
             self.get_pokemon(pokemon).end_effect(effect)
         elif event[1] == "-endability":
             pokemon = event[2]
-            self.get_pokemon(pokemon).ability = None
+            self.get_pokemon(pokemon).set_temporary_ability(None)
         elif event[1] == "-enditem":
             pokemon, item = event[2:4]
             self.get_pokemon(pokemon).end_item(item)
