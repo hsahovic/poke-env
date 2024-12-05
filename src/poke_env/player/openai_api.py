@@ -114,6 +114,7 @@ class OpenAIGymEnv(
         avatar: Optional[int] = None,
         battle_format: str = "gen8randombattle",
         log_level: Optional[int] = None,
+        accept_open_team_sheet: Optional[bool] = False,
         save_replays: Union[bool, str] = False,
         server_configuration: Optional[
             ServerConfiguration
@@ -175,6 +176,7 @@ class OpenAIGymEnv(
             battle_format=battle_format,
             log_level=log_level,
             max_concurrent_battles=1,
+            accept_open_team_sheet=accept_open_team_sheet,
             save_replays=save_replays,
             server_configuration=server_configuration,
             start_timer_on_battle_start=start_timer_on_battle_start,
