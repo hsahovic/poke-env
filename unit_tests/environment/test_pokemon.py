@@ -307,3 +307,42 @@ def test_stats(example_request, showdown_format_teams):
         "spd": 120,
         "spe": 82,
     }
+
+
+def test_temporary():
+    furret = Pokemon(species="furret", gen=8)
+    furret._ability = "adaptability"
+
+    assert furret.types == [PokemonType.NORMAL]
+    assert furret.stab_multiplier == 2
+
+    furret.start_effect("typechange", "???/Fighting")
+    furret.start_effect("move: Skill Swap", ["Levitate", "Adaptability"])
+
+    assert furret.types == [PokemonType.THREE_QUESTION_MARKS, PokemonType.FIGHTING]
+    assert furret.ability == "levitate"
+    assert furret.damage_multiplier(PokemonType.PSYCHIC) == 1
+    assert furret.stab_multiplier == 1.5
+
+    furret.start_effect("typechange", "Fighting")
+    assert furret.damage_multiplier(PokemonType.PSYCHIC) == 2
+
+    furret.switch_out()
+    furret.switch_in()
+
+    assert furret.ability == "adaptability"
+
+    furret.terastallize("dragon")
+    assert furret.type_1 == PokemonType.DRAGON
+    assert furret.type_2 is None
+    assert furret.damage_multiplier(PokemonType.ICE) == 2
+
+    furret.set_temporary_ability("frisk")
+    assert furret.ability == "frisk"
+
+    furret.set_temporary_ability(None)
+    assert furret.ability is None
+
+    furret.switch_out()
+    assert furret.ability == "adaptability"
+    assert furret.types == [PokemonType.DRAGON]
