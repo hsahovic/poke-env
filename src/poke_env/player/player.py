@@ -321,16 +321,24 @@ class Player(ABC):
                                 details=mon._last_details,
                             )
                         pokemon = team[identifier]
-                        pokemon_msg = [msg for name, msg in message_dict.items() if mon.base_species in to_id_str(name)][0]
+                        pokemon_msg = [
+                            msg
+                            for name, msg in message_dict.items()
+                            if mon.base_species in to_id_str(name)
+                        ][0]
                         pokemon._item = to_id_str(pokemon_msg[1])
                         pokemon._ability = to_id_str(pokemon_msg[2])
                         pokemon._moves = {
                             to_id_str(name): Move(to_id_str(name), battle.gen)
                             for name in pokemon_msg[3].split(",")
                         }
-                        pokemon._gender = PokemonGender.from_request_details(pokemon_msg[6] or "N")
+                        pokemon._gender = PokemonGender.from_request_details(
+                            pokemon_msg[6] or "N"
+                        )
                         pokemon._level = int(pokemon_msg[9])
-                        pokemon._terastallized_type = PokemonType.from_name(pokemon_msg[10].split(",")[-1])
+                        pokemon._terastallized_type = PokemonType.from_name(
+                            pokemon_msg[10].split(",")[-1]
+                        )
                 if (
                     battle.team
                     and battle.opponent_team
