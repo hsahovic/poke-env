@@ -216,12 +216,20 @@ class AbstractBattle(ABC):
             identifier = identifier[:2] + identifier[3:]
 
         base_identifier = identifier[:4] + details.split(",")[0]
-        if base_identifier in self._team:
-            self._team[identifier] = self._team.pop(base_identifier)
-            self._team[identifier]._name = identifier[4:]
-        elif base_identifier in self._opponent_team:
-            self._opponent_team[identifier] = self._opponent_team.pop(base_identifier)
-            self._opponent_team[identifier]._name = identifier[4:]
+        if base_identifier != identifier and base_identifier in self._team:
+            keys = list(self._team.keys())
+            i = keys.index(base_identifier)
+            keys[i] = base_identifier
+            values = list(self._team.values())
+            values[i]._name = identifier[4:]
+            self._team = dict(zip(keys, values))
+        elif base_identifier != identifier and base_identifier in self._opponent_team:
+            keys = list(self._opponent_team.keys())
+            i = keys.index(base_identifier)
+            keys[i] = base_identifier
+            values = list(self._opponent_team.values())
+            values[i]._name = identifier[4:]
+            self._opponent_team = dict(zip(keys, values))
 
         if identifier in self._team:
             return self._team[identifier]
