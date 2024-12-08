@@ -233,6 +233,15 @@ class Player(ABC):
                 if self._start_timer_on_battle_start:
                     await self.ps_client.send_message("/timer on", battle.battle_tag)
 
+                if self.accept_open_team_sheet:
+                    await self.ps_client.send_message(
+                        "/acceptopenteamsheets", room=battle_tag
+                    )
+                else:
+                    await self.ps_client.send_message(
+                        "/rejectopenteamsheets", room=battle_tag
+                    )
+
                 return battle
         else:
             self.logger.critical(
@@ -279,6 +288,30 @@ class Player(ABC):
                     if battle.move_on_next_request:
                         await self._handle_battle_request(battle)
                         battle.move_on_next_request = False
+            elif split_message[1] == "showteam":
+                # only need open sheets data for opponent
+                if split_message[2] == battle.opponent_role:
+                    split_pokemon_messages = [
+                        m.split("|") for m in "|".join(split_message[3:]).split("]")
+                    ]
+                    message_dict = {m[0]: m[1:] for m in split_pokemon_messages}
+                    role = split_message[2]
+                    battle._update_team_from_open_sheets(message_dict, role)
+                # only handle battle request after all open sheets are processed
+                if (
+                    battle.team
+                    and battle.opponent_team
+                    and all(
+                        [
+                            p.moves
+                            for p in list(battle.team.values())
+                            + list(battle.opponent_team.values())
+                        ]
+                    )
+                ):
+                    await self._handle_battle_request(
+                        battle, from_teampreview_request=True
+                    )
             elif split_message[1] == "win" or split_message[1] == "tie":
                 if split_message[1] == "win":
                     battle.won_by(split_message[2])
@@ -361,11 +394,13 @@ class Player(ABC):
                 await self._handle_battle_request(battle)
             elif split_message[1] == "teampreview":
                 battle.parse_message(split_message)
-                await self._handle_battle_request(battle, from_teampreview_request=True)
+                # wait for open sheets to be processed before handling battle request
+                if not self.accept_open_team_sheet:
+                    await self._handle_battle_request(
+                        battle, from_teampreview_request=True
+                    )
             elif split_message[1] == "bigerror":
                 self.logger.warning("Received 'bigerror' message: %s", split_message)
-            elif split_message[1] == "uhtml" and split_message[2] == "otsrequest":
-                await self._handle_ots_request(battle.battle_tag)
             else:
                 battle.parse_message(split_message)
 
@@ -397,13 +432,6 @@ class Player(ABC):
             if len(split_message) >= 6:
                 if split_message[5] == self._format:
                     await self._challenge_queue.put(challenging_player)
-
-    async def _handle_ots_request(self, battle_tag: str):
-        """Handles an Open Team Sheet request."""
-        if self.accept_open_team_sheet:
-            await self.ps_client.send_message("/acceptopenteamsheets", room=battle_tag)
-        else:
-            await self.ps_client.send_message("/rejectopenteamsheets", room=battle_tag)
 
     async def _update_challenges(self, split_message: List[str]):
         """Update internal challenge state.
