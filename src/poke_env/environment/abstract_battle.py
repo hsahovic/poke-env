@@ -215,35 +215,26 @@ class AbstractBattle(ABC):
         if identifier[3] != " ":
             identifier = identifier[:2] + identifier[3:]
 
-        base_identifier = identifier[:4] + details.split(",")[0]
-        if base_identifier != identifier and base_identifier in self._team:
-            keys = list(self._team.keys())
-            i = keys.index(base_identifier)
-            keys[i] = base_identifier
-            values = list(self._team.values())
-            values[i]._name = identifier[4:]
-            self._team = dict(zip(keys, values))
-        elif base_identifier != identifier and base_identifier in self._opponent_team:
-            keys = list(self._opponent_team.keys())
-            i = keys.index(base_identifier)
-            keys[i] = base_identifier
-            values = list(self._opponent_team.values())
-            values[i]._name = identifier[4:]
-            self._opponent_team = dict(zip(keys, values))
-
-        if identifier in self._team:
-            return self._team[identifier]
-        elif identifier in self._opponent_team:
-            return self._opponent_team[identifier]
-
         player_role = identifier[:2]
         name = identifier[3:].strip()
         is_mine = player_role == self._player_role
+        team = self._team if is_mine or force_self_team else self._opponent_team
 
-        if is_mine or force_self_team:
-            team: Dict[str, Pokemon] = self._team
-        else:
-            team: Dict[str, Pokemon] = self._opponent_team  # type: ignore
+        matches = [i for i, p in enumerate(team.values()) if p.base_species in to_id_str(details.split(",")[0])]
+        assert len(matches) < 2
+        if identifier not in team and matches:
+            i = matches[0]
+            items = list(team.items())
+            items[i] = (identifier, items[i][1])
+            items[i][1]._name = identifier[4:]
+            if is_mine or force_self_team:
+                self._team = dict(items)
+            else:
+                self._opponent_team = dict(items)
+        team = self._team if is_mine or force_self_team else self._opponent_team
+
+        if identifier in team:
+            return team[identifier]
 
         if self._team_size and len(team) >= self._team_size[player_role]:
             raise ValueError(
