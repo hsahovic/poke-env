@@ -220,7 +220,11 @@ class AbstractBattle(ABC):
         is_mine = player_role == self._player_role
         team = self._team if is_mine or force_self_team else self._opponent_team
 
-        matches = [i for i, p in enumerate(team.values()) if p.base_species in to_id_str(details.split(",")[0])]
+        matches = [
+            i
+            for i, p in enumerate(team.values())
+            if p.base_species in to_id_str(details.split(",")[0])
+        ]
         assert len(matches) < 2
         if identifier not in team and matches:
             i = matches[0]
