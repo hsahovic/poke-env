@@ -649,7 +649,8 @@ class AbstractBattle(ABC):
             if target and effect == "move: Skill Swap":
                 self.get_pokemon(target).start_effect(effect, event[4:6])
                 actor = event[6].replace("[of] ", "")
-                self.get_pokemon(actor).set_temporary_ability(event[5])
+                if event[5]:
+                    self.get_pokemon(actor).set_temporary_ability(event[5])
             else:
                 self.get_pokemon(target).start_effect(effect)
         elif event[1] == "-status":

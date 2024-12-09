@@ -407,7 +407,7 @@ class Pokemon:
             self._temporary_types = []
             for type_ in details.split("/"):
                 self._temporary_types.append(PokemonType.from_name(type_))
-        elif effect == Effect.SKILL_SWAP and details:
+        elif effect == Effect.SKILL_SWAP and details and details[0]:
             self.set_temporary_ability(details[0])
 
             # Skill Swap reveals a mon's ability
