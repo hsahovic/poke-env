@@ -696,21 +696,40 @@ class AbstractBattle(ABC):
             if len(event) == 6:
                 item, ability, pokemon = event[3:6]
 
-                assert ability == "[from] ability: Frisk", ability
+                if ability == "[from] ability: Frisk":
+                    pokemon = pokemon.split("[of] ")[-1]
+                    mon = self.get_pokemon(pokemon)
 
-                pokemon = pokemon.split("[of] ")[-1]
-                mon = self.get_pokemon(pokemon)
-
-                if isinstance(self.active_pokemon, list):
-                    self.get_pokemon(event[2]).item = to_id_str(item)
-                else:
-                    if mon == self.active_pokemon:
-                        self.opponent_active_pokemon.item = to_id_str(item)
+                    if isinstance(self.active_pokemon, list):
+                        self.get_pokemon(event[2]).item = to_id_str(item)
                     else:
-                        assert mon == self.opponent_active_pokemon
-                        self.active_pokemon.item = to_id_str(item)
+                        if mon == self.active_pokemon:
+                            self.opponent_active_pokemon.item = to_id_str(item)
+                        else:
+                            assert mon == self.opponent_active_pokemon
+                            self.active_pokemon.item = to_id_str(item)
 
-                mon.ability = to_id_str("frisk")
+                    mon.ability = to_id_str("frisk")
+                elif ability == "[from] ability: Pickpocket":
+                    pickpocket = event[2]
+                    pickpocketed = event[5]
+                    item = event[3]
+
+                    self.get_pokemon(pickpocket).item = to_id_str(item)
+                    self.get_pokemon(pickpocket).ability = to_id_str(
+                        ability.replace("[from] ability: ", "")
+                    )
+                    self.get_pokemon(pickpocketed).item = None
+                elif ability in {"[from] move: Thief"}:
+                    thief = event[2]
+                    victim = event[5]
+                    item = event[3]
+
+                    self.get_pokemon(thief).item = to_id_str(item)
+                    self.get_pokemon(victim).item = None
+                else:
+                    raise ValueError(f"Unhandled item message: {event}")
+
             else:
                 pokemon, item = event[2:4]
                 self.get_pokemon(pokemon).item = to_id_str(item)
