@@ -693,8 +693,27 @@ class AbstractBattle(ABC):
             pokemon = event[2]
             self.get_pokemon(pokemon).invert_boosts()
         elif event[1] == "-item":
-            pokemon, item = event[2:4]
-            self.get_pokemon(pokemon).item = to_id_str(item)
+            if len(event) == 6:
+                item, ability, pokemon = event[3:6]
+
+                assert ability == "[from] ability: Frisk", ability
+
+                pokemon = pokemon.split("[of] ")[-1]
+                mon = self.get_pokemon(pokemon)
+
+                if isinstance(self.active_pokemon, list):
+                    self.get_pokemon(event[2]).item = to_id_str(item)
+                else:
+                    if mon == self.active_pokemon:
+                        self.opponent_active_pokemon.item = to_id_str(item)
+                    else:
+                        assert mon == self.opponent_active_pokemon
+                        self.active_pokemon.item = to_id_str(item)
+
+                mon.ability = to_id_str("frisk")
+            else:
+                pokemon, item = event[2:4]
+                self.get_pokemon(pokemon).item = to_id_str(item)
         elif event[1] == "-mega":
             if self.player_role is not None and not event[2].startswith(
                 self.player_role
