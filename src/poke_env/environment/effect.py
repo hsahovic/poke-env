@@ -23,6 +23,7 @@ class Effect(Enum):
     BAD_DREAMS = auto()
     BANEFUL_BUNKER = auto()
     BATTLE_BOND = auto()
+    BEAK_BLAST = auto()
     BIDE = auto()
     BIND = auto()
     BURNING_BULWARK = auto()
@@ -476,6 +477,7 @@ _FROM_MOVE_EFFECTS: Set[Effect] = {
     Effect.ATTRACT,
     Effect.AUTOTOMIZE,
     Effect.BANEFUL_BUNKER,
+    Effect.BEAK_BLAST,
     Effect.BIDE,
     Effect.BIND,
     Effect.BURNING_BULWARK,
@@ -743,6 +745,7 @@ _ENDS_ON_SWITCH_EFFECTS = {
 _ENDS_ON_TURN_EFFECTS = {
     Effect.AFTER_YOU,
     Effect.BANEFUL_BUNKER,
+    Effect.BEAK_BLAST,
     Effect.BURNING_BULWARK,
     Effect.CRAFTY_SHIELD,
     Effect.FEINT,
