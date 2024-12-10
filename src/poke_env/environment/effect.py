@@ -23,6 +23,7 @@ class Effect(Enum):
     BAD_DREAMS = auto()
     BANEFUL_BUNKER = auto()
     BATTLE_BOND = auto()
+    BEAK_BLAST = auto()
     BIDE = auto()
     BIND = auto()
     BURNING_BULWARK = auto()
@@ -67,6 +68,7 @@ class Effect(Enum):
     FLOWER_VEIL = auto()
     FOCUS_BAND = auto()
     FOCUS_ENERGY = auto()
+    FOCUS_PUNCH = auto()
     FOLLOW_ME = auto()
     FORESIGHT = auto()
     FOREWARN = auto()
@@ -475,6 +477,7 @@ _FROM_MOVE_EFFECTS: Set[Effect] = {
     Effect.ATTRACT,
     Effect.AUTOTOMIZE,
     Effect.BANEFUL_BUNKER,
+    Effect.BEAK_BLAST,
     Effect.BIDE,
     Effect.BIND,
     Effect.BURNING_BULWARK,
@@ -503,6 +506,7 @@ _FROM_MOVE_EFFECTS: Set[Effect] = {
     Effect.FIRE_SPIN,
     Effect.FLINCH,
     Effect.FOCUS_ENERGY,
+    Effect.FOCUS_PUNCH,
     Effect.FOLLOW_ME,
     Effect.FORESIGHT,
     Effect.FUTURE_SIGHT,
@@ -741,10 +745,12 @@ _ENDS_ON_SWITCH_EFFECTS = {
 _ENDS_ON_TURN_EFFECTS = {
     Effect.AFTER_YOU,
     Effect.BANEFUL_BUNKER,
+    Effect.BEAK_BLAST,
     Effect.BURNING_BULWARK,
     Effect.CRAFTY_SHIELD,
     Effect.FEINT,
     Effect.FLINCH,
+    Effect.FOCUS_PUNCH,
     Effect.FOLLOW_ME,
     Effect.KINGS_SHIELD,
     Effect.CUSTAP_BERRY,
