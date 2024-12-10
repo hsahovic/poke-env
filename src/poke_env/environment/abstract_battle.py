@@ -620,11 +620,11 @@ class AbstractBattle(ABC):
             pokemon, stat, amount = event[2:5]
             self.get_pokemon(pokemon).boost(stat, -int(amount))
         elif event[1] == "-ability":
-            pokemon, ability = event[2:4]
+            pokemon, cause = event[2:4]
             if len(event) > 4 and event[4].startswith("[from] move:"):
-                self.get_pokemon(pokemon).set_temporary_ability(ability)
+                self.get_pokemon(pokemon).set_temporary_ability(cause)
             else:
-                self.get_pokemon(pokemon).ability = ability
+                self.get_pokemon(pokemon).ability = cause
         elif split_message[1] == "-start":
             pokemon, effect = event[2:4]
             pokemon = self.get_pokemon(pokemon)  # type: ignore
@@ -705,8 +705,52 @@ class AbstractBattle(ABC):
             pokemon = event[2]
             self.get_pokemon(pokemon).invert_boosts()
         elif event[1] == "-item":
-            pokemon, item = event[2:4]
-            self.get_pokemon(pokemon).item = to_id_str(item)
+            if len(event) == 6:
+                item, cause, pokemon = event[3:6]
+
+                if cause == "[from] ability: Frisk":
+                    pokemon = pokemon.split("[of] ")[-1]
+                    mon = self.get_pokemon(pokemon)
+
+                    if isinstance(self.active_pokemon, list):
+                        self.get_pokemon(event[2]).item = to_id_str(item)
+                    else:
+                        if mon == self.active_pokemon:
+                            self.opponent_active_pokemon.item = to_id_str(item)
+                        else:
+                            assert mon == self.opponent_active_pokemon
+                            self.active_pokemon.item = to_id_str(item)
+
+                    mon.ability = to_id_str("frisk")
+                elif cause == "[from] ability: Pickpocket":
+                    pickpocket = event[2]
+                    pickpocketed = event[5].replace("[of] ", "")
+                    item = event[3]
+
+                    self.get_pokemon(pickpocket).item = to_id_str(item)
+                    self.get_pokemon(pickpocket).ability = to_id_str("pickpocket")
+                    self.get_pokemon(pickpocketed).item = None
+                elif cause == "[from] ability: Magician":
+                    magician = event[2]
+                    victim = event[5].replace("[of] ", "")
+                    item = event[3]
+
+                    self.get_pokemon(magician).item = to_id_str(item)
+                    self.get_pokemon(magician).ability = to_id_str("magician")
+                    self.get_pokemon(victim).item = None
+                elif cause in {"[from] move: Thief"}:
+                    thief = event[2]
+                    victim = event[5].replace("[of] ", "")
+                    item = event[3]
+
+                    self.get_pokemon(thief).item = to_id_str(item)
+                    self.get_pokemon(victim).item = None
+                else:
+                    raise ValueError(f"Unhandled item message: {event}")
+
+            else:
+                pokemon, item = event[2:4]
+                self.get_pokemon(pokemon).item = to_id_str(item)
         elif event[1] == "-mega":
             if self.player_role is not None and not event[2].startswith(
                 self.player_role
@@ -859,8 +903,8 @@ class AbstractBattle(ABC):
                 mon, cause = event[2:]  # type: ignore
 
                 if cause.startswith("[from] ability:"):
-                    ability = cause.replace("[from] ability:", "")
-                    self.get_pokemon(mon).ability = to_id_str(ability)  # type: ignore
+                    cause = cause.replace("[from] ability:", "")
+                    self.get_pokemon(mon).ability = to_id_str(cause)  # type: ignore
         elif event[1] == "-swapsideconditions":
             self._side_conditions, self._opponent_side_conditions = (
                 self._opponent_side_conditions,
