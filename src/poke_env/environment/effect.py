@@ -67,6 +67,7 @@ class Effect(Enum):
     FLOWER_VEIL = auto()
     FOCUS_BAND = auto()
     FOCUS_ENERGY = auto()
+    FOCUS_PUNCH = auto()
     FOLLOW_ME = auto()
     FORESIGHT = auto()
     FOREWARN = auto()
@@ -503,6 +504,7 @@ _FROM_MOVE_EFFECTS: Set[Effect] = {
     Effect.FIRE_SPIN,
     Effect.FLINCH,
     Effect.FOCUS_ENERGY,
+    Effect.FOCUS_PUNCH,
     Effect.FOLLOW_ME,
     Effect.FORESIGHT,
     Effect.FUTURE_SIGHT,
@@ -745,6 +747,7 @@ _ENDS_ON_TURN_EFFECTS = {
     Effect.CRAFTY_SHIELD,
     Effect.FEINT,
     Effect.FLINCH,
+    Effect.FOCUS_PUNCH,
     Effect.FOLLOW_ME,
     Effect.KINGS_SHIELD,
     Effect.CUSTAP_BERRY,
