@@ -8321,6 +8321,33 @@
         ],
         "weightkg": 4
     },
+    "shox": {
+        "abilities": {
+            "0": "Electromorphosis",
+            "1": "Sticky Hold"
+        },
+        "baseStats": {
+            "atk": 73,
+            "def": 81,
+            "hp": 136,
+            "spa": 90,
+            "spd": 98,
+            "spe": 56
+        },
+        "color": "Brown",
+        "eggGroups": [
+            "Field"
+        ],
+        "gen": 9,
+        "heightm": 3,
+        "name": "Shox",
+        "num": -77,
+        "types": [
+            "Electric",
+            "Normal"
+        ],
+        "weightkg": 99.9
+    },
     "slowbro": {
         "abilities": {
             "0": "Oblivious",
