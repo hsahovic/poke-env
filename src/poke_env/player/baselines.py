@@ -186,6 +186,9 @@ class SimpleHeuristicsPlayer(Player):
         active = battle.active_pokemon
         opponent = battle.opponent_active_pokemon
 
+        if active is None or opponent is None:
+            return self.choose_random_move(battle)
+
         # Rough estimation of damage ratio
         physical_ratio = self._stat_estimation(active, "atk") / self._stat_estimation(
             opponent, "def"
