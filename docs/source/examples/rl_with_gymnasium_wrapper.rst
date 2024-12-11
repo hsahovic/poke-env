@@ -1,18 +1,18 @@
-.. _rl_with_open_ai_gym_wrapper:
+.. _rl_with_gymnasium_wrapper:
 
-Reinforcement learning with the OpenAI Gym wrapper
+Reinforcement learning with the Gymnasium wrapper
 ==================================================
 
-The corresponding complete source code can be found `here <https://github.com/hsahovic/poke-env/blob/master/examples/rl_with_new_open_ai_gym_wrapper.py>`__.
+The corresponding complete source code can be found `here <https://github.com/hsahovic/poke-env/blob/master/examples/rl_with_new_gymnasium_wrapper.py>`__.
 
-The goal of this example is to demonstrate how to use the `open ai gym <https://gym.openai.com/>`__ interface proposed by ``EnvPlayer``, and to train a simple deep reinforcement learning agent comparable in performance to the ``MaxDamagePlayer`` we created in :ref:`max_damage_player`.
+The goal of this example is to demonstrate how to use the `farama gymnasium <https://gymnasium.farama.org/>`__ interface proposed by ``EnvPlayer``, and to train a simple deep reinforcement learning agent comparable in performance to the ``MaxDamagePlayer`` we created in :ref:`max_damage_player`.
 
-.. note:: This example necessitates `keras-rl <https://github.com/keras-rl/keras-rl>`__ (compatible with Tensorflow 1.X) or `keras-rl2 <https://github.com/wau/keras-rl2>`__ (Tensorflow 2.X), which implement numerous reinforcement learning algorithms and offer a simple API fully compatible with the Open AI Gym API. You can install them by running ``pip install keras-rl`` or ``pip install keras-rl2``. If you are unsure, ``pip install keras-rl2`` is recommended.
+.. note:: This example necessitates `keras-rl <https://github.com/keras-rl/keras-rl>`__ (compatible with Tensorflow 1.X) or `keras-rl2 <https://github.com/wau/keras-rl2>`__ (Tensorflow 2.X), which implement numerous reinforcement learning algorithms and offer a simple API fully compatible with the Gymnasium API. You can install them by running ``pip install keras-rl`` or ``pip install keras-rl2``. If you are unsure, ``pip install keras-rl2`` is recommended.
 
 Implementing rewards and observations
 *************************************
 
-The open ai gym API provides *rewards* and *observations* for each step of each episode. In our case, each step corresponds to one decision in a battle and battles correspond to episodes.
+The Gymnasium API provides *rewards* and *observations* for each step of each episode. In our case, each step corresponds to one decision in a battle and battles correspond to episodes.
 
 Defining observations
 ^^^^^^^^^^^^^^^^^^^^^
@@ -26,9 +26,9 @@ Observations are embeddings of the current state of the battle. They can be an a
 
 To define our observations, we will create a custom ``embed_battle`` method. It takes one argument, a ``Battle`` object, and returns our embedding.
 
-In addition to this, we also need to describe the embedding to the gym interface.
+In addition to this, we also need to describe the embedding to the gymnasium interface.
 To achieve this, we need to implement the ``describe_embedding`` method where we specify the low bound and the high bound
-for each component of the embedding vector and return them as a ``gym.Space`` object.
+for each component of the embedding vector and return them as a ``gymnasium.Space`` object.
 
 Defining rewards
 ^^^^^^^^^^^^^^^^
@@ -108,7 +108,7 @@ Our player will play the ``gen8randombattle`` format. We can therefore inherit f
 Instantiating and testing a player
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Now that our custom class is defined, we can instantiate our RL player and test if it's compliant with the OpenAI gym API.
+Now that our custom class is defined, we can instantiate our RL player and test if it's compliant with the Gymnasium API.
 
 .. code-block:: python
 
@@ -340,7 +340,7 @@ To use the ``cross_evaluate`` method, the strategy is the same to the one used f
 Final result
 ************
 
-Running the `whole file <https://github.com/hsahovic/poke-env/blob/master/examples/rl_with_new_open_ai_gym_wrapper.py>`__ should take a couple of minutes and print something similar to this:
+Running the `whole file <https://github.com/hsahovic/poke-env/blob/master/examples/rl_with_gymnasium_wrapper.py>`__ should take a couple of minutes and print something similar to this:
 
 .. code-block:: console
 

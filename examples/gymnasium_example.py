@@ -7,13 +7,13 @@ from poke_env import LocalhostServerConfiguration
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.player import (
     Gen8EnvSinglePlayer,
+    GymnasiumEnv,
     ObservationType,
-    OpenAIGymEnv,
     RandomPlayer,
 )
 
 
-class TestEnv(OpenAIGymEnv):
+class TestEnv(GymnasiumEnv):
     def __init__(self, **kwargs):
         self.opponent = RandomPlayer(
             battle_format="gen8randombattle",
@@ -66,14 +66,14 @@ class Gen8(Gen8EnvSinglePlayer):
         return Box(np.array([0, 0]), np.array([6, 6]), dtype=int)
 
 
-def openai_api():
-    gym_env = TestEnv(
+def gymnasium_api():
+    gymnasium_env = TestEnv(
         battle_format="gen8randombattle",
         server_configuration=LocalhostServerConfiguration,
         start_challenging=True,
     )
-    check_env(gym_env)
-    gym_env.close()
+    check_env(gymnasium_env)
+    gymnasium_env.close()
 
 
 def env_player():
@@ -81,16 +81,16 @@ def env_player():
         battle_format="gen8randombattle",
         server_configuration=LocalhostServerConfiguration,
     )
-    gym_env = Gen8(
+    gymnasium_env = Gen8(
         battle_format="gen8randombattle",
         server_configuration=LocalhostServerConfiguration,
         start_challenging=True,
         opponent=opponent,
     )
-    check_env(gym_env)
-    gym_env.close()
+    check_env(gymnasium_env)
+    gymnasium_env.close()
 
 
 if __name__ == "__main__":
-    openai_api()
+    gymnasium_api()
     env_player()

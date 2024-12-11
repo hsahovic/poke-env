@@ -6,7 +6,7 @@ Poke-env: A Python Interface for Training Reinforcement Learning Pokémon Bots
 
 Poke-env provides an environment for engaging in `Pokémon Showdown <https://pokemonshowdown.com/>`__ battles with a focus on reinforcement learning. 
 
-It boasts a straightforward API for handling Pokémon, Battles, Moves, and other battle-centric objects, alongside an `OpenAI Gym <https://gym.openai.com/>`__ interface for training agents.
+It boasts a straightforward API for handling Pokémon, Battles, Moves, and other battle-centric objects, alongside a `Farama Gymnasium <https://gymnasium.farama.org/>`__ interface for training agents.
 
 .. attention:: While poke-env aims to support all Pokémon generations, it was primarily developed with the latest generations in mind. If you discover any missing or incorrect functionalities for earlier generations, please `open an issue <https://github.com/hsahovic/poke-env/issues>`__ to help improve the library.
 
