@@ -119,6 +119,7 @@ class OpenAIGymEnv(
         server_configuration: Optional[
             ServerConfiguration
         ] = LocalhostServerConfiguration,
+        accept_open_team_sheet: Optional[bool] = False,
         start_timer_on_battle_start: bool = False,
         start_listening: bool = True,
         ping_interval: Optional[float] = 20.0,
@@ -149,6 +150,8 @@ class OpenAIGymEnv(
         :param start_listening: Whether to start listening to the server. Defaults to
             True.
         :type start_listening: bool
+        :param accept_open_team_sheet: Whether to automatically start the battle with
+            open team sheets on. Defaults to False.
         :param start_timer_on_battle_start: Whether to automatically start the battle
             timer on battle start. Defaults to False.
         :type start_timer_on_battle_start: bool
@@ -179,6 +182,7 @@ class OpenAIGymEnv(
             accept_open_team_sheet=accept_open_team_sheet,
             save_replays=save_replays,
             server_configuration=server_configuration,
+            accept_open_team_sheet=accept_open_team_sheet,
             start_timer_on_battle_start=start_timer_on_battle_start,
             start_listening=start_listening,
             ping_interval=ping_interval,
