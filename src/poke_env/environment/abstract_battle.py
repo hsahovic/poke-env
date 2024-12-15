@@ -1003,7 +1003,11 @@ class AbstractBattle(ABC):
                 to_id_str(name): Move(to_id_str(name), self.gen)
                 for name in pokemon_msg[3].split(",")
             }
-            pokemon._gender = PokemonGender.from_request_details(pokemon_msg[6] or "N")
+            pokemon._gender = (
+                PokemonGender.from_request_details(pokemon_msg[6])
+                if pokemon_msg[6]
+                else PokemonGender.NEUTRAL
+            )
             pokemon._level = int(pokemon_msg[9])
             pokemon._terastallized_type = PokemonType.from_name(
                 pokemon_msg[10].split(",")[-1]
