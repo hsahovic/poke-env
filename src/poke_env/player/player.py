@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 from asyncio import Condition, Event, Queue, Semaphore
 from logging import Logger
 from time import perf_counter
-from typing import Any, Awaitable, Dict, List, Optional, Union
+from typing import Any, Awaitable, Dict, List, Optional, Tuple, Union
 
 import orjson
 
@@ -691,6 +691,31 @@ class Player(ABC):
             n_games,
             perf_counter() - start_time,
         )
+
+    async def battle_against_multi(
+        self, opponents: List["Player"], n_battles: int = 1
+    ) -> Dict[str, Tuple[float, float]]:
+        """Make the player play n_battles against opponents.
+
+        :param opponents: The list of opponents to play against.
+        :type opponents: List[Player]
+        :param n_battles: The number of games to play. Defaults to 1.
+        :type n_battles: int
+        """
+        return await handle_threaded_coroutines(
+            self._battle_against_multi(opponents, n_battles)
+        )
+
+    async def _battle_against_multi(
+        self, opponents: List["Player"], n_battles: int
+    ) -> Dict[str, Tuple[float, float]]:
+        results: Dict[str, Tuple[float, float]] = {}
+        for opponent in opponents:
+            await self.battle_against(opponent, n_battles)
+            results[opponent.username] = (self.win_rate, opponent.win_rate)
+            self.reset_battles()
+            opponent.reset_battles()
+        return results
 
     async def battle_against(self, opponent: "Player", n_battles: int = 1):
         """Make the player play n_battles against opponent.
