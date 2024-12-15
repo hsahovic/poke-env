@@ -65,12 +65,12 @@ def test_doubles_max_damage_player():
     # forced switch
     battle._force_switch = [True, False]
     assert player.choose_move(battle).message in [
-        "/choose switch ponyta, default",
+        "/choose switch ponyta, pass",
     ]
 
     battle._force_switch = [False, True]
     assert player.choose_move(battle).message in [
-        "/choose switch rapidash, default",
+        "/choose pass, switch rapidash",
     ]
 
     battle._force_switch = [True, True]
