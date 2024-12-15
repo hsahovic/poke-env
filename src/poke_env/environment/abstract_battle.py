@@ -229,7 +229,7 @@ class AbstractBattle(ABC):
             for i, p in enumerate(team.values())
             if p.base_species in to_id_str(details.split(",")[0])
             and not (
-                p.base_species == "mew" and to_id_str(details.split(",")[0] == "mewtwo")
+                p.base_species == "mew" and to_id_str(details.split(",")[0]) == "mewtwo"
             )
         ]
         assert len(matches) < 2
