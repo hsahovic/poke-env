@@ -7,9 +7,12 @@ from typing import Any, Dict, List, Optional, Set, Tuple, Union
 from poke_env.data import GenData, to_id_str
 from poke_env.data.replay_template import REPLAY_TEMPLATE
 from poke_env.environment.field import Field
+from poke_env.environment.move import Move
 from poke_env.environment.observation import Observation
 from poke_env.environment.observed_pokemon import ObservedPokemon
 from poke_env.environment.pokemon import Pokemon
+from poke_env.environment.pokemon_gender import PokemonGender
+from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.side_condition import STACKABLE_CONDITIONS, SideCondition
 from poke_env.environment.weather import Weather
 
@@ -215,19 +218,34 @@ class AbstractBattle(ABC):
         if identifier[3] != " ":
             identifier = identifier[:2] + identifier[3:]
 
-        if identifier in self._team:
-            return self._team[identifier]
-        elif identifier in self._opponent_team:
-            return self._opponent_team[identifier]
-
         player_role = identifier[:2]
         name = identifier[3:].strip()
         is_mine = player_role == self._player_role
+        team = self._team if is_mine or force_self_team else self._opponent_team
 
-        if is_mine or force_self_team:
-            team: Dict[str, Pokemon] = self._team
-        else:
-            team: Dict[str, Pokemon] = self._opponent_team  # type: ignore
+        # if the pokemon has a nickname, this ensures we recognize it
+        matches = [
+            i
+            for i, p in enumerate(team.values())
+            if p.base_species in to_id_str(details.split(",")[0])
+            and not (
+                p.base_species == "mew" and to_id_str(details.split(",")[0]) == "mewtwo"
+            )
+        ]
+        assert len(matches) < 2
+        if identifier not in team and matches:
+            i = matches[0]
+            items = list(team.items())
+            items[i] = (identifier, items[i][1])
+            items[i][1]._name = identifier[4:]
+            if is_mine or force_self_team:
+                self._team = dict(items)
+            else:
+                self._opponent_team = dict(items)
+        team = self._team if is_mine or force_self_team else self._opponent_team
+
+        if identifier in team:
+            return team[identifier]
 
         if self._team_size and len(team) >= self._team_size[player_role]:
             raise ValueError(
@@ -957,6 +975,46 @@ class AbstractBattle(ABC):
                 self.get_pokemon(
                     pokemon["ident"], force_self_team=True, request=pokemon
                 )
+
+    def _update_team_from_open_sheets(
+        self, message_dict: Dict[str, List[str]], role: str
+    ):
+        teampreview_team = (
+            self.teampreview_team
+            if role == self.player_role
+            else self.teampreview_opponent_team
+        )
+        team = self._team if role == self.player_role else self._opponent_team
+        for mon in teampreview_team:
+            identifier = f"{role}: {mon.base_species.capitalize()}"
+            if identifier not in team:
+                team[identifier] = Pokemon(
+                    mon._data.gen,
+                    species=mon.species,
+                    name=mon._data.pokedex[mon.species]["name"],
+                    details=mon._last_details,
+                )
+            pokemon = team[identifier]
+            pokemon_msg = [
+                msg
+                for name, msg in message_dict.items()
+                if mon.base_species in to_id_str(name)
+            ][0]
+            pokemon._item = to_id_str(pokemon_msg[1])
+            pokemon._ability = to_id_str(pokemon_msg[2])
+            pokemon._moves = {
+                to_id_str(name): Move(to_id_str(name), self.gen)
+                for name in pokemon_msg[3].split(",")
+            }
+            pokemon._gender = (
+                PokemonGender.from_request_details(pokemon_msg[6])
+                if pokemon_msg[6]
+                else PokemonGender.NEUTRAL
+            )
+            pokemon._level = int(pokemon_msg[9])
+            pokemon._terastallized_type = PokemonType.from_name(
+                pokemon_msg[10].split(",")[-1]
+            )
 
     def won_by(self, player_name: str):
         if player_name == self._player_username:
