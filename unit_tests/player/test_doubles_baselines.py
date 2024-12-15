@@ -17,11 +17,11 @@ def test_doubles_max_damage_player():
     battle._active_pokemon["p1a"] = active_pikachu
 
     # calls player.choose_random_doubles_move(battle)
-    assert player.choose_move(battle).message == "/choose default, default"
+    assert player.choose_move(battle).message == "/choose default, pass"
 
     # calls player.choose_random_doubles_move(battle)
     battle._available_switches[0].append(Pokemon(species="ponyta", gen=8))
-    assert player.choose_move(battle).message == "/choose switch ponyta, default"
+    assert player.choose_move(battle).message == "/choose switch ponyta, pass"
 
     active_raichu = Pokemon(species="raichu", gen=8)
     active_raichu.switch_in()
@@ -65,12 +65,12 @@ def test_doubles_max_damage_player():
     # forced switch
     battle._force_switch = [True, False]
     assert player.choose_move(battle).message in [
-        "/choose switch ponyta, default",
+        "/choose switch ponyta, pass",
     ]
 
     battle._force_switch = [False, True]
     assert player.choose_move(battle).message in [
-        "/choose switch rapidash, default",
+        "/choose pass, switch rapidash",
     ]
 
     battle._force_switch = [True, True]
