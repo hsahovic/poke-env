@@ -35,11 +35,11 @@ def test_double_orders():
         DoubleBattleOrder(mon, move).message
         == "/choose switch lugia, move selfdestruct 2"
     )
-    assert DoubleBattleOrder(mon).message == "/choose switch lugia, default"
+    assert DoubleBattleOrder(mon).message == "/choose switch lugia, pass"
     assert (
-        DoubleBattleOrder(None, move).message == "/choose move selfdestruct 2, default"
+        DoubleBattleOrder(None, move).message == "/choose pass, move selfdestruct 2"
     )
-    assert DoubleBattleOrder().message == "/choose default"
+    assert DoubleBattleOrder().message == "/choose pass, pass"
 
     orders = [move, mon]
 
@@ -53,14 +53,14 @@ def test_double_orders():
         "/choose switch lugia, move selfdestruct 2",
     }
     assert first == {
-        "/choose move selfdestruct 2, default",
-        "/choose switch lugia, default",
+        "/choose move selfdestruct 2, pass",
+        "/choose switch lugia, pass",
     }
     assert second == {
-        "/choose move selfdestruct 2, default",
-        "/choose switch lugia, default",
+        "/choose pass, move selfdestruct 2",
+        "/choose pass, switch lugia",
     }
-    assert none == {"/choose default"}
+    assert none == {"/choose pass, pass"}
 
 
 def test_forfeit_order():
