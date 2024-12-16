@@ -6,16 +6,11 @@ from io import StringIO
 from typing import Union
 
 from gymnasium import Space
-from pettingzoo.utils.env import ObsType, ActionType
+from pettingzoo.utils.env import ActionType, ObsType
 
 from poke_env.environment import AbstractBattle, Battle, Pokemon
-from poke_env.player import (
-    BattleOrder,
-    ForfeitBattleOrder,
-    OpenAIGymEnv,
-    Player,
-)
-from poke_env.player.openai_api import _EnvPlayer, _AsyncQueue
+from poke_env.player import BattleOrder, ForfeitBattleOrder, OpenAIGymEnv, Player
+from poke_env.player.openai_api import _AsyncQueue, _EnvPlayer
 
 
 class DummyEnv(OpenAIGymEnv[list, ActionType]):
@@ -23,9 +18,7 @@ class DummyEnv(OpenAIGymEnv[list, ActionType]):
         self.opponent = None
         super().__init__(*args, **kwargs)
 
-    def calc_reward(
-        self, battle: AbstractBattle
-    ) -> float:
+    def calc_reward(self, battle: AbstractBattle) -> float:
         return 69.42
 
     def action_to_move(self, action: int, battle: AbstractBattle) -> BattleOrder:
