@@ -697,12 +697,12 @@ class Player(ABC):
     async def battle_against(
         self, *opponents: Player, n_battles: int = 1
     ) -> Dict[str, Tuple[float, float]]:
-        """Make the player play n_battles against opponent.
+        """Make the player play n_battles against the given opponents.
 
-        This function is a wrapper around send_challenges and accept challenges.
+        This function is a wrapper around send_challenges and accept_challenges.
 
-        :param opponent: The opponent to play against.
-        :type opponent: Player
+        :param opponents: The opponents to play against.
+        :type opponents: Player
         :param n_battles: The number of games to play. Defaults to 1.
         :type n_battles: int
         """
