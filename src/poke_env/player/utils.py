@@ -7,7 +7,6 @@ from concurrent.futures import Future
 from typing import Dict, List, Optional, Tuple
 
 from poke_env.concurrency import POKE_LOOP
-from poke_env.data import to_id_str
 from poke_env.player.baselines import MaxBasePowerPlayer, SimpleHeuristicsPlayer
 from poke_env.player.player import Player
 from poke_env.player.random_player import RandomPlayer
@@ -31,29 +30,17 @@ async def cross_evaluate(
     players: List[Player], n_challenges: int
 ) -> Dict[str, Dict[str, Optional[float]]]:
     results: Dict[str, Dict[str, Optional[float]]] = {
-        p_1.username: {p_2.username: None for p_2 in players} for p_1 in players
+        p1.username: {p2.username: None for p2 in players} for p1 in players
     }
-    for i, p_1 in enumerate(players):
-        for j, p_2 in enumerate(players):
+    for i, p1 in enumerate(players):
+        for j, p2 in enumerate(players):
             if j <= i:
                 continue
-            await asyncio.gather(
-                p_1.send_challenges(
-                    opponent=to_id_str(p_2.username),
-                    n_challenges=n_challenges,
-                    to_wait=p_2.ps_client.logged_in,
-                ),
-                p_2.accept_challenges(
-                    opponent=to_id_str(p_1.username),
-                    n_challenges=n_challenges,
-                    packed_team=p_2.next_team,
-                ),
-            )
-            results[p_1.username][p_2.username] = p_1.win_rate
-            results[p_2.username][p_1.username] = p_2.win_rate
-
-            p_1.reset_battles()
-            p_2.reset_battles()
+            await p1.battle_against(p2, n_battles=n_challenges)
+            results[p1.username][p2.username] = p1.win_rate
+            results[p2.username][p1.username] = p2.win_rate
+            p1.reset_battles()
+            p2.reset_battles()
     return results
 
 
@@ -170,7 +157,7 @@ async def evaluate_player(
     baselines = [p(max_concurrent_battles=n_battles) for p in _EVALUATION_RATINGS]  # type: ignore
 
     for p in baselines:
-        await p.battle_against(player, n_placement_battles)
+        await p.battle_against(player, n_battles=n_placement_battles)
 
     # Select the best opponent for evaluation
     best_opp = min(
@@ -179,7 +166,7 @@ async def evaluate_player(
 
     # Performing the main evaluation
     remaining_battles = n_battles - len(_EVALUATION_RATINGS) * n_placement_battles
-    await best_opp.battle_against(player, remaining_battles)
+    await best_opp.battle_against(player, n_battles=remaining_battles)
 
     return _estimate_strength_from_results(
         best_opp.n_finished_battles,
