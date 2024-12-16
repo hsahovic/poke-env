@@ -6,7 +6,7 @@ from io import StringIO
 from typing import Union
 
 from gymnasium import Space
-from pettingzoo.utils.env import ActionType, ObsType
+from pettingzoo.utils.env import ActionType
 
 from poke_env.environment import AbstractBattle, Battle, Pokemon
 from poke_env.player import BattleOrder, ForfeitBattleOrder, OpenAIGymEnv, Player
