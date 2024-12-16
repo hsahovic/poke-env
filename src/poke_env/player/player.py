@@ -711,10 +711,7 @@ class Player(ABC):
         )
         return result
 
-    async def _battle_against(
-        self, *opponents: Player, n_battles: int
-    ) -> Dict[str, Tuple[float, float]]:
-        results: Dict[str, Tuple[float, float]] = {}
+    async def _battle_against(self, *opponents: Player, n_battles: int):
         for opponent in opponents:
             await asyncio.gather(
                 self.send_challenges(
@@ -726,10 +723,6 @@ class Player(ABC):
                     to_id_str(self.username), n_battles, opponent.next_team
                 ),
             )
-            results[opponent.username] = (self.win_rate, opponent.win_rate)
-            self.reset_battles()
-            opponent.reset_battles()
-        return results
 
     async def send_challenges(
         self, opponent: str, n_challenges: int, to_wait: Optional[Event] = None

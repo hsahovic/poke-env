@@ -7,6 +7,7 @@ from concurrent.futures import Future
 from typing import Dict, List, Optional, Tuple
 
 from poke_env.concurrency import POKE_LOOP
+from poke_env.data import to_id_str
 from poke_env.player.baselines import MaxBasePowerPlayer, SimpleHeuristicsPlayer
 from poke_env.player.player import Player
 from poke_env.player.random_player import RandomPlayer
@@ -33,11 +34,14 @@ async def cross_evaluate(
         p1.username: {p2.username: None for p2 in players} for p1 in players
     }
     for i, p1 in enumerate(players):
-        results[p1.username][p1.username] = None
-        r = await p1.battle_against(*players[i + 1 :], n_battles=n_challenges)
-        for p2, (win_rate, lose_rate) in r.items():
-            results[p1.username][p2] = win_rate
-            results[p2][p1.username] = lose_rate
+        for j, p2 in enumerate(players):
+            if j <= i:
+                continue
+            await p1.battle_against(p2, n_battles=n_challenges)
+            results[p1.username][p2.username] = p1.win_rate
+            results[p2.username][p1.username] = p2.win_rate
+            p1.reset_battles()
+            p2.reset_battles()
     return results
 
 
