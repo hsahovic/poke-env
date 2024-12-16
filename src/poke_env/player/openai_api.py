@@ -5,15 +5,14 @@ For a black-box implementation consider using the module env_player.
 from __future__ import annotations
 
 import asyncio
-import copy
 import random
 import time
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from logging import Logger
-from typing import Any, Awaitable, Callable, Dict, Generic, List, Optional, Tuple, Union
+from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple, Union
 
-from gymnasium.core import ActType, Env, ObsType
-from gymnasium.spaces import Discrete, Space
+from gymnasium.core import ObsType
+from gymnasium.spaces import Space
 from pettingzoo.utils.env import ActionType, ParallelEnv
 
 from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
