@@ -1,36 +1,37 @@
+from __future__ import annotations
+
 import asyncio
 import sys
 from io import StringIO
 from typing import Union
 
 from gymnasium import Space
+from pettingzoo.utils.env import ObsType, ActionType
 
 from poke_env.environment import AbstractBattle, Battle, Pokemon
 from poke_env.player import (
-    ActType,
     BattleOrder,
     ForfeitBattleOrder,
-    ObsType,
     OpenAIGymEnv,
     Player,
 )
-from poke_env.player.openai_api import _AsyncPlayer, _AsyncQueue
+from poke_env.player.openai_api import _EnvPlayer, _AsyncQueue
 
 
-class DummyEnv(OpenAIGymEnv[ObsType, ActType]):
+class DummyEnv(OpenAIGymEnv[list, ActionType]):
     def __init__(self, *args, **kwargs):
         self.opponent = None
         super().__init__(*args, **kwargs)
 
     def calc_reward(
-        self, last_battle: AbstractBattle, current_battle: AbstractBattle
+        self, battle: AbstractBattle
     ) -> float:
         return 69.42
 
     def action_to_move(self, action: int, battle: AbstractBattle) -> BattleOrder:
         return ForfeitBattleOrder()
 
-    def embed_battle(self, battle: AbstractBattle) -> ObsType:
+    def embed_battle(self, battle: AbstractBattle) -> list[int]:
         return [0, 1, 2]
 
     def describe_embedding(self) -> Space:
@@ -43,7 +44,10 @@ class DummyEnv(OpenAIGymEnv[ObsType, ActType]):
         return self.opponent
 
 
-class UserFuncs:
+class MockPlayer(_EnvPlayer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
     def embed_battle(self, battle):
         return "battle"
 
@@ -73,12 +77,12 @@ def test_queue():
 
 
 def test_async_player():
-    player = _AsyncPlayer(UserFuncs(), start_listening=False, username="usr")
+    player = MockPlayer(start_listening=False, username="usr")
     battle = Battle("bat1", player.username, player.logger, gen=8)
-    player.actions.put(-1)
-    order = asyncio.get_event_loop().run_until_complete(player._env_move(battle))
+    player.order_queue.put(ForfeitBattleOrder())
+    order = asyncio.get_event_loop().run_until_complete(player.choose_move(battle))
     assert isinstance(order, ForfeitBattleOrder)
-    assert player.observations.get() == "battle"
+    assert player.embed_battle(player.battle_queue.get()) == "battle"
 
 
 def render(battle):

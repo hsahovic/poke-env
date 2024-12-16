@@ -19,7 +19,7 @@ from poke_env.player import (
     Gen9EnvSinglePlayer,
     RandomPlayer,
 )
-from poke_env.player.openai_api import _AsyncPlayer
+from poke_env.player.openai_api import _EnvPlayer
 
 account_configuration = AccountConfiguration("username", "password")
 server_configuration = ServerConfiguration("server.url", "auth.url")
@@ -49,9 +49,11 @@ def test_init():
         start_listening=False,
         battle_format="gen7randombattles",
     )
-    player = gym_env.agent
+    player = gym_env.agent1
+    opponent = gym_env.agent2
     assert isinstance(gym_env, CustomEnvPlayer)
-    assert isinstance(player, _AsyncPlayer)
+    assert isinstance(player, _EnvPlayer)
+    assert isinstance(opponent, _EnvPlayer)
 
 
 class AsyncMock(unittest.mock.MagicMock):
