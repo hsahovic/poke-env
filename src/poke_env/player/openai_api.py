@@ -14,6 +14,7 @@ from typing import Any, Awaitable, Callable, Dict, Generic, List, Optional, Tupl
 
 from gymnasium.core import ActType, Env, ObsType
 from gymnasium.spaces import Discrete, Space
+from pettingzoo.utils.env import ParallelEnv, ActionType
 
 from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
 from poke_env.environment.abstract_battle import AbstractBattle
@@ -56,48 +57,29 @@ class _AsyncQueue:
         await self.queue.join()
 
 
-class _AsyncPlayer(Generic[ObsType, ActType], Player):
-    actions: _AsyncQueue
-    observations: _AsyncQueue
+class _EnvPlayer(Player):
+    battle_queue: _AsyncQueue
+    order_queue: _AsyncQueue
+    current_battle: AbstractBattle | None = None
 
-    def __init__(
-        self,
-        user_funcs: OpenAIGymEnv[ObsType, ActType],
-        username: str,
-        **kwargs: Any,
-    ):
-        self.__class__.__name__ = username
-        super().__init__(**kwargs)
-        self.__class__.__name__ = "_AsyncPlayer"
-        self.observations = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
-        self.actions = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
-        self.current_battle: Optional[AbstractBattle] = None
-        self._user_funcs = user_funcs
+    def __init__(self, *args, **kwargs: Any):
+        super().__init__(*args, **kwargs)
+        self.battle_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
+        self.order_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
 
     def choose_move(self, battle: AbstractBattle) -> Awaitable[BattleOrder]:
-        return self._env_move(battle)
+        self.current_battle = battle
+        return self._choose_move(battle)
 
-    async def _env_move(self, battle: AbstractBattle) -> BattleOrder:
-        if not self.current_battle or self.current_battle.finished:
-            self.current_battle = battle
-        if not self.current_battle == battle:
-            raise RuntimeError("Using different battles for queues")
-        battle_to_send = self._user_funcs.embed_battle(battle)
-        await self.observations.async_put(battle_to_send)
-        action = await self.actions.async_get()
-        if action == -1:
-            return ForfeitBattleOrder()
-        return self._user_funcs.action_to_move(action, battle)
+    async def _choose_move(self, battle: AbstractBattle) -> BattleOrder:
+        await self.battle_queue.async_put(battle)
+        return await self.order_queue.async_get()
 
     def _battle_finished_callback(self, battle: AbstractBattle):
-        to_put = self._user_funcs.embed_battle(battle)
-        asyncio.run_coroutine_threadsafe(self.observations.async_put(to_put), POKE_LOOP)
+        asyncio.run_coroutine_threadsafe(self.battle_queue.async_put(battle), POKE_LOOP)
 
 
-class OpenAIGymEnv(
-    Env[ObsType, ActType],
-    ABC,
-):
+class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
     """
     Base class implementing the OpenAI Gym API on the main thread.
     """
@@ -170,8 +152,7 @@ class OpenAIGymEnv(
             leave it inactive.
         :type start_challenging: bool
         """
-        self.agent = _AsyncPlayer(
-            self,
+        self.agent1 = _EnvPlayer(
             username=self.__class__.__name__,  # type: ignore
             account_configuration=account_configuration,
             avatar=avatar,
@@ -187,12 +168,23 @@ class OpenAIGymEnv(
             ping_timeout=ping_timeout,
             team=team,
         )
-        self._actions = self.agent.actions
-        self._observations = self.agent.observations
-        self.action_space = Discrete(self.action_space_size())  # type: ignore
-        self.observation_space = self.describe_embedding()
-        self.current_battle: Optional[AbstractBattle] = None
-        self.last_battle: Optional[AbstractBattle] = None
+        self.agent2 = _EnvPlayer(
+            username=self.__class__.__name__,  # type: ignore
+            account_configuration=account_configuration,
+            avatar=avatar,
+            battle_format=battle_format,
+            log_level=log_level,
+            max_concurrent_battles=1,
+            save_replays=save_replays,
+            server_configuration=server_configuration,
+            accept_open_team_sheet=accept_open_team_sheet,
+            start_timer_on_battle_start=start_timer_on_battle_start,
+            start_listening=start_listening,
+            ping_interval=ping_interval,
+            ping_timeout=ping_timeout,
+            team=team,
+        )
+        self.agents = [self.agent1.username, self.agent2.username]
         self._keep_challenging: bool = False
         self._challenge_task = None
         self._seed_initialized: bool = False
@@ -203,9 +195,7 @@ class OpenAIGymEnv(
             )
 
     @abstractmethod
-    def calc_reward(
-        self, last_battle: AbstractBattle, current_battle: AbstractBattle
-    ) -> float:
+    def calc_reward(self, battle: AbstractBattle) -> float:
         """
         Returns the reward for the current battle state. The battle state in the previous
         turn is given as well and can be used for comparisons.
@@ -221,7 +211,7 @@ class OpenAIGymEnv(
         pass
 
     @abstractmethod
-    def action_to_move(self, action: int, battle: AbstractBattle) -> BattleOrder:
+    def action_to_move(self, action: ActionType, battle: AbstractBattle) -> BattleOrder:
         """
         Returns the BattleOrder relative to the given action.
 
@@ -293,37 +283,35 @@ class OpenAIGymEnv(
 
     def reset(
         self,
-        *,
         seed: Optional[int] = None,
         options: Optional[Dict[str, Any]] = None,
-    ) -> Tuple[ObsType, Dict[str, Any]]:
+    ) -> Tuple[Dict[str, ObsType], Dict[str, Dict[str, Any]]]:
+        # clean up hanging battle if it exists
+        if self.agent1.current_battle and not self.agent1.current_battle.finished:
+            self.agent1.order_queue.put(ForfeitBattleOrder())
+            self.agent1.battle_queue.get()
+            self.agent2.battle_queue.get()
+        elif self.agent2.current_battle and not self.agent2.current_battle.finished:
+            self.agent2.order_queue.put(ForfeitBattleOrder())
+            self.agent1.battle_queue.get()
+            self.agent2.battle_queue.get()
+        # seed selection
         if seed is not None:
             super().reset(seed=seed)  # type: ignore
             self._seed_initialized = True
         elif not self._seed_initialized:
             super().reset(seed=int(time.time()))  # type: ignore
             self._seed_initialized = True
-        if not self.agent.current_battle:
-            count = self._INIT_RETRIES
-            while not self.agent.current_battle:
-                if count == 0:
-                    raise RuntimeError("Agent is not challenging")
-                count -= 1
-                time.sleep(self._TIME_BETWEEN_RETRIES)
-        if self.current_battle and not self.current_battle.finished:
-            if self.current_battle == self.agent.current_battle:
-                self._actions.put(-1)
-                self._observations.get()
-            else:
-                raise RuntimeError(
-                    "Environment and agent aren't synchronized. Try to restart"
-                )
-        while self.current_battle == self.agent.current_battle:
-            time.sleep(0.01)
-        self.current_battle = self.agent.current_battle
-        self.current_battle.logger = None
-        self.last_battle = self.current_battle
-        return self._observations.get(), self.get_additional_info()
+        # wait for agent1 and agent2 to spin up
+        count = self._INIT_RETRIES
+        while not (self.agent1.current_battle and self.agent2.current_battle):
+            if count == 0:
+                raise RuntimeError("Agent is not challenging")
+            count -= 1
+            time.sleep(self._TIME_BETWEEN_RETRIES)
+        obs1 = self.embed_battle(self.agent1.battle_queue.get())
+        obs2 = self.embed_battle(self.agent2.battle_queue.get())
+        return {self.agents[0]: obs1, self.agents[1]: obs2}, self.get_additional_info()
 
     def get_additional_info(self) -> Dict[str, Any]:
         """
@@ -335,46 +323,56 @@ class OpenAIGymEnv(
         """
         return {}
 
-    def step(
-        self, action: ActType
-    ) -> Tuple[ObsType, float, bool, bool, Dict[str, Any]]:
-        """
-        Execute the specified action in the environment.
+    def step(self, actions: Dict[str, ActionType]) -> Tuple[
+        Dict[str, ObsType],
+        Dict[str, float],
+        Dict[str, bool],
+        Dict[str, bool],
+        Dict[str, dict],
+    ]:
+        order1 = self.action_to_order(actions[self.agents[0]])
+        order2 = self.action_to_order(actions[self.agents[1]])
+        self.agent1.order_queue.put(order1)
+        self.agent2.order_queue.put(order2)
+        battle1 = self.agent1.battle_queue.get()
+        battle2 = self.agent2.battle_queue.get()
+        obs = {
+            self.agents[0]: self.embed_battle(battle1),
+            self.agents[1]: self.embed_battle(battle2),
+        }
+        reward = {
+            self.agents[0]: self.calc_reward(battle1),
+            self.agents[1]: self.calc_reward(battle2),
+        }
+        term1, trunc1 = self.get_term_trunc(battle1)
+        term2, trunc2 = self.get_term_trunc(battle2)
+        terminated = {
+            self.agents[0]: term1,
+            self.agents[1]: term2,
+        }
+        truncated = {
+            self.agents[0]: trunc1,
+            self.agents[1]: trunc2,
+        }
+        return obs, reward, terminated, truncated, self.get_additional_info()
 
-        :param ActType action: The action to be executed.
-        :return: A tuple containing the new observation, reward, termination flag, truncation flag, and info dictionary.
-        :rtype: Tuple[ObsType, float, bool, bool, Dict[str, Any]]
-        """
-        if not self.current_battle:
-            obs, info = self.reset()
-            return obs, 0.0, False, False, info
-        if self.current_battle.finished:
-            raise RuntimeError("Battle is already finished, call reset")
-        battle = copy.copy(self.current_battle)
-        battle.logger = None
-        self.last_battle = battle
-        self._actions.put(action)
-        observation = self._observations.get()
-        reward = self.calc_reward(self.last_battle, self.current_battle)
+    @staticmethod
+    def get_term_trunc(battle: AbstractBattle) -> tuple[bool, bool]:
         terminated = False
         truncated = False
-        if self.current_battle.finished:
-            size = self.current_battle.team_size
+        if battle.finished:
+            size = battle.team_size
             remaining_mons = size - len(
-                [mon for mon in self.current_battle.team.values() if mon.fainted]
+                [mon for mon in battle.team.values() if mon.fainted]
             )
             remaining_opponent_mons = size - len(
-                [
-                    mon
-                    for mon in self.current_battle.opponent_team.values()
-                    if mon.fainted
-                ]
+                [mon for mon in battle.opponent_team.values() if mon.fainted]
             )
             if (remaining_mons == 0) != (remaining_opponent_mons == 0):
                 terminated = True
             else:
                 truncated = True
-        return observation, reward, terminated, truncated, self.get_additional_info()
+        return terminated, truncated
 
     def render(self, mode: str = "human"):
         if self.current_battle is not None:
@@ -461,8 +459,6 @@ class OpenAIGymEnv(
                     await self.agent.battle_against(opponent, 1)
                 else:
                     await self.agent.send_challenges(opponent, 1)
-                if callback and self.current_battle is not None:
-                    callback(copy.deepcopy(self.current_battle))
         elif n_challenges > 0:
             for _ in range(n_challenges):
                 opponent = self._get_opponent()
@@ -470,8 +466,6 @@ class OpenAIGymEnv(
                     await self.agent.battle_against(opponent, 1)
                 else:
                     await self.agent.send_challenges(opponent, 1)
-                if callback and self.current_battle is not None:
-                    callback(copy.deepcopy(self.current_battle))
         else:
             raise ValueError(f"Number of challenges must be > 0. Got {n_challenges}")
 
@@ -515,13 +509,9 @@ class OpenAIGymEnv(
                 )
             for _ in range(n_challenges):
                 await self.agent.ladder(1)
-                if callback and self.current_battle is not None:
-                    callback(self.current_battle)
         else:
             while self._keep_challenging:
                 await self.agent.ladder(1)
-                if callback and self.current_battle is not None:
-                    callback(self.current_battle)
 
     def start_laddering(
         self,
