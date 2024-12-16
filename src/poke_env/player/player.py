@@ -694,9 +694,7 @@ class Player(ABC):
             perf_counter() - start_time,
         )
 
-    async def battle_against(
-        self, *opponents: Player, n_battles: int = 1
-    ) -> Dict[str, Tuple[float, float]]:
+    async def battle_against(self, *opponents: Player, n_battles: int = 1):
         """Make the player play n_battles against the given opponents.
 
         This function is a wrapper around send_challenges and accept_challenges.
@@ -706,10 +704,9 @@ class Player(ABC):
         :param n_battles: The number of games to play. Defaults to 1.
         :type n_battles: int
         """
-        result = await handle_threaded_coroutines(
+        await handle_threaded_coroutines(
             self._battle_against(*opponents, n_battles=n_battles)
         )
-        return result
 
     async def _battle_against(self, *opponents: Player, n_battles: int):
         for opponent in opponents:
