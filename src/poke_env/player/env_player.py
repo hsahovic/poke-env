@@ -4,18 +4,19 @@
 from abc import ABC
 from threading import Lock
 from typing import List, Optional, Union
+from pettingzoo.utils.env import ActionType, ObsType
 from weakref import WeakKeyDictionary
 
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.player.battle_order import BattleOrder, ForfeitBattleOrder
-from poke_env.player.openai_api import ActType, ObsType, OpenAIGymEnv
+from poke_env.player.openai_api import OpenAIGymEnv
 from poke_env.player.player import Player
 from poke_env.ps_client.account_configuration import AccountConfiguration
 from poke_env.ps_client.server_configuration import ServerConfiguration
 from poke_env.teambuilder.teambuilder import Teambuilder
 
 
-class EnvPlayer(OpenAIGymEnv[ObsType, ActType], ABC):
+class EnvPlayer(OpenAIGymEnv[ObsType, ActionType], ABC):
     """Player exposing the Open AI Gym Env API."""
 
     _ACTION_SPACE: List[int] = []
@@ -241,7 +242,7 @@ class EnvPlayer(OpenAIGymEnv[ObsType, ActType], ABC):
             self.start_challenging()
 
 
-class Gen4EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
+class Gen4EnvSinglePlayer(EnvPlayer[ObsType, ActionType], ABC):
     _ACTION_SPACE = list(range(4 + 6))
     _DEFAULT_BATTLE_FORMAT = "gen4randombattle"
 
@@ -280,11 +281,11 @@ class Gen4EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
             return self.agent.choose_random_move(battle)
 
 
-class Gen5EnvSinglePlayer(Gen4EnvSinglePlayer[ObsType, ActType], ABC):
+class Gen5EnvSinglePlayer(Gen4EnvSinglePlayer[ObsType, ActionType], ABC):
     _DEFAULT_BATTLE_FORMAT = "gen5randombattle"
 
 
-class Gen6EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
+class Gen6EnvSinglePlayer(EnvPlayer[ObsType, ActionType], ABC):
     _ACTION_SPACE = list(range(2 * 4 + 6))
     _DEFAULT_BATTLE_FORMAT = "gen6randombattle"
 
@@ -334,7 +335,7 @@ class Gen6EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
             return self.agent.choose_random_move(battle)
 
 
-class Gen7EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
+class Gen7EnvSinglePlayer(EnvPlayer[ObsType, ActionType], ABC):
     _ACTION_SPACE = list(range(3 * 4 + 6))
     _DEFAULT_BATTLE_FORMAT = "gen7randombattle"
 
@@ -396,7 +397,7 @@ class Gen7EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
             return self.agent.choose_random_move(battle)
 
 
-class Gen8EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
+class Gen8EnvSinglePlayer(EnvPlayer[ObsType, ActionType], ABC):
     _ACTION_SPACE = list(range(4 * 4 + 6))
     _DEFAULT_BATTLE_FORMAT = "gen8randombattle"
 
@@ -472,7 +473,7 @@ class Gen8EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
             return self.agent.choose_random_move(battle)
 
 
-class Gen9EnvSinglePlayer(EnvPlayer[ObsType, ActType], ABC):
+class Gen9EnvSinglePlayer(EnvPlayer[ObsType, ActionType], ABC):
     _ACTION_SPACE = list(range(5 * 4 + 6))
     _DEFAULT_BATTLE_FORMAT = "gen9randombattle"
 
