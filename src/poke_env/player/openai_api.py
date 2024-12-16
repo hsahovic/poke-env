@@ -14,7 +14,7 @@ from typing import Any, Awaitable, Callable, Dict, Generic, List, Optional, Tupl
 
 from gymnasium.core import ActType, Env, ObsType
 from gymnasium.spaces import Discrete, Space
-from pettingzoo.utils.env import ParallelEnv, ActionType
+from pettingzoo.utils.env import ActionType, ParallelEnv
 
 from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
 from poke_env.environment.abstract_battle import AbstractBattle
