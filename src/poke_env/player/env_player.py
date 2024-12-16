@@ -4,8 +4,9 @@
 from abc import ABC
 from threading import Lock
 from typing import List, Optional, Union
-from pettingzoo.utils.env import ActionType, ObsType
 from weakref import WeakKeyDictionary
+
+from pettingzoo.utils.env import ActionType, ObsType
 
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.player.battle_order import BattleOrder, ForfeitBattleOrder
