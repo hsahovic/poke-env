@@ -716,9 +716,7 @@ class Player(ABC):
                     n_battles,
                     to_wait=opponent.ps_client.logged_in,
                 ),
-                opponent.accept_challenges(
-                    to_id_str(self.username), n_battles, opponent.next_team
-                ),
+                opponent.accept_challenges(to_id_str(self.username), n_battles),
             )
 
     async def send_challenges(
