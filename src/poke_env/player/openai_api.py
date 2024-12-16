@@ -184,6 +184,7 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
             team=team,
         )
         self.agents = [self.agent1.username, self.agent2.username]
+        self.current_battle: AbstractBattle | None = None
         self._keep_challenging: bool = False
         self._challenge_task = None
         self._seed_initialized: bool = False
