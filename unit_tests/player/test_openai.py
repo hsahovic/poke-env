@@ -11,7 +11,7 @@ from pettingzoo.utils.env import ActionType
 from poke_env import AccountConfiguration
 from poke_env.environment import AbstractBattle, Battle, Pokemon
 from poke_env.player import BattleOrder, ForfeitBattleOrder, Player, PokeEnv
-from poke_env.player.openai_api import _AsyncQueue, _EnvPlayer
+from poke_env.player.openai_api import _AsyncQueue, AsyncPlayer
 
 
 class DummyEnv(PokeEnv[list, ActionType]):
@@ -38,7 +38,7 @@ class DummyEnv(PokeEnv[list, ActionType]):
         return self.opponent
 
 
-class MockPlayer(_EnvPlayer):
+class MockPlayer(AsyncPlayer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

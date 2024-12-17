@@ -56,7 +56,7 @@ class _AsyncQueue:
         await self.queue.join()
 
 
-class _EnvPlayer(Player):
+class AsyncPlayer(Player):
     battle_queue: _AsyncQueue
     order_queue: _AsyncQueue
     current_battle: AbstractBattle | None = None
@@ -151,7 +151,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             leave it inactive.
         :type start_challenging: bool
         """
-        self.agent1 = _EnvPlayer(
+        self.agent1 = AsyncPlayer(
             account_configuration=acct_config1,
             avatar=avatar,
             battle_format=battle_format,
@@ -166,7 +166,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             ping_timeout=ping_timeout,
             team=team,
         )
-        self.agent2 = _EnvPlayer(
+        self.agent2 = AsyncPlayer(
             account_configuration=acct_config2,
             avatar=avatar,
             battle_format=battle_format,

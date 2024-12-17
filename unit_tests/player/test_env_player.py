@@ -17,7 +17,7 @@ from poke_env.player import (
     Gen9EnvSinglePlayer,
     PokeEnv,
 )
-from poke_env.player.openai_api import _EnvPlayer
+from poke_env.player.openai_api import AsyncPlayer
 
 acct_config1 = AccountConfiguration("username1", "password1")
 acct_config2 = AccountConfiguration("username2", "password2")
@@ -54,8 +54,8 @@ def test_init():
     player = gym_env.agent1
     opponent = gym_env.agent2
     assert isinstance(gym_env, CustomEnvPlayer)
-    assert isinstance(player, _EnvPlayer)
-    assert isinstance(opponent, _EnvPlayer)
+    assert isinstance(player, AsyncPlayer)
+    assert isinstance(opponent, AsyncPlayer)
 
 
 def test_choose_move():
