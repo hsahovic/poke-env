@@ -26,6 +26,9 @@ server_configuration = ServerConfiguration("server.url", "auth.url")
 
 
 class CustomEnvPlayer(PokeEnv):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
     def calc_reward(self, battle) -> float:
         pass
 
