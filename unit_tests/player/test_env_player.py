@@ -76,7 +76,7 @@ def test_choose_move(queue_put_mock, queue_get_mock):
         battle_format="gen7randombattles",
         start_challenging=False,
     )
-    battle = Battle("bat1", player.username, player.logger, gen=8)
+    battle = Battle("bat1", player.agent1.username, player.logger, gen=8)
     battle._available_moves = {Move("flamethrower", gen=8)}
     message = player.agent.choose_move(battle)
 
