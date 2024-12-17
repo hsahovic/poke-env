@@ -12,7 +12,7 @@ from logging import Logger
 from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple, Union
 
 from gymnasium.core import ObsType
-from gymnasium.spaces import Space
+from gymnasium.spaces import Space, Discrete
 from pettingzoo.utils.env import ActionType, ParallelEnv
 
 from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
@@ -87,6 +87,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
     _TIME_BETWEEN_RETRIES = 0.5
     _SWITCH_CHALLENGE_TASK_RETRIES = 30
     _TIME_BETWEEN_SWITCH_RETIRES = 1
+
+    _ACTION_SPACE: list[int]
 
     def __init__(
         self,
@@ -182,6 +184,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             team=team,
         )
         self.agents = [self.agent1.username, self.agent2.username]
+        self.action_spaces = {name: Discrete(self.action_space_size()) for name in self.agents}
         self.current_battle: AbstractBattle | None = None
         self._keep_challenging: bool = False
         self._challenge_task = None
@@ -247,7 +250,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         """
         pass
 
-    @abstractmethod
     def action_space_size(self) -> int:
         """
         Returns the size of the action space. Given size x, the action space goes
@@ -256,28 +258,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         :return: The action space size.
         :rtype: int
         """
-        pass
-
-    @abstractmethod
-    def get_opponent(
-        self,
-    ) -> Union[Player, str, List[Player], List[str]]:
-        """
-        Returns the opponent (or list of opponents) that will be challenged
-        on the next iteration of the challenge loop. If a list is returned,
-        a random element will be chosen at random during the challenge loop.
-
-        :return: The opponent (or list of opponents).
-        :rtype: Player or str or list(Player) or list(str)
-        """
-        pass
-
-    def _get_opponent(self) -> Union[Player, str]:
-        opponent = self.get_opponent()
-        random_opponent = (
-            random.choice(opponent) if isinstance(opponent, list) else opponent
-        )
-        return random_opponent  # type: ignore
+        return len(self._ACTION_SPACE)
 
     def reset(
         self,
