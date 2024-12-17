@@ -12,7 +12,7 @@ from logging import Logger
 from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple, Union
 
 from gymnasium.core import ObsType
-from gymnasium.spaces import Space, Discrete
+from gymnasium.spaces import Discrete, Space
 from pettingzoo.utils.env import ActionType, ParallelEnv
 
 from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
@@ -86,7 +86,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
     _INIT_RETRIES = 100
     _TIME_BETWEEN_RETRIES = 0.5
     _SWITCH_CHALLENGE_TASK_RETRIES = 30
-    _TIME_BETWEEN_SWITCH_RETIRES = 1
+    _TIME_BETWEEN_SWITCH_RETRIES = 1
 
     _ACTION_SPACE: list[int]
 
@@ -184,7 +184,9 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             team=team,
         )
         self.agents = [self.agent1.username, self.agent2.username]
-        self.action_spaces = {name: Discrete(self.action_space_size()) for name in self.agents}
+        self.action_spaces = {
+            name: Discrete(len(self._ACTION_SPACE)) for name in self.agents
+        }
         self.current_battle: AbstractBattle | None = None
         self._keep_challenging: bool = False
         self._challenge_task = None
@@ -194,6 +196,112 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             self._challenge_task = asyncio.run_coroutine_threadsafe(
                 self._challenge_loop(), POKE_LOOP
             )
+
+    ###################################################################################
+    # PettingZoo API
+    # https://pettingzoo.farama.org/api/parallel/#parallelenv
+
+    def step(self, actions: Dict[str, ActionType]) -> Tuple[
+        Dict[str, ObsType],
+        Dict[str, float],
+        Dict[str, bool],
+        Dict[str, bool],
+        Dict[str, dict],
+    ]:
+        battle1 = self.agent1.current_battle
+        battle2 = self.agent2.current_battle
+        assert battle1 is not None and battle2 is not None
+        order1 = self.action_to_move(actions[self.agents[0]], battle1)
+        order2 = self.action_to_move(actions[self.agents[1]], battle2)
+        self.agent1.order_queue.put(order1)
+        self.agent2.order_queue.put(order2)
+        battle1 = self.agent1.battle_queue.get()
+        battle2 = self.agent2.battle_queue.get()
+        obs = {
+            self.agents[0]: self.embed_battle(battle1),
+            self.agents[1]: self.embed_battle(battle2),
+        }
+        reward = {
+            self.agents[0]: self.calc_reward(battle1),
+            self.agents[1]: self.calc_reward(battle2),
+        }
+        term1, trunc1 = self.get_term_trunc(battle1)
+        term2, trunc2 = self.get_term_trunc(battle2)
+        terminated = {
+            self.agents[0]: term1,
+            self.agents[1]: term2,
+        }
+        truncated = {
+            self.agents[0]: trunc1,
+            self.agents[1]: trunc2,
+        }
+        return obs, reward, terminated, truncated, self.get_additional_info()
+
+    def reset(
+        self,
+        seed: Optional[int] = None,
+        options: Optional[Dict[str, Any]] = None,
+    ) -> Tuple[Dict[str, ObsType], Dict[str, Dict[str, Any]]]:
+        # clean up hanging battle if it exists
+        if self.agent1.current_battle and not self.agent1.current_battle.finished:
+            self.agent1.order_queue.put(ForfeitBattleOrder())
+            self.agent1.battle_queue.get()
+            self.agent2.battle_queue.get()
+        elif self.agent2.current_battle and not self.agent2.current_battle.finished:
+            self.agent2.order_queue.put(ForfeitBattleOrder())
+            self.agent1.battle_queue.get()
+            self.agent2.battle_queue.get()
+        # wait for agent1 and agent2 to spin up
+        count = self._INIT_RETRIES
+        while not (self.agent1.current_battle and self.agent2.current_battle):
+            if count == 0:
+                raise RuntimeError("Agent is not challenging")
+            count -= 1
+            time.sleep(self._TIME_BETWEEN_RETRIES)
+        # observe
+        obs1 = self.embed_battle(self.agent1.battle_queue.get())
+        obs2 = self.embed_battle(self.agent2.battle_queue.get())
+        return {self.agents[0]: obs1, self.agents[1]: obs2}, self.get_additional_info()
+
+    def render(self, mode: str = "human"):
+        if self.current_battle is not None:
+            print(
+                "  Turn %4d. | [%s][%3d/%3dhp] %10.10s - %10.10s [%3d%%hp][%s]"
+                % (
+                    self.current_battle.turn,
+                    "".join(
+                        [
+                            "⦻" if mon.fainted else "●"
+                            for mon in self.current_battle.team.values()
+                        ]
+                    ),
+                    self.current_battle.active_pokemon.current_hp or 0,
+                    self.current_battle.active_pokemon.max_hp or 0,
+                    self.current_battle.active_pokemon.species,
+                    self.current_battle.opponent_active_pokemon.species,
+                    self.current_battle.opponent_active_pokemon.current_hp or 0,
+                    "".join(
+                        [
+                            "⦻" if mon.fainted else "●"
+                            for mon in self.current_battle.opponent_team.values()
+                        ]
+                    ),
+                ),
+                end="\n" if self.current_battle.finished else "\r",
+            )
+
+    def close(self, purge: bool = True):
+        if self.current_battle is None or self.current_battle.finished:
+            time.sleep(1)
+            if self.current_battle != self.agent1.current_battle:
+                self.current_battle = self.agent1.current_battle
+        closing_task = asyncio.run_coroutine_threadsafe(
+            self._stop_challenge_loop(purge=purge), POKE_LOOP
+        )
+        closing_task.result()
+
+    ###################################################################################
+    # Abstract methods
 
     @abstractmethod
     def calc_reward(self, battle: AbstractBattle) -> float:
@@ -239,98 +347,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         """
         pass
 
-    @abstractmethod
-    def describe_embedding(self) -> Space[ObsType]:
-        """
-        Returns the description of the embedding. It must return a Space specifying
-        low bounds and high bounds.
-
-        :return: The description of the embedding.
-        :rtype: Space
-        """
-        pass
-
-    def action_space_size(self) -> int:
-        """
-        Returns the size of the action space. Given size x, the action space goes
-        from 0 to x - 1.
-
-        :return: The action space size.
-        :rtype: int
-        """
-        return len(self._ACTION_SPACE)
-
-    def reset(
-        self,
-        seed: Optional[int] = None,
-        options: Optional[Dict[str, Any]] = None,
-    ) -> Tuple[Dict[str, ObsType], Dict[str, Dict[str, Any]]]:
-        # clean up hanging battle if it exists
-        if self.agent1.current_battle and not self.agent1.current_battle.finished:
-            self.agent1.order_queue.put(ForfeitBattleOrder())
-            self.agent1.battle_queue.get()
-            self.agent2.battle_queue.get()
-        elif self.agent2.current_battle and not self.agent2.current_battle.finished:
-            self.agent2.order_queue.put(ForfeitBattleOrder())
-            self.agent1.battle_queue.get()
-            self.agent2.battle_queue.get()
-        # wait for agent1 and agent2 to spin up
-        count = self._INIT_RETRIES
-        while not (self.agent1.current_battle and self.agent2.current_battle):
-            if count == 0:
-                raise RuntimeError("Agent is not challenging")
-            count -= 1
-            time.sleep(self._TIME_BETWEEN_RETRIES)
-        # observe
-        obs1 = self.embed_battle(self.agent1.battle_queue.get())
-        obs2 = self.embed_battle(self.agent2.battle_queue.get())
-        return {self.agents[0]: obs1, self.agents[1]: obs2}, self.get_additional_info()
-
-    def get_additional_info(self) -> Dict[str, Any]:
-        """
-        Returns additional info for the reset method.
-        Override only if you really need it.
-
-        :return: Additional information as a Dict
-        :rtype: Dict
-        """
-        return {}
-
-    def step(self, actions: Dict[str, ActionType]) -> Tuple[
-        Dict[str, ObsType],
-        Dict[str, float],
-        Dict[str, bool],
-        Dict[str, bool],
-        Dict[str, dict],
-    ]:
-        battle1 = self.agent1.current_battle
-        battle2 = self.agent2.current_battle
-        assert battle1 is not None and battle2 is not None
-        order1 = self.action_to_move(actions[self.agents[0]], battle1)
-        order2 = self.action_to_move(actions[self.agents[1]], battle2)
-        self.agent1.order_queue.put(order1)
-        self.agent2.order_queue.put(order2)
-        battle1 = self.agent1.battle_queue.get()
-        battle2 = self.agent2.battle_queue.get()
-        obs = {
-            self.agents[0]: self.embed_battle(battle1),
-            self.agents[1]: self.embed_battle(battle2),
-        }
-        reward = {
-            self.agents[0]: self.calc_reward(battle1),
-            self.agents[1]: self.calc_reward(battle2),
-        }
-        term1, trunc1 = self.get_term_trunc(battle1)
-        term2, trunc2 = self.get_term_trunc(battle2)
-        terminated = {
-            self.agents[0]: term1,
-            self.agents[1]: term2,
-        }
-        truncated = {
-            self.agents[0]: trunc1,
-            self.agents[1]: trunc2,
-        }
-        return obs, reward, terminated, truncated, self.get_additional_info()
+    ###################################################################################
+    # Helper methods
 
     @staticmethod
     def get_term_trunc(battle: AbstractBattle) -> tuple[bool, bool]:
@@ -350,42 +368,15 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 truncated = True
         return terminated, truncated
 
-    def render(self, mode: str = "human"):
-        if self.current_battle is not None:
-            print(
-                "  Turn %4d. | [%s][%3d/%3dhp] %10.10s - %10.10s [%3d%%hp][%s]"
-                % (
-                    self.current_battle.turn,
-                    "".join(
-                        [
-                            "⦻" if mon.fainted else "●"
-                            for mon in self.current_battle.team.values()
-                        ]
-                    ),
-                    self.current_battle.active_pokemon.current_hp or 0,
-                    self.current_battle.active_pokemon.max_hp or 0,
-                    self.current_battle.active_pokemon.species,
-                    self.current_battle.opponent_active_pokemon.species,
-                    self.current_battle.opponent_active_pokemon.current_hp or 0,
-                    "".join(
-                        [
-                            "⦻" if mon.fainted else "●"
-                            for mon in self.current_battle.opponent_team.values()
-                        ]
-                    ),
-                ),
-                end="\n" if self.current_battle.finished else "\r",
-            )
+    def get_additional_info(self) -> Dict[str, Any]:
+        """
+        Returns additional info for the reset method.
+        Override only if you really need it.
 
-    def close(self, purge: bool = True):
-        if self.current_battle is None or self.current_battle.finished:
-            time.sleep(1)
-            if self.current_battle != self.agent1.current_battle:
-                self.current_battle = self.agent1.current_battle
-        closing_task = asyncio.run_coroutine_threadsafe(
-            self._stop_challenge_loop(purge=purge), POKE_LOOP
-        )
-        closing_task.result()
+        :return: Additional information as a Dict
+        :rtype: Dict
+        """
+        return {}
 
     def background_send_challenge(self, username: str):
         """
@@ -458,7 +449,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 if count == 0:
                     raise RuntimeError("Agent is already challenging")
                 count -= 1
-                time.sleep(self._TIME_BETWEEN_SWITCH_RETIRES)
+                time.sleep(self._TIME_BETWEEN_SWITCH_RETRIES)
         if not n_challenges:
             self._keep_challenging = True
         self._challenge_task = asyncio.run_coroutine_threadsafe(
@@ -502,7 +493,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 if count == 0:
                     raise RuntimeError("Agent is already challenging")
                 count -= 1
-                time.sleep(self._TIME_BETWEEN_SWITCH_RETIRES)
+                time.sleep(self._TIME_BETWEEN_SWITCH_RETRIES)
         if not n_challenges:
             self._keep_challenging = True
         self._challenge_task = asyncio.run_coroutine_threadsafe(
@@ -573,6 +564,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         time.sleep(timeout)
         return self._challenge_task.done()
 
+    ###################################################################################
     # Expose properties of Player class
 
     @property
@@ -607,6 +599,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
     def win_rate(self) -> float:
         return self.agent1.win_rate
 
+    ###################################################################################
     # Expose properties of Player Network Interface Class
 
     @property
