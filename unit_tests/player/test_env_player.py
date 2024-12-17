@@ -131,7 +131,7 @@ def test_action_to_move(z_moves_mock):
                 return None
 
         p = CustomEnvClass(None, start_listening=False, start_challenging=False)
-        battle = Battle("bat1", p.username, p.logger, gen=8)
+        battle = Battle("bat1", p.agent1.username, p.agent1.logger, gen=8)
         assert p.action_to_move(-1, battle).message == "/forfeit"
         battle._available_moves = [Move("flamethrower", gen=8)]
         assert p.action_to_move(0, battle).message == "/choose move flamethrower"
