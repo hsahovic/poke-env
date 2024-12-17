@@ -1,3 +1,4 @@
+import asyncio
 import unittest
 from unittest.mock import patch
 
@@ -89,7 +90,7 @@ def test_choose_move():
         assert message.message == "/choose switch charizard"
 
     # Run everything in POKE_LOOP
-    POKE_LOOP.run_until_complete(run_test())
+    asyncio.run_coroutine_threadsafe(run_test(), POKE_LOOP)
 
 
 @patch(
