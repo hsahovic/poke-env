@@ -396,8 +396,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
     def close(self, purge: bool = True):
         if self.current_battle is None or self.current_battle.finished:
             time.sleep(1)
-            if self.current_battle != self.agent.current_battle:
-                self.current_battle = self.agent.current_battle
+            if self.current_battle != self.agent1.current_battle:
+                self.current_battle = self.agent1.current_battle
         closing_task = asyncio.run_coroutine_threadsafe(
             self._stop_challenge_loop(purge=purge), POKE_LOOP
         )
@@ -418,7 +418,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 "'await agent.stop_challenge_loop()' to clear the task."
             )
         self._challenge_task = asyncio.run_coroutine_threadsafe(
-            self.agent.send_challenges(username, 1), POKE_LOOP
+            self.agent1.send_challenges(username, 1), POKE_LOOP
         )
 
     def background_accept_challenge(self, username: str):
@@ -436,7 +436,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 "'await agent.stop_challenge_loop()' to clear the task."
             )
         self._challenge_task = asyncio.run_coroutine_threadsafe(
-            self.agent.accept_challenges(username, 1, self.agent.next_team), POKE_LOOP
+            self.agent1.accept_challenges(username, 1, self.agent1.next_team), POKE_LOOP
         )
 
     async def _challenge_loop(
@@ -446,18 +446,10 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
     ):
         if not n_challenges:
             while self._keep_challenging:
-                opponent = self._get_opponent()
-                if isinstance(opponent, Player):
-                    await self.agent.battle_against(opponent, 1)
-                else:
-                    await self.agent.send_challenges(opponent, 1)
+                await self.agent1.battle_against(self.agent2, 1)
         elif n_challenges > 0:
             for _ in range(n_challenges):
-                opponent = self._get_opponent()
-                if isinstance(opponent, Player):
-                    await self.agent.battle_against(opponent, 1)
-                else:
-                    await self.agent.send_challenges(opponent, 1)
+                await self.agent1.battle_against(self.agent2, 1)
         else:
             raise ValueError(f"Number of challenges must be > 0. Got {n_challenges}")
 
@@ -500,10 +492,10 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                     f"Number of challenges must be > 0. Got {n_challenges}"
                 )
             for _ in range(n_challenges):
-                await self.agent.ladder(1)
+                await self.agent1.ladder(1)
         else:
             while self._keep_challenging:
-                await self.agent.ladder(1)
+                await self.agent1.ladder(1)
 
     def start_laddering(
         self,
@@ -559,18 +551,21 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
 
         self._challenge_task = None
         self.current_battle = None
-        self.agent.current_battle = None
+        self.agent1.current_battle = None
+        self.agent2.current_battle = None
         while not self._actions.empty():
             await self._actions.async_get()
         while not self._observations.empty():
             await self._observations.async_get()
 
         if purge:
-            self.agent.reset_battles()
+            self.agent1.reset_battles()
+            self.agent2.reset_battles()
 
     def reset_battles(self):
         """Resets the player's inner battle tracker."""
-        self.agent.reset_battles()
+        self.agent1.reset_battles()
+        self.agent2.reset_battles()
 
     def done(self, timeout: Optional[int] = None) -> bool:
         """
@@ -598,35 +593,35 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
 
     @property
     def battles(self) -> Dict[str, AbstractBattle]:
-        return self.agent.battles
+        return self.agent1.battles
 
     @property
     def format(self) -> str:
-        return self.agent.format
+        return self.agent1.format
 
     @property
     def format_is_doubles(self) -> bool:
-        return self.agent.format_is_doubles
+        return self.agent1.format_is_doubles
 
     @property
     def n_finished_battles(self) -> int:
-        return self.agent.n_finished_battles
+        return self.agent1.n_finished_battles
 
     @property
     def n_lost_battles(self) -> int:
-        return self.agent.n_lost_battles
+        return self.agent1.n_lost_battles
 
     @property
     def n_tied_battles(self) -> int:
-        return self.agent.n_tied_battles
+        return self.agent1.n_tied_battles
 
     @property
     def n_won_battles(self) -> int:
-        return self.agent.n_won_battles
+        return self.agent1.n_won_battles
 
     @property
     def win_rate(self) -> float:
-        return self.agent.win_rate
+        return self.agent1.win_rate
 
     # Expose properties of Player Network Interface Class
 
@@ -637,7 +632,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         :return: The logged-in event
         :rtype: Event
         """
-        return self.agent.ps_client.logged_in
+        return self.agent1.ps_client.logged_in
 
     @property
     def logger(self) -> Logger:
@@ -646,7 +641,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         :return: The logger.
         :rtype: Logger
         """
-        return self.agent.logger
+        return self.agent1.logger
 
     @property
     def username(self) -> str:
@@ -655,7 +650,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         :return: The player's username.
         :rtype: str
         """
-        return self.agent.username
+        return self.agent1.username
 
     @property
     def websocket_url(self) -> str:
@@ -666,7 +661,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         :return: The websocket url.
         :rtype: str
         """
-        return self.agent.ps_client.websocket_url
+        return self.agent1.ps_client.websocket_url
 
     def __getattr__(self, item: str):
-        return getattr(self.agent, item)
+        return getattr(self.agent1, item)
