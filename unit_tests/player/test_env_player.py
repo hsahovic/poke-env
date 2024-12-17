@@ -89,7 +89,9 @@ def test_choose_move(queue_put_mock, queue_get_mock):
 
     message = asyncio.get_event_loop().run_until_complete(message)
 
-    assert message.message == "/choose move flamethrower", message
+    print(message)
+
+    assert message.message == "/choose move flamethrower"
 
     battle._available_switches = [Pokemon(species="charizard", gen=8)]
 
