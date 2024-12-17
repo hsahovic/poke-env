@@ -1,13 +1,11 @@
-import asyncio
 import unittest
-from inspect import isawaitable
 from unittest.mock import patch
 
-import pytest
-from gymnasium.spaces import Discrete, Space
+from gymnasium.spaces import Space
 
+from poke_env.concurrency import POKE_LOOP
 from poke_env import AccountConfiguration, ServerConfiguration
-from poke_env.environment import AbstractBattle, Battle, Move, Pokemon, Status
+from poke_env.environment import AbstractBattle, Battle, Move, Pokemon
 from poke_env.player import (
     BattleOrder,
     Gen4EnvSinglePlayer,
@@ -59,43 +57,39 @@ def test_init():
     assert isinstance(opponent, _EnvPlayer)
 
 
-class AsyncMock(unittest.mock.MagicMock):
-    async def __call__(self, *args, **kwargs):
-        return super(AsyncMock, self).__call__(*args, **kwargs)
-
-
 def test_choose_move():
-    player = CustomEnvPlayer(
-        acct_config1=acct_config1,
-        acct_config2=acct_config2,
-        server_configuration=server_configuration,
-        start_listening=False,
-        battle_format="gen7randombattles",
-        start_challenging=False,
-    )
-    battle = Battle("bat1", player.agent1.username, player.agent1.logger, gen=8)
-    battle._available_moves = [Move("flamethrower", gen=8)]
-    message = player.agent1.choose_move(battle)
-    order = player.action_to_move(0, battle)
-    player.agent1.order_queue.put(order)
+    # Run the test code within POKE_LOOP
+    async def run_test():
+        player = CustomEnvPlayer(
+            acct_config1=acct_config1,
+            acct_config2=acct_config2,
+            server_configuration=server_configuration,
+            start_listening=False,
+            battle_format="gen7randombattles",
+            start_challenging=False,
+        )
 
-    assert isawaitable(message)
+        # Create a mock battle and moves
+        battle = Battle("bat1", player.agent1.username, player.agent1.logger, gen=8)
+        battle._available_moves = [Move("flamethrower", gen=8)]
 
-    message = asyncio.get_event_loop().run_until_complete(message)
+        # Test choosing a move
+        message = await player.agent1.choose_move(battle)
+        order = player.action_to_move(0, battle)
+        player.agent1.order_queue.put(order)
 
-    assert message.message == "/choose move flamethrower"
+        assert message.message == "/choose move flamethrower"
 
-    battle._available_switches = [Pokemon(species="charizard", gen=8)]
+        # Test switching Pokémon
+        battle._available_switches = [Pokemon(species="charizard", gen=8)]
+        message = await player.agent1.choose_move(battle)
+        order = player.action_to_move(4, battle)
+        player.agent1.order_queue.put(order)
 
-    message = player.agent1.choose_move(battle)
-    order = player.action_to_move(4, battle)
-    player.agent1.order_queue.put(order)
+        assert message.message == "/choose switch charizard"
 
-    assert isawaitable(message)
-
-    message = asyncio.get_event_loop().run_until_complete(message)
-
-    assert message.message == "/choose switch charizard"
+    # Run everything in POKE_LOOP
+    POKE_LOOP.run_until_complete(run_test())
 
 
 @patch(
