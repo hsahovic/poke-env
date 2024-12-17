@@ -4,8 +4,8 @@ from unittest.mock import patch
 
 from gymnasium.spaces import Space
 
-from poke_env.concurrency import POKE_LOOP
 from poke_env import AccountConfiguration, ServerConfiguration
+from poke_env.concurrency import POKE_LOOP
 from poke_env.environment import AbstractBattle, Battle, Move, Pokemon
 from poke_env.player import (
     BattleOrder,

@@ -92,9 +92,7 @@ def play_function(player, n_battles):
 @pytest.mark.timeout(30)
 def test_random_gym_players_gen4():
     random_player = RandomPlayer(battle_format="gen4randombattle", log_level=25)
-    env_player = RandomGen4EnvPlayer(
-        log_level=25, start_challenging=False
-    )
+    env_player = RandomGen4EnvPlayer(log_level=25, start_challenging=False)
     env_player.start_challenging(3)
     play_function(env_player, 3)
 
@@ -102,9 +100,7 @@ def test_random_gym_players_gen4():
 @pytest.mark.timeout(30)
 def test_random_gym_players_gen5():
     random_player = RandomPlayer(battle_format="gen5randombattle", log_level=25)
-    env_player = RandomGen5EnvPlayer(
-        log_level=25, start_challenging=False
-    )
+    env_player = RandomGen5EnvPlayer(log_level=25, start_challenging=False)
     env_player.start_challenging(3)
     play_function(env_player, 3)
 
@@ -112,9 +108,7 @@ def test_random_gym_players_gen5():
 @pytest.mark.timeout(30)
 def test_random_gym_players_gen6():
     random_player = RandomPlayer(battle_format="gen6randombattle", log_level=25)
-    env_player = RandomGen6EnvPlayer(
-        log_level=25, start_challenging=False
-    )
+    env_player = RandomGen6EnvPlayer(log_level=25, start_challenging=False)
     env_player.start_challenging(3)
     play_function(env_player, 3)
 
@@ -122,9 +116,7 @@ def test_random_gym_players_gen6():
 @pytest.mark.timeout(30)
 def test_random_gym_players_gen7():
     random_player = RandomPlayer(battle_format="gen7randombattle", log_level=25)
-    env_player = RandomGen7EnvPlayer(
-        log_level=25, start_challenging=False
-    )
+    env_player = RandomGen7EnvPlayer(log_level=25, start_challenging=False)
     env_player.start_challenging(3)
     play_function(env_player, 3)
 
@@ -132,9 +124,7 @@ def test_random_gym_players_gen7():
 @pytest.mark.timeout(30)
 def test_random_gym_players_gen8():
     random_player = RandomPlayer(battle_format="gen8randombattle", log_level=25)
-    env_player = RandomGen8EnvPlayer(
-        log_level=25, start_challenging=False
-    )
+    env_player = RandomGen8EnvPlayer(log_level=25, start_challenging=False)
     env_player.start_challenging(3)
     play_function(env_player, 3)
 
@@ -142,9 +132,7 @@ def test_random_gym_players_gen8():
 @pytest.mark.timeout(30)
 def test_random_gym_players_gen9():
     random_player = RandomPlayer(battle_format="gen9randombattle", log_level=25)
-    env_player = RandomGen9EnvPlayer(
-        log_level=25, start_challenging=False
-    )
+    env_player = RandomGen9EnvPlayer(log_level=25, start_challenging=False)
     env_player.start_challenging(3)
     play_function(env_player, 3)
 
@@ -152,9 +140,7 @@ def test_random_gym_players_gen9():
 @pytest.mark.timeout(60)
 def test_two_successive_calls_gen8():
     random_player = RandomPlayer(battle_format="gen8randombattle", log_level=25)
-    env_player = RandomGen8EnvPlayer(
-        log_level=25, start_challenging=False
-    )
+    env_player = RandomGen8EnvPlayer(log_level=25, start_challenging=False)
     env_player.start_challenging(2)
     play_function(env_player, 2)
     env_player.start_challenging(2)
@@ -164,9 +150,7 @@ def test_two_successive_calls_gen8():
 @pytest.mark.timeout(60)
 def test_two_successive_calls_gen9():
     random_player = RandomPlayer(battle_format="gen9randombattle", log_level=25)
-    env_player = RandomGen9EnvPlayer(
-        log_level=25, start_challenging=False
-    )
+    env_player = RandomGen9EnvPlayer(log_level=25, start_challenging=False)
     env_player.start_challenging(2)
     play_function(env_player, 2)
     env_player.start_challenging(2)
@@ -176,38 +160,26 @@ def test_two_successive_calls_gen9():
 @pytest.mark.timeout(60)
 def test_parallel_api_tests():
     random_player = RandomPlayer(battle_format="gen4randombattle", log_level=25)
-    env_player_gen4 = RandomGen4EnvPlayer(
-        log_level=25, start_challenging=True
-    )
+    env_player_gen4 = RandomGen4EnvPlayer(log_level=25, start_challenging=True)
     parallel_api_test(env_player_gen4)
     env_player_gen4.close()
     random_player = RandomPlayer(battle_format="gen5randombattle", log_level=25)
-    env_player_gen5 = RandomGen5EnvPlayer(
-        log_level=25, start_challenging=True
-    )
+    env_player_gen5 = RandomGen5EnvPlayer(log_level=25, start_challenging=True)
     parallel_api_test(env_player_gen5)
     env_player_gen5.close()
     random_player = RandomPlayer(battle_format="gen6randombattle", log_level=25)
-    env_player_gen6 = RandomGen6EnvPlayer(
-        log_level=25, start_challenging=True
-    )
+    env_player_gen6 = RandomGen6EnvPlayer(log_level=25, start_challenging=True)
     parallel_api_test(env_player_gen6)
     env_player_gen6.close()
     random_player = RandomPlayer(battle_format="gen7randombattle", log_level=25)
-    env_player_gen7 = RandomGen7EnvPlayer(
-        log_level=25, start_challenging=True
-    )
+    env_player_gen7 = RandomGen7EnvPlayer(log_level=25, start_challenging=True)
     parallel_api_test(env_player_gen7)
     env_player_gen7.close()
     random_player = RandomPlayer(battle_format="gen8randombattle", log_level=25)
-    env_player_gen8 = RandomGen8EnvPlayer(
-        log_level=25, start_challenging=True
-    )
+    env_player_gen8 = RandomGen8EnvPlayer(log_level=25, start_challenging=True)
     parallel_api_test(env_player_gen8)
     env_player_gen8.close()
     random_player = RandomPlayer(battle_format="gen9randombattle", log_level=25)
-    env_player_gen9 = RandomGen9EnvPlayer(
-        log_level=25, start_challenging=True
-    )
+    env_player_gen9 = RandomGen9EnvPlayer(log_level=25, start_challenging=True)
     parallel_api_test(env_player_gen9)
     env_player_gen9.close()

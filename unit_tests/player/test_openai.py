@@ -8,10 +8,10 @@ from typing import Union
 from gymnasium import Space
 from pettingzoo.utils.env import ActionType
 
-from poke_env.environment import AbstractBattle, Battle, Pokemon
-from poke_env.player import BattleOrder, ForfeitBattleOrder, PokeEnv, Player
-from poke_env.player.openai_api import _AsyncQueue, _EnvPlayer
 from poke_env import AccountConfiguration
+from poke_env.environment import AbstractBattle, Battle, Pokemon
+from poke_env.player import BattleOrder, ForfeitBattleOrder, Player, PokeEnv
+from poke_env.player.openai_api import _AsyncQueue, _EnvPlayer
 
 
 class DummyEnv(PokeEnv[list, ActionType]):
@@ -71,7 +71,9 @@ def test_queue():
 
 
 def test_async_player():
-    player = MockPlayer(account_configuration=AccountConfiguration("usr", None), start_listening=False)
+    player = MockPlayer(
+        account_configuration=AccountConfiguration("usr", None), start_listening=False
+    )
     battle = Battle("bat1", player.username, player.logger, gen=8)
     player.order_queue.put(ForfeitBattleOrder())
     order = asyncio.get_event_loop().run_until_complete(player.choose_move(battle))
