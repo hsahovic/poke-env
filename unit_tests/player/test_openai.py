@@ -3,14 +3,13 @@ from __future__ import annotations
 import asyncio
 import sys
 from io import StringIO
-from typing import Union
 
 from gymnasium import Space
 from pettingzoo.utils.env import ActionType
 
 from poke_env import AccountConfiguration
 from poke_env.environment import AbstractBattle, Battle, Pokemon
-from poke_env.player import BattleOrder, ForfeitBattleOrder, Player, PokeEnv
+from poke_env.player import BattleOrder, ForfeitBattleOrder, PokeEnv
 from poke_env.player.openai_api import _AsyncQueue, AsyncPlayer
 
 
@@ -33,9 +32,6 @@ class DummyEnv(PokeEnv[list, ActionType]):
 
     def action_space_size(self) -> int:
         return 1
-
-    def get_opponent(self) -> Union[Player, str]:
-        return self.opponent
 
 
 class MockPlayer(AsyncPlayer):
@@ -113,17 +109,3 @@ def test_render():
     battle._team["2"] = other_mon
     expected = "  Turn    3. | [●●][ 60/120hp]  charizard -    pikachu [ 20%hp][●]\r"
     assert render(battle) == expected
-
-
-def test_get_opponent():
-    player = DummyEnv(start_listening=False)
-    assert player._get_opponent() is None
-    player.opponent = "test"
-    assert player._get_opponent() == "test"
-    player.opponent = ["test"]
-    assert player._get_opponent() == "test"
-    opponents = ["test1", "test2", "test3", "test4", "test5"]
-    player.opponent = opponents
-    for _ in range(100):
-        assert player._get_opponent() in opponents
-    player.opponent = [0]
