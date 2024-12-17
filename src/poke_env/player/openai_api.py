@@ -10,8 +10,6 @@ from abc import abstractmethod
 from logging import Logger
 from typing import Any, Awaitable, Callable, Dict, Optional, Tuple, Union
 
-import numpy as np
-import numpy.typing as npt
 from gymnasium.core import ObsType
 from gymnasium.spaces import Discrete
 from pettingzoo.utils.env import ActionType, ParallelEnv
