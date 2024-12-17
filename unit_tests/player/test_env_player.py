@@ -10,14 +10,13 @@ from poke_env import AccountConfiguration, ServerConfiguration
 from poke_env.environment import AbstractBattle, Battle, Move, Pokemon, Status
 from poke_env.player import (
     BattleOrder,
-    EnvPlayer,
     Gen4EnvSinglePlayer,
     Gen5EnvSinglePlayer,
     Gen6EnvSinglePlayer,
     Gen7EnvSinglePlayer,
     Gen8EnvSinglePlayer,
     Gen9EnvSinglePlayer,
-    RandomPlayer,
+    PokeEnv,
 )
 from poke_env.player.openai_api import _EnvPlayer
 
@@ -26,8 +25,8 @@ acct_config2 = AccountConfiguration("username2", "password2")
 server_configuration = ServerConfiguration("server.url", "auth.url")
 
 
-class CustomEnvPlayer(EnvPlayer):
-    def calc_reward(self, last_battle, current_battle) -> float:
+class CustomEnvPlayer(PokeEnv):
+    def calc_reward(self, battle) -> float:
         pass
 
     def action_to_move(self, action: int, battle: AbstractBattle) -> BattleOrder:
@@ -44,7 +43,6 @@ class CustomEnvPlayer(EnvPlayer):
 
 def test_init():
     gym_env = CustomEnvPlayer(
-        None,
         acct_config1=acct_config1,
         acct_config2=acct_config2,
         server_configuration=server_configuration,
@@ -71,7 +69,6 @@ class AsyncMock(unittest.mock.MagicMock):
 @patch("poke_env.player.openai_api._AsyncQueue.async_put", new_callable=AsyncMock)
 def test_choose_move(queue_put_mock, queue_get_mock):
     player = CustomEnvPlayer(
-        None,
         acct_config1=acct_config1,
         acct_config2=acct_config2,
         server_configuration=server_configuration,
@@ -102,7 +99,6 @@ def test_choose_move(queue_put_mock, queue_get_mock):
 
 def test_reward_computing_helper():
     player = CustomEnvPlayer(
-        None,
         acct_config1=acct_config1,
         acct_config2=acct_config2,
         server_configuration=server_configuration,
@@ -263,22 +259,6 @@ def test_action_space():
         assert p.action_space == Discrete(
             4 * sum([1, has_megas, has_z_moves, has_dynamax]) + 6
         )
-
-
-def test_get_opponent():
-    player = CustomEnvPlayer(start_listening=False, opponent="test")
-    assert player.get_opponent() == "test"
-    player._opponent = None
-    with pytest.raises(RuntimeError):
-        player.get_opponent()
-
-
-def test_set_opponent():
-    player = CustomEnvPlayer(None, start_listening=False)
-    assert player._opponent is None
-    dummy_player = RandomPlayer()
-    player.set_opponent(dummy_player)
-    assert player._opponent == dummy_player
 
 
 @patch(

@@ -13,7 +13,6 @@ from poke_env.player.battle_order import (
     ForfeitBattleOrder,
 )
 from poke_env.player.env_player import (
-    EnvPlayer,
     Gen4EnvSinglePlayer,
     Gen5EnvSinglePlayer,
     Gen6EnvSinglePlayer,
@@ -40,7 +39,6 @@ __all__ = [
     "utils",
     "ActionType",
     "ObsType",
-    "EnvPlayer",
     "ForfeitBattleOrder",
     "Gen4EnvSinglePlayer",
     "Gen5EnvSinglePlayer",
