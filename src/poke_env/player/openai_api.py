@@ -10,6 +10,8 @@ from abc import abstractmethod
 from logging import Logger
 from typing import Any, Awaitable, Callable, Dict, Optional, Tuple, Union
 
+import numpy as np
+import numpy.typing as npt
 from gymnasium.core import ObsType
 from gymnasium.spaces import Discrete
 from pettingzoo.utils.env import ActionType, ParallelEnv
@@ -298,6 +300,12 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             self._stop_challenge_loop(purge=purge), POKE_LOOP
         )
         closing_task.result()
+
+    def observation_space(self, agent: str):
+        return self.observation_spaces[agent]
+
+    def action_space(self, agent: str):
+        return self.action_spaces[agent]
 
     ###################################################################################
     # Abstract methods
