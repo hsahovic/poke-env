@@ -83,6 +83,7 @@ def test_choose_move(queue_put_mock, queue_get_mock):
     battle._available_moves = [Move("flamethrower", gen=8)]
     message = player.agent1.choose_move(battle)
     order = player.action_to_move(0, battle)
+    print(order)
     player.agent1.order_queue.put(order)
 
     assert isawaitable(message)
@@ -90,7 +91,6 @@ def test_choose_move(queue_put_mock, queue_get_mock):
     message = asyncio.get_event_loop().run_until_complete(message)
 
     print(message)
-
     assert message.message == "/choose move flamethrower"
 
     battle._available_switches = [Pokemon(species="charizard", gen=8)]
