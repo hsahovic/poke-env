@@ -21,7 +21,8 @@ from poke_env.player import (
 )
 from poke_env.player.openai_api import _EnvPlayer
 
-account_configuration = AccountConfiguration("username", "password")
+acct_config1 = AccountConfiguration("username1", "password1")
+acct_config2 = AccountConfiguration("username2", "password2")
 server_configuration = ServerConfiguration("server.url", "auth.url")
 
 
@@ -44,7 +45,8 @@ class CustomEnvPlayer(EnvPlayer):
 def test_init():
     gym_env = CustomEnvPlayer(
         None,
-        account_configuration=account_configuration,
+        acct_config1=acct_config1,
+        acct_config2=acct_config2,
         server_configuration=server_configuration,
         start_listening=False,
         battle_format="gen7randombattles",
