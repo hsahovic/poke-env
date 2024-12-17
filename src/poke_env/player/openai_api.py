@@ -293,13 +293,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             self.agent2.order_queue.put(ForfeitBattleOrder())
             self.agent1.battle_queue.get()
             self.agent2.battle_queue.get()
-        # seed selection
-        if seed is not None:
-            super().reset(seed=seed)  # type: ignore
-            self._seed_initialized = True
-        elif not self._seed_initialized:
-            super().reset(seed=int(time.time()))  # type: ignore
-            self._seed_initialized = True
         # wait for agent1 and agent2 to spin up
         count = self._INIT_RETRIES
         while not (self.agent1.current_battle and self.agent2.current_battle):
@@ -307,6 +300,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 raise RuntimeError("Agent is not challenging")
             count -= 1
             time.sleep(self._TIME_BETWEEN_RETRIES)
+        # observe
         obs1 = self.embed_battle(self.agent1.battle_queue.get())
         obs2 = self.embed_battle(self.agent2.battle_queue.get())
         return {self.agents[0]: obs1, self.agents[1]: obs2}, self.get_additional_info()
