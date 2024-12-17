@@ -80,7 +80,7 @@ def test_choose_move(queue_put_mock, queue_get_mock):
         start_challenging=False,
     )
     battle = Battle("bat1", player.agent1.username, player.agent1.logger, gen=8)
-    battle._available_moves = {Move("flamethrower", gen=8)}
+    battle._available_moves = [Move("flamethrower", gen=8)]
     message = player.agent1.choose_move(battle)
     order = player.action_to_move(0, battle)
     player.agent1.order_queue.put(order)
@@ -91,7 +91,7 @@ def test_choose_move(queue_put_mock, queue_get_mock):
 
     assert message.message == "/choose move flamethrower"
 
-    battle._available_moves = {Pokemon(species="charizard", gen=8)}
+    battle._available_switches = [Pokemon(species="charizard", gen=8)]
 
     message = player.agent1.choose_move(battle)
     order = player.action_to_move(4, battle)
