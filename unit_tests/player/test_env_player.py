@@ -87,6 +87,8 @@ def test_choose_move(queue_put_mock, queue_get_mock):
 
     assert isawaitable(message)
 
+    print(message)
+
     message = asyncio.get_event_loop().run_until_complete(message)
 
     assert message.message == "/choose move flamethrower"
