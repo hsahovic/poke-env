@@ -7,14 +7,14 @@ from weakref import WeakKeyDictionary
 
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.player.battle_order import BattleOrder, ForfeitBattleOrder
-from poke_env.player.openai_api import OpenAIGymEnv
+from poke_env.player.openai_api import PokeEnv
 from poke_env.player.player import Player
 from poke_env.ps_client.account_configuration import AccountConfiguration
 from poke_env.ps_client.server_configuration import ServerConfiguration
 from poke_env.teambuilder.teambuilder import Teambuilder
 
 
-class EnvPlayer(OpenAIGymEnv):
+class EnvPlayer(PokeEnv):
     """Player exposing the Open AI Gym Env API."""
 
     _ACTION_SPACE: List[int] = []

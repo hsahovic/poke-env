@@ -21,7 +21,7 @@ from poke_env.player.env_player import (
     Gen8EnvSinglePlayer,
     Gen9EnvSinglePlayer,
 )
-from poke_env.player.openai_api import OpenAIGymEnv
+from poke_env.player.openai_api import PokeEnv
 from poke_env.player.player import Player
 from poke_env.player.random_player import RandomPlayer
 from poke_env.player.utils import (
@@ -49,7 +49,7 @@ __all__ = [
     "Gen8EnvSinglePlayer",
     "Gen9EnvSinglePlayer",
     "POKE_LOOP",
-    "OpenAIGymEnv",
+    "PokeEnv",
     "PSClient",
     "Player",
     "RandomPlayer",

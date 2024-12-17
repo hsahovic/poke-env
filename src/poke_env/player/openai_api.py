@@ -78,7 +78,7 @@ class _EnvPlayer(Player):
         asyncio.run_coroutine_threadsafe(self.battle_queue.async_put(battle), POKE_LOOP)
 
 
-class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
+class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
     """
     Base class implementing the OpenAI Gym API on the main thread.
     """
@@ -90,8 +90,8 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
 
     def __init__(
         self,
-        account_configuration: Optional[AccountConfiguration] = None,
-        *,
+        acct_config1: AccountConfiguration | None = None,
+        acct_config2: AccountConfiguration | None = None,
         avatar: Optional[int] = None,
         battle_format: str = "gen8randombattle",
         log_level: Optional[int] = None,
@@ -152,8 +152,7 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
         :type start_challenging: bool
         """
         self.agent1 = _EnvPlayer(
-            username=self.__class__.__name__,  # type: ignore
-            account_configuration=account_configuration,
+            account_configuration=acct_config1,
             avatar=avatar,
             battle_format=battle_format,
             log_level=log_level,
@@ -168,8 +167,7 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
             team=team,
         )
         self.agent2 = _EnvPlayer(
-            username=self.__class__.__name__,  # type: ignore
-            account_configuration=account_configuration,
+            account_configuration=acct_config2,
             avatar=avatar,
             battle_format=battle_format,
             log_level=log_level,

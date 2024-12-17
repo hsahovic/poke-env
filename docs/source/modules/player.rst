@@ -21,7 +21,7 @@ Player
    :undoc-members:
    :show-inheritance:
 
-OpenAIGymEnv
+PokeEnv
 ************
 
 .. automodule:: poke_env.player.openai_api
