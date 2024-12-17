@@ -23,8 +23,8 @@ class EnvPlayer(PokeEnv):
     def __init__(
         self,
         opponent: Optional[Union[Player, str]],
-        account_configuration: Optional[AccountConfiguration] = None,
-        *,
+        acct_config1: Optional[AccountConfiguration] = None,
+        acct_config2: Optional[AccountConfiguration] = None,
         avatar: Optional[int] = None,
         battle_format: Optional[str] = None,
         log_level: Optional[int] = None,
@@ -95,7 +95,8 @@ class EnvPlayer(PokeEnv):
         if opponent is None:
             start_challenging = False
         super().__init__(
-            account_configuration=account_configuration,
+            acct_config1=acct_config1,
+            acct_config2=acct_config2,
             avatar=avatar,
             battle_format=b_format,
             log_level=log_level,
