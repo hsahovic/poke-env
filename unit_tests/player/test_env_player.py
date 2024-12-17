@@ -72,7 +72,8 @@ class AsyncMock(unittest.mock.MagicMock):
 def test_choose_move(queue_put_mock, queue_get_mock):
     player = CustomEnvPlayer(
         None,
-        account_configuration=account_configuration,
+        acct_config1=acct_config1,
+        acct_config2=acct_config2,
         server_configuration=server_configuration,
         start_listening=False,
         battle_format="gen7randombattles",
@@ -102,7 +103,8 @@ def test_choose_move(queue_put_mock, queue_get_mock):
 def test_reward_computing_helper():
     player = CustomEnvPlayer(
         None,
-        account_configuration=account_configuration,
+        acct_config1=acct_config1,
+        acct_config2=acct_config2,
         server_configuration=server_configuration,
         start_listening=False,
         battle_format="gen7randombattles",
