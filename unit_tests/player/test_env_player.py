@@ -64,13 +64,7 @@ class AsyncMock(unittest.mock.MagicMock):
         return super(AsyncMock, self).__call__(*args, **kwargs)
 
 
-@patch(
-    "poke_env.player.openai_api._AsyncQueue.async_get",
-    return_value=2,
-    new_callable=AsyncMock,
-)
-@patch("poke_env.player.openai_api._AsyncQueue.async_put", new_callable=AsyncMock)
-def test_choose_move(queue_put_mock, queue_get_mock):
+def test_choose_move():
     player = CustomEnvPlayer(
         acct_config1=acct_config1,
         acct_config2=acct_config2,
@@ -83,14 +77,12 @@ def test_choose_move(queue_put_mock, queue_get_mock):
     battle._available_moves = [Move("flamethrower", gen=8)]
     message = player.agent1.choose_move(battle)
     order = player.action_to_move(0, battle)
-    print(order)
     player.agent1.order_queue.put(order)
 
     assert isawaitable(message)
 
     message = asyncio.get_event_loop().run_until_complete(message)
 
-    print(message)
     assert message.message == "/choose move flamethrower"
 
     battle._available_switches = [Pokemon(species="charizard", gen=8)]
