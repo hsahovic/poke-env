@@ -89,7 +89,7 @@ def play_function(player: PokeEnv, n_battles):
                 name: player.action_space(name).sample() for name in player.agents
             }
             _, _, terminated, truncated, _ = player.step(actions)
-            done = terminated or truncated
+            done = any(terminated.values()) or any(truncated.values())
 
 
 @pytest.mark.timeout(30)

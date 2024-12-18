@@ -234,8 +234,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             self.agents[0]: trunc1,
             self.agents[1]: trunc2,
         }
-        print(terminated)
-        print(truncated)
         return obs, reward, terminated, truncated, self.get_additional_info()
 
     def reset(
