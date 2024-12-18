@@ -211,10 +211,12 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         battle2 = self.agent2.current_battle
         assert battle1 is not None and battle2 is not None
         if not battle1._wait:
+            print(1)
             order1 = self.action_to_move(actions[self.agents[0]], battle1)
             self.agent1.order_queue.put(order1)
             battle1 = self.agent1.battle_queue.get()
         if not battle2._wait:
+            print(2)
             order2 = self.action_to_move(actions[self.agents[1]], battle2)
             self.agent2.order_queue.put(order2)
             battle2 = self.agent2.battle_queue.get()
