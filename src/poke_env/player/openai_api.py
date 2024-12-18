@@ -63,6 +63,7 @@ class AsyncPlayer(Player):
     battle_queue: _AsyncQueue
     order_queue: _AsyncQueue
     current_battle: AbstractBattle | None = None
+    choose_called: bool = False
 
     def __init__(self, *args, **kwargs: Any):
         super().__init__(*args, **kwargs)
@@ -70,12 +71,15 @@ class AsyncPlayer(Player):
         self.order_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
 
     def choose_move(self, battle: AbstractBattle) -> Awaitable[BattleOrder]:
+        self.choose_called = True
         self.current_battle = battle
         return self._choose_move(battle)
 
     async def _choose_move(self, battle: AbstractBattle) -> BattleOrder:
         await self.battle_queue.async_put(battle)
-        return await self.order_queue.async_get()
+        order = await self.order_queue.async_get()
+        self.choose_called = False
+        return order
 
     def _battle_finished_callback(self, battle: AbstractBattle):
         asyncio.run_coroutine_threadsafe(self.battle_queue.async_put(battle), POKE_LOOP)
@@ -214,21 +218,14 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         battle1 = self.agent1.current_battle
         battle2 = self.agent2.current_battle
         assert battle1 is not None and battle2 is not None
-        print("wait" in self.agent1.battles[battle1.battle_tag].last_request, "wait" in self.agent2.battles[battle2.battle_tag].last_request)
-        order1 = (
-            DefaultBattleOrder()
-            if "wait" in self.agent1.battles[battle1.battle_tag].last_request
-            else self.action_to_move(actions[self.agents[0]], battle1)
-        )
-        order2 = (
-            DefaultBattleOrder()
-            if "wait" in self.agent2.battles[battle2.battle_tag].last_request
-            else self.action_to_move(actions[self.agents[1]], battle2)
-        )
-        self.agent1.order_queue.put(order1)
-        self.agent2.order_queue.put(order2)
-        battle1 = self.agent1.battle_queue.get()
-        battle2 = self.agent2.battle_queue.get()
+        if self.agent1.choose_called:
+            order1 = self.action_to_move(actions[self.agents[0]], battle1)
+            self.agent1.order_queue.put(order1)
+            battle1 = self.agent1.battle_queue.get()
+        if self.agent2.choose_called:
+            order2 = self.action_to_move(actions[self.agents[1]], battle2)
+            self.agent2.order_queue.put(order2)
+            battle2 = self.agent2.battle_queue.get()
         obs = {
             self.agents[0]: self.embed_battle(battle1),
             self.agents[1]: self.embed_battle(battle2),
