@@ -221,10 +221,14 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         if self.agent1.choose_called:
             order1 = self.action_to_move(actions[self.agents[0]], battle1)
             self.agent1.order_queue.put(order1)
-            battle1 = self.agent1.battle_queue.get()
         if self.agent2.choose_called:
             order2 = self.action_to_move(actions[self.agents[1]], battle2)
             self.agent2.order_queue.put(order2)
+        while not (self.agent1.choose_called and self.agent2.choose_called):
+            pass
+        if self.agent1.choose_called:
+            battle1 = self.agent1.battle_queue.get()
+        if self.agent2.choose_called:
             battle2 = self.agent2.battle_queue.get()
         obs = {
             self.agents[0]: self.embed_battle(battle1),
