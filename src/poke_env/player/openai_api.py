@@ -16,7 +16,11 @@ from pettingzoo.utils.env import ActionType, ParallelEnv
 
 from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
 from poke_env.environment.abstract_battle import AbstractBattle
-from poke_env.player.battle_order import BattleOrder, ForfeitBattleOrder
+from poke_env.player.battle_order import (
+    BattleOrder,
+    DefaultBattleOrder,
+    ForfeitBattleOrder,
+)
 from poke_env.player.player import Player
 from poke_env.ps_client import AccountConfiguration
 from poke_env.ps_client.server_configuration import (
@@ -210,15 +214,20 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         battle1 = self.agent1.current_battle
         battle2 = self.agent2.current_battle
         assert battle1 is not None and battle2 is not None
-        print(battle1._wait, battle2._wait)
-        if not battle1._wait:
-            order1 = self.action_to_move(actions[self.agents[0]], battle1)
-            self.agent1.order_queue.put(order1)
-            battle1 = self.agent1.battle_queue.get()
-        if not battle2._wait:
-            order2 = self.action_to_move(actions[self.agents[1]], battle2)
-            self.agent2.order_queue.put(order2)
-            battle2 = self.agent2.battle_queue.get()
+        order1 = (
+            self.action_to_move(actions[self.agents[0]], battle1)
+            if not battle1._wait
+            else DefaultBattleOrder()
+        )
+        order2 = (
+            self.action_to_move(actions[self.agents[1]], battle2)
+            if not battle2._wait
+            else DefaultBattleOrder()
+        )
+        self.agent1.order_queue.put(order1)
+        self.agent2.order_queue.put(order2)
+        battle1 = self.agent1.battle_queue.get()
+        battle2 = self.agent2.battle_queue.get()
         obs = {
             self.agents[0]: self.embed_battle(battle1),
             self.agents[1]: self.embed_battle(battle2),
