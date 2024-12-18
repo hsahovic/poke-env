@@ -248,8 +248,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             self.agents[0]: trunc1,
             self.agents[1]: trunc2,
         }
-        print(terminated)
-        print(truncated)
         return obs, reward, terminated, truncated, self.get_additional_info()
 
     def reset(
@@ -257,15 +255,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         seed: Optional[int] = None,
         options: Optional[Dict[str, Any]] = None,
     ) -> Tuple[Dict[str, ObsType], Dict[str, Dict[str, Any]]]:
-        # clean up hanging battle if it exists
-        if self.agent1.current_battle and not self.agent1.current_battle.finished:
-            self.agent1.order_queue.put(ForfeitBattleOrder())
-            self.agent1.battle_queue.get()
-            self.agent2.battle_queue.get()
-        elif self.agent2.current_battle and not self.agent2.current_battle.finished:
-            self.agent2.order_queue.put(ForfeitBattleOrder())
-            self.agent1.battle_queue.get()
-            self.agent2.battle_queue.get()
         # wait for agent1 and agent2 to spin up
         count = self._INIT_RETRIES
         while not (self.agent1.current_battle and self.agent2.current_battle):
