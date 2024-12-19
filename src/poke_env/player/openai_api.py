@@ -189,6 +189,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         self.action_spaces = {
             name: Discrete(len(self._ACTION_SPACE)) for name in self.agents
         }
+        self.possible_agents = [f"AsyncPlayer {i}" for i in range(100)]
         self.current_battle: AbstractBattle | None = None
         self._keep_challenging: bool = False
         self._challenge_task = None
