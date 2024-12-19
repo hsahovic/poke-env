@@ -22,6 +22,7 @@ def play_function(env: PokeEnv, n_battles):
         done = False
         _, info = env.reset()
         while not done:
+            print([info[name]["action_space"] for name in env.agents])
             actions = {
                 name: random.choice(info[name]["action_space"]) for name in env.agents
             }
