@@ -276,9 +276,7 @@ class Player(ABC):
                 if split_message[2]:
                     request = orjson.loads(split_message[2])
                     battle.parse_request(request)
-                    if battle.move_on_next_request:
-                        await self._handle_battle_request(battle)
-                        battle.move_on_next_request = False
+                    await self._handle_battle_request(battle)
             elif split_message[1] == "win" or split_message[1] == "tie":
                 if split_message[1] == "win":
                     battle.won_by(split_message[2])
@@ -340,11 +338,11 @@ class Player(ABC):
                 elif split_message[2].startswith(
                     "[Unavailable choice]"
                 ) and split_message[2].endswith("is disabled"):
-                    battle.move_on_next_request = True
+                    pass
                 elif split_message[2].startswith("[Invalid choice]") and split_message[
                     2
                 ].endswith("is disabled"):
-                    battle.move_on_next_request = True
+                    pass
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: You sent more choices than unfainted"
                     " Pokémon."
