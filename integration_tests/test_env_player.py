@@ -17,6 +17,8 @@ class RandomEnv(PokeEnv):
         return Box(np.array([0]), np.array([1]), dtype=np.int32)
 
     def embed_battle(self, battle):
+        if battle.maybe_trapped:
+            battle._trapped = True
         return battle
 
     def action_to_move(self, action, battle):
