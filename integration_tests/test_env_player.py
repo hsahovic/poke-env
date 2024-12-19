@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 import numpy as np
 import pytest
 from gymnasium.spaces import Box, Space
@@ -17,23 +19,29 @@ class RandomEnv(PokeEnv):
         return Box(np.array([0]), np.array([1]), dtype=np.int32)
 
     def embed_battle(self, battle):
-        if battle.maybe_trapped:
-            battle._trapped = True
         return battle
 
     def action_to_move(self, action, battle):
         return action
 
 
-def play_function(player: PokeEnv[AbstractBattle, BattleOrder], n_battles):
+def play_function(env: PokeEnv[AbstractBattle, BattleOrder], n_battles):
     for _ in range(n_battles):
         done = False
-        obs, _ = player.reset()
+        obs, _ = env.reset()
         while not done:
+            battle1, battle2 = obs.values()
+            if battle1.maybe_trapped:
+                battle1 = deepcopy(battle1)
+                battle1._trapped = True
+            if battle2.maybe_trapped:
+                battle2 = deepcopy(battle2)
+                battle2._trapped = True
             actions = {
-                name: Player.choose_random_move(obs[name]) for name in player.agents
+                env.agents[0]: Player.choose_random_move(battle1),
+                env.agents[1]: Player.choose_random_move(battle2),
             }
-            obs, _, terminated, truncated, _ = player.step(actions)
+            obs, _, terminated, truncated, _ = env.step(actions)
             done = any(terminated.values()) or any(truncated.values())
 
 
