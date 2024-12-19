@@ -450,8 +450,14 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         else:
             active_mon = battle.active_pokemon
             assert active_mon is not None
+            mvs = (
+                battle.available_moves
+                if len(battle.available_moves) == 1
+                and battle.available_moves[0].id in ["struggle", "recharge"]
+                else list(active_mon.moves.values())
+            )
             order = Player.create_order(
-                list(active_mon.moves.values())[(action - 6) % 4],
+                mvs[(action - 6) % 4],
                 mega=10 <= action < 14,
                 z_move=14 <= action < 18,
                 dynamax=18 <= action < 22,
