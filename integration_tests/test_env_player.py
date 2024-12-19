@@ -1,12 +1,8 @@
-from copy import deepcopy
-
 import numpy as np
 import pytest
-from gymnasium.spaces import Box, Space
 from pettingzoo.test import parallel_api_test
 
-from poke_env.environment import AbstractBattle
-from poke_env.player import BattleOrder, Player, PokeEnv
+from poke_env.player import PokeEnv
 
 
 class RandomEnv(PokeEnv):
@@ -15,33 +11,20 @@ class RandomEnv(PokeEnv):
     def calc_reward(self, battle) -> float:
         return 0.0
 
-    def describe_embedding(self) -> Space:
-        return Box(np.array([0]), np.array([1]), dtype=np.int32)
-
     def embed_battle(self, battle):
-        return battle
-
-    def action_to_move(self, action, battle):
-        return action
+        return np.array([0])
 
 
-def play_function(env: PokeEnv[AbstractBattle, BattleOrder], n_battles):
+def play_function(env: PokeEnv, n_battles):
     for _ in range(n_battles):
         done = False
-        obs, _ = env.reset()
+        _, info = env.reset()
         while not done:
-            battle1, battle2 = obs.values()
-            if battle1.maybe_trapped:
-                battle1 = deepcopy(battle1)
-                battle1._trapped = True
-            if battle2.maybe_trapped:
-                battle2 = deepcopy(battle2)
-                battle2._trapped = True
             actions = {
-                env.agents[0]: Player.choose_random_move(battle1),
-                env.agents[1]: Player.choose_random_move(battle2),
+                env.agents[0]: info[env.agents[0]]["action_space"].sample(),
+                env.agents[1]: info[env.agents[0]]["action_space"].sample(),
             }
-            obs, _, terminated, truncated, _ = env.step(actions)
+            _, _, terminated, truncated, info = env.step(actions)
             done = any(terminated.values()) or any(truncated.values())
 
 

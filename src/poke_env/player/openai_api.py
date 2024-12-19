@@ -8,7 +8,7 @@ import asyncio
 import time
 from abc import abstractmethod
 from logging import Logger
-from typing import Any, Awaitable, Callable, Dict, Optional, Tuple, Union
+from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple, Union
 
 from gymnasium.core import ObsType
 from gymnasium.spaces import Discrete
@@ -18,9 +18,11 @@ from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.player.battle_order import (
     BattleOrder,
-    DefaultBattleOrder,
+    DoubleBattleOrder,
     ForfeitBattleOrder,
 )
+from poke_env.environment.double_battle import DoubleBattle
+from poke_env.environment.battle import Battle
 from poke_env.player.player import Player
 from poke_env.ps_client import AccountConfiguration
 from poke_env.ps_client.server_configuration import (
@@ -312,21 +314,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         pass
 
     @abstractmethod
-    def action_to_move(self, action: ActionType, battle: AbstractBattle) -> BattleOrder:
-        """
-        Returns the BattleOrder relative to the given action.
-
-        :param action: The action to take.
-        :type action: int
-        :param battle: The current battle state
-        :type battle: AbstractBattle
-
-        :return: The battle order for the given action in context of the current battle.
-        :rtype: BattleOrder
-        """
-        pass
-
-    @abstractmethod
     def embed_battle(self, battle: AbstractBattle) -> ObsType:
         """
         Returns the embedding of the current battle state in a format compatible with
@@ -338,6 +325,168 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         :return: The embedding of the current battle state.
         """
         pass
+
+    ###################################################################################
+    # Action space methods
+
+    @staticmethod
+    def get_action_space(battle: AbstractBattle) -> List[int]:
+        if isinstance(battle, Battle):
+            return PokeEnv.get_singles_action_space(battle)
+        elif isinstance(battle, DoubleBattle):
+            return PokeEnv.get_doubles_action_space(battle)
+        else:
+            raise TypeError()
+
+    @staticmethod
+    def get_singles_action_space(battle: Battle) -> List[int]:
+        switch_space = [
+            i
+            for i, pokemon in enumerate(battle.team.values())
+            if not battle.maybe_trapped
+            and pokemon.species in [p.species for p in battle.available_switches]
+        ]
+        if battle.active_pokemon is None:
+            return switch_space
+        else:
+            move_space = [
+                i + 6
+                for i, move in enumerate(battle.active_pokemon.moves.values())
+                if move.id in [m.id for m in battle.available_moves]
+            ]
+            mega_space = [i + 4 for i in move_space if battle.can_mega_evolve]
+            zmove_space = [
+                i + 8
+                for i, move in enumerate(battle.active_pokemon.moves.values())
+                if move.id in [m.id for m in battle.active_pokemon.available_z_moves]
+                and battle.can_z_move
+            ]
+            dynamax_space = [i + 12 for i in move_space if battle.can_dynamax]
+            tera_space = [i + 16 for i in move_space if battle.can_tera]
+            return switch_space + move_space + mega_space + zmove_space + dynamax_space + tera_space
+
+    @staticmethod
+    def get_doubles_action_space(battle: DoubleBattle) -> List[int]:
+        action_space1 = PokeEnv.get_doubles_action_space_(battle, pos=0)
+        action_space2 = PokeEnv.get_doubles_action_space_(battle, pos=1)
+        return action_space1 + action_space2
+
+    @staticmethod
+    def get_doubles_action_space_(battle: DoubleBattle, pos: int) -> List[int]:
+        assert pos is not None
+        if battle.finished:
+            return []
+        switch_space = [
+            i + 1
+            for i, pokemon in enumerate(battle.team.values())
+            if not battle.maybe_trapped[pos]
+            and battle.force_switch != [[False, True], [True, False]][pos]
+            and not (
+                len(battle.available_switches[0]) == 1
+                and battle.force_switch == [True, True]
+                and pos == 1
+            )
+            and not pokemon.active
+            and pokemon.species in [p.species for p in battle.available_switches[pos]]
+        ]
+        active_mon = battle.active_pokemon[pos]
+        if battle.teampreview:
+            return switch_space
+        elif active_mon is None:
+            return switch_space or [0]
+        else:
+            move_spaces = [
+                [
+                    7 + 5 * i + j + 2
+                    for j in battle.get_possible_showdown_targets(move, active_mon)
+                ]
+                for i, move in enumerate(active_mon.moves.values())
+                if move.id in [m.id for m in battle.available_moves[pos]]
+            ]
+            move_space = [i for s in move_spaces for i in s]
+            tera_space = [i + 20 for i in move_space if battle.can_tera[pos]]
+            if (
+                not move_space
+                and len(battle.available_moves[pos]) == 1
+                and battle.available_moves[pos][0].id in ["struggle", "recharge"]
+            ):
+                move_space = [9]
+            return (switch_space + move_space + tera_space) or [0]
+
+    ###################################################################################
+    # Action-move conversion methods
+
+    @staticmethod
+    def action_to_move(action: ActionType, battle: AbstractBattle) -> BattleOrder:
+        if isinstance(action, int) and isinstance(battle, Battle):
+            return PokeEnv.singles_action_to_move(action, battle)
+        elif isinstance(action, List) and isinstance(battle, DoubleBattle):
+            return PokeEnv.doubles_action_to_move(action[0], action[1], battle)
+        else:
+            raise TypeError()
+
+    @staticmethod
+    def singles_action_to_move(action: int, battle: Battle) -> BattleOrder:
+        if action == -1:
+            return ForfeitBattleOrder()
+        elif action < 6:
+            order = Player.create_order(list(battle.team.values())[action])
+        else:
+            active_mon = battle.active_pokemon
+            assert active_mon is not None
+            order = Player.create_order(
+                list(active_mon.moves.values())[(action - 6) % 4],
+                mega=10 <= action < 14,
+                z_move=14 <= action < 18,
+                dynamax=18 <= action < 22,
+                terastallize=22 <= action < 26,
+            )
+        return order
+
+    @staticmethod
+    def doubles_action_to_move(action1: int, action2: int, battle: DoubleBattle) -> BattleOrder:
+        if action1 == -1 or action2 == -1:
+            return ForfeitBattleOrder()
+        order1 = PokeEnv.doubles_action_to_move_(action1, battle, 0)
+        order2 = PokeEnv.doubles_action_to_move_(action2, battle, 1)
+        return DoubleBattleOrder(order1, order2)
+
+    @staticmethod
+    def doubles_action_to_move_(action: int, battle: DoubleBattle, pos: int) -> BattleOrder | None:
+        """
+        Currently this works for gen 9 VGC format
+        action = 0: pass
+        1 <= action <= 6: switch
+        7 <= action <= 26 (refer to below table):
+
+            target  -2   -1    0    1    2
+        move
+        0           7    8    9    10   11
+        1           12   13   14   15   16
+        2           17   18   19   20   21
+        3           22   23   24   25   26
+
+        27 <= action <= 46: same as above, but terastallized
+        """
+        if action == 0:
+            order = None
+        elif action < 7:
+            order = Player.create_order(list(battle.team.values())[action - 1])
+        else:
+            active_mon = battle.active_pokemon[pos]
+            assert active_mon is not None
+            mvs = (
+                battle.available_moves[pos]
+                if len(battle.available_moves[pos]) == 1
+                and battle.available_moves[pos][0].id in ["struggle", "recharge"]
+                else list(active_mon.moves.values())
+            )
+            order = Player.create_order(
+                mvs[(action - 7) % 20 // 5],
+                terastallize=bool((action - 7) // 20),
+                move_target=(int(action) - 7) % 5 - 2,
+            )
+        return order
 
     ###################################################################################
     # Helper methods
@@ -445,7 +594,13 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         :return: Additional information as a Dict
         :rtype: Dict
         """
-        return {}
+        battle1 = self.agent1.current_battle
+        battle2 = self.agent2.current_battle
+        assert battle1 is not None and battle2 is not None
+        return {
+            self.agents[0]: {"action_space": self.get_action_space(battle1)},
+            self.agents[1]: {"action_space": self.get_action_space(battle2)},
+        }
 
     def background_send_challenge(self, username: str):
         """
