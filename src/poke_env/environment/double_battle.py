@@ -405,7 +405,7 @@ class DoubleBattle(AbstractBattle):
             move request for each Pokemon.
         :rtype: List[List[Move]]
         """
-        return [[], []] if self._wait else self._available_moves
+        return self._available_moves
 
     @property
     def available_switches(self) -> List[List[Pokemon]]:
@@ -414,7 +414,7 @@ class DoubleBattle(AbstractBattle):
             current move request for each active pokemon
         :rtype: List[List[Pokemon]]
         """
-        return [[], []] if self._wait else self._available_switches
+        return self._available_switches
 
     @property
     def can_mega_evolve(self) -> List[bool]:
