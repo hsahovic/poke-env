@@ -350,19 +350,19 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             return switch_space
         else:
             move_space = [
-                i + 6
+                i + 10
                 for i, move in enumerate(battle.active_pokemon.moves.values())
                 if move.id in [m.id for m in battle.available_moves]
             ]
             # mega_space = [i + 4 for i in move_space if battle.can_mega_evolve]
             zmove_space = [
-                i + 8
+                i + 14
                 for i, move in enumerate(battle.active_pokemon.moves.values())
                 if move.id in [m.id for m in battle.active_pokemon.available_z_moves]
                 and battle.can_z_move
             ]
-            dynamax_space = [i + 12 for i in move_space if battle.can_dynamax]
-            tera_space = [i + 16 for i in move_space if battle.can_tera]
+            dynamax_space = [i + 18 for i in move_space if battle.can_dynamax]
+            tera_space = [i + 22 for i in move_space if battle.can_tera]
             if (
                 not move_space
                 and len(battle.available_moves) == 1
