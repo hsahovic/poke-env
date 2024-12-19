@@ -369,14 +369,17 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 and battle.available_moves[0].id in ["struggle", "recharge"]
             ):
                 move_space = [6]
-            return (
-                switch_space
-                + move_space
-                + mega_space
-                + zmove_space
-                + dynamax_space
-                + tera_space
-            )
+            if battle._wait:
+                return [0]
+            else:
+                return (
+                    switch_space
+                    + move_space
+                    + mega_space
+                    + zmove_space
+                    + dynamax_space
+                    + tera_space
+                )
 
     @staticmethod
     def get_doubles_action_space(battle: DoubleBattle) -> List[int]:
