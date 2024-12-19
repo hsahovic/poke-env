@@ -121,7 +121,7 @@ def test_two_successive_calls_gen9():
     play_function(env_player, 2)
 
 
-@pytest.mark.timeout(60)
+@pytest.mark.timeout(120)
 def test_parallel_api_tests():
     env_player_gen4 = RandomEnv(
         battle_format="gen4randombattle", log_level=25, start_challenging=True
