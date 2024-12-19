@@ -381,11 +381,9 @@ class Player(ABC):
             message = self.teampreview(battle)
         else:
             choice = self.choose_move(battle)
-            if battle._wait:
-                choice = DefaultBattleOrder()
             if isinstance(choice, Awaitable):
                 choice = await choice
-            message = choice.message
+            message = "/choose pass" if battle._wait else choice.message
 
         await self.ps_client.send_message(message, battle.battle_tag)
 
