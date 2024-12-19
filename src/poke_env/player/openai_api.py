@@ -87,8 +87,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
     Base class implementing the OpenAI Gym API on the main thread.
     """
 
-    _INIT_RETRIES = 100
-    _TIME_BETWEEN_RETRIES = 0.5
     _SWITCH_CHALLENGE_TASK_RETRIES = 30
     _TIME_BETWEEN_SWITCH_RETRIES = 1
 
