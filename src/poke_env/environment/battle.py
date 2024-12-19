@@ -171,7 +171,7 @@ class Battle(AbstractBattle):
         :return: The list of moves the player can use during the current move request.
         :rtype: List[Move]
         """
-        return self._available_moves
+        return [] if self._wait else self._available_moves
 
     @property
     def available_switches(self) -> List[Pokemon]:
@@ -179,7 +179,7 @@ class Battle(AbstractBattle):
         :return: The list of switches the player can do during the current move request.
         :rtype: List[Pokemon]
         """
-        return self._available_switches
+        return [] if self._wait else self._available_switches
 
     @property
     def can_dynamax(self) -> bool:
