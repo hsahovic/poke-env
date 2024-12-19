@@ -246,14 +246,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         seed: Optional[int] = None,
         options: Optional[Dict[str, Any]] = None,
     ) -> Tuple[Dict[str, ObsType], Dict[str, Dict[str, Any]]]:
-        # wait for agent1 and agent2 to spin up
-        count = self._INIT_RETRIES
-        while not (self.agent1.current_battle and self.agent2.current_battle):
-            if count == 0:
-                raise RuntimeError("Agent is not challenging")
-            count -= 1
-            time.sleep(self._TIME_BETWEEN_RETRIES)
-        # observe
         obs1 = self.embed_battle(self.agent1.battle_queue.get())
         obs2 = self.embed_battle(self.agent2.battle_queue.get())
         return {self.agents[0]: obs1, self.agents[1]: obs2}, self.get_additional_info()
