@@ -383,9 +383,9 @@ class Player(ABC):
             choice = self.choose_move(battle)
             if isinstance(choice, Awaitable):
                 choice = await choice
-            message = "/choose pass" if battle._wait else choice.message
-
-        await self.ps_client.send_message(message, battle.battle_tag)
+            message = choice.message
+        if not battle._wait:
+            await self.ps_client.send_message(message, battle.battle_tag)
 
     async def _handle_challenge_request(self, split_message: List[str]):
         """Handles an individual challenge."""
