@@ -363,6 +363,12 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             ]
             dynamax_space = [i + 12 for i in move_space if battle.can_dynamax]
             tera_space = [i + 16 for i in move_space if battle.can_tera]
+            if (
+                not move_space
+                and len(battle.available_moves) == 1
+                and battle.available_moves[0].id in ["struggle", "recharge"]
+            ):
+                move_space = [6]
             return (
                 switch_space
                 + move_space
