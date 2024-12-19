@@ -86,7 +86,6 @@ class AbstractBattle(ABC):
         "_last_request",
         "_max_team_size",
         "_maybe_trapped",
-        "_move_on_next_request",
         "_observations",
         "_opponent_can_dynamax",
         "_opponent_can_mega_evolve",
