@@ -24,7 +24,7 @@ def play_function(env: PokeEnv, n_battles):
         while not done:
             actions = {
                 env.agents[0]: random.choice(info[env.agents[0]]["action_space"]),
-                env.agents[1]: random.choice(info[env.agents[0]]["action_space"]),
+                env.agents[1]: random.choice(info[env.agents[1]]["action_space"]),
             }
             _, _, terminated, truncated, info = env.step(actions)
             done = any(terminated.values()) or any(truncated.values())
