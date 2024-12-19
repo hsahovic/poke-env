@@ -16,13 +16,13 @@ from pettingzoo.utils.env import ActionType, ParallelEnv
 
 from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
 from poke_env.environment.abstract_battle import AbstractBattle
+from poke_env.environment.battle import Battle
+from poke_env.environment.double_battle import DoubleBattle
 from poke_env.player.battle_order import (
     BattleOrder,
     DoubleBattleOrder,
     ForfeitBattleOrder,
 )
-from poke_env.environment.double_battle import DoubleBattle
-from poke_env.environment.battle import Battle
 from poke_env.player.player import Player
 from poke_env.ps_client import AccountConfiguration
 from poke_env.ps_client.server_configuration import (
@@ -363,7 +363,14 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             ]
             dynamax_space = [i + 12 for i in move_space if battle.can_dynamax]
             tera_space = [i + 16 for i in move_space if battle.can_tera]
-            return switch_space + move_space + mega_space + zmove_space + dynamax_space + tera_space
+            return (
+                switch_space
+                + move_space
+                + mega_space
+                + zmove_space
+                + dynamax_space
+                + tera_space
+            )
 
     @staticmethod
     def get_doubles_action_space(battle: DoubleBattle) -> List[int]:
@@ -444,7 +451,9 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         return order
 
     @staticmethod
-    def doubles_action_to_move(action1: int, action2: int, battle: DoubleBattle) -> BattleOrder:
+    def doubles_action_to_move(
+        action1: int, action2: int, battle: DoubleBattle
+    ) -> BattleOrder:
         if action1 == -1 or action2 == -1:
             return ForfeitBattleOrder()
         order1 = PokeEnv.doubles_action_to_move_(action1, battle, 0)
@@ -452,7 +461,9 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         return DoubleBattleOrder(order1, order2)
 
     @staticmethod
-    def doubles_action_to_move_(action: int, battle: DoubleBattle, pos: int) -> BattleOrder | None:
+    def doubles_action_to_move_(
+        action: int, battle: DoubleBattle, pos: int
+    ) -> BattleOrder | None:
         """
         Currently this works for gen 9 VGC format
         action = 0: pass

@@ -1,3 +1,5 @@
+import random
+
 import numpy as np
 import pytest
 from pettingzoo.test import parallel_api_test
@@ -21,8 +23,8 @@ def play_function(env: PokeEnv, n_battles):
         _, info = env.reset()
         while not done:
             actions = {
-                env.agents[0]: info[env.agents[0]]["action_space"].sample(),
-                env.agents[1]: info[env.agents[0]]["action_space"].sample(),
+                env.agents[0]: random.choice(info[env.agents[0]]["action_space"]),
+                env.agents[1]: random.choice(info[env.agents[0]]["action_space"]),
             }
             _, _, terminated, truncated, info = env.step(actions)
             done = any(terminated.values()) or any(truncated.values())
