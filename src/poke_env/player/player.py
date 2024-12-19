@@ -304,7 +304,7 @@ class Player(ABC):
                 ) or split_message[2].startswith(
                     "[Invalid choice] Can't switch: The active Pokémon is trapped"
                 ):
-                    battle.trapped = True
+                    battle.trapped = [True, True] if self.format_is_doubles else True
                     await self._handle_battle_request(battle)
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't switch: You can't switch to an active "
@@ -536,6 +536,7 @@ class Player(ABC):
             can_z_move,
             can_dynamax,
             can_tera,
+            trapped,
         ) in zip(
             active_orders,
             battle.active_pokemon,
@@ -545,6 +546,7 @@ class Player(ABC):
             battle.can_z_move,
             battle.can_dynamax,
             battle.can_tera,
+            battle.trapped,
         ):
             if not mon:
                 continue
@@ -559,7 +561,8 @@ class Player(ABC):
                     for target in targets[move]
                 ]
             )
-            orders.extend([BattleOrder(switch) for switch in switches])
+            if not trapped:
+                orders.extend([BattleOrder(switch) for switch in switches])
 
             if can_mega:
                 orders.extend(
@@ -608,9 +611,10 @@ class Player(ABC):
     @staticmethod
     def choose_random_singles_move(battle: Battle) -> BattleOrder:
         available_orders = [BattleOrder(move) for move in battle.available_moves]
-        available_orders.extend(
-            [BattleOrder(switch) for switch in battle.available_switches]
-        )
+        if not battle.trapped:
+            available_orders.extend(
+                [BattleOrder(switch) for switch in battle.available_switches]
+            )
 
         if battle.can_mega_evolve:
             available_orders.extend(

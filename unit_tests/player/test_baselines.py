@@ -19,10 +19,11 @@ def test_max_base_power_player():
             "can_dynamax",
             "can_tera",
             "can_mega_evolve",
+            "trapped",
             "gen",
         ),
     )
-    battle = PseudoBattle([], [], False, False, False, False, 8)
+    battle = PseudoBattle([], [], False, False, False, False, False, 8)
 
     player_pkg.Battle = PseudoBattle
 
@@ -234,10 +235,11 @@ def test_random_player():
             "can_dynamax",
             "can_tera",
             "can_mega_evolve",
+            "trapped",
             "gen",
         ),
     )
-    battle = PseudoBattle([], [], False, False, False, False, 8)
+    battle = PseudoBattle([], [], False, False, False, False, False, 8)
 
     player_pkg.Battle = PseudoBattle
 
