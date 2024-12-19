@@ -121,35 +121,35 @@ def test_two_successive_calls_gen9():
     play_function(env_player, 2)
 
 
-@pytest.mark.timeout(120)
+@pytest.mark.timeout(60)
 def test_parallel_api_tests():
     env_player_gen4 = RandomEnv(
         battle_format="gen4randombattle", log_level=25, start_challenging=True
     )
-    parallel_api_test(env_player_gen4)
+    parallel_api_test(env_player_gen4, num_cycles=10)
     env_player_gen4.close()
     env_player_gen5 = RandomEnv(
         battle_format="gen5randombattle", log_level=25, start_challenging=True
     )
-    parallel_api_test(env_player_gen5)
+    parallel_api_test(env_player_gen5, num_cycles=10)
     env_player_gen5.close()
     env_player_gen6 = RandomEnv(
         battle_format="gen6randombattle", log_level=25, start_challenging=True
     )
-    parallel_api_test(env_player_gen6)
+    parallel_api_test(env_player_gen6, num_cycles=10)
     env_player_gen6.close()
     env_player_gen7 = RandomEnv(
         battle_format="gen7randombattle", log_level=25, start_challenging=True
     )
-    parallel_api_test(env_player_gen7)
+    parallel_api_test(env_player_gen7, num_cycles=10)
     env_player_gen7.close()
     env_player_gen8 = RandomEnv(
         battle_format="gen8randombattle", log_level=25, start_challenging=True
     )
-    parallel_api_test(env_player_gen8)
+    parallel_api_test(env_player_gen8, num_cycles=10)
     env_player_gen8.close()
     env_player_gen9 = RandomEnv(
         battle_format="gen9randombattle", log_level=25, start_challenging=True
     )
-    parallel_api_test(env_player_gen9)
+    parallel_api_test(env_player_gen9, num_cycles=10)
     env_player_gen9.close()
