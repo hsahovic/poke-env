@@ -229,6 +229,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         battle2 = self.agent2.battle_queue.get()
         action_space1 = self.get_action_space(battle1)
         action_space2 = self.get_action_space(battle2)
+        print(action_space1, action_space2)
         action_mask1 = [float(i in action_space1) for i in range(26)]
         action_mask2 = [float(i in action_space2) for i in range(26)]
         obs = {
@@ -274,6 +275,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         battle2 = self.agent2.battle_queue.get()
         action_space1 = self.get_action_space(battle1)
         action_space2 = self.get_action_space(battle2)
+        print(action_space1, action_space2)
         action_mask1 = [float(i in action_space1) for i in range(26)]
         action_mask2 = [float(i in action_space2) for i in range(26)]
         obs = {

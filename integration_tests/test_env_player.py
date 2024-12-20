@@ -22,7 +22,6 @@ def play_function(env: PokeEnv, n_battles):
         done = False
         obs, _ = env.reset()
         while not done:
-            print([obs[name]["action_space"] for name in env.agents])
             actions = {
                 name: random.choice(obs[name]["action_space"]) for name in env.agents
             }
