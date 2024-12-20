@@ -616,7 +616,7 @@ class Pokemon:
         pokemon_request = [
             p
             for p in request["side"]["pokemon"]
-            if self.base_species in to_id_str(p["details"].split(", ")[0][4:])
+            if self.base_species in to_id_str(p["details"].split(", ")[0])
         ][0]
         self.update_from_request(pokemon_request)
         print(pokemon_request)
