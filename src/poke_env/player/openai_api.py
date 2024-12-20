@@ -12,7 +12,7 @@ from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple, Union
 
 import numpy as np
 from gymnasium.core import ObsType
-from gymnasium.spaces import Discrete
+from gymnasium.spaces import Box, Discrete
 from pettingzoo.utils.env import ActionType, ParallelEnv
 
 from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
@@ -189,6 +189,10 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             team=team,
         )
         self.agents = [self.agent1.username, self.agent2.username]
+        self.observation_spaces = {
+            name: Box(low=-1, high=1, shape=(10,), dtype=np.float32)
+            for name in self.agents
+        }
         self.action_spaces = {
             name: Discrete(len(self._ACTION_SPACE)) for name in self.agents
         }
@@ -482,7 +486,9 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 return PokeEnv.singles_action_to_move(action.item(), battle)
             else:
                 raise TypeError()
-        elif isinstance(battle, DoubleBattle) and isinstance(action, (List, np.ndarray)):
+        elif isinstance(battle, DoubleBattle) and isinstance(
+            action, (List, np.ndarray)
+        ):
             return PokeEnv.doubles_action_to_move(action[0], action[1], battle)
         else:
             raise TypeError()
