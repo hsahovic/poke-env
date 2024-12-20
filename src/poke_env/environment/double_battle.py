@@ -1,3 +1,4 @@
+from copy import deepcopy
 from logging import Logger
 from typing import Any, Dict, List, Optional, Union
 
@@ -224,6 +225,7 @@ class DoubleBattle(AbstractBattle):
         if pokemon_out is not None:
             pokemon_out.switch_out()
         pokemon_in = self.get_pokemon(pokemon_str, details=details)
+        self._backup_mon = deepcopy(pokemon_in)
         pokemon_in.switch_in()
         pokemon_in.set_hp_status(hp_status)
         team[pokemon_identifier] = pokemon_in
