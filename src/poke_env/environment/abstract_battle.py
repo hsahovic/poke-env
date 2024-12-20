@@ -345,7 +345,9 @@ class AbstractBattle(ABC):
         )
         illusionist_mon.set_hp(f"{illusioned.current_hp}/{illusioned.max_hp}")
 
-        illusioned.was_illusioned(self.last_request)
+        role = self.player_role
+        assert role is not None
+        illusioned.was_illusioned(role, self.last_request)
 
         return illusionist_mon
 

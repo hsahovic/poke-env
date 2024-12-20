@@ -605,30 +605,17 @@ class Pokemon:
     def used_z_move(self):
         self._item = None
 
-    def was_illusioned(self, request: Dict[str, Any]):
-        self._current_hp = None
-        self._max_hp = None
-        self._status = None
-        print("############################################")
-        print(request)
-        print(
-            self.base_species,
-            [
-                to_id_str(p["details"].split(", ")[0])
+    def was_illusioned(self, role: str, request: Dict[str, Any]):
+        if role == request["side"]["id"]:
+            self._current_hp = None
+            self._max_hp = None
+            self._status = None
+            pokemon_request = [
+                p
                 for p in request["side"]["pokemon"]
-            ],
-            self.base_species
-            in [
-                to_id_str(p["details"].split(", ")[0])
-                for p in request["side"]["pokemon"]
-            ],
-        )
-        pokemon_request = [
-            p
-            for p in request["side"]["pokemon"]
-            if self.base_species in to_id_str(p["details"].split(", ")[0])
-        ][0]
-        self.update_from_request(pokemon_request)
+                if self.base_species in to_id_str(p["details"].split(", ")[0])
+            ][0]
+            self.update_from_request(pokemon_request)
         self.switch_out()
 
     def available_moves_from_request(self, request: Dict[str, Any]) -> List[Move]:
