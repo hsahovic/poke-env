@@ -146,7 +146,10 @@ class Battle(AbstractBattle):
                 self.opponent_active_pokemon.switch_out()
 
         pokemon = self.get_pokemon(pokemon_str, details=details)
-        self._backup_mon = deepcopy(pokemon)
+        if identifier == self.player_role:
+            self._backup_mon = deepcopy(pokemon)
+        else:
+            self._opp_backup_mon = deepcopy(pokemon)
         pokemon.switch_in(details=details)
         pokemon.set_hp_status(hp_status)
 

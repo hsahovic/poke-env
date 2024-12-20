@@ -90,6 +90,7 @@ class AbstractBattle(ABC):
         "_maybe_trapped",
         "_move_on_next_request",
         "_observations",
+        "_opp_backup_mon",
         "_opponent_can_dynamax",
         "_opponent_can_mega_evolve",
         "_opponent_can_terrastallize",
@@ -162,6 +163,7 @@ class AbstractBattle(ABC):
         self._finished: bool = False
         self._last_request: Dict[str, Any] = {}
         self._backup_mon: Optional[Pokemon] = None
+        self._opp_backup_mon: Optional[Pokemon] = None
         self.rules: List[str] = []
         self._turn: int = 0
         self._opponent_can_terrastallize: bool = True
@@ -349,12 +351,20 @@ class AbstractBattle(ABC):
         illusionist_mon._boosts.update(illusioned.boosts)
         illusionist_mon.set_hp(f"{illusioned.current_hp}/{illusioned.max_hp}")
 
-        illusioned_key = [
+        illusioned_team_keys = [
             k for k, p in self.team.items() if p.base_species == illusioned.base_species
-        ][0]
+        ]
+        illusioned_opp_team_keys = [
+            k
+            for k, p in self.opponent_team.items()
+            if p.base_species == illusioned.base_species
+        ]
         backup = deepcopy(self.backup_mon)
         assert backup is not None
-        self._team[illusioned_key] = backup
+        if illusioned_team_keys:
+            self._team[illusioned_team_keys[0]] = backup
+        if illusioned_opp_team_keys:
+            self._opponent_team[illusioned_opp_team_keys[0]] = backup
 
         return illusionist_mon
 
@@ -1271,6 +1281,10 @@ class AbstractBattle(ABC):
         :rtype: int, optional
         """
         return self._rating
+
+    @property
+    def opp_backup_mon(self) -> Optional[Pokemon]:
+        return self._opp_backup_mon
 
     @property
     def opponent_rating(self) -> Optional[int]:

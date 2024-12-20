@@ -225,7 +225,10 @@ class DoubleBattle(AbstractBattle):
         if pokemon_out is not None:
             pokemon_out.switch_out()
         pokemon_in = self.get_pokemon(pokemon_str, details=details)
-        self._backup_mon = deepcopy(pokemon_in)
+        if player_identifier == self.player_role:
+            self._backup_mon = deepcopy(pokemon_in)
+        else:
+            self._opp_backup_mon = deepcopy(pokemon_in)
         pokemon_in.switch_in()
         pokemon_in.set_hp_status(hp_status)
         team[pokemon_identifier] = pokemon_in
