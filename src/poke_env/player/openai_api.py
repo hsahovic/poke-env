@@ -475,9 +475,14 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
 
     @staticmethod
     def action_to_move(action: ActionType, battle: AbstractBattle) -> BattleOrder:
-        if isinstance(action, np.integer) and isinstance(battle, Battle):
-            return PokeEnv.singles_action_to_move(action.item(), battle)
-        elif isinstance(action, np.ndarray) and isinstance(battle, DoubleBattle):
+        if isinstance(battle, Battle):
+            if isinstance(action, int):
+                return PokeEnv.singles_action_to_move(action, battle)
+            elif isinstance(action, np.integer):
+                return PokeEnv.singles_action_to_move(action.item(), battle)
+            else:
+                raise TypeError()
+        elif isinstance(battle, DoubleBattle) and isinstance(action, (List, np.ndarray)):
             return PokeEnv.doubles_action_to_move(action[0], action[1], battle)
         else:
             raise TypeError()
