@@ -269,12 +269,15 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             self.agent1.current_battle is not None
             and not self.agent1.current_battle.finished
         ):
-            print("lens:", self.agent1.order_queue.queue.qsize, self.agent2.order_queue.queue.qsize)
+            # clear past observations
+            if not self.agent1.battle_queue.empty():
+                self.agent1.order_queue.get()
+            if not self.agent2.battle_queue.empty():
+                self.agent2.order_queue.get()
+            # forfeit
             self.agent1.order_queue.put(ForfeitBattleOrder())
-            self.agent2.order_queue.put(ForfeitBattleOrder())
-        while not self.agent1.battle_queue.empty():
+            # clear post-forfeit observations
             self.agent1.battle_queue.get()
-        while not self.agent2.battle_queue.empty():
             self.agent2.battle_queue.get()
         battle1 = self.agent1.battle_queue.get()
         battle2 = self.agent2.battle_queue.get()
