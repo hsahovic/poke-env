@@ -671,7 +671,7 @@ def test_end_illusion():
 
     battle.player_role = "p1"
     battle.switch("p1: Clodsire", "Clodsire, L81, M", "293/293")
-    battle.switch("p1: Kingdra", "Kingdra, F", "100/100")
+    battle.switch("p2: Kingdra", "Kingdra, F", "100/100")
     battle.active_pokemon._boosts = non_empty_boosts
 
     assert battle.active_pokemon.species == "clodsire"
