@@ -606,10 +606,6 @@ class Pokemon:
         self._item = None
 
     def was_illusioned(self, request: Dict[str, Any]):
-        print("##########################################")
-        print(self.current_hp, self.max_hp, self.status)
-        print(request)
-        print(self.base_species)
         self._current_hp = None
         self._max_hp = None
         self._status = None
@@ -619,9 +615,6 @@ class Pokemon:
             if self.base_species in to_id_str(p["details"].split(", ")[0])
         ][0]
         self.update_from_request(pokemon_request)
-        print(pokemon_request)
-        print(pokemon_request is not None, self.current_hp, self.max_hp, self.status)
-        print("##########################################")
         self.switch_out()
 
     def available_moves_from_request(self, request: Dict[str, Any]) -> List[Move]:

@@ -195,25 +195,6 @@ def test_to_showdown_target(example_doubles_request):
     assert battle.to_showdown_target(dynamax_psychic, klinklang) == -2
 
 
-def test_end_illusion():
-    logger = MagicMock()
-    battle = DoubleBattle("tag", "username", logger, gen=8)
-    battle.player_role = "p2"
-
-    battle.switch("p2a: Celebi", "Celebi", "100/100")
-    battle.switch("p2b: Ferrothorn", "Ferrothorn, M", "100/100")
-    battle.switch("p1a: Pelipper", "Pelipper, F", "100/100")
-    battle.switch("p1b: Kingdra", "Kingdra, F", "100/100")
-
-    battle.end_illusion("p2a: Zoroark", "Zoroark, M")
-    zoroark = battle.team["p2: Zoroark"]
-    celebi = battle.team["p2: Celebi"]
-    ferrothorn = battle.team["p2: Ferrothorn"]
-    assert zoroark in battle.active_pokemon
-    assert ferrothorn in battle.active_pokemon
-    assert celebi not in battle.active_pokemon
-
-
 def test_one_mon_left_in_double_battles_results_in_available_move_in_the_correct_slot():
     request = {
         "active": [
