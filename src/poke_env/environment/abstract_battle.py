@@ -346,6 +346,7 @@ class AbstractBattle(ABC):
         illusionist_mon.status = (  # type: ignore
             illusioned.status if illusioned.status is not None else None
         )
+        illusionist_mon._boosts.update(illusioned.boosts)
         illusionist_mon.set_hp(f"{illusioned.current_hp}/{illusioned.max_hp}")
 
         illusioned_key = [
