@@ -611,9 +611,14 @@ class Pokemon:
         self._current_hp = None
         self._max_hp = None
         self._status = None
-        self.update_from_request(request)
-        print(request)
-        print(request is not None, self.current_hp, self.max_hp, self.status)
+        pokemon_request = [
+            p
+            for p in request["side"]["pokemon"]
+            if self.base_species in to_id_str(p["details"].split(", ")[0][4:])
+        ][0]
+        self.update_from_request(pokemon_request)
+        print(pokemon_request)
+        print(pokemon_request is not None, self.current_hp, self.max_hp, self.status)
         print("##########################################")
         self.switch_out()
 
