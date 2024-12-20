@@ -611,8 +611,18 @@ class Pokemon:
         self._status = None
         print("############################################")
         print(request)
-        print(self.base_species)
-        print([to_id_str(p["details"].split(", ")[0]) for p in request["side"]["pokemon"]])
+        print(
+            self.base_species,
+            [
+                to_id_str(p["details"].split(", ")[0])
+                for p in request["side"]["pokemon"]
+            ],
+            self.base_species
+            in [
+                to_id_str(p["details"].split(", ")[0])
+                for p in request["side"]["pokemon"]
+            ],
+        )
         pokemon_request = [
             p
             for p in request["side"]["pokemon"]
