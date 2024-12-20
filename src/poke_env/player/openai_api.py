@@ -227,8 +227,16 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         action_mask1 = [float(i in action_space1) for i in range(26)]
         action_mask2 = [float(i in action_space2) for i in range(26)]
         obs = {
-            self.agents[0]: {"observation": self.embed_battle(battle1), "action_space": action_space1, "action_mask": action_mask1},
-            self.agents[1]: {"observation": self.embed_battle(battle2), "action_space": action_space2, "action_mask": action_mask2},
+            self.agents[0]: {
+                "observation": self.embed_battle(battle1),
+                "action_space": action_space1,
+                "action_mask": action_mask1,
+            },
+            self.agents[1]: {
+                "observation": self.embed_battle(battle2),
+                "action_space": action_space2,
+                "action_mask": action_mask2,
+            },
         }
         reward = {
             self.agents[0]: self.calc_reward(battle1),
@@ -251,6 +259,12 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         seed: Optional[int] = None,
         options: Optional[Dict[str, Any]] = None,
     ) -> Tuple[Dict[str, Dict[str, Any]], Dict[str, Dict[str, Any]]]:
+        if (
+            self.agent1.current_battle is not None
+            and not self.agent1.current_battle.finished
+        ):
+            self.agent1.order_queue.put(ForfeitBattleOrder())
+            self.agent2.order_queue.put(ForfeitBattleOrder())
         battle1 = self.agent1.battle_queue.get()
         battle2 = self.agent2.battle_queue.get()
         action_space1 = self.get_action_space(battle1)
@@ -258,8 +272,16 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         action_mask1 = [float(i in action_space1) for i in range(26)]
         action_mask2 = [float(i in action_space2) for i in range(26)]
         obs = {
-            self.agents[0]: {"observation": self.embed_battle(battle1), "action_space": action_space1, "action_mask": action_mask1},
-            self.agents[1]: {"observation": self.embed_battle(battle2), "action_space": action_space2, "action_mask": action_mask2},
+            self.agents[0]: {
+                "observation": self.embed_battle(battle1),
+                "action_space": action_space1,
+                "action_mask": action_mask1,
+            },
+            self.agents[1]: {
+                "observation": self.embed_battle(battle2),
+                "action_space": action_space2,
+                "action_mask": action_mask2,
+            },
         }
         return obs, self.get_additional_info()
 
