@@ -10,6 +10,7 @@ from abc import abstractmethod
 from logging import Logger
 from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple, Union
 
+import numpy as np
 from gymnasium.core import ObsType
 from gymnasium.spaces import Discrete
 from pettingzoo.utils.env import ActionType, ParallelEnv
@@ -474,9 +475,9 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
 
     @staticmethod
     def action_to_move(action: ActionType, battle: AbstractBattle) -> BattleOrder:
-        if isinstance(action, int) and isinstance(battle, Battle):
-            return PokeEnv.singles_action_to_move(action, battle)
-        elif isinstance(action, List) and isinstance(battle, DoubleBattle):
+        if isinstance(action, np.integer) and isinstance(battle, Battle):
+            return PokeEnv.singles_action_to_move(action.item(), battle)
+        elif isinstance(action, np.ndarray) and isinstance(battle, DoubleBattle):
             return PokeEnv.doubles_action_to_move(action[0], action[1], battle)
         else:
             raise TypeError()
