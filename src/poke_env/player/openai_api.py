@@ -346,6 +346,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             if not battle.maybe_trapped
             and pokemon.species in [p.species for p in battle.available_switches]
         ]
+        print([p.species for p in battle.available_switches])
         if battle.active_pokemon is None:
             return switch_space
         else:
