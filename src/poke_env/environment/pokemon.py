@@ -608,6 +608,7 @@ class Pokemon:
     def was_illusioned(self, request: Dict[str, Any]):
         print("##########################################")
         print(self.current_hp, self.max_hp, self.status)
+        print(request)
         self._current_hp = None
         self._max_hp = None
         self._status = None
