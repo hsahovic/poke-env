@@ -345,7 +345,7 @@ class AbstractBattle(ABC):
         )
         illusionist_mon.set_hp(f"{illusioned.current_hp}/{illusioned.max_hp}")
 
-        illusioned.was_illusioned()
+        illusioned.was_illusioned(self.last_request)
 
         return illusionist_mon
 

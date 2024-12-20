@@ -605,20 +605,15 @@ class Pokemon:
     def used_z_move(self):
         self._item = None
 
-    def was_illusioned(self):
+    def was_illusioned(self, request: Dict[str, Any]):
         print("##########################################")
         print(self.current_hp, self.max_hp, self.status)
         self._current_hp = None
         self._max_hp = None
         self._status = None
-
-        last_request = self._last_request
-        self._last_request = None
-
-        if last_request:
-            self.update_from_request(last_request)
-        print(last_request)
-        print(last_request is not None, self.current_hp, self.max_hp, self.status)
+        self.update_from_request(request)
+        print(request)
+        print(request is not None, self.current_hp, self.max_hp, self.status)
         print("##########################################")
         self.switch_out()
 
