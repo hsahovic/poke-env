@@ -609,6 +609,7 @@ class Pokemon:
         print("##########################################")
         print(self.current_hp, self.max_hp, self.status)
         print(request)
+        print(self.base_species)
         self._current_hp = None
         self._max_hp = None
         self._status = None
