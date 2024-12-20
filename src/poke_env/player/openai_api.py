@@ -250,10 +250,18 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         self,
         seed: Optional[int] = None,
         options: Optional[Dict[str, Any]] = None,
-    ) -> Tuple[Dict[str, ObsType], Dict[str, Dict[str, Any]]]:
-        obs1 = self.embed_battle(self.agent1.battle_queue.get())
-        obs2 = self.embed_battle(self.agent2.battle_queue.get())
-        return {self.agents[0]: obs1, self.agents[1]: obs2}, self.get_additional_info()
+    ) -> Tuple[Dict[str, Dict[str, Any]], Dict[str, Dict[str, Any]]]:
+        battle1 = self.agent1.battle_queue.get()
+        battle2 = self.agent2.battle_queue.get()
+        action_space1 = self.get_action_space(battle1)
+        action_space2 = self.get_action_space(battle2)
+        action_mask1 = [float(i in action_space1) for i in range(26)]
+        action_mask2 = [float(i in action_space2) for i in range(26)]
+        obs = {
+            self.agents[0]: {"observation": self.embed_battle(battle1), "action_space": action_space1, "action_mask": action_mask1},
+            self.agents[1]: {"observation": self.embed_battle(battle2), "action_space": action_space2, "action_mask": action_mask2},
+        }
+        return obs, self.get_additional_info()
 
     def render(self, mode: str = "human"):
         if self.current_battle is not None:
