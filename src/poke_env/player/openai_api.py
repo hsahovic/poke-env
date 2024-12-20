@@ -271,6 +271,10 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         ):
             self.agent1.order_queue.put(ForfeitBattleOrder())
             self.agent2.order_queue.put(ForfeitBattleOrder())
+        while not self.agent1.battle_queue.empty():
+            self.agent1.battle_queue.get()
+        while not self.agent2.battle_queue.empty():
+            self.agent2.battle_queue.get()
         battle1 = self.agent1.battle_queue.get()
         battle2 = self.agent2.battle_queue.get()
         action_space1 = self.get_action_space(battle1)
