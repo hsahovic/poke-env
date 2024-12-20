@@ -609,6 +609,9 @@ class Pokemon:
         self._current_hp = None
         self._max_hp = None
         self._status = None
+        print("############################################")
+        print(request)
+        print(self.base_species)
         pokemon_request = [
             p
             for p in request["side"]["pokemon"]
