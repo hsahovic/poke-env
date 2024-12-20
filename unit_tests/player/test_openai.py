@@ -1,36 +1,32 @@
+from __future__ import annotations
+
 import asyncio
 import sys
 from io import StringIO
-from typing import Union
 
 from gymnasium import Space
+from pettingzoo.utils.env import ActionType
 
+from poke_env import AccountConfiguration
 from poke_env.environment import AbstractBattle, Battle, Pokemon
-from poke_env.player import (
-    ActType,
-    BattleOrder,
-    ForfeitBattleOrder,
-    ObsType,
-    OpenAIGymEnv,
-    Player,
-)
-from poke_env.player.openai_api import _AsyncPlayer, _AsyncQueue
+from poke_env.player import BattleOrder, ForfeitBattleOrder, PokeEnv
+from poke_env.player.openai_api import _AsyncQueue, AsyncPlayer
 
 
-class DummyEnv(OpenAIGymEnv[ObsType, ActType]):
+class DummyEnv(PokeEnv[list, ActionType]):
+    _ACTION_SPACE = list(range(10))
+
     def __init__(self, *args, **kwargs):
         self.opponent = None
         super().__init__(*args, **kwargs)
 
-    def calc_reward(
-        self, last_battle: AbstractBattle, current_battle: AbstractBattle
-    ) -> float:
+    def calc_reward(self, battle: AbstractBattle) -> float:
         return 69.42
 
     def action_to_move(self, action: int, battle: AbstractBattle) -> BattleOrder:
         return ForfeitBattleOrder()
 
-    def embed_battle(self, battle: AbstractBattle) -> ObsType:
+    def embed_battle(self, battle: AbstractBattle) -> list[int]:
         return [0, 1, 2]
 
     def describe_embedding(self) -> Space:
@@ -39,11 +35,11 @@ class DummyEnv(OpenAIGymEnv[ObsType, ActType]):
     def action_space_size(self) -> int:
         return 1
 
-    def get_opponent(self) -> Union[Player, str]:
-        return self.opponent
 
+class MockPlayer(AsyncPlayer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
-class UserFuncs:
     def embed_battle(self, battle):
         return "battle"
 
@@ -73,12 +69,14 @@ def test_queue():
 
 
 def test_async_player():
-    player = _AsyncPlayer(UserFuncs(), start_listening=False, username="usr")
+    player = MockPlayer(
+        account_configuration=AccountConfiguration("usr", None), start_listening=False
+    )
     battle = Battle("bat1", player.username, player.logger, gen=8)
-    player.actions.put(-1)
-    order = asyncio.get_event_loop().run_until_complete(player._env_move(battle))
+    player.order_queue.put(ForfeitBattleOrder())
+    order = asyncio.get_event_loop().run_until_complete(player.choose_move(battle))
     assert isinstance(order, ForfeitBattleOrder)
-    assert player.observations.get() == "battle"
+    assert player.embed_battle(player.battle_queue.get()) == "battle"
 
 
 def render(battle):
@@ -113,17 +111,3 @@ def test_render():
     battle._team["2"] = other_mon
     expected = "  Turn    3. | [●●][ 60/120hp]  charizard -    pikachu [ 20%hp][●]\r"
     assert render(battle) == expected
-
-
-def test_get_opponent():
-    player = DummyEnv(start_listening=False)
-    assert player._get_opponent() is None
-    player.opponent = "test"
-    assert player._get_opponent() == "test"
-    player.opponent = ["test"]
-    assert player._get_opponent() == "test"
-    opponents = ["test1", "test2", "test3", "test4", "test5"]
-    player.opponent = opponents
-    for _ in range(100):
-        assert player._get_opponent() in opponents
-    player.opponent = [0]

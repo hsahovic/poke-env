@@ -1,6 +1,8 @@
 """poke_env.player module init.
 """
 
+from pettingzoo.utils.env import ActionType, ObsType
+
 from poke_env.concurrency import POKE_LOOP
 from poke_env.player import env_player, openai_api, player, random_player, utils
 from poke_env.player.baselines import MaxBasePowerPlayer, SimpleHeuristicsPlayer
@@ -11,7 +13,6 @@ from poke_env.player.battle_order import (
     ForfeitBattleOrder,
 )
 from poke_env.player.env_player import (
-    EnvPlayer,
     Gen4EnvSinglePlayer,
     Gen5EnvSinglePlayer,
     Gen6EnvSinglePlayer,
@@ -19,7 +20,7 @@ from poke_env.player.env_player import (
     Gen8EnvSinglePlayer,
     Gen9EnvSinglePlayer,
 )
-from poke_env.player.openai_api import ActType, ObsType, OpenAIGymEnv
+from poke_env.player.openai_api import PokeEnv
 from poke_env.player.player import Player
 from poke_env.player.random_player import RandomPlayer
 from poke_env.player.utils import (
@@ -36,9 +37,8 @@ __all__ = [
     "player",
     "random_player",
     "utils",
-    "ActType",
+    "ActionType",
     "ObsType",
-    "EnvPlayer",
     "ForfeitBattleOrder",
     "Gen4EnvSinglePlayer",
     "Gen5EnvSinglePlayer",
@@ -47,7 +47,7 @@ __all__ = [
     "Gen8EnvSinglePlayer",
     "Gen9EnvSinglePlayer",
     "POKE_LOOP",
-    "OpenAIGymEnv",
+    "PokeEnv",
     "PSClient",
     "Player",
     "RandomPlayer",

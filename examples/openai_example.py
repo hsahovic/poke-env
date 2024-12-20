@@ -8,12 +8,12 @@ from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.player import (
     Gen8EnvSinglePlayer,
     ObservationType,
-    OpenAIGymEnv,
+    PokeEnv,
     RandomPlayer,
 )
 
 
-class TestEnv(OpenAIGymEnv):
+class TestEnv(PokeEnv):
     def __init__(self, **kwargs):
         self.opponent = RandomPlayer(
             battle_format="gen8randombattle",
