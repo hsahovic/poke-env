@@ -1,3 +1,4 @@
+from copy import deepcopy
 from logging import Logger
 from typing import Any, Dict, List, Optional, Union
 
@@ -114,7 +115,7 @@ class DoubleBattle(AbstractBattle):
             [mon.get("reviving") for mon in request["side"]["pokemon"]]
         )
 
-        if any(self._force_switch):
+        if any(self._force_switch) or self._wait:
             self._move_on_next_request = True
 
         self._last_request = request
@@ -224,6 +225,10 @@ class DoubleBattle(AbstractBattle):
         if pokemon_out is not None:
             pokemon_out.switch_out()
         pokemon_in = self.get_pokemon(pokemon_str, details=details)
+        if player_identifier == self.player_role:
+            self._backup_mon = deepcopy(pokemon_in)
+        else:
+            self._opp_backup_mon = deepcopy(pokemon_in)
         pokemon_in.switch_in()
         pokemon_in.set_hp_status(hp_status)
         team[pokemon_identifier] = pokemon_in

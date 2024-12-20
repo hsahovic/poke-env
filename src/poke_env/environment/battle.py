@@ -1,3 +1,4 @@
+from copy import deepcopy
 from logging import Logger
 from typing import Any, Dict, List, Optional, Union
 
@@ -81,7 +82,7 @@ class Battle(AbstractBattle):
         self._trapped = False
         self._force_switch = request.get("forceSwitch", [False])[0]
 
-        if self._force_switch:
+        if self._force_switch or self._wait:
             self._move_on_next_request = True
 
         self._last_request = request
@@ -145,7 +146,10 @@ class Battle(AbstractBattle):
                 self.opponent_active_pokemon.switch_out()
 
         pokemon = self.get_pokemon(pokemon_str, details=details)
-
+        if identifier == self.player_role:
+            self._backup_mon = deepcopy(pokemon)
+        else:
+            self._opp_backup_mon = deepcopy(pokemon)
         pokemon.switch_in(details=details)
         pokemon.set_hp_status(hp_status)
 

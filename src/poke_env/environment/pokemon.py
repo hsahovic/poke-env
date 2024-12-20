@@ -276,6 +276,8 @@ class Pokemon:
 
     def heal(self, hp_status: str):
         self.set_hp_status(hp_status)
+        if self.fainted and self.current_hp > 0:
+            self._status = None
 
     def invert_boosts(self):
         self._boosts = {k: -v for k, v in self._boosts.items()}
@@ -602,19 +604,6 @@ class Pokemon:
 
     def used_z_move(self):
         self._item = None
-
-    def was_illusioned(self):
-        self._current_hp = None
-        self._max_hp = None
-        self._status = None
-
-        last_request = self._last_request
-        self._last_request = None
-
-        if last_request:
-            self.update_from_request(last_request)
-
-        self.switch_out()
 
     def available_moves_from_request(self, request: Dict[str, Any]) -> List[Move]:
         moves: List[Move] = []

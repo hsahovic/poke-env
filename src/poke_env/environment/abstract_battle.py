@@ -1,6 +1,7 @@
 import os
 import re
 from abc import ABC, abstractmethod
+from copy import deepcopy
 from logging import Logger
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
@@ -69,6 +70,7 @@ class AbstractBattle(ABC):
         "_anybody_inactive",
         "_available_moves",
         "_available_switches",
+        "_backup_mon",
         "_battle_tag",
         "_can_dynamax",
         "_can_mega_evolve",
@@ -88,6 +90,7 @@ class AbstractBattle(ABC):
         "_maybe_trapped",
         "_move_on_next_request",
         "_observations",
+        "_opp_backup_mon",
         "_opponent_can_dynamax",
         "_opponent_can_mega_evolve",
         "_opponent_can_terrastallize",
@@ -159,6 +162,8 @@ class AbstractBattle(ABC):
         self._dynamax_turn: Optional[int] = None
         self._finished: bool = False
         self._last_request: Dict[str, Any] = {}
+        self._backup_mon: Optional[Pokemon] = None
+        self._opp_backup_mon: Optional[Pokemon] = None
         self.rules: List[str] = []
         self._turn: int = 0
         self._opponent_can_terrastallize: bool = True
@@ -343,9 +348,23 @@ class AbstractBattle(ABC):
         illusionist_mon.status = (  # type: ignore
             illusioned.status if illusioned.status is not None else None
         )
+        illusionist_mon._boosts.update(illusioned.boosts)
         illusionist_mon.set_hp(f"{illusioned.current_hp}/{illusioned.max_hp}")
 
-        illusioned.was_illusioned()
+        illusioned_team_keys = [
+            k for k, p in self.team.items() if p.base_species == illusioned.base_species
+        ]
+        illusioned_opp_team_keys = [
+            k
+            for k, p in self.opponent_team.items()
+            if p.base_species == illusioned.base_species
+        ]
+        backup = deepcopy(self.backup_mon)
+        assert backup is not None
+        if illusioned_team_keys:
+            self._team[illusioned_team_keys[0]] = backup
+        if illusioned_opp_team_keys:
+            self._opponent_team[illusioned_opp_team_keys[0]] = backup
 
         return illusionist_mon
 
@@ -993,6 +1012,10 @@ class AbstractBattle(ABC):
         pass
 
     @property
+    def backup_mon(self) -> Optional[Pokemon]:
+        return self._backup_mon
+
+    @property
     def battle_tag(self) -> str:
         """
         :return: The battle identifier.
@@ -1258,6 +1281,10 @@ class AbstractBattle(ABC):
         :rtype: int, optional
         """
         return self._rating
+
+    @property
+    def opp_backup_mon(self) -> Optional[Pokemon]:
+        return self._opp_backup_mon
 
     @property
     def opponent_rating(self) -> Optional[int]:
