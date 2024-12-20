@@ -604,6 +604,7 @@ class Pokemon:
         self._item = None
 
     def was_illusioned(self):
+        print(self.current_hp, self.max_hp, self.status)
         self._current_hp = None
         self._max_hp = None
         self._status = None
@@ -613,7 +614,7 @@ class Pokemon:
 
         if last_request:
             self.update_from_request(last_request)
-
+        print(last_request is not None, self.current_hp, self.max_hp, self.status)
         self.switch_out()
 
     def available_moves_from_request(self, request: Dict[str, Any]) -> List[Move]:
