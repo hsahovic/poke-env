@@ -358,10 +358,14 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             if not battle.maybe_trapped
             and pokemon.species in [p.species for p in battle.available_switches]
         ]
-        print([p.species for p in battle.available_switches])
         if battle.active_pokemon is None:
             return switch_space
         else:
+            revival_space = [
+                i
+                for i, pokemon in enumerate(battle.team.values())
+                if battle.reviving and pokemon.fainted
+            ]
             move_space = [
                 i + 6
                 for i, move in enumerate(battle.active_pokemon.moves.values())
@@ -387,6 +391,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             else:
                 return (
                     switch_space
+                    + revival_space
                     + move_space
                     # + mega_space
                     + zmove_space
