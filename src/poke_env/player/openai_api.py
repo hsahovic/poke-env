@@ -660,7 +660,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         :return: Additional information as a Dict
         :rtype: Dict
         """
-        return {}
+        return {name: {} for name in self.agents}
 
     def background_send_challenge(self, username: str):
         """
