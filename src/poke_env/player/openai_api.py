@@ -207,7 +207,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
     # https://pettingzoo.farama.org/api/parallel/#parallelenv
 
     def step(self, actions: Dict[str, ActionType]) -> Tuple[
-        Dict[str, ObsType],
+        Dict[str, Dict[str, Any]],
         Dict[str, float],
         Dict[str, bool],
         Dict[str, bool],
@@ -222,9 +222,13 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         self.agent2.order_queue.put(order2)
         battle1 = self.agent1.battle_queue.get()
         battle2 = self.agent2.battle_queue.get()
+        action_space1 = self.get_action_space(battle1)
+        action_space2 = self.get_action_space(battle2)
+        action_mask1 = [float(i in action_space1) for i in range(26)]
+        action_mask2 = [float(i in action_space2) for i in range(26)]
         obs = {
-            self.agents[0]: self.embed_battle(battle1),
-            self.agents[1]: self.embed_battle(battle2),
+            self.agents[0]: {"observation": self.embed_battle(battle1), "action_space": action_space1, "action_mask": action_mask1},
+            self.agents[1]: {"observation": self.embed_battle(battle2), "action_space": action_space2, "action_mask": action_mask2},
         }
         reward = {
             self.agents[0]: self.calc_reward(battle1),
@@ -621,13 +625,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         :return: Additional information as a Dict
         :rtype: Dict
         """
-        battle1 = self.agent1.current_battle
-        battle2 = self.agent2.current_battle
-        assert battle1 is not None and battle2 is not None
-        return {
-            self.agents[0]: {"action_space": self.get_action_space(battle1)},
-            self.agents[1]: {"action_space": self.get_action_space(battle2)},
-        }
+        return {}
 
     def background_send_challenge(self, username: str):
         """
