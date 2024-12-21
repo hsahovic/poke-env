@@ -1,4 +1,4 @@
-"""This module defines a player class with the OpenAI API on the main thread.
+"""This module defines a player class with the Gymnasium API on the main thread.
 For a black-box implementation consider using the module env_player.
 """
 
@@ -62,7 +62,7 @@ class _AsyncPlayer(Generic[ObsType, ActType], Player):
 
     def __init__(
         self,
-        user_funcs: OpenAIGymEnv[ObsType, ActType],
+        user_funcs: GymnasiumEnv[ObsType, ActType],
         username: str,
         **kwargs: Any,
     ):
@@ -94,12 +94,12 @@ class _AsyncPlayer(Generic[ObsType, ActType], Player):
         asyncio.run_coroutine_threadsafe(self.observations.async_put(to_put), POKE_LOOP)
 
 
-class OpenAIGymEnv(
+class GymnasiumEnv(
     Env[ObsType, ActType],
     ABC,
 ):
     """
-    Base class implementing the OpenAI Gym API on the main thread.
+    Base class implementing the Gymnasium API on the main thread.
     """
 
     _INIT_RETRIES = 100
@@ -239,7 +239,7 @@ class OpenAIGymEnv(
     def embed_battle(self, battle: AbstractBattle) -> ObsType:
         """
         Returns the embedding of the current battle state in a format compatible with
-        the OpenAI gym API.
+        the Gymnasium API.
 
         :param battle: The current battle state.
         :type battle: AbstractBattle
@@ -416,7 +416,7 @@ class OpenAIGymEnv(
     def background_send_challenge(self, username: str):
         """
         Sends a single challenge specified player. The function immediately returns
-        to allow use of the OpenAI gym API.
+        to allow use of the Gymnasium API.
 
         :param username: The username of the player to challenge.
         :type username: str
@@ -434,7 +434,7 @@ class OpenAIGymEnv(
     def background_accept_challenge(self, username: str):
         """
         Accepts a single challenge specified player. The function immediately returns
-        to allow use of the OpenAI gym API.
+        to allow use of the Gymnasium API.
 
         :param username: The username of the player to challenge.
         :type username: str

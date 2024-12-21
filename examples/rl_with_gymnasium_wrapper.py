@@ -72,7 +72,7 @@ class SimpleRLPlayer(Gen8EnvSinglePlayer):
 
 async def main():
     # First test the environment to ensure the class is consistent
-    # with the OpenAI API
+    # with the Gymnasium API
     opponent = RandomPlayer(battle_format="gen8randombattle")
     test_env = SimpleRLPlayer(
         battle_format="gen8randombattle", start_challenging=True, opponent=opponent
