@@ -305,9 +305,14 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
                 count -= 1
                 time.sleep(self._TIME_BETWEEN_RETRIES)
         if self.current_battle1 and not self.current_battle1.finished:
-            self._actions1.put(-1)
-            self._observations1.get()
-            self._observations2.get()
+            if self.current_battle1 == self.agent1.current_battle:
+                self._actions1.put(-1)
+                self._observations1.get()
+                self._observations2.get()
+            else:
+                raise RuntimeError(
+                    "Environment and agent aren't synchronized. Try to restart"
+                )
         while (
             self.current_battle1 == self.agent1.current_battle
             or self.current_battle2 == self.agent2.current_battle
