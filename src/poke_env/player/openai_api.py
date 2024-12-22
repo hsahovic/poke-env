@@ -628,6 +628,7 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
 
         if wait and self._challenge_task:
             while not self._challenge_task.done():
+                print("waitingggg")
                 await asyncio.sleep(1)
             self._challenge_task.result()
 
