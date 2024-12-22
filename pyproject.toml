@@ -43,9 +43,6 @@ line-length = 88
 profile = "black"
 multi_line_output = 3
 
-[tool.mypy]
-ignore_missing_imports = true
-
 [tool.pyright]
 include = ["src"]
 pythonVersion = "3.7"
