@@ -1,7 +1,7 @@
 """This module defines a player class exposing the Open AI Gym API with utility functions.
 """
 
-from typing import Generic, List, Optional, Union
+from typing import List, Optional, Union
 from weakref import WeakKeyDictionary
 
 from pettingzoo.utils.env import ActionType, ObsType  # type: ignore
@@ -15,7 +15,7 @@ from poke_env.ps_client.server_configuration import ServerConfiguration
 from poke_env.teambuilder.teambuilder import Teambuilder
 
 
-class EnvPlayer(OpenAIGymEnv[ObsType, ActionType], Generic[ObsType, ActionType]):
+class EnvPlayer(OpenAIGymEnv[ObsType, ActionType]):
     """Player exposing the Open AI Gym Env API."""
 
     _ACTION_SPACE: List[int] = []
@@ -213,7 +213,7 @@ class EnvPlayer(OpenAIGymEnv[ObsType, ActionType], Generic[ObsType, ActionType])
             self.start_challenging()
 
 
-class Gen4EnvSinglePlayer(EnvPlayer[ObsType, ActionType], Generic[ObsType, ActionType]):
+class Gen4EnvSinglePlayer(EnvPlayer[ObsType, ActionType]):
     _ACTION_SPACE = list(range(4 + 6))
     _DEFAULT_BATTLE_FORMAT = "gen4randombattle"
 
@@ -253,12 +253,12 @@ class Gen4EnvSinglePlayer(EnvPlayer[ObsType, ActionType], Generic[ObsType, Actio
 
 
 class Gen5EnvSinglePlayer(
-    Gen4EnvSinglePlayer[ObsType, ActionType], Generic[ObsType, ActionType]
+    Gen4EnvSinglePlayer[ObsType, ActionType]
 ):
     _DEFAULT_BATTLE_FORMAT = "gen5randombattle"
 
 
-class Gen6EnvSinglePlayer(EnvPlayer[ObsType, ActionType], Generic[ObsType, ActionType]):
+class Gen6EnvSinglePlayer(EnvPlayer[ObsType, ActionType]):
     _ACTION_SPACE = list(range(2 * 4 + 6))
     _DEFAULT_BATTLE_FORMAT = "gen6randombattle"
 
@@ -306,7 +306,7 @@ class Gen6EnvSinglePlayer(EnvPlayer[ObsType, ActionType], Generic[ObsType, Actio
             return Player.choose_random_move(battle)
 
 
-class Gen7EnvSinglePlayer(EnvPlayer[ObsType, ActionType], Generic[ObsType, ActionType]):
+class Gen7EnvSinglePlayer(EnvPlayer[ObsType, ActionType]):
     _ACTION_SPACE = list(range(3 * 4 + 6))
     _DEFAULT_BATTLE_FORMAT = "gen7randombattle"
 
@@ -366,7 +366,7 @@ class Gen7EnvSinglePlayer(EnvPlayer[ObsType, ActionType], Generic[ObsType, Actio
             return Player.choose_random_move(battle)
 
 
-class Gen8EnvSinglePlayer(EnvPlayer[ObsType, ActionType], Generic[ObsType, ActionType]):
+class Gen8EnvSinglePlayer(EnvPlayer[ObsType, ActionType]):
     _ACTION_SPACE = list(range(4 * 4 + 6))
     _DEFAULT_BATTLE_FORMAT = "gen8randombattle"
 
@@ -440,7 +440,7 @@ class Gen8EnvSinglePlayer(EnvPlayer[ObsType, ActionType], Generic[ObsType, Actio
             return Player.choose_random_move(battle)
 
 
-class Gen9EnvSinglePlayer(EnvPlayer[ObsType, ActionType], Generic[ObsType, ActionType]):
+class Gen9EnvSinglePlayer(EnvPlayer[ObsType, ActionType]):
     _ACTION_SPACE = list(range(5 * 4 + 6))
     _DEFAULT_BATTLE_FORMAT = "gen9randombattle"
 
