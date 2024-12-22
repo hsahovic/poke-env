@@ -7,12 +7,7 @@ from gymnasium import Space
 from pettingzoo.utils.env import ActionType, ObsType
 
 from poke_env.environment import AbstractBattle, Battle, Pokemon
-from poke_env.player import (
-    BattleOrder,
-    ForfeitBattleOrder,
-    OpenAIGymEnv,
-    Player,
-)
+from poke_env.player import BattleOrder, ForfeitBattleOrder, OpenAIGymEnv, Player
 from poke_env.player.openai_api import _AsyncPlayer, _AsyncQueue
 
 
