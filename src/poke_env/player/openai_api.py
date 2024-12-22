@@ -297,12 +297,7 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
         seed: Optional[int] = None,
         options: Optional[Dict[str, Any]] = None,
     ) -> Tuple[Dict[str, ObsType], Dict[str, Dict[str, Any]]]:
-        if seed is not None:
-            super().reset(seed=seed)  # type: ignore
-            self._seed_initialized = True
-        elif not self._seed_initialized:
-            super().reset(seed=int(time.time()))  # type: ignore
-            self._seed_initialized = True
+        # TODO: use the seed
         if not self.agent1.current_battle:
             count = self._INIT_RETRIES
             while not self.agent1.current_battle:
