@@ -4,7 +4,7 @@
 from typing import Generic, List, Optional, Union
 from weakref import WeakKeyDictionary
 
-from pettingzoo.utils.env import ActionType, ObsType
+from pettingzoo.utils.env import ActionType, ObsType  # type: ignore
 
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.player.battle_order import BattleOrder, ForfeitBattleOrder
