@@ -297,9 +297,9 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
         options: Optional[Dict[str, Any]] = None,
     ) -> Tuple[Dict[str, ObsType], Dict[str, Dict[str, Any]]]:
         # TODO: use the seed
-        if not self.agent1.current_battle:
+        if not self.agent1.current_battle or not self.agent2.current_battle:
             count = self._INIT_RETRIES
-            while not self.agent1.current_battle:
+            while not self.agent1.current_battle or not self.agent2.current_battle:
                 if count == 0:
                     raise RuntimeError("Agent is not challenging")
                 count -= 1
@@ -308,8 +308,15 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
             self._actions1.put(-1)
             self._observations1.get()
             self._observations2.get()
+        while (
+            self.current_battle1 == self.agent1.current_battle
+            or self.current_battle2 == self.agent2.current_battle
+        ):
+            time.sleep(0.01)
         self.current_battle1 = self.agent1.current_battle
         self.current_battle1.logger = None
+        self.current_battle2 = self.agent2.current_battle
+        self.current_battle2.logger = None
         self.last_battle1 = self.current_battle1
         self.last_battle2 = self.current_battle2
         observations = {
