@@ -450,17 +450,17 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
             )
 
     def close(self, purge: bool = True):
-        if (
-            self.current_battle1 is None
-            or self.current_battle1.finished
-            or self.current_battle2 is None
-            or self.current_battle2.finished
-        ):
-            time.sleep(1)
-            if self.current_battle1 != self.agent1.current_battle:
-                self.current_battle1 = self.agent1.current_battle
-            if self.current_battle2 != self.agent2.current_battle:
-                self.current_battle2 = self.agent2.current_battle
+        # if (
+        #     self.current_battle1 is None
+        #     or self.current_battle1.finished
+        #     or self.current_battle2 is None
+        #     or self.current_battle2.finished
+        # ):
+        #     time.sleep(1)
+        #     if self.current_battle1 != self.agent1.current_battle:
+        #         self.current_battle1 = self.agent1.current_battle
+        #     if self.current_battle2 != self.agent2.current_battle:
+        #         self.current_battle2 = self.agent2.current_battle
         closing_task = asyncio.run_coroutine_threadsafe(
             self._stop_challenge_loop(purge=purge), POKE_LOOP
         )
