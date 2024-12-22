@@ -83,6 +83,7 @@ def test_choose_move(queue_put_mock, queue_get_mock):
 
     assert message.message == "/choose move flamethrower"
 
+    battle._available_moves = []
     battle._available_switches = [Pokemon(species="charizard", gen=8)]
 
     message = player.agent1.choose_move(battle)
