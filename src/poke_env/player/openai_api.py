@@ -364,9 +364,7 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
         self._actions1.put(actions[self.agents[0]])
         self._actions2.put(actions[self.agents[1]])
         while self._observations1.empty() and self._observations2.empty():
-            pass
-        if self._observations1.empty() != self._observations2.empty():
-            time.sleep(0.1)
+            time.sleep(0.01)
         if not self._observations1.empty() and not self._observations2.empty():
             observations = {
                 self.agents[0]: self._observations1.get(),
