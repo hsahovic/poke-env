@@ -220,7 +220,7 @@ def test_reward_computing_helper():
 
 def test_action_space():
     player = CustomEnvPlayer(start_listening=False)
-    assert player.action_space == Discrete(len(Gen7EnvSinglePlayer._ACTION_SPACE))
+    assert player.action_space(player.agents[0]) == Discrete(len(Gen7EnvSinglePlayer._ACTION_SPACE))
 
     for PlayerClass, (has_megas, has_z_moves, has_dynamax) in zip(
         [
@@ -249,12 +249,9 @@ def test_action_space():
             def describe_embedding(self):
                 return None
 
-            def get_opponent(self):
-                return None
+        p = CustomEnvClass(start_listening=False, start_challenging=False)
 
-        p = CustomEnvClass(None, start_listening=False, start_challenging=False)
-
-        assert p.action_space == Discrete(
+        assert p.action_space(player.agents[0]) == Discrete(
             4 * sum([1, has_megas, has_z_moves, has_dynamax]) + 6
         )
 
