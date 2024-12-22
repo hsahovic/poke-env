@@ -450,17 +450,6 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
             )
 
     def close(self, purge: bool = True):
-        # if (
-        #     self.current_battle1 is None
-        #     or self.current_battle1.finished
-        #     or self.current_battle2 is None
-        #     or self.current_battle2.finished
-        # ):
-        #     time.sleep(1)
-        #     if self.current_battle1 != self.agent1.current_battle:
-        #         self.current_battle1 = self.agent1.current_battle
-        #     if self.current_battle2 != self.agent2.current_battle:
-        #         self.current_battle2 = self.agent2.current_battle
         closing_task = asyncio.run_coroutine_threadsafe(
             self._stop_challenge_loop(purge=purge), POKE_LOOP
         )
@@ -603,34 +592,19 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
             self._ladder_loop(n_challenges, callback), POKE_LOOP
         )
 
-    async def _stop_challenge_loop(
-        self, force: bool = True, wait: bool = True, purge: bool = False
-    ):
+    async def _stop_challenge_loop(self, purge: bool = False):
         self._keep_challenging = False
 
-        if wait and self._challenge_task:
+        if self.agent1.current_battle and not self.agent1.current_battle.finished:
+            await self._actions1.async_put(-1)
+            await self._observations1.async_get()
+            await self._observations2.async_get()
+
+        if self._challenge_task:
             while not self._challenge_task.done():
                 print("waitingggg")
                 await asyncio.sleep(1)
             self._challenge_task.result()
-
-        if force:
-            if (self.current_battle1 and not self.current_battle1.finished) or (
-                self.current_battle2 and not self.current_battle2.finished
-            ):
-                if not self._actions1.empty() or self._actions2.empty():
-                    await asyncio.sleep(2)
-                    if not self._actions1.empty() or not self._actions2.empty():
-                        raise RuntimeError(
-                            "The agent is still sending actions. "
-                            "Use this method only when training or "
-                            "evaluation are over."
-                        )
-                if not self._observations1.empty():
-                    await self._observations1.async_get()
-                if not self._observations2.empty():
-                    await self._observations2.async_get()
-                await self._actions1.async_put(-1)
 
         self._challenge_task = None
         self.current_battle1 = None
