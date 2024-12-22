@@ -368,6 +368,7 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
         # Handling case such as "trapped" where error message causes re-send of battle request,
         # but only for one of the two agents.
         if self._observations1.empty() != self._observations2.empty():
+            print("############################################################################### ITS ME HEYOOOO")
             if self._observations1.empty():
                 observations = {
                     self.agents[0]: self.embed_battle(self.last_battle1),
