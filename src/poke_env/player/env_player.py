@@ -2,7 +2,6 @@
 """
 
 from abc import ABC
-from threading import Lock
 from typing import List, Optional, Union
 from weakref import WeakKeyDictionary
 

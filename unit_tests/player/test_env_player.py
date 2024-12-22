@@ -3,7 +3,6 @@ import unittest
 from inspect import isawaitable
 from unittest.mock import patch
 
-import pytest
 from gymnasium.spaces import Discrete, Space
 
 from poke_env import AccountConfiguration, ServerConfiguration
@@ -17,7 +16,6 @@ from poke_env.player import (
     Gen7EnvSinglePlayer,
     Gen8EnvSinglePlayer,
     Gen9EnvSinglePlayer,
-    RandomPlayer,
 )
 from poke_env.player.openai_api import _AsyncPlayer
 

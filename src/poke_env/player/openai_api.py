@@ -7,8 +7,7 @@ from __future__ import annotations
 import asyncio
 import copy
 import time
-from abc import ABC, abstractmethod
-from logging import Logger
+from abc import abstractmethod
 from typing import Any, Awaitable, Callable, Dict, Generic, Optional, Tuple, Union
 
 from gymnasium.spaces import Discrete, Space
@@ -306,19 +305,13 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
                 count -= 1
                 time.sleep(self._TIME_BETWEEN_RETRIES)
         if self.current_battle1 and not self.current_battle1.finished:
-            if self.current_battle1 == self.agent1.current_battle:
-                self._actions1.put(-1)
-                self._observations1.get()
-                self._observations2.get()
-            else:
-                raise RuntimeError(
-                    "Environment and agent aren't synchronized. Try to restart"
-                )
-        while self.current_battle1 == self.agent1.current_battle:
-            time.sleep(0.01)
+            self._actions1.put(-1)
+            self._observations1.get()
+            self._observations2.get()
         self.current_battle1 = self.agent1.current_battle
         self.current_battle1.logger = None
-        self.last_battle = self.current_battle1
+        self.last_battle1 = self.current_battle1
+        self.last_battle2 = self.current_battle2
         observations = {
             self.agents[0]: self._observations1.get(),
             self.agents[1]: self._observations2.get(),
@@ -342,7 +335,7 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
         Dict[str, bool],
         Dict[str, Dict[str, Any]],
     ]:
-        if not self.current_battle1:
+        if not self.current_battle1 or not self.current_battle2:
             obs, info = self.reset()
             reward = {self.agents[0]: 0.0, self.agents[1]: 0.0}
             terminated = {self.agents[0]: False, self.agents[1]: False}
@@ -350,26 +343,26 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
             return obs, reward, terminated, truncated, info
         if self.current_battle1.finished:
             raise RuntimeError("Battle is already finished, call reset")
-        battle = copy.copy(self.current_battle1)
-        battle.logger = None
-        self.last_battle = battle
+        b1 = copy.copy(self.current_battle1)
+        b1.logger = None
+        b2 = copy.copy(self.current_battle2)
+        b2.logger = None
+        self.last_battle1 = b1
+        self.last_battle2 = b2
         self._actions1.put(actions[self.agents[0]])
         self._actions2.put(actions[self.agents[1]])
         observations = {
             self.agents[0]: self._observations1.get(),
             self.agents[1]: self._observations2.get(),
         }
-        battle1 = self.current_battle1
-        battle2 = self.current_battle2
-        assert battle1 is not None and battle2 is not None
         last_battle1 = self.last_battle1
         last_battle2 = self.last_battle2
         assert last_battle1 is not None and last_battle2 is not None
-        reward1 = self.calc_reward(last_battle1, battle1)
-        reward2 = self.calc_reward(last_battle2, battle2)
+        reward1 = self.calc_reward(last_battle1, self.current_battle1)
+        reward2 = self.calc_reward(last_battle2, self.current_battle2)
         reward = {self.agents[0]: reward1, self.agents[1]: reward2}
-        term1, trunc1 = self.calc_term_trunc(battle1)
-        term2, trunc2 = self.calc_term_trunc(battle2)
+        term1, trunc1 = self.calc_term_trunc(self.current_battle1)
+        term2, trunc2 = self.calc_term_trunc(self.current_battle2)
         terminated = {self.agents[0]: term1, self.agents[1]: term2}
         truncated = {self.agents[0]: trunc1, self.agents[1]: trunc2}
         return observations, reward, terminated, truncated, self.get_additional_info()
