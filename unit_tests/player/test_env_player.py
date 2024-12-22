@@ -43,13 +43,12 @@ class CustomEnvPlayer(EnvPlayer):
 
 def test_init():
     gym_env = CustomEnvPlayer(
-        None,
         account_configuration=account_configuration,
         server_configuration=server_configuration,
         start_listening=False,
         battle_format="gen7randombattles",
     )
-    player = gym_env.agent
+    player = gym_env.agent1
     assert isinstance(gym_env, CustomEnvPlayer)
     assert isinstance(player, _AsyncPlayer)
 
@@ -67,16 +66,15 @@ class AsyncMock(unittest.mock.MagicMock):
 @patch("poke_env.player.openai_api._AsyncQueue.async_put", new_callable=AsyncMock)
 def test_choose_move(queue_put_mock, queue_get_mock):
     player = CustomEnvPlayer(
-        None,
         account_configuration=account_configuration,
         server_configuration=server_configuration,
         start_listening=False,
         battle_format="gen7randombattles",
         start_challenging=False,
     )
-    battle = Battle("bat1", player.username, player.logger, gen=8)
-    battle._available_moves = {Move("flamethrower", gen=8)}
-    message = player.agent.choose_move(battle)
+    battle = Battle("bat1", player.agent1.username, player.agent1.logger, gen=8)
+    battle._available_moves = [Move("flamethrower", gen=8)]
+    message = player.agent1.choose_move(battle)
 
     assert isawaitable(message)
 
@@ -84,9 +82,9 @@ def test_choose_move(queue_put_mock, queue_get_mock):
 
     assert message.message == "/choose move flamethrower"
 
-    battle._available_moves = {Pokemon(species="charizard", gen=8)}
+    battle._available_switches = [Pokemon(species="charizard", gen=8)]
 
-    message = player.agent.choose_move(battle)
+    message = player.agent1.choose_move(battle)
 
     assert isawaitable(message)
 
@@ -97,16 +95,15 @@ def test_choose_move(queue_put_mock, queue_get_mock):
 
 def test_reward_computing_helper():
     player = CustomEnvPlayer(
-        None,
         account_configuration=account_configuration,
         server_configuration=server_configuration,
         start_listening=False,
         battle_format="gen7randombattles",
     )
-    battle_1 = Battle("bat1", player.username, player.logger, gen=8)
-    battle_2 = Battle("bat2", player.username, player.logger, gen=8)
-    battle_3 = Battle("bat3", player.username, player.logger, gen=8)
-    battle_4 = Battle("bat4", player.username, player.logger, gen=8)
+    battle_1 = Battle("bat1", player.agent1.username, player.agent1.logger, gen=8)
+    battle_2 = Battle("bat2", player.agent1.username, player.agent1.logger, gen=8)
+    battle_3 = Battle("bat3", player.agent1.username, player.agent1.logger, gen=8)
+    battle_4 = Battle("bat4", player.agent1.username, player.agent1.logger, gen=8)
 
     assert (
         player.reward_computing_helper(
@@ -219,7 +216,7 @@ def test_reward_computing_helper():
 
 
 def test_action_space():
-    player = CustomEnvPlayer(None, start_listening=False)
+    player = CustomEnvPlayer(start_listening=False)
     assert player.action_space == Discrete(len(Gen7EnvSinglePlayer._ACTION_SPACE))
 
     for PlayerClass, (has_megas, has_z_moves, has_dynamax) in zip(
@@ -259,22 +256,6 @@ def test_action_space():
         )
 
 
-def test_get_opponent():
-    player = CustomEnvPlayer(start_listening=False, opponent="test")
-    assert player.get_opponent() == "test"
-    player._opponent = None
-    with pytest.raises(RuntimeError):
-        player.get_opponent()
-
-
-def test_set_opponent():
-    player = CustomEnvPlayer(None, start_listening=False)
-    assert player._opponent is None
-    dummy_player = RandomPlayer()
-    player.set_opponent(dummy_player)
-    assert player._opponent == dummy_player
-
-
 @patch(
     "poke_env.environment.Pokemon.available_z_moves",
     new_callable=unittest.mock.PropertyMock,
@@ -312,7 +293,7 @@ def test_action_to_move(z_moves_mock):
             def get_opponent(self):
                 return None
 
-        p = CustomEnvClass(None, start_listening=False, start_challenging=False)
+        p = CustomEnvClass(start_listening=False, start_challenging=False)
         battle = Battle("bat1", p.username, p.logger, gen=8)
         assert p.action_to_move(-1, battle).message == "/forfeit"
         battle._available_moves = [Move("flamethrower", gen=8)]
