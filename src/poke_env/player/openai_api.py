@@ -39,7 +39,6 @@ class _AsyncQueue:
             )
             return res.result()
         except asyncio.TimeoutError:
-            print("########## timeout buddy")
             return default
 
     async def async_put(self, item: Any):
