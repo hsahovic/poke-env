@@ -79,13 +79,14 @@ class RandomGen9EnvPlayer(Gen9EnvSinglePlayer):
         return np.array([0])
 
 
-def play_function(player, n_battles):
+def play_function(env, n_battles):
     for _ in range(n_battles):
         done = False
-        player.reset()
+        env.reset()
         while not done:
-            _, _, terminated, truncated, _ = player.step(player.action_space.sample())
-            done = terminated or truncated
+            actions = {name: env.action_space(name).sample() for name in env.agents}
+            _, _, terminated, truncated, _ = env.step(actions)
+            done = any(terminated.values()) or any(truncated.values())
 
 
 @pytest.mark.timeout(30)
