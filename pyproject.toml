@@ -43,7 +43,7 @@ line-length = 88
 profile = "black"
 multi_line_output = 3
 
-[tool.mypy-poke_env]
+[tool.mypy-pettingzoo]
 ignore_missing_imports = true
 
 [tool.pyright]
