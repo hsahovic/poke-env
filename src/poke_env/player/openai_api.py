@@ -54,13 +54,13 @@ class _AsyncQueue:
         await self.queue.join()
 
 
-class _AsyncPlayer(Generic[ObsType, ActionType], Player):
+class _AsyncPlayer(Player):
     actions: _AsyncQueue
     observations: _AsyncQueue
 
     def __init__(
         self,
-        user_funcs: OpenAIGymEnv[ObsType, ActionType],
+        user_funcs: OpenAIGymEnv,
         username: str,
         **kwargs: Any,
     ):
@@ -92,7 +92,7 @@ class _AsyncPlayer(Generic[ObsType, ActionType], Player):
         asyncio.run_coroutine_threadsafe(self.observations.async_put(to_put), POKE_LOOP)
 
 
-class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
+class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType], Generic[ObsType, ActionType]):
     """
     Base class implementing the OpenAI Gym API on the main thread.
     """
