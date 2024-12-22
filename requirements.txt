@@ -1,6 +1,7 @@
 gymnasium
 numpy
 orjson
+pettingzoo
 requests
 tabulate
 websockets==12.0
