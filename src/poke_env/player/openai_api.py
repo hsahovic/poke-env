@@ -364,6 +364,7 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
         self._actions1.put(actions[self.agents[0]])
         self._actions2.put(actions[self.agents[1]])
         while self._observations1.empty() and self._observations2.empty():
+            print("############################################################################### ITS ME HEYOOOO")
             time.sleep(0.01)
         if not self._observations1.empty() and not self._observations2.empty():
             observations = {
@@ -372,18 +373,16 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
             }
         # Handling case such as "trapped" where error message causes re-send of battle request,
         # but only for one of the two agents.
+        elif self._observations1.empty():
+            observations = {
+                self.agents[0]: self.embed_battle(self.last_battle1),
+                self.agents[1]: self._observations2.get(),
+            }
         else:
-            print("############################################################################### ITS ME HEYOOOO")
-            if self._observations1.empty():
-                observations = {
-                    self.agents[0]: self.embed_battle(self.last_battle1),
-                    self.agents[1]: self._observations2.get(),
-                }
-            else:
-                observations = {
-                    self.agents[0]: self._observations1.get(),
-                    self.agents[1]: self.embed_battle(self.last_battle2),
-                }
+            observations = {
+                self.agents[0]: self._observations1.get(),
+                self.agents[1]: self.embed_battle(self.last_battle2),
+            }
         last_battle1 = self.last_battle1
         last_battle2 = self.last_battle2
         assert last_battle1 is not None and last_battle2 is not None
