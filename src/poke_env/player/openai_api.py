@@ -8,7 +8,7 @@ import asyncio
 import copy
 import time
 from abc import abstractmethod
-from typing import Any, Awaitable, Callable, Dict, Generic, Optional, Tuple, Union
+from typing import Any, Awaitable, Callable, Dict, Optional, Tuple, Union
 
 from gymnasium.spaces import Discrete, Space
 from pettingzoo.utils.env import ActionType, ObsType, ParallelEnv  # type: ignore
@@ -92,7 +92,7 @@ class _AsyncPlayer(Player):
         asyncio.run_coroutine_threadsafe(self.observations.async_put(to_put), POKE_LOOP)
 
 
-class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType], Generic[ObsType, ActionType]):
+class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
     """
     Base class implementing the OpenAI Gym API on the main thread.
     """
