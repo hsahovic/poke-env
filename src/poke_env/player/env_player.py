@@ -252,9 +252,7 @@ class Gen4EnvSinglePlayer(EnvPlayer[ObsType, ActionType]):
             return Player.choose_random_move(battle)
 
 
-class Gen5EnvSinglePlayer(
-    Gen4EnvSinglePlayer[ObsType, ActionType]
-):
+class Gen5EnvSinglePlayer(Gen4EnvSinglePlayer[ObsType, ActionType]):
     _DEFAULT_BATTLE_FORMAT = "gen5randombattle"
 
 
