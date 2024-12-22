@@ -1,7 +1,7 @@
 """poke_env.player module init.
 """
 
-from pettingzoo.utils.env import ActionType, ObsType  # type: ignore
+from pettingzoo.utils.env import ActionType, ObsType  # type: ignore[import-untyped]
 
 from poke_env.concurrency import POKE_LOOP
 from poke_env.player import env_player, openai_api, player, random_player, utils

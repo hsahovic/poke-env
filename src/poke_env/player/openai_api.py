@@ -11,7 +11,11 @@ from abc import abstractmethod
 from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple, Union
 
 from gymnasium.spaces import Discrete, Space
-from pettingzoo.utils.env import ActionType, ObsType, ParallelEnv  # type: ignore
+from pettingzoo.utils.env import (  # type: ignore[import-untyped]
+    ActionType,
+    ObsType,
+    ParallelEnv,
+)
 
 from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
 from poke_env.environment.abstract_battle import AbstractBattle
