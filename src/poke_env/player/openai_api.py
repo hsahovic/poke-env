@@ -314,8 +314,8 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
         if self.current_battle1 and not self.current_battle1.finished:
             if self.current_battle1 == self.agent1.current_battle:
                 self._actions1.put(-1)
-                self._observations1.get(timeout=1)
-                self._observations2.get(timeout=1)
+                self._observations1.get(timeout=0.1)
+                self._observations2.get(timeout=0.1)
             else:
                 raise RuntimeError(
                     "Environment and agent aren't synchronized. Try to restart"
@@ -376,10 +376,10 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
         assert last_battle1 is not None and last_battle2 is not None
         observations = {
             self.agents[0]: self._observations1.get(
-                timeout=1, default=self.embed_battle(last_battle1)
+                timeout=0.1, default=self.embed_battle(last_battle1)
             ),
             self.agents[1]: self._observations2.get(
-                timeout=1, default=self.embed_battle(last_battle2)
+                timeout=0.1, default=self.embed_battle(last_battle2)
             ),
         }
         reward1 = self.calc_reward(last_battle1, self.current_battle1)
