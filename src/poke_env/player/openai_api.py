@@ -205,7 +205,7 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
             ping_timeout=ping_timeout,
             team=team,
         )
-        self.agents = [self.agent1.username, self.agent2.username]
+        self.agents = []
         self.possible_agents = [self.agent1.username, self.agent2.username]
         self.observation_spaces = {
             name: self.describe_embedding() for name in self.agents
@@ -331,6 +331,7 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
         self.current_battle2.logger = None
         self.last_battle1 = self.current_battle1
         self.last_battle2 = self.current_battle2
+        self.agents = [self.agent1.username, self.agent2.username]
         observations = {
             self.agents[0]: self._observations1.get(),
             self.agents[1]: self._observations2.get(),
@@ -385,7 +386,11 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
         reward2 = self.calc_reward(last_battle2, self.current_battle2)
         reward = {self.agents[0]: reward1, self.agents[1]: reward2}
         term1, trunc1 = self.calc_term_trunc(self.current_battle1)
+        if term1 or trunc1:
+            self.agents.remove(self.agent1.username)
         term2, trunc2 = self.calc_term_trunc(self.current_battle2)
+        if term2 or trunc2:
+            self.agents.remove(self.agent2.username)
         terminated = {self.agents[0]: term1, self.agents[1]: term2}
         truncated = {self.agents[0]: trunc1, self.agents[1]: trunc2}
         return observations, reward, terminated, truncated, self.get_additional_info()
