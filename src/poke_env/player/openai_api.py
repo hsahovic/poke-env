@@ -346,7 +346,7 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
         :return: Additional information as a Dict
         :rtype: Dict
         """
-        return {self.agents[0]: {}, self.agents[1]: {}}
+        return {self.possible_agents[0]: {}, self.possible_agents[1]: {}}
 
     def step(self, actions: Dict[str, ActionType]) -> Tuple[
         Dict[str, ObsType],
