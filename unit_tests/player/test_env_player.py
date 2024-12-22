@@ -218,7 +218,7 @@ def test_reward_computing_helper():
 
 def test_action_space():
     player = CustomEnvPlayer(start_listening=False)
-    assert player.action_space(player.agents[0]) == Discrete(
+    assert player.action_space(player.possible_agents[0]) == Discrete(
         len(Gen7EnvSinglePlayer._ACTION_SPACE)
     )
 
@@ -251,7 +251,7 @@ def test_action_space():
 
         p = CustomEnvClass(start_listening=False, start_challenging=False)
 
-        assert p.action_space(p.agents[0]) == Discrete(
+        assert p.action_space(p.possible_agents[0]) == Discrete(
             4 * sum([1, has_megas, has_z_moves, has_dynamax]) + 6
         )
 

@@ -208,10 +208,10 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
         self.agents = []
         self.possible_agents = [self.agent1.username, self.agent2.username]
         self.observation_spaces = {
-            name: self.describe_embedding() for name in self.agents
+            name: self.describe_embedding() for name in self.possible_agents
         }
         self.action_spaces = {
-            name: Discrete(self.action_space_size()) for name in self.agents
+            name: Discrete(self.action_space_size()) for name in self.possible_agents
         }
         self._actions1 = self.agent1.actions
         self._observations1 = self.agent1.observations
