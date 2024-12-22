@@ -89,7 +89,6 @@ class EnvPlayer(OpenAIGymEnv[ObsType, ActionType], ABC):
         self._reward_buffer: WeakKeyDictionary[AbstractBattle, float] = (
             WeakKeyDictionary()
         )
-        self._opponent_lock = Lock()
         b_format = self._DEFAULT_BATTLE_FORMAT
         if battle_format:
             b_format = battle_format
@@ -196,9 +195,7 @@ class EnvPlayer(OpenAIGymEnv[ObsType, ActionType], ABC):
     def action_space_size(self) -> int:
         return len(self._ACTION_SPACE)
 
-    def reset_env(
-        self, opponent: Optional[Union[Player, str]] = None, restart: bool = True
-    ):
+    def reset_env(self, restart: bool = True):
         """
         Resets the environment to an inactive state: it will forfeit all unfinished
         battles, reset the internal battle tracker and optionally change the next
@@ -250,11 +247,11 @@ class Gen4EnvSinglePlayer(EnvPlayer[ObsType, ActionType], ABC):
             and action < len(battle.available_moves)
             and not battle.force_switch
         ):
-            return self.agent.create_order(battle.available_moves[action])
+            return Player.create_order(battle.available_moves[action])
         elif 0 <= action - 4 < len(battle.available_switches):
-            return self.agent.create_order(battle.available_switches[action - 4])
+            return Player.create_order(battle.available_switches[action - 4])
         else:
-            return self.agent.choose_random_move(battle)
+            return Player.choose_random_move(battle)
 
 
 class Gen5EnvSinglePlayer(Gen4EnvSinglePlayer[ObsType, ActionType], ABC):
@@ -296,19 +293,17 @@ class Gen6EnvSinglePlayer(EnvPlayer[ObsType, ActionType], ABC):
             and action < len(battle.available_moves)
             and not battle.force_switch
         ):
-            return self.agent.create_order(battle.available_moves[action])
+            return Player.create_order(battle.available_moves[action])
         elif (
             battle.can_mega_evolve
             and 0 <= action - 4 < len(battle.available_moves)
             and not battle.force_switch
         ):
-            return self.agent.create_order(
-                battle.available_moves[action - 4], mega=True
-            )
+            return Player.create_order(battle.available_moves[action - 4], mega=True)
         elif 0 <= action - 8 < len(battle.available_switches):
-            return self.agent.create_order(battle.available_switches[action - 8])
+            return Player.create_order(battle.available_switches[action - 8])
         else:
-            return self.agent.choose_random_move(battle)
+            return Player.choose_random_move(battle)
 
 
 class Gen7EnvSinglePlayer(EnvPlayer[ObsType, ActionType], ABC):
@@ -349,14 +344,14 @@ class Gen7EnvSinglePlayer(EnvPlayer[ObsType, ActionType], ABC):
             and action < len(battle.available_moves)
             and not battle.force_switch
         ):
-            return self.agent.create_order(battle.available_moves[action])
+            return Player.create_order(battle.available_moves[action])
         elif (
             not battle.force_switch
             and battle.can_z_move
             and battle.active_pokemon
             and 0 <= action - 4 < len(battle.active_pokemon.available_z_moves)
         ):
-            return self.agent.create_order(
+            return Player.create_order(
                 battle.active_pokemon.available_z_moves[action - 4], z_move=True
             )
         elif (
@@ -364,13 +359,11 @@ class Gen7EnvSinglePlayer(EnvPlayer[ObsType, ActionType], ABC):
             and 0 <= action - 8 < len(battle.available_moves)
             and not battle.force_switch
         ):
-            return self.agent.create_order(
-                battle.available_moves[action - 8], mega=True
-            )
+            return Player.create_order(battle.available_moves[action - 8], mega=True)
         elif 0 <= action - 12 < len(battle.available_switches):
-            return self.agent.create_order(battle.available_switches[action - 12])
+            return Player.create_order(battle.available_switches[action - 12])
         else:
-            return self.agent.choose_random_move(battle)
+            return Player.choose_random_move(battle)
 
 
 class Gen8EnvSinglePlayer(EnvPlayer[ObsType, ActionType], ABC):
@@ -417,14 +410,14 @@ class Gen8EnvSinglePlayer(EnvPlayer[ObsType, ActionType], ABC):
             and action < len(battle.available_moves)
             and not battle.force_switch
         ):
-            return self.agent.create_order(battle.available_moves[action])
+            return Player.create_order(battle.available_moves[action])
         elif (
             not battle.force_switch
             and battle.can_z_move
             and battle.active_pokemon
             and 0 <= action - 4 < len(battle.active_pokemon.available_z_moves)
         ):
-            return self.agent.create_order(
+            return Player.create_order(
                 battle.active_pokemon.available_z_moves[action - 4], z_move=True
             )
         elif (
@@ -432,21 +425,19 @@ class Gen8EnvSinglePlayer(EnvPlayer[ObsType, ActionType], ABC):
             and 0 <= action - 8 < len(battle.available_moves)
             and not battle.force_switch
         ):
-            return self.agent.create_order(
-                battle.available_moves[action - 8], mega=True
-            )
+            return Player.create_order(battle.available_moves[action - 8], mega=True)
         elif (
             battle.can_dynamax
             and 0 <= action - 12 < len(battle.available_moves)
             and not battle.force_switch
         ):
-            return self.agent.create_order(
+            return Player.create_order(
                 battle.available_moves[action - 12], dynamax=True
             )
         elif 0 <= action - 16 < len(battle.available_switches):
-            return self.agent.create_order(battle.available_switches[action - 16])
+            return Player.create_order(battle.available_switches[action - 16])
         else:
-            return self.agent.choose_random_move(battle)
+            return Player.choose_random_move(battle)
 
 
 class Gen9EnvSinglePlayer(EnvPlayer[ObsType, ActionType], ABC):
@@ -496,14 +487,14 @@ class Gen9EnvSinglePlayer(EnvPlayer[ObsType, ActionType], ABC):
             and action < len(battle.available_moves)
             and not battle.force_switch
         ):
-            return self.agent.create_order(battle.available_moves[action])
+            return Player.create_order(battle.available_moves[action])
         elif (
             not battle.force_switch
             and battle.can_z_move
             and battle.active_pokemon
             and 0 <= action - 4 < len(battle.active_pokemon.available_z_moves)
         ):
-            return self.agent.create_order(
+            return Player.create_order(
                 battle.active_pokemon.available_z_moves[action - 4], z_move=True
             )
         elif (
@@ -511,15 +502,13 @@ class Gen9EnvSinglePlayer(EnvPlayer[ObsType, ActionType], ABC):
             and 0 <= action - 8 < len(battle.available_moves)
             and not battle.force_switch
         ):
-            return self.agent.create_order(
-                battle.available_moves[action - 8], mega=True
-            )
+            return Player.create_order(battle.available_moves[action - 8], mega=True)
         elif (
             battle.can_dynamax
             and 0 <= action - 12 < len(battle.available_moves)
             and not battle.force_switch
         ):
-            return self.agent.create_order(
+            return Player.create_order(
                 battle.available_moves[action - 12], dynamax=True
             )
         elif (
@@ -527,10 +516,10 @@ class Gen9EnvSinglePlayer(EnvPlayer[ObsType, ActionType], ABC):
             and 0 <= action - 16 < len(battle.available_moves)
             and not battle.force_switch
         ):
-            return self.agent.create_order(
+            return Player.create_order(
                 battle.available_moves[action - 16], terastallize=True
             )
         elif 0 <= action - 20 < len(battle.available_switches):
-            return self.agent.create_order(battle.available_switches[action - 20])
+            return Player.create_order(battle.available_switches[action - 20])
         else:
-            return self.agent.choose_random_move(battle)
+            return Player.choose_random_move(battle)
