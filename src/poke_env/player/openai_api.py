@@ -608,6 +608,12 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
     ):
         self._keep_challenging = False
 
+        if wait and self._challenge_task:
+            while not self._challenge_task.done():
+                print("waitingggg")
+                await asyncio.sleep(1)
+            self._challenge_task.result()
+
         if force:
             if (self.current_battle1 and not self.current_battle1.finished) or (
                 self.current_battle2 and not self.current_battle2.finished
@@ -625,12 +631,6 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
                 if not self._observations2.empty():
                     await self._observations2.async_get()
                 await self._actions1.async_put(-1)
-
-        if wait and self._challenge_task:
-            while not self._challenge_task.done():
-                print("waitingggg")
-                await asyncio.sleep(1)
-            self._challenge_task.result()
 
         self._challenge_task = None
         self.current_battle1 = None
