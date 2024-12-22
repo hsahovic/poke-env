@@ -32,9 +32,15 @@ class _AsyncQueue:
     async def async_get(self):
         return await self.queue.get()
 
-    def get(self):
-        res = asyncio.run_coroutine_threadsafe(self.queue.get(), POKE_LOOP)
-        return res.result()
+    def get(self, timeout: Optional[float] = None, default: Any = None):
+        try:
+            res = asyncio.run_coroutine_threadsafe(
+                asyncio.wait_for(self.queue.get(), timeout), POKE_LOOP
+            )
+            return res.result()
+        except asyncio.TimeoutError:
+            print("########## timeout buddy")
+            return default
 
     async def async_put(self, item: Any):
         await self.queue.put(item)
@@ -363,29 +369,17 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
         self.last_battle2 = b2
         self._actions1.put(actions[self.agents[0]])
         self._actions2.put(actions[self.agents[1]])
-        while self._observations1.empty() and self._observations2.empty():
-            print("############################################################################### ITS ME HEYOOOO")
-            time.sleep(0.01)
-        if not self._observations1.empty() and not self._observations2.empty():
-            observations = {
-                self.agents[0]: self._observations1.get(),
-                self.agents[1]: self._observations2.get(),
-            }
-        # Handling case such as "trapped" where error message causes re-send of battle request,
-        # but only for one of the two agents.
-        elif self._observations1.empty():
-            observations = {
-                self.agents[0]: self.embed_battle(self.last_battle1),
-                self.agents[1]: self._observations2.get(),
-            }
-        else:
-            observations = {
-                self.agents[0]: self._observations1.get(),
-                self.agents[1]: self.embed_battle(self.last_battle2),
-            }
         last_battle1 = self.last_battle1
         last_battle2 = self.last_battle2
         assert last_battle1 is not None and last_battle2 is not None
+        observations = {
+            self.agents[0]: self._observations1.get(
+                timeout=0.1, default=self.embed_battle(last_battle1)
+            ),
+            self.agents[1]: self._observations2.get(
+                timeout=0.1, default=self.embed_battle(last_battle2)
+            ),
+        }
         reward1 = self.calc_reward(last_battle1, self.current_battle1)
         reward2 = self.calc_reward(last_battle2, self.current_battle2)
         reward = {self.agents[0]: reward1, self.agents[1]: reward2}
