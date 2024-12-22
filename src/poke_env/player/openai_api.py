@@ -45,9 +45,14 @@ class _AsyncQueue:
     async def async_put(self, item: Any):
         await self.queue.put(item)
 
-    def put(self, item: Any):
-        task = asyncio.run_coroutine_threadsafe(self.queue.put(item), POKE_LOOP)
-        task.result()
+    def put(self, item: Any, timeout: Optional[float] = None):
+        try:
+            task = asyncio.run_coroutine_threadsafe(
+                asyncio.wait_for(self.queue.put(item), timeout), POKE_LOOP
+            )
+            task.result()
+        except asyncio.TimeoutError:
+            print("###TIMEOUT###")
 
     def empty(self):
         return self.queue.empty()
@@ -313,7 +318,7 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
                 time.sleep(self._TIME_BETWEEN_RETRIES)
         if self.current_battle1 and not self.current_battle1.finished:
             if self.current_battle1 == self.agent1.current_battle:
-                self._actions1.put(-1)
+                self._actions1.put(-1, timeout=0.1)
                 self._observations1.get(timeout=0.1)
                 self._observations2.get(timeout=0.1)
             else:
@@ -369,8 +374,8 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
         b2.logger = None
         self.last_battle1 = b1
         self.last_battle2 = b2
-        self._actions1.put(actions[self.agents[0]])
-        self._actions2.put(actions[self.agents[1]])
+        self._actions1.put(actions[self.agents[0]], timeout=0.1)
+        self._actions2.put(actions[self.agents[1]], timeout=0.1)
         last_battle1 = self.last_battle1
         last_battle2 = self.last_battle2
         assert last_battle1 is not None and last_battle2 is not None
