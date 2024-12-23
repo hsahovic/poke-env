@@ -390,6 +390,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
                 timeout=0.01, default=self.embed_battle(self.last_battle2)
             ),
         }
+        assert self.current_battle1 == self.agent1.current_battle
         reward = {
             self.agents[0]: self.calc_reward(self.last_battle1, self.current_battle1),
             self.agents[1]: self.calc_reward(self.last_battle2, self.current_battle2),
@@ -402,7 +403,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
             self.agents = []
         print(
             self.current_battle1.battle_tag,
-            self.agent1.current_battle,
+            self.agent1.current_battle.battle_tag,
             [b.battle_tag for b in self.agent1.battles.values()],
         )
         return observations, reward, terminated, truncated, self.get_additional_info()
