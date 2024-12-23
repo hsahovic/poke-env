@@ -340,6 +340,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
                 )
         while self.current_battle1 == self.agent1.current_battle:
             time.sleep(0.01)
+        print(self.current_battle1.battle_tag, self.agent1.current_battle.battle_tag)
         observations = {
             self.agents[0]: self._observations1.get(),
             self.agents[1]: self._observations2.get(),
