@@ -50,13 +50,17 @@ class _AsyncQueue:
         await self.queue.put(item)
 
     def put(self, item: Any, timeout: Optional[float] = None):
-        try:
-            task = asyncio.run_coroutine_threadsafe(
-                asyncio.wait_for(self.queue.put(item), timeout), POKE_LOOP
-            )
-            task.result()
-        except asyncio.TimeoutError:
-            print("###TIMEOUT###")
+        task = asyncio.run_coroutine_threadsafe(
+            self.put_until(item, timeout), POKE_LOOP
+        )
+        task.result()
+
+    async def put_until(self, item: Any, timeout: Optional[float] = None):
+        await self.queue.put(item)
+        if timeout:
+            await asyncio.sleep(timeout)
+            if not self.queue.empty():
+                await self.queue.get()
 
     def empty(self):
         return self.queue.empty()
@@ -367,8 +371,8 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
         self.last_battle1 = b1
         self.last_battle2 = b2
         print(actions)
-        self._actions1.put(actions[self.agents[0]], timeout=0.1)
-        self._actions2.put(actions[self.agents[1]], timeout=0.1)
+        self._actions1.put(actions[self.agents[0]], timeout=0.01)
+        self._actions2.put(actions[self.agents[1]], timeout=0.01)
         last_battle1 = self.last_battle1
         last_battle2 = self.last_battle2
         assert last_battle1 is not None and last_battle2 is not None
@@ -380,12 +384,6 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
                 timeout=0.1, default=self.embed_battle(last_battle2)
             ),
         }
-        if not self._actions1.empty():
-            print("agent1's action was never requested, removing now")
-            self._actions1.get()
-        if not self._actions2.empty():
-            print("agent2's action was never requested, removing now")
-            self._actions2.get()
         reward1 = self.calc_reward(last_battle1, self.current_battle1)
         reward2 = self.calc_reward(last_battle2, self.current_battle2)
         reward = {self.agents[0]: reward1, self.agents[1]: reward2}
