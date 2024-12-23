@@ -91,42 +91,42 @@ def play_function(env, n_battles):
 
 
 @pytest.mark.timeout(30)
-def test_random_gym_players_gen4():
+def test_random_gymnasium_players_gen4():
     env_player = RandomGen4EnvPlayer(log_level=25, start_challenging=False)
     env_player.start_challenging(3)
     play_function(env_player, 3)
 
 
 @pytest.mark.timeout(30)
-def test_random_gym_players_gen5():
+def test_random_gymnasium_players_gen5():
     env_player = RandomGen5EnvPlayer(log_level=25, start_challenging=False)
     env_player.start_challenging(3)
     play_function(env_player, 3)
 
 
 @pytest.mark.timeout(30)
-def test_random_gym_players_gen6():
+def test_random_gymnasium_players_gen6():
     env_player = RandomGen6EnvPlayer(log_level=25, start_challenging=False)
     env_player.start_challenging(3)
     play_function(env_player, 3)
 
 
 @pytest.mark.timeout(30)
-def test_random_gym_players_gen7():
+def test_random_gymnasium_players_gen7():
     env_player = RandomGen7EnvPlayer(log_level=25, start_challenging=False)
     env_player.start_challenging(3)
     play_function(env_player, 3)
 
 
 @pytest.mark.timeout(30)
-def test_random_gym_players_gen8():
+def test_random_gymnasium_players_gen8():
     env_player = RandomGen8EnvPlayer(log_level=25, start_challenging=False)
     env_player.start_challenging(3)
     play_function(env_player, 3)
 
 
 @pytest.mark.timeout(30)
-def test_random_gym_players_gen9():
+def test_random_gymnasium_players_gen9():
     env_player = RandomGen9EnvPlayer(log_level=25, start_challenging=False)
     env_player.start_challenging(3)
     play_function(env_player, 3)

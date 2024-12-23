@@ -17,7 +17,7 @@ from poke_env.player import (
     Gen8EnvSinglePlayer,
     Gen9EnvSinglePlayer,
 )
-from poke_env.player.openai_api import _AsyncPlayer
+from poke_env.player.gymnasium_api import _AsyncPlayer
 
 account_configuration = AccountConfiguration("username", "password")
 server_configuration = ServerConfiguration("server.url", "auth.url")
@@ -40,14 +40,14 @@ class CustomEnvPlayer(EnvPlayer):
 
 
 def test_init():
-    gym_env = CustomEnvPlayer(
+    gymnasium_env = CustomEnvPlayer(
         account_configuration=account_configuration,
         server_configuration=server_configuration,
         start_listening=False,
         battle_format="gen7randombattles",
     )
-    player = gym_env.agent1
-    assert isinstance(gym_env, CustomEnvPlayer)
+    player = gymnasium_env.agent1
+    assert isinstance(gymnasium_env, CustomEnvPlayer)
     assert isinstance(player, _AsyncPlayer)
 
 
@@ -57,11 +57,11 @@ class AsyncMock(unittest.mock.MagicMock):
 
 
 @patch(
-    "poke_env.player.openai_api._AsyncQueue.async_get",
+    "poke_env.player.gymnasium_api._AsyncQueue.async_get",
     return_value=2,
     new_callable=AsyncMock,
 )
-@patch("poke_env.player.openai_api._AsyncQueue.async_put", new_callable=AsyncMock)
+@patch("poke_env.player.gymnasium_api._AsyncQueue.async_put", new_callable=AsyncMock)
 def test_choose_move(queue_put_mock, queue_get_mock):
     player = CustomEnvPlayer(
         account_configuration=account_configuration,

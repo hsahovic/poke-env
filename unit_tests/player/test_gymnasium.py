@@ -6,11 +6,11 @@ from gymnasium import Space
 from pettingzoo.utils.env import ActionType, ObsType
 
 from poke_env.environment import AbstractBattle, Battle, Pokemon
-from poke_env.player import BattleOrder, ForfeitBattleOrder, OpenAIGymEnv
-from poke_env.player.openai_api import _AsyncPlayer, _AsyncQueue
+from poke_env.player import BattleOrder, ForfeitBattleOrder, GymnasiumEnv
+from poke_env.player.gymnasium_api import _AsyncPlayer, _AsyncQueue
 
 
-class DummyEnv(OpenAIGymEnv[ObsType, ActionType]):
+class DummyEnv(GymnasiumEnv[ObsType, ActionType]):
     def __init__(self, *args, **kwargs):
         self.opponent = None
         super().__init__(*args, **kwargs)
