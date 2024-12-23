@@ -297,8 +297,9 @@ class Player(ABC):
                 if split_message[2].startswith(
                     "[Invalid choice] Sorry, too late to make a different move"
                 ):
+                    print("from too late error")
                     if battle.trapped:
-                        print("from too late error")
+                        print("VERY INTERESTING")
                         await self._handle_battle_request(battle)
                 elif split_message[2].startswith(
                     "[Unavailable choice] Can't switch: The active Pokémon is "
