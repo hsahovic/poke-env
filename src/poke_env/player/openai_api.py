@@ -381,8 +381,10 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
             ),
         }
         if not self._actions1.empty():
+            print("agent1's action was never requested, removing now")
             self._actions1.get()
         if not self._actions2.empty():
+            print("agent2's action was never requested, removing now")
             self._actions2.get()
         reward1 = self.calc_reward(last_battle1, self.current_battle1)
         reward2 = self.calc_reward(last_battle2, self.current_battle2)
