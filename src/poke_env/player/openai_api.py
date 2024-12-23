@@ -311,6 +311,7 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
         seed: Optional[int] = None,
         options: Optional[Dict[str, Any]] = None,
     ) -> Tuple[Dict[str, ObsType], Dict[str, Dict[str, Any]]]:
+        self.agents = [self.agent1.username, self.agent2.username]
         # TODO: use the seed
         if not self.agent1.current_battle:
             count = self._INIT_RETRIES
@@ -338,7 +339,6 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
         self.current_battle2 = self.agent2.current_battle
         self.last_battle1 = self.current_battle1
         self.last_battle2 = self.current_battle2
-        self.agents = [self.agent1.username, self.agent2.username]
         return observations, self.get_additional_info()
 
     def get_additional_info(self) -> Dict[str, Dict[str, Any]]:
