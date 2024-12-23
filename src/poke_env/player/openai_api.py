@@ -375,6 +375,7 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
         b2.logger = None
         self.last_battle1 = b1
         self.last_battle2 = b2
+        print(actions)
         self._actions1.put(actions[self.agents[0]], timeout=0.1)
         self._actions2.put(actions[self.agents[1]], timeout=0.1)
         last_battle1 = self.last_battle1
