@@ -620,6 +620,7 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
                             "Use this method only when training or "
                             "evaluation are over."
                         )
+                print("alright we here")
                 if not self._observations1.empty():
                     await self._observations1.async_get()
                 if not self._observations2.empty():
