@@ -400,10 +400,11 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         truncated = {self.agents[0]: trunc1, self.agents[1]: trunc2}
         if self.current_battle1.finished:
             self.agents = []
-            self.current_battle1 = None
-            self.current_battle2 = None
-            self.agent1.current_battle = None
-            self.agent2.current_battle = None
+        print(
+            self.current_battle1.battle_tag,
+            self.agent1.current_battle,
+            [b.battle_tag for b in self.agent1.battles.values()],
+        )
         return observations, reward, terminated, truncated, self.get_additional_info()
 
     @staticmethod
