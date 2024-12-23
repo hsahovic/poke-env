@@ -365,12 +365,8 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
         Dict[str, bool],
         Dict[str, Dict[str, Any]],
     ]:
-        if not self.current_battle1 or not self.current_battle2:
-            obs, info = self.reset()
-            reward = {self.agents[0]: 0.0, self.agents[1]: 0.0}
-            terminated = {self.agents[0]: False, self.agents[1]: False}
-            truncated = {self.agents[0]: False, self.agents[1]: False}
-            return obs, reward, terminated, truncated, info
+        assert self.current_battle1 is not None
+        assert self.current_battle2 is not None
         if self.current_battle1.finished:
             raise RuntimeError("Battle is already finished, call reset")
         b1 = copy.copy(self.current_battle1)
