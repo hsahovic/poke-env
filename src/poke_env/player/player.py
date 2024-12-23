@@ -277,6 +277,7 @@ class Player(ABC):
                     request = orjson.loads(split_message[2])
                     battle.parse_request(request)
                     if battle.move_on_next_request:
+                        print("from move on next request")
                         await self._handle_battle_request(battle)
                         battle.move_on_next_request = False
             elif split_message[1] == "win" or split_message[1] == "tie":
@@ -297,7 +298,7 @@ class Player(ABC):
                     "[Invalid choice] Sorry, too late to make a different move"
                 ):
                     if battle.trapped:
-                        print("here???")
+                        print("from too late error")
                         await self._handle_battle_request(battle)
                 elif split_message[2].startswith(
                     "[Unavailable choice] Can't switch: The active Pokémon is "
@@ -359,6 +360,7 @@ class Player(ABC):
                     self.logger.critical("Unexpected error message: %s", split_message)
             elif split_message[1] == "turn":
                 battle.parse_message(split_message)
+                print("from turn")
                 await self._handle_battle_request(battle)
             elif split_message[1] == "teampreview":
                 battle.parse_message(split_message)
