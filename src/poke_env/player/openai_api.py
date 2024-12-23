@@ -43,7 +43,7 @@ class _AsyncQueue:
             )
             return res.result()
         except asyncio.TimeoutError:
-            print("###TIMEOUT###")
+            print("###GET TIMEOUT###")
             return default
 
     async def async_put(self, item: Any):
@@ -60,6 +60,7 @@ class _AsyncQueue:
         if timeout:
             await asyncio.sleep(timeout)
             if not self.queue.empty():
+                print("###PUT TIMEOUT###")
                 await self.queue.get()
 
     def empty(self):
