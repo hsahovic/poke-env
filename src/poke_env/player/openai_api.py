@@ -96,7 +96,10 @@ class _AsyncPlayer(Player):
         return self._env_move(battle)
 
     async def _env_move(self, battle: AbstractBattle) -> BattleOrder:
-        self.current_battle = battle
+        if not self.current_battle or self.current_battle.finished:
+            self.current_battle = battle
+        if not self.current_battle == battle:
+            raise RuntimeError("Using different battles for queues")
         battle_to_send = self._user_funcs.embed_battle(battle)
         await self.observations.async_put(battle_to_send)
         action = await self.actions.async_get()
@@ -318,9 +321,9 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
     ) -> Tuple[Dict[str, ObsType], Dict[str, Dict[str, Any]]]:
         self.agents = [self.agent1.username, self.agent2.username]
         # TODO: use the seed
-        if not self.agent1.current_battle:
+        if not self.agent1.current_battle or not self.agent2.current_battle:
             count = self._INIT_RETRIES
-            while not self.agent1.current_battle:
+            while not self.agent1.current_battle or not self.agent2.current_battle:
                 if count == 0:
                     raise RuntimeError("Agent is not challenging")
                 count -= 1
@@ -342,7 +345,9 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
             self.agents[1]: self._observations2.get(),
         }
         self.current_battle1 = self.agent1.current_battle
+        self.current_battle1.logger = None
         self.current_battle2 = self.agent2.current_battle
+        self.current_battle2.logger = None
         self.last_battle1 = self.current_battle1
         self.last_battle2 = self.current_battle2
         return observations, self.get_additional_info()
@@ -368,27 +373,27 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
         assert self.current_battle2 is not None
         if self.current_battle1.finished:
             raise RuntimeError("Battle is already finished, call reset")
-        b1 = copy.copy(self.current_battle1)
-        b2 = copy.copy(self.current_battle2)
-        self.last_battle1 = b1
-        self.last_battle2 = b2
+        battle1 = copy.copy(self.current_battle1)
+        battle1.logger = None
+        battle2 = copy.copy(self.current_battle2)
+        battle2.logger = None
+        self.last_battle1 = battle1
+        self.last_battle2 = battle2
         print(actions)
         self._actions1.put(actions[self.agents[0]], timeout=0.1)
         self._actions2.put(actions[self.agents[1]], timeout=0.1)
-        last_battle1 = self.last_battle1
-        last_battle2 = self.last_battle2
-        assert last_battle1 is not None and last_battle2 is not None
         observations = {
             self.agents[0]: self._observations1.get(
-                timeout=0.1, default=self.embed_battle(last_battle1)
+                timeout=0.1, default=self.embed_battle(self.last_battle1)
             ),
             self.agents[1]: self._observations2.get(
-                timeout=0.1, default=self.embed_battle(last_battle2)
+                timeout=0.1, default=self.embed_battle(self.last_battle2)
             ),
         }
-        reward1 = self.calc_reward(last_battle1, self.current_battle1)
-        reward2 = self.calc_reward(last_battle2, self.current_battle2)
-        reward = {self.agents[0]: reward1, self.agents[1]: reward2}
+        reward = {
+            self.agents[0]: self.calc_reward(self.last_battle1, self.current_battle1),
+            self.agents[1]: self.calc_reward(self.last_battle2, self.current_battle2),
+        }
         term1, trunc1 = self.calc_term_trunc(self.current_battle1)
         term2, trunc2 = self.calc_term_trunc(self.current_battle2)
         terminated = {self.agents[0]: term1, self.agents[1]: term2}
