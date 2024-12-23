@@ -314,9 +314,9 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
         options: Optional[Dict[str, Any]] = None,
     ) -> Tuple[Dict[str, ObsType], Dict[str, Dict[str, Any]]]:
         # TODO: use the seed
-        if not self.agent1.current_battle or not self.agent2.current_battle:
+        if not self.agent1.current_battle:
             count = self._INIT_RETRIES
-            while not self.agent1.current_battle or not self.agent2.current_battle:
+            while not self.agent1.current_battle:
                 if count == 0:
                     raise RuntimeError("Agent is not challenging")
                 count -= 1
@@ -330,15 +330,10 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
                 raise RuntimeError(
                     "Environment and agent aren't synchronized. Try to restart"
                 )
-        while (
-            self.current_battle1 == self.agent1.current_battle
-            or self.current_battle2 == self.agent2.current_battle
-        ):
+        while self.current_battle1 == self.agent1.current_battle:
             time.sleep(0.01)
         self.current_battle1 = self.agent1.current_battle
-        self.current_battle1.logger = None
         self.current_battle2 = self.agent2.current_battle
-        self.current_battle2.logger = None
         self.last_battle1 = self.current_battle1
         self.last_battle2 = self.current_battle2
         self.agents = [self.agent1.username, self.agent2.username]
@@ -370,9 +365,7 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
         if self.current_battle1.finished:
             raise RuntimeError("Battle is already finished, call reset")
         b1 = copy.copy(self.current_battle1)
-        b1.logger = None
         b2 = copy.copy(self.current_battle2)
-        b2.logger = None
         self.last_battle1 = b1
         self.last_battle2 = b2
         print(actions)
@@ -389,6 +382,10 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
                 timeout=0.1, default=self.embed_battle(last_battle2)
             ),
         }
+        if not self._actions1.empty():
+            self._actions1.get()
+        if not self._actions2.empty():
+            self._actions2.get()
         reward1 = self.calc_reward(last_battle1, self.current_battle1)
         reward2 = self.calc_reward(last_battle2, self.current_battle2)
         reward = {self.agents[0]: reward1, self.agents[1]: reward2}
@@ -607,9 +604,7 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
         self._keep_challenging = False
 
         if force:
-            if (self.current_battle1 and not self.current_battle1.finished) or (
-                self.current_battle2 and not self.current_battle2.finished
-            ):
+            if self.current_battle1 and not self.current_battle1.finished:
                 if not self._observations1.empty():
                     await self._observations1.async_get()
                 if not self._observations2.empty():
@@ -638,8 +633,7 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
             await self._observations2.async_get()
 
         if purge:
-            self.agent1.reset_battles()
-            self.agent2.reset_battles()
+            self.reset_battles()
 
     def reset_battles(self):
         """Resets the player's inner battle tracker."""
