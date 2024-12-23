@@ -324,6 +324,7 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
         if self.current_battle1 and not self.current_battle1.finished:
             if self.current_battle1 == self.agent1.current_battle:
                 self._actions1.put(-1, timeout=0.1)
+                self._actions1.put(-1, timeout=0.1)
                 self._observations1.get(timeout=0.1)
                 self._observations2.get(timeout=0.1)
             else:
