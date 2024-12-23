@@ -99,6 +99,7 @@ class _AsyncPlayer(Player):
         await self.observations.async_put(battle_to_send)
         action = await self.actions.async_get()
         if action == -1:
+            print("please please please")
             return ForfeitBattleOrder()
         return self._user_funcs.action_to_move(action, battle)
 
