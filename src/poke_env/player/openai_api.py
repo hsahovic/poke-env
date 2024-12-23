@@ -323,10 +323,9 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
                 time.sleep(self._TIME_BETWEEN_RETRIES)
         if self.current_battle1 and not self.current_battle1.finished:
             if self.current_battle1 == self.agent1.current_battle:
-                self._actions1.put(-1, timeout=0.1)
-                self._actions1.put(-1, timeout=0.1)
-                self._observations1.get(timeout=0.1)
-                self._observations2.get(timeout=0.1)
+                self._actions1.put(-1)
+                self._observations1.get()
+                self._observations2.get()
             else:
                 raise RuntimeError(
                     "Environment and agent aren't synchronized. Try to restart"
@@ -617,7 +616,6 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
                     await self._observations2.async_get()
                 print("alright we here", self._actions1.empty(), self._actions2.empty())
                 await self._actions1.async_put(-1)
-                await self._actions2.async_put(-1)
 
         if wait and self._challenge_task:
             while not self._challenge_task.done():
