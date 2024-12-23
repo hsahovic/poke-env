@@ -379,6 +379,7 @@ class Player(ABC):
         from_teampreview_request: bool = False,
         maybe_default_order: bool = False,
     ):
+        print("_handle_battle_request start")
         if maybe_default_order and random.random() < self.DEFAULT_CHOICE_CHANCE:
             message = self.choose_default_move().message
         elif battle.teampreview:
