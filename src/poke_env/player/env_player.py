@@ -1,4 +1,4 @@
-"""This module defines a player class exposing the Open AI Gym API with utility functions.
+"""This module defines a player class exposing the Gymnasium API with utility functions.
 """
 
 from abc import ABC
@@ -8,15 +8,15 @@ from weakref import WeakKeyDictionary
 
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.player.battle_order import BattleOrder, ForfeitBattleOrder
-from poke_env.player.openai_api import ActType, ObsType, OpenAIGymEnv
+from poke_env.player.gymnasium_api import ActType, GymnasiumEnv, ObsType
 from poke_env.player.player import Player
 from poke_env.ps_client.account_configuration import AccountConfiguration
 from poke_env.ps_client.server_configuration import ServerConfiguration
 from poke_env.teambuilder.teambuilder import Teambuilder
 
 
-class EnvPlayer(OpenAIGymEnv[ObsType, ActType], ABC):
-    """Player exposing the Open AI Gym Env API."""
+class EnvPlayer(GymnasiumEnv[ObsType, ActType], ABC):
+    """Player exposing the Gymnasium Env API."""
 
     _ACTION_SPACE: List[int] = []
     _DEFAULT_BATTLE_FORMAT = "gen8randombattle"
