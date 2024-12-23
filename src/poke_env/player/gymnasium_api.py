@@ -341,7 +341,9 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         while self.current_battle1 == self.agent1.current_battle:
             time.sleep(0.01)
         if self.current_battle1 is not None:
-            print(self.current_battle1.battle_tag, self.agent1.current_battle.battle_tag)
+            print("@@@@@@@@@@@@@@@@@@@@@", self.current_battle1.battle_tag, self.agent1.current_battle.battle_tag)
+        else:
+            print("@@@@@@@@@@@@@@@@@@@@@")
         observations = {
             self.agents[0]: self._observations1.get(),
             self.agents[1]: self._observations2.get(),
