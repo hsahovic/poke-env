@@ -328,6 +328,7 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
         if self.current_battle1 and not self.current_battle1.finished:
             if self.current_battle1 == self.agent1.current_battle:
                 self._actions1.put(-1)
+                self._actions2.put(0)
                 self._observations1.get()
                 self._observations2.get()
             else:
@@ -372,8 +373,8 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
         self.last_battle1 = b1
         self.last_battle2 = b2
         print(actions)
-        self._actions1.put(actions[self.agents[0]], timeout=0.01)
-        self._actions2.put(actions[self.agents[1]], timeout=0.01)
+        self._actions1.put(actions[self.agents[0]], timeout=0.1)
+        self._actions2.put(actions[self.agents[1]], timeout=0.1)
         last_battle1 = self.last_battle1
         last_battle2 = self.last_battle2
         assert last_battle1 is not None and last_battle2 is not None
@@ -607,6 +608,7 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
                     await self._observations2.async_get()
                 print("alright we here", self._actions1.empty(), self._actions2.empty())
                 await self._actions1.async_put(-1)
+                await self._actions2.async_put(0)
 
         if wait and self._challenge_task:
             while not self._challenge_task.done():
