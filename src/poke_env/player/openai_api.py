@@ -99,7 +99,7 @@ class _AsyncPlayer(Player):
         await self.observations.async_put(battle_to_send)
         action = await self.actions.async_get()
         if action == -1:
-            print("please please please")
+            print(self.username, "gives up!")
             return ForfeitBattleOrder()
         return self._user_funcs.action_to_move(action, battle)
 
@@ -609,11 +609,11 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
             if (self.current_battle1 and not self.current_battle1.finished) or (
                 self.current_battle2 and not self.current_battle2.finished
             ):
-                print("alright we here", self._actions1.empty(), self._actions2.empty())
                 if not self._observations1.empty():
                     await self._observations1.async_get()
                 if not self._observations2.empty():
                     await self._observations2.async_get()
+                print("alright we here", self._actions1.empty(), self._actions2.empty())
                 await self._actions1.async_put(-1)
                 await self._actions2.async_put(-1)
 

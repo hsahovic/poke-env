@@ -87,6 +87,7 @@ def play_function(env, n_battles):
             actions = {name: env.action_space(name).sample() for name in env.agents}
             _, _, terminated, truncated, _ = env.step(actions)
             done = any(terminated.values()) or any(truncated.values())
+    env.close()
 
 
 @pytest.mark.timeout(30)
