@@ -613,7 +613,7 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
             if (self.current_battle1 and not self.current_battle1.finished) or (
                 self.current_battle2 and not self.current_battle2.finished
             ):
-                print("alright we here")
+                print("alright we here", self._actions1.empty(), self._actions2.empty())
                 if not self._observations1.empty():
                     await self._observations1.async_get()
                 if not self._observations2.empty():
