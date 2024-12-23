@@ -91,10 +91,7 @@ class _AsyncPlayer(Player):
         return self._env_move(battle)
 
     async def _env_move(self, battle: AbstractBattle) -> BattleOrder:
-        if not self.current_battle or self.current_battle.finished:
-            self.current_battle = battle
-        if not self.current_battle == battle:
-            raise RuntimeError("Using different battles for queues")
+        self.current_battle = battle
         battle_to_send = self._user_funcs.embed_battle(battle)
         await self.observations.async_put(battle_to_send)
         action = await self.actions.async_get()
@@ -333,15 +330,15 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
                 )
         while self.current_battle1 == self.agent1.current_battle:
             time.sleep(0.01)
+        observations = {
+            self.agents[0]: self._observations1.get(),
+            self.agents[1]: self._observations2.get(),
+        }
         self.current_battle1 = self.agent1.current_battle
         self.current_battle2 = self.agent2.current_battle
         self.last_battle1 = self.current_battle1
         self.last_battle2 = self.current_battle2
         self.agents = [self.agent1.username, self.agent2.username]
-        observations = {
-            self.agents[0]: self._observations1.get(),
-            self.agents[1]: self._observations2.get(),
-        }
         return observations, self.get_additional_info()
 
     def get_additional_info(self) -> Dict[str, Dict[str, Any]]:
