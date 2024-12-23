@@ -380,14 +380,14 @@ class OpenAIGymEnv(ParallelEnv[str, ObsType, ActionType]):
         self.last_battle1 = battle1
         self.last_battle2 = battle2
         print(actions)
-        self._actions1.put(actions[self.agents[0]], timeout=0.1)
-        self._actions2.put(actions[self.agents[1]], timeout=0.1)
+        self._actions1.put(actions[self.agents[0]], timeout=0.01)
+        self._actions2.put(actions[self.agents[1]], timeout=0.01)
         observations = {
             self.agents[0]: self._observations1.get(
-                timeout=0.1, default=self.embed_battle(self.last_battle1)
+                timeout=0.01, default=self.embed_battle(self.last_battle1)
             ),
             self.agents[1]: self._observations2.get(
-                timeout=0.1, default=self.embed_battle(self.last_battle2)
+                timeout=0.01, default=self.embed_battle(self.last_battle2)
             ),
         }
         reward = {
