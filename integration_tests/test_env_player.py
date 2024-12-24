@@ -18,7 +18,7 @@ class RandomGen4EnvPlayer(Gen4EnvSinglePlayer):
         return 0.0
 
     def describe_embedding(self) -> Space:
-        return Box(np.array([0]), np.array([1]), dtype=np.int64)
+        return Box(np.array([0]), np.array([1]), dtype=int)
 
     def embed_battle(self, battle):
         return np.array([0])
@@ -29,7 +29,7 @@ class RandomGen5EnvPlayer(Gen5EnvSinglePlayer):
         return 0.0
 
     def describe_embedding(self) -> Space:
-        return Box(np.array([0]), np.array([1]), dtype=np.int64)
+        return Box(np.array([0]), np.array([1]), dtype=int)
 
     def embed_battle(self, battle):
         return np.array([0])
@@ -40,7 +40,7 @@ class RandomGen6EnvPlayer(Gen6EnvSinglePlayer):
         return 0.0
 
     def describe_embedding(self) -> Space:
-        return Box(np.array([0]), np.array([1]), dtype=np.int64)
+        return Box(np.array([0]), np.array([1]), dtype=int)
 
     def embed_battle(self, battle):
         return np.array([0])
@@ -51,7 +51,7 @@ class RandomGen7EnvPlayer(Gen7EnvSinglePlayer):
         return 0.0
 
     def describe_embedding(self) -> Space:
-        return Box(np.array([0]), np.array([1]), dtype=np.int64)
+        return Box(np.array([0]), np.array([1]), dtype=int)
 
     def embed_battle(self, battle):
         return np.array([0])
@@ -62,7 +62,7 @@ class RandomGen8EnvPlayer(Gen8EnvSinglePlayer):
         return 0.0
 
     def describe_embedding(self) -> Space:
-        return Box(np.array([0]), np.array([1]), dtype=np.int64)
+        return Box(np.array([0]), np.array([1]), dtype=int)
 
     def embed_battle(self, battle):
         return np.array([0])
@@ -73,7 +73,7 @@ class RandomGen9EnvPlayer(Gen9EnvSinglePlayer):
         return 0.0
 
     def describe_embedding(self) -> Space:
-        return Box(np.array([0]), np.array([1]), dtype=np.int64)
+        return Box(np.array([0]), np.array([1]), dtype=int)
 
     def embed_battle(self, battle):
         return np.array([0])
@@ -87,7 +87,6 @@ def play_function(env, n_battles):
             actions = {name: env.action_space(name).sample() for name in env.agents}
             _, _, terminated, truncated, _ = env.step(actions)
             done = any(terminated.values()) or any(truncated.values())
-    env.close()
 
 
 @pytest.mark.timeout(30)
