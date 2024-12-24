@@ -105,6 +105,8 @@ class _AsyncPlayer(Player):
         self.waiting = True
         action = await self.actions.async_get()
         self.waiting = False
+        if action == -1:
+            return ForfeitBattleOrder()
         return self._user_funcs.action_to_move(action, battle)
 
     def _battle_finished_callback(self, battle: AbstractBattle):
