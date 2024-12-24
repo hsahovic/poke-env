@@ -93,6 +93,7 @@ class _AsyncPlayer(Player):
         self._user_funcs = user_funcs
 
     def choose_move(self, battle: AbstractBattle) -> Awaitable[BattleOrder]:
+        print(time.time(), "choose_move start")
         return self._env_move(battle)
 
     async def _env_move(self, battle: AbstractBattle) -> BattleOrder:

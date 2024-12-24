@@ -7,6 +7,7 @@ from abc import ABC, abstractmethod
 from asyncio import Condition, Event, Queue, Semaphore
 from logging import Logger
 from time import perf_counter
+import time
 from typing import Any, Awaitable, Dict, List, Optional, Union
 
 import orjson
@@ -379,7 +380,7 @@ class Player(ABC):
         from_teampreview_request: bool = False,
         maybe_default_order: bool = False,
     ):
-        print("_handle_battle_request start")
+        print(time.time(), "_handle_battle_request start")
         if maybe_default_order and random.random() < self.DEFAULT_CHOICE_CHANCE:
             message = self.choose_default_move().message
         elif battle.teampreview:
