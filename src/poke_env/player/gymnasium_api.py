@@ -49,15 +49,8 @@ class _AsyncQueue:
         await self.queue.put(item)
 
     def put(self, item: Any):
-        task = asyncio.run_coroutine_threadsafe(self.async_put(item), POKE_LOOP)
+        task = asyncio.run_coroutine_threadsafe(self.queue.put(item), POKE_LOOP)
         task.result()
-
-    async def put_until(self, item: Any, timeout: Optional[float] = None):
-        await self.async_put(item)
-        if timeout:
-            await asyncio.sleep(timeout)
-            if not self.empty():
-                await self.async_get()
 
     def empty(self):
         return self.queue.empty()
