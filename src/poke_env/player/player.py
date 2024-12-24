@@ -7,7 +7,6 @@ from abc import ABC, abstractmethod
 from asyncio import Condition, Event, Queue, Semaphore
 from logging import Logger
 from time import perf_counter
-import time
 from typing import Any, Awaitable, Dict, List, Optional, Union
 
 import orjson
@@ -278,7 +277,6 @@ class Player(ABC):
                     request = orjson.loads(split_message[2])
                     battle.parse_request(request)
                     if battle.move_on_next_request:
-                        print("from move on next request")
                         await self._handle_battle_request(battle)
                         battle.move_on_next_request = False
             elif split_message[1] == "win" or split_message[1] == "tie":
@@ -298,9 +296,7 @@ class Player(ABC):
                 if split_message[2].startswith(
                     "[Invalid choice] Sorry, too late to make a different move"
                 ):
-                    print("from too late error")
                     if battle.trapped:
-                        print("VERY INTERESTING")
                         await self._handle_battle_request(battle)
                 elif split_message[2].startswith(
                     "[Unavailable choice] Can't switch: The active Pokémon is "
@@ -362,7 +358,6 @@ class Player(ABC):
                     self.logger.critical("Unexpected error message: %s", split_message)
             elif split_message[1] == "turn":
                 battle.parse_message(split_message)
-                print("from turn")
                 await self._handle_battle_request(battle)
             elif split_message[1] == "teampreview":
                 battle.parse_message(split_message)
@@ -380,7 +375,6 @@ class Player(ABC):
         from_teampreview_request: bool = False,
         maybe_default_order: bool = False,
     ):
-        print(time.time(), "_handle_battle_request start")
         if maybe_default_order and random.random() < self.DEFAULT_CHOICE_CHANCE:
             message = self.choose_default_move().message
         elif battle.teampreview:

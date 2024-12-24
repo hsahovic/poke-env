@@ -88,14 +88,11 @@ class _AsyncPlayer(Player):
         self.current_battle: Optional[AbstractBattle] = None
         self.waiting = False
         self._user_funcs = user_funcs
-        self.count = 0
 
     def choose_move(self, battle: AbstractBattle) -> Awaitable[BattleOrder]:
-        self.count += 1
         return self._env_move(battle)
 
     async def _env_move(self, battle: AbstractBattle) -> BattleOrder:
-        t1 = time.time()
         if not self.current_battle or self.current_battle.finished:
             self.current_battle = battle
         if not self.current_battle == battle:
@@ -350,7 +347,6 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         self.current_battle2.logger = None
         self.last_battle1 = self.current_battle1
         self.last_battle2 = self.current_battle2
-        self.count = 0
         return observations, self.get_additional_info()
 
     def get_additional_info(self) -> Dict[str, Dict[str, Any]]:
@@ -384,7 +380,6 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
             self._actions1.put(actions[self.agents[0]])
         if self.agent2.waiting:
             self._actions2.put(actions[self.agents[1]])
-        self.count += 1
         observations = {
             self.agents[0]: self._observations1.get(
                 timeout=0.1, default=self.embed_battle(self.last_battle1)
