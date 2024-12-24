@@ -350,6 +350,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
             self.agents[1]: self._observations2.get(),
         }
         self.current_battle1 = self.agent1.current_battle
+        print(self.current_battle1.battle_tag)
         self.current_battle1.logger = None
         self.current_battle2 = self.agent2.current_battle
         self.current_battle2.logger = None
