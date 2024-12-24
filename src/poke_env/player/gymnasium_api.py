@@ -39,7 +39,7 @@ class _AsyncQueue:
     def get(self, timeout: Optional[float] = None, default: Any = None):
         try:
             res = asyncio.run_coroutine_threadsafe(
-                asyncio.wait_for(self.queue.get(), timeout), POKE_LOOP
+                asyncio.wait_for(self.async_get(), timeout), POKE_LOOP
             )
             return res.result()
         except asyncio.TimeoutError:
@@ -49,19 +49,24 @@ class _AsyncQueue:
     async def async_put(self, item: Any):
         await self.queue.put(item)
 
-    def put(self, item: Any, timeout: Optional[float] = None):
+    def put(self, item: Any, force: bool = False, timeout: Optional[float] = None):
+        if force:
+            try:
+                self.queue.get_nowait()
+            except asyncio.QueueEmpty:
+                pass
         task = asyncio.run_coroutine_threadsafe(
             self.put_until(item, timeout), POKE_LOOP
         )
         task.result()
 
     async def put_until(self, item: Any, timeout: Optional[float] = None):
-        await self.queue.put(item)
+        await self.async_put(item)
         if timeout:
             await asyncio.sleep(timeout)
-            if not self.queue.empty():
+            if not self.empty():
                 print("###PUT TIMEOUT###")
-                await self.queue.get()
+                await self.async_get()
 
     def empty(self):
         return self.queue.empty()
@@ -334,8 +339,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
                 time.sleep(self._TIME_BETWEEN_RETRIES)
         if self.current_battle1 and not self.current_battle1.finished:
             if self.current_battle1 == self.agent1.current_battle:
-                self._actions1.put(-1)
-                self._actions2.put(0)
+                self._actions1.put(-1, force=True)
                 self._observations1.get()
                 self._observations2.get()
             else:
@@ -345,7 +349,11 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         while self.current_battle1 == self.agent1.current_battle:
             time.sleep(0.01)
         if self.current_battle1 is not None:
-            print("@@@@@@@@@@@@@@@@@@@@@", self.current_battle1.battle_tag, self.agent1.current_battle.battle_tag)
+            print(
+                "@@@@@@@@@@@@@@@@@@@@@",
+                self.current_battle1.battle_tag,
+                self.agent1.current_battle.battle_tag,
+            )
         else:
             print("@@@@@@@@@@@@@@@@@@@@@")
         observations = {
@@ -390,8 +398,8 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         self.last_battle1 = battle1
         self.last_battle2 = battle2
         print(actions)
-        self._actions1.put(actions[self.agents[0]], timeout=0.01)
-        self._actions2.put(actions[self.agents[1]], timeout=0.01)
+        self._actions1.put(actions[self.agents[0]], force=True, timeout=0.01)
+        self._actions2.put(actions[self.agents[1]], force=True, timeout=0.01)
         self.count += 1
         observations = {
             self.agents[0]: self._observations1.get(
