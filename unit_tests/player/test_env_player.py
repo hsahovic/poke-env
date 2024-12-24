@@ -20,7 +20,7 @@ from poke_env.player import (
 from poke_env.player.gymnasium_api import _AsyncPlayer
 
 account_configuration1 = AccountConfiguration("username1", "password1")
-account_configuration1 = AccountConfiguration("username2", "password2")
+account_configuration2 = AccountConfiguration("username2", "password2")
 server_configuration = ServerConfiguration("server.url", "auth.url")
 
 
