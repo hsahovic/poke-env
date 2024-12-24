@@ -375,10 +375,10 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
             self._actions2.put(actions[self.agents[1]])
         observations = {
             self.agents[0]: self._observations1.get(
-                timeout=1, default=self.embed_battle(self.last_battle1)
+                timeout=0.1, default=self.embed_battle(self.last_battle1)
             ),
             self.agents[1]: self._observations2.get(
-                timeout=1, default=self.embed_battle(self.last_battle2)
+                timeout=0.1, default=self.embed_battle(self.last_battle2)
             ),
         }
         assert self.current_battle1 == self.agent1.current_battle
