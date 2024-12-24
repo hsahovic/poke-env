@@ -28,8 +28,8 @@ class CustomEnvPlayer(GymnasiumEnv):
     def calc_reward(self, last_battle, current_battle) -> float:
         pass
 
-    def action_to_move(self, action: int, battle: AbstractBattle) -> BattleOrder:
-        return Gen7EnvSinglePlayer.action_to_move(self, action, battle)
+    def action_to_order(self, action: int, battle: AbstractBattle) -> BattleOrder:
+        return Gen7EnvSinglePlayer.action_to_order(self, action, battle)
 
     def describe_embedding(self) -> Space:
         pass
@@ -299,12 +299,12 @@ def test_action_to_move(z_moves_mock):
 
         p = CustomEnvClass(start_listening=False, start_challenging=False)
         battle = Battle("bat1", p.agent1.username, p.agent1.logger, gen=8)
-        assert p.action_to_move(-1, battle).message == "/forfeit"
+        assert p.action_to_order(-1, battle).message == "/forfeit"
         battle._available_moves = [Move("flamethrower", gen=8)]
-        assert p.action_to_move(0, battle).message == "/choose move flamethrower"
+        assert p.action_to_order(0, battle).message == "/choose move flamethrower"
         battle._available_switches = [Pokemon(species="charizard", gen=8)]
         assert (
-            p.action_to_move(
+            p.action_to_order(
                 4
                 + (4 * int(has_megas))
                 + (4 * int(has_z_moves))
@@ -315,11 +315,11 @@ def test_action_to_move(z_moves_mock):
             == "/choose switch charizard"
         )
         battle._available_switches = []
-        assert p.action_to_move(3, battle).message == "/choose move flamethrower"
+        assert p.action_to_order(3, battle).message == "/choose move flamethrower"
         if has_megas:
             battle._can_mega_evolve = True
             assert (
-                p.action_to_move(4 + (4 * int(has_z_moves)), battle).message
+                p.action_to_order(4 + (4 * int(has_z_moves)), battle).message
                 == "/choose move flamethrower mega"
             )
         if has_z_moves:
@@ -329,18 +329,18 @@ def test_action_to_move(z_moves_mock):
             battle._team = {"charizard": active_pokemon}
             z_moves_mock.return_value = [Move("flamethrower", gen=8)]
             assert (
-                p.action_to_move(4, battle).message == "/choose move flamethrower zmove"
+                p.action_to_order(4, battle).message == "/choose move flamethrower zmove"
             )
             battle._team = {}
         if has_dynamax:
             battle._can_dynamax = True
             assert (
-                p.action_to_move(12, battle).message
+                p.action_to_order(12, battle).message
                 == "/choose move flamethrower dynamax"
             )
         if has_tera:
             battle._can_tera = True
             assert (
-                p.action_to_move(16, battle).message
+                p.action_to_order(16, battle).message
                 == "/choose move flamethrower terastallize"
             )

@@ -34,7 +34,7 @@ class TestEnv(GymnasiumEnv):
             dtype=np.float64,
         )
 
-    def action_to_move(self, action, battle):
+    def action_to_order(self, action, battle):
         return self.agent.choose_random_move(battle)
 
     def calc_reward(self, last_battle, current_battle):
