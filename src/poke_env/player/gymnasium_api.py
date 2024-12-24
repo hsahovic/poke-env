@@ -93,10 +93,11 @@ class _AsyncPlayer(Player):
         self._user_funcs = user_funcs
 
     def choose_move(self, battle: AbstractBattle) -> Awaitable[BattleOrder]:
-        print(time.time(), "choose_move start")
         return self._env_move(battle)
 
     async def _env_move(self, battle: AbstractBattle) -> BattleOrder:
+        print("choose_move start")
+        t1 = time.time()
         if not self.current_battle or self.current_battle.finished:
             self.current_battle = battle
         if not self.current_battle == battle:
@@ -104,7 +105,7 @@ class _AsyncPlayer(Player):
         battle_to_send = self._user_funcs.embed_battle(battle)
         await self.observations.async_put(battle_to_send)
         action = await self.actions.async_get()
-        print(action)
+        print(f"ACTION (after {time.time() - t1}): {action}")
         if action == -1:
             print(self.username, "gives up!")
             return ForfeitBattleOrder()
