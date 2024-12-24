@@ -336,6 +336,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         if self.current_battle1 and not self.current_battle1.finished:
             if self.current_battle1 == self.agent1.current_battle:
                 self._actions1.put(-1)
+                self._actions2.put(0)
                 self._observations1.get()
                 self._observations2.get()
             else:
@@ -635,6 +636,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
                     await self._observations2.async_get()
                 print("alright we here", self._actions1.empty(), self._actions2.empty())
                 await self._actions1.async_put(-1)
+                await self._actions2.async_put(0)
 
         if wait and self._challenge_task:
             while not self._challenge_task.done():
