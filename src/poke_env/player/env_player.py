@@ -21,7 +21,8 @@ class EnvPlayer(GymnasiumEnv):
 
     def __init__(
         self,
-        account_configuration: Optional[AccountConfiguration] = None,
+        account_configuration1: Optional[AccountConfiguration] = None,
+        account_configuration2: Optional[AccountConfiguration] = None,
         *,
         avatar: Optional[int] = None,
         battle_format: Optional[str] = None,
@@ -89,7 +90,8 @@ class EnvPlayer(GymnasiumEnv):
         if battle_format:
             b_format = battle_format
         super().__init__(
-            account_configuration=account_configuration,
+            account_configuration1=account_configuration1,
+            account_configuration2=account_configuration2,
             avatar=avatar,
             battle_format=b_format,
             log_level=log_level,

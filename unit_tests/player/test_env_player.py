@@ -19,7 +19,8 @@ from poke_env.player import (
 )
 from poke_env.player.gymnasium_api import _AsyncPlayer
 
-account_configuration = AccountConfiguration("username", "password")
+account_configuration1 = AccountConfiguration("username1", "password1")
+account_configuration1 = AccountConfiguration("username2", "password2")
 server_configuration = ServerConfiguration("server.url", "auth.url")
 
 
@@ -41,7 +42,8 @@ class CustomEnvPlayer(EnvPlayer):
 
 def test_init():
     gymnasium_env = CustomEnvPlayer(
-        account_configuration=account_configuration,
+        account_configuration1=account_configuration1,
+        account_configuration2=account_configuration2,
         server_configuration=server_configuration,
         start_listening=False,
         battle_format="gen7randombattles",
@@ -64,7 +66,8 @@ class AsyncMock(unittest.mock.MagicMock):
 @patch("poke_env.player.gymnasium_api._AsyncQueue.async_put", new_callable=AsyncMock)
 def test_choose_move(queue_put_mock, queue_get_mock):
     player = CustomEnvPlayer(
-        account_configuration=account_configuration,
+        account_configuration1=account_configuration1,
+        account_configuration2=account_configuration2,
         server_configuration=server_configuration,
         start_listening=False,
         battle_format="gen7randombattles",
@@ -96,7 +99,8 @@ def test_choose_move(queue_put_mock, queue_get_mock):
 
 def test_reward_computing_helper():
     player = CustomEnvPlayer(
-        account_configuration=account_configuration,
+        account_configuration1=account_configuration1,
+        account_configuration2=account_configuration2,
         server_configuration=server_configuration,
         start_listening=False,
         battle_format="gen7randombattles",

@@ -116,7 +116,8 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
 
     def __init__(
         self,
-        account_configuration: Optional[AccountConfiguration] = None,
+        account_configuration1: Optional[AccountConfiguration] = None,
+        account_configuration2: Optional[AccountConfiguration] = None,
         *,
         avatar: Optional[int] = None,
         battle_format: str = "gen8randombattle",
@@ -180,7 +181,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         self.agent1 = _AsyncPlayer(
             self,
             username=self.__class__.__name__,  # type: ignore
-            account_configuration=account_configuration,
+            account_configuration=account_configuration1,
             avatar=avatar,
             battle_format=battle_format,
             log_level=log_level,
@@ -197,7 +198,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         self.agent2 = _AsyncPlayer(
             self,
             username=self.__class__.__name__,  # type: ignore
-            account_configuration=account_configuration,
+            account_configuration=account_configuration2,
             avatar=avatar,
             battle_format=battle_format,
             log_level=log_level,
