@@ -7,7 +7,7 @@ from pettingzoo.utils.env import ActionType, ObsType
 
 from poke_env.environment import AbstractBattle, Battle, Pokemon
 from poke_env.player import BattleOrder, ForfeitBattleOrder, GymnasiumEnv
-from poke_env.player.gymnasium_api import _AsyncPlayer, _AsyncQueue
+from poke_env.player.gymnasium_api import _EnvPlayer, _AsyncQueue
 
 
 class DummyEnv(GymnasiumEnv[ObsType, ActionType]):
@@ -63,7 +63,7 @@ def test_queue():
 
 
 def test_async_player():
-    player = _AsyncPlayer(UserFuncs(), start_listening=False, username="usr")
+    player = _EnvPlayer(UserFuncs(), start_listening=False, username="usr")
     battle = Battle("bat1", player.username, player.logger, gen=8)
     player.actions.put(-1)
     order = asyncio.get_event_loop().run_until_complete(player._env_move(battle))

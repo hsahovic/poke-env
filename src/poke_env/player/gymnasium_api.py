@@ -7,6 +7,7 @@ from __future__ import annotations
 import asyncio
 import copy
 import time
+from weakref import WeakKeyDictionary
 from abc import abstractmethod
 from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple, Union
 
@@ -63,7 +64,7 @@ class _AsyncQueue:
         await self.queue.join()
 
 
-class _AsyncPlayer(Player):
+class _EnvPlayer(Player):
     actions: _AsyncQueue
     observations: _AsyncQueue
 
@@ -75,7 +76,7 @@ class _AsyncPlayer(Player):
     ):
         self.__class__.__name__ = username
         super().__init__(**kwargs)
-        self.__class__.__name__ = "_AsyncPlayer"
+        self.__class__.__name__ = "_EnvPlayer"
         self.observations = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
         self.actions = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
         self.current_battle: Optional[AbstractBattle] = None
@@ -113,6 +114,9 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
     _TIME_BETWEEN_RETRIES = 0.5
     _SWITCH_CHALLENGE_TASK_RETRIES = 30
     _TIME_BETWEEN_SWITCH_RETIRES = 1
+
+    _ACTION_SPACE: List[int] = []
+    _DEFAULT_BATTLE_FORMAT = "gen8randombattle"
 
     def __init__(
         self,
@@ -178,12 +182,12 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
             leave it inactive.
         :type start_challenging: bool
         """
-        self.agent1 = _AsyncPlayer(
+        self.agent1 = _EnvPlayer(
             self,
             username=self.__class__.__name__,  # type: ignore
             account_configuration=account_configuration1,
             avatar=avatar,
-            battle_format=battle_format,
+            battle_format=battle_format or self._DEFAULT_BATTLE_FORMAT,
             log_level=log_level,
             max_concurrent_battles=1,
             save_replays=save_replays,
@@ -195,12 +199,12 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
             ping_timeout=ping_timeout,
             team=team,
         )
-        self.agent2 = _AsyncPlayer(
+        self.agent2 = _EnvPlayer(
             self,
             username=self.__class__.__name__,  # type: ignore
             account_configuration=account_configuration2,
             avatar=avatar,
-            battle_format=battle_format,
+            battle_format=battle_format or self._DEFAULT_BATTLE_FORMAT,
             log_level=log_level,
             max_concurrent_battles=1,
             save_replays=save_replays,
@@ -224,6 +228,9 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         self._observations1 = self.agent1.observations
         self._actions2 = self.agent2.actions
         self._observations2 = self.agent2.observations
+        self._reward_buffer: WeakKeyDictionary[AbstractBattle, float] = (
+            WeakKeyDictionary()
+        )
         self.current_battle1: Optional[AbstractBattle] = None
         self.current_battle2: Optional[AbstractBattle] = None
         self.last_battle1: Optional[AbstractBattle] = None
@@ -236,6 +243,90 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
             self._challenge_task = asyncio.run_coroutine_threadsafe(
                 self._challenge_loop(), POKE_LOOP
             )
+
+    def reward_computing_helper(
+        self,
+        battle: AbstractBattle,
+        *,
+        fainted_value: float = 0.0,
+        hp_value: float = 0.0,
+        number_of_pokemons: int = 6,
+        starting_value: float = 0.0,
+        status_value: float = 0.0,
+        victory_value: float = 1.0,
+    ) -> float:
+        """A helper function to compute rewards.
+
+        The reward is computed by computing the value of a game state, and by comparing
+        it to the last state.
+
+        State values are computed by weighting different factor. Fainted pokemons,
+        their remaining HP, inflicted statuses and winning are taken into account.
+
+        For instance, if the last time this function was called for battle A it had
+        a state value of 8 and this call leads to a value of 9, the returned reward will
+        be 9 - 8 = 1.
+
+        Consider a single battle where each player has 6 pokemons. No opponent pokemon
+        has fainted, but our team has one fainted pokemon. Three opposing pokemons are
+        burned. We have one pokemon missing half of its HP, and our fainted pokemon has
+        no HP left.
+
+        The value of this state will be:
+
+        - With fainted value: 1, status value: 0.5, hp value: 1:
+            = - 1 (fainted) + 3 * 0.5 (status) - 1.5 (our hp) = -1
+        - With fainted value: 3, status value: 0, hp value: 1:
+            = - 3 + 3 * 0 - 1.5 = -4.5
+
+        :param battle: The battle for which to compute rewards.
+        :type battle: AbstractBattle
+        :param fainted_value: The reward weight for fainted pokemons. Defaults to 0.
+        :type fainted_value: float
+        :param hp_value: The reward weight for hp per pokemon. Defaults to 0.
+        :type hp_value: float
+        :param number_of_pokemons: The number of pokemons per team. Defaults to 6.
+        :type number_of_pokemons: int
+        :param starting_value: The default reference value evaluation. Defaults to 0.
+        :type starting_value: float
+        :param status_value: The reward value per non-fainted status. Defaults to 0.
+        :type status_value: float
+        :param victory_value: The reward value for winning. Defaults to 1.
+        :type victory_value: float
+        :return: The reward.
+        :rtype: float
+        """
+        if battle not in self._reward_buffer:
+            self._reward_buffer[battle] = starting_value
+        current_value = 0.0
+
+        for mon in battle.team.values():
+            current_value += mon.current_hp_fraction * hp_value
+            if mon.fainted:
+                current_value -= fainted_value
+            elif mon.status is not None:
+                current_value -= status_value
+
+        current_value += (number_of_pokemons - len(battle.team)) * hp_value
+
+        for mon in battle.opponent_team.values():
+            current_value -= mon.current_hp_fraction * hp_value
+            if mon.fainted:
+                current_value += fainted_value
+            elif mon.status is not None:
+                current_value += status_value
+
+        current_value -= (number_of_pokemons - len(battle.opponent_team)) * hp_value
+
+        if battle.won:
+            current_value += victory_value
+        elif battle.lost:
+            current_value -= victory_value
+
+        to_return = current_value - self._reward_buffer[battle]
+        self._reward_buffer[battle] = current_value
+
+        return to_return
 
     @abstractmethod
     def calc_reward(
@@ -303,7 +394,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         :return: The action space size.
         :rtype: int
         """
-        pass
+        return len(self._ACTION_SPACE)
 
     def reset(
         self,
@@ -453,6 +544,25 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
             self._stop_challenge_loop(purge=purge), POKE_LOOP
         )
         closing_task.result()
+
+    def reset_env(self, restart: bool = True):
+        """
+        Resets the environment to an inactive state: it will forfeit all unfinished
+        battles, reset the internal battle tracker and optionally change the next
+        opponent and restart the challenge loop.
+
+        :param opponent: The opponent to use for the next battles. If empty it
+            will not change opponent.
+        :type opponent: Player or str, optional
+        :param restart: If True the challenge loop will be restarted before returning,
+            otherwise the challenge loop will be left inactive and can be
+            started manually.
+        :type restart: bool
+        """
+        self.close(purge=False)
+        self.reset_battles()
+        if restart:
+            self.start_challenging()
 
     def observation_space(self, agent: str) -> Space:
         return self.observation_spaces[agent]

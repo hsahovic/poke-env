@@ -9,22 +9,22 @@ from poke_env import AccountConfiguration, ServerConfiguration
 from poke_env.environment import AbstractBattle, Battle, Move, Pokemon, Status
 from poke_env.player import (
     BattleOrder,
-    EnvPlayer,
     Gen4EnvSinglePlayer,
     Gen5EnvSinglePlayer,
     Gen6EnvSinglePlayer,
     Gen7EnvSinglePlayer,
     Gen8EnvSinglePlayer,
     Gen9EnvSinglePlayer,
+    GymnasiumEnv,
 )
-from poke_env.player.gymnasium_api import _AsyncPlayer
+from poke_env.player.gymnasium_api import _EnvPlayer
 
 account_configuration1 = AccountConfiguration("username1", "password1")
 account_configuration2 = AccountConfiguration("username2", "password2")
 server_configuration = ServerConfiguration("server.url", "auth.url")
 
 
-class CustomEnvPlayer(EnvPlayer):
+class CustomEnvPlayer(GymnasiumEnv):
     def calc_reward(self, last_battle, current_battle) -> float:
         pass
 
@@ -50,7 +50,7 @@ def test_init():
     )
     player = gymnasium_env.agent1
     assert isinstance(gymnasium_env, CustomEnvPlayer)
-    assert isinstance(player, _AsyncPlayer)
+    assert isinstance(player, _EnvPlayer)
 
 
 class AsyncMock(unittest.mock.MagicMock):
