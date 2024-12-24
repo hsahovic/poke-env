@@ -596,6 +596,14 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
 
         if force:
             if self.current_battle1 and not self.current_battle1.finished:
+                if not (self._actions1.empty() and self._actions2.empty()):
+                    await asyncio.sleep(2)
+                    if not (self._actions1.empty() and self._actions2.empty()):
+                        raise RuntimeError(
+                            "The agent is still sending actions. "
+                            "Use this method only when training or "
+                            "evaluation are over."
+                        )
                 if not self._observations1.empty():
                     await self._observations1.async_get()
                 if not self._observations2.empty():
