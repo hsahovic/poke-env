@@ -43,7 +43,6 @@ class _AsyncQueue:
             )
             return res.result()
         except asyncio.TimeoutError:
-            print("###GET TIMEOUT###")
             return default
 
     async def async_put(self, item: Any):
@@ -58,7 +57,6 @@ class _AsyncQueue:
         if timeout:
             await asyncio.sleep(timeout)
             if not self.empty():
-                print("###PUT TIMEOUT###")
                 await self.async_get()
 
     def empty(self):
@@ -97,7 +95,6 @@ class _AsyncPlayer(Player):
         return self._env_move(battle)
 
     async def _env_move(self, battle: AbstractBattle) -> BattleOrder:
-        print("choose_move start")
         t1 = time.time()
         if not self.current_battle or self.current_battle.finished:
             self.current_battle = battle
@@ -108,10 +105,6 @@ class _AsyncPlayer(Player):
         self.waiting = True
         action = await self.actions.async_get()
         self.waiting = False
-        print(f"ACTION (after {time.time() - t1}): {action}")
-        if action == -1:
-            print(self.username, "gives up!")
-            return ForfeitBattleOrder()
         return self._user_funcs.action_to_move(action, battle)
 
     def _battle_finished_callback(self, battle: AbstractBattle):
@@ -345,20 +338,11 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
                 )
         while self.current_battle1 == self.agent1.current_battle:
             time.sleep(0.01)
-        if self.current_battle1 is not None:
-            print(
-                "@@@@@@@@@@@@@@@@@@@@@",
-                self.current_battle1.battle_tag,
-                self.agent1.current_battle.battle_tag,
-            )
-        else:
-            print("@@@@@@@@@@@@@@@@@@@@@")
         observations = {
             self.agents[0]: self._observations1.get(),
             self.agents[1]: self._observations2.get(),
         }
         self.current_battle1 = self.agent1.current_battle
-        print(self.current_battle1.battle_tag)
         self.current_battle1.logger = None
         self.current_battle2 = self.agent2.current_battle
         self.current_battle2.logger = None
@@ -394,7 +378,6 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         battle2.logger = None
         self.last_battle1 = battle1
         self.last_battle2 = battle2
-        print(actions)
         if self.agent1.waiting:
             self._actions1.put(actions[self.agents[0]])
         if self.agent2.waiting:
@@ -419,12 +402,6 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         truncated = {self.agents[0]: trunc1, self.agents[1]: trunc2}
         if self.current_battle1.finished:
             self.agents = []
-        print(
-            self.current_battle1.battle_tag,
-            self.agent1.current_battle.battle_tag,
-            [b.battle_tag for b in self.agent1.battles.values()],
-        )
-        print(self.count, self.agent1.count, self.agent2.count)
         return observations, reward, terminated, truncated, self.get_additional_info()
 
     @staticmethod
@@ -535,7 +512,6 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
     ):
         if not n_challenges:
             while self._keep_challenging:
-                print(time.time(), "challenge again!")
                 await self.agent1.battle_against(self.agent2, 1)
                 if callback and self.current_battle1 is not None:
                     callback(copy.deepcopy(self.current_battle1))
@@ -634,13 +610,11 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
                     await self._observations1.async_get()
                 if not self._observations2.empty():
                     await self._observations2.async_get()
-                print("alright we here", self._actions1.empty(), self._actions2.empty())
                 await self._actions1.async_put(-1)
                 await self._actions2.async_put(0)
 
         if wait and self._challenge_task:
             while not self._challenge_task.done():
-                print("waitingggg")
                 await asyncio.sleep(1)
             self._challenge_task.result()
 
