@@ -91,8 +91,10 @@ class _AsyncPlayer(Player):
         self.actions = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
         self.current_battle: Optional[AbstractBattle] = None
         self._user_funcs = user_funcs
+        self.count = 0
 
     def choose_move(self, battle: AbstractBattle) -> Awaitable[BattleOrder]:
+        self.count += 1
         return self._env_move(battle)
 
     async def _env_move(self, battle: AbstractBattle) -> BattleOrder:
@@ -357,6 +359,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         self.current_battle2.logger = None
         self.last_battle1 = self.current_battle1
         self.last_battle2 = self.current_battle2
+        self.count = 0
         return observations, self.get_additional_info()
 
     def get_additional_info(self) -> Dict[str, Dict[str, Any]]:
@@ -389,6 +392,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         print(actions)
         self._actions1.put(actions[self.agents[0]], timeout=0.01)
         self._actions2.put(actions[self.agents[1]], timeout=0.01)
+        self.count += 1
         observations = {
             self.agents[0]: self._observations1.get(
                 timeout=0.01, default=self.embed_battle(self.last_battle1)
@@ -413,6 +417,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
             self.agent1.current_battle.battle_tag,
             [b.battle_tag for b in self.agent1.battles.values()],
         )
+        print(self.count, self.agent1.count, self.agent2.count)
         return observations, reward, terminated, truncated, self.get_additional_info()
 
     @staticmethod
