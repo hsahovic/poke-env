@@ -396,7 +396,8 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         print(actions)
         if self.agent1.waiting:
             self._actions1.put(actions[self.agents[0]])
-        self._actions2.put(actions[self.agents[1]])
+        if self.agent2.waiting:
+            self._actions2.put(actions[self.agents[1]])
         self.count += 1
         observations = {
             self.agents[0]: self._observations1.get(
