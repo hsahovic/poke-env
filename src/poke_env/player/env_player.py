@@ -34,6 +34,7 @@ class EnvPlayer(GymnasiumEnv[ObsType, ActType], ABC):
         start_listening: bool = True,
         accept_open_team_sheet: Optional[bool] = False,
         start_timer_on_battle_start: bool = False,
+        open_timeout: Optional[float] = 10.0,
         ping_interval: Optional[float] = 20.0,
         ping_timeout: Optional[float] = 20.0,
         team: Optional[Union[str, Teambuilder]] = None,
@@ -69,6 +70,11 @@ class EnvPlayer(GymnasiumEnv[ObsType, ActType], ABC):
         :param start_timer_on_battle_start: Whether to automatically start the battle
             timer on battle start. Defaults to False.
         :type start_timer_on_battle_start: bool
+        :param open_timeout: How long to wait for a timeout when connecting the socket
+            (important for backend websockets.
+            Increase only if timeouts occur during runtime).
+            If None connect will never time out.
+        :type open_timeout: float, optional
         :param ping_interval: How long between keepalive pings (Important for backend
             websockets). If None, disables keepalive entirely.
         :type ping_interval: float, optional
@@ -106,6 +112,7 @@ class EnvPlayer(GymnasiumEnv[ObsType, ActType], ABC):
             accept_open_team_sheet=accept_open_team_sheet,
             start_timer_on_battle_start=start_timer_on_battle_start,
             team=team,
+            open_timeout=open_timeout,
             ping_interval=ping_interval,
             ping_timeout=ping_timeout,
             start_challenging=start_challenging,
