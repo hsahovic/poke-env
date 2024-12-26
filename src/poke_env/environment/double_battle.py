@@ -72,6 +72,7 @@ class DoubleBattle(AbstractBattle):
     def _get_active_pokemon(
         active_pokemon: Dict[str, Pokemon], role: str
     ) -> List[Optional[Pokemon]]:
+        print("########################", active_pokemon)
         pokemon_1 = active_pokemon.get(f"{role}a")
         pokemon_2 = active_pokemon.get(f"{role}b")
         if pokemon_1 is None or not pokemon_1.active or pokemon_1.fainted:
