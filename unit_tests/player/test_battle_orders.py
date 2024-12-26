@@ -37,7 +37,7 @@ def test_double_orders():
     )
     assert DoubleBattleOrder(mon).message == "/choose switch lugia, pass"
     assert DoubleBattleOrder(None, move).message == "/choose pass, move selfdestruct 2"
-    assert DoubleBattleOrder().message == "/choose pass, pass"
+    assert DoubleBattleOrder().message == "/choose default"
 
     orders = [move, mon]
 
