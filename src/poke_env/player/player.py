@@ -63,6 +63,7 @@ class Player(ABC):
         server_configuration: Optional[ServerConfiguration] = None,
         start_timer_on_battle_start: bool = False,
         start_listening: bool = True,
+        open_timeout: Optional[float] = 10.0,
         ping_interval: Optional[float] = 20.0,
         ping_timeout: Optional[float] = 20.0,
         team: Optional[Union[str, Teambuilder]] = None,
@@ -95,6 +96,11 @@ class Player(ABC):
         :param start_listening: Whether to start listening to the server. Defaults to
             True.
         :type start_listening: bool
+        :param open_timeout: How long to wait for a timeout when connecting the socket
+            (important for backend websockets.
+            Increase only if timeouts occur during runtime).
+            If None connect will never time out.
+        :type open_timeout: float, optional
         :param ping_interval: How long between keepalive pings (Important for backend
             websockets). If None, disables keepalive entirely.
         :type ping_interval: float, optional
@@ -123,6 +129,7 @@ class Player(ABC):
             log_level=log_level,
             server_configuration=server_configuration,
             start_listening=start_listening,
+            open_timeout=open_timeout,
             ping_interval=ping_interval,
             ping_timeout=ping_timeout,
         )
