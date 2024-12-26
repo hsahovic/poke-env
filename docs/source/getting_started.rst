@@ -41,7 +41,7 @@ Agents in ``poke-env`` are instances of the ``Player`` class. Explore the follow
 
 - Basic agent: :ref:`/examples/cross_evaluate_random_players.ipynb`
 - Advanced agent: :ref:`max_damage_player`
-- RL agent: :ref:`rl_with_open_ai_gym_wrapper`
+- RL agent: :ref:`rl_with_gymnasium_wrapper`
 - Using teams: :ref:`ou_max_player`
 - Custom team builder: :ref:`using_a_custom_teambuilder`
 
