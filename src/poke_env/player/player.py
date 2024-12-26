@@ -283,7 +283,8 @@ class Player(ABC):
                 if split_message[2]:
                     request = orjson.loads(split_message[2])
                     battle.parse_request(request)
-                    print("request:", request)
+                    print("request:", split_message[2])
+                    print("active:", battle.active_pokemon)
                     print("team:", battle.team)
                     if battle.move_on_next_request:
                         await self._handle_battle_request(battle)
