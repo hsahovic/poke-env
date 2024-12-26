@@ -90,7 +90,7 @@ def play_function(player, n_battles):
 
 
 @pytest.mark.timeout(30)
-def test_random_gym_players_gen4():
+def test_random_gymnasium_players_gen4():
     random_player = RandomPlayer(battle_format="gen4randombattle", log_level=25)
     env_player = RandomGen4EnvPlayer(
         log_level=25, opponent=random_player, start_challenging=False
@@ -100,7 +100,7 @@ def test_random_gym_players_gen4():
 
 
 @pytest.mark.timeout(30)
-def test_random_gym_players_gen5():
+def test_random_gymnasium_players_gen5():
     random_player = RandomPlayer(battle_format="gen5randombattle", log_level=25)
     env_player = RandomGen5EnvPlayer(
         log_level=25, opponent=random_player, start_challenging=False
@@ -110,7 +110,7 @@ def test_random_gym_players_gen5():
 
 
 @pytest.mark.timeout(30)
-def test_random_gym_players_gen6():
+def test_random_gymnasium_players_gen6():
     random_player = RandomPlayer(battle_format="gen6randombattle", log_level=25)
     env_player = RandomGen6EnvPlayer(
         log_level=25, opponent=random_player, start_challenging=False
@@ -120,7 +120,7 @@ def test_random_gym_players_gen6():
 
 
 @pytest.mark.timeout(30)
-def test_random_gym_players_gen7():
+def test_random_gymnasium_players_gen7():
     random_player = RandomPlayer(battle_format="gen7randombattle", log_level=25)
     env_player = RandomGen7EnvPlayer(
         log_level=25, opponent=random_player, start_challenging=False
@@ -130,7 +130,7 @@ def test_random_gym_players_gen7():
 
 
 @pytest.mark.timeout(30)
-def test_random_gym_players_gen8():
+def test_random_gymnasium_players_gen8():
     random_player = RandomPlayer(battle_format="gen8randombattle", log_level=25)
     env_player = RandomGen8EnvPlayer(
         log_level=25, opponent=random_player, start_challenging=False
@@ -140,7 +140,7 @@ def test_random_gym_players_gen8():
 
 
 @pytest.mark.timeout(30)
-def test_random_gym_players_gen9():
+def test_random_gymnasium_players_gen9():
     random_player = RandomPlayer(battle_format="gen9randombattle", log_level=25)
     env_player = RandomGen9EnvPlayer(
         log_level=25, opponent=random_player, start_challenging=False

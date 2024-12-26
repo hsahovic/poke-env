@@ -41,6 +41,7 @@ class PSClient:
         log_level: Optional[int] = None,
         server_configuration: ServerConfiguration,
         start_listening: bool = True,
+        open_timeout: Optional[float] = 10.0,
         ping_interval: Optional[float] = 20.0,
         ping_timeout: Optional[float] = 20.0,
     ):
@@ -56,6 +57,11 @@ class PSClient:
         :param start_listening: Whether to start listening to the server. Defaults to
             True.
         :type start_listening: bool
+        :param open_timeout: How long to wait for a timeout when connecting the socket
+            (important for backend websockets.
+            Increase only if timeouts occur during runtime).
+            If None connect will never time out.
+        :type open_timeout: float, optional
         :param ping_interval: How long between keepalive pings (Important for backend
             websockets). If None, disables keepalive entirely.
         :type ping_interval: float, optional
@@ -66,6 +72,7 @@ class PSClient:
         :type ping_timeout: float, optional
         """
         self._active_tasks: Set[Any] = set()
+        self._open_timeout = open_timeout
         self._ping_interval = ping_interval
         self._ping_timeout = ping_timeout
 
@@ -210,9 +217,9 @@ class PSClient:
             async with ws.connect(
                 self.websocket_url,
                 max_queue=None,
+                open_timeout=self._open_timeout,
                 ping_interval=self._ping_interval,
                 ping_timeout=self._ping_timeout,
-                open_timeout=None,
             ) as websocket:
                 self.websocket = websocket
                 async for message in websocket:
