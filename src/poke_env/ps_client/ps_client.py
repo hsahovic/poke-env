@@ -126,7 +126,7 @@ class PSClient:
         logger.addHandler(stream_handler)
         return logger
 
-    async def _handle_message(self, message: str):
+    async def _handle_message(self, message: str, message2: Optional[str] = None):
         """Handle received messages.
 
         :param message: The message to parse.
@@ -140,7 +140,12 @@ class PSClient:
             # Otherwise it is the one-th entry
             if split_messages[0][0].startswith(">battle"):
                 # Battle update
-                await self._handle_battle_message(split_messages)  # type: ignore
+                split_messages2 = (
+                    [m.split("|") for m in message2.split("\n")]
+                    if message2 is not None
+                    else None
+                )
+                await self._handle_battle_message(split_messages, split_messages2)  # type: ignore
             elif split_messages[0][1] == "challstr":
                 # Confirms connection to the server: we can login
                 await self.log_in(split_messages[0])
@@ -224,7 +229,16 @@ class PSClient:
                 self.websocket = websocket
                 async for message in websocket:
                     self.logger.info("\033[92m\033[1m<<<\033[0m %s", message)
-                    task = create_task(self._handle_message(str(message)))
+                    if str(message).startswith(">battle"):
+                        try:
+                            message2 = str(
+                                await asyncio.wait_for(websocket.recv(), timeout=0.01)
+                            )
+                        except asyncio.TimeoutError:
+                            message2 = None
+                    else:
+                        message2 = None
+                    task = create_task(self._handle_message(str(message), message2))
                     self._active_tasks.add(task)
                     task.add_done_callback(self._active_tasks.discard)
 
