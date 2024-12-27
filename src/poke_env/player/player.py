@@ -399,7 +399,7 @@ class Player(ABC):
                     maybe_default_order=self.maybe_default_order,
                 )
             else:
-                message = None
+                message = "waiting"
             print(f"{protocol}\n{request_message}\n{message}\n\n")
             self.from_teampreview_request = False
             self.maybe_default_order = False
@@ -409,12 +409,12 @@ class Player(ABC):
         battle: AbstractBattle,
         from_teampreview_request: bool = False,
         maybe_default_order: bool = False,
-    ) -> str:
+    ) -> Optional[str]:
         if maybe_default_order and random.random() < self.DEFAULT_CHOICE_CHANCE:
             message = self.choose_default_move().message
         elif battle.teampreview:
             if not from_teampreview_request:
-                return ""
+                return
             message = self.teampreview(battle)
         else:
             choice = self.choose_move(battle)
