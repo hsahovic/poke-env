@@ -142,7 +142,7 @@ class PSClient:
                 # Battle update
                 if (
                     len(split_messages) > 1
-                    and len(split_messages[1]) > 1
+                    and len(split_messages[1]) > 2
                     and split_messages[1][1] == "request"
                 ):
                     request = split_messages
