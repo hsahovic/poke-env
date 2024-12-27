@@ -263,7 +263,6 @@ class Player(ABC):
         protocol: Optional[List[List[str]]],
         request_message: Optional[List[List[str]]],
     ):
-        print(f"{protocol}\n{request_message}\n\n")
         """Handles a battle message.
 
         :param split_message: The received battle message.
@@ -372,7 +371,6 @@ class Player(ABC):
                         )
                 elif split_message[1] == "turn":
                     battle.parse_message(split_message)
-                    await self._handle_battle_request(battle)
                 elif split_message[1] == "teampreview":
                     battle.parse_message(split_message)
                     self.from_teampreview_request = True
@@ -397,15 +395,19 @@ class Player(ABC):
             if not battle._wait:
                 await self._handle_battle_request(
                     battle,
+                    protocol,
+                    request_message,
                     from_teampreview_request=self.from_teampreview_request,
                     maybe_default_order=self.maybe_default_order,
                 )
-                self.from_teampreview_request = False
-                self.maybe_default_order = False
+            self.from_teampreview_request = False
+            self.maybe_default_order = False
 
     async def _handle_battle_request(
         self,
         battle: AbstractBattle,
+        protocol,
+        request_message,
         from_teampreview_request: bool = False,
         maybe_default_order: bool = False,
     ):
@@ -421,7 +423,7 @@ class Player(ABC):
                 choice = await choice
             message = choice.message
 
-        print(message)
+        print(f"{protocol}\n{request_message}\n{message}\n\n")
         await self.ps_client.send_message(message, battle.battle_tag)
 
     async def _handle_challenge_request(self, split_message: List[str]):
