@@ -261,9 +261,9 @@ class Player(ABC):
         request_message: Optional[List[List[str]]],
     ):
         if protocol is not None:
-            print(protocol)
+            print("PROTOCOL:", protocol)
         if request_message is not None:
-            print("EXTRA:", request_message)
+            print("REQUEST:", request_message)
         """Handles a battle message.
 
         :param split_message: The received battle message.
