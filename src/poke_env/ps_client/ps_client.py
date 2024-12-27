@@ -9,6 +9,7 @@ from logging import Logger
 from time import perf_counter
 from typing import Any, List, Optional, Set
 
+import orjson
 import requests
 import websockets.client as ws
 from websockets.client import WebSocketClientProtocol
@@ -140,12 +141,17 @@ class PSClient:
             # Otherwise it is the one-th entry
             if split_messages[0][0].startswith(">battle"):
                 # Battle update
-                split_messages2 = (
-                    [m.split("|") for m in message2.split("\n")]
-                    if message2 is not None
-                    else None
-                )
-                await self._handle_battle_message(split_messages, split_messages2)  # type: ignore
+                if len(split_messages[0]) > 2 and split_messages[0][2] == "request":
+                    request = split_messages
+                    protocol = (
+                        [m.split("|") for m in message2.split("\n")]
+                        if message2 is not None
+                        else None
+                    )
+                else:
+                    request = None
+                    protocol = split_messages
+                await self._handle_battle_message(protocol, request)  # type: ignore
             elif split_messages[0][1] == "challstr":
                 # Confirms connection to the server: we can login
                 await self.log_in(split_messages[0])

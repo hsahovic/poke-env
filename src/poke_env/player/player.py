@@ -257,30 +257,34 @@ class Player(ABC):
 
     async def _handle_battle_message(
         self,
-        split_messages: List[List[str]],
-        split_messages2: Optional[List[List[str]]],
+        protocol: Optional[List[List[str]]],
+        request_message: Optional[List[List[str]]],
     ):
-        print(split_messages)
-        if split_messages2 is not None:
-            print("EXTRA:", split_messages2)
+        if protocol is not None:
+            print(protocol)
+        if request_message is not None:
+            print("EXTRA:", request_message)
         """Handles a battle message.
 
         :param split_message: The received battle message.
         :type split_message: str
         """
+        assert protocol is not None or request_message is not None
         # Battle messages can be multiline
         if (
-            len(split_messages) > 1
-            and len(split_messages[1]) > 1
-            and split_messages[1][1] == "init"
+            protocol is not None
+            and len(protocol) > 1
+            and len(protocol[1]) > 1
+            and protocol[1][1] == "init"
         ):
-            battle_info = split_messages[0][0].split("-")
+            battle_info = protocol[0][0].split("-")
             battle = await self._create_battle(battle_info)
         else:
-            battle = await self._get_battle(split_messages[0][0])
+            non_none_message = protocol or request_message
+            assert non_none_message is not None
+            battle = await self._get_battle(non_none_message[0][0])
 
         # consume protocol message
-        protocol = split_messages2 if split_messages2 is not None else split_messages
         if protocol:
             for split_message in protocol[1:]:
                 if len(split_message) <= 1:
@@ -404,8 +408,8 @@ class Player(ABC):
                     battle.parse_message(split_message)
 
         # consume request
-        if len(split_messages[0]) > 2 and split_messages[0][1] == "request":
-            request = orjson.loads(split_messages[0][2])
+        if request_message is not None:
+            request = orjson.loads(request_message[0][2])
             battle.parse_request(request)
             if battle.move_on_next_request:
                 await self._handle_battle_request(battle)
