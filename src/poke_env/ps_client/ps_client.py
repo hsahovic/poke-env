@@ -9,7 +9,6 @@ from logging import Logger
 from time import perf_counter
 from typing import Any, List, Optional, Set
 
-import orjson
 import requests
 import websockets.client as ws
 from websockets.client import WebSocketClientProtocol
@@ -141,7 +140,11 @@ class PSClient:
             # Otherwise it is the one-th entry
             if split_messages[0][0].startswith(">battle"):
                 # Battle update
-                if len(split_messages[0]) > 2 and split_messages[0][2] == "request":
+                if (
+                    len(split_messages) > 1
+                    and len(split_messages[1]) > 1
+                    and split_messages[1][1] == "request"
+                ):
                     request = split_messages
                     protocol = (
                         [m.split("|") for m in message2.split("\n")]

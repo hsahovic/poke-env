@@ -285,7 +285,7 @@ class Player(ABC):
             battle = await self._get_battle(non_none_message[0][0])
 
         # consume protocol message
-        if protocol:
+        if protocol is not None:
             for split_message in protocol[1:]:
                 if len(split_message) <= 1:
                     continue
