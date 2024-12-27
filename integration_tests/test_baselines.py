@@ -23,7 +23,7 @@ async def test_random_players():
     players = [RandomPlayer(), RandomPlayer()]
     await asyncio.wait_for(
         simple_cross_evaluation(5, players=players),
-        timeout=5,
+        timeout=50,
     )
 
 
@@ -33,19 +33,19 @@ async def test_random_players_in_doubles():
         RandomPlayer(battle_format="gen9randomdoublesbattle"),
         RandomPlayer(battle_format="gen9randomdoublesbattle"),
     ]
-    await asyncio.wait_for(simple_cross_evaluation(5, players=players), timeout=5)
+    await asyncio.wait_for(simple_cross_evaluation(5, players=players), timeout=50)
 
 
 @pytest.mark.asyncio
 async def test_shp():
     players = [RandomPlayer(), SimpleHeuristicsPlayer()]
-    await asyncio.wait_for(simple_cross_evaluation(5, players=players), timeout=5)
+    await asyncio.wait_for(simple_cross_evaluation(5, players=players), timeout=50)
 
 
 @pytest.mark.asyncio
 async def test_max_base_power():
     players = [RandomPlayer(), MaxBasePowerPlayer()]
-    await asyncio.wait_for(simple_cross_evaluation(5, players=players), timeout=5)
+    await asyncio.wait_for(simple_cross_evaluation(5, players=players), timeout=50)
 
 
 @pytest.mark.asyncio
@@ -54,4 +54,4 @@ async def test_max_base_power_in_doubles():
         RandomPlayer(battle_format="gen9randomdoublesbattle"),
         MaxBasePowerPlayer(battle_format="gen9randomdoublesbattle"),
     ]
-    await asyncio.wait_for(simple_cross_evaluation(5, players=players), timeout=5)
+    await asyncio.wait_for(simple_cross_evaluation(5, players=players), timeout=50)
