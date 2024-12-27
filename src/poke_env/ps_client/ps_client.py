@@ -232,7 +232,7 @@ class PSClient:
                 self.websocket = websocket
                 async for message in websocket:
                     self.logger.info("\033[92m\033[1m<<<\033[0m %s", message)
-                    if str(message).startswith(">battle"):
+                    if "|request|" in str(message):
                         try:
                             message2 = str(
                                 await asyncio.wait_for(websocket.recv(), timeout=0.01)
