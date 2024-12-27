@@ -400,11 +400,12 @@ class Player(ABC):
                     battle.parse_message(split_message)
 
         # consume request
-        request = orjson.loads(split_messages[0][2])
-        battle.parse_request(request)
-        if battle.move_on_next_request:
-            await self._handle_battle_request(battle)
-            battle.move_on_next_request = False
+        if len(split_messages[0]) > 2:
+            request = orjson.loads(split_messages[0][2])
+            battle.parse_request(request)
+            if battle.move_on_next_request:
+                await self._handle_battle_request(battle)
+                battle.move_on_next_request = False
 
     async def _handle_battle_request(
         self,
