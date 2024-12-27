@@ -403,6 +403,8 @@ class Player(ABC):
             print(f"{protocol}\n{request_message}\n{message}\n\n")
             self.from_teampreview_request = False
             self.maybe_default_order = False
+        else:
+            print(f"{request_message}\n{protocol}\n{None}\n\n")
 
     async def _handle_battle_request(
         self,
