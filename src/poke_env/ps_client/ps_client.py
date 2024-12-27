@@ -239,7 +239,7 @@ class PSClient:
                 async for message in websocket:
                     self.logger.info("\033[92m\033[1m<<<\033[0m %s", message)
                     if "|request|" in str(message) and len(websocket.messages) > 0:
-                        message2 = str(websocket.recv())
+                        message2 = str(await websocket.recv())
                     else:
                         message2 = None
                     task = create_task(self._handle_message(str(message), message2))
