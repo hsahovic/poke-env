@@ -238,13 +238,8 @@ class PSClient:
                 self.websocket = websocket
                 async for message in websocket:
                     self.logger.info("\033[92m\033[1m<<<\033[0m %s", message)
-                    if "|request|" in str(message):
-                        try:
-                            message2 = str(
-                                await asyncio.wait_for(websocket.recv(), timeout=0.01)
-                            )
-                        except asyncio.TimeoutError:
-                            message2 = None
+                    if "|request|" in str(message) and len(websocket.messages) > 0:
+                        message2 = str(websocket.recv())
                     else:
                         message2 = None
                     task = create_task(self._handle_message(str(message), message2))
