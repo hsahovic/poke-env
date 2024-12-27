@@ -149,7 +149,7 @@ async def test_listen(handle_message_mock):
 
     await gathered
     assert handle_message_mock.await_count == 3
-    handle_message_mock.assert_awaited_with("error|test 3")
+    handle_message_mock.assert_awaited_with("error|test 3", None)
 
 
 @pytest.mark.asyncio
