@@ -408,8 +408,12 @@ class Player(ABC):
                     battle.parse_message(split_message)
 
         # consume request
-        if request_message is not None:
-            request = orjson.loads(request_message[0][2])
+        if (
+            request_message is not None
+            and len(request_message) > 1
+            and len(request_message[1]) > 1
+        ):
+            request = orjson.loads(request_message[1][1])
             battle.parse_request(request)
             if battle.move_on_next_request:
                 await self._handle_battle_request(battle)
