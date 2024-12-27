@@ -277,8 +277,9 @@ class Player(ABC):
             battle = await self._get_battle(split_messages[0][0])
 
         # consume protocol message
-        if split_messages2:
-            for split_message in split_messages2[1:]:
+        protocol = split_messages2 if split_messages2 is not None else split_messages
+        if protocol:
+            for split_message in protocol[1:]:
                 if len(split_message) <= 1:
                     continue
                 elif split_message[1] == "":
@@ -400,7 +401,7 @@ class Player(ABC):
                     battle.parse_message(split_message)
 
         # consume request
-        if len(split_messages[0]) > 2:
+        if len(split_messages[0]) > 2 and split_messages[0][1] == "request":
             request = orjson.loads(split_messages[0][2])
             battle.parse_request(request)
             if battle.move_on_next_request:
