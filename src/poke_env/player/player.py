@@ -260,6 +260,9 @@ class Player(ABC):
         split_messages: List[List[str]],
         split_messages2: Optional[List[List[str]]],
     ):
+        print(split_messages)
+        if split_messages2 is not None:
+            print("EXTRA:", split_messages2)
         """Handles a battle message.
 
         :param split_message: The received battle message.

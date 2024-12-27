@@ -127,9 +127,6 @@ class PSClient:
         return logger
 
     async def _handle_message(self, message: str, message2: Optional[str] = None):
-        print(message)
-        if message2 is not None:
-            print("EXTRA:", message2)
         """Handle received messages.
 
         :param message: The message to parse.
