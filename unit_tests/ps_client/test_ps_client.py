@@ -108,7 +108,7 @@ async def test_handle_message():
 
     client._handle_battle_message = AsyncMock()
     await client._handle_message(">battle|thing")
-    client._handle_battle_message.assert_called_once_with([[">battle", "thing"]])
+    client._handle_battle_message.assert_called_once_with([[">battle", "thing"]], None)
 
     await client._handle_message("|updatesearch")
 
