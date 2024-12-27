@@ -412,6 +412,7 @@ class Player(ABC):
             request_message is not None
             and len(request_message) > 1
             and len(request_message[1]) > 2
+            and request_message[1][2] != ""
         ):
             request = orjson.loads(request_message[1][2])
             battle.parse_request(request)
