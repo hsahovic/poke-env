@@ -393,29 +393,28 @@ class Player(ABC):
             request = orjson.loads(request_message[1][2])
             battle.parse_request(request)
             if not battle._wait:
-                await self._handle_battle_request(
+                message = await self._handle_battle_request(
                     battle,
-                    protocol,
-                    request_message,
                     from_teampreview_request=self.from_teampreview_request,
                     maybe_default_order=self.maybe_default_order,
                 )
+            else:
+                message = None
+            print(f"{protocol}\n{request_message}\n{message}\n\n")
             self.from_teampreview_request = False
             self.maybe_default_order = False
 
     async def _handle_battle_request(
         self,
         battle: AbstractBattle,
-        protocol,
-        request_message,
         from_teampreview_request: bool = False,
         maybe_default_order: bool = False,
-    ):
+    ) -> str:
         if maybe_default_order and random.random() < self.DEFAULT_CHOICE_CHANCE:
             message = self.choose_default_move().message
         elif battle.teampreview:
             if not from_teampreview_request:
-                return
+                return ""
             message = self.teampreview(battle)
         else:
             choice = self.choose_move(battle)
@@ -423,8 +422,8 @@ class Player(ABC):
                 choice = await choice
             message = choice.message
 
-        print(f"{protocol}\n{request_message}\n{message}\n\n")
         await self.ps_client.send_message(message, battle.battle_tag)
+        return message
 
     async def _handle_challenge_request(self, split_message: List[str]):
         """Handles an individual challenge."""
