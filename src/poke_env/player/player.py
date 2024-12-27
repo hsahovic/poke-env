@@ -414,7 +414,7 @@ class Player(ABC):
             message = self.choose_default_move().message
         elif battle.teampreview:
             if not from_teampreview_request:
-                return
+                return None
             message = self.teampreview(battle)
         else:
             choice = self.choose_move(battle)
