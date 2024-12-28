@@ -207,7 +207,9 @@ class PSClient:
             self.logger.critical("CancelledError intercepted: %s", e)
         except Exception as exception:
             self.logger.exception(
-                "Unhandled exception raised while handling message:\n%s", message
+                "Unhandled exception raised while handling message:\n%s\n...and extra message:\n%s",
+                message,
+                message2,
             )
             raise exception
 
@@ -238,16 +240,15 @@ class PSClient:
                 self.websocket = websocket
                 async for message in websocket:
                     self.logger.info("\033[92m\033[1m<<<\033[0m %s", message)
-                    if "|request|" in str(message):
-                        try:
-                            message2 = str(
-                                await asyncio.wait_for(websocket.recv(), timeout=0.01)
-                            )
-                        except asyncio.TimeoutError:
-                            message2 = None
+                    m = str(message)
+                    if "|request|" in m:
+                        m2 = str(await websocket.recv())
+                        if "|request|" in m2:
+                            websocket.messages.appendleft(m2)
+                            m2 = None
                     else:
-                        message2 = None
-                    task = create_task(self._handle_message(str(message), message2))
+                        m2 = None
+                    task = create_task(self._handle_message(m, m2))
                     self._active_tasks.add(task)
                     task.add_done_callback(self._active_tasks.discard)
 
