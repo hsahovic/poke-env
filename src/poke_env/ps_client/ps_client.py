@@ -7,7 +7,7 @@ import logging
 from asyncio import CancelledError, Event, Lock, create_task, sleep
 from logging import Logger
 from time import perf_counter
-from typing import Any, List, Optional, Set
+from typing import Any, Dict, List, Optional, Set
 
 import requests
 import websockets.client as ws
@@ -85,7 +85,7 @@ class PSClient:
         self._sending_lock = create_in_poke_loop(Lock)
 
         self.websocket: WebSocketClientProtocol
-        self.req: Optional[str] = None
+        self.reqs: Dict[str, List[List[str]]] = {}
         self._logger: Logger = self._create_logger(log_level)
 
         if start_listening:
@@ -127,7 +127,7 @@ class PSClient:
         logger.addHandler(stream_handler)
         return logger
 
-    async def _handle_message(self, message: str, message2: Optional[str] = None):
+    async def _handle_message(self, message: str):
         """Handle received messages.
 
         :param message: The message to parse.
@@ -141,21 +141,15 @@ class PSClient:
             # Otherwise it is the one-th entry
             if split_messages[0][0].startswith(">battle"):
                 # Battle update
-                if (
-                    len(split_messages) > 1
-                    and len(split_messages[1]) > 2
-                    and split_messages[1][1] == "request"
-                ):
-                    request = split_messages
-                    protocol = (
-                        [m.split("|") for m in message2.split("\n")]
-                        if message2 is not None
-                        else None
-                    )
+                battle_tag = split_messages[0][0][1:]
+                request = self.reqs.pop(battle_tag, None)
+                if "|request|" in message:
+                    protocol = None
+                    self.reqs[battle_tag] = split_messages
                 else:
-                    request = None
                     protocol = split_messages
-                await self._handle_battle_message(protocol, request)  # type: ignore
+                if protocol is not None or request is not None:
+                    await self._handle_battle_message(protocol, request)  # type: ignore
             elif split_messages[0][1] == "challstr":
                 # Confirms connection to the server: we can login
                 await self.log_in(split_messages[0])
@@ -208,9 +202,7 @@ class PSClient:
             self.logger.critical("CancelledError intercepted: %s", e)
         except Exception as exception:
             self.logger.exception(
-                "Unhandled exception raised while handling message:\n%s\n...and extra message:\n%s",
-                message,
-                message2,
+                "Unhandled exception raised while handling message:\n%s", message
             )
             raise exception
 
@@ -241,24 +233,9 @@ class PSClient:
                 self.websocket = websocket
                 async for message in websocket:
                     self.logger.info("\033[92m\033[1m<<<\033[0m %s", message)
-                    m = str(message)
-                    if self.req is None:
-                        if "|request|" in m:
-                            self.req = m
-                            task = None
-                        else:
-                            task = create_task(self._handle_message(m))
-                    else:
-                        if "|request|" in m:
-                            last_req = self.req
-                            self.req = m
-                            task = create_task(self._handle_message(last_req))
-                        else:
-                            task = create_task(self._handle_message(self.req, m))
-                            self.req = None
-                    if task is not None:
-                        self._active_tasks.add(task)
-                        task.add_done_callback(self._active_tasks.discard)
+                    task = create_task(self._handle_message(str(message)))
+                    self._active_tasks.add(task)
+                    task.add_done_callback(self._active_tasks.discard)
 
         except ConnectionClosedOK:
             self.logger.warning(
