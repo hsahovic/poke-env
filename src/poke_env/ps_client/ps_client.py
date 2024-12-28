@@ -85,6 +85,7 @@ class PSClient:
         self._sending_lock = create_in_poke_loop(Lock)
 
         self.websocket: WebSocketClientProtocol
+        self.req: Optional[str] = None
         self._logger: Logger = self._create_logger(log_level)
 
         if start_listening:
@@ -241,16 +242,23 @@ class PSClient:
                 async for message in websocket:
                     self.logger.info("\033[92m\033[1m<<<\033[0m %s", message)
                     m = str(message)
-                    if "|request|" in m:
-                        m2 = str(await websocket.recv())
-                        if "|request|" in m2:
-                            websocket.messages.appendleft(m2)
-                            m2 = None
+                    if self.req is None:
+                        if "|request|" in m:
+                            self.req = m
+                            task = None
+                        else:
+                            task = create_task(self._handle_message(m))
                     else:
-                        m2 = None
-                    task = create_task(self._handle_message(m, m2))
-                    self._active_tasks.add(task)
-                    task.add_done_callback(self._active_tasks.discard)
+                        if "|request|" in m:
+                            last_req = self.req
+                            self.req = m
+                            task = create_task(self._handle_message(last_req))
+                        else:
+                            task = create_task(self._handle_message(self.req, m))
+                            self.req = None
+                    if task is not None:
+                        self._active_tasks.add(task)
+                        task.add_done_callback(self._active_tasks.discard)
 
         except ConnectionClosedOK:
             self.logger.warning(
