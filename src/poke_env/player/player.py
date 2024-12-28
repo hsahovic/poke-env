@@ -293,13 +293,11 @@ class Player(ABC):
         ):
             request = orjson.loads(request_message[1][2])
             battle.parse_request(request)
+            print(
+                f"{protocol}\n{request_message}\n{battle.team}\n{battle.active_pokemon}\n"
+            )
             if not battle._wait:
-                message = await self._handle_battle_request(battle)
-            else:
-                message = "waiting"
-            print(f"{protocol}\n{request_message}\n{message}\n")
-        else:
-            print(f"{request_message}\n{protocol}\n{None}\n")
+                await self._handle_battle_request(battle)
 
     async def _handle_protocol(self, battle: AbstractBattle, protocol: List[List[str]]):
         for split_message in protocol[1:]:
@@ -403,12 +401,12 @@ class Player(ABC):
         battle: AbstractBattle,
         from_teampreview_request: bool = False,
         maybe_default_order: bool = False,
-    ) -> Optional[str]:
+    ):
         if maybe_default_order and random.random() < self.DEFAULT_CHOICE_CHANCE:
             message = self.choose_default_move().message
         elif battle.teampreview:
             if not from_teampreview_request:
-                return None
+                return
             message = self.teampreview(battle)
         else:
             choice = self.choose_move(battle)
@@ -417,7 +415,6 @@ class Player(ABC):
             message = choice.message
 
         await self.ps_client.send_message(message, battle.battle_tag)
-        return message
 
     async def _handle_challenge_request(self, split_message: List[str]):
         """Handles an individual challenge."""
