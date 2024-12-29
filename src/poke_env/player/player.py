@@ -295,8 +295,8 @@ class Player(ABC):
         ):
             request = orjson.loads(request_message[1][2])
             battle.parse_request(request)
-            print("TEAM:", battle.team)
-            print("ACTIVE:", battle.active_pokemon, end="\n\n")
+            print(f"TEAM {battle.battle_tag}:", battle.team)
+            print(f"ACTIVE {battle.battle_tag}:", battle.active_pokemon, end="\n\n")
             if not battle._wait:
                 await self._handle_battle_request(battle)
 
@@ -415,7 +415,7 @@ class Player(ABC):
                 choice = await choice
             message = choice.message
 
-        print("CHOICE:", message, end="\n\n")
+        print(f"CHOICE {battle.battle_tag}:", message, end="\n\n")
         await self.ps_client.send_message(message, battle.battle_tag)
 
     async def _handle_challenge_request(self, split_message: List[str]):
