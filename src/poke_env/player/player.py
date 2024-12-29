@@ -294,7 +294,6 @@ class Player(ABC):
             and len(request_message) > 1
             and len(request_message[1]) > 2
             and request_message[1][2] != ""
-            and not battle._wait
         ):
             await self._handle_battle_request(battle, request_message=request_message)
 
@@ -414,26 +413,26 @@ class Player(ABC):
         if request_message is not None:
             request = orjson.loads(request_message[1][2])
             battle.parse_request(request)
-        if maybe_default_order and random.random() < self.DEFAULT_CHOICE_CHANCE:
-            message = self.choose_default_move().message
-        elif battle.teampreview:
-            if not from_teampreview_request:
-                return
-            message = self.teampreview(battle)
-        else:
-            choice = self.choose_move(battle)
-            if isinstance(choice, Awaitable):
-                choice = await choice
-            message = choice.message
-
         print(f"TEAM {battle.battle_tag} {self.username}:", battle.team)
         print(
             f"ACTIVE {battle.battle_tag} {self.username}:",
             battle.active_pokemon,
             end="\n\n",
         )
-        print(f"CHOICE {battle.battle_tag}:", message, end="\n\n")
-        await self.ps_client.send_message(message, battle.battle_tag)
+        if not battle._wait:
+            if maybe_default_order and random.random() < self.DEFAULT_CHOICE_CHANCE:
+                message = self.choose_default_move().message
+            elif battle.teampreview:
+                if not from_teampreview_request:
+                    return
+                message = self.teampreview(battle)
+            else:
+                choice = self.choose_move(battle)
+                if isinstance(choice, Awaitable):
+                    choice = await choice
+                message = choice.message
+            await self.ps_client.send_message(message, battle.battle_tag)
+            print(f"CHOICE {battle.battle_tag}:", message, end="\n\n")
 
     async def _handle_challenge_request(self, split_message: List[str]):
         """Handles an individual challenge."""
