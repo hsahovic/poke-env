@@ -299,6 +299,7 @@ class Player(ABC):
             await self._handle_battle_request(battle, request_message=request_message)
 
     async def _handle_protocol(self, battle: AbstractBattle, protocol: List[List[str]]):
+        print("_handle_protocol start", battle.battle_tag, self.username)
         for split_message in protocol[1:]:
             if len(split_message) <= 1:
                 continue
