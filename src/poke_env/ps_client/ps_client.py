@@ -141,13 +141,15 @@ class PSClient:
             # Otherwise it is the one-th entry
             if split_messages[0][0].startswith(">battle"):
                 # Battle update
-                print(f"REQS {self.username}:", self.reqs, end="\n\n")
+                print(f"REQS {self.username}:", self.reqs.keys(), end="\n\n")
                 battle_tag = split_messages[0][0][1:]
                 request = self.reqs.pop(battle_tag, None)
                 if "|request|" in message:
+                    print(1)
                     protocol = None
                     self.reqs[battle_tag] = split_messages
                 else:
+                    print(2)
                     protocol = split_messages
                 if protocol is not None or request is not None:
                     await self._handle_battle_message(protocol, request)  # type: ignore
