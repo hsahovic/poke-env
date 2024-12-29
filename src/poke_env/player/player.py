@@ -294,17 +294,9 @@ class Player(ABC):
             and len(request_message) > 1
             and len(request_message[1]) > 2
             and request_message[1][2] != ""
+            and not battle._wait
         ):
-            request = orjson.loads(request_message[1][2])
-            battle.parse_request(request)
-            print(f"TEAM {battle.battle_tag} {self.username}:", battle.team)
-            print(
-                f"ACTIVE {battle.battle_tag} {self.username}:",
-                battle.active_pokemon,
-                end="\n\n",
-            )
-            if not battle._wait:
-                await self._handle_battle_request(battle)
+            await self._handle_battle_request(battle, request_message=request_message)
 
     async def _handle_protocol(self, battle: AbstractBattle, protocol: List[List[str]]):
         for split_message in protocol[1:]:
@@ -332,7 +324,10 @@ class Player(ABC):
                     "[Invalid choice] Sorry, too late to make a different move"
                 ):
                     if battle.trapped:
-                        await self._handle_battle_request(battle)
+                        await self._handle_battle_request(
+                            battle,
+                            request_message=self.ps_client.reqs[battle.battle_tag],
+                        )
                 elif split_message[2].startswith(
                     "[Unavailable choice] Can't switch: The active Pokémon is "
                     "trapped"
@@ -340,7 +335,10 @@ class Player(ABC):
                     "[Invalid choice] Can't switch: The active Pokémon is trapped"
                 ):
                     battle.trapped = True
-                    await self._handle_battle_request(battle)
+                    await self._handle_battle_request(
+                        battle,
+                        request_message=self.ps_client.reqs[battle.battle_tag],
+                    )
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't switch: You can't switch to an active "
                     "Pokémon"
@@ -406,9 +404,13 @@ class Player(ABC):
     async def _handle_battle_request(
         self,
         battle: AbstractBattle,
+        request_message: Optional[List[List[str]]] = None,
         from_teampreview_request: bool = False,
         maybe_default_order: bool = False,
     ):
+        if request_message is not None:
+            request = orjson.loads(request_message[1][2])
+            battle.parse_request(request)
         if maybe_default_order and random.random() < self.DEFAULT_CHOICE_CHANCE:
             message = self.choose_default_move().message
         elif battle.teampreview:
@@ -421,6 +423,12 @@ class Player(ABC):
                 choice = await choice
             message = choice.message
 
+        print(f"TEAM {battle.battle_tag} {self.username}:", battle.team)
+        print(
+            f"ACTIVE {battle.battle_tag} {self.username}:",
+            battle.active_pokemon,
+            end="\n\n",
+        )
         print(f"CHOICE {battle.battle_tag}:", message, end="\n\n")
         await self.ps_client.send_message(message, battle.battle_tag)
 
