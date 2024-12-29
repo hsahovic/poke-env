@@ -260,8 +260,8 @@ class Player(ABC):
         protocol: Optional[List[List[str]]],
         request_message: Optional[List[List[str]]],
     ):
-        print("PROTOCOL:", protocol)
-        print("REQUEST:", request_message, end="\n\n")
+        print(f"PROTOCOL {self.username}:", protocol)
+        print(f"REQUEST {self.username}:", request_message, end="\n\n")
         """Handles a battle message.
 
         :param split_message: The received battle message.
@@ -295,8 +295,8 @@ class Player(ABC):
         ):
             request = orjson.loads(request_message[1][2])
             battle.parse_request(request)
-            print(f"TEAM {battle.battle_tag}:", battle.team)
-            print(f"ACTIVE {battle.battle_tag}:", battle.active_pokemon, end="\n\n")
+            print(f"TEAM {battle.battle_tag} {self.username}:", battle.team)
+            print(f"ACTIVE {battle.battle_tag} {self.username}:", battle.active_pokemon, end="\n\n")
             if not battle._wait:
                 await self._handle_battle_request(battle)
 
