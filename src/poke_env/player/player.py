@@ -401,6 +401,7 @@ class Player(ABC):
                 await self._handle_ots_request(battle.battle_tag)
             else:
                 battle.parse_message(split_message)
+            print(split_message, "finished")
 
     async def _handle_battle_request(
         self,
