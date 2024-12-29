@@ -408,6 +408,7 @@ class Player(ABC):
         from_teampreview_request: bool = False,
         maybe_default_order: bool = False,
     ):
+        print("_handle_battle_request start", battle.battle_tag, self.username)
         if request_message is not None:
             request = orjson.loads(request_message[1][2])
             battle.parse_request(request)
