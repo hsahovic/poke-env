@@ -276,6 +276,8 @@ class Pokemon:
 
     def heal(self, hp_status: str):
         self.set_hp_status(hp_status)
+        if self.fainted:
+            self._status = None
 
     def invert_boosts(self):
         self._boosts = {k: -v for k, v in self._boosts.items()}
