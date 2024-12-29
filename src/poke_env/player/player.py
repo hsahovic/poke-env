@@ -415,6 +415,7 @@ class Player(ABC):
                 choice = await choice
             message = choice.message
 
+        print("CHOICE:", message, end="\n\n")
         await self.ps_client.send_message(message, battle.battle_tag)
 
     async def _handle_challenge_request(self, split_message: List[str]):
