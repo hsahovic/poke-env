@@ -141,6 +141,7 @@ class PSClient:
             # Otherwise it is the one-th entry
             if split_messages[0][0].startswith(">battle"):
                 # Battle update
+                print(f"REQS {self.username}:", self.reqs, end="\n\n")
                 battle_tag = split_messages[0][0][1:]
                 request = self.reqs.pop(battle_tag, None)
                 if "|request|" in message:

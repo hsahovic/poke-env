@@ -264,7 +264,6 @@ class Player(ABC):
         print(time.time())
         print(f"PROTOCOL {self.username}:", protocol)
         print(f"REQUEST {self.username}:", request_message)
-        print(f"REQS {self.username}:", self.ps_client.reqs, end="\n\n")
         """Handles a battle message.
 
         :param split_message: The received battle message.
