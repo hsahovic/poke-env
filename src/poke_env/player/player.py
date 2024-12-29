@@ -263,7 +263,8 @@ class Player(ABC):
     ):
         print(time.time())
         print(f"PROTOCOL {self.username}:", protocol)
-        print(f"REQUEST {self.username}:", request_message, end="\n\n")
+        print(f"REQUEST {self.username}:", request_message)
+        print(f"REQS {self.username}:", self.ps_client.reqs, end="\n\n")
         """Handles a battle message.
 
         :param split_message: The received battle message.
@@ -335,10 +336,7 @@ class Player(ABC):
                     "[Invalid choice] Can't switch: The active Pokémon is trapped"
                 ):
                     battle.trapped = True
-                    await self._handle_battle_request(
-                        battle,
-                        request_message=self.ps_client.reqs[battle.battle_tag],
-                    )
+                    await self._handle_battle_request(battle)
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't switch: You can't switch to an active "
                     "Pokémon"
