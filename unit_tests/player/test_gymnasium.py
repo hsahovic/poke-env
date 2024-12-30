@@ -73,7 +73,7 @@ def render(battle):
     player = DummyEnv(start_listening=False)
     captured_output = StringIO()
     sys.stdout = captured_output
-    player.current_battle1 = battle
+    player.battle1 = battle
     player.render()
     sys.stdout = sys.__stdout__
     return captured_output.getvalue()

@@ -86,16 +86,16 @@ class _EnvPlayer(Player):
         self.__class__.__name__ = "_EnvPlayer"
         self.battle_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
         self.order_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
-        self.current_battle: Optional[AbstractBattle] = None
+        self.battle: Optional[AbstractBattle] = None
         self.waiting = False
 
     def choose_move(self, battle: AbstractBattle) -> Awaitable[BattleOrder]:
         return self._env_move(battle)
 
     async def _env_move(self, battle: AbstractBattle) -> BattleOrder:
-        if not self.current_battle or self.current_battle.finished:
-            self.current_battle = battle
-        if not self.current_battle == battle:
+        if not self.battle or self.battle.finished:
+            self.battle = battle
+        if not self.battle == battle:
             raise RuntimeError("Using different battles for queues")
         await self.battle_queue.async_put(battle)
         self.waiting = True
@@ -234,8 +234,8 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         self._reward_buffer: WeakKeyDictionary[AbstractBattle, float] = (
             WeakKeyDictionary()
         )
-        self.current_battle1: Optional[AbstractBattle] = None
-        self.current_battle2: Optional[AbstractBattle] = None
+        self.battle1: Optional[AbstractBattle] = None
+        self.battle2: Optional[AbstractBattle] = None
         self._keep_challenging: bool = False
         self._challenge_task = None
         self._seed_initialized: bool = False
@@ -256,32 +256,31 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         Dict[str, bool],
         Dict[str, Dict[str, Any]],
     ]:
-        assert self.current_battle1 is not None
-        assert self.current_battle2 is not None
-        if self.current_battle1.finished:
+        assert self.battle1 is not None
+        assert self.battle2 is not None
+        if self.battle1.finished:
             raise RuntimeError("Battle is already finished, call reset")
         if self.agent1.waiting:
-            order1 = self.action_to_order(actions[self.agents[0]], self.current_battle1)
+            order1 = self.action_to_order(actions[self.agents[0]], self.battle1)
             self.agent1.order_queue.put(order1)
         if self.agent2.waiting:
-            order2 = self.action_to_order(actions[self.agents[1]], self.current_battle2)
+            order2 = self.action_to_order(actions[self.agents[1]], self.battle2)
             self.agent2.order_queue.put(order2)
-        obs1 = self.agent1.battle_queue.get(timeout=0.01, default=self.current_battle1)
-        obs2 = self.agent2.battle_queue.get(timeout=0.01, default=self.current_battle2)
+        obs1 = self.agent1.battle_queue.get(timeout=0.01, default=self.battle1)
+        obs2 = self.agent2.battle_queue.get(timeout=0.01, default=self.battle2)
         observations = {
             self.agents[0]: self.embed_battle(obs1),
             self.agents[1]: self.embed_battle(obs2),
         }
-        assert self.current_battle1 == self.agent1.current_battle
         reward = {
-            self.agents[0]: self.calc_reward(self.current_battle1),
-            self.agents[1]: self.calc_reward(self.current_battle2),
+            self.agents[0]: self.calc_reward(self.battle1),
+            self.agents[1]: self.calc_reward(self.battle2),
         }
-        term1, trunc1 = self.calc_term_trunc(self.current_battle1)
-        term2, trunc2 = self.calc_term_trunc(self.current_battle2)
+        term1, trunc1 = self.calc_term_trunc(self.battle1)
+        term2, trunc2 = self.calc_term_trunc(self.battle2)
         terminated = {self.agents[0]: term1, self.agents[1]: term2}
         truncated = {self.agents[0]: trunc1, self.agents[1]: trunc2}
-        if self.current_battle1.finished:
+        if self.battle1.finished:
             self.agents = []
         return observations, reward, terminated, truncated, self.get_additional_info()
 
@@ -292,8 +291,9 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
     ) -> Tuple[Dict[str, ObsType], Dict[str, Dict[str, Any]]]:
         self.agents = [self.agent1.username, self.agent2.username]
         # TODO: use the seed
-        if self.current_battle1 and not self.current_battle1.finished:
-            if self.current_battle1 == self.agent1.current_battle:
+        # forfeit any still-running battle between agent1 and agent2
+        if self.battle1 and not self.battle1.finished:
+            if self.battle1 == self.agent1.battle:
                 self.agent1.order_queue.put(ForfeitBattleOrder())
                 self.agent2.order_queue.put(DefaultBattleOrder())
                 self.agent1.battle_queue.get()
@@ -308,46 +308,46 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
             self.agents[0]: self.embed_battle(obs1),
             self.agents[1]: self.embed_battle(obs2),
         }
-        self.current_battle1 = self.agent1.current_battle
-        self.current_battle2 = self.agent2.current_battle
+        self.battle1 = self.agent1.battle
+        self.battle2 = self.agent2.battle
         return observations, self.get_additional_info()
 
     def render(self, mode: str = "human"):
-        if self.current_battle1 is not None:
+        if self.battle1 is not None:
             print(
                 "  Turn %4d. | [%s][%3d/%3dhp] %10.10s - %10.10s [%3d%%hp][%s]"
                 % (
-                    self.current_battle1.turn,
+                    self.battle1.turn,
                     "".join(
                         [
                             "⦻" if mon.fainted else "●"
-                            for mon in self.current_battle1.team.values()
+                            for mon in self.battle1.team.values()
                         ]
                     ),
-                    self.current_battle1.active_pokemon.current_hp or 0,
-                    self.current_battle1.active_pokemon.max_hp or 0,
-                    self.current_battle1.active_pokemon.species,
-                    self.current_battle1.opponent_active_pokemon.species,
-                    self.current_battle1.opponent_active_pokemon.current_hp or 0,
+                    self.battle1.active_pokemon.current_hp or 0,
+                    self.battle1.active_pokemon.max_hp or 0,
+                    self.battle1.active_pokemon.species,
+                    self.battle1.opponent_active_pokemon.species,
+                    self.battle1.opponent_active_pokemon.current_hp or 0,
                     "".join(
                         [
                             "⦻" if mon.fainted else "●"
-                            for mon in self.current_battle1.opponent_team.values()
+                            for mon in self.battle1.opponent_team.values()
                         ]
                     ),
                 ),
-                end="\n" if self.current_battle1.finished else "\r",
+                end="\n" if self.battle1.finished else "\r",
             )
 
     def close(self, purge: bool = True):
-        if self.current_battle1 is None or self.current_battle1.finished:
+        if self.battle1 is None or self.battle1.finished:
             time.sleep(1)
-            if self.current_battle1 != self.agent1.current_battle:
-                self.current_battle1 = self.agent1.current_battle
-        if self.current_battle2 is None or self.current_battle2.finished:
+            if self.battle1 != self.agent1.battle:
+                self.battle1 = self.agent1.battle
+        if self.battle2 is None or self.battle2.finished:
             time.sleep(1)
-            if self.current_battle2 != self.agent2.current_battle:
-                self.current_battle2 = self.agent2.current_battle
+            if self.battle2 != self.agent2.battle:
+                self.battle2 = self.agent2.battle
         closing_task = asyncio.run_coroutine_threadsafe(
             self._stop_challenge_loop(purge=purge), POKE_LOOP
         )
@@ -665,7 +665,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         self._keep_challenging = False
 
         if force:
-            if self.current_battle1 and not self.current_battle1.finished:
+            if self.battle1 and not self.battle1.finished:
                 if not (
                     self.agent1.order_queue.empty() and self.agent2.order_queue.empty()
                 ):
@@ -692,10 +692,10 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
             self._challenge_task.result()
 
         self._challenge_task = None
-        self.current_battle1 = None
-        self.current_battle2 = None
-        self.agent1.current_battle = None
-        self.agent2.current_battle = None
+        self.battle1 = None
+        self.battle2 = None
+        self.agent1.battle = None
+        self.agent2.battle = None
         while not self.agent1.order_queue.empty():
             await self.agent1.order_queue.async_get()
         while not self.agent2.order_queue.empty():
