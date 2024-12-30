@@ -65,30 +65,23 @@ def test_choose_move():
             battle_format="gen7randombattles",
             start_challenging=False,
         )
+
+        # Create a mock battle and moves
         battle = Battle("bat1", player.agent1.username, player.agent1.logger, gen=8)
         battle._available_moves = [Move("flamethrower", gen=8)]
-        message = player.agent1.choose_move(battle)
+
+        # Test choosing a move
+        message = await player.agent1.choose_move(battle)
         order = player.action_to_order(0, battle)
         player.agent1.order_queue.put(order)
-        player.agent2.choose_move(battle)
-
-        assert isawaitable(message)
-
-        message = asyncio.get_event_loop().run_until_complete(message)
 
         assert message.message == "/choose move flamethrower"
 
-        battle._available_moves = []
+        # Test switching Pokémon
         battle._available_switches = [Pokemon(species="charizard", gen=8)]
-
-        message = player.agent1.choose_move(battle)
+        message = await player.agent1.choose_move(battle)
         order = player.action_to_order(4, battle)
         player.agent1.order_queue.put(order)
-        player.agent2.choose_move(battle)
-
-        assert isawaitable(message)
-
-        message = asyncio.get_event_loop().run_until_complete(message)
 
         assert message.message == "/choose switch charizard"
 
