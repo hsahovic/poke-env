@@ -7,7 +7,7 @@ from pettingzoo.utils.env import ActionType, ObsType
 
 from poke_env.environment import AbstractBattle, Battle, Pokemon
 from poke_env.player import BattleOrder, ForfeitBattleOrder, GymnasiumEnv
-from poke_env.player.gymnasium_api import _EnvPlayer, _AsyncQueue
+from poke_env.player.gymnasium_api import _AsyncQueue, _EnvPlayer
 
 
 class DummyEnv(GymnasiumEnv[ObsType, ActionType]):
