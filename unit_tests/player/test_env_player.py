@@ -25,7 +25,7 @@ server_configuration = ServerConfiguration("server.url", "auth.url")
 
 
 class CustomEnvPlayer(GymnasiumEnv):
-    def calc_reward(self, last_battle, current_battle) -> float:
+    def calc_reward(self, battle) -> float:
         pass
 
     def action_to_order(self, action: int, battle: AbstractBattle) -> BattleOrder:
