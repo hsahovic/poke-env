@@ -292,13 +292,6 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
     ) -> Tuple[Dict[str, ObsType], Dict[str, Dict[str, Any]]]:
         self.agents = [self.agent1.username, self.agent2.username]
         # TODO: use the seed
-        if not self.agent1.current_battle or not self.agent2.current_battle:
-            count = self._INIT_RETRIES
-            while not self.agent1.current_battle or not self.agent2.current_battle:
-                if count == 0:
-                    raise RuntimeError("Agent is not challenging")
-                count -= 1
-                time.sleep(self._TIME_BETWEEN_RETRIES)
         if self.current_battle1 and not self.current_battle1.finished:
             if self.current_battle1 == self.agent1.current_battle:
                 self.agent1.order_queue.put(ForfeitBattleOrder())
@@ -309,8 +302,6 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
                 raise RuntimeError(
                     "Environment and agent aren't synchronized. Try to restart"
                 )
-        while self.current_battle1 == self.agent1.current_battle:
-            time.sleep(0.01)
         obs1 = self.agent1.battle_queue.get()
         obs2 = self.agent2.battle_queue.get()
         observations = {
