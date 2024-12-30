@@ -72,7 +72,6 @@ class DoubleBattle(AbstractBattle):
     def _get_active_pokemon(
         active_pokemon: Dict[str, Pokemon], role: str
     ) -> List[Optional[Pokemon]]:
-        print("########################", active_pokemon)
         pokemon_1 = active_pokemon.get(f"{role}a")
         pokemon_2 = active_pokemon.get(f"{role}b")
         if pokemon_1 is None or not pokemon_1.active or pokemon_1.fainted:
@@ -132,8 +131,12 @@ class DoubleBattle(AbstractBattle):
             self._player_role = side["pokemon"][0]["ident"][:2]
         self._update_team_from_request(side)
         if self.player_role is not None:
-            self._active_pokemon[f"{self.player_role}a"] = self.team[request["side"]["pokemon"][0]["ident"]]
-            self._active_pokemon[f"{self.player_role}b"] = self.team[request["side"]["pokemon"][1]["ident"]]
+            self._active_pokemon[f"{self.player_role}a"] = self.team[
+                request["side"]["pokemon"][0]["ident"]
+            ]
+            self._active_pokemon[f"{self.player_role}b"] = self.team[
+                request["side"]["pokemon"][1]["ident"]
+            ]
 
         if "active" in request:
             for active_pokemon_number, active_request in enumerate(request["active"]):
