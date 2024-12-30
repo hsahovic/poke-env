@@ -259,8 +259,8 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         if self.agent2.waiting:
             order2 = self.action_to_order(actions[self.agents[1]], self.current_battle2)
             self.agent2.order_queue.put(order2)
-        obs1 = self.agent1.battle_queue.get(timeout=0.1, default=self.current_battle1)
-        obs2 = self.agent2.battle_queue.get(timeout=0.1, default=self.current_battle2)
+        obs1 = self.agent1.battle_queue.get(timeout=0.01, default=self.current_battle1)
+        obs2 = self.agent2.battle_queue.get(timeout=0.01, default=self.current_battle2)
         observations = {
             self.agents[0]: self.embed_battle(obs1),
             self.agents[1]: self.embed_battle(obs2),
