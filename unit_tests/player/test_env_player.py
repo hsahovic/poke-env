@@ -76,6 +76,8 @@ def test_choose_move(queue_put_mock, queue_get_mock):
     battle = Battle("bat1", player.agent1.username, player.agent1.logger, gen=8)
     battle._available_moves = [Move("flamethrower", gen=8)]
     message = player.agent1.choose_move(battle)
+    order = player.action_to_order(0, battle)
+    player.agent1.order_queue.put(order)
     player.agent2.choose_move(battle)
 
     assert isawaitable(message)
@@ -88,6 +90,8 @@ def test_choose_move(queue_put_mock, queue_get_mock):
     battle._available_switches = [Pokemon(species="charizard", gen=8)]
 
     message = player.agent1.choose_move(battle)
+    order = player.action_to_order(4, battle)
+    player.agent1.order_queue.put(order)
     player.agent2.choose_move(battle)
 
     assert isawaitable(message)
