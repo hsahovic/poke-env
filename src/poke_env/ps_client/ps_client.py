@@ -140,19 +140,19 @@ class PSClient:
             # For battles, this is the zero-th entry
             # Otherwise it is the one-th entry
             if split_messages[0][0].startswith(">battle"):
-                # Battle update
-                print(f"REQS {self.username}:", self.reqs.keys(), end="\n\n")
+                # Determine protocol and request
                 battle_tag = split_messages[0][0][1:]
                 request = self.reqs.pop(battle_tag, None)
                 if "|request|" in message:
-                    print(1)
                     protocol = None
                     self.reqs[battle_tag] = split_messages
                 else:
-                    print(2)
                     protocol = split_messages
-                if protocol is not None or request is not None:
-                    await self._handle_battle_message(protocol, request)  # type: ignore
+                # Battle update
+                split_messages = protocol or [[f">{battle_tag}"]]
+                if request is not None:
+                    split_messages += [request[1]]
+                await self._handle_battle_message(split_messages)  # type: ignore
             elif split_messages[0][1] == "challstr":
                 # Confirms connection to the server: we can login
                 await self.log_in(split_messages[0])

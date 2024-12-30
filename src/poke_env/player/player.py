@@ -3,7 +3,6 @@
 
 import asyncio
 import random
-import time
 from abc import ABC, abstractmethod
 from asyncio import Condition, Event, Queue, Semaphore
 from logging import Logger
@@ -256,56 +255,40 @@ class Player(ABC):
             async with self._battle_start_condition:
                 await self._battle_start_condition.wait()
 
-    async def _handle_battle_message(
-        self,
-        protocol: Optional[List[List[str]]],
-        request_message: Optional[List[List[str]]],
-    ):
-        print(time.time())
-        print(f"PROTOCOL {self.username}:", protocol)
-        print(f"REQUEST {self.username}:", request_message)
+    async def _handle_battle_message(self, split_messages: List[List[str]]):
         """Handles a battle message.
 
         :param split_message: The received battle message.
         :type split_message: str
         """
-        assert protocol is not None or request_message is not None
         # Battle messages can be multiline
+        gotta_move = False
+        from_teampreview_request = False
+        maybe_default_order = False
         if (
-            protocol is not None
-            and len(protocol) > 1
-            and len(protocol[1]) > 1
-            and protocol[1][1] == "init"
+            len(split_messages) > 1
+            and len(split_messages[1]) > 1
+            and split_messages[1][1] == "init"
         ):
-            battle_info = protocol[0][0].split("-")
+            battle_info = split_messages[0][0].split("-")
             battle = await self._create_battle(battle_info)
         else:
-            non_none_message = protocol or request_message
-            assert non_none_message is not None
-            battle = await self._get_battle(non_none_message[0][0])
+            battle = await self._get_battle(split_messages[0][0])
 
-        # consume protocol message
-        if protocol is not None:
-            await self._handle_protocol(battle, protocol)
-
-        # consume request
-        if (
-            request_message is not None
-            and len(request_message) > 1
-            and len(request_message[1]) > 2
-            and request_message[1][2] != ""
-        ):
-            await self._handle_battle_request(battle, request_message=request_message)
-
-    async def _handle_protocol(self, battle: AbstractBattle, protocol: List[List[str]]):
-        print("_handle_protocol start", battle.battle_tag, self.username)
-        for split_message in protocol[1:]:
+        for split_message in split_messages[1:]:
             if len(split_message) <= 1:
                 continue
             elif split_message[1] == "":
                 battle.parse_message(split_message)
             elif split_message[1] in self.MESSAGES_TO_IGNORE:
                 pass
+            elif split_message[1] == "request":
+                if split_message[2]:
+                    request = orjson.loads(split_message[2])
+                    battle.parse_request(request)
+                    if battle.move_on_next_request:
+                        gotta_move = True
+                        battle.move_on_next_request = False
             elif split_message[1] == "win" or split_message[1] == "tie":
                 if split_message[1] == "win":
                     battle.won_by(split_message[2])
@@ -324,7 +307,7 @@ class Player(ABC):
                     "[Invalid choice] Sorry, too late to make a different move"
                 ):
                     if battle.trapped:
-                        await self._handle_battle_request(battle)
+                        gotta_move = True
                 elif split_message[2].startswith(
                     "[Unavailable choice] Can't switch: The active Pokémon is "
                     "trapped"
@@ -332,100 +315,105 @@ class Player(ABC):
                     "[Invalid choice] Can't switch: The active Pokémon is trapped"
                 ):
                     battle.trapped = True
+                    gotta_move = True
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't switch: You can't switch to an active "
                     "Pokémon"
                 ):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    gotta_move = True
+                    maybe_default_order = True
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't switch: You can't switch to a fainted "
                     "Pokémon"
                 ):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    gotta_move = True
+                    maybe_default_order = True
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: Invalid target for"
                 ):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    gotta_move = True
+                    maybe_default_order = True
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: You can't choose a target for"
                 ):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    gotta_move = True
+                    maybe_default_order = True
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: "
                 ) and split_message[2].endswith("needs a target"):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    gotta_move = True
+                    maybe_default_order = True
                 elif (
                     split_message[2].startswith("[Invalid choice] Can't move: Your")
                     and " doesn't have a move matching " in split_message[2]
                 ):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    gotta_move = True
+                    maybe_default_order = True
                 elif split_message[2].startswith(
                     "[Invalid choice] Incomplete choice: "
                 ):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    gotta_move = True
+                    maybe_default_order = True
                 elif split_message[2].startswith(
                     "[Unavailable choice]"
                 ) and split_message[2].endswith("is disabled"):
-                    pass
+                    battle.move_on_next_request = True
                 elif split_message[2].startswith("[Invalid choice]") and split_message[
                     2
                 ].endswith("is disabled"):
-                    pass
+                    battle.move_on_next_request = True
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: You sent more choices than unfainted"
                     " Pokémon."
                 ):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    gotta_move = True
+                    maybe_default_order = True
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: You can only Terastallize once per battle."
                 ):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    gotta_move = True
+                    maybe_default_order = True
                 else:
                     self.logger.critical("Unexpected error message: %s", split_message)
             elif split_message[1] == "turn":
                 battle.parse_message(split_message)
+                gotta_move = True
             elif split_message[1] == "teampreview":
                 battle.parse_message(split_message)
-                await self._handle_battle_request(battle, from_teampreview_request=True)
+                gotta_move = True
+                from_teampreview_request = True
             elif split_message[1] == "bigerror":
                 self.logger.warning("Received 'bigerror' message: %s", split_message)
             elif split_message[1] == "uhtml" and split_message[2] == "otsrequest":
                 await self._handle_ots_request(battle.battle_tag)
             else:
                 battle.parse_message(split_message)
-            print(split_message, "finished")
+        if gotta_move:
+            await self._handle_battle_request(
+                battle,
+                from_teampreview_request=from_teampreview_request,
+                maybe_default_order=maybe_default_order,
+            )
 
     async def _handle_battle_request(
         self,
         battle: AbstractBattle,
-        request_message: Optional[List[List[str]]] = None,
         from_teampreview_request: bool = False,
         maybe_default_order: bool = False,
     ):
-        print("_handle_battle_request start", battle.battle_tag, self.username)
-        if request_message is not None:
-            request = orjson.loads(request_message[1][2])
-            battle.parse_request(request)
-        print(f"TEAM {battle.battle_tag} {self.username}:", battle.team)
-        print(
-            f"ACTIVE {battle.battle_tag} {self.username}:",
-            battle.active_pokemon,
-            end="\n\n",
-        )
-        if not battle._wait:
-            if maybe_default_order and random.random() < self.DEFAULT_CHOICE_CHANCE:
-                message = self.choose_default_move().message
-            elif battle.teampreview:
-                if not from_teampreview_request:
-                    return
-                message = self.teampreview(battle)
-            else:
-                choice = self.choose_move(battle)
-                if isinstance(choice, Awaitable):
-                    choice = await choice
-                message = choice.message
-            await self.ps_client.send_message(message, battle.battle_tag)
-            print(f"CHOICE {battle.battle_tag}:", message, end="\n\n")
+        if maybe_default_order and random.random() < self.DEFAULT_CHOICE_CHANCE:
+            message = self.choose_default_move().message
+        elif battle.teampreview:
+            if not from_teampreview_request:
+                return
+            message = self.teampreview(battle)
+        else:
+            choice = self.choose_move(battle)
+            if isinstance(choice, Awaitable):
+                choice = await choice
+            message = choice.message
+
+        await self.ps_client.send_message(message, battle.battle_tag)
 
     async def _handle_challenge_request(self, split_message: List[str]):
         """Handles an individual challenge."""
