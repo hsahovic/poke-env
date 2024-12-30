@@ -12,6 +12,8 @@ from poke_env.player.gymnasium_api import _AsyncQueue, _EnvPlayer
 
 
 class DummyEnv(GymnasiumEnv[List[int], ActionType]):
+    _ACTION_SPACE = list(range(10))
+
     def __init__(self, *args, **kwargs):
         self.opponent = None
         super().__init__(*args, **kwargs)
