@@ -59,6 +59,7 @@ def test_queue():
 def test_async_player():
     def embed_battle(battle):
         return "battle"
+
     player = _EnvPlayer(username="usr", start_listening=False)
     battle = Battle("bat1", player.username, player.logger, gen=8)
     player.order_queue.put(ForfeitBattleOrder())
