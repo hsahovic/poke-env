@@ -1,6 +1,5 @@
 import asyncio
 import unittest
-from inspect import isawaitable
 from unittest.mock import patch
 
 from gymnasium.spaces import Discrete, Space
