@@ -112,10 +112,8 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
     Base class implementing the Gymnasium API on the main thread.
     """
 
-    _INIT_RETRIES = 100
-    _TIME_BETWEEN_RETRIES = 0.5
     _SWITCH_CHALLENGE_TASK_RETRIES = 30
-    _TIME_BETWEEN_SWITCH_RETIRES = 1
+    _TIME_BETWEEN_SWITCH_RETRIES = 1
 
     _ACTION_SPACE: List[int] = []
     _DEFAULT_BATTLE_FORMAT = "gen8randombattle"
@@ -616,7 +614,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
                 if count == 0:
                     raise RuntimeError("Agent is already challenging")
                 count -= 1
-                time.sleep(self._TIME_BETWEEN_SWITCH_RETIRES)
+                time.sleep(self._TIME_BETWEEN_SWITCH_RETRIES)
         if not n_challenges:
             self._keep_challenging = True
         self._challenge_task = asyncio.run_coroutine_threadsafe(
@@ -652,7 +650,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
                 if count == 0:
                     raise RuntimeError("Agent is already challenging")
                 count -= 1
-                time.sleep(self._TIME_BETWEEN_SWITCH_RETIRES)
+                time.sleep(self._TIME_BETWEEN_SWITCH_RETRIES)
         if not n_challenges:
             self._keep_challenging = True
         self._challenge_task = asyncio.run_coroutine_threadsafe(
