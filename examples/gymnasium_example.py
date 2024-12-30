@@ -35,9 +35,9 @@ class TestEnv(GymnasiumEnv):
         )
 
     def action_to_order(self, action, battle):
-        return self.agent.choose_random_move(battle)
+        return self.agent1.choose_random_move(battle)
 
-    def calc_reward(self, last_battle, current_battle):
+    def calc_reward(self, battle):
         return 0.25
 
     def get_opponent(self):
@@ -45,8 +45,8 @@ class TestEnv(GymnasiumEnv):
 
 
 class Gen8(Gen8EnvSinglePlayer):
-    def calc_reward(self, last_battle, current_battle) -> float:
-        return self.reward_computing_helper(current_battle)
+    def calc_reward(self, battle) -> float:
+        return self.reward_computing_helper(battle)
 
     def embed_battle(self, battle: AbstractBattle) -> ObservationType:
         to_embed = []

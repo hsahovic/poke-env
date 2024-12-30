@@ -14,7 +14,7 @@ from poke_env.player import (
 
 
 class RandomGen4EnvPlayer(Gen4EnvSinglePlayer):
-    def calc_reward(self, last_battle, current_battle) -> float:
+    def calc_reward(self, battle) -> float:
         return 0.0
 
     def describe_embedding(self) -> Space:
@@ -25,7 +25,7 @@ class RandomGen4EnvPlayer(Gen4EnvSinglePlayer):
 
 
 class RandomGen5EnvPlayer(Gen5EnvSinglePlayer):
-    def calc_reward(self, last_battle, current_battle) -> float:
+    def calc_reward(self, battle) -> float:
         return 0.0
 
     def describe_embedding(self) -> Space:
@@ -36,7 +36,7 @@ class RandomGen5EnvPlayer(Gen5EnvSinglePlayer):
 
 
 class RandomGen6EnvPlayer(Gen6EnvSinglePlayer):
-    def calc_reward(self, last_battle, current_battle) -> float:
+    def calc_reward(self, battle) -> float:
         return 0.0
 
     def describe_embedding(self) -> Space:
@@ -47,7 +47,7 @@ class RandomGen6EnvPlayer(Gen6EnvSinglePlayer):
 
 
 class RandomGen7EnvPlayer(Gen7EnvSinglePlayer):
-    def calc_reward(self, last_battle, current_battle) -> float:
+    def calc_reward(self, battle) -> float:
         return 0.0
 
     def describe_embedding(self) -> Space:
@@ -58,7 +58,7 @@ class RandomGen7EnvPlayer(Gen7EnvSinglePlayer):
 
 
 class RandomGen8EnvPlayer(Gen8EnvSinglePlayer):
-    def calc_reward(self, last_battle, current_battle) -> float:
+    def calc_reward(self, battle) -> float:
         return 0.0
 
     def describe_embedding(self) -> Space:
@@ -69,7 +69,7 @@ class RandomGen8EnvPlayer(Gen8EnvSinglePlayer):
 
 
 class RandomGen9EnvPlayer(Gen9EnvSinglePlayer):
-    def calc_reward(self, last_battle, current_battle) -> float:
+    def calc_reward(self, battle) -> float:
         return 0.0
 
     def describe_embedding(self) -> Space:

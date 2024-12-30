@@ -238,7 +238,7 @@ def test_action_space():
             def embed_battle(self, *args, **kwargs):
                 return []
 
-            def calc_reward(self, last_battle, current_battle):
+            def calc_reward(self, battle):
                 return 0.0
 
             def describe_embedding(self):
@@ -279,7 +279,7 @@ def test_action_to_move(z_moves_mock):
             def embed_battle(self, *args, **kwargs):
                 return []
 
-            def calc_reward(self, last_battle, current_battle):
+            def calc_reward(self, battle):
                 return 0.0
 
             def describe_embedding(self):
