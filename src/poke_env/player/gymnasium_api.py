@@ -5,11 +5,13 @@ For a black-box implementation consider using the module env_player.
 from __future__ import annotations
 
 import asyncio
+import functools
 import time
 from abc import abstractmethod
 from typing import Any, Awaitable, Dict, Generic, List, Optional, Tuple, TypeVar, Union
 from weakref import WeakKeyDictionary
 
+import numpy as np
 from gymnasium.spaces import Box, Discrete, Space
 from pettingzoo.utils.env import (  # type: ignore[import-untyped]
     ActionType,
@@ -355,10 +357,11 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         )
         closing_task.result()
 
-    def observation_space(self, agent: str) -> Space:
+    @functools.lru_cache(maxsize=None)
+    def observation_space(self, agent: str) -> Space[np.ndarray]:  # type: ignore
         return Box(-1, 1)
 
-    def action_space(self, agent: str) -> Space:
+    def action_space(self, agent: str) -> Space[np.int64]:
         return Discrete(len(self._ACTION_SPACE))
 
     ###################################################################################
