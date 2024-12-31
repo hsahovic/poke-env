@@ -17,7 +17,7 @@ class RandomGen4EnvPlayer(Gen4EnvSinglePlayer):
     def calc_reward(self, battle) -> float:
         return 0.0
 
-    def describe_embedding(self) -> Space:
+    def observation_space(self, agent) -> Space:
         return Box(np.array([0]), np.array([1]), dtype=int)
 
     def embed_battle(self, battle):
@@ -28,7 +28,7 @@ class RandomGen5EnvPlayer(Gen5EnvSinglePlayer):
     def calc_reward(self, battle) -> float:
         return 0.0
 
-    def describe_embedding(self) -> Space:
+    def observation_space(self, agent) -> Space:
         return Box(np.array([0]), np.array([1]), dtype=int)
 
     def embed_battle(self, battle):
@@ -39,7 +39,7 @@ class RandomGen6EnvPlayer(Gen6EnvSinglePlayer):
     def calc_reward(self, battle) -> float:
         return 0.0
 
-    def describe_embedding(self) -> Space:
+    def observation_space(self, agent) -> Space:
         return Box(np.array([0]), np.array([1]), dtype=int)
 
     def embed_battle(self, battle):
@@ -50,7 +50,7 @@ class RandomGen7EnvPlayer(Gen7EnvSinglePlayer):
     def calc_reward(self, battle) -> float:
         return 0.0
 
-    def describe_embedding(self) -> Space:
+    def observation_space(self, agent) -> Space:
         return Box(np.array([0]), np.array([1]), dtype=int)
 
     def embed_battle(self, battle):
@@ -61,7 +61,7 @@ class RandomGen8EnvPlayer(Gen8EnvSinglePlayer):
     def calc_reward(self, battle) -> float:
         return 0.0
 
-    def describe_embedding(self) -> Space:
+    def observation_space(self, agent) -> Space:
         return Box(np.array([0]), np.array([1]), dtype=int)
 
     def embed_battle(self, battle):
@@ -72,7 +72,7 @@ class RandomGen9EnvPlayer(Gen9EnvSinglePlayer):
     def calc_reward(self, battle) -> float:
         return 0.0
 
-    def describe_embedding(self) -> Space:
+    def observation_space(self, agent) -> Space:
         return Box(np.array([0]), np.array([1]), dtype=int)
 
     def embed_battle(self, battle):
