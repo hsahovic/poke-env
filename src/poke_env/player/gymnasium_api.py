@@ -140,10 +140,14 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         start_challenging: bool = False,
     ):
         """
-        :param account_configuration: Player configuration. If empty, defaults to an
-            automatically generated username with no password. This option must be set
-            if the server configuration requires authentication.
-        :type account_configuration: AccountConfiguration, optional
+        :param account_configuration1: Player configuration for agent1. If empty,
+            defaults to an automatically generated username with no password. This
+            option must be set if the server configuration requires authentication.
+        :type account_configuration1: AccountConfiguration, optional
+        :param account_configuration2: Player configuration for agent2. If empty,
+            defaults to an automatically generated username with no password. This
+            option must be set if the server configuration requires authentication.
+        :type account_configuration2: AccountConfiguration, optional
         :param avatar: Player avatar id. Optional.
         :type avatar: int, optional
         :param battle_format: Name of the battle format this player plays. Defaults to
