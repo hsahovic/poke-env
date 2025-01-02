@@ -2,13 +2,12 @@ import asyncio
 import sys
 from io import StringIO
 from typing import List
-from unittest.mock import PropertyMock, patch
 
 from gymnasium.spaces import Box, Discrete
 from pettingzoo.utils.env import ActionType
 
 from poke_env.concurrency import POKE_LOOP
-from poke_env.environment import AbstractBattle, Battle, Move, Pokemon, Status
+from poke_env.environment import AbstractBattle, Battle, Move, PokemonType, Pokemon, Status
 from poke_env.player import ForfeitBattleOrder, GymnasiumEnv
 from poke_env.player.gymnasium_api import _AsyncQueue, _EnvPlayer
 from poke_env.ps_client import AccountConfiguration, ServerConfiguration
@@ -231,10 +230,6 @@ def test_action_space():
         )
 
 
-@patch(
-    "poke_env.environment.Pokemon.available_z_moves",
-    new_callable=PropertyMock,
-)
 def test_action_to_move(z_moves_mock):
     for battle_format, (has_megas, has_z_moves, has_dynamax, has_tera) in zip(
         [
@@ -274,7 +269,6 @@ def test_action_to_move(z_moves_mock):
             )
         if has_z_moves:
             battle._can_z_move = True
-            z_moves_mock.return_value = [Move("flamethrower", gen=8)]
             assert (
                 p.action_to_order(6 + 4 + 4, battle).message
                 == "/choose move flamethrower zmove"
@@ -287,7 +281,7 @@ def test_action_to_move(z_moves_mock):
                 == "/choose move flamethrower dynamax"
             )
         if has_tera:
-            battle._can_tera = True
+            battle._can_tera = PokemonType.FIRE
             assert (
                 p.action_to_order(6 + 4 + 12, battle).message
                 == "/choose move flamethrower terastallize"
