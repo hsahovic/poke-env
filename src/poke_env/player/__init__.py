@@ -12,14 +12,6 @@ from poke_env.player.battle_order import (
     DoubleBattleOrder,
     ForfeitBattleOrder,
 )
-from poke_env.player.env_player import (
-    Gen4EnvSinglePlayer,
-    Gen5EnvSinglePlayer,
-    Gen6EnvSinglePlayer,
-    Gen7EnvSinglePlayer,
-    Gen8EnvSinglePlayer,
-    Gen9EnvSinglePlayer,
-)
 from poke_env.player.gymnasium_api import GymnasiumEnv
 from poke_env.player.player import Player
 from poke_env.player.random_player import RandomPlayer
@@ -40,12 +32,6 @@ __all__ = [
     "ActionType",
     "ObsType",
     "ForfeitBattleOrder",
-    "Gen4EnvSinglePlayer",
-    "Gen5EnvSinglePlayer",
-    "Gen6EnvSinglePlayer",
-    "Gen7EnvSinglePlayer",
-    "Gen8EnvSinglePlayer",
-    "Gen9EnvSinglePlayer",
     "POKE_LOOP",
     "GymnasiumEnv",
     "PSClient",
