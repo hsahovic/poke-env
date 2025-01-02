@@ -203,7 +203,7 @@ def test_reward_computing_helper():
 
 def test_action_space():
     player = CustomEnv(start_listening=False)
-    assert player.action_space(player.possible_agents[0]) == Discrete(3 * 4 + 6)
+    assert player.action_space(player.possible_agents[0]) == Discrete(4 * 4 + 6)
 
     for battle_format, (has_megas, has_z_moves, has_dynamax) in zip(
         [
