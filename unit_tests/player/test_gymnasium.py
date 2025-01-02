@@ -230,7 +230,7 @@ def test_action_space():
         )
 
 
-def test_action_to_move(z_moves_mock):
+def test_action_to_move():
     for battle_format, (has_megas, has_z_moves, has_dynamax, has_tera) in zip(
         [
             "gen4randombattle",
