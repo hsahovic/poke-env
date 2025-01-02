@@ -3,11 +3,10 @@ import sys
 from io import StringIO
 from typing import List
 
-from gymnasium import Space
 from pettingzoo.utils.env import ActionType
 
 from poke_env.environment import AbstractBattle, Battle, Pokemon
-from poke_env.player import BattleOrder, ForfeitBattleOrder, GymnasiumEnv
+from poke_env.player import ForfeitBattleOrder, GymnasiumEnv
 from poke_env.player.gymnasium_api import _AsyncQueue, _EnvPlayer
 
 

@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from gymnasium.spaces import Box, Discrete
+from gymnasium.spaces import Box
 from pettingzoo.test.parallel_test import parallel_api_test
 
 from poke_env.player import GymnasiumEnv
