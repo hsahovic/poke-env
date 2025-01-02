@@ -1,7 +1,9 @@
 import asyncio
 import sys
+import unittest
 from io import StringIO
 from typing import List
+from unittest.mock import PropertyMock, patch
 
 from gymnasium.spaces import Box, Discrete
 from pettingzoo.utils.env import ActionType
@@ -232,7 +234,7 @@ def test_action_space():
 
 @patch(
     "poke_env.environment.Pokemon.available_z_moves",
-    new_callable=unittest.mock.PropertyMock,
+    new_callable=PropertyMock,
 )
 def test_action_to_move(z_moves_mock):
     for battle_format, (has_megas, has_z_moves, has_dynamax, has_tera) in zip(
