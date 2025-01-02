@@ -2,7 +2,7 @@ import asyncio
 import unittest
 from unittest.mock import patch
 
-from gymnasium.spaces import Discrete, Space
+from gymnasium.spaces import Box, Discrete, Space
 
 from poke_env import AccountConfiguration, ServerConfiguration
 from poke_env.concurrency import POKE_LOOP
@@ -25,6 +25,13 @@ server_configuration = ServerConfiguration("server.url", "auth.url")
 
 
 class CustomEnvPlayer(GymnasiumEnv):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.observation_spaces = {agent: Box(-1, 1) for agent in self.possible_agents}
+        self.action_spaces = {
+            agent: Discrete(len(self._ACTION_SPACE)) for agent in self.possible_agents
+        }
+
     def calc_reward(self, battle) -> float:
         pass
 
