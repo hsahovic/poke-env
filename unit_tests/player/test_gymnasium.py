@@ -259,10 +259,10 @@ def test_action_to_move(z_moves_mock):
         )
         battle = Battle("bat1", p.agent1.username, p.agent1.logger, gen=8)
         active_pokemon = Pokemon(species="charizard", gen=8)
+        move = Move("flamethrower", gen=8)
+        active_pokemon._moves = {move.id: move}
         active_pokemon._active = True
         battle._team = {"charizard": active_pokemon}
-        battle._available_switches = [Pokemon(species="charizard", gen=8)]
-        battle._available_moves = [Move("flamethrower", gen=8)]
         assert p.action_to_order(-1, battle).message == "/forfeit"
         assert p.action_to_order(0, battle).message == "/choose switch charizard"
         assert p.action_to_order(6, battle).message == "/choose move flamethrower"
