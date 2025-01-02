@@ -7,7 +7,7 @@ from gymnasium.spaces import Box, Discrete
 from pettingzoo.utils.env import ActionType
 
 from poke_env.concurrency import POKE_LOOP
-from poke_env.environment import AbstractBattle, Battle, Move, Pokemon
+from poke_env.environment import AbstractBattle, Battle, Move, Pokemon, Status
 from poke_env.player import ForfeitBattleOrder, GymnasiumEnv
 from poke_env.player.gymnasium_api import _AsyncQueue, _EnvPlayer
 from poke_env.ps_client import AccountConfiguration, ServerConfiguration
