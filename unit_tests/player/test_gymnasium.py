@@ -21,17 +21,8 @@ class DummyEnv(GymnasiumEnv[List[int], ActionType]):
     def calc_reward(self, battle: AbstractBattle) -> float:
         return 69.42
 
-    def action_to_order(self, action: int, battle: AbstractBattle) -> BattleOrder:
-        return ForfeitBattleOrder()
-
     def embed_battle(self, battle: AbstractBattle) -> List[int]:
         return [0, 1, 2]
-
-    def describe_embedding(self) -> Space:
-        return "Space"
-
-    def action_space_size(self) -> int:
-        return 1
 
 
 def test_init_queue():

@@ -10,7 +10,8 @@ from abc import abstractmethod
 from typing import Any, Awaitable, Dict, Generic, List, Optional, Tuple, TypeVar, Union
 from weakref import WeakKeyDictionary
 
-from gymnasium.spaces import Space
+import numpy as np
+from gymnasium.spaces import Discrete, MultiDiscrete, Space
 from pettingzoo.utils.env import (  # type: ignore[import-untyped]
     ActionType,
     ObsType,
@@ -19,9 +20,12 @@ from pettingzoo.utils.env import (  # type: ignore[import-untyped]
 
 from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
 from poke_env.environment.abstract_battle import AbstractBattle
+from poke_env.environment.battle import Battle
+from poke_env.environment.double_battle import DoubleBattle
 from poke_env.player.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
+    DoubleBattleOrder,
     ForfeitBattleOrder,
 )
 from poke_env.player.player import Player
@@ -222,6 +226,26 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         )
         self.agents: List[str] = []
         self.possible_agents = [self.agent1.username, self.agent2.username]
+        if battle_format.startswith("gen6"):
+            self._ACTION_SPACE = list(range(2 * 4 + 6))
+        elif battle_format.startswith("gen7"):
+            self._ACTION_SPACE = list(range(3 * 4 + 6))
+        elif battle_format.startswith("gen8"):
+            self._ACTION_SPACE = list(range(4 * 4 + 6))
+        elif battle_format.startswith("gen9"):
+            self._ACTION_SPACE = list(range(5 * 4 + 6))
+        else:
+            self._ACTION_SPACE = list(range(4 + 6))
+        if self.agent1.format_is_doubles:
+            self.action_spaces = {
+                agent: MultiDiscrete([len(self._ACTION_SPACE), len(self._ACTION_SPACE)])
+                for agent in self.possible_agents
+            }
+        else:
+            self.action_spaces = {
+                agent: Discrete(len(self._ACTION_SPACE))
+                for agent in self.possible_agents
+            }
         self._reward_buffer: WeakKeyDictionary[AbstractBattle, float] = (
             WeakKeyDictionary()
         )
@@ -367,23 +391,6 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         pass
 
     @abstractmethod
-    def action_to_order(
-        self, action: ActionType, battle: AbstractBattle
-    ) -> BattleOrder:
-        """
-        Returns the BattleOrder relative to the given action.
-
-        :param action: The action to take.
-        :type action: int
-        :param battle: The current battle state
-        :type battle: AbstractBattle
-
-        :return: The battle order for the given action in context of the current battle.
-        :rtype: BattleOrder
-        """
-        pass
-
-    @abstractmethod
     def calc_reward(self, battle: AbstractBattle) -> float:
         """
         Returns the reward for the current battle state. The battle state in the previous
@@ -398,6 +405,98 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         :rtype: float
         """
         pass
+
+    ###################################################################################
+    # Action -> Order methods
+
+    @staticmethod
+    def action_to_order(action: ActionType, battle: AbstractBattle) -> BattleOrder:
+        if isinstance(battle, Battle):
+            if isinstance(action, int):
+                return GymnasiumEnv.singles_action_to_order(action, battle)
+            elif isinstance(action, np.integer):
+                return GymnasiumEnv.singles_action_to_order(action.item(), battle)
+            else:
+                raise TypeError()
+        elif isinstance(battle, DoubleBattle) and isinstance(
+            action, (List, np.ndarray)
+        ):
+            return GymnasiumEnv.doubles_action_to_order(action[0], action[1], battle)
+        else:
+            raise TypeError()
+
+    @staticmethod
+    def singles_action_to_order(action: int, battle: Battle) -> BattleOrder:
+        if action == -1:
+            return ForfeitBattleOrder()
+        elif action < 6:
+            order = Player.create_order(list(battle.team.values())[action])
+        else:
+            active_mon = battle.active_pokemon
+            assert active_mon is not None
+            mvs = (
+                battle.available_moves
+                if len(battle.available_moves) == 1
+                and battle.available_moves[0].id in ["struggle", "recharge"]
+                else list(active_mon.moves.values())
+            )
+            order = Player.create_order(
+                mvs[(action - 6) % 4],
+                mega=10 <= action < 14,
+                z_move=14 <= action < 18,
+                dynamax=18 <= action < 22,
+                terastallize=22 <= action < 26,
+            )
+        return order
+
+    @staticmethod
+    def doubles_action_to_order(
+        action1: int, action2: int, battle: DoubleBattle
+    ) -> BattleOrder:
+        if action1 == -1 or action2 == -1:
+            return ForfeitBattleOrder()
+        order1 = GymnasiumEnv.doubles_action_to_order_(action1, battle, 0)
+        order2 = GymnasiumEnv.doubles_action_to_order_(action2, battle, 1)
+        return DoubleBattleOrder(order1, order2)
+
+    @staticmethod
+    def doubles_action_to_order_(
+        action: int, battle: DoubleBattle, pos: int
+    ) -> BattleOrder | None:
+        """
+        Currently this works for gen 9 VGC format
+        action = 0: pass
+        1 <= action <= 6: switch
+        7 <= action <= 26 (refer to below table):
+
+            target  -2   -1    0    1    2
+        move
+        0           7    8    9    10   11
+        1           12   13   14   15   16
+        2           17   18   19   20   21
+        3           22   23   24   25   26
+
+        27 <= action <= 46: same as above, but terastallized
+        """
+        if action == 0:
+            order = None
+        elif action < 7:
+            order = Player.create_order(list(battle.team.values())[action - 1])
+        else:
+            active_mon = battle.active_pokemon[pos]
+            assert active_mon is not None
+            mvs = (
+                battle.available_moves[pos]
+                if len(battle.available_moves[pos]) == 1
+                and battle.available_moves[pos][0].id in ["struggle", "recharge"]
+                else list(active_mon.moves.values())
+            )
+            order = Player.create_order(
+                mvs[(action - 7) % 20 // 5],
+                terastallize=bool((action - 7) // 20),
+                move_target=(int(action) - 7) % 5 - 2,
+            )
+        return order
 
     ###################################################################################
     # Helper methods

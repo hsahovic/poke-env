@@ -28,17 +28,8 @@ class CustomEnvPlayer(GymnasiumEnv):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.observation_spaces = {agent: Box(-1, 1) for agent in self.possible_agents}
-        self.action_spaces = {
-            agent: Discrete(len(self._ACTION_SPACE)) for agent in self.possible_agents
-        }
 
     def calc_reward(self, battle) -> float:
-        pass
-
-    def action_to_order(self, action: int, battle: AbstractBattle) -> BattleOrder:
-        return Gen7EnvSinglePlayer.action_to_order(self, action, battle)
-
-    def describe_embedding(self) -> Space:
         pass
 
     _ACTION_SPACE = Gen7EnvSinglePlayer._ACTION_SPACE

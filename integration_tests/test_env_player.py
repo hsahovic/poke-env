@@ -3,97 +3,15 @@ import pytest
 from gymnasium.spaces import Box, Discrete
 from pettingzoo.test.parallel_test import parallel_api_test
 
-from poke_env.player import (
-    Gen4EnvSinglePlayer,
-    Gen5EnvSinglePlayer,
-    Gen6EnvSinglePlayer,
-    Gen7EnvSinglePlayer,
-    Gen8EnvSinglePlayer,
-    Gen9EnvSinglePlayer,
-)
+from poke_env.player import GymnasiumEnv
 
 
-class RandomGen4EnvPlayer(Gen4EnvSinglePlayer):
+class TestEnv(GymnasiumEnv):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.observation_spaces = {agent: Box(-1, 1) for agent in self.possible_agents}
-        self.action_spaces = {
-            agent: Discrete(len(self._ACTION_SPACE)) for agent in self.possible_agents
-        }
-
-    def calc_reward(self, battle) -> float:
-        return 0.0
-
-    def embed_battle(self, battle):
-        return np.array([0])
-
-
-class RandomGen5EnvPlayer(Gen5EnvSinglePlayer):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.observation_spaces = {agent: Box(-1, 1) for agent in self.possible_agents}
-        self.action_spaces = {
-            agent: Discrete(len(self._ACTION_SPACE)) for agent in self.possible_agents
-        }
-
-    def calc_reward(self, battle) -> float:
-        return 0.0
-
-    def embed_battle(self, battle):
-        return np.array([0])
-
-
-class RandomGen6EnvPlayer(Gen6EnvSinglePlayer):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.observation_spaces = {agent: Box(-1, 1) for agent in self.possible_agents}
-        self.action_spaces = {
-            agent: Discrete(len(self._ACTION_SPACE)) for agent in self.possible_agents
-        }
-
-    def calc_reward(self, battle) -> float:
-        return 0.0
-
-    def embed_battle(self, battle):
-        return np.array([0])
-
-
-class RandomGen7EnvPlayer(Gen7EnvSinglePlayer):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.observation_spaces = {agent: Box(-1, 1) for agent in self.possible_agents}
-        self.action_spaces = {
-            agent: Discrete(len(self._ACTION_SPACE)) for agent in self.possible_agents
-        }
-
-    def calc_reward(self, battle) -> float:
-        return 0.0
-
-    def embed_battle(self, battle):
-        return np.array([0])
-
-
-class RandomGen8EnvPlayer(Gen8EnvSinglePlayer):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.observation_spaces = {agent: Box(-1, 1) for agent in self.possible_agents}
-        self.action_spaces = {
-            agent: Discrete(len(self._ACTION_SPACE)) for agent in self.possible_agents
-        }
-
-    def calc_reward(self, battle) -> float:
-        return 0.0
-
-    def embed_battle(self, battle):
-        return np.array([0])
-
-
-class RandomGen9EnvPlayer(Gen9EnvSinglePlayer):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.observation_spaces = {agent: Box(-1, 1) for agent in self.possible_agents}
-        self.action_spaces = {
-            agent: Discrete(len(self._ACTION_SPACE)) for agent in self.possible_agents
+        self.observation_spaces = {
+            agent: Box(np.array([0]), np.array([1]), dtype=np.int64)
+            for agent in self.possible_agents
         }
 
     def calc_reward(self, battle) -> float:
@@ -115,49 +33,63 @@ def play_function(env, n_battles):
 
 @pytest.mark.timeout(30)
 def test_random_gymnasium_players_gen4():
-    env_player = RandomGen4EnvPlayer(log_level=25, start_challenging=False)
+    env_player = TestEnv(
+        battle_format="gen4randombattle", log_level=25, start_challenging=False
+    )
     env_player.start_challenging(3)
     play_function(env_player, 3)
 
 
 @pytest.mark.timeout(30)
 def test_random_gymnasium_players_gen5():
-    env_player = RandomGen5EnvPlayer(log_level=25, start_challenging=False)
+    env_player = TestEnv(
+        battle_format="gen5randombattle", log_level=25, start_challenging=False
+    )
     env_player.start_challenging(3)
     play_function(env_player, 3)
 
 
 @pytest.mark.timeout(30)
 def test_random_gymnasium_players_gen6():
-    env_player = RandomGen6EnvPlayer(log_level=25, start_challenging=False)
+    env_player = TestEnv(
+        battle_format="gen6randombattle", log_level=25, start_challenging=False
+    )
     env_player.start_challenging(3)
     play_function(env_player, 3)
 
 
 @pytest.mark.timeout(30)
 def test_random_gymnasium_players_gen7():
-    env_player = RandomGen7EnvPlayer(log_level=25, start_challenging=False)
+    env_player = TestEnv(
+        battle_format="gen7randombattle", log_level=25, start_challenging=False
+    )
     env_player.start_challenging(3)
     play_function(env_player, 3)
 
 
 @pytest.mark.timeout(30)
 def test_random_gymnasium_players_gen8():
-    env_player = RandomGen8EnvPlayer(log_level=25, start_challenging=False)
+    env_player = TestEnv(
+        battle_format="gen8randombattle", log_level=25, start_challenging=False
+    )
     env_player.start_challenging(3)
     play_function(env_player, 3)
 
 
 @pytest.mark.timeout(30)
 def test_random_gymnasium_players_gen9():
-    env_player = RandomGen9EnvPlayer(log_level=25, start_challenging=False)
+    env_player = TestEnv(
+        battle_format="gen9randombattle", log_level=25, start_challenging=False
+    )
     env_player.start_challenging(3)
     play_function(env_player, 3)
 
 
 @pytest.mark.timeout(60)
 def test_two_successive_calls_gen8():
-    env_player = RandomGen8EnvPlayer(log_level=25, start_challenging=False)
+    env_player = TestEnv(
+        battle_format="gen8randombattle", log_level=25, start_challenging=False
+    )
     env_player.start_challenging(2)
     play_function(env_player, 2)
     env_player.start_challenging(2)
@@ -166,7 +98,9 @@ def test_two_successive_calls_gen8():
 
 @pytest.mark.timeout(60)
 def test_two_successive_calls_gen9():
-    env_player = RandomGen9EnvPlayer(log_level=25, start_challenging=False)
+    env_player = TestEnv(
+        battle_format="gen9randombattle", log_level=25, start_challenging=False
+    )
     env_player.start_challenging(2)
     play_function(env_player, 2)
     env_player.start_challenging(2)
@@ -175,21 +109,33 @@ def test_two_successive_calls_gen9():
 
 @pytest.mark.timeout(60)
 def test_check_envs():
-    env_player_gen4 = RandomGen4EnvPlayer(log_level=25, start_challenging=True)
+    env_player_gen4 = TestEnv(
+        battle_format="gen4randombattle", log_level=25, start_challenging=True
+    )
     parallel_api_test(env_player_gen4)
     env_player_gen4.close()
-    env_player_gen5 = RandomGen5EnvPlayer(log_level=25, start_challenging=True)
+    env_player_gen5 = TestEnv(
+        battle_format="gen5randombattle", log_level=25, start_challenging=True
+    )
     parallel_api_test(env_player_gen5)
     env_player_gen5.close()
-    env_player_gen6 = RandomGen6EnvPlayer(log_level=25, start_challenging=True)
+    env_player_gen6 = TestEnv(
+        battle_format="gen6randombattle", log_level=25, start_challenging=True
+    )
     parallel_api_test(env_player_gen6)
     env_player_gen6.close()
-    env_player_gen7 = RandomGen7EnvPlayer(log_level=25, start_challenging=True)
+    env_player_gen7 = TestEnv(
+        battle_format="gen7randombattle", log_level=25, start_challenging=True
+    )
     parallel_api_test(env_player_gen7)
     env_player_gen7.close()
-    env_player_gen8 = RandomGen8EnvPlayer(log_level=25, start_challenging=True)
+    env_player_gen8 = TestEnv(
+        battle_format="gen8randombattle", log_level=25, start_challenging=True
+    )
     parallel_api_test(env_player_gen8)
     env_player_gen8.close()
-    env_player_gen9 = RandomGen9EnvPlayer(log_level=25, start_challenging=True)
+    env_player_gen9 = TestEnv(
+        battle_format="gen9randombattle", log_level=25, start_challenging=True
+    )
     parallel_api_test(env_player_gen9)
     env_player_gen9.close()
