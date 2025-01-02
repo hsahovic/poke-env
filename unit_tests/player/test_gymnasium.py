@@ -61,7 +61,7 @@ def test_choose_move():
 
         # Test choosing a move
         message = await player.agent1.choose_move(battle)
-        order = player.action_to_order(0, battle)
+        order = player.action_to_order(6, battle)
         player.agent1.order_queue.put(order)
 
         assert message.message == "/choose move flamethrower"
@@ -69,7 +69,7 @@ def test_choose_move():
         # Test switching Pokémon
         battle._available_switches = [Pokemon(species="charizard", gen=8)]
         message = await player.agent1.choose_move(battle)
-        order = player.action_to_order(4, battle)
+        order = player.action_to_order(0, battle)
         player.agent1.order_queue.put(order)
 
         assert message.message == "/choose switch charizard"
