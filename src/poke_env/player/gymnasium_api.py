@@ -5,14 +5,12 @@ For a black-box implementation consider using the module env_player.
 from __future__ import annotations
 
 import asyncio
-import functools
 import time
 from abc import abstractmethod
 from typing import Any, Awaitable, Dict, Generic, List, Optional, Tuple, TypeVar, Union
 from weakref import WeakKeyDictionary
 
-import numpy as np
-from gymnasium.spaces import Box, Discrete, Space
+from gymnasium.spaces import Space
 from pettingzoo.utils.env import (  # type: ignore[import-untyped]
     ActionType,
     ObsType,
@@ -117,7 +115,6 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
     _SWITCH_CHALLENGE_TASK_RETRIES = 30
     _TIME_BETWEEN_SWITCH_RETRIES = 1
 
-    _ACTION_SPACE: List[int] = []
     _DEFAULT_BATTLE_FORMAT = "gen8randombattle"
 
     def __init__(
@@ -142,14 +139,10 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         start_challenging: bool = False,
     ):
         """
-        :param account_configuration1: Player configuration for agent1. If empty,
-            defaults to an automatically generated username with no password. This
-            option must be set if the server configuration requires authentication.
-        :type account_configuration1: AccountConfiguration, optional
-        :param account_configuration2: Player configuration for agent2. If empty,
-            defaults to an automatically generated username with no password. This
-            option must be set if the server configuration requires authentication.
-        :type account_configuration2: AccountConfiguration, optional
+        :param account_configuration: Player configuration. If empty, defaults to an
+            automatically generated username with no password. This option must be set
+            if the server configuration requires authentication.
+        :type account_configuration: AccountConfiguration, optional
         :param avatar: Player avatar id. Optional.
         :type avatar: int, optional
         :param battle_format: Name of the battle format this player plays. Defaults to
@@ -229,12 +222,6 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         )
         self.agents: List[str] = []
         self.possible_agents = [self.agent1.username, self.agent2.username]
-        self.observation_spaces = {
-            name: self.observation_space(name) for name in self.possible_agents
-        }
-        self.action_spaces = {
-            name: self.action_space(name) for name in self.possible_agents
-        }
         self._reward_buffer: WeakKeyDictionary[AbstractBattle, float] = (
             WeakKeyDictionary()
         )
@@ -357,12 +344,11 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         )
         closing_task.result()
 
-    @functools.lru_cache(maxsize=None)
-    def observation_space(self, agent: str) -> Space[np.ndarray]:  # type: ignore
-        return Box(-1, 1)
+    def observation_space(self, agent: str) -> Space[ObsType]:
+        return self.observation_spaces[agent]
 
-    def action_space(self, agent: str) -> Space[np.int64]:
-        return Discrete(len(self._ACTION_SPACE))
+    def action_space(self, agent: str) -> Space[ActionType]:
+        return self.action_spaces[agent]
 
     ###################################################################################
     # Abstract methods
