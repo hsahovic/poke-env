@@ -1,6 +1,5 @@
 import asyncio
 import sys
-import unittest
 from io import StringIO
 from typing import List
 from unittest.mock import PropertyMock, patch
