@@ -258,11 +258,14 @@ def test_action_to_move(z_moves_mock):
             battle_format=battle_format, start_listening=False, start_challenging=False
         )
         battle = Battle("bat1", p.agent1.username, p.agent1.logger, gen=8)
-        assert p.action_to_order(-1, battle).message == "/forfeit"
-        battle._available_moves = [Move("flamethrower", gen=8)]
-        assert p.action_to_order(6, battle).message == "/choose move flamethrower"
+        active_pokemon = Pokemon(species="charizard", gen=8)
+        active_pokemon._active = True
+        battle._team = {"charizard": active_pokemon}
         battle._available_switches = [Pokemon(species="charizard", gen=8)]
+        battle._available_moves = [Move("flamethrower", gen=8)]
+        assert p.action_to_order(-1, battle).message == "/forfeit"
         assert p.action_to_order(0, battle).message == "/choose switch charizard"
+        assert p.action_to_order(6, battle).message == "/choose move flamethrower"
         if has_megas:
             battle._can_mega_evolve = True
             assert (
@@ -271,9 +274,6 @@ def test_action_to_move(z_moves_mock):
             )
         if has_z_moves:
             battle._can_z_move = True
-            active_pokemon = Pokemon(species="charizard", gen=8)
-            active_pokemon._active = True
-            battle._team = {"charizard": active_pokemon}
             z_moves_mock.return_value = [Move("flamethrower", gen=8)]
             assert (
                 p.action_to_order(6 + 4 + 4, battle).message
