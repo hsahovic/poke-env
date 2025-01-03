@@ -423,6 +423,8 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
                 return GymnasiumEnv.doubles_action_to_order(a1, a2, battle)
             else:
                 raise TypeError()
+        except IndexError:
+            return Player.choose_random_move(battle)
         except AssertionError as e:
             if str(e) == "invalid pick":
                 return Player.choose_random_move(battle)
