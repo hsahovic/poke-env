@@ -412,16 +412,22 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
 
     @staticmethod
     def action_to_order(action: ActionType, battle: AbstractBattle) -> BattleOrder:
-        if isinstance(battle, Battle):
-            assert isinstance(action, (int, np.integer))
-            a = action.item() if isinstance(action, np.integer) else action
-            return GymnasiumEnv.singles_action_to_order(a, battle)
-        elif isinstance(battle, DoubleBattle):
-            assert isinstance(action, (List, np.ndarray))
-            [a1, a2] = action
-            return GymnasiumEnv.doubles_action_to_order(a1, a2, battle)
-        else:
-            raise TypeError()
+        try:
+            if isinstance(battle, Battle):
+                assert isinstance(action, (int, np.integer))
+                a = action.item() if isinstance(action, np.integer) else action
+                return GymnasiumEnv.singles_action_to_order(a, battle)
+            elif isinstance(battle, DoubleBattle):
+                assert isinstance(action, (List, np.ndarray))
+                [a1, a2] = action
+                return GymnasiumEnv.doubles_action_to_order(a1, a2, battle)
+            else:
+                raise TypeError()
+        except AssertionError as e:
+            if str(e) == "invalid pick":
+                return Player.choose_random_move(battle)
+            else:
+                raise e
 
     @staticmethod
     def singles_action_to_order(action: int, battle: Battle) -> BattleOrder:
@@ -429,6 +435,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
             return ForfeitBattleOrder()
         elif action < 6:
             order = Player.create_order(list(battle.team.values())[action])
+            assert order.order in battle.available_switches, "invalid pick"
         else:
             active_mon = battle.active_pokemon
             assert active_mon is not None
@@ -445,6 +452,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
                 dynamax=18 <= action < 22,
                 terastallize=22 <= action < 26,
             )
+            assert order.order in battle.available_moves, "invalid pick"
         return order
 
     @staticmethod
@@ -480,6 +488,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
             order = None
         elif action < 7:
             order = Player.create_order(list(battle.team.values())[action - 1])
+            assert order.order in battle.available_switches[pos], "invalid pick"
         else:
             active_mon = battle.active_pokemon[pos]
             assert active_mon is not None
@@ -494,6 +503,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
                 terastallize=bool((action - 7) // 20),
                 move_target=(int(action) - 7) % 5 - 2,
             )
+            assert order.order in battle.available_moves[pos], "invalid pick"
         return order
 
     ###################################################################################
