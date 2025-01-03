@@ -258,6 +258,7 @@ def test_action_to_move():
         move = Move("flamethrower", gen=8)
         active_pokemon._moves = {move.id: move}
         active_pokemon._active = True
+        active_pokemon._item = "firiumz"
         battle._team = {"charizard": active_pokemon}
         battle._available_switches = [active_pokemon]
         battle._available_moves = [move]
