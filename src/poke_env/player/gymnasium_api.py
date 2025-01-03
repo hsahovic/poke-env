@@ -236,6 +236,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
             self._ACTION_SPACE = list(range(5 * 4 + 6))
         else:
             self._ACTION_SPACE = list(range(4 + 6))
+        self.action_spaces: Dict[str, Space]
         if self.agent1.format_is_doubles:
             self.action_spaces = {
                 agent: MultiDiscrete([len(self._ACTION_SPACE), len(self._ACTION_SPACE)])
@@ -368,10 +369,10 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         )
         closing_task.result()
 
-    def observation_space(self, agent: str) -> Space[ObsType]:
+    def observation_space(self, agent: str) -> Space:
         return self.observation_spaces[agent]
 
-    def action_space(self, agent: str) -> Space[ActionType]:
+    def action_space(self, agent: str) -> Space:
         return self.action_spaces[agent]
 
     ###################################################################################
