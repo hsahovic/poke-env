@@ -671,10 +671,10 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
     async def _challenge_loop(self, n_challenges: Optional[int] = None):
         if not n_challenges:
             while self._keep_challenging:
-                await self.agent1.battle_against(self.agent2, 1)
+                await self.agent1.battle_against(self.agent2, n_battles=1)
         elif n_challenges > 0:
             for _ in range(n_challenges):
-                await self.agent1.battle_against(self.agent2, 1)
+                await self.agent1.battle_against(self.agent2, n_battles=1)
         else:
             raise ValueError(f"Number of challenges must be > 0. Got {n_challenges}")
 
