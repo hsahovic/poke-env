@@ -402,7 +402,7 @@ class Pokemon:
         if effect.breaks_protect:
             self._protect_counter = 0
 
-        if effect == Effect.TYPECHANGE and details:
+        if effect == Effect.TYPECHANGE and details is not None:
             self._temporary_types = []
             for type_ in details.split("/"):
                 self._temporary_types.append(PokemonType.from_name(type_))
