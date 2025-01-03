@@ -13,7 +13,7 @@ Player
    :undoc-members:
    :show-inheritance:
 
-GymnasiumEnv
+PokeEnv
 ************
 
 .. automodule:: poke_env.player.gymnasium_api

@@ -15,7 +15,7 @@ from poke_env.environment import (
     PokemonType,
     Status,
 )
-from poke_env.player import ForfeitBattleOrder, GymnasiumEnv
+from poke_env.player import ForfeitBattleOrder, PokeEnv
 from poke_env.player.gymnasium_api import _AsyncQueue, _EnvPlayer
 from poke_env.ps_client import AccountConfiguration, ServerConfiguration
 
@@ -24,7 +24,7 @@ account_configuration2 = AccountConfiguration("username2", "password2")
 server_configuration = ServerConfiguration("server.url", "auth.url")
 
 
-class CustomEnv(GymnasiumEnv):
+class CustomEnv(PokeEnv):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.observation_spaces = {agent: Box(-1, 1) for agent in self.possible_agents}
@@ -248,7 +248,7 @@ def test_action_to_move():
             (True, True, True, True),
         ]
     ):
-        p = GymnasiumEnv(
+        p = PokeEnv(
             battle_format=f"gen{i + 4}randombattle",
             start_listening=False,
             start_challenging=False,
@@ -291,7 +291,7 @@ def test_action_to_move():
             )
 
 
-class DummyEnv(GymnasiumEnv[List[int], ActionType]):
+class DummyEnv(PokeEnv[List[int], ActionType]):
     _ACTION_SPACE = list(range(10))
 
     def __init__(self, *args, **kwargs):

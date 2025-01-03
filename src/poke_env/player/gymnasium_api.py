@@ -111,7 +111,7 @@ class _EnvPlayer(Player):
         asyncio.run_coroutine_threadsafe(self.battle_queue.async_put(battle), POKE_LOOP)
 
 
-class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
+class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
     """
     Base class implementing the Gymnasium API on the main thread.
     """
@@ -416,11 +416,11 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
             if isinstance(battle, Battle):
                 assert isinstance(action, (int, np.integer))
                 a = action.item() if isinstance(action, np.integer) else action
-                return GymnasiumEnv.singles_action_to_order(a, battle)
+                return PokeEnv.singles_action_to_order(a, battle)
             elif isinstance(battle, DoubleBattle):
                 assert isinstance(action, (List, np.ndarray))
                 [a1, a2] = action
-                return GymnasiumEnv.doubles_action_to_order(a1, a2, battle)
+                return PokeEnv.doubles_action_to_order(a1, a2, battle)
             else:
                 raise TypeError()
         except IndexError:
@@ -470,8 +470,8 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
     ) -> BattleOrder:
         if action1 == -1 or action2 == -1:
             return ForfeitBattleOrder()
-        order1 = GymnasiumEnv.doubles_action_to_order_(action1, battle, 0)
-        order2 = GymnasiumEnv.doubles_action_to_order_(action2, battle, 1)
+        order1 = PokeEnv.doubles_action_to_order_(action1, battle, 0)
+        order2 = PokeEnv.doubles_action_to_order_(action2, battle, 1)
         return DoubleBattleOrder(order1, order2)
 
     @staticmethod
