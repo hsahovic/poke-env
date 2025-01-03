@@ -1,23 +1,16 @@
 import asyncio
 import sys
 from io import StringIO
-from typing import Union
 
 from gymnasium import Space
+from pettingzoo.utils.env import ActionType, ObsType
 
 from poke_env.environment import AbstractBattle, Battle, Pokemon
-from poke_env.player import (
-    ActType,
-    BattleOrder,
-    ForfeitBattleOrder,
-    GymnasiumEnv,
-    ObsType,
-    Player,
-)
+from poke_env.player import BattleOrder, ForfeitBattleOrder, GymnasiumEnv
 from poke_env.player.gymnasium_api import _AsyncPlayer, _AsyncQueue
 
 
-class DummyEnv(GymnasiumEnv[ObsType, ActType]):
+class DummyEnv(GymnasiumEnv[ObsType, ActionType]):
     def __init__(self, *args, **kwargs):
         self.opponent = None
         super().__init__(*args, **kwargs)
@@ -38,9 +31,6 @@ class DummyEnv(GymnasiumEnv[ObsType, ActType]):
 
     def action_space_size(self) -> int:
         return 1
-
-    def get_opponent(self) -> Union[Player, str]:
-        return self.opponent
 
 
 class UserFuncs:
@@ -85,7 +75,7 @@ def render(battle):
     player = DummyEnv(start_listening=False)
     captured_output = StringIO()
     sys.stdout = captured_output
-    player.current_battle = battle
+    player.current_battle1 = battle
     player.render()
     sys.stdout = sys.__stdout__
     return captured_output.getvalue()
@@ -113,17 +103,3 @@ def test_render():
     battle._team["2"] = other_mon
     expected = "  Turn    3. | [●●][ 60/120hp]  charizard -    pikachu [ 20%hp][●]\r"
     assert render(battle) == expected
-
-
-def test_get_opponent():
-    player = DummyEnv(start_listening=False)
-    assert player._get_opponent() is None
-    player.opponent = "test"
-    assert player._get_opponent() == "test"
-    player.opponent = ["test"]
-    assert player._get_opponent() == "test"
-    opponents = ["test1", "test2", "test3", "test4", "test5"]
-    player.opponent = opponents
-    for _ in range(100):
-        assert player._get_opponent() in opponents
-    player.opponent = [0]
