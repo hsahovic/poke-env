@@ -262,13 +262,14 @@ def test_action_to_move():
         assert p.action_to_order(-1, battle).message == "/forfeit"
         assert p.action_to_order(0, battle).message == "/choose switch charizard"
         assert p.action_to_order(6, battle).message == "/choose move flamethrower"
-        assert battle.active_pokemon is not None
+        assert battle.active_pokemon is not None, i
         if has_megas:
             battle._can_mega_evolve = True
             assert (
                 p.action_to_order(6 + 4, battle).message
                 == "/choose move flamethrower mega"
             )
+        assert battle.active_pokemon is not None, i
         if has_z_moves:
             battle._can_z_move = True
             assert (
@@ -276,12 +277,14 @@ def test_action_to_move():
                 == "/choose move flamethrower zmove"
             )
             battle._team = {}
+        assert battle.active_pokemon is not None, i
         if has_dynamax:
             battle._can_dynamax = True
             assert (
                 p.action_to_order(6 + 4 + 8, battle).message
                 == "/choose move flamethrower dynamax"
             )
+        assert battle.active_pokemon is not None, i
         if has_tera:
             battle._can_tera = PokemonType.FIRE
             assert (
