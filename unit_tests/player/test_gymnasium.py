@@ -238,15 +238,7 @@ def test_action_space():
 
 
 def test_action_to_move():
-    for battle_format, (has_megas, has_z_moves, has_dynamax, has_tera) in zip(
-        [
-            "gen4randombattle",
-            "gen5randombattle",
-            "gen6randombattle",
-            "gen7randombattle",
-            "gen8randombattle",
-            "gen9randombattle",
-        ],
+    for i, (has_megas, has_z_moves, has_dynamax, has_tera) in enumerate(
         [
             (False, False, False, False),
             (False, False, False, False),
@@ -254,10 +246,12 @@ def test_action_to_move():
             (True, True, False, False),
             (True, True, True, False),
             (True, True, True, True),
-        ],
+        ]
     ):
         p = GymnasiumEnv(
-            battle_format=battle_format, start_listening=False, start_challenging=False
+            battle_format=f"gen{i + 4}randombattle",
+            start_listening=False,
+            start_challenging=False,
         )
         battle = Battle("bat1", p.agent1.username, p.agent1.logger, gen=8)
         active_pokemon = Pokemon(species="charizard", gen=8)
@@ -268,6 +262,7 @@ def test_action_to_move():
         assert p.action_to_order(-1, battle).message == "/forfeit"
         assert p.action_to_order(0, battle).message == "/choose switch charizard"
         assert p.action_to_order(6, battle).message == "/choose move flamethrower"
+        assert battle.active_pokemon is not None
         if has_megas:
             battle._can_mega_evolve = True
             assert (
