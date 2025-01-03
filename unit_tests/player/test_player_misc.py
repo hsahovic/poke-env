@@ -33,10 +33,6 @@ class FixedWinRatePlayer(Player):
     def win_rate(self):
         return 0.5
 
-    @property
-    def next_team(self):
-        return None
-
 
 def test_player_default_order():
     assert SimplePlayer().choose_default_move().message == "/choose default"
