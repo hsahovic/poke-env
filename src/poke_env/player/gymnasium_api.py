@@ -379,19 +379,6 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
     # Abstract methods
 
     @abstractmethod
-    def embed_battle(self, battle: AbstractBattle) -> ObsType:
-        """
-        Returns the embedding of the current battle state in a format compatible with
-        the Gymnasium API.
-
-        :param battle: The current battle state.
-        :type battle: AbstractBattle
-
-        :return: The embedding of the current battle state.
-        """
-        pass
-
-    @abstractmethod
     def calc_reward(self, battle: AbstractBattle) -> float:
         """
         Returns the reward for the current battle state. The battle state in the previous
@@ -404,6 +391,19 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
 
         :return: The reward for current_battle.
         :rtype: float
+        """
+        pass
+
+    @abstractmethod
+    def embed_battle(self, battle: AbstractBattle) -> ObsType:
+        """
+        Returns the embedding of the current battle state in a format compatible with
+        the Gymnasium API.
+
+        :param battle: The current battle state.
+        :type battle: AbstractBattle
+
+        :return: The embedding of the current battle state.
         """
         pass
 
