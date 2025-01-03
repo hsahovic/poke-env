@@ -3,7 +3,6 @@ import unittest
 from inspect import isawaitable
 from unittest.mock import patch
 
-import pytest
 from gymnasium.spaces import Discrete, Space
 
 from poke_env import AccountConfiguration, ServerConfiguration
@@ -17,11 +16,11 @@ from poke_env.player import (
     Gen7EnvSinglePlayer,
     Gen8EnvSinglePlayer,
     Gen9EnvSinglePlayer,
-    RandomPlayer,
 )
 from poke_env.player.gymnasium_api import _AsyncPlayer
 
-account_configuration = AccountConfiguration("username", "password")
+account_configuration1 = AccountConfiguration("username1", "password1")
+account_configuration2 = AccountConfiguration("username2", "password2")
 server_configuration = ServerConfiguration("server.url", "auth.url")
 
 
@@ -43,13 +42,13 @@ class CustomEnvPlayer(EnvPlayer):
 
 def test_init():
     gymnasium_env = CustomEnvPlayer(
-        None,
-        account_configuration=account_configuration,
+        account_configuration1=account_configuration1,
+        account_configuration2=account_configuration2,
         server_configuration=server_configuration,
         start_listening=False,
         battle_format="gen7randombattles",
     )
-    player = gymnasium_env.agent
+    player = gymnasium_env.agent1
     assert isinstance(gymnasium_env, CustomEnvPlayer)
     assert isinstance(player, _AsyncPlayer)
 
@@ -67,16 +66,17 @@ class AsyncMock(unittest.mock.MagicMock):
 @patch("poke_env.player.gymnasium_api._AsyncQueue.async_put", new_callable=AsyncMock)
 def test_choose_move(queue_put_mock, queue_get_mock):
     player = CustomEnvPlayer(
-        None,
-        account_configuration=account_configuration,
+        account_configuration1=account_configuration1,
+        account_configuration2=account_configuration2,
         server_configuration=server_configuration,
         start_listening=False,
         battle_format="gen7randombattles",
         start_challenging=False,
     )
-    battle = Battle("bat1", player.username, player.logger, gen=8)
-    battle._available_moves = {Move("flamethrower", gen=8)}
-    message = player.agent.choose_move(battle)
+    battle = Battle("bat1", player.agent1.username, player.agent1.logger, gen=8)
+    battle._available_moves = [Move("flamethrower", gen=8)]
+    message = player.agent1.choose_move(battle)
+    player.agent2.choose_move(battle)
 
     assert isawaitable(message)
 
@@ -84,9 +84,11 @@ def test_choose_move(queue_put_mock, queue_get_mock):
 
     assert message.message == "/choose move flamethrower"
 
-    battle._available_moves = {Pokemon(species="charizard", gen=8)}
+    battle._available_moves = []
+    battle._available_switches = [Pokemon(species="charizard", gen=8)]
 
-    message = player.agent.choose_move(battle)
+    message = player.agent1.choose_move(battle)
+    player.agent2.choose_move(battle)
 
     assert isawaitable(message)
 
@@ -97,16 +99,16 @@ def test_choose_move(queue_put_mock, queue_get_mock):
 
 def test_reward_computing_helper():
     player = CustomEnvPlayer(
-        None,
-        account_configuration=account_configuration,
+        account_configuration1=account_configuration1,
+        account_configuration2=account_configuration2,
         server_configuration=server_configuration,
         start_listening=False,
         battle_format="gen7randombattles",
     )
-    battle_1 = Battle("bat1", player.username, player.logger, gen=8)
-    battle_2 = Battle("bat2", player.username, player.logger, gen=8)
-    battle_3 = Battle("bat3", player.username, player.logger, gen=8)
-    battle_4 = Battle("bat4", player.username, player.logger, gen=8)
+    battle_1 = Battle("bat1", player.agent1.username, player.agent1.logger, gen=8)
+    battle_2 = Battle("bat2", player.agent1.username, player.agent1.logger, gen=8)
+    battle_3 = Battle("bat3", player.agent1.username, player.agent1.logger, gen=8)
+    battle_4 = Battle("bat4", player.agent1.username, player.agent1.logger, gen=8)
 
     assert (
         player.reward_computing_helper(
@@ -219,8 +221,10 @@ def test_reward_computing_helper():
 
 
 def test_action_space():
-    player = CustomEnvPlayer(None, start_listening=False)
-    assert player.action_space == Discrete(len(Gen7EnvSinglePlayer._ACTION_SPACE))
+    player = CustomEnvPlayer(start_listening=False)
+    assert player.action_space(player.possible_agents[0]) == Discrete(
+        len(Gen7EnvSinglePlayer._ACTION_SPACE)
+    )
 
     for PlayerClass, (has_megas, has_z_moves, has_dynamax) in zip(
         [
@@ -249,30 +253,11 @@ def test_action_space():
             def describe_embedding(self):
                 return None
 
-            def get_opponent(self):
-                return None
+        p = CustomEnvClass(start_listening=False, start_challenging=False)
 
-        p = CustomEnvClass(None, start_listening=False, start_challenging=False)
-
-        assert p.action_space == Discrete(
+        assert p.action_space(p.possible_agents[0]) == Discrete(
             4 * sum([1, has_megas, has_z_moves, has_dynamax]) + 6
         )
-
-
-def test_get_opponent():
-    player = CustomEnvPlayer(start_listening=False, opponent="test")
-    assert player.get_opponent() == "test"
-    player._opponent = None
-    with pytest.raises(RuntimeError):
-        player.get_opponent()
-
-
-def test_set_opponent():
-    player = CustomEnvPlayer(None, start_listening=False)
-    assert player._opponent is None
-    dummy_player = RandomPlayer()
-    player.set_opponent(dummy_player)
-    assert player._opponent == dummy_player
 
 
 @patch(
@@ -312,8 +297,8 @@ def test_action_to_move(z_moves_mock):
             def get_opponent(self):
                 return None
 
-        p = CustomEnvClass(None, start_listening=False, start_challenging=False)
-        battle = Battle("bat1", p.username, p.logger, gen=8)
+        p = CustomEnvClass(start_listening=False, start_challenging=False)
+        battle = Battle("bat1", p.agent1.username, p.agent1.logger, gen=8)
         assert p.action_to_move(-1, battle).message == "/forfeit"
         battle._available_moves = [Move("flamethrower", gen=8)]
         assert p.action_to_move(0, battle).message == "/choose move flamethrower"

@@ -33,11 +33,14 @@ async def cross_evaluate(
         p1.username: {p2.username: None for p2 in players} for p1 in players
     }
     for i, p1 in enumerate(players):
-        results[p1.username][p1.username] = None
-        r = await p1.battle_against_multi(players[i + 1 :], n_challenges)
-        for p2, (win_rate, lose_rate) in r.items():
-            results[p1.username][p2] = win_rate
-            results[p2][p1.username] = lose_rate
+        for j, p2 in enumerate(players):
+            if j <= i:
+                continue
+            await p1.battle_against(p2, n_battles=n_challenges)
+            results[p1.username][p2.username] = p1.win_rate
+            results[p2.username][p1.username] = p2.win_rate
+            p1.reset_battles()
+            p2.reset_battles()
     return results
 
 
@@ -154,7 +157,7 @@ async def evaluate_player(
     baselines = [p(max_concurrent_battles=n_battles) for p in _EVALUATION_RATINGS]  # type: ignore
 
     for p in baselines:
-        await p.battle_against(player, n_placement_battles)
+        await p.battle_against(player, n_battles=n_placement_battles)
 
     # Select the best opponent for evaluation
     best_opp = min(
@@ -163,7 +166,7 @@ async def evaluate_player(
 
     # Performing the main evaluation
     remaining_battles = n_battles - len(_EVALUATION_RATINGS) * n_placement_battles
-    await best_opp.battle_against(player, remaining_battles)
+    await best_opp.battle_against(player, n_battles=remaining_battles)
 
     return _estimate_strength_from_results(
         best_opp.n_finished_battles,
