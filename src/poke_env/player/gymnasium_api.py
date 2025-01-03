@@ -465,7 +465,7 @@ class GymnasiumEnv(
             while self._keep_challenging:
                 opponent = self._get_opponent()
                 if isinstance(opponent, Player):
-                    await self.agent.battle_against(opponent, 1)
+                    await self.agent.battle_against(opponent, n_battles=1)
                 else:
                     await self.agent.send_challenges(opponent, 1)
                 if callback and self.current_battle is not None:
@@ -474,7 +474,7 @@ class GymnasiumEnv(
             for _ in range(n_challenges):
                 opponent = self._get_opponent()
                 if isinstance(opponent, Player):
-                    await self.agent.battle_against(opponent, 1)
+                    await self.agent.battle_against(opponent, n_battles=1)
                 else:
                     await self.agent.send_challenges(opponent, 1)
                 if callback and self.current_battle is not None:
