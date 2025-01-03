@@ -413,16 +413,13 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
     @staticmethod
     def action_to_order(action: ActionType, battle: AbstractBattle) -> BattleOrder:
         if isinstance(battle, Battle):
-            if isinstance(action, int):
-                return GymnasiumEnv.singles_action_to_order(action, battle)
-            elif isinstance(action, np.integer):
-                return GymnasiumEnv.singles_action_to_order(action.item(), battle)
-            else:
-                raise TypeError()
-        elif isinstance(battle, DoubleBattle) and isinstance(
-            action, (List, np.ndarray)
-        ):
-            return GymnasiumEnv.doubles_action_to_order(action[0], action[1], battle)
+            assert isinstance(action, (int, np.integer))
+            a = action.item() if isinstance(action, np.integer) else action
+            return GymnasiumEnv.singles_action_to_order(a, battle)
+        elif isinstance(battle, DoubleBattle):
+            assert isinstance(action, (List, np.ndarray))
+            [a1, a2] = action
+            return GymnasiumEnv.doubles_action_to_order(a1, a2, battle)
         else:
             raise TypeError()
 
