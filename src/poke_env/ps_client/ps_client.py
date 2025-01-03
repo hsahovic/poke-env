@@ -149,10 +149,11 @@ class PSClient:
                 else:
                     protocol = split_messages
                 # Battle update
-                split_messages = protocol or [[f">{battle_tag}"]]
-                if request is not None:
-                    split_messages += [request[1]]
-                await self._handle_battle_message(split_messages)  # type: ignore
+                if protocol is not None or request is not None:
+                    split_messages = protocol or [[f">{battle_tag}"]]
+                    if request is not None:
+                        split_messages += [request[1]]
+                    await self._handle_battle_message(split_messages)  # type: ignore
             elif split_messages[0][1] == "challstr":
                 # Confirms connection to the server: we can login
                 await self.log_in(split_messages[0])
