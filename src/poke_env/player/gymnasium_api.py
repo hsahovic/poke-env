@@ -6,14 +6,16 @@ from __future__ import annotations
 
 import asyncio
 import copy
-import random
 import time
-from abc import ABC, abstractmethod
-from logging import Logger
-from typing import Any, Awaitable, Callable, Dict, Generic, List, Optional, Tuple, Union
+from abc import abstractmethod
+from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple, Union
 
-from gymnasium.core import ActType, Env, ObsType
 from gymnasium.spaces import Discrete, Space
+from pettingzoo.utils.env import (  # type: ignore[import-untyped]
+    ActionType,
+    ObsType,
+    ParallelEnv,
+)
 
 from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
 from poke_env.environment.abstract_battle import AbstractBattle
@@ -34,9 +36,14 @@ class _AsyncQueue:
     async def async_get(self):
         return await self.queue.get()
 
-    def get(self):
-        res = asyncio.run_coroutine_threadsafe(self.queue.get(), POKE_LOOP)
-        return res.result()
+    def get(self, timeout: Optional[float] = None, default: Any = None):
+        try:
+            res = asyncio.run_coroutine_threadsafe(
+                asyncio.wait_for(self.async_get(), timeout), POKE_LOOP
+            )
+            return res.result()
+        except asyncio.TimeoutError:
+            return default
 
     async def async_put(self, item: Any):
         await self.queue.put(item)
@@ -56,13 +63,13 @@ class _AsyncQueue:
         await self.queue.join()
 
 
-class _AsyncPlayer(Generic[ObsType, ActType], Player):
+class _AsyncPlayer(Player):
     actions: _AsyncQueue
     observations: _AsyncQueue
 
     def __init__(
         self,
-        user_funcs: GymnasiumEnv[ObsType, ActType],
+        user_funcs: GymnasiumEnv,
         username: str,
         **kwargs: Any,
     ):
@@ -72,6 +79,7 @@ class _AsyncPlayer(Generic[ObsType, ActType], Player):
         self.observations = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
         self.actions = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
         self.current_battle: Optional[AbstractBattle] = None
+        self.waiting = False
         self._user_funcs = user_funcs
 
     def choose_move(self, battle: AbstractBattle) -> Awaitable[BattleOrder]:
@@ -84,7 +92,9 @@ class _AsyncPlayer(Generic[ObsType, ActType], Player):
             raise RuntimeError("Using different battles for queues")
         battle_to_send = self._user_funcs.embed_battle(battle)
         await self.observations.async_put(battle_to_send)
+        self.waiting = True
         action = await self.actions.async_get()
+        self.waiting = False
         if action == -1:
             return ForfeitBattleOrder()
         return self._user_funcs.action_to_move(action, battle)
@@ -94,10 +104,7 @@ class _AsyncPlayer(Generic[ObsType, ActType], Player):
         asyncio.run_coroutine_threadsafe(self.observations.async_put(to_put), POKE_LOOP)
 
 
-class GymnasiumEnv(
-    Env[ObsType, ActType],
-    ABC,
-):
+class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
     """
     Base class implementing the Gymnasium API on the main thread.
     """
@@ -109,7 +116,8 @@ class GymnasiumEnv(
 
     def __init__(
         self,
-        account_configuration: Optional[AccountConfiguration] = None,
+        account_configuration1: Optional[AccountConfiguration] = None,
+        account_configuration2: Optional[AccountConfiguration] = None,
         *,
         avatar: Optional[int] = None,
         battle_format: str = "gen8randombattle",
@@ -176,10 +184,10 @@ class GymnasiumEnv(
             leave it inactive.
         :type start_challenging: bool
         """
-        self.agent = _AsyncPlayer(
+        self.agent1 = _AsyncPlayer(
             self,
             username=self.__class__.__name__,  # type: ignore
-            account_configuration=account_configuration,
+            account_configuration=account_configuration1,
             avatar=avatar,
             battle_format=battle_format,
             log_level=log_level,
@@ -194,12 +202,39 @@ class GymnasiumEnv(
             ping_timeout=ping_timeout,
             team=team,
         )
-        self._actions = self.agent.actions
-        self._observations = self.agent.observations
-        self.action_space = Discrete(self.action_space_size())  # type: ignore
-        self.observation_space = self.describe_embedding()
-        self.current_battle: Optional[AbstractBattle] = None
-        self.last_battle: Optional[AbstractBattle] = None
+        self.agent2 = _AsyncPlayer(
+            self,
+            username=self.__class__.__name__,  # type: ignore
+            account_configuration=account_configuration2,
+            avatar=avatar,
+            battle_format=battle_format,
+            log_level=log_level,
+            max_concurrent_battles=1,
+            save_replays=save_replays,
+            server_configuration=server_configuration,
+            accept_open_team_sheet=accept_open_team_sheet,
+            start_timer_on_battle_start=start_timer_on_battle_start,
+            start_listening=start_listening,
+            ping_interval=ping_interval,
+            ping_timeout=ping_timeout,
+            team=team,
+        )
+        self.agents: List[str] = []
+        self.possible_agents = [self.agent1.username, self.agent2.username]
+        self.observation_spaces = {
+            name: self.describe_embedding() for name in self.possible_agents
+        }
+        self.action_spaces = {
+            name: Discrete(self.action_space_size()) for name in self.possible_agents
+        }
+        self._actions1 = self.agent1.actions
+        self._observations1 = self.agent1.observations
+        self._actions2 = self.agent2.actions
+        self._observations2 = self.agent2.observations
+        self.current_battle1: Optional[AbstractBattle] = None
+        self.current_battle2: Optional[AbstractBattle] = None
+        self.last_battle1: Optional[AbstractBattle] = None
+        self.last_battle2: Optional[AbstractBattle] = None
         self._keep_challenging: bool = False
         self._challenge_task = None
         self._seed_initialized: bool = False
@@ -277,62 +312,45 @@ class GymnasiumEnv(
         """
         pass
 
-    @abstractmethod
-    def get_opponent(
-        self,
-    ) -> Union[Player, str, List[Player], List[str]]:
-        """
-        Returns the opponent (or list of opponents) that will be challenged
-        on the next iteration of the challenge loop. If a list is returned,
-        a random element will be chosen at random during the challenge loop.
-
-        :return: The opponent (or list of opponents).
-        :rtype: Player or str or list(Player) or list(str)
-        """
-        pass
-
-    def _get_opponent(self) -> Union[Player, str]:
-        opponent = self.get_opponent()
-        random_opponent = (
-            random.choice(opponent) if isinstance(opponent, list) else opponent
-        )
-        return random_opponent  # type: ignore
-
     def reset(
         self,
-        *,
         seed: Optional[int] = None,
         options: Optional[Dict[str, Any]] = None,
-    ) -> Tuple[ObsType, Dict[str, Any]]:
-        if seed is not None:
-            super().reset(seed=seed)  # type: ignore
-            self._seed_initialized = True
-        elif not self._seed_initialized:
-            super().reset(seed=int(time.time()))  # type: ignore
-            self._seed_initialized = True
-        if not self.agent.current_battle:
+    ) -> Tuple[Dict[str, ObsType], Dict[str, Dict[str, Any]]]:
+        self.agents = [self.agent1.username, self.agent2.username]
+        # TODO: use the seed
+        if not self.agent1.current_battle or not self.agent2.current_battle:
             count = self._INIT_RETRIES
-            while not self.agent.current_battle:
+            while not self.agent1.current_battle or not self.agent2.current_battle:
                 if count == 0:
                     raise RuntimeError("Agent is not challenging")
                 count -= 1
                 time.sleep(self._TIME_BETWEEN_RETRIES)
-        if self.current_battle and not self.current_battle.finished:
-            if self.current_battle == self.agent.current_battle:
-                self._actions.put(-1)
-                self._observations.get()
+        if self.current_battle1 and not self.current_battle1.finished:
+            if self.current_battle1 == self.agent1.current_battle:
+                self._actions1.put(-1)
+                self._actions2.put(0)
+                self._observations1.get()
+                self._observations2.get()
             else:
                 raise RuntimeError(
                     "Environment and agent aren't synchronized. Try to restart"
                 )
-        while self.current_battle == self.agent.current_battle:
+        while self.current_battle1 == self.agent1.current_battle:
             time.sleep(0.01)
-        self.current_battle = self.agent.current_battle
-        self.current_battle.logger = None
-        self.last_battle = self.current_battle
-        return self._observations.get(), self.get_additional_info()
+        observations = {
+            self.agents[0]: self._observations1.get(),
+            self.agents[1]: self._observations2.get(),
+        }
+        self.current_battle1 = self.agent1.current_battle
+        self.current_battle1.logger = None
+        self.current_battle2 = self.agent2.current_battle
+        self.current_battle2.logger = None
+        self.last_battle1 = self.current_battle1
+        self.last_battle2 = self.current_battle2
+        return observations, self.get_additional_info()
 
-    def get_additional_info(self) -> Dict[str, Any]:
+    def get_additional_info(self) -> Dict[str, Dict[str, Any]]:
         """
         Returns additional info for the reset method.
         Override only if you really need it.
@@ -340,85 +358,114 @@ class GymnasiumEnv(
         :return: Additional information as a Dict
         :rtype: Dict
         """
-        return {}
+        return {self.possible_agents[0]: {}, self.possible_agents[1]: {}}
 
-    def step(
-        self, action: ActType
-    ) -> Tuple[ObsType, float, bool, bool, Dict[str, Any]]:
-        """
-        Execute the specified action in the environment.
-
-        :param ActType action: The action to be executed.
-        :return: A tuple containing the new observation, reward, termination flag, truncation flag, and info dictionary.
-        :rtype: Tuple[ObsType, float, bool, bool, Dict[str, Any]]
-        """
-        if not self.current_battle:
-            obs, info = self.reset()
-            return obs, 0.0, False, False, info
-        if self.current_battle.finished:
+    def step(self, actions: Dict[str, ActionType]) -> Tuple[
+        Dict[str, ObsType],
+        Dict[str, float],
+        Dict[str, bool],
+        Dict[str, bool],
+        Dict[str, Dict[str, Any]],
+    ]:
+        assert self.current_battle1 is not None
+        assert self.current_battle2 is not None
+        if self.current_battle1.finished:
             raise RuntimeError("Battle is already finished, call reset")
-        battle = copy.copy(self.current_battle)
-        battle.logger = None
-        self.last_battle = battle
-        self._actions.put(action)
-        observation = self._observations.get()
-        reward = self.calc_reward(self.last_battle, self.current_battle)
+        battle1 = copy.copy(self.current_battle1)
+        battle1.logger = None
+        battle2 = copy.copy(self.current_battle2)
+        battle2.logger = None
+        self.last_battle1 = battle1
+        self.last_battle2 = battle2
+        if self.agent1.waiting:
+            self._actions1.put(actions[self.agents[0]])
+        if self.agent2.waiting:
+            self._actions2.put(actions[self.agents[1]])
+        observations = {
+            self.agents[0]: self._observations1.get(
+                timeout=0.1, default=self.embed_battle(self.last_battle1)
+            ),
+            self.agents[1]: self._observations2.get(
+                timeout=0.1, default=self.embed_battle(self.last_battle2)
+            ),
+        }
+        assert self.current_battle1 == self.agent1.current_battle
+        reward = {
+            self.agents[0]: self.calc_reward(self.last_battle1, self.current_battle1),
+            self.agents[1]: self.calc_reward(self.last_battle2, self.current_battle2),
+        }
+        term1, trunc1 = self.calc_term_trunc(self.current_battle1)
+        term2, trunc2 = self.calc_term_trunc(self.current_battle2)
+        terminated = {self.agents[0]: term1, self.agents[1]: term2}
+        truncated = {self.agents[0]: trunc1, self.agents[1]: trunc2}
+        if self.current_battle1.finished:
+            self.agents = []
+        return observations, reward, terminated, truncated, self.get_additional_info()
+
+    @staticmethod
+    def calc_term_trunc(battle: AbstractBattle):
         terminated = False
         truncated = False
-        if self.current_battle.finished:
-            size = self.current_battle.team_size
+        if battle.finished:
+            size = battle.team_size
             remaining_mons = size - len(
-                [mon for mon in self.current_battle.team.values() if mon.fainted]
+                [mon for mon in battle.team.values() if mon.fainted]
             )
             remaining_opponent_mons = size - len(
-                [
-                    mon
-                    for mon in self.current_battle.opponent_team.values()
-                    if mon.fainted
-                ]
+                [mon for mon in battle.opponent_team.values() if mon.fainted]
             )
             if (remaining_mons == 0) != (remaining_opponent_mons == 0):
                 terminated = True
             else:
                 truncated = True
-        return observation, reward, terminated, truncated, self.get_additional_info()
+        return terminated, truncated
 
     def render(self, mode: str = "human"):
-        if self.current_battle is not None:
+        if self.current_battle1 is not None:
             print(
                 "  Turn %4d. | [%s][%3d/%3dhp] %10.10s - %10.10s [%3d%%hp][%s]"
                 % (
-                    self.current_battle.turn,
+                    self.current_battle1.turn,
                     "".join(
                         [
                             "⦻" if mon.fainted else "●"
-                            for mon in self.current_battle.team.values()
+                            for mon in self.current_battle1.team.values()
                         ]
                     ),
-                    self.current_battle.active_pokemon.current_hp or 0,
-                    self.current_battle.active_pokemon.max_hp or 0,
-                    self.current_battle.active_pokemon.species,
-                    self.current_battle.opponent_active_pokemon.species,
-                    self.current_battle.opponent_active_pokemon.current_hp or 0,
+                    self.current_battle1.active_pokemon.current_hp or 0,
+                    self.current_battle1.active_pokemon.max_hp or 0,
+                    self.current_battle1.active_pokemon.species,
+                    self.current_battle1.opponent_active_pokemon.species,
+                    self.current_battle1.opponent_active_pokemon.current_hp or 0,
                     "".join(
                         [
                             "⦻" if mon.fainted else "●"
-                            for mon in self.current_battle.opponent_team.values()
+                            for mon in self.current_battle1.opponent_team.values()
                         ]
                     ),
                 ),
-                end="\n" if self.current_battle.finished else "\r",
+                end="\n" if self.current_battle1.finished else "\r",
             )
 
     def close(self, purge: bool = True):
-        if self.current_battle is None or self.current_battle.finished:
+        if self.current_battle1 is None or self.current_battle1.finished:
             time.sleep(1)
-            if self.current_battle != self.agent.current_battle:
-                self.current_battle = self.agent.current_battle
+            if self.current_battle1 != self.agent1.current_battle:
+                self.current_battle1 = self.agent1.current_battle
+        if self.current_battle2 is None or self.current_battle2.finished:
+            time.sleep(1)
+            if self.current_battle2 != self.agent2.current_battle:
+                self.current_battle2 = self.agent2.current_battle
         closing_task = asyncio.run_coroutine_threadsafe(
             self._stop_challenge_loop(purge=purge), POKE_LOOP
         )
         closing_task.result()
+
+    def observation_space(self, agent: str) -> Space:
+        return self.observation_spaces[agent]
+
+    def action_space(self, agent: str):
+        return self.action_spaces[agent]
 
     def background_send_challenge(self, username: str):
         """
@@ -435,7 +482,7 @@ class GymnasiumEnv(
                 "'await agent.stop_challenge_loop()' to clear the task."
             )
         self._challenge_task = asyncio.run_coroutine_threadsafe(
-            self.agent.send_challenges(username, 1), POKE_LOOP
+            self.agent1.send_challenges(username, 1), POKE_LOOP
         )
 
     def background_accept_challenge(self, username: str):
@@ -453,7 +500,7 @@ class GymnasiumEnv(
                 "'await agent.stop_challenge_loop()' to clear the task."
             )
         self._challenge_task = asyncio.run_coroutine_threadsafe(
-            self.agent.accept_challenges(username, 1, self.agent.next_team), POKE_LOOP
+            self.agent1.accept_challenges(username, 1, self.agent1.next_team), POKE_LOOP
         )
 
     async def _challenge_loop(
@@ -463,22 +510,14 @@ class GymnasiumEnv(
     ):
         if not n_challenges:
             while self._keep_challenging:
-                opponent = self._get_opponent()
-                if isinstance(opponent, Player):
-                    await self.agent.battle_against(opponent, 1)
-                else:
-                    await self.agent.send_challenges(opponent, 1)
-                if callback and self.current_battle is not None:
-                    callback(copy.deepcopy(self.current_battle))
+                await self.agent1.battle_against(self.agent2, n_battles=1)
+                if callback and self.current_battle1 is not None:
+                    callback(copy.deepcopy(self.current_battle1))
         elif n_challenges > 0:
             for _ in range(n_challenges):
-                opponent = self._get_opponent()
-                if isinstance(opponent, Player):
-                    await self.agent.battle_against(opponent, 1)
-                else:
-                    await self.agent.send_challenges(opponent, 1)
-                if callback and self.current_battle is not None:
-                    callback(copy.deepcopy(self.current_battle))
+                await self.agent1.battle_against(self.agent2, n_battles=1)
+                if callback and self.current_battle1 is not None:
+                    callback(copy.deepcopy(self.current_battle1))
         else:
             raise ValueError(f"Number of challenges must be > 0. Got {n_challenges}")
 
@@ -521,14 +560,14 @@ class GymnasiumEnv(
                     f"Number of challenges must be > 0. Got {n_challenges}"
                 )
             for _ in range(n_challenges):
-                await self.agent.ladder(1)
-                if callback and self.current_battle is not None:
-                    callback(self.current_battle)
+                await self.agent1.ladder(1)
+                if callback and self.current_battle1 is not None:
+                    callback(self.current_battle1)
         else:
             while self._keep_challenging:
-                await self.agent.ladder(1)
-                if callback and self.current_battle is not None:
-                    callback(self.current_battle)
+                await self.agent1.ladder(1)
+                if callback and self.current_battle1 is not None:
+                    callback(self.current_battle1)
 
     def start_laddering(
         self,
@@ -564,18 +603,21 @@ class GymnasiumEnv(
         self._keep_challenging = False
 
         if force:
-            if self.current_battle and not self.current_battle.finished:
-                if not self._actions.empty():
+            if self.current_battle1 and not self.current_battle1.finished:
+                if not (self._actions1.empty() and self._actions2.empty()):
                     await asyncio.sleep(2)
-                    if not self._actions.empty():
+                    if not (self._actions1.empty() and self._actions2.empty()):
                         raise RuntimeError(
                             "The agent is still sending actions. "
                             "Use this method only when training or "
                             "evaluation are over."
                         )
-                if not self._observations.empty():
-                    await self._observations.async_get()
-                await self._actions.async_put(-1)
+                if not self._observations1.empty():
+                    await self._observations1.async_get()
+                if not self._observations2.empty():
+                    await self._observations2.async_get()
+                await self._actions1.async_put(-1)
+                await self._actions2.async_put(0)
 
         if wait and self._challenge_task:
             while not self._challenge_task.done():
@@ -583,19 +625,26 @@ class GymnasiumEnv(
             self._challenge_task.result()
 
         self._challenge_task = None
-        self.current_battle = None
-        self.agent.current_battle = None
-        while not self._actions.empty():
-            await self._actions.async_get()
-        while not self._observations.empty():
-            await self._observations.async_get()
+        self.current_battle1 = None
+        self.current_battle2 = None
+        self.agent1.current_battle = None
+        self.agent2.current_battle = None
+        while not self._actions1.empty():
+            await self._actions1.async_get()
+        while not self._actions2.empty():
+            await self._actions2.async_get()
+        while not self._observations1.empty():
+            await self._observations1.async_get()
+        while not self._observations2.empty():
+            await self._observations2.async_get()
 
         if purge:
-            self.agent.reset_battles()
+            self.reset_battles()
 
     def reset_battles(self):
         """Resets the player's inner battle tracker."""
-        self.agent.reset_battles()
+        self.agent1.reset_battles()
+        self.agent2.reset_battles()
 
     def done(self, timeout: Optional[int] = None) -> bool:
         """
@@ -618,80 +667,3 @@ class GymnasiumEnv(
             return True
         time.sleep(timeout)
         return self._challenge_task.done()
-
-    # Expose properties of Player class
-
-    @property
-    def battles(self) -> Dict[str, AbstractBattle]:
-        return self.agent.battles
-
-    @property
-    def format(self) -> str:
-        return self.agent.format
-
-    @property
-    def format_is_doubles(self) -> bool:
-        return self.agent.format_is_doubles
-
-    @property
-    def n_finished_battles(self) -> int:
-        return self.agent.n_finished_battles
-
-    @property
-    def n_lost_battles(self) -> int:
-        return self.agent.n_lost_battles
-
-    @property
-    def n_tied_battles(self) -> int:
-        return self.agent.n_tied_battles
-
-    @property
-    def n_won_battles(self) -> int:
-        return self.agent.n_won_battles
-
-    @property
-    def win_rate(self) -> float:
-        return self.agent.win_rate
-
-    # Expose properties of Player Network Interface Class
-
-    @property
-    def logged_in(self) -> asyncio.Event:
-        """Event object associated with user login.
-
-        :return: The logged-in event
-        :rtype: Event
-        """
-        return self.agent.ps_client.logged_in
-
-    @property
-    def logger(self) -> Logger:
-        """Logger associated with the player.
-
-        :return: The logger.
-        :rtype: Logger
-        """
-        return self.agent.logger
-
-    @property
-    def username(self) -> str:
-        """The player's username.
-
-        :return: The player's username.
-        :rtype: str
-        """
-        return self.agent.username
-
-    @property
-    def websocket_url(self) -> str:
-        """The websocket url.
-
-        It is derived from the server url.
-
-        :return: The websocket url.
-        :rtype: str
-        """
-        return self.agent.ps_client.websocket_url
-
-    def __getattr__(self, item: str):
-        return getattr(self.agent, item)
