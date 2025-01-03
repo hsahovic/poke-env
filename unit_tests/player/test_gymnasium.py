@@ -11,8 +11,8 @@ from poke_env.environment import (
     AbstractBattle,
     Battle,
     Move,
-    PokemonType,
     Pokemon,
+    PokemonType,
     Status,
 )
 from poke_env.player import ForfeitBattleOrder, GymnasiumEnv
