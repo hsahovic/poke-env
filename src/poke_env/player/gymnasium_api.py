@@ -456,6 +456,12 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
                 terastallize=battle.can_tera is not None and 22 <= action < 26,
             )
             assert order.order in battle.available_moves, "invalid pick"
+            assert not order.mega or battle.can_mega_evolve, "invalid pick"
+            assert not order.z_move or (
+                battle.can_z_move and order.order in active_mon.available_z_moves
+            ), "invalid pick"
+            assert not order.dynamax or battle.can_dynamax, "invalid pick"
+            assert not order.terastallize or battle.can_tera is not None, "invalid pick"
         return order
 
     @staticmethod
