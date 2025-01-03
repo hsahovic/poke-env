@@ -379,6 +379,7 @@ class Pokemon:
                 self.end_effect("yawn")
         else:
             hp = hp_status
+            self._status = None
 
         current_hp, max_hp = "".join([c for c in hp if c in "0123456789/"]).split("/")
         self._current_hp = int(current_hp)

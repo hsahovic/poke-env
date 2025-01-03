@@ -80,7 +80,7 @@ class DoubleBattleOrder(BattleOrder):
         elif self.second_order:
             return "/choose pass, " + self.second_order.message.replace("/choose ", "")
         else:
-            return "/choose pass, pass"
+            return self.DEFAULT_ORDER
 
     @staticmethod
     def join_orders(first_orders: List[BattleOrder], second_orders: List[BattleOrder]):
@@ -101,7 +101,8 @@ class DoubleBattleOrder(BattleOrder):
             return [DoubleBattleOrder(order, None) for order in first_orders]
         elif second_orders:
             return [DoubleBattleOrder(None, order) for order in second_orders]
-        return [DefaultBattleOrder()]
+        else:
+            return [DoubleBattleOrder(None, None)]
 
 
 class ForfeitBattleOrder(BattleOrder):
