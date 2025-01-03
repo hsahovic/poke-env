@@ -313,44 +313,8 @@ class Player(ABC):
                     ]
                     message_dict = {m[0]: m[1:] for m in split_pokemon_messages}
                     role = split_message[2]
-                    teampreview_team = (
-                        battle.teampreview_team
-                        if role == battle.player_role
-                        else battle.teampreview_opponent_team
-                    )
-                    team = (
-                        battle._team
-                        if role == battle.player_role
-                        else battle._opponent_team
-                    )
-                    for mon in teampreview_team:
-                        identifier = f"{role}: {mon.base_species.capitalize()}"
-                        if identifier not in team:
-                            team[identifier] = Pokemon(
-                                mon._data.gen,
-                                species=mon.species,
-                                name=mon._data.pokedex[mon.species]["name"],
-                                details=mon._last_details,
-                            )
-                        pokemon = team[identifier]
-                        pokemon_msg = [
-                            msg
-                            for name, msg in message_dict.items()
-                            if mon.base_species in to_id_str(name)
-                        ][0]
-                        pokemon._item = to_id_str(pokemon_msg[1])
-                        pokemon._ability = to_id_str(pokemon_msg[2])
-                        pokemon._moves = {
-                            to_id_str(name): Move(to_id_str(name), battle.gen)
-                            for name in pokemon_msg[3].split(",")
-                        }
-                        pokemon._gender = PokemonGender.from_request_details(
-                            pokemon_msg[6] or "N"
-                        )
-                        pokemon._level = int(pokemon_msg[9])
-                        pokemon._terastallized_type = PokemonType.from_name(
-                            pokemon_msg[10].split(",")[-1]
-                        )
+                    battle._update_team_from_open_sheets(message_dict, role)
+                # only handle battle request after all open sheets are processed
                 if (
                     battle.team
                     and battle.opponent_team
@@ -362,9 +326,8 @@ class Player(ABC):
                         ]
                     )
                 ):
-                    await self._handle_battle_request(
-                        battle, from_teampreview_request=True
-                    )
+                    will_move = True
+                    from_teampreview_request = True
             elif split_message[1] == "win" or split_message[1] == "tie":
                 if split_message[1] == "win":
                     battle.won_by(split_message[2])
