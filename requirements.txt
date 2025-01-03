@@ -4,4 +4,4 @@ orjson
 pettingzoo
 requests
 tabulate
-websockets==12.0
+websockets==14.1
