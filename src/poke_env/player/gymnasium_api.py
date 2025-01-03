@@ -439,6 +439,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
             order = Player.create_order(list(battle.team.values())[action])
             assert order.order in battle.available_switches, "invalid pick"
         else:
+            assert not battle.force_switch, "invalid pick"
             active_mon = battle.active_pokemon
             assert active_mon is not None
             mvs = (
@@ -449,10 +450,10 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
             )
             order = Player.create_order(
                 mvs[(action - 6) % 4],
-                mega=10 <= action < 14,
-                z_move=14 <= action < 18,
-                dynamax=18 <= action < 22,
-                terastallize=22 <= action < 26,
+                mega=battle.can_mega_evolve and 10 <= action < 14,
+                z_move=battle.can_z_move and 14 <= action < 18,
+                dynamax=battle.can_dynamax and 18 <= action < 22,
+                terastallize=battle.can_tera is not None and 22 <= action < 26,
             )
             assert order.order in battle.available_moves, "invalid pick"
         return order
@@ -492,6 +493,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
             order = Player.create_order(list(battle.team.values())[action - 1])
             assert order.order in battle.available_switches[pos], "invalid pick"
         else:
+            assert not battle.force_switch[pos], "invalid pick"
             active_mon = battle.active_pokemon[pos]
             assert active_mon is not None
             mvs = (
