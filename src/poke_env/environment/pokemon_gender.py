@@ -34,6 +34,4 @@ class PokemonGender(Enum):
             return PokemonGender.MALE
         elif gender == "F":
             return PokemonGender.FEMALE
-        elif gender == "N":
-            return PokemonGender.NEUTRAL
         raise ShowdownException("Unmanaged request gender: '%s'", gender)
