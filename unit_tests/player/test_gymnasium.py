@@ -259,6 +259,8 @@ def test_action_to_move():
         active_pokemon._moves = {move.id: move}
         active_pokemon._active = True
         battle._team = {"charizard": active_pokemon}
+        battle._available_switches = [active_pokemon]
+        battle._available_moves = [move]
         assert p.action_to_order(-1, battle).message == "/forfeit"
         assert p.action_to_order(0, battle).message == "/choose switch charizard"
         assert p.action_to_order(6, battle).message == "/choose move flamethrower"
