@@ -510,12 +510,12 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
     ):
         if not n_challenges:
             while self._keep_challenging:
-                await self.agent1.battle_against(self.agent2, 1)
+                await self.agent1.battle_against(self.agent2, n_battles=1)
                 if callback and self.current_battle1 is not None:
                     callback(copy.deepcopy(self.current_battle1))
         elif n_challenges > 0:
             for _ in range(n_challenges):
-                await self.agent1.battle_against(self.agent2, 1)
+                await self.agent1.battle_against(self.agent2, n_battles=1)
                 if callback and self.current_battle1 is not None:
                     callback(copy.deepcopy(self.current_battle1))
         else:
