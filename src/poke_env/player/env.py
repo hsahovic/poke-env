@@ -488,8 +488,18 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
     ) -> BattleOrder:
         if action1 == -1 or action2 == -1:
             return ForfeitBattleOrder()
-        order1 = PokeEnv._doubles_action_to_order_individual(action1, battle, 0)
-        order2 = PokeEnv._doubles_action_to_order_individual(action2, battle, 1)
+        must_respond1 = not (any(battle.force_switch) and not battle.force_switch[0])
+        must_respond2 = not (any(battle.force_switch) and not battle.force_switch[0])
+        order1 = (
+            PokeEnv._doubles_action_to_order_individual(action1, battle, 0)
+            if must_respond1
+            else None
+        )
+        order2 = (
+            PokeEnv._doubles_action_to_order_individual(action2, battle, 1)
+            if must_respond2
+            else None
+        )
         return DoubleBattleOrder.join_orders(
             [order1] if order1 is not None else [],
             [order2] if order2 is not None else [],
