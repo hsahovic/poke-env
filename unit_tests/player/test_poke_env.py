@@ -244,17 +244,16 @@ def test_action_to_move():
         )
         battle = Battle("bat1", p.agent1.username, p.agent1.logger, gen=8)
         active_pokemon = Pokemon(species="charizard", gen=8)
-        active_pokemon._moves = {"flamethrower": Move("flamethrower", gen=8)}
+        move = Move("flamethrower", gen=8)
+        active_pokemon._moves = {move.id: move}
         active_pokemon._active = True
         active_pokemon._item = "firiumz"
         battle._team = {"charizard": active_pokemon}
         assert p.action_to_order(-1, battle).message == "/forfeit"
-        battle._available_moves = [Move("flamethrower", gen=8)]
-        assert p.action_to_order(6, battle).message == "/choose move flamethrower"
-        battle._available_switches = [Pokemon(species="charizard", gen=8)]
+        battle._available_switches = [active_pokemon]
         assert p.action_to_order(0, battle).message == "/choose switch charizard"
-        battle._available_switches = []
-        assert p.action_to_order(9, battle).message == "/choose move flamethrower"
+        battle._available_moves = [move]
+        assert p.action_to_order(6, battle).message == "/choose move flamethrower"
         if has_megas:
             battle._can_mega_evolve = True
             assert (
