@@ -244,6 +244,140 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
                 self._challenge_loop(), POKE_LOOP
             )
 
+    ###################################################################################
+    # PettingZoo API
+    # https://pettingzoo.farama.org/api/parallel/#parallelenv
+
+    def step(self, actions: Dict[str, ActionType]) -> Tuple[
+        Dict[str, ObsType],
+        Dict[str, float],
+        Dict[str, bool],
+        Dict[str, bool],
+        Dict[str, Dict[str, Any]],
+    ]:
+        assert self.current_battle1 is not None
+        assert self.current_battle2 is not None
+        if self.current_battle1.finished:
+            raise RuntimeError("Battle is already finished, call reset")
+        battle1 = copy.copy(self.current_battle1)
+        battle1.logger = None
+        battle2 = copy.copy(self.current_battle2)
+        battle2.logger = None
+        self.last_battle1 = battle1
+        self.last_battle2 = battle2
+        if self.agent1.waiting:
+            self._actions1.put(actions[self.agents[0]])
+        if self.agent2.waiting:
+            self._actions2.put(actions[self.agents[1]])
+        observations = {
+            self.agents[0]: self._observations1.get(
+                timeout=0.1, default=self.embed_battle(self.last_battle1)
+            ),
+            self.agents[1]: self._observations2.get(
+                timeout=0.1, default=self.embed_battle(self.last_battle2)
+            ),
+        }
+        assert self.current_battle1 == self.agent1.current_battle
+        reward = {
+            self.agents[0]: self.calc_reward(self.last_battle1, self.current_battle1),
+            self.agents[1]: self.calc_reward(self.last_battle2, self.current_battle2),
+        }
+        term1, trunc1 = self.calc_term_trunc(self.current_battle1)
+        term2, trunc2 = self.calc_term_trunc(self.current_battle2)
+        terminated = {self.agents[0]: term1, self.agents[1]: term2}
+        truncated = {self.agents[0]: trunc1, self.agents[1]: trunc2}
+        if self.current_battle1.finished:
+            self.agents = []
+        return observations, reward, terminated, truncated, self.get_additional_info()
+
+    def reset(
+        self,
+        seed: Optional[int] = None,
+        options: Optional[Dict[str, Any]] = None,
+    ) -> Tuple[Dict[str, ObsType], Dict[str, Dict[str, Any]]]:
+        self.agents = [self.agent1.username, self.agent2.username]
+        # TODO: use the seed
+        if not self.agent1.current_battle or not self.agent2.current_battle:
+            count = self._INIT_RETRIES
+            while not self.agent1.current_battle or not self.agent2.current_battle:
+                if count == 0:
+                    raise RuntimeError("Agent is not challenging")
+                count -= 1
+                time.sleep(self._TIME_BETWEEN_RETRIES)
+        if self.current_battle1 and not self.current_battle1.finished:
+            if self.current_battle1 == self.agent1.current_battle:
+                self._actions1.put(-1)
+                self._actions2.put(0)
+                self._observations1.get()
+                self._observations2.get()
+            else:
+                raise RuntimeError(
+                    "Environment and agent aren't synchronized. Try to restart"
+                )
+        while self.current_battle1 == self.agent1.current_battle:
+            time.sleep(0.01)
+        observations = {
+            self.agents[0]: self._observations1.get(),
+            self.agents[1]: self._observations2.get(),
+        }
+        self.current_battle1 = self.agent1.current_battle
+        self.current_battle1.logger = None
+        self.current_battle2 = self.agent2.current_battle
+        self.current_battle2.logger = None
+        self.last_battle1 = self.current_battle1
+        self.last_battle2 = self.current_battle2
+        return observations, self.get_additional_info()
+
+    def render(self, mode: str = "human"):
+        if self.current_battle1 is not None:
+            print(
+                "  Turn %4d. | [%s][%3d/%3dhp] %10.10s - %10.10s [%3d%%hp][%s]"
+                % (
+                    self.current_battle1.turn,
+                    "".join(
+                        [
+                            "⦻" if mon.fainted else "●"
+                            for mon in self.current_battle1.team.values()
+                        ]
+                    ),
+                    self.current_battle1.active_pokemon.current_hp or 0,
+                    self.current_battle1.active_pokemon.max_hp or 0,
+                    self.current_battle1.active_pokemon.species,
+                    self.current_battle1.opponent_active_pokemon.species,
+                    self.current_battle1.opponent_active_pokemon.current_hp or 0,
+                    "".join(
+                        [
+                            "⦻" if mon.fainted else "●"
+                            for mon in self.current_battle1.opponent_team.values()
+                        ]
+                    ),
+                ),
+                end="\n" if self.current_battle1.finished else "\r",
+            )
+
+    def close(self, purge: bool = True):
+        if self.current_battle1 is None or self.current_battle1.finished:
+            time.sleep(1)
+            if self.current_battle1 != self.agent1.current_battle:
+                self.current_battle1 = self.agent1.current_battle
+        if self.current_battle2 is None or self.current_battle2.finished:
+            time.sleep(1)
+            if self.current_battle2 != self.agent2.current_battle:
+                self.current_battle2 = self.agent2.current_battle
+        closing_task = asyncio.run_coroutine_threadsafe(
+            self._stop_challenge_loop(purge=purge), POKE_LOOP
+        )
+        closing_task.result()
+
+    def observation_space(self, agent: str) -> Space:
+        return self.observation_spaces[agent]
+
+    def action_space(self, agent: str):
+        return self.action_spaces[agent]
+
+    ###################################################################################
+    # Abstract methods
+
     @abstractmethod
     def calc_reward(
         self, last_battle: AbstractBattle, current_battle: AbstractBattle
@@ -305,43 +439,8 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
     def describe_action(self) -> Space[ActionType]:
         pass
 
-    def reset(
-        self,
-        seed: Optional[int] = None,
-        options: Optional[Dict[str, Any]] = None,
-    ) -> Tuple[Dict[str, ObsType], Dict[str, Dict[str, Any]]]:
-        self.agents = [self.agent1.username, self.agent2.username]
-        # TODO: use the seed
-        if not self.agent1.current_battle or not self.agent2.current_battle:
-            count = self._INIT_RETRIES
-            while not self.agent1.current_battle or not self.agent2.current_battle:
-                if count == 0:
-                    raise RuntimeError("Agent is not challenging")
-                count -= 1
-                time.sleep(self._TIME_BETWEEN_RETRIES)
-        if self.current_battle1 and not self.current_battle1.finished:
-            if self.current_battle1 == self.agent1.current_battle:
-                self._actions1.put(-1)
-                self._actions2.put(0)
-                self._observations1.get()
-                self._observations2.get()
-            else:
-                raise RuntimeError(
-                    "Environment and agent aren't synchronized. Try to restart"
-                )
-        while self.current_battle1 == self.agent1.current_battle:
-            time.sleep(0.01)
-        observations = {
-            self.agents[0]: self._observations1.get(),
-            self.agents[1]: self._observations2.get(),
-        }
-        self.current_battle1 = self.agent1.current_battle
-        self.current_battle1.logger = None
-        self.current_battle2 = self.agent2.current_battle
-        self.current_battle2.logger = None
-        self.last_battle1 = self.current_battle1
-        self.last_battle2 = self.current_battle2
-        return observations, self.get_additional_info()
+    ###################################################################################
+    # Helper methods
 
     def get_additional_info(self) -> Dict[str, Dict[str, Any]]:
         """
@@ -352,48 +451,6 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         :rtype: Dict
         """
         return {self.possible_agents[0]: {}, self.possible_agents[1]: {}}
-
-    def step(self, actions: Dict[str, ActionType]) -> Tuple[
-        Dict[str, ObsType],
-        Dict[str, float],
-        Dict[str, bool],
-        Dict[str, bool],
-        Dict[str, Dict[str, Any]],
-    ]:
-        assert self.current_battle1 is not None
-        assert self.current_battle2 is not None
-        if self.current_battle1.finished:
-            raise RuntimeError("Battle is already finished, call reset")
-        battle1 = copy.copy(self.current_battle1)
-        battle1.logger = None
-        battle2 = copy.copy(self.current_battle2)
-        battle2.logger = None
-        self.last_battle1 = battle1
-        self.last_battle2 = battle2
-        if self.agent1.waiting:
-            self._actions1.put(actions[self.agents[0]])
-        if self.agent2.waiting:
-            self._actions2.put(actions[self.agents[1]])
-        observations = {
-            self.agents[0]: self._observations1.get(
-                timeout=0.1, default=self.embed_battle(self.last_battle1)
-            ),
-            self.agents[1]: self._observations2.get(
-                timeout=0.1, default=self.embed_battle(self.last_battle2)
-            ),
-        }
-        assert self.current_battle1 == self.agent1.current_battle
-        reward = {
-            self.agents[0]: self.calc_reward(self.last_battle1, self.current_battle1),
-            self.agents[1]: self.calc_reward(self.last_battle2, self.current_battle2),
-        }
-        term1, trunc1 = self.calc_term_trunc(self.current_battle1)
-        term2, trunc2 = self.calc_term_trunc(self.current_battle2)
-        terminated = {self.agents[0]: term1, self.agents[1]: term2}
-        truncated = {self.agents[0]: trunc1, self.agents[1]: trunc2}
-        if self.current_battle1.finished:
-            self.agents = []
-        return observations, reward, terminated, truncated, self.get_additional_info()
 
     @staticmethod
     def calc_term_trunc(battle: AbstractBattle):
@@ -412,53 +469,6 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
             else:
                 truncated = True
         return terminated, truncated
-
-    def render(self, mode: str = "human"):
-        if self.current_battle1 is not None:
-            print(
-                "  Turn %4d. | [%s][%3d/%3dhp] %10.10s - %10.10s [%3d%%hp][%s]"
-                % (
-                    self.current_battle1.turn,
-                    "".join(
-                        [
-                            "⦻" if mon.fainted else "●"
-                            for mon in self.current_battle1.team.values()
-                        ]
-                    ),
-                    self.current_battle1.active_pokemon.current_hp or 0,
-                    self.current_battle1.active_pokemon.max_hp or 0,
-                    self.current_battle1.active_pokemon.species,
-                    self.current_battle1.opponent_active_pokemon.species,
-                    self.current_battle1.opponent_active_pokemon.current_hp or 0,
-                    "".join(
-                        [
-                            "⦻" if mon.fainted else "●"
-                            for mon in self.current_battle1.opponent_team.values()
-                        ]
-                    ),
-                ),
-                end="\n" if self.current_battle1.finished else "\r",
-            )
-
-    def close(self, purge: bool = True):
-        if self.current_battle1 is None or self.current_battle1.finished:
-            time.sleep(1)
-            if self.current_battle1 != self.agent1.current_battle:
-                self.current_battle1 = self.agent1.current_battle
-        if self.current_battle2 is None or self.current_battle2.finished:
-            time.sleep(1)
-            if self.current_battle2 != self.agent2.current_battle:
-                self.current_battle2 = self.agent2.current_battle
-        closing_task = asyncio.run_coroutine_threadsafe(
-            self._stop_challenge_loop(purge=purge), POKE_LOOP
-        )
-        closing_task.result()
-
-    def observation_space(self, agent: str) -> Space:
-        return self.observation_spaces[agent]
-
-    def action_space(self, agent: str):
-        return self.action_spaces[agent]
 
     def background_send_challenge(self, username: str):
         """
