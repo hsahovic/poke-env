@@ -12,8 +12,8 @@ from poke_env.player.battle_order import (
     DoubleBattleOrder,
     ForfeitBattleOrder,
 )
-from poke_env.player.poke_env import PokeEnv
 from poke_env.player.player import Player
+from poke_env.player.poke_env import PokeEnv
 from poke_env.player.random_player import RandomPlayer
 from poke_env.player.utils import (
     background_cross_evaluate,
