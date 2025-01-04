@@ -265,7 +265,6 @@ def test_action_to_move():
         assert p.action_to_order(0, battle).message == "/choose switch charizard"
         battle._available_switches = []
         assert p.action_to_order(9, battle).message == "/choose move flamethrower"
-        battle._available_switches = [active_pokemon]
         if has_megas:
             battle._can_mega_evolve = True
             assert (
