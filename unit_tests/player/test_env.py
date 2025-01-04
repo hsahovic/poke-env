@@ -16,7 +16,7 @@ from poke_env.environment import (
     Status,
 )
 from poke_env.player import ForfeitBattleOrder, PokeEnv
-from poke_env.player.poke_env import _AsyncQueue, _EnvPlayer
+from poke_env.player.env import _AsyncQueue, _EnvPlayer
 from poke_env.ps_client import AccountConfiguration, ServerConfiguration
 
 account_configuration1 = AccountConfiguration("username1", "password1")
