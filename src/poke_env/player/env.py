@@ -11,6 +11,7 @@ from typing import Any, Awaitable, Dict, Generic, List, Optional, Tuple, TypeVar
 from weakref import WeakKeyDictionary
 
 import numpy as np
+import numpy.typing as npt
 from gymnasium.spaces import Discrete, MultiDiscrete, Space
 from pettingzoo.utils.env import (  # type: ignore[import-untyped]
     ActionType,
@@ -556,10 +557,10 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             raise TypeError()
 
     @staticmethod
-    def _singles_order_to_action(order: BattleOrder, battle: Battle) -> int:
+    def _singles_order_to_action(order: BattleOrder, battle: Battle) -> np.int64:
         assert order.order is not None
         if isinstance(order, ForfeitBattleOrder):
-            return -1
+            action = -1
         elif isinstance(order.order, Pokemon):
             action = [p.base_species for p in battle.team.values()].index(
                 order.order.base_species
@@ -593,29 +594,29 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             ), "invalid pick"
             assert not order.dynamax or battle.can_dynamax, "invalid pick"
             assert not order.terastallize or battle.can_tera is not None, "invalid pick"
-        return action
+        return np.int64(action)
 
     @staticmethod
     def _doubles_order_to_action(
         order: DoubleBattleOrder, battle: DoubleBattle
-    ) -> List[int]:
+    ) -> npt.NDArray[np.int64]:
         action1 = PokeEnv._doubles_order_to_action_individual(
             order.first_order, battle, 0
         )
         action2 = PokeEnv._doubles_order_to_action_individual(
             order.second_order, battle, 1
         )
-        return [action1, action2]
+        return np.array([action1, action2])
 
     @staticmethod
     def _doubles_order_to_action_individual(
         order: Optional[BattleOrder], battle: DoubleBattle, pos: int
-    ) -> int:
+    ) -> np.int64:
         if order is None:
-            return 0
+            return np.int64(0)
         assert order.order is not None
         if isinstance(order, ForfeitBattleOrder):
-            return -1
+            action = -1
         elif isinstance(order.order, Pokemon):
             action = [p.base_species for p in battle.team.values()].index(
                 order.order.base_species
@@ -644,7 +645,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             assert order.move_target in battle.get_possible_showdown_targets(
                 order.order, active_mon
             ), "invalid pick"
-        return action
+        return np.int64(action)
 
     ###################################################################################
     # Helper methods
