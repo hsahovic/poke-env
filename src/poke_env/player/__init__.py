@@ -4,7 +4,7 @@
 from pettingzoo.utils.env import ActionType, ObsType  # type: ignore[import-untyped]
 
 from poke_env.concurrency import POKE_LOOP
-from poke_env.player import player, poke_env, random_player, utils
+from poke_env.player import env, player, random_player, utils
 from poke_env.player.baselines import MaxBasePowerPlayer, SimpleHeuristicsPlayer
 from poke_env.player.battle_order import (
     BattleOrder,
@@ -13,7 +13,7 @@ from poke_env.player.battle_order import (
     ForfeitBattleOrder,
 )
 from poke_env.player.player import Player
-from poke_env.player.poke_env import PokeEnv
+from poke_env.player.env import PokeEnv
 from poke_env.player.random_player import RandomPlayer
 from poke_env.player.utils import (
     background_cross_evaluate,
@@ -24,7 +24,7 @@ from poke_env.player.utils import (
 from poke_env.ps_client import PSClient
 
 __all__ = [
-    "poke_env",
+    "env",
     "player",
     "random_player",
     "utils",
