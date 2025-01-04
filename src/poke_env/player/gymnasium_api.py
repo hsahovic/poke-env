@@ -19,18 +19,16 @@ from pettingzoo.utils.env import (  # type: ignore[import-untyped]
 )
 
 from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
-from poke_env.environment.abstract_battle import AbstractBattle
-from poke_env.environment.battle import Battle
-from poke_env.environment.double_battle import DoubleBattle
-from poke_env.player.battle_order import (
+from poke_env.environment import AbstractBattle, Battle, DoubleBattle, Move
+from poke_env.player import (
     BattleOrder,
     DefaultBattleOrder,
     DoubleBattleOrder,
     ForfeitBattleOrder,
+    Player,
 )
-from poke_env.player.player import Player
-from poke_env.ps_client import AccountConfiguration
-from poke_env.ps_client.server_configuration import (
+from poke_env.ps_client import (
+    AccountConfiguration,
     LocalhostServerConfiguration,
     ServerConfiguration,
 )
@@ -523,6 +521,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             assert (
                 not order.terastallize or battle.can_tera[pos] is not False
             ), "invalid pick"
+            assert isinstance(order.order, Move)
             assert order.move_target in battle.get_possible_showdown_targets(
                 order.order, active_mon
             ), "invalid pick"
