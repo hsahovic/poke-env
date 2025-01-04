@@ -119,8 +119,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
     _SWITCH_CHALLENGE_TASK_RETRIES = 30
     _TIME_BETWEEN_SWITCH_RETRIES = 1
 
-    _DEFAULT_BATTLE_FORMAT = "gen8randombattle"
-
     def __init__(
         self,
         account_configuration1: Optional[AccountConfiguration] = None,
@@ -195,7 +193,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             username=self.__class__.__name__,  # type: ignore
             account_configuration=account_configuration1,
             avatar=avatar,
-            battle_format=battle_format or self._DEFAULT_BATTLE_FORMAT,
+            battle_format=battle_format,
             log_level=log_level,
             max_concurrent_battles=1,
             save_replays=save_replays,
@@ -212,7 +210,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             username=self.__class__.__name__,  # type: ignore
             account_configuration=account_configuration2,
             avatar=avatar,
-            battle_format=battle_format or self._DEFAULT_BATTLE_FORMAT,
+            battle_format=battle_format,
             log_level=log_level,
             max_concurrent_battles=1,
             save_replays=save_replays,
@@ -226,26 +224,16 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         )
         self.agents: List[str] = []
         self.possible_agents = [self.agent1.username, self.agent2.username]
-        if battle_format.startswith("gen6"):
-            self._ACTION_SPACE = list(range(2 * 4 + 6))
-        elif battle_format.startswith("gen7"):
-            self._ACTION_SPACE = list(range(3 * 4 + 6))
-        elif battle_format.startswith("gen8"):
-            self._ACTION_SPACE = list(range(4 * 4 + 6))
-        elif battle_format.startswith("gen9"):
-            self._ACTION_SPACE = list(range(5 * 4 + 6))
-        else:
-            self._ACTION_SPACE = list(range(4 + 6))
         self.action_spaces: Dict[str, Space]
+        act_size = self.get_action_space_size(battle_format)
         if self.agent1.format_is_doubles:
             self.action_spaces = {
-                agent: MultiDiscrete([len(self._ACTION_SPACE), len(self._ACTION_SPACE)])
+                agent: MultiDiscrete([act_size, act_size])
                 for agent in self.possible_agents
             }
         else:
             self.action_spaces = {
-                agent: Discrete(len(self._ACTION_SPACE))
-                for agent in self.possible_agents
+                agent: Discrete(act_size) for agent in self.possible_agents
             }
         self._reward_buffer: WeakKeyDictionary[AbstractBattle, float] = (
             WeakKeyDictionary()
@@ -655,6 +643,31 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         :rtype: Dict
         """
         return {self.possible_agents[0]: {}, self.possible_agents[1]: {}}
+
+    @staticmethod
+    def get_action_space_size(battle_format: str):
+        format_lowercase = battle_format.lower()
+        num_switches = 6
+        num_moves = 4
+        if (
+            "vgc" in format_lowercase
+            or "double" in format_lowercase
+            or "metronome" in format_lowercase
+        ):
+            num_targets = 5
+        else:
+            num_targets = 1
+        if battle_format.startswith("gen6"):
+            num_gimmicks = 1
+        elif battle_format.startswith("gen7"):
+            num_gimmicks = 2
+        elif battle_format.startswith("gen8"):
+            num_gimmicks = 3
+        elif battle_format.startswith("gen9"):
+            num_gimmicks = 4
+        else:
+            num_gimmicks = 0
+        return num_switches + num_moves * num_targets * num_gimmicks
 
     @staticmethod
     def calc_term_trunc(battle: AbstractBattle):
