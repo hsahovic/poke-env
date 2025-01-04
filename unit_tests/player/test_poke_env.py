@@ -219,7 +219,9 @@ def test_action_space():
         ]
     ):
         p = CustomEnv(
-            battle_format=f"gen{i + 4}randombattle", start_listening=False, start_challenging=False
+            battle_format=f"gen{i + 4}randombattle",
+            start_listening=False,
+            start_challenging=False,
         )
         assert p.action_space(p.possible_agents[0]) == Discrete(
             4 * sum([1, has_megas, has_z_moves, has_dynamax]) + 6
