@@ -667,7 +667,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             num_gimmicks = 4
         else:
             num_gimmicks = 0
-        return num_switches + num_moves * num_targets * num_gimmicks
+        return num_switches + num_moves * num_targets * (num_gimmicks + 1)
 
     @staticmethod
     def calc_term_trunc(battle: AbstractBattle):
