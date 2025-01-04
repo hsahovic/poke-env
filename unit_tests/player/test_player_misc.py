@@ -1,8 +1,8 @@
-from collections import namedtuple
 from unittest.mock import MagicMock, patch
 
 import pytest
 
+from poke_env import AccountConfiguration
 from poke_env.environment import AbstractBattle, Battle, DoubleBattle, Move, PokemonType
 from poke_env.player import BattleOrder, Player, RandomPlayer, cross_evaluate
 from poke_env.stats import _raw_hp, _raw_stat
@@ -13,7 +13,13 @@ class SimplePlayer(Player):
         return self.choose_random_move(battle)
 
 
-class FixedWinRatePlayer:
+class FixedWinRatePlayer(Player):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def choose_move(self, battle: AbstractBattle) -> BattleOrder:
+        return self.choose_random_move(battle)
+
     async def accept_challenges(self, *args, **kwargs):
         pass
 
@@ -26,14 +32,6 @@ class FixedWinRatePlayer:
     @property
     def win_rate(self):
         return 0.5
-
-    @property
-    def next_team(self):
-        return None
-
-    @property
-    def ps_client(self):
-        return namedtuple("PSClient", "logged_in")(logged_in=None)
 
 
 def test_player_default_order():
@@ -208,11 +206,9 @@ async def test_basic_challenge_handling():
 
 @pytest.mark.asyncio
 async def test_cross_evaluate():
-    p1 = FixedWinRatePlayer()
-    p2 = FixedWinRatePlayer()
+    p1 = FixedWinRatePlayer(account_configuration=AccountConfiguration("p1", None))
+    p2 = FixedWinRatePlayer(account_configuration=AccountConfiguration("p2", None))
 
-    p1.username = "p1"
-    p2.username = "p2"
     cross_evaluation = await cross_evaluate([p1, p2], 10)
     assert cross_evaluation == {
         "p1": {"p1": None, "p2": 0.5},

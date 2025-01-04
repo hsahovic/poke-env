@@ -1,6 +1,8 @@
 """This module defines a base class for players.
 """
 
+from __future__ import annotations
+
 import asyncio
 import random
 from abc import ABC, abstractmethod
@@ -61,6 +63,7 @@ class Player(ABC):
         server_configuration: Optional[ServerConfiguration] = None,
         start_timer_on_battle_start: bool = False,
         start_listening: bool = True,
+        open_timeout: Optional[float] = 10.0,
         ping_interval: Optional[float] = 20.0,
         ping_timeout: Optional[float] = 20.0,
         team: Optional[Union[str, Teambuilder]] = None,
@@ -93,6 +96,11 @@ class Player(ABC):
         :param start_listening: Whether to start listening to the server. Defaults to
             True.
         :type start_listening: bool
+        :param open_timeout: How long to wait for a timeout when connecting the socket
+            (important for backend websockets.
+            Increase only if timeouts occur during runtime).
+            If None connect will never time out.
+        :type open_timeout: float, optional
         :param ping_interval: How long between keepalive pings (Important for backend
             websockets). If None, disables keepalive entirely.
         :type ping_interval: float, optional
@@ -121,6 +129,7 @@ class Player(ABC):
             log_level=log_level,
             server_configuration=server_configuration,
             start_listening=start_listening,
+            open_timeout=open_timeout,
             ping_interval=ping_interval,
             ping_timeout=ping_timeout,
         )
@@ -721,27 +730,30 @@ class Player(ABC):
             perf_counter() - start_time,
         )
 
-    async def battle_against(self, opponent: "Player", n_battles: int = 1):
-        """Make the player play n_battles against opponent.
+    async def battle_against(self, *opponents: Player, n_battles: int = 1):
+        """Make the player play n_battles against the given opponents.
 
-        This function is a wrapper around send_challenges and accept challenges.
+        This function is a wrapper around send_challenges and accept_challenges.
 
-        :param opponent: The opponent to play against.
-        :type opponent: Player
+        :param opponents: The opponents to play against.
+        :type opponents: Player
         :param n_battles: The number of games to play. Defaults to 1.
         :type n_battles: int
         """
-        await handle_threaded_coroutines(self._battle_against(opponent, n_battles))
-
-    async def _battle_against(self, opponent: "Player", n_battles: int):
-        await asyncio.gather(
-            self.send_challenges(
-                to_id_str(opponent.username),
-                n_battles,
-                to_wait=opponent.ps_client.logged_in,
-            ),
-            opponent.accept_challenges(to_id_str(self.username), n_battles),
+        await handle_threaded_coroutines(
+            self._battle_against(*opponents, n_battles=n_battles)
         )
+
+    async def _battle_against(self, *opponents: Player, n_battles: int):
+        for opponent in opponents:
+            await asyncio.gather(
+                self.send_challenges(
+                    to_id_str(opponent.username),
+                    n_battles,
+                    to_wait=opponent.ps_client.logged_in,
+                ),
+                opponent.accept_challenges(to_id_str(self.username), n_battles),
+            )
 
     async def send_challenges(
         self, opponent: str, n_challenges: int, to_wait: Optional[Event] = None
