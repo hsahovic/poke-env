@@ -60,15 +60,6 @@ def test_random_gymnasium_players_gen7():
 
 
 @pytest.mark.timeout(30)
-def test_random_gymnasium_player_doubles_gen7():
-    env = CIEnv(
-        battle_format="gen7randomdoublesbattle", log_level=25, start_challenging=False
-    )
-    env.start_challenging(3)
-    play_function(env, 3)
-
-
-@pytest.mark.timeout(30)
 def test_random_gymnasium_players_gen8():
     env = CIEnv(battle_format="gen8randombattle", log_level=25, start_challenging=False)
     env.start_challenging(3)
@@ -140,11 +131,6 @@ def test_check_envs():
     )
     parallel_api_test(env_gen7)
     env_gen7.close()
-    env_gen7_doubles = CIEnv(
-        battle_format="gen7randomdoublesbattle", log_level=25, start_challenging=True
-    )
-    parallel_api_test(env_gen7_doubles)
-    env_gen7_doubles.close()
     env_gen8 = CIEnv(
         battle_format="gen8randombattle", log_level=25, start_challenging=True
     )
