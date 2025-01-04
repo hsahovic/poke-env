@@ -109,7 +109,7 @@ def test_two_successive_calls_gen9():
     play_function(env, 2)
 
 
-@pytest.mark.timeout(120)
+@pytest.mark.timeout(60)
 def test_check_envs():
     env_gen4 = CIEnv(
         battle_format="gen4randombattle", log_level=25, start_challenging=True
