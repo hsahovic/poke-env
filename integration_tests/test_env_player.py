@@ -39,8 +39,26 @@ def test_random_gymnasium_players_gen4():
 
 
 @pytest.mark.timeout(30)
+def test_random_gymnasium_player_doubles_gen4():
+    env = CIEnv(
+        battle_format="gen4randomdoublesbattle", log_level=25, start_challenging=False
+    )
+    env.start_challenging(3)
+    play_function(env, 3)
+
+
+@pytest.mark.timeout(30)
 def test_random_gymnasium_players_gen5():
     env = CIEnv(battle_format="gen5randombattle", log_level=25, start_challenging=False)
+    env.start_challenging(3)
+    play_function(env, 3)
+
+
+@pytest.mark.timeout(30)
+def test_random_gymnasium_player_doubles_gen5():
+    env = CIEnv(
+        battle_format="gen5randomdoublesbattle", log_level=25, start_challenging=False
+    )
     env.start_challenging(3)
     play_function(env, 3)
 
@@ -53,6 +71,15 @@ def test_random_gymnasium_players_gen6():
 
 
 @pytest.mark.timeout(30)
+def test_random_gymnasium_player_doubles_gen6():
+    env = CIEnv(
+        battle_format="gen6randomdoublesbattle", log_level=25, start_challenging=False
+    )
+    env.start_challenging(3)
+    play_function(env, 3)
+
+
+@pytest.mark.timeout(30)
 def test_random_gymnasium_players_gen7():
     env = CIEnv(battle_format="gen7randombattle", log_level=25, start_challenging=False)
     env.start_challenging(3)
@@ -60,8 +87,26 @@ def test_random_gymnasium_players_gen7():
 
 
 @pytest.mark.timeout(30)
+def test_random_gymnasium_player_doubles_gen7():
+    env = CIEnv(
+        battle_format="gen7randomdoublesbattle", log_level=25, start_challenging=False
+    )
+    env.start_challenging(3)
+    play_function(env, 3)
+
+
+@pytest.mark.timeout(30)
 def test_random_gymnasium_players_gen8():
     env = CIEnv(battle_format="gen8randombattle", log_level=25, start_challenging=False)
+    env.start_challenging(3)
+    play_function(env, 3)
+
+
+@pytest.mark.timeout(30)
+def test_random_gymnasium_player_doubles_gen8():
+    env = CIEnv(
+        battle_format="gen8randomdoublesbattle", log_level=25, start_challenging=False
+    )
     env.start_challenging(3)
     play_function(env, 3)
 
@@ -75,7 +120,9 @@ def test_random_gymnasium_players_gen9():
 
 @pytest.mark.timeout(30)
 def test_random_gymnasium_player_doubles_gen9():
-    env = CIEnv(battle_format="gen9randomdoublesbattle", log_level=25, start_challenging=False)
+    env = CIEnv(
+        battle_format="gen9randomdoublesbattle", log_level=25, start_challenging=False
+    )
     env.start_challenging(3)
     play_function(env, 3)
 
@@ -98,33 +145,58 @@ def test_two_successive_calls_gen9():
     play_function(env, 2)
 
 
-@pytest.mark.timeout(60)
+@pytest.mark.timeout(120)
 def test_check_envs():
     env_gen4 = CIEnv(
         battle_format="gen4randombattle", log_level=25, start_challenging=True
     )
     parallel_api_test(env_gen4)
     env_gen4.close()
+    env_gen4_doubles = CIEnv(
+        battle_format="gen4randomdoublesbattle", log_level=25, start_challenging=True
+    )
+    parallel_api_test(env_gen4_doubles)
+    env_gen4_doubles.close()
     env_gen5 = CIEnv(
         battle_format="gen5randombattle", log_level=25, start_challenging=True
     )
     parallel_api_test(env_gen5)
     env_gen5.close()
+    env_gen5_doubles = CIEnv(
+        battle_format="gen5randomdoublesbattle", log_level=25, start_challenging=True
+    )
+    parallel_api_test(env_gen5_doubles)
+    env_gen5_doubles.close()
     env_gen6 = CIEnv(
         battle_format="gen6randombattle", log_level=25, start_challenging=True
     )
     parallel_api_test(env_gen6)
     env_gen6.close()
+    env_gen6_doubles = CIEnv(
+        battle_format="gen6randomdoublesbattle", log_level=25, start_challenging=True
+    )
+    parallel_api_test(env_gen6_doubles)
+    env_gen6_doubles.close()
     env_gen7 = CIEnv(
         battle_format="gen7randombattle", log_level=25, start_challenging=True
     )
     parallel_api_test(env_gen7)
     env_gen7.close()
+    env_gen7_doubles = CIEnv(
+        battle_format="gen7randomdoublesbattle", log_level=25, start_challenging=True
+    )
+    parallel_api_test(env_gen7_doubles)
+    env_gen7_doubles.close()
     env_gen8 = CIEnv(
         battle_format="gen8randombattle", log_level=25, start_challenging=True
     )
     parallel_api_test(env_gen8)
     env_gen8.close()
+    env_gen8_doubles = CIEnv(
+        battle_format="gen8randomdoublesbattle", log_level=25, start_challenging=True
+    )
+    parallel_api_test(env_gen8_doubles)
+    env_gen8_doubles.close()
     env_gen9 = CIEnv(
         battle_format="gen9randombattle", log_level=25, start_challenging=True
     )

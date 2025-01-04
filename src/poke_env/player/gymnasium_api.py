@@ -410,6 +410,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
     ###################################################################################
     # Action -> Order methods
 
+    # TODO: add mega evolving, z-moves, and dynamaxing for doubles
     @staticmethod
     def action_to_order(action: ActionType, battle: AbstractBattle) -> BattleOrder:
         """
@@ -425,7 +426,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
 
         DOUBLES:
 
-        Currently this works for gen 9 VGC format
         The action is a list here, and every element follows the following rules:
         element = -1: forfeit
         element = 0: pass
@@ -506,7 +506,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             [order2] if order2 is not None else [],
         )[0]
 
-    # TODO: Generalize this to work for more than just gen 9 VGC
     @staticmethod
     def _doubles_action_to_order_individual(
         action: int, battle: DoubleBattle, pos: int
@@ -535,6 +534,9 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             assert order.order in battle.available_moves[pos], "invalid pick"
             assert (
                 not order.terastallize or battle.can_tera[pos] is not None
+            ), "invalid pick"
+            assert order.move_target in battle.get_possible_showdown_targets(
+                order.order, active_mon
             ), "invalid pick"
         return order
 
