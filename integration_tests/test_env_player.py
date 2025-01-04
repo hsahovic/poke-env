@@ -85,6 +85,15 @@ def test_random_gymnasium_players_gen9():
     play_function(env_player, 3)
 
 
+@pytest.mark.timeout(30)
+def test_random_gymnasium_player_vgc():
+    env = CIEnv(
+        battle_format="gen9vgc2024regh", log_level=25, start_challenging=False
+    )
+    env.start_challenging(3)
+    play_function(env, 3)
+
+
 @pytest.mark.timeout(60)
 def test_two_successive_calls_gen8():
     env_player = CIEnv(
@@ -139,3 +148,8 @@ def test_check_envs():
     )
     parallel_api_test(env_player_gen9)
     env_player_gen9.close()
+    env_vgc = CIEnv(
+        battle_format="gen9vgc2024regh", log_level=25, start_challenging=True
+    )
+    parallel_api_test(env_vgc)
+    env_vgc.close()
