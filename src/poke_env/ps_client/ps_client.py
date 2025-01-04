@@ -7,7 +7,7 @@ import logging
 from asyncio import CancelledError, Event, Lock, create_task, sleep
 from logging import Logger
 from time import perf_counter
-from typing import Any, List, Optional, Set
+from typing import Any, Dict, List, Optional, Set
 
 import requests
 import websockets.client as ws
@@ -85,6 +85,7 @@ class PSClient:
         self._sending_lock = create_in_poke_loop(Lock)
 
         self.websocket: WebSocketClientProtocol
+        self.reqs: Dict[str, List[List[str]]] = {}
         self._logger: Logger = self._create_logger(log_level)
 
         if start_listening:
@@ -139,8 +140,20 @@ class PSClient:
             # For battles, this is the zero-th entry
             # Otherwise it is the one-th entry
             if split_messages[0][0].startswith(">battle"):
+                # Determine protocol and request
+                battle_tag = split_messages[0][0][1:]
+                request = self.reqs.pop(battle_tag, None)
+                if "|request|" in message:
+                    protocol = None
+                    self.reqs[battle_tag] = split_messages
+                else:
+                    protocol = split_messages
                 # Battle update
-                await self._handle_battle_message(split_messages)  # type: ignore
+                if protocol is not None or request is not None:
+                    split_messages = protocol or [[f">{battle_tag}"]]
+                    if request is not None:
+                        split_messages += [request[1]]
+                    await self._handle_battle_message(split_messages)  # type: ignore
             elif split_messages[0][1] == "challstr":
                 # Confirms connection to the server: we can login
                 await self.log_in(split_messages[0])
