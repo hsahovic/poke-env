@@ -521,7 +521,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             )
             assert order.order in battle.available_moves[pos], "invalid pick"
             assert (
-                not order.terastallize or battle.can_tera[pos] is not None
+                not order.terastallize or battle.can_tera[pos] is not False
             ), "invalid pick"
             assert order.move_target in battle.get_possible_showdown_targets(
                 order.order, active_mon
