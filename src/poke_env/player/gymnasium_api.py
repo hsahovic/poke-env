@@ -507,7 +507,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         else:
             assert not battle.force_switch[pos], "invalid pick"
             active_mon = battle.active_pokemon[pos]
-            assert active_mon is not None
+            assert active_mon is not None, "invalid pick"
             mvs = (
                 battle.available_moves[pos]
                 if len(battle.available_moves[pos]) == 1
@@ -524,7 +524,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             assert (
                 not order.terastallize or battle.can_tera[pos] is not False
             ), "invalid pick"
-            assert isinstance(order.order, Move), "wtf"
+            assert isinstance(order.order, Move)
             assert order.move_target in battle.get_possible_showdown_targets(
                 order.order, active_mon
             ), "invalid pick"
