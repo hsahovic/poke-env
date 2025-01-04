@@ -412,15 +412,44 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
 
     @staticmethod
     def action_to_order(action: ActionType, battle: AbstractBattle) -> BattleOrder:
+        """
+        SINGLES:
+
+        action = -1: forfeit
+        0 <= action < 6: switch
+        6 <= action < 10: move
+        10 <= action < 14: move + mega evolve
+        14 <= action < 18: move + z-move
+        18 <= action < 22: move + dynamax
+        22 <= action < 26: move + terastallize
+
+        DOUBLES:
+
+        Currently this works for gen 9 VGC format
+        The action is a list here, and every element follows the following rules:
+        element = -1: forfeit
+        element = 0: pass
+        1 <= element <= 6: switch
+        7 <= element <= 10: move with target = -2
+        11 <= element <= 14: move with target = -1
+        15 <= element <= 18: move with target = 0
+        19 <= element <= 22: move with target = 1
+        23 <= element <= 26: move with target = 2
+        27 <= element <= 30: move with target = -2 and terastallize
+        31 <= element <= 34: move with target = -1 and terastallize
+        35 <= element <= 38: move with target = 0 and terastallize
+        39 <= element <= 42: move with target = 1 and terastallize
+        43 <= element <= 46: move with target = 2 and terastallize
+        """
         try:
             if isinstance(battle, Battle):
                 assert isinstance(action, (int, np.integer))
                 a = action.item() if isinstance(action, np.integer) else action
-                return PokeEnv.singles_action_to_order(a, battle)
+                return PokeEnv._singles_action_to_order(a, battle)
             elif isinstance(battle, DoubleBattle):
                 assert isinstance(action, (List, np.ndarray))
                 [a1, a2] = action
-                return PokeEnv.doubles_action_to_order(a1, a2, battle)
+                return PokeEnv._doubles_action_to_order(a1, a2, battle)
             else:
                 raise TypeError()
         except IndexError:
@@ -432,7 +461,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 raise e
 
     @staticmethod
-    def singles_action_to_order(action: int, battle: Battle) -> BattleOrder:
+    def _singles_action_to_order(action: int, battle: Battle) -> BattleOrder:
         if action == -1:
             return ForfeitBattleOrder()
         elif action < 6:
@@ -465,34 +494,23 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         return order
 
     @staticmethod
-    def doubles_action_to_order(
+    def _doubles_action_to_order(
         action1: int, action2: int, battle: DoubleBattle
     ) -> BattleOrder:
         if action1 == -1 or action2 == -1:
             return ForfeitBattleOrder()
-        order1 = PokeEnv.doubles_action_to_order_(action1, battle, 0)
-        order2 = PokeEnv.doubles_action_to_order_(action2, battle, 1)
-        return DoubleBattleOrder(order1, order2)
+        order1 = PokeEnv._doubles_action_to_order_individual(action1, battle, 0)
+        order2 = PokeEnv._doubles_action_to_order_individual(action2, battle, 1)
+        return DoubleBattleOrder.join_orders(
+            [order1] if order1 is not None else [],
+            [order2] if order2 is not None else [],
+        )[0]
 
+    # TODO: Generalize this to work for more than just gen 9 VGC
     @staticmethod
-    def doubles_action_to_order_(
+    def _doubles_action_to_order_individual(
         action: int, battle: DoubleBattle, pos: int
     ) -> BattleOrder | None:
-        """
-        Currently this works for gen 9 VGC format
-        action = 0: pass
-        1 <= action <= 6: switch
-        7 <= action <= 26 (refer to below table):
-
-            target  -2   -1    0    1    2
-        move
-        0           7    8    9    10   11
-        1           12   13   14   15   16
-        2           17   18   19   20   21
-        3           22   23   24   25   26
-
-        27 <= action <= 46: same as above, but terastallized
-        """
         if action == 0:
             order = None
         elif action < 7:
@@ -509,11 +527,15 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 else list(active_mon.moves.values())
             )
             order = Player.create_order(
-                mvs[(action - 7) % 20 // 5],
-                terastallize=bool((action - 7) // 20),
-                move_target=(int(action) - 7) % 5 - 2,
+                mvs[(action - 7) % 4],
+                terastallize=battle.can_tera[pos] is not None
+                and bool((action - 7) // 20),
+                move_target=(action - 7) % 20 // 4 - 2,
             )
             assert order.order in battle.available_moves[pos], "invalid pick"
+            assert (
+                not order.terastallize or battle.can_tera[pos] is not None
+            ), "invalid pick"
         return order
 
     ###################################################################################
@@ -603,6 +625,25 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
 
         return to_return
 
+    def reset_env(self, restart: bool = True):
+        """
+        Resets the environment to an inactive state: it will forfeit all unfinished
+        battles, reset the internal battle tracker and optionally change the next
+        opponent and restart the challenge loop.
+
+        :param opponent: The opponent to use for the next battles. If empty it
+            will not change opponent.
+        :type opponent: Player or str, optional
+        :param restart: If True the challenge loop will be restarted before returning,
+            otherwise the challenge loop will be left inactive and can be
+            started manually.
+        :type restart: bool
+        """
+        self.close(purge=False)
+        self.reset_battles()
+        if restart:
+            self.start_challenging()
+
     def get_additional_info(self) -> Dict[str, Dict[str, Any]]:
         """
         Returns additional info for the reset method.
@@ -630,25 +671,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             else:
                 truncated = True
         return terminated, truncated
-
-    def reset_env(self, restart: bool = True):
-        """
-        Resets the environment to an inactive state: it will forfeit all unfinished
-        battles, reset the internal battle tracker and optionally change the next
-        opponent and restart the challenge loop.
-
-        :param opponent: The opponent to use for the next battles. If empty it
-            will not change opponent.
-        :type opponent: Player or str, optional
-        :param restart: If True the challenge loop will be restarted before returning,
-            otherwise the challenge loop will be left inactive and can be
-            started manually.
-        :type restart: bool
-        """
-        self.close(purge=False)
-        self.reset_battles()
-        if restart:
-            self.start_challenging()
 
     def background_send_challenge(self, username: str):
         """
