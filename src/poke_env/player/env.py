@@ -667,16 +667,19 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             or "metronome" in format_lowercase
         ):
             num_targets = 5
-            num_gimmicks = 1
+            if format_lowercase.startswith("gen9"):
+                num_gimmicks = 1
+            else:
+                num_gimmicks = 0
         else:
             num_targets = 1
-            if battle_format.startswith("gen6"):
+            if format_lowercase.startswith("gen6"):
                 num_gimmicks = 1
-            elif battle_format.startswith("gen7"):
+            elif format_lowercase.startswith("gen7"):
                 num_gimmicks = 2
-            elif battle_format.startswith("gen8"):
+            elif format_lowercase.startswith("gen8"):
                 num_gimmicks = 3
-            elif battle_format.startswith("gen9"):
+            elif format_lowercase.startswith("gen9"):
                 num_gimmicks = 4
             else:
                 num_gimmicks = 0
