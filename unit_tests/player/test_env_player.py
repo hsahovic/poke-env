@@ -38,39 +38,38 @@ def test_init():
     assert isinstance(player, _EnvPlayer)
 
 
+async def run_test_choose_move():
+    player = CustomEnv(
+        account_configuration1=account_configuration1,
+        account_configuration2=account_configuration2,
+        server_configuration=server_configuration,
+        start_listening=False,
+        battle_format="gen7randombattles",
+        start_challenging=False,
+    )
+
+    # Create a mock battle and moves
+    battle = Battle("bat1", player.agent1.username, player.agent1.logger, gen=8)
+    battle._available_moves = [Move("flamethrower", gen=8)]
+
+    # Test choosing a move
+    message = await player.agent1.choose_move(battle)
+    order = player.action_to_order(6, battle)
+    player.agent1.order_queue.put(order)
+
+    assert message.message == "/choose move flamethrower"
+
+    # Test switching Pokémon
+    battle._available_switches = [Pokemon(species="charizard", gen=8)]
+    message = await player.agent1.choose_move(battle)
+    order = player.action_to_order(0, battle)
+    player.agent1.order_queue.put(order)
+
+    assert message.message == "/choose switch charizard"
+
+
 def test_choose_move():
-    # Run the test code within POKE_LOOP
-    async def run_test():
-        player = CustomEnv(
-            account_configuration1=account_configuration1,
-            account_configuration2=account_configuration2,
-            server_configuration=server_configuration,
-            start_listening=False,
-            battle_format="gen7randombattles",
-            start_challenging=False,
-        )
-
-        # Create a mock battle and moves
-        battle = Battle("bat1", player.agent1.username, player.agent1.logger, gen=8)
-        battle._available_moves = [Move("flamethrower", gen=8)]
-
-        # Test choosing a move
-        message = await player.agent1.choose_move(battle)
-        order = player.action_to_order(6, battle)
-        player.agent1.order_queue.put(order)
-
-        assert message.message == "/choose move flamethrower"
-
-        # Test switching Pokémon
-        battle._available_switches = [Pokemon(species="charizard", gen=8)]
-        message = await player.agent1.choose_move(battle)
-        order = player.action_to_order(0, battle)
-        player.agent1.order_queue.put(order)
-
-        assert message.message == "/choose switch charizard"
-
-    # Run everything in POKE_LOOP
-    asyncio.run_coroutine_threadsafe(run_test(), POKE_LOOP)
+    asyncio.run_coroutine_threadsafe(run_test_choose_move(), POKE_LOOP)
 
 
 def test_reward_computing_helper():
