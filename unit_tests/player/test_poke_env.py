@@ -209,28 +209,18 @@ def test_reward_computing_helper():
 def test_action_space():
     player = CustomEnv(start_listening=False)
     assert player.action_space(player.possible_agents[0]) == Discrete(4 * 4 + 6)
-
-    for battle_format, (has_megas, has_z_moves, has_dynamax) in zip(
-        [
-            "gen4randombattle",
-            "gen5randombattle",
-            "gen6randombattle",
-            "gen7randombattle",
-            "gen8randombattle",
-        ],
+    for i, (has_megas, has_z_moves, has_dynamax) in enumerate(
         [
             (False, False, False),
             (False, False, False),
             (True, False, False),
             (True, True, False),
             (True, True, True),
-        ],
+        ]
     ):
-
         p = CustomEnv(
-            battle_format=battle_format, start_listening=False, start_challenging=False
+            battle_format=f"gen{i + 4}randombattle", start_listening=False, start_challenging=False
         )
-
         assert p.action_space(p.possible_agents[0]) == Discrete(
             4 * sum([1, has_megas, has_z_moves, has_dynamax]) + 6
         )
@@ -261,7 +251,7 @@ def test_action_to_move():
         assert p.action_to_order(-1, battle).message == "/forfeit"
         battle._available_moves = [Move("flamethrower", gen=8)]
         assert p.action_to_order(6, battle).message == "/choose move flamethrower"
-        battle._available_switches = [active_pokemon]
+        battle._available_switches = [Pokemon(species="charizard", gen=8)]
         assert p.action_to_order(0, battle).message == "/choose switch charizard"
         battle._available_switches = []
         assert p.action_to_order(9, battle).message == "/choose move flamethrower"
