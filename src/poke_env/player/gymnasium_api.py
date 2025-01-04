@@ -19,16 +19,19 @@ from pettingzoo.utils.env import (  # type: ignore[import-untyped]
 )
 
 from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
-from poke_env.environment import AbstractBattle, Battle, DoubleBattle, Move
-from poke_env.player import (
+from poke_env.environment.abstract_battle import AbstractBattle
+from poke_env.environment.battle import Battle
+from poke_env.environment.double_battle import DoubleBattle
+from poke_env.environment.move import Move
+from poke_env.player.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
     DoubleBattleOrder,
     ForfeitBattleOrder,
-    Player,
 )
-from poke_env.ps_client import (
-    AccountConfiguration,
+from poke_env.player.player import Player
+from poke_env.ps_client import AccountConfiguration
+from poke_env.ps_client.server_configuration import (
     LocalhostServerConfiguration,
     ServerConfiguration,
 )
