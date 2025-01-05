@@ -4,8 +4,7 @@ import numpy as np
 import numpy.typing as npt
 from gymnasium.spaces import MultiDiscrete
 
-from poke_env.player import PokeEnv
-from poke_env.player.gymnasium_api import ObsType
+from poke_env.player.gymnasium_api import ObsType, PokeEnv
 from poke_env.ps_client import (
     AccountConfiguration,
     LocalhostServerConfiguration,
