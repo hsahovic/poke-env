@@ -61,35 +61,45 @@ def check_action_order_roundtrip(action, battle):
 
 @pytest.mark.timeout(30)
 def test_random_gymnasium_players_gen4():
-    env = SinglesCIEnv(battle_format="gen4randombattle", log_level=25, start_challenging=False)
+    env = SinglesCIEnv(
+        battle_format="gen4randombattle", log_level=25, start_challenging=False
+    )
     env.start_challenging(3)
     play_function(env, 3)
 
 
 @pytest.mark.timeout(30)
 def test_random_gymnasium_players_gen5():
-    env = SinglesCIEnv(battle_format="gen5randombattle", log_level=25, start_challenging=False)
+    env = SinglesCIEnv(
+        battle_format="gen5randombattle", log_level=25, start_challenging=False
+    )
     env.start_challenging(3)
     play_function(env, 3)
 
 
 @pytest.mark.timeout(30)
 def test_random_gymnasium_players_gen6():
-    env = SinglesCIEnv(battle_format="gen6randombattle", log_level=25, start_challenging=False)
+    env = SinglesCIEnv(
+        battle_format="gen6randombattle", log_level=25, start_challenging=False
+    )
     env.start_challenging(3)
     play_function(env, 3)
 
 
 @pytest.mark.timeout(30)
 def test_random_gymnasium_players_gen7():
-    env = SinglesCIEnv(battle_format="gen7randombattle", log_level=25, start_challenging=False)
+    env = SinglesCIEnv(
+        battle_format="gen7randombattle", log_level=25, start_challenging=False
+    )
     env.start_challenging(3)
     play_function(env, 3)
 
 
 @pytest.mark.timeout(30)
 def test_random_gymnasium_players_gen8():
-    env = SinglesCIEnv(battle_format="gen8randombattle", log_level=25, start_challenging=False)
+    env = SinglesCIEnv(
+        battle_format="gen8randombattle", log_level=25, start_challenging=False
+    )
     env.start_challenging(3)
     play_function(env, 3)
 
@@ -105,7 +115,9 @@ def test_random_gymnasium_player_doubles_gen8():
 
 @pytest.mark.timeout(30)
 def test_random_gymnasium_players_gen9():
-    env = SinglesCIEnv(battle_format="gen9randombattle", log_level=25, start_challenging=False)
+    env = SinglesCIEnv(
+        battle_format="gen9randombattle", log_level=25, start_challenging=False
+    )
     env.start_challenging(3)
     play_function(env, 3)
 
@@ -121,7 +133,9 @@ def test_random_gymnasium_player_doubles_gen9():
 
 @pytest.mark.timeout(60)
 def test_two_successive_calls_gen8():
-    env = SinglesCIEnv(battle_format="gen8randombattle", log_level=25, start_challenging=False)
+    env = SinglesCIEnv(
+        battle_format="gen8randombattle", log_level=25, start_challenging=False
+    )
     env.start_challenging(2)
     play_function(env, 2)
     env.start_challenging(2)
@@ -130,7 +144,9 @@ def test_two_successive_calls_gen8():
 
 @pytest.mark.timeout(60)
 def test_two_successive_calls_gen9():
-    env = SinglesCIEnv(battle_format="gen9randombattle", log_level=25, start_challenging=False)
+    env = SinglesCIEnv(
+        battle_format="gen9randombattle", log_level=25, start_challenging=False
+    )
     env.start_challenging(2)
     play_function(env, 2)
     env.start_challenging(2)
