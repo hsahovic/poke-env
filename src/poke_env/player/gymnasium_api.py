@@ -407,12 +407,12 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         SINGLES:
 
         action = -1: forfeit
-        0 <= action < 6: switch
-        6 <= action < 10: move
-        10 <= action < 14: move + mega evolve
-        14 <= action < 18: move + z-move
-        18 <= action < 22: move + dynamax
-        22 <= action < 26: move + terastallize
+        0 <= action <= 5: switch
+        6 <= action <= 9: move
+        10 <= action <= 13: move and mega evolve
+        14 <= action <= 17: move and z-move
+        18 <= action <= 21: move and dynamax
+        22 <= action <= 25: move and terastallize
 
         DOUBLES:
 
@@ -425,11 +425,26 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         15 <= element <= 18: move with target = 0
         19 <= element <= 22: move with target = 1
         23 <= element <= 26: move with target = 2
-        27 <= element <= 30: move with target = -2 and terastallize
-        31 <= element <= 34: move with target = -1 and terastallize
-        35 <= element <= 38: move with target = 0 and terastallize
-        39 <= element <= 42: move with target = 1 and terastallize
-        43 <= element <= 46: move with target = 2 and terastallize
+        27 <= element <= 30: move with target = -2 and mega evolve
+        31 <= element <= 34: move with target = -1 and mega evolve
+        35 <= element <= 38: move with target = 0 and mega evolve
+        39 <= element <= 42: move with target = 1 and mega evolve
+        43 <= element <= 46: move with target = 2 and mega evolve
+        47 <= element <= 50: move with target = -2 and z-move
+        51 <= element <= 54: move with target = -1 and z-move
+        55 <= element <= 58: move with target = 0 and z-move
+        59 <= element <= 62: move with target = 1 and z-move
+        63 <= element <= 66: move with target = 2 and z-move
+        67 <= element <= 70: move with target = -2 and dynamax
+        71 <= element <= 74: move with target = -1 and dynamax
+        75 <= element <= 78: move with target = 0 and dynamax
+        79 <= element <= 82: move with target = 1 and dynamax
+        83 <= element <= 86: move with target = 2 and dynamax
+        87 <= element <= 90: move with target = -2 and terastallize
+        91 <= element <= 94: move with target = -1 and terastallize
+        95 <= element <= 98: move with target = 0 and terastallize
+        99 <= element <= 102: move with target = 1 and terastallize
+        103 <= element <= 106: move with target = 2 and terastallize
         """
         try:
             if isinstance(battle, Battle):
@@ -469,10 +484,10 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             )
             order = Player.create_order(
                 mvs[(action - 6) % 4],
-                mega=battle.can_mega_evolve and 10 <= action < 14,
-                z_move=battle.can_z_move and 14 <= action < 18,
-                dynamax=battle.can_dynamax and 18 <= action < 22,
-                terastallize=battle.can_tera is not None and 22 <= action < 26,
+                mega=10 <= action < 14,
+                z_move=14 <= action < 18,
+                dynamax=18 <= action < 22,
+                terastallize=22 <= action < 26,
             )
             assert isinstance(order.order, Move)
             assert order.order.id in [
@@ -531,11 +546,10 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             order = Player.create_order(
                 mvs[(action - 7) % 4],
                 move_target=(action - 7) % 20 // 4 - 2,
-                mega=battle.can_mega_evolve[pos] and (action - 7) // 20 == 1,
-                z_move=battle.can_z_move[pos] and (action - 7) // 20 == 2,
-                dynamax=battle.can_dynamax[pos] and (action - 7) // 20 == 3,
-                terastallize=battle.can_tera[pos] is not None
-                and (action - 7) // 20 == 4,
+                mega=(action - 7) // 20 == 1,
+                z_move=(action - 7) // 20 == 2,
+                dynamax=(action - 7) // 20 == 3,
+                terastallize=(action - 7) // 20 == 4,
             )
             assert isinstance(order.order, Move)
             assert order.order.id in [
