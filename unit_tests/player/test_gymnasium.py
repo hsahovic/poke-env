@@ -9,10 +9,7 @@ from poke_env.player.gymnasium_api import _AsyncQueue, _EnvPlayer
 
 
 class DummyEnv(SinglesEnv):
-    _ACTION_SPACE = list(range(10))
-
     def __init__(self, *args, **kwargs):
-        self.opponent = None
         super().__init__(*args, **kwargs)
 
     def calc_reward(self, battle: AbstractBattle) -> float:

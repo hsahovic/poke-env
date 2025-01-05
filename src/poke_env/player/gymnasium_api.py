@@ -11,11 +11,7 @@ from weakref import WeakKeyDictionary
 import numpy as np
 import numpy.typing as npt
 from gymnasium.spaces import Space
-from pettingzoo.utils.env import (  # type: ignore[import-untyped]
-    ActionType,
-    ObsType,
-    ParallelEnv,
-)
+from pettingzoo.utils.env import ParallelEnv  # type: ignore[import-untyped]
 
 from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
 from poke_env.environment.abstract_battle import AbstractBattle
@@ -38,6 +34,8 @@ from poke_env.ps_client.server_configuration import (
 from poke_env.teambuilder.teambuilder import Teambuilder
 
 ItemType = TypeVar("ItemType")
+ObsType = TypeVar("ObsType")
+ActionType = TypeVar("ActionType")
 
 
 class _AsyncQueue(Generic[ItemType]):

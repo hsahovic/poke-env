@@ -1,8 +1,6 @@
 """poke_env.player module init.
 """
 
-from pettingzoo.utils.env import ActionType, ObsType  # type: ignore[import-untyped]
-
 from poke_env.concurrency import POKE_LOOP
 from poke_env.player import gymnasium_api, player, random_player, utils
 from poke_env.player.baselines import MaxBasePowerPlayer, SimpleHeuristicsPlayer
@@ -13,7 +11,7 @@ from poke_env.player.battle_order import (
     ForfeitBattleOrder,
 )
 from poke_env.player.doubles_env import DoublesEnv
-from poke_env.player.gymnasium_api import PokeEnv
+from poke_env.player.gymnasium_api import ActionType, ObsType, PokeEnv
 from poke_env.player.player import Player
 from poke_env.player.random_player import RandomPlayer
 from poke_env.player.singles_env import SinglesEnv
