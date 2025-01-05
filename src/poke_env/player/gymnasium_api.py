@@ -493,17 +493,17 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
     ) -> BattleOrder:
         if action1 == -1 or action2 == -1:
             return ForfeitBattleOrder()
-        must_respond1 = not (any(battle.force_switch) and not battle.force_switch[0])
-        must_respond2 = not (any(battle.force_switch) and not battle.force_switch[0])
+        dont_respond1 = any(battle.force_switch) and not battle.force_switch[0]
+        dont_respond2 = any(battle.force_switch) and not battle.force_switch[1]
         order1 = (
-            PokeEnv._doubles_action_to_order_individual(action1, battle, 0)
-            if must_respond1
-            else None
+            None
+            if dont_respond1
+            else PokeEnv._doubles_action_to_order_individual(action1, battle, 0)
         )
         order2 = (
-            PokeEnv._doubles_action_to_order_individual(action2, battle, 1)
-            if must_respond2
-            else None
+            None
+            if dont_respond2
+            else PokeEnv._doubles_action_to_order_individual(action2, battle, 1)
         )
         return DoubleBattleOrder.join_orders(
             [order1] if order1 is not None else [],
@@ -535,7 +535,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 and bool((action - 7) // 20),
                 move_target=(action - 7) % 20 // 4 - 2,
             )
-            assert order.order in battle.available_moves[pos], "invalid pick"
+            assert isinstance(order.order, Move)
+            assert order.order.id in [m.id for m in battle.available_moves[pos]], "invalid pick"
             assert (
                 not order.terastallize or battle.can_tera[pos] is not False
             ), "invalid pick"
