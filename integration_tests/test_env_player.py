@@ -34,7 +34,6 @@ def play_function(env: CIEnv, n_battles: int):
             check_action_order_roundtrip(a2, env.battle2)
             _, _, terminated, truncated, _ = env.step(actions)
             done = any(terminated.values()) or any(truncated.values())
-            print()
 
 
 def check_action_order_roundtrip(action, battle):

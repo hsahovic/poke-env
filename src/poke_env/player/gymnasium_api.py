@@ -432,7 +432,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         43 <= element <= 46: move with target = 2 and terastallize
         """
         try:
-            print(action)
             if isinstance(battle, Battle):
                 assert isinstance(action, (int, np.integer))
                 a = action.item() if isinstance(action, np.integer) else action
@@ -468,7 +467,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 and battle.available_moves[0].id in ["struggle", "recharge"]
                 else list(active_mon.moves.values())
             )
-            print(active_mon.base_species, [m.id for m in mvs])
             order = Player.create_order(
                 mvs[(action - 6) % 4],
                 mega=battle.can_mega_evolve and 10 <= action < 14,
@@ -530,7 +528,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 and battle.available_moves[pos][0].id in ["struggle", "recharge"]
                 else list(active_mon.moves.values())
             )
-            print(pos, active_mon.base_species, [m.id for m in mvs])
             order = Player.create_order(
                 mvs[(action - 7) % 4],
                 move_target=(action - 7) % 20 // 4 - 2,
@@ -589,7 +586,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 and battle.available_moves[0].id in ["struggle", "recharge"]
                 else list(active_mon.moves.values())
             )
-            print(order.message, [m.id for m in mvs])
             action = [m.id for m in mvs].index(order.order.id)
             if order.mega:
                 gimmick = 1
@@ -648,7 +644,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 and battle.available_moves[pos][0].id in ["struggle", "recharge"]
                 else list(active_mon.moves.values())
             )
-            print(order.message, [m.id for m in mvs])
             action = [m.id for m in mvs].index(order.order.id)
             target = order.move_target + 2
             if order.mega:
