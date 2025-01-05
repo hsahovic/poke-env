@@ -432,6 +432,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         43 <= element <= 46: move with target = 2 and terastallize
         """
         try:
+            print(action)
             if isinstance(battle, Battle):
                 assert isinstance(action, (int, np.integer))
                 a = action.item() if isinstance(action, np.integer) else action
@@ -467,6 +468,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 and battle.available_moves[0].id in ["struggle", "recharge"]
                 else list(active_mon.moves.values())
             )
+            print(active_mon.base_species, [m.id for m in mvs])
             order = Player.create_order(
                 mvs[(action - 6) % 4],
                 mega=battle.can_mega_evolve and 10 <= action < 14,
@@ -528,11 +530,15 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 and battle.available_moves[pos][0].id in ["struggle", "recharge"]
                 else list(active_mon.moves.values())
             )
+            print(pos, active_mon.base_species, [m.id for m in mvs])
             order = Player.create_order(
                 mvs[(action - 7) % 4],
-                terastallize=battle.can_tera[pos] is not None
-                and bool((action - 7) // 20),
                 move_target=(action - 7) % 20 // 4 - 2,
+                mega=battle.can_mega_evolve[pos] and (action - 7) // 20 == 1,
+                z_move=battle.can_z_move[pos] and (action - 7) // 20 == 2,
+                dynamax=battle.can_dynamax[pos] and (action - 7) // 20 == 3,
+                terastallize=battle.can_tera[pos] is not None
+                and (action - 7) // 20 == 4,
             )
             assert isinstance(order.order, Move)
             assert order.order.id in [
@@ -542,6 +548,9 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             assert order.move_target in battle.get_possible_showdown_targets(
                 move, active_mon
             ), "invalid pick"
+            assert not order.mega or battle.can_mega_evolve[pos], "invalid pick"
+            assert not order.z_move or battle.can_z_move[pos], "invalid pick"
+            assert not order.dynamax or battle.can_dynamax[pos], "invalid pick"
             assert (
                 not order.terastallize or battle.can_tera[pos] is not False
             ), "invalid pick"
@@ -580,6 +589,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 and battle.available_moves[0].id in ["struggle", "recharge"]
                 else list(active_mon.moves.values())
             )
+            print(order.message, [m.id for m in mvs])
             action = [m.id for m in mvs].index(order.order.id)
             if order.mega:
                 gimmick = 1
@@ -638,13 +648,20 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 and battle.available_moves[pos][0].id in ["struggle", "recharge"]
                 else list(active_mon.moves.values())
             )
-            action = mvs.index(order.order)
+            print(order.message, [m.id for m in mvs])
+            action = [m.id for m in mvs].index(order.order.id)
             target = order.move_target + 2
-            if order.terastallize:
+            if order.mega:
                 gimmick = 1
+            elif order.z_move:
+                gimmick = 2
+            elif order.dynamax:
+                gimmick = 3
+            elif order.terastallize:
+                gimmick = 4
             else:
                 gimmick = 0
-            action = 6 + action + 4 * target + 20 * gimmick
+            action = 1 + 6 + action + 4 * target + 20 * gimmick
             assert order.order.id in [
                 m.id for m in battle.available_moves[pos]
             ], "invalid pick"
@@ -652,6 +669,9 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             assert order.move_target in battle.get_possible_showdown_targets(
                 move, active_mon
             ), "invalid pick"
+            assert not order.mega or battle.can_mega_evolve[pos], "invalid pick"
+            assert not order.z_move or battle.can_z_move[pos], "invalid pick"
+            assert not order.dynamax or battle.can_dynamax[pos], "invalid pick"
             assert (
                 not order.terastallize or battle.can_tera[pos] is not False
             ), "invalid pick"
@@ -784,22 +804,18 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             or "metronome" in format_lowercase
         ):
             num_targets = 5
-            if format_lowercase.startswith("gen9"):
-                num_gimmicks = 1
-            else:
-                num_gimmicks = 0
         else:
             num_targets = 1
-            if format_lowercase.startswith("gen6"):
-                num_gimmicks = 1
-            elif format_lowercase.startswith("gen7"):
-                num_gimmicks = 2
-            elif format_lowercase.startswith("gen8"):
-                num_gimmicks = 3
-            elif format_lowercase.startswith("gen9"):
-                num_gimmicks = 4
-            else:
-                num_gimmicks = 0
+        if format_lowercase.startswith("gen6"):
+            num_gimmicks = 1
+        elif format_lowercase.startswith("gen7"):
+            num_gimmicks = 2
+        elif format_lowercase.startswith("gen8"):
+            num_gimmicks = 3
+        elif format_lowercase.startswith("gen9"):
+            num_gimmicks = 4
+        else:
+            num_gimmicks = 0
         return num_switches + num_moves * num_targets * (num_gimmicks + 1)
 
     @staticmethod
