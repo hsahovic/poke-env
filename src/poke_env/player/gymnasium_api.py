@@ -475,7 +475,10 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 dynamax=battle.can_dynamax and 18 <= action < 22,
                 terastallize=battle.can_tera is not None and 22 <= action < 26,
             )
-            assert order.order in battle.available_moves, "invalid pick"
+            assert isinstance(order.order, Move)
+            assert order.order.id in [
+                m.id for m in battle.available_moves
+            ], "invalid pick"
             assert not order.mega or battle.can_mega_evolve, "invalid pick"
             assert not order.z_move or (
                 battle.can_z_move and order.order in active_mon.available_z_moves
