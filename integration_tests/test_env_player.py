@@ -21,14 +21,28 @@ class CIEnv(PokeEnv):
         return np.array([0])
 
 
-def play_function(env, n_battles):
+def play_function(env: CIEnv, n_battles: int):
     for _ in range(n_battles):
         done = False
         env.reset()
         while not done:
             actions = {name: env.action_space(name).sample() for name in env.agents}
+            assert env.battle1 is not None
+            assert env.battle2 is not None
+            [a1, a2] = list(actions.values())
+            check_action_order_roundtrip(a1, env.battle1)
+            check_action_order_roundtrip(a2, env.battle2)
             _, _, terminated, truncated, _ = env.step(actions)
             done = any(terminated.values()) or any(truncated.values())
+            print()
+
+
+def check_action_order_roundtrip(action, battle):
+    order = CIEnv.action_to_order(action, battle)
+    team = [p.base_species for p in battle.team.values()]
+    if "default" not in order.message and "zoroark" not in team:
+        a = CIEnv.order_to_action(order, battle)
+        assert order.message == CIEnv.action_to_order(a, battle).message
 
 
 @pytest.mark.timeout(30)
