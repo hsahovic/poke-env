@@ -13,8 +13,8 @@ from poke_env.player.battle_order import (
     ForfeitBattleOrder,
 )
 from poke_env.player.doubles_env import DoublesEnv
-from poke_env.player.player import Player
 from poke_env.player.gymnasium_api import PokeEnv
+from poke_env.player.player import Player
 from poke_env.player.random_player import RandomPlayer
 from poke_env.player.singles_env import SinglesEnv
 from poke_env.player.utils import (
