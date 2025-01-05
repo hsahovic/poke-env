@@ -41,7 +41,7 @@ def against_random_player():
         server_configuration=LocalhostServerConfiguration,
         start_challenging=True,
     )
-    random_player = RandomPlayer()
+    random_player = RandomPlayer(battle_format="gen8randombattle")
     for _ in range(3):
         done = False
         env.reset()
