@@ -1,10 +1,11 @@
 import asyncio
 
+import numpy as np
 from gymnasium.spaces import Box, Discrete
 
 from poke_env.concurrency import POKE_LOOP
 from poke_env.environment import Battle, Move, Pokemon, PokemonType, Status
-from poke_env.player import PokeEnv
+from poke_env.player import SinglesEnv
 from poke_env.player.gymnasium_api import _EnvPlayer
 from poke_env.ps_client import AccountConfiguration, ServerConfiguration
 
@@ -13,7 +14,7 @@ account_configuration2 = AccountConfiguration("username2", "password2")
 server_configuration = ServerConfiguration("server.url", "auth.url")
 
 
-class CustomEnv(PokeEnv):
+class CustomEnv(SinglesEnv):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.observation_spaces = {agent: Box(-1, 1) for agent in self.possible_agents}
@@ -54,7 +55,7 @@ async def run_test_choose_move():
 
     # Test choosing a move
     message = await player.agent1.choose_move(battle)
-    order = player.action_to_order(6, battle)
+    order = player.action_to_order(np.int64(6), battle)
     player.agent1.order_queue.put(order)
 
     assert message.message == "/choose move flamethrower"
@@ -62,7 +63,7 @@ async def run_test_choose_move():
     # Test switching Pokémon
     battle._available_switches = [Pokemon(species="charizard", gen=8)]
     message = await player.agent1.choose_move(battle)
-    order = player.action_to_order(0, battle)
+    order = player.action_to_order(np.int64(0), battle)
     player.agent1.order_queue.put(order)
 
     assert message.message == "/choose switch charizard"
@@ -228,7 +229,7 @@ def test_action_to_move():
             (True, True, True, True),
         ]
     ):
-        p = PokeEnv(
+        p = SinglesEnv(
             battle_format=f"gen{i + 4}randombattle",
             start_listening=False,
             start_challenging=False,
@@ -240,34 +241,34 @@ def test_action_to_move():
         active_pokemon._active = True
         active_pokemon._item = "firiumz"
         battle._team = {"charizard": active_pokemon}
-        assert p.action_to_order(-1, battle).message == "/forfeit"
+        assert p.action_to_order(np.int64(-1), battle).message == "/forfeit"
         battle._available_moves = [move]
-        assert p.action_to_order(6, battle).message == "/choose move flamethrower"
+        assert p.action_to_order(np.int64(6), battle).message == "/choose move flamethrower"
         battle._available_switches = [active_pokemon]
-        assert p.action_to_order(0, battle).message == "/choose switch charizard"
+        assert p.action_to_order(np.int64(0), battle).message == "/choose switch charizard"
         battle._available_switches = []
-        assert p.action_to_order(9, battle).message == "/choose move flamethrower"
+        assert p.action_to_order(np.int64(9), battle).message == "/choose move flamethrower"
         if has_megas:
             battle._can_mega_evolve = True
             assert (
-                p.action_to_order(6 + 4, battle).message
+                p.action_to_order(np.int64(6 + 4), battle).message
                 == "/choose move flamethrower mega"
             )
         if has_z_moves:
             battle._can_z_move = True
             assert (
-                p.action_to_order(6 + 4 + 4, battle).message
+                p.action_to_order(np.int64(6 + 4 + 4), battle).message
                 == "/choose move flamethrower zmove"
             )
         if has_dynamax:
             battle._can_dynamax = True
             assert (
-                p.action_to_order(6 + 4 + 8, battle).message
+                p.action_to_order(np.int64(6 + 4 + 8), battle).message
                 == "/choose move flamethrower dynamax"
             )
         if has_tera:
             battle._can_tera = PokemonType.FIRE
             assert (
-                p.action_to_order(6 + 4 + 12, battle).message
+                p.action_to_order(np.int64(6 + 4 + 12), battle).message
                 == "/choose move flamethrower terastallize"
             )

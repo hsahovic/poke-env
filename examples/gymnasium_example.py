@@ -3,10 +3,10 @@ from gymnasium.spaces import Box
 from pettingzoo.test.parallel_test import parallel_api_test
 
 from poke_env import LocalhostServerConfiguration
-from poke_env.player import PokeEnv
+from poke_env.player import SinglesEnv
 
 
-class TestEnv(PokeEnv):
+class ExampleEnv(SinglesEnv):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.observation_spaces = {
@@ -26,7 +26,7 @@ class TestEnv(PokeEnv):
 
 
 def gymnasium_api():
-    gymnasium_env = TestEnv(
+    gymnasium_env = ExampleEnv(
         battle_format="gen8randombattle",
         server_configuration=LocalhostServerConfiguration,
         start_challenging=True,

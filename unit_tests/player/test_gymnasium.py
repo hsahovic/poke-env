@@ -3,14 +3,12 @@ import sys
 from io import StringIO
 from typing import List
 
-from pettingzoo.utils.env import ActionType
-
 from poke_env.environment import AbstractBattle, Battle, Pokemon
-from poke_env.player import ForfeitBattleOrder, PokeEnv
+from poke_env.player import ForfeitBattleOrder, SinglesEnv
 from poke_env.player.gymnasium_api import _AsyncQueue, _EnvPlayer
 
 
-class DummyEnv(PokeEnv[List[int], ActionType]):
+class DummyEnv(SinglesEnv):
     _ACTION_SPACE = list(range(10))
 
     def __init__(self, *args, **kwargs):

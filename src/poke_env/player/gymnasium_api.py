@@ -2,8 +2,6 @@
 For a black-box implementation consider using the module env_player.
 """
 
-from __future__ import annotations
-
 import asyncio
 import time
 from abc import abstractmethod
@@ -12,7 +10,7 @@ from weakref import WeakKeyDictionary
 
 import numpy as np
 import numpy.typing as npt
-from gymnasium.spaces import Discrete, MultiDiscrete, Space
+from gymnasium.spaces import Space
 from pettingzoo.utils.env import (  # type: ignore[import-untyped]
     ActionType,
     ObsType,
@@ -50,7 +48,7 @@ class _AsyncQueue(Generic[ItemType]):
         return await self.queue.get()
 
     def get(
-        self, timeout: Optional[float] = None, default: ItemType | None = None
+        self, timeout: Optional[float] = None, default: Optional[ItemType] = None
     ) -> ItemType:
         try:
             res = asyncio.run_coroutine_threadsafe(
@@ -126,7 +124,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         self,
         account_configuration1: Optional[AccountConfiguration] = None,
         account_configuration2: Optional[AccountConfiguration] = None,
-        *,
         avatar: Optional[int] = None,
         battle_format: str = "gen8randombattle",
         log_level: Optional[int] = None,
@@ -227,17 +224,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         )
         self.agents: List[str] = []
         self.possible_agents = [self.agent1.username, self.agent2.username]
-        self.action_spaces: Dict[str, Space]
-        act_size = self.get_action_space_size(battle_format)
-        if self.agent1.format_is_doubles:
-            self.action_spaces = {
-                agent: MultiDiscrete([act_size, act_size])
-                for agent in self.possible_agents
-            }
-        else:
-            self.action_spaces = {
-                agent: Discrete(act_size) for agent in self.possible_agents
-            }
         self._reward_buffer: WeakKeyDictionary[AbstractBattle, float] = (
             WeakKeyDictionary()
         )
@@ -527,7 +513,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
     @staticmethod
     def _doubles_action_to_order_individual(
         action: int, battle: DoubleBattle, pos: int
-    ) -> BattleOrder | None:
+    ) -> Optional[BattleOrder]:
         if action == 0:
             order = None
         elif action < 7:
