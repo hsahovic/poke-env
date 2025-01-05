@@ -3,7 +3,7 @@ from typing import Optional, Union
 import numpy as np
 import numpy.typing as npt
 from gymnasium.spaces import MultiDiscrete
-from pettingzoo.utils.env import ObsType
+from pettingzoo.utils.env import ObsType  # type: ignore[import-untyped]
 
 from poke_env.player.gymnasium_api import PokeEnv
 from poke_env.ps_client import (

@@ -112,7 +112,7 @@ class _EnvPlayer(Player):
         asyncio.run_coroutine_threadsafe(self.battle_queue.async_put(battle), POKE_LOOP)
 
 
-class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
+class PokeEnv(ParallelEnv[str, ObsType, ActionType], Generic[ObsType, ActionType]):
     """
     Base class implementing the Gymnasium API on the main thread.
     """
