@@ -3,7 +3,7 @@ from gymnasium.spaces import Box
 from pettingzoo.test.parallel_test import parallel_api_test
 
 from poke_env import LocalhostServerConfiguration
-from poke_env.player import SinglesEnv
+from poke_env.player import RandomPlayer, SinglesEnv
 
 
 class ExampleEnv(SinglesEnv):
@@ -33,6 +33,28 @@ def gymnasium_api():
     )
     parallel_api_test(gymnasium_env)
     gymnasium_env.close()
+
+
+def against_random_player():
+    env = ExampleEnv(
+        battle_format="gen8randombattle",
+        server_configuration=LocalhostServerConfiguration,
+        start_challenging=True,
+    )
+    random_player = RandomPlayer()
+    for _ in range(3):
+        done = False
+        env.reset()
+        while not done:
+            assert env.battle2 is not None
+            actions = {
+                env.agents[0]: env.action_space(env.agents[0]).sample(),
+                env.agents[1]: env.order_to_action(
+                    random_player.choose_move(env.battle2), env.battle2
+                ),
+            }
+            _, _, terminated, truncated, _ = env.step(actions)
+            done = any(terminated.values()) or any(truncated.values())
 
 
 if __name__ == "__main__":
