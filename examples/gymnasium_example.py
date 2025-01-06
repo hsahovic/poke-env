@@ -1,9 +1,10 @@
 import numpy as np
 from gymnasium.spaces import Box
 from pettingzoo.test.parallel_test import parallel_api_test
+from gymnasium.utils.env_checker import check_env
 
 from poke_env import LocalhostServerConfiguration
-from poke_env.player import RandomPlayer, SinglesEnv
+from poke_env.player import RandomPlayer, SinglesEnv, SingleAgentWrapper
 
 
 class ExampleEnv(SinglesEnv):
@@ -42,19 +43,8 @@ def against_random_player():
         start_challenging=True,
     )
     random_player = RandomPlayer(battle_format="gen8randombattle")
-    for _ in range(3):
-        done = False
-        env.reset()
-        while not done:
-            assert env.battle2 is not None
-            actions = {
-                env.agents[0]: env.action_space(env.agents[0]).sample(),
-                env.agents[1]: env.order_to_action(
-                    random_player.choose_move(env.battle2), env.battle2
-                ),
-            }
-            _, _, terminated, truncated, _ = env.step(actions)
-            done = any(terminated.values()) or any(truncated.values())
+    single_agent_env = SingleAgentWrapper(env, random_player)
+    check_env(single_agent_env)
 
 
 if __name__ == "__main__":
