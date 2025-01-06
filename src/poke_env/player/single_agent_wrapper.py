@@ -2,8 +2,8 @@ from typing import Any, Awaitable, Dict, Optional, Tuple
 
 from gymnasium import Env
 
-from poke_env.player import Player
 from poke_env.player.gymnasium_api import ActionType, ObsType, PokeEnv
+from poke_env.player.player import Player
 
 
 class SingleAgentWrapper(Env[ObsType, ActionType]):
