@@ -42,21 +42,8 @@ def play_function(env: PokeEnv, n_battles: int):
         env.reset()
         while not done:
             actions = {name: env.action_space(name).sample() for name in env.agents}
-            assert env.battle1 is not None
-            assert env.battle2 is not None
-            [a1, a2] = list(actions.values())
-            check_action_order_roundtrip(a1, env.battle1)
-            check_action_order_roundtrip(a2, env.battle2)
             _, _, terminated, truncated, _ = env.step(actions)
             done = any(terminated.values()) or any(truncated.values())
-
-
-def check_action_order_roundtrip(action, battle):
-    order = PokeEnv.action_to_order(action, battle)
-    team = [p.base_species for p in battle.team.values()]
-    if "default" not in order.message and "zoroark" not in team:
-        a = PokeEnv.order_to_action(order, battle)
-        assert order.message == PokeEnv.action_to_order(a, battle).message
 
 
 @pytest.mark.timeout(30)

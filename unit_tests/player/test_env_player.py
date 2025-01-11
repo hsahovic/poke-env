@@ -4,7 +4,7 @@ import numpy as np
 from gymnasium.spaces import Box, Discrete
 
 from poke_env.concurrency import POKE_LOOP
-from poke_env.environment import Battle, Move, Pokemon, PokemonType, Status
+from poke_env.environment import AbstractBattle, Battle, Move, Pokemon, PokemonType, Status
 from poke_env.player import SinglesEnv
 from poke_env.player.gymnasium_api import _EnvPlayer
 from poke_env.ps_client import AccountConfiguration, ServerConfiguration
@@ -247,10 +247,12 @@ def test_action_to_move():
             p.action_to_order(np.int64(6), battle).message
             == "/choose move flamethrower"
         )
+        check_action_order_roundtrip(np.int64(6), battle)
         battle._available_switches = [active_pokemon]
         assert (
             p.action_to_order(np.int64(0), battle).message == "/choose switch charizard"
         )
+        check_action_order_roundtrip(np.int64(0), battle)
         battle._available_switches = []
         assert (
             p.action_to_order(np.int64(9), battle).message
@@ -262,21 +264,33 @@ def test_action_to_move():
                 p.action_to_order(np.int64(6 + 4), battle).message
                 == "/choose move flamethrower mega"
             )
+            check_action_order_roundtrip(np.int64(6 + 4), battle)
         if has_z_moves:
             battle._can_z_move = True
             assert (
                 p.action_to_order(np.int64(6 + 4 + 4), battle).message
                 == "/choose move flamethrower zmove"
             )
+            check_action_order_roundtrip(np.int64(6 + 4 + 4), battle)
         if has_dynamax:
             battle._can_dynamax = True
             assert (
                 p.action_to_order(np.int64(6 + 4 + 8), battle).message
                 == "/choose move flamethrower dynamax"
             )
+            check_action_order_roundtrip(np.int64(6 + 4 + 8), battle)
         if has_tera:
             battle._can_tera = PokemonType.FIRE
             assert (
                 p.action_to_order(np.int64(6 + 4 + 12), battle).message
                 == "/choose move flamethrower terastallize"
             )
+            check_action_order_roundtrip(np.int64(6 + 4 + 12), battle)
+
+
+def check_action_order_roundtrip(action: np.int64, battle: AbstractBattle):
+    order = SinglesEnv.action_to_order(action, battle)
+    team = [p.base_species for p in battle.team.values()]
+    if "default" not in order.message and "zoroark" not in team:
+        a = SinglesEnv.order_to_action(order, battle)
+        assert order.message == SinglesEnv.action_to_order(a, battle).message
