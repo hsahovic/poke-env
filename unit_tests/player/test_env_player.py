@@ -4,7 +4,14 @@ import numpy as np
 from gymnasium.spaces import Box, Discrete
 
 from poke_env.concurrency import POKE_LOOP
-from poke_env.environment import AbstractBattle, Battle, Move, Pokemon, PokemonType, Status
+from poke_env.environment import (
+    AbstractBattle,
+    Battle,
+    Move,
+    Pokemon,
+    PokemonType,
+    Status,
+)
 from poke_env.player import SinglesEnv
 from poke_env.player.gymnasium_api import _EnvPlayer
 from poke_env.ps_client import AccountConfiguration, ServerConfiguration
