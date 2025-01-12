@@ -325,7 +325,8 @@ def test_doubles_action_order_conversions():
         check_action_order_roundtrip(p, np.array([7, 0]), battle)
         battle._available_switches = [[active_pokemon], []]
         assert (
-            p.action_to_order(np.array([1, 0]), battle).message == "/choose switch charizard"
+            p.action_to_order(np.array([1, 0]), battle).message
+            == "/choose switch charizard"
         )
         check_action_order_roundtrip(p, np.array([1, 0]), battle)
         battle._available_switches = []
@@ -361,6 +362,7 @@ def test_doubles_action_order_conversions():
                 == "/choose move flamethrower terastallize -2"
             )
             check_action_order_roundtrip(p, np.array([7 + 20 + 60, 0]), battle)
+
 
 def check_action_order_roundtrip(env: PokeEnv, action, battle: AbstractBattle):
     order = env.action_to_order(action, battle)

@@ -375,13 +375,13 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         """
         pass
 
-    @abstractmethod
     @staticmethod
+    @abstractmethod
     def action_to_order(action: ActionType, battle: AbstractBattle) -> BattleOrder:
         pass
 
-    @abstractmethod
     @staticmethod
+    @abstractmethod
     def order_to_action(order: BattleOrder, battle: AbstractBattle) -> ActionType:
         pass
 
