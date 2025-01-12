@@ -53,7 +53,20 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             team=team,
             start_challenging=start_challenging,
         )
-        act_size = self.get_action_space_size(battle_format)
+        num_switches = 6
+        num_moves = 4
+        num_targets = 5
+        if battle_format.startswith("gen6"):
+            num_gimmicks = 1
+        elif battle_format.startswith("gen7"):
+            num_gimmicks = 2
+        elif battle_format.startswith("gen8"):
+            num_gimmicks = 3
+        elif battle_format.startswith("gen9"):
+            num_gimmicks = 4
+        else:
+            num_gimmicks = 0
+        act_size = num_switches + num_moves * num_targets * (num_gimmicks + 1)
         self.action_spaces = {
             agent: MultiDiscrete([act_size, act_size]) for agent in self.possible_agents
         }

@@ -8,21 +8,14 @@ from abc import abstractmethod
 from typing import Any, Awaitable, Dict, Generic, List, Optional, Tuple, TypeVar, Union
 from weakref import WeakKeyDictionary
 
-import numpy as np
-import numpy.typing as npt
 from gymnasium.spaces import Space
 from pettingzoo.utils.env import ParallelEnv  # type: ignore[import-untyped]
 
 from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
 from poke_env.environment.abstract_battle import AbstractBattle
-from poke_env.environment.battle import Battle
-from poke_env.environment.double_battle import DoubleBattle
-from poke_env.environment.move import Move
-from poke_env.environment.pokemon import Pokemon
 from poke_env.player.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
-    DoubleBattleOrder,
     ForfeitBattleOrder,
 )
 from poke_env.player.player import Player
@@ -507,31 +500,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         :rtype: Dict
         """
         return {self.possible_agents[0]: {}, self.possible_agents[1]: {}}
-
-    @staticmethod
-    def get_action_space_size(battle_format: str):
-        format_lowercase = battle_format.lower()
-        num_switches = 6
-        num_moves = 4
-        if (
-            "vgc" in format_lowercase
-            or "double" in format_lowercase
-            or "metronome" in format_lowercase
-        ):
-            num_targets = 5
-        else:
-            num_targets = 1
-        if format_lowercase.startswith("gen6"):
-            num_gimmicks = 1
-        elif format_lowercase.startswith("gen7"):
-            num_gimmicks = 2
-        elif format_lowercase.startswith("gen8"):
-            num_gimmicks = 3
-        elif format_lowercase.startswith("gen9"):
-            num_gimmicks = 4
-        else:
-            num_gimmicks = 0
-        return num_switches + num_moves * num_targets * (num_gimmicks + 1)
 
     @staticmethod
     def calc_term_trunc(battle: AbstractBattle):
