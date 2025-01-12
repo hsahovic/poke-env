@@ -339,6 +339,7 @@ def test_doubles_action_order_conversions():
         assert p.action_to_order(np.array([-1, 0]), battle).message == "/forfeit"
         check_action_order_roundtrip(p, ForfeitBattleOrder(), battle)
         battle._available_moves = [[move], []]
+        print(battle.active_pokemon)
         assert (
             p.action_to_order(np.array([7 + 16, 0]), battle).message
             == "/choose move flamethrower"
