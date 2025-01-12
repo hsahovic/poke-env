@@ -297,6 +297,7 @@ class DoubleBattle(AbstractBattle):
         elif move.id == "terastarstorm" and pokemon.type_1 == PokemonType.STELLAR:
             targets = [self.EMPTY_TARGET_POSITION]
         else:
+            print(move.deduced_target)
             targets = {
                 Target.from_showdown_message("adjacentAlly"): [ally_position],
                 Target.from_showdown_message("adjacentAllyOrSelf"): [
