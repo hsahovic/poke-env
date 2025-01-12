@@ -416,4 +416,6 @@ def check_action_order_roundtrip(
     team = [p.base_species for p in battle.team.values()]
     if "default" not in order.message and "zoroark" not in team:
         o = env.action_to_order(action, battle)
-        assert action == env.order_to_action(o, battle)
+        a = env.order_to_action(o, battle)
+        assert action[0] == a[0]
+        assert action[1] == a[1]
