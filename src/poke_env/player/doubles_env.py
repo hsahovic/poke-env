@@ -188,6 +188,8 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
     def order_to_action(
         order: BattleOrder, battle: AbstractBattle
     ) -> npt.NDArray[np.int64]:
+        if isinstance(order, ForfeitBattleOrder):
+            return np.array([-1, -1])
         assert isinstance(order, DoubleBattleOrder)
         assert isinstance(battle, DoubleBattle)
         action1 = DoublesEnv._doubles_order_to_action_individual(
