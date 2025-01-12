@@ -328,6 +328,7 @@ def test_doubles_action_order_conversions():
             start_challenging=False,
         )
         battle = DoubleBattle("bat1", p.agent1.username, p.agent1.logger, gen=gen)
+        battle._player_role = "p1"
         active_pokemon = Pokemon(species="charizard", gen=gen)
         move = Move("flamethrower", gen=gen)
         active_pokemon._moves = {move.id: move}
