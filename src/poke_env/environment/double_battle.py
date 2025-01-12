@@ -273,6 +273,7 @@ class DoubleBattle(AbstractBattle):
 
         pokemon_1, pokemon_2 = self.active_pokemon
         if pokemon == pokemon_1 and move in self.available_moves[0]:
+            print("here")
             self_position = self.POKEMON_1_POSITION
             ally_position = self.POKEMON_2_POSITION
         elif pokemon == pokemon_2 and move in self.available_moves[1]:
