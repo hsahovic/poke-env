@@ -5,8 +5,13 @@ import numpy.typing as npt
 from gymnasium.spaces import MultiDiscrete
 
 from poke_env.environment import AbstractBattle, DoubleBattle, Move, Pokemon
-from poke_env.player import BattleOrder, DoubleBattleOrder, ForfeitBattleOrder, Player
+from poke_env.player.battle_order import (
+    BattleOrder,
+    DoubleBattleOrder,
+    ForfeitBattleOrder,
+)
 from poke_env.player.gymnasium_api import ObsType, PokeEnv
+from poke_env.player.player import Player
 from poke_env.ps_client import (
     AccountConfiguration,
     LocalhostServerConfiguration,

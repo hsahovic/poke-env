@@ -13,7 +13,7 @@ from poke_env.environment import (
     PokemonType,
     Status,
 )
-from poke_env.player import DoublesEnv, SinglesEnv, PokeEnv
+from poke_env.player import DoublesEnv, PokeEnv, SinglesEnv
 from poke_env.player.gymnasium_api import _EnvPlayer
 from poke_env.ps_client import AccountConfiguration, ServerConfiguration
 
