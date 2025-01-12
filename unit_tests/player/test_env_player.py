@@ -412,10 +412,6 @@ def test_doubles_action_order_conversions():
 def check_action_order_roundtrip(
     env: PokeEnv, order: BattleOrder, battle: AbstractBattle
 ):
-    action = env.order_to_action(order, battle)
-    team = [p.base_species for p in battle.team.values()]
-    if "default" not in order.message and "zoroark" not in team:
-        o = env.action_to_order(action, battle)
-        a = env.order_to_action(o, battle)
-        assert action[0] == a[0]
-        assert action[1] == a[1]
+    a = env.order_to_action(order, battle)
+    o = env.action_to_order(a, battle)
+    assert order.message == o.message
