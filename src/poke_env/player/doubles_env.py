@@ -205,10 +205,11 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         order: Optional[BattleOrder], battle: DoubleBattle, pos: int
     ) -> np.int64:
         if order is None:
-            return np.int64(0)
-        assert order.order is not None
-        if isinstance(order, ForfeitBattleOrder):
+            action = 0
+        elif isinstance(order, ForfeitBattleOrder):
             action = -1
+        elif order.order is None:
+            raise AssertionError()
         elif isinstance(order.order, Pokemon):
             action = [p.base_species for p in battle.team.values()].index(
                 order.order.base_species

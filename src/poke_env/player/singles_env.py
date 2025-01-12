@@ -131,9 +131,10 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
     @staticmethod
     def order_to_action(order: BattleOrder, battle: AbstractBattle) -> np.int64:
         assert isinstance(battle, Battle)
-        assert order.order is not None
         if isinstance(order, ForfeitBattleOrder):
             action = -1
+        elif order.order is None:
+            raise AssertionError()
         elif isinstance(order.order, Pokemon):
             action = [p.base_species for p in battle.team.values()].index(
                 order.order.base_species
