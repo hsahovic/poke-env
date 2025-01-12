@@ -227,7 +227,7 @@ def test_action_space():
 
 
 def test_singles_action_order_conversions():
-    for i, (has_megas, has_z_moves, has_dynamax, has_tera) in enumerate(
+    for gen, (has_megas, has_z_moves, has_dynamax, has_tera) in enumerate(
         [
             (False, False, False, False),
             (False, False, False, False),
@@ -235,16 +235,17 @@ def test_singles_action_order_conversions():
             (True, True, False, False),
             (True, True, True, False),
             (True, True, True, True),
-        ]
+        ],
+        start=4,
     ):
         p = SinglesEnv(
-            battle_format=f"gen{i + 4}randombattle",
+            battle_format=f"gen{gen}randombattle",
             start_listening=False,
             start_challenging=False,
         )
-        battle = Battle("bat1", p.agent1.username, p.agent1.logger, gen=i)
-        active_pokemon = Pokemon(species="charizard", gen=i)
-        move = Move("flamethrower", gen=i)
+        battle = Battle("bat1", p.agent1.username, p.agent1.logger, gen=gen)
+        active_pokemon = Pokemon(species="charizard", gen=gen)
+        move = Move("flamethrower", gen=gen)
         active_pokemon._moves = {move.id: move}
         active_pokemon._active = True
         active_pokemon._item = "firiumz"
@@ -297,20 +298,21 @@ def test_singles_action_order_conversions():
 
 
 def test_doubles_action_order_conversions():
-    for i, (has_megas, has_z_moves, has_dynamax, has_tera) in enumerate(
+    for gen, (has_megas, has_z_moves, has_dynamax, has_tera) in enumerate(
         [
             (True, True, True, False),
             (True, True, True, True),
-        ]
+        ],
+        start=8,
     ):
         p = DoublesEnv(
-            battle_format=f"gen{i + 4}randomdoublesbattle",
+            battle_format=f"gen{gen}randomdoublesbattle",
             start_listening=False,
             start_challenging=False,
         )
-        battle = DoubleBattle("bat1", p.agent1.username, p.agent1.logger, gen=i)
-        active_pokemon = Pokemon(species="charizard", gen=i)
-        move = Move("flamethrower", gen=i)
+        battle = DoubleBattle("bat1", p.agent1.username, p.agent1.logger, gen=gen)
+        active_pokemon = Pokemon(species="charizard", gen=gen)
+        move = Move("flamethrower", gen=gen)
         active_pokemon._moves = {move.id: move}
         active_pokemon._active = True
         active_pokemon._item = "firiumz"
