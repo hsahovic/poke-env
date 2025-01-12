@@ -78,7 +78,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
 
     @staticmethod
     def action_to_order(
-        action: npt.NDArray[np.int64], battle: AbstractBattle
+        action: npt.NDArray[np.int64], battle: DoubleBattle
     ) -> BattleOrder:
         """
         Returns the BattleOrder relative to the given action.
@@ -123,7 +123,6 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
 
         """
         try:
-            assert isinstance(battle, DoubleBattle)
             if action[0] == -1 or action[1] == -1:
                 return ForfeitBattleOrder()
             dont_respond1 = any(battle.force_switch) and not battle.force_switch[0]
@@ -195,7 +194,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
 
     @staticmethod
     def order_to_action(
-        order: BattleOrder, battle: AbstractBattle
+        order: BattleOrder, battle: DoubleBattle
     ) -> npt.NDArray[np.int64]:
         """
         Returns the action relative to the given BattleOrder.
@@ -211,7 +210,6 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         if isinstance(order, ForfeitBattleOrder):
             return np.array([-1, -1])
         assert isinstance(order, DoubleBattleOrder)
-        assert isinstance(battle, DoubleBattle)
         action1 = DoublesEnv._doubles_order_to_action_individual(
             order.first_order, battle, 0
         )
