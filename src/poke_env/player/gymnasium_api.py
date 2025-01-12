@@ -425,7 +425,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
 
     @staticmethod
     @abstractmethod
-    def action_to_order(action: ActionType, battle: AbstractBattle) -> BattleOrder:
+    def action_to_order(action: ActionType, battle: Any) -> BattleOrder:
         """
         Returns the BattleOrder relative to the given action.
 
@@ -441,7 +441,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
 
     @staticmethod
     @abstractmethod
-    def order_to_action(order: BattleOrder, battle: AbstractBattle) -> ActionType:
+    def order_to_action(order: BattleOrder, battle: Any) -> ActionType:
         """
         Returns the action relative to the given BattleOrder.
 

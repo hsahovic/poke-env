@@ -71,7 +71,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         }
 
     @staticmethod
-    def action_to_order(action: np.int64, battle: AbstractBattle) -> BattleOrder:
+    def action_to_order(action: np.int64, battle: Battle) -> BattleOrder:
         """
         Returns the BattleOrder relative to the given action.
 
@@ -93,7 +93,6 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         :rtype: BattleOrder
         """
         try:
-            assert isinstance(battle, Battle)
             if action == -1:
                 return ForfeitBattleOrder()
             elif action < 6:
@@ -138,7 +137,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
                 raise e
 
     @staticmethod
-    def order_to_action(order: BattleOrder, battle: AbstractBattle) -> np.int64:
+    def order_to_action(order: BattleOrder, battle: Battle) -> np.int64:
         """
         Returns the action relative to the given BattleOrder.
 
@@ -150,7 +149,6 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         :return: The action for the given battle order in context of the current battle.
         :rtype: int64
         """
-        assert isinstance(battle, Battle)
         if isinstance(order, ForfeitBattleOrder):
             action = -1
         elif order.order is None:
