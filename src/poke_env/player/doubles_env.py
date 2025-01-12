@@ -165,6 +165,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 m.id for m in battle.available_moves[pos]
             ], "invalid pick"
             move = [m for m in battle.available_moves[pos] if m.id == order.order.id][0]
+            print(order.move_target, battle.get_possible_showdown_targets(move, active_mon))
             assert order.move_target in battle.get_possible_showdown_targets(
                 move, active_mon
             ), "invalid pick"
