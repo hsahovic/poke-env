@@ -335,17 +335,18 @@ def test_doubles_action_order_conversions():
         active_pokemon._active = True
         active_pokemon._item = "firiumz"
         battle._team = {"charizard": active_pokemon}
+        battle._opponent_active_pokemon = {"p2a": active_pokemon}
         battle._active_pokemon = {"p1a": active_pokemon}
         assert p.action_to_order(np.array([-1, 0]), battle).message == "/forfeit"
         check_action_order_roundtrip(p, ForfeitBattleOrder(), battle)
         battle._available_moves = [[move], []]
         print(battle.active_pokemon)
         assert (
-            p.action_to_order(np.array([7 + 16, 0]), battle).message
+            p.action_to_order(np.array([7 + 12, 0]), battle).message
             == "/choose move flamethrower"
         )
         check_action_order_roundtrip(
-            p, DoubleBattleOrder(Player.create_order(move, move_target=2)), battle
+            p, DoubleBattleOrder(Player.create_order(move, move_target=1)), battle
         )
         battle._available_switches = [[active_pokemon], []]
         assert (
@@ -357,56 +358,56 @@ def test_doubles_action_order_conversions():
         )
         battle._available_switches = [[], []]
         assert (
-            p.action_to_order(np.array([10 + 16, 0]), battle).message
+            p.action_to_order(np.array([10 + 12, 0]), battle).message
             == "/choose move flamethrower"
         )
         if has_megas:
             battle._can_mega_evolve = [True, True]
             assert (
-                p.action_to_order(np.array([7 + 16 + 20, 0]), battle).message
+                p.action_to_order(np.array([7 + 12 + 20, 0]), battle).message
                 == "/choose move flamethrower mega 2"
             )
             check_action_order_roundtrip(
                 p,
-                DoubleBattleOrder(Player.create_order(move, mega=True, move_target=2)),
+                DoubleBattleOrder(Player.create_order(move, mega=True, move_target=1)),
                 battle,
             )
         if has_z_moves:
             battle._can_z_move = [True, True]
             assert (
-                p.action_to_order(np.array([7 + 16 + 20 + 20, 0]), battle).message
+                p.action_to_order(np.array([7 + 12 + 20 + 20, 0]), battle).message
                 == "/choose move flamethrower zmove 2"
             )
             check_action_order_roundtrip(
                 p,
                 DoubleBattleOrder(
-                    Player.create_order(move, z_move=True, move_target=2)
+                    Player.create_order(move, z_move=True, move_target=1)
                 ),
                 battle,
             )
         if has_dynamax:
             battle._can_dynamax = [True, True]
             assert (
-                p.action_to_order(np.array([7 + 16 + 20 + 40, 0]), battle).message
+                p.action_to_order(np.array([7 + 12 + 20 + 40, 0]), battle).message
                 == "/choose move flamethrower dynamax 2"
             )
             check_action_order_roundtrip(
                 p,
                 DoubleBattleOrder(
-                    Player.create_order(move, dynamax=True, move_target=2)
+                    Player.create_order(move, dynamax=True, move_target=1)
                 ),
                 battle,
             )
         if has_tera:
             battle._can_tera = [PokemonType.FIRE, PokemonType.FIRE]
             assert (
-                p.action_to_order(np.array([7 + 16 + 20 + 60, 0]), battle).message
+                p.action_to_order(np.array([7 + 12 + 20 + 60, 0]), battle).message
                 == "/choose move flamethrower terastallize 2"
             )
             check_action_order_roundtrip(
                 p,
                 DoubleBattleOrder(
-                    Player.create_order(move, terastallize=True, move_target=2)
+                    Player.create_order(move, terastallize=True, move_target=1)
                 ),
                 battle,
             )
