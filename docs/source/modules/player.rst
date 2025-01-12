@@ -5,14 +5,6 @@ The player object and related subclasses
 
 .. contents:: :local:
 
-Env player
-**********
-
-.. automodule:: poke_env.player.env_player
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Player
 ******
 
@@ -21,7 +13,7 @@ Player
    :undoc-members:
    :show-inheritance:
 
-GymnasiumEnv
+PokeEnv
 ************
 
 .. automodule:: poke_env.player.gymnasium_api
