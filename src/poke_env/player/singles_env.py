@@ -73,8 +73,9 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
     @staticmethod
     def action_to_order(action: np.int64, battle: AbstractBattle) -> BattleOrder:
         """
-        SINGLES:
-
+        Returns the BattleOrder relative to the given action.
+        
+        The action mapping is as follows:
         action = -1: forfeit
         0 <= action <= 5: switch
         6 <= action <= 9: move
@@ -82,6 +83,14 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         14 <= action <= 17: move and z-move
         18 <= action <= 21: move and dynamax
         22 <= action <= 25: move and terastallize
+
+        :param action: The action to take.
+        :type action: int64
+        :param battle: The current battle state
+        :type battle: AbstractBattle
+
+        :return: The battle order for the given action in context of the current battle.
+        :rtype: BattleOrder
         """
         try:
             assert isinstance(battle, Battle)
@@ -130,6 +139,17 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
 
     @staticmethod
     def order_to_action(order: BattleOrder, battle: AbstractBattle) -> np.int64:
+        """
+        Returns the action relative to the given BattleOrder.
+
+        :param order: The order to take.
+        :type order: BattleOrder
+        :param battle: The current battle state
+        :type battle: AbstractBattle
+
+        :return: The action for the given battle order in context of the current battle.
+        :rtype: int64
+        """
         assert isinstance(battle, Battle)
         if isinstance(order, ForfeitBattleOrder):
             action = -1

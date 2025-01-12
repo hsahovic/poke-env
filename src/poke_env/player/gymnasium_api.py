@@ -378,11 +378,33 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
     @staticmethod
     @abstractmethod
     def action_to_order(action: ActionType, battle: AbstractBattle) -> BattleOrder:
+        """
+        Returns the BattleOrder relative to the given action.
+
+        :param action: The action to take.
+        :type action: ActionType
+        :param battle: The current battle state
+        :type battle: AbstractBattle
+
+        :return: The battle order for the given action in context of the current battle.
+        :rtype: BattleOrder
+        """
         pass
 
     @staticmethod
     @abstractmethod
     def order_to_action(order: BattleOrder, battle: AbstractBattle) -> ActionType:
+        """
+        Returns the action relative to the given BattleOrder.
+
+        :param order: The order to take.
+        :type order: BattleOrder
+        :param battle: The current battle state
+        :type battle: AbstractBattle
+
+        :return: The action for the given battle order in context of the current battle.
+        :rtype: ActionType
+        """
         pass
 
     ###################################################################################

@@ -81,9 +81,9 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         action: npt.NDArray[np.int64], battle: AbstractBattle
     ) -> BattleOrder:
         """
-        DOUBLES:
+        Returns the BattleOrder relative to the given action.
 
-        The action is a list here, and every element follows the following rules:
+        The action is a list in doubles, and the individual action mapping is as follows:
         element = -1: forfeit
         element = 0: pass
         1 <= element <= 6: switch
@@ -112,6 +112,15 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         95 <= element <= 98: move with target = 0 and terastallize
         99 <= element <= 102: move with target = 1 and terastallize
         103 <= element <= 106: move with target = 2 and terastallize
+
+        :param action: The action to take.
+        :type action: ndarray[int64]
+        :param battle: The current battle state
+        :type battle: AbstractBattle
+
+        :return: The battle order for the given action in context of the current battle.
+        :rtype: BattleOrder
+
         """
         try:
             assert isinstance(battle, DoubleBattle)
@@ -188,6 +197,17 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
     def order_to_action(
         order: BattleOrder, battle: AbstractBattle
     ) -> npt.NDArray[np.int64]:
+        """
+        Returns the action relative to the given BattleOrder.
+
+        :param order: The order to take.
+        :type order: BattleOrder
+        :param battle: The current battle state
+        :type battle: AbstractBattle
+
+        :return: The action for the given battle order in context of the current battle.
+        :rtype: ndarray[int64]
+        """
         if isinstance(order, ForfeitBattleOrder):
             return np.array([-1, -1])
         assert isinstance(order, DoubleBattleOrder)
