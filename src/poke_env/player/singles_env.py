@@ -74,7 +74,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
     def action_to_order(action: np.int64, battle: AbstractBattle) -> BattleOrder:
         """
         Returns the BattleOrder relative to the given action.
-        
+
         The action mapping is as follows:
         action = -1: forfeit
         0 <= action <= 5: switch
