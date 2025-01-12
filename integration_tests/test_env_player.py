@@ -142,43 +142,17 @@ def test_two_successive_calls_gen9():
 
 @pytest.mark.timeout(60)
 def test_check_envs():
-    env_gen4 = SinglesCIEnv(
-        battle_format="gen4randombattle", log_level=25, start_challenging=True
-    )
-    parallel_api_test(env_gen4)
-    env_gen4.close()
-    env_gen5 = SinglesCIEnv(
-        battle_format="gen5randombattle", log_level=25, start_challenging=True
-    )
-    parallel_api_test(env_gen5)
-    env_gen5.close()
-    env_gen6 = SinglesCIEnv(
-        battle_format="gen6randombattle", log_level=25, start_challenging=True
-    )
-    parallel_api_test(env_gen6)
-    env_gen6.close()
-    env_gen7 = SinglesCIEnv(
-        battle_format="gen7randombattle", log_level=25, start_challenging=True
-    )
-    parallel_api_test(env_gen7)
-    env_gen7.close()
-    env_gen8 = SinglesCIEnv(
-        battle_format="gen8randombattle", log_level=25, start_challenging=True
-    )
-    parallel_api_test(env_gen8)
-    env_gen8.close()
-    env_gen8_doubles = DoublesCIEnv(
-        battle_format="gen8randomdoublesbattle", log_level=25, start_challenging=True
-    )
-    parallel_api_test(env_gen8_doubles)
-    env_gen8_doubles.close()
-    env_gen9 = SinglesCIEnv(
-        battle_format="gen9randombattle", log_level=25, start_challenging=True
-    )
-    parallel_api_test(env_gen9)
-    env_gen9.close()
-    env_gen9_doubles = DoublesCIEnv(
-        battle_format="gen9randomdoublesbattle", log_level=25, start_challenging=True
-    )
-    parallel_api_test(env_gen9_doubles)
-    env_gen9_doubles.close()
+    for gen in range(4, 10):
+        env = SinglesCIEnv(
+            battle_format=f"gen{gen}randombattle", log_level=25, start_challenging=True
+        )
+        parallel_api_test(env)
+        env.close()
+    for gen in range(8, 10):
+        env = DoublesCIEnv(
+            battle_format=f"gen{gen}randomdoublesbattle",
+            log_level=25,
+            start_challenging=True,
+        )
+        parallel_api_test(env)
+        env.close()
