@@ -335,6 +335,7 @@ def test_doubles_action_order_conversions():
         active_pokemon._active = True
         active_pokemon._item = "firiumz"
         battle._team = {"charizard": active_pokemon}
+        battle._active_pokemon = {"p1a": active_pokemon}
         assert p.action_to_order(np.array([-1, 0]), battle).message == "/forfeit"
         check_action_order_roundtrip(p, ForfeitBattleOrder(), battle)
         battle._available_moves = [[move], []]

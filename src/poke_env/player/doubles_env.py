@@ -113,25 +113,33 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         99 <= element <= 102: move with target = 1 and terastallize
         103 <= element <= 106: move with target = 2 and terastallize
         """
-        assert isinstance(battle, DoubleBattle)
-        if action[0] == -1 or action[1] == -1:
-            return ForfeitBattleOrder()
-        dont_respond1 = any(battle.force_switch) and not battle.force_switch[0]
-        dont_respond2 = any(battle.force_switch) and not battle.force_switch[1]
-        order1 = (
-            None
-            if dont_respond1
-            else DoublesEnv._action_to_order_individual(action[0], battle, 0)
-        )
-        order2 = (
-            None
-            if dont_respond2
-            else DoublesEnv._action_to_order_individual(action[1], battle, 1)
-        )
-        return DoubleBattleOrder.join_orders(
-            [order1] if order1 is not None else [],
-            [order2] if order2 is not None else [],
-        )[0]
+        try:
+            assert isinstance(battle, DoubleBattle)
+            if action[0] == -1 or action[1] == -1:
+                return ForfeitBattleOrder()
+            dont_respond1 = any(battle.force_switch) and not battle.force_switch[0]
+            dont_respond2 = any(battle.force_switch) and not battle.force_switch[1]
+            order1 = (
+                None
+                if dont_respond1
+                else DoublesEnv._action_to_order_individual(action[0], battle, 0)
+            )
+            order2 = (
+                None
+                if dont_respond2
+                else DoublesEnv._action_to_order_individual(action[1], battle, 1)
+            )
+            return DoubleBattleOrder.join_orders(
+                [order1] if order1 is not None else [],
+                [order2] if order2 is not None else [],
+            )[0]
+        except IndexError:
+            return Player.choose_random_move(battle)
+        except AssertionError as e:
+            if str(e) == "invalid pick":
+                return Player.choose_random_move(battle)
+            else:
+                raise e
 
     @staticmethod
     def _action_to_order_individual(
