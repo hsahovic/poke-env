@@ -6,7 +6,7 @@ from pettingzoo.test.parallel_test import parallel_api_test
 from poke_env.player import DoublesEnv, PokeEnv, SinglesEnv
 
 
-class SinglesCIEnv(SinglesEnv):
+class SinglesTestEnv(SinglesEnv):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.observation_spaces = {
@@ -21,7 +21,7 @@ class SinglesCIEnv(SinglesEnv):
         return np.array([0])
 
 
-class DoublesCIEnv(DoublesEnv):
+class DoublesTestEnv(DoublesEnv):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.observation_spaces = {
@@ -48,7 +48,7 @@ def play_function(env: PokeEnv, n_battles: int):
 
 @pytest.mark.timeout(30)
 def test_random_gymnasium_players_gen4():
-    env = SinglesCIEnv(
+    env = SinglesTestEnv(
         battle_format="gen4randombattle", log_level=25, start_challenging=False
     )
     env.start_challenging(3)
@@ -57,7 +57,7 @@ def test_random_gymnasium_players_gen4():
 
 @pytest.mark.timeout(30)
 def test_random_gymnasium_players_gen5():
-    env = SinglesCIEnv(
+    env = SinglesTestEnv(
         battle_format="gen5randombattle", log_level=25, start_challenging=False
     )
     env.start_challenging(3)
@@ -66,7 +66,7 @@ def test_random_gymnasium_players_gen5():
 
 @pytest.mark.timeout(30)
 def test_random_gymnasium_players_gen6():
-    env = SinglesCIEnv(
+    env = SinglesTestEnv(
         battle_format="gen6randombattle", log_level=25, start_challenging=False
     )
     env.start_challenging(3)
@@ -75,7 +75,7 @@ def test_random_gymnasium_players_gen6():
 
 @pytest.mark.timeout(30)
 def test_random_gymnasium_players_gen7():
-    env = SinglesCIEnv(
+    env = SinglesTestEnv(
         battle_format="gen7randombattle", log_level=25, start_challenging=False
     )
     env.start_challenging(3)
@@ -84,7 +84,7 @@ def test_random_gymnasium_players_gen7():
 
 @pytest.mark.timeout(30)
 def test_random_gymnasium_players_gen8():
-    env = SinglesCIEnv(
+    env = SinglesTestEnv(
         battle_format="gen8randombattle", log_level=25, start_challenging=False
     )
     env.start_challenging(3)
@@ -93,7 +93,7 @@ def test_random_gymnasium_players_gen8():
 
 @pytest.mark.timeout(30)
 def test_random_gymnasium_player_doubles_gen8():
-    env = DoublesCIEnv(
+    env = DoublesTestEnv(
         battle_format="gen8randomdoublesbattle", log_level=25, start_challenging=False
     )
     env.start_challenging(3)
@@ -102,7 +102,7 @@ def test_random_gymnasium_player_doubles_gen8():
 
 @pytest.mark.timeout(30)
 def test_random_gymnasium_players_gen9():
-    env = SinglesCIEnv(
+    env = SinglesTestEnv(
         battle_format="gen9randombattle", log_level=25, start_challenging=False
     )
     env.start_challenging(3)
@@ -111,7 +111,7 @@ def test_random_gymnasium_players_gen9():
 
 @pytest.mark.timeout(30)
 def test_random_gymnasium_player_doubles_gen9():
-    env = DoublesCIEnv(
+    env = DoublesTestEnv(
         battle_format="gen9randomdoublesbattle", log_level=25, start_challenging=False
     )
     env.start_challenging(3)
@@ -120,7 +120,7 @@ def test_random_gymnasium_player_doubles_gen9():
 
 @pytest.mark.timeout(60)
 def test_two_successive_calls_gen8():
-    env = SinglesCIEnv(
+    env = SinglesTestEnv(
         battle_format="gen8randombattle", log_level=25, start_challenging=False
     )
     env.start_challenging(2)
@@ -131,7 +131,7 @@ def test_two_successive_calls_gen8():
 
 @pytest.mark.timeout(60)
 def test_two_successive_calls_gen9():
-    env = SinglesCIEnv(
+    env = SinglesTestEnv(
         battle_format="gen9randombattle", log_level=25, start_challenging=False
     )
     env.start_challenging(2)
@@ -143,13 +143,13 @@ def test_two_successive_calls_gen9():
 @pytest.mark.timeout(60)
 def test_check_envs():
     for gen in range(4, 10):
-        env = SinglesCIEnv(
+        env = SinglesTestEnv(
             battle_format=f"gen{gen}randombattle", log_level=25, start_challenging=True
         )
         parallel_api_test(env)
         env.close()
     for gen in range(8, 10):
-        env = DoublesCIEnv(
+        env = DoublesTestEnv(
             battle_format=f"gen{gen}randomdoublesbattle",
             log_level=25,
             start_challenging=True,
