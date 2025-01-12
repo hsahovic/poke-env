@@ -339,11 +339,11 @@ def test_doubles_action_order_conversions():
         check_action_order_roundtrip(p, ForfeitBattleOrder(), battle)
         battle._available_moves = [[move], []]
         assert (
-            p.action_to_order(np.array([7, 0]), battle).message
+            p.action_to_order(np.array([7 + 16, 0]), battle).message
             == "/choose move flamethrower"
         )
         check_action_order_roundtrip(
-            p, DoubleBattleOrder(Player.create_order(move, move_target=-2)), battle
+            p, DoubleBattleOrder(Player.create_order(move, move_target=2)), battle
         )
         battle._available_switches = [[active_pokemon], []]
         assert (
@@ -353,9 +353,9 @@ def test_doubles_action_order_conversions():
         check_action_order_roundtrip(
             p, DoubleBattleOrder(Player.create_order(active_pokemon)), battle
         )
-        battle._available_switches = []
+        battle._available_switches = [[], []]
         assert (
-            p.action_to_order(np.array([10, 0]), battle).message
+            p.action_to_order(np.array([10 + 16, 0]), battle).message
             == "/choose move flamethrower"
         )
         if has_megas:
