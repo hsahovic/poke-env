@@ -1,7 +1,6 @@
 from typing import Any, Awaitable, Dict, Optional, Tuple
 
 from gymnasium import Env
-from gymnasium.spaces import Space
 
 from poke_env.player.gymnasium_api import ActionType, ObsType, PokeEnv
 from poke_env.player.player import Player
