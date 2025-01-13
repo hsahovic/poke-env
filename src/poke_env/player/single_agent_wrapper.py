@@ -1,6 +1,7 @@
 from typing import Any, Awaitable, Dict, Optional, Tuple
 
 from gymnasium import Env
+from gymnasium.spaces import Space
 
 from poke_env.player.gymnasium_api import ActionType, ObsType, PokeEnv
 from poke_env.player.player import Player
@@ -10,6 +11,8 @@ class SingleAgentWrapper(Env[ObsType, ActionType]):
     def __init__(self, env: PokeEnv[ObsType, ActionType], opponent: Player):
         self.env = env
         self.opponent = opponent
+        self.observation_space = list(env.observation_spaces.values())[0]
+        self.action_space = list(env.action_spaces.values())[0]
 
     def reset(
         self,
@@ -17,7 +20,7 @@ class SingleAgentWrapper(Env[ObsType, ActionType]):
         seed: Optional[int] = None,
         options: Optional[Dict[str, Any]] = None,
     ) -> Tuple[ObsType, Dict[str, Any]]:
-        obs, infos = self.env.reset()
+        obs, infos = self.env.reset(seed, options)
         return obs[self.env.agent1.username], infos[self.env.agent1.username]
 
     def step(
