@@ -4,7 +4,7 @@ import numpy as np
 import numpy.typing as npt
 from gymnasium.spaces import MultiDiscrete
 
-from poke_env.environment import AbstractBattle, DoubleBattle, Move, Pokemon
+from poke_env.environment import DoubleBattle, Move, Pokemon
 from poke_env.player.battle_order import (
     BattleOrder,
     DoubleBattleOrder,
@@ -210,16 +210,12 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         if isinstance(order, ForfeitBattleOrder):
             return np.array([-1, -1])
         assert isinstance(order, DoubleBattleOrder)
-        action1 = DoublesEnv._doubles_order_to_action_individual(
-            order.first_order, battle, 0
-        )
-        action2 = DoublesEnv._doubles_order_to_action_individual(
-            order.second_order, battle, 1
-        )
+        action1 = DoublesEnv._order_to_action_individual(order.first_order, battle, 0)
+        action2 = DoublesEnv._order_to_action_individual(order.second_order, battle, 1)
         return np.array([action1, action2])
 
     @staticmethod
-    def _doubles_order_to_action_individual(
+    def _order_to_action_individual(
         order: Optional[BattleOrder], battle: DoubleBattle, pos: int
     ) -> np.int64:
         if order is None:
