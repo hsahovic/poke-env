@@ -15,9 +15,7 @@ class DummyEnv(GymnasiumEnv[ObsType, ActionType]):
         self.opponent = None
         super().__init__(*args, **kwargs)
 
-    def calc_reward(
-        self, last_battle: AbstractBattle, current_battle: AbstractBattle
-    ) -> float:
+    def calc_reward(self, battle: AbstractBattle) -> float:
         return 69.42
 
     def action_to_move(self, action: int, battle: AbstractBattle) -> BattleOrder:
