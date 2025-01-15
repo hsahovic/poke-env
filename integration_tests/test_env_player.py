@@ -1,12 +1,20 @@
 import numpy as np
+import numpy.typing as npt
 import pytest
 from gymnasium.spaces import Box
+from gymnasium.utils.env_checker import check_env
 from pettingzoo.test.parallel_test import parallel_api_test
 
-from poke_env.player import DoublesEnv, PokeEnv, SinglesEnv
+from poke_env.player import (
+    DoublesEnv,
+    PokeEnv,
+    RandomPlayer,
+    SingleAgentWrapper,
+    SinglesEnv,
+)
 
 
-class SinglesTestEnv(SinglesEnv):
+class SinglesTestEnv(SinglesEnv[npt.NDArray[np.float32]]):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.observation_spaces = {
@@ -21,7 +29,7 @@ class SinglesTestEnv(SinglesEnv):
         return np.array([0])
 
 
-class DoublesTestEnv(DoublesEnv):
+class DoublesTestEnv(DoublesEnv[npt.NDArray[np.float32]]):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.observation_spaces = {
@@ -148,6 +156,9 @@ def test_check_envs():
         )
         parallel_api_test(env)
         env.close()
+        env = SingleAgentWrapper(env, RandomPlayer())
+        check_env(env)
+        env.close()
     for gen in range(8, 10):
         env = DoublesTestEnv(
             battle_format=f"gen{gen}randomdoublesbattle",
@@ -155,4 +166,7 @@ def test_check_envs():
             start_challenging=True,
         )
         parallel_api_test(env)
+        env.close()
+        env = SingleAgentWrapper(env, RandomPlayer())
+        check_env(env)
         env.close()
