@@ -154,6 +154,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         :rtype: int64
         """
         if isinstance(order, DefaultBattleOrder):
+            print(battle.player_role, battle.available_moves, battle.available_switches)
             o = Player.create_order(
                 (battle.available_moves + battle.available_switches)[0]
             )
