@@ -31,7 +31,7 @@ class SingleAgentWrapper(Env[ObsType, ActionType]):
         opp_action = self.env.order_to_action(opp_order, self.env.battle1)
         actions = {
             self.env.agent1.username: action,
-            self.opponent.username: opp_action,
+            self.env.agent2.username: opp_action,
         }
         obs, rewards, terms, truncs, infos = self.env.step(actions)
         return (
