@@ -54,6 +54,16 @@ def play_function(env: PokeEnv, n_battles: int):
             done = any(terminated.values()) or any(truncated.values())
 
 
+def single_agent_play_function(env: SingleAgentWrapper, n_battles: int):
+    for _ in range(n_battles):
+        done = False
+        env.reset()
+        while not done:
+            action = env.action_space.sample()
+            _, _, terminated, truncated, _ = env.step(action)
+            done = terminated or truncated
+
+
 @pytest.mark.timeout(30)
 def test_random_gymnasium_players_gen4():
     env = SinglesTestEnv(
@@ -61,6 +71,9 @@ def test_random_gymnasium_players_gen4():
     )
     env.start_challenging(3)
     play_function(env, 3)
+    single_agent_env = SingleAgentWrapper(env, RandomPlayer())
+    env.start_challenging(3)
+    single_agent_play_function(single_agent_env, 3)
 
 
 @pytest.mark.timeout(30)
