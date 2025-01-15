@@ -7,6 +7,7 @@ from gymnasium.spaces import MultiDiscrete
 from poke_env.environment import DoubleBattle, Move, Pokemon
 from poke_env.player.battle_order import (
     BattleOrder,
+    DefaultBattleOrder,
     DoubleBattleOrder,
     ForfeitBattleOrder,
 )
@@ -220,6 +221,11 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
     ) -> np.int64:
         if order is None:
             action = 0
+        elif isinstance(order, DefaultBattleOrder):
+            o = Player.create_order(
+                (battle.available_moves[pos] + battle.available_switches[pos])[0]
+            )
+            return DoublesEnv._order_to_action_individual(o, battle, pos)
         elif isinstance(order, ForfeitBattleOrder):
             action = -1
         elif order.order is None:

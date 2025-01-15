@@ -4,7 +4,11 @@ import numpy as np
 from gymnasium.spaces import Discrete
 
 from poke_env.environment import Battle, Move, Pokemon
-from poke_env.player.battle_order import BattleOrder, ForfeitBattleOrder
+from poke_env.player.battle_order import (
+    BattleOrder,
+    ForfeitBattleOrder,
+    DefaultBattleOrder,
+)
 from poke_env.player.gymnasium_api import ObsType, PokeEnv
 from poke_env.player.player import Player
 from poke_env.ps_client import (
@@ -149,7 +153,12 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         :return: The action for the given battle order in context of the current battle.
         :rtype: int64
         """
-        if isinstance(order, ForfeitBattleOrder):
+        if isinstance(order, DefaultBattleOrder):
+            o = Player.create_order(
+                (battle.available_moves + battle.available_switches)[0]
+            )
+            return SinglesEnv.order_to_action(o, battle)
+        elif isinstance(order, ForfeitBattleOrder):
             action = -1
         elif order.order is None:
             raise AssertionError()
