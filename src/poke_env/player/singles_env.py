@@ -80,6 +80,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         Returns the BattleOrder relative to the given action.
 
         The action mapping is as follows:
+        action = -2: default
         action = -1: forfeit
         0 <= action <= 5: switch
         6 <= action <= 9: move
@@ -97,7 +98,9 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         :rtype: BattleOrder
         """
         try:
-            if action == -1:
+            if action == -2:
+                return DefaultBattleOrder()
+            elif action == -1:
                 return ForfeitBattleOrder()
             elif action < 6:
                 order = Player.create_order(list(battle.team.values())[action])
@@ -154,11 +157,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         :rtype: int64
         """
         if isinstance(order, DefaultBattleOrder):
-            print(battle.player_role, battle.available_moves, battle.available_switches)
-            o = Player.create_order(
-                (battle.available_moves + battle.available_switches)[0]
-            )
-            action = SinglesEnv.order_to_action(o, battle)
+            action = -2
         elif isinstance(order, ForfeitBattleOrder):
             action = -1
         elif order.order is None:

@@ -85,6 +85,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         Returns the BattleOrder relative to the given action.
 
         The action is a list in doubles, and the individual action mapping is as follows:
+        element = -2: default
         element = -1: forfeit
         element = 0: pass
         1 <= element <= 6: switch
@@ -154,7 +155,9 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
     def _action_to_order_individual(
         action: np.int64, battle: DoubleBattle, pos: int
     ) -> Optional[BattleOrder]:
-        if action == 0:
+        if action == -2:
+            order = DefaultBattleOrder()
+        elif action == 0:
             order = None
         elif action < 7:
             order = Player.create_order(list(battle.team.values())[action - 1])
@@ -208,7 +211,9 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         :return: The action for the given battle order in context of the current battle.
         :rtype: ndarray[int64]
         """
-        if isinstance(order, ForfeitBattleOrder):
+        if isinstance(order, DefaultBattleOrder):
+            return np.array([-2, -2])
+        elif isinstance(order, ForfeitBattleOrder):
             return np.array([-1, -1])
         assert isinstance(order, DoubleBattleOrder)
         action1 = DoublesEnv._order_to_action_individual(order.first_order, battle, 0)
@@ -222,11 +227,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         if order is None:
             action = 0
         elif isinstance(order, DefaultBattleOrder):
-            print(battle.player_role, battle.available_moves[pos], battle.available_switches[pos])
-            o = Player.create_order(
-                (battle.available_moves[pos] + battle.available_switches[pos])[0]
-            )
-            action = DoublesEnv._order_to_action_individual(o, battle, pos)
+            action = -2
         elif isinstance(order, ForfeitBattleOrder):
             action = -1
         elif order.order is None:
