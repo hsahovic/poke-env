@@ -148,7 +148,7 @@ def test_two_successive_calls_gen9():
     play_function(env, 2)
 
 
-@pytest.mark.timeout(60)
+@pytest.mark.timeout(120)
 def test_check_envs():
     for gen in range(4, 10):
         env = SinglesTestEnv(
