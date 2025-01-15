@@ -169,9 +169,9 @@ def test_check_envs():
         )
         parallel_api_test(env)
         env.close()
-        env = SingleAgentWrapper(env, RandomPlayer())
-        check_env(env)
-        env.close()
+        single_agent_env = SingleAgentWrapper(env, RandomPlayer())
+        check_env(single_agent_env)
+        single_agent_env.close()
     for gen in range(8, 10):
         env = DoublesTestEnv(
             battle_format=f"gen{gen}randomdoublesbattle",
