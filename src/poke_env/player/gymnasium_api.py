@@ -371,11 +371,8 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
     @abstractmethod
     def calc_reward(self, battle: AbstractBattle) -> float:
         """
-        Returns the reward for the current battle state. The battle state in the previous
-        turn is given as well and can be used for comparisons.
+        Returns the reward for the current battle state.
 
-        :param last_battle: The battle state in the previous turn.
-        :type last_battle: AbstractBattle
         :param battle: The current battle state.
         :type battle: AbstractBattle
 
