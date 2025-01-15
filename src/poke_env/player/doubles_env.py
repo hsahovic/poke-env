@@ -225,7 +225,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             o = Player.create_order(
                 (battle.available_moves[pos] + battle.available_switches[pos])[0]
             )
-            return DoublesEnv._order_to_action_individual(o, battle, pos)
+            action = DoublesEnv._order_to_action_individual(o, battle, pos)
         elif isinstance(order, ForfeitBattleOrder):
             action = -1
         elif order.order is None:

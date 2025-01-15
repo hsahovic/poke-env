@@ -157,7 +157,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
             o = Player.create_order(
                 (battle.available_moves + battle.available_switches)[0]
             )
-            return SinglesEnv.order_to_action(o, battle)
+            action = SinglesEnv.order_to_action(o, battle)
         elif isinstance(order, ForfeitBattleOrder):
             action = -1
         elif order.order is None:
