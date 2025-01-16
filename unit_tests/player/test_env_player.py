@@ -85,7 +85,7 @@ async def run_test_choose_move():
     assert message.message == "/choose switch charizard"
 
 
-def test_choose_move(queue_put_mock, queue_get_mock):
+def test_choose_move():
     asyncio.run_coroutine_threadsafe(run_test_choose_move(), POKE_LOOP)
 
 
