@@ -29,8 +29,8 @@ class CustomEnvPlayer(EnvPlayer):
     def calc_reward(self, last_battle, current_battle) -> float:
         pass
 
-    def action_to_move(self, action: np.int64, battle: AbstractBattle) -> BattleOrder:
-        return Gen7EnvSinglePlayer.action_to_move(self, action, battle)
+    def action_to_order(self, action: np.int64, battle: AbstractBattle) -> BattleOrder:
+        return Gen7EnvSinglePlayer.action_to_order(self, action, battle)
 
     def describe_embedding(self) -> Space:
         pass
@@ -68,13 +68,13 @@ async def run_test_choose_move():
     battle._available_moves = [Move("flamethrower", gen=8)]
     # Test choosing a move
     message = await player.agent1.choose_move(battle)
-    order = player.action_to_move(np.int64(6), battle)
+    order = player.action_to_order(np.int64(6), battle)
     player.agent1.order_queue.put(order)
     assert message.message == "/choose move flamethrower"
     # Test switching Pokémon
     battle._available_switches = [Pokemon(species="charizard", gen=8)]
     message = await player.agent1.choose_move(battle)
-    order = player.action_to_move(np.int64(0), battle)
+    order = player.action_to_order(np.int64(0), battle)
     player.agent1.order_queue.put(order)
     assert message.message == "/choose switch charizard"
 
@@ -250,7 +250,7 @@ def test_action_space():
     "poke_env.environment.Pokemon.available_z_moves",
     new_callable=unittest.mock.PropertyMock,
 )
-def test_action_to_move(z_moves_mock):
+def test_action_to_order(z_moves_mock):
     for PlayerClass, (has_megas, has_z_moves, has_dynamax, has_tera) in zip(
         [
             Gen4EnvSinglePlayer,
@@ -285,12 +285,12 @@ def test_action_to_move(z_moves_mock):
 
         p = CustomEnvPlayerClass(start_listening=False, start_challenging=False)
         battle = Battle("bat1", p.agent1.username, p.agent1.logger, gen=8)
-        assert p.action_to_move(-1, battle).message == "/forfeit"
+        assert p.action_to_order(-1, battle).message == "/forfeit"
         battle._available_moves = [Move("flamethrower", gen=8)]
-        assert p.action_to_move(0, battle).message == "/choose move flamethrower"
+        assert p.action_to_order(0, battle).message == "/choose move flamethrower"
         battle._available_switches = [Pokemon(species="charizard", gen=8)]
         assert (
-            p.action_to_move(
+            p.action_to_order(
                 4
                 + (4 * int(has_megas))
                 + (4 * int(has_z_moves))
@@ -301,11 +301,11 @@ def test_action_to_move(z_moves_mock):
             == "/choose switch charizard"
         )
         battle._available_switches = []
-        assert p.action_to_move(3, battle).message == "/choose move flamethrower"
+        assert p.action_to_order(3, battle).message == "/choose move flamethrower"
         if has_megas:
             battle._can_mega_evolve = True
             assert (
-                p.action_to_move(4 + (4 * int(has_z_moves)), battle).message
+                p.action_to_order(4 + (4 * int(has_z_moves)), battle).message
                 == "/choose move flamethrower mega"
             )
         if has_z_moves:
@@ -315,18 +315,18 @@ def test_action_to_move(z_moves_mock):
             battle._team = {"charizard": active_pokemon}
             z_moves_mock.return_value = [Move("flamethrower", gen=8)]
             assert (
-                p.action_to_move(4, battle).message == "/choose move flamethrower zmove"
+                p.action_to_order(4, battle).message == "/choose move flamethrower zmove"
             )
             battle._team = {}
         if has_dynamax:
             battle._can_dynamax = True
             assert (
-                p.action_to_move(12, battle).message
+                p.action_to_order(12, battle).message
                 == "/choose move flamethrower dynamax"
             )
         if has_tera:
             battle._can_tera = True
             assert (
-                p.action_to_move(16, battle).message
+                p.action_to_order(16, battle).message
                 == "/choose move flamethrower terastallize"
             )

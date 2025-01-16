@@ -226,7 +226,7 @@ class Gen4EnvSinglePlayer(EnvPlayer):
     _ACTION_SPACE = list(range(4 + 6))
     _DEFAULT_BATTLE_FORMAT = "gen4randombattle"
 
-    def action_to_move(self, action: np.int64, battle: AbstractBattle) -> BattleOrder:
+    def action_to_order(self, action: np.int64, battle: AbstractBattle) -> BattleOrder:
         """Converts actions to move orders.
 
         The conversion is done as follows:
@@ -269,7 +269,7 @@ class Gen6EnvSinglePlayer(EnvPlayer):
     _ACTION_SPACE = list(range(2 * 4 + 6))
     _DEFAULT_BATTLE_FORMAT = "gen6randombattle"
 
-    def action_to_move(self, action: np.int64, battle: AbstractBattle) -> BattleOrder:
+    def action_to_order(self, action: np.int64, battle: AbstractBattle) -> BattleOrder:
         """Converts actions to move orders.
 
         The conversion is done as follows:
@@ -317,7 +317,7 @@ class Gen7EnvSinglePlayer(EnvPlayer):
     _ACTION_SPACE = list(range(3 * 4 + 6))
     _DEFAULT_BATTLE_FORMAT = "gen7randombattle"
 
-    def action_to_move(self, action: np.int64, battle: AbstractBattle) -> BattleOrder:
+    def action_to_order(self, action: np.int64, battle: AbstractBattle) -> BattleOrder:
         """Converts actions to move orders.
 
         The conversion is done as follows:
@@ -377,7 +377,7 @@ class Gen8EnvSinglePlayer(EnvPlayer):
     _ACTION_SPACE = list(range(4 * 4 + 6))
     _DEFAULT_BATTLE_FORMAT = "gen8randombattle"
 
-    def action_to_move(self, action: np.int64, battle: AbstractBattle) -> BattleOrder:
+    def action_to_order(self, action: np.int64, battle: AbstractBattle) -> BattleOrder:
         """Converts actions to move orders.
 
         The conversion is done as follows:
@@ -451,7 +451,7 @@ class Gen9EnvSinglePlayer(EnvPlayer):
     _ACTION_SPACE = list(range(5 * 4 + 6))
     _DEFAULT_BATTLE_FORMAT = "gen9randombattle"
 
-    def action_to_move(self, action: np.int64, battle: AbstractBattle) -> BattleOrder:
+    def action_to_order(self, action: np.int64, battle: AbstractBattle) -> BattleOrder:
         """Converts actions to move orders.
 
         The conversion is done as follows:

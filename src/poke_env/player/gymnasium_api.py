@@ -269,10 +269,10 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
         self.last_battle2 = copy.copy(self.current_battle2)
         self.last_battle2.logger = None
         if self.agent1.waiting:
-            order1 = self.action_to_move(actions[self.agents[0]], self.current_battle1)
+            order1 = self.action_to_order(actions[self.agents[0]], self.current_battle1)
             self.agent1.order_queue.put(order1)
         if self.agent2.waiting:
-            order2 = self.action_to_move(actions[self.agents[1]], self.current_battle2)
+            order2 = self.action_to_order(actions[self.agents[1]], self.current_battle2)
             self.agent2.order_queue.put(order2)
         battle1 = self.agent1.battle_queue.get(
             timeout=0.01, default=self.current_battle1
@@ -406,7 +406,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
         pass
 
     @abstractmethod
-    def action_to_move(self, action: np.int64, battle: AbstractBattle) -> BattleOrder:
+    def action_to_order(self, action: np.int64, battle: AbstractBattle) -> BattleOrder:
         """
         Returns the BattleOrder relative to the given action.
 
