@@ -25,10 +25,10 @@ class SingleAgentWrapper(Env[ObsType, ActionType]):
     def step(
         self, action: ActionType
     ) -> Tuple[ObsType, float, bool, bool, Dict[str, Any]]:
-        assert self.env.battle1 is not None
-        opp_order = self.opponent.choose_move(self.env.battle1)
+        assert self.env.agent2.battle is not None
+        opp_order = self.opponent.choose_move(self.env.agent2.battle)
         assert not isinstance(opp_order, Awaitable)
-        opp_action = self.env.order_to_action(opp_order, self.env.battle1)
+        opp_action = self.env.order_to_action(opp_order, self.env.agent2.battle)
         actions = {
             self.env.agent1.username: action,
             self.env.agent2.username: opp_action,
