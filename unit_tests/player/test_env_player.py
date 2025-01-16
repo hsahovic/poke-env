@@ -25,7 +25,7 @@ account_configuration2 = AccountConfiguration("username2", "password2")
 server_configuration = ServerConfiguration("server.url", "auth.url")
 
 
-class CustomEnv(EnvPlayer):
+class CustomEnvPlayer(EnvPlayer):
     def calc_reward(self, last_battle, current_battle) -> float:
         pass
 
@@ -42,7 +42,7 @@ class CustomEnv(EnvPlayer):
 
 
 def test_init():
-    gymnasium_env = CustomEnv(
+    gymnasium_env = CustomEnvPlayer(
         account_configuration1=account_configuration1,
         account_configuration2=account_configuration2,
         server_configuration=server_configuration,
@@ -50,12 +50,12 @@ def test_init():
         battle_format="gen7randombattles",
     )
     player = gymnasium_env.agent1
-    assert isinstance(gymnasium_env, CustomEnv)
+    assert isinstance(gymnasium_env, CustomEnvPlayer)
     assert isinstance(player, _EnvPlayer)
 
 
 async def run_test_choose_move():
-    player = CustomEnv(
+    player = CustomEnvPlayer(
         account_configuration1=account_configuration1,
         account_configuration2=account_configuration2,
         server_configuration=server_configuration,
@@ -89,7 +89,7 @@ def test_choose_move():
 
 
 def test_reward_computing_helper():
-    player = CustomEnv(
+    player = CustomEnvPlayer(
         account_configuration1=account_configuration1,
         account_configuration2=account_configuration2,
         server_configuration=server_configuration,
@@ -212,7 +212,7 @@ def test_reward_computing_helper():
 
 
 def test_action_space():
-    player = CustomEnv(start_listening=False)
+    player = CustomEnvPlayer(start_listening=False)
     assert player.action_space(player.possible_agents[0]) == Discrete(
         len(Gen7EnvSinglePlayer._ACTION_SPACE)
     )
@@ -234,7 +234,7 @@ def test_action_space():
         ],
     ):
 
-        class CustomEnvClass(PlayerClass):
+        class CustomEnvPlayerClass(PlayerClass):
             def embed_battle(self, *args, **kwargs):
                 return []
 
@@ -244,7 +244,7 @@ def test_action_space():
             def describe_embedding(self):
                 return None
 
-        p = CustomEnvClass(start_listening=False, start_challenging=False)
+        p = CustomEnvPlayerClass(start_listening=False, start_challenging=False)
 
         assert p.action_space(p.possible_agents[0]) == Discrete(
             4 * sum([1, has_megas, has_z_moves, has_dynamax]) + 6
@@ -275,7 +275,7 @@ def test_action_to_move(z_moves_mock):
         ],
     ):
 
-        class CustomEnvClass(PlayerClass):
+        class CustomEnvPlayerClass(PlayerClass):
             def embed_battle(self, *args, **kwargs):
                 return []
 
@@ -288,7 +288,7 @@ def test_action_to_move(z_moves_mock):
             def get_opponent(self):
                 return None
 
-        p = CustomEnvClass(start_listening=False, start_challenging=False)
+        p = CustomEnvPlayerClass(start_listening=False, start_challenging=False)
         battle = Battle("bat1", p.agent1.username, p.agent1.logger, gen=8)
         assert p.action_to_move(-1, battle).message == "/forfeit"
         battle._available_moves = [Move("flamethrower", gen=8)]
