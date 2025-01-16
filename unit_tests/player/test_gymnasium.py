@@ -2,7 +2,6 @@ import asyncio
 import sys
 from io import StringIO
 
-from gymnasium import Space
 from pettingzoo.utils.env import ActionType, ObsType
 
 from poke_env.environment import AbstractBattle, Battle, Pokemon

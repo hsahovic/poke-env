@@ -3,7 +3,7 @@ import unittest
 from inspect import isawaitable
 from unittest.mock import patch
 
-from gymnasium.spaces import Discrete, Space
+from gymnasium.spaces import Discrete
 
 from poke_env import AccountConfiguration, ServerConfiguration
 from poke_env.environment import AbstractBattle, Battle, Move, Pokemon, Status
