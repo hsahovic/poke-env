@@ -221,9 +221,6 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         )
         self.agents: List[str] = []
         self.possible_agents = [self.agent1.username, self.agent2.username]
-        self.observation_spaces = {
-            name: self.describe_embedding() for name in self.possible_agents
-        }
         self.action_spaces = {
             name: Discrete(self.action_space_size()) for name in self.possible_agents
         }
@@ -369,10 +366,10 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         )
         closing_task.result()
 
-    def observation_space(self, agent: str) -> Space:
+    def observation_space(self, agent: str) -> Space[ObsType]:
         return self.observation_spaces[agent]
 
-    def action_space(self, agent: str):
+    def action_space(self, agent: str) -> Space[ActionType]:
         return self.action_spaces[agent]
 
     ###################################################################################
@@ -421,17 +418,6 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         :type battle: AbstractBattle
 
         :return: The embedding of the current battle state.
-        """
-        pass
-
-    @abstractmethod
-    def describe_embedding(self) -> Space[ObsType]:
-        """
-        Returns the description of the embedding. It must return a Space specifying
-        low bounds and high bounds.
-
-        :return: The description of the embedding.
-        :rtype: Space
         """
         pass
 

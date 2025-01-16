@@ -24,6 +24,17 @@ from poke_env.player import (
 
 
 class SimpleRLPlayer(Gen8EnvSinglePlayer):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        low = [-1, -1, -1, -1, 0, 0, 0, 0, 0, 0]
+        high = [3, 3, 3, 3, 4, 4, 4, 4, 1, 1]
+        self.observation_spaces = {
+        agent: Box(
+            np.array(low, dtype=np.float32),
+            np.array(high, dtype=np.float32),
+            dtype=np.float32,
+        ) for agent in self.possible_agents}
+
     def calc_reward(self, last_battle, current_battle) -> float:
         return self.reward_computing_helper(
             current_battle, fainted_value=2.0, hp_value=1.0, victory_value=30.0
@@ -59,15 +70,6 @@ class SimpleRLPlayer(Gen8EnvSinglePlayer):
             ]
         )
         return np.float32(final_vector)
-
-    def describe_embedding(self) -> Space:
-        low = [-1, -1, -1, -1, 0, 0, 0, 0, 0, 0]
-        high = [3, 3, 3, 3, 4, 4, 4, 4, 1, 1]
-        return Box(
-            np.array(low, dtype=np.float32),
-            np.array(high, dtype=np.float32),
-            dtype=np.float32,
-        )
 
 
 async def main():

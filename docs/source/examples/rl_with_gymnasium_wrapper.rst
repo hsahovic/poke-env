@@ -27,7 +27,7 @@ Observations are embeddings of the current state of the battle. They can be an a
 To define our observations, we will create a custom ``embed_battle`` method. It takes one argument, a ``Battle`` object, and returns our embedding.
 
 In addition to this, we also need to describe the embedding to the gymnasium interface.
-To achieve this, we need to implement the ``describe_embedding`` method where we specify the low bound and the high bound
+To achieve this, we need to initialize the ``observation_spaces`` field in the ``__init__`` method where we specify the low bound and the high bound
 for each component of the embedding vector and return them as a ``gymnasium.Space`` object.
 
 Defining rewards
@@ -58,6 +58,19 @@ Our player will play the ``gen8randombattle`` format. We can therefore inherit f
     from poke_env.player import Gen8EnvSinglePlayer
 
     class SimpleRLPlayer(Gen8EnvSinglePlayer):
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+            low = [-1, -1, -1, -1, 0, 0, 0, 0, 0, 0]
+            high = [3, 3, 3, 3, 4, 4, 4, 4, 1, 1]
+            self.observation_spaces = {
+                agent: Box(
+                    np.array(low, dtype=np.float32),
+                    np.array(high, dtype=np.float32),
+                    dtype=np.float32,
+                )
+                for agent in self.possible_agents
+            }
+
         def calc_reward(self, last_battle, current_battle) -> float:
             return self.reward_computing_helper(
                 current_battle, fainted_value=2.0, hp_value=1.0, victory_value=30.0
@@ -93,15 +106,6 @@ Our player will play the ``gen8randombattle`` format. We can therefore inherit f
                 ]
             )
             return np.float32(final_vector)
-
-        def describe_embedding(self) -> Space:
-            low = [-1, -1, -1, -1, 0, 0, 0, 0, 0, 0]
-            high = [3, 3, 3, 3, 4, 4, 4, 4, 1, 1]
-            return Box(
-                np.array(low, dtype=np.float32),
-                np.array(high, dtype=np.float32),
-                dtype=np.float32,
-            )
 
     ...
 

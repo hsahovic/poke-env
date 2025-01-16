@@ -14,66 +14,72 @@ from poke_env.player import (
 
 
 class RandomGen4EnvPlayer(Gen4EnvSinglePlayer):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.observation_spaces = {agent: Box(np.array([0]), np.array([1]), dtype=int) for agent in self.possible_agents}
+
     def calc_reward(self, last_battle, current_battle) -> float:
         return 0.0
-
-    def describe_embedding(self) -> Space:
-        return Box(np.array([0]), np.array([1]), dtype=int)
 
     def embed_battle(self, battle):
         return np.array([0])
 
 
 class RandomGen5EnvPlayer(Gen5EnvSinglePlayer):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.observation_spaces = {agent: Box(np.array([0]), np.array([1]), dtype=int) for agent in self.possible_agents}
+
     def calc_reward(self, last_battle, current_battle) -> float:
         return 0.0
-
-    def describe_embedding(self) -> Space:
-        return Box(np.array([0]), np.array([1]), dtype=int)
 
     def embed_battle(self, battle):
         return np.array([0])
 
 
 class RandomGen6EnvPlayer(Gen6EnvSinglePlayer):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.observation_spaces = {agent: Box(np.array([0]), np.array([1]), dtype=int) for agent in self.possible_agents}
+
     def calc_reward(self, last_battle, current_battle) -> float:
         return 0.0
-
-    def describe_embedding(self) -> Space:
-        return Box(np.array([0]), np.array([1]), dtype=int)
 
     def embed_battle(self, battle):
         return np.array([0])
 
 
 class RandomGen7EnvPlayer(Gen7EnvSinglePlayer):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.observation_spaces = {agent: Box(np.array([0]), np.array([1]), dtype=int) for agent in self.possible_agents}
+
     def calc_reward(self, last_battle, current_battle) -> float:
         return 0.0
-
-    def describe_embedding(self) -> Space:
-        return Box(np.array([0]), np.array([1]), dtype=int)
 
     def embed_battle(self, battle):
         return np.array([0])
 
 
 class RandomGen8EnvPlayer(Gen8EnvSinglePlayer):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.observation_spaces = {agent: Box(np.array([0]), np.array([1]), dtype=int) for agent in self.possible_agents}
+
     def calc_reward(self, last_battle, current_battle) -> float:
         return 0.0
-
-    def describe_embedding(self) -> Space:
-        return Box(np.array([0]), np.array([1]), dtype=int)
 
     def embed_battle(self, battle):
         return np.array([0])
 
 
 class RandomGen9EnvPlayer(Gen9EnvSinglePlayer):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.observation_spaces = {agent: Box(np.array([0]), np.array([1]), dtype=int) for agent in self.possible_agents}
+
     def calc_reward(self, last_battle, current_battle) -> float:
         return 0.0
-
-    def describe_embedding(self) -> Space:
-        return Box(np.array([0]), np.array([1]), dtype=int)
 
     def embed_battle(self, battle):
         return np.array([0])
