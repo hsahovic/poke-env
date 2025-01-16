@@ -8,7 +8,7 @@ import asyncio
 import copy
 import time
 from abc import abstractmethod
-from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Awaitable, Dict, List, Optional, Tuple, Union
 
 from gymnasium.spaces import Discrete, Space
 from pettingzoo.utils.env import (  # type: ignore[import-untyped]
