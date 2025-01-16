@@ -315,7 +315,8 @@ def test_action_to_order(z_moves_mock):
             battle._team = {"charizard": active_pokemon}
             z_moves_mock.return_value = [Move("flamethrower", gen=8)]
             assert (
-                p.action_to_order(4, battle).message == "/choose move flamethrower zmove"
+                p.action_to_order(4, battle).message
+                == "/choose move flamethrower zmove"
             )
             battle._team = {}
         if has_dynamax:
