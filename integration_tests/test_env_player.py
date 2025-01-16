@@ -83,6 +83,9 @@ def test_random_gymnasium_players_gen5():
     )
     env.start_challenging(3)
     play_function(env, 3)
+    single_agent_env = SingleAgentWrapper(env, RandomPlayer())
+    env.start_challenging(3)
+    single_agent_play_function(single_agent_env, 3)
 
 
 @pytest.mark.timeout(30)
@@ -92,6 +95,9 @@ def test_random_gymnasium_players_gen6():
     )
     env.start_challenging(3)
     play_function(env, 3)
+    single_agent_env = SingleAgentWrapper(env, RandomPlayer())
+    env.start_challenging(3)
+    single_agent_play_function(single_agent_env, 3)
 
 
 @pytest.mark.timeout(30)
@@ -101,6 +107,9 @@ def test_random_gymnasium_players_gen7():
     )
     env.start_challenging(3)
     play_function(env, 3)
+    single_agent_env = SingleAgentWrapper(env, RandomPlayer())
+    env.start_challenging(3)
+    single_agent_play_function(single_agent_env, 3)
 
 
 @pytest.mark.timeout(30)
@@ -110,6 +119,9 @@ def test_random_gymnasium_players_gen8():
     )
     env.start_challenging(3)
     play_function(env, 3)
+    single_agent_env = SingleAgentWrapper(env, RandomPlayer())
+    env.start_challenging(3)
+    single_agent_play_function(single_agent_env, 3)
 
 
 @pytest.mark.timeout(30)
@@ -119,6 +131,9 @@ def test_random_gymnasium_player_doubles_gen8():
     )
     env.start_challenging(3)
     play_function(env, 3)
+    single_agent_env = SingleAgentWrapper(env, RandomPlayer())
+    env.start_challenging(3)
+    single_agent_play_function(single_agent_env, 3)
 
 
 @pytest.mark.timeout(30)
@@ -128,6 +143,9 @@ def test_random_gymnasium_players_gen9():
     )
     env.start_challenging(3)
     play_function(env, 3)
+    single_agent_env = SingleAgentWrapper(env, RandomPlayer())
+    env.start_challenging(3)
+    single_agent_play_function(single_agent_env, 3)
 
 
 @pytest.mark.timeout(30)
@@ -137,6 +155,9 @@ def test_random_gymnasium_player_doubles_gen9():
     )
     env.start_challenging(3)
     play_function(env, 3)
+    single_agent_env = SingleAgentWrapper(env, RandomPlayer())
+    env.start_challenging(3)
+    single_agent_play_function(single_agent_env, 3)
 
 
 @pytest.mark.timeout(60)
@@ -161,7 +182,7 @@ def test_two_successive_calls_gen9():
     play_function(env, 2)
 
 
-@pytest.mark.timeout(120)
+@pytest.mark.timeout(60)
 def test_check_envs():
     for gen in range(4, 10):
         env = SinglesTestEnv(
@@ -180,6 +201,6 @@ def test_check_envs():
         )
         parallel_api_test(env)
         env.close()
-        env = SingleAgentWrapper(env, RandomPlayer())
-        check_env(env)
-        env.close()
+        single_agent_env = SingleAgentWrapper(env, RandomPlayer())
+        check_env(single_agent_env)
+        single_agent_env.close()
