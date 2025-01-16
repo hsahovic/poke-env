@@ -21,12 +21,9 @@ from typing import (
     Union,
 )
 
+import numpy as np
 from gymnasium.spaces import Discrete, Space
-from pettingzoo.utils.env import (  # type: ignore[import-untyped]
-    ActionType,
-    ObsType,
-    ParallelEnv,
-)
+from pettingzoo.utils.env import ObsType, ParallelEnv  # type: ignore[import-untyped]
 
 from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
 from poke_env.environment.abstract_battle import AbstractBattle
@@ -118,7 +115,7 @@ class _EnvPlayer(Player):
         asyncio.run_coroutine_threadsafe(self.battle_queue.async_put(battle), POKE_LOOP)
 
 
-class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
+class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
     """
     Base class implementing the Gymnasium API on the main thread.
     """
@@ -256,7 +253,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
     # PettingZoo API
     # https://pettingzoo.farama.org/api/parallel/#parallelenv
 
-    def step(self, actions: Dict[str, ActionType]) -> Tuple[
+    def step(self, actions: Dict[str, np.int64]) -> Tuple[
         Dict[str, ObsType],
         Dict[str, float],
         Dict[str, bool],
@@ -409,7 +406,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
         pass
 
     @abstractmethod
-    def action_to_move(self, action: ActionType, battle: AbstractBattle) -> BattleOrder:
+    def action_to_move(self, action: np.int64, battle: AbstractBattle) -> BattleOrder:
         """
         Returns the BattleOrder relative to the given action.
 

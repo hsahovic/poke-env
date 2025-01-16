@@ -3,9 +3,11 @@ import unittest
 from inspect import isawaitable
 from unittest.mock import patch
 
+import numpy as np
 from gymnasium.spaces import Discrete, Space
 
 from poke_env import AccountConfiguration, ServerConfiguration
+from poke_env.concurrency import POKE_LOOP
 from poke_env.environment import AbstractBattle, Battle, Move, Pokemon, Status
 from poke_env.player import (
     BattleOrder,
@@ -17,18 +19,18 @@ from poke_env.player import (
     Gen8EnvSinglePlayer,
     Gen9EnvSinglePlayer,
 )
-from poke_env.player.gymnasium_api import _AsyncPlayer
+from poke_env.player.gymnasium_api import _EnvPlayer
 
 account_configuration1 = AccountConfiguration("username1", "password1")
 account_configuration2 = AccountConfiguration("username2", "password2")
 server_configuration = ServerConfiguration("server.url", "auth.url")
 
 
-class CustomEnvPlayer(EnvPlayer):
+class CustomEnv(EnvPlayer):
     def calc_reward(self, last_battle, current_battle) -> float:
         pass
 
-    def action_to_move(self, action: int, battle: AbstractBattle) -> BattleOrder:
+    def action_to_move(self, action: np.int64, battle: AbstractBattle) -> BattleOrder:
         return Gen7EnvSinglePlayer.action_to_move(self, action, battle)
 
     def describe_embedding(self) -> Space:
@@ -41,7 +43,7 @@ class CustomEnvPlayer(EnvPlayer):
 
 
 def test_init():
-    gymnasium_env = CustomEnvPlayer(
+    gymnasium_env = CustomEnv(
         account_configuration1=account_configuration1,
         account_configuration2=account_configuration2,
         server_configuration=server_configuration,
@@ -49,23 +51,12 @@ def test_init():
         battle_format="gen7randombattles",
     )
     player = gymnasium_env.agent1
-    assert isinstance(gymnasium_env, CustomEnvPlayer)
-    assert isinstance(player, _AsyncPlayer)
+    assert isinstance(gymnasium_env, CustomEnv)
+    assert isinstance(player, _EnvPlayer)
 
 
-class AsyncMock(unittest.mock.MagicMock):
-    async def __call__(self, *args, **kwargs):
-        return super(AsyncMock, self).__call__(*args, **kwargs)
-
-
-@patch(
-    "poke_env.player.gymnasium_api._AsyncQueue.async_get",
-    return_value=2,
-    new_callable=AsyncMock,
-)
-@patch("poke_env.player.gymnasium_api._AsyncQueue.async_put", new_callable=AsyncMock)
-def test_choose_move(queue_put_mock, queue_get_mock):
-    player = CustomEnvPlayer(
+async def run_test_choose_move():
+    player = CustomEnv(
         account_configuration1=account_configuration1,
         account_configuration2=account_configuration2,
         server_configuration=server_configuration,
@@ -73,32 +64,33 @@ def test_choose_move(queue_put_mock, queue_get_mock):
         battle_format="gen7randombattles",
         start_challenging=False,
     )
+
+    # Create a mock battle and moves
     battle = Battle("bat1", player.agent1.username, player.agent1.logger, gen=8)
     battle._available_moves = [Move("flamethrower", gen=8)]
-    message = player.agent1.choose_move(battle)
-    player.agent2.choose_move(battle)
 
-    assert isawaitable(message)
-
-    message = asyncio.get_event_loop().run_until_complete(message)
+    # Test choosing a move
+    message = await player.agent1.choose_move(battle)
+    order = player.action_to_move(np.int64(6), battle)
+    player.agent1.order_queue.put(order)
 
     assert message.message == "/choose move flamethrower"
 
-    battle._available_moves = []
+    # Test switching Pokémon
     battle._available_switches = [Pokemon(species="charizard", gen=8)]
-
-    message = player.agent1.choose_move(battle)
-    player.agent2.choose_move(battle)
-
-    assert isawaitable(message)
-
-    message = asyncio.get_event_loop().run_until_complete(message)
+    message = await player.agent1.choose_move(battle)
+    order = player.action_to_move(np.int64(0), battle)
+    player.agent1.order_queue.put(order)
 
     assert message.message == "/choose switch charizard"
 
 
+def test_choose_move(queue_put_mock, queue_get_mock):
+    asyncio.run_coroutine_threadsafe(run_test_choose_move(), POKE_LOOP)
+
+
 def test_reward_computing_helper():
-    player = CustomEnvPlayer(
+    player = CustomEnv(
         account_configuration1=account_configuration1,
         account_configuration2=account_configuration2,
         server_configuration=server_configuration,
@@ -221,7 +213,7 @@ def test_reward_computing_helper():
 
 
 def test_action_space():
-    player = CustomEnvPlayer(start_listening=False)
+    player = CustomEnv(start_listening=False)
     assert player.action_space(player.possible_agents[0]) == Discrete(
         len(Gen7EnvSinglePlayer._ACTION_SPACE)
     )
