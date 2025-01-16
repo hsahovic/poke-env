@@ -63,24 +63,19 @@ async def run_test_choose_move():
         battle_format="gen7randombattles",
         start_challenging=False,
     )
-
     # Create a mock battle and moves
     battle = Battle("bat1", player.agent1.username, player.agent1.logger, gen=8)
     battle._available_moves = [Move("flamethrower", gen=8)]
-
     # Test choosing a move
     message = await player.agent1.choose_move(battle)
     order = player.action_to_move(np.int64(6), battle)
     player.agent1.order_queue.put(order)
-
     assert message.message == "/choose move flamethrower"
-
     # Test switching Pokémon
     battle._available_switches = [Pokemon(species="charizard", gen=8)]
     message = await player.agent1.choose_move(battle)
     order = player.action_to_move(np.int64(0), battle)
     player.agent1.order_queue.put(order)
-
     assert message.message == "/choose switch charizard"
 
 
