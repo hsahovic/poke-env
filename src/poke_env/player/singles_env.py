@@ -6,8 +6,8 @@ from gymnasium.spaces import Discrete
 from poke_env.environment import Battle, Move, Pokemon
 from poke_env.player.battle_order import (
     BattleOrder,
-    ForfeitBattleOrder,
     DefaultBattleOrder,
+    ForfeitBattleOrder,
 )
 from poke_env.player.gymnasium_api import ObsType, PokeEnv
 from poke_env.player.player import Player
