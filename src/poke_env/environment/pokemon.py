@@ -787,7 +787,7 @@ class Pokemon:
     @property
     def fainted(self) -> bool:
         """
-        :return: Wheter the pokemon has fainted.
+        :return: Whether the pokemon has fainted.
         :rtype: bool
         """
         return Status.FNT == self._status
@@ -795,7 +795,7 @@ class Pokemon:
     @property
     def first_turn(self) -> bool:
         """
-        :return: Wheter this is this pokemon's first action since its last switch in.
+        :return: Whether this is this pokemon's first action since its last switch in.
         :rtype: bool
         """
         return self._first_turn

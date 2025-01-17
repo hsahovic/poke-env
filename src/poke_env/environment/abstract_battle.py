@@ -732,7 +732,7 @@ class AbstractBattle(ABC):
                     self.get_pokemon(magician).item = to_id_str(item)
                     self.get_pokemon(magician).ability = to_id_str("magician")
                     self.get_pokemon(victim).item = None
-                elif cause in {"[from] move: Thief"}:
+                elif cause in {"[from] move: Thief", "[from] move: Covet"}:
                     thief = event[2]
                     victim = event[5].replace("[of] ", "")
                     item = event[3]
