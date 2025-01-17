@@ -523,7 +523,9 @@ class AbstractBattle(ABC):
                     )
             else:
                 pokemon, move, presumed_target = event[2:5]
-                if presumed_target == "":  # ['', 'move', 'p2a: 07ffb4c367', 'Teeter Dance', '', '[from] ability: Dancer']
+                if (
+                    presumed_target == ""
+                ):  # ['', 'move', 'p2a: 07ffb4c367', 'Teeter Dance', '', '[from] ability: Dancer']
                     pass
                 elif self.logger is not None:
                     self.logger.warning(
@@ -622,7 +624,9 @@ class AbstractBattle(ABC):
 
             if effect == "typechange":
                 if len(event) > 5 and event[5].startswith("[of] "):
-                    types = "/".join(map(lambda x: x.name, self.get_pokemon(event[5][5:]).types))
+                    types = "/".join(
+                        map(lambda x: x.name, self.get_pokemon(event[5][5:]).types)
+                    )
                 else:
                     types = event[4]
                 pokemon.start_effect(effect, details=types)  # type: ignore

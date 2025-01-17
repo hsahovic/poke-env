@@ -23,7 +23,9 @@ class Observation:
     fields: Dict[Field, int] = field(default_factory=dict)
 
     active_pokemon: Union[ObservedPokemon, None, List[Optional[ObservedPokemon]]] = None
-    opponent_active_pokemon: Union[ObservedPokemon, List[Optional[ObservedPokemon]], None] = None
+    opponent_active_pokemon: Union[
+        ObservedPokemon, List[Optional[ObservedPokemon]], None
+    ] = None
 
     # The player's team, so we can track states of mons throughout the battle
     team: Dict[str, Optional[ObservedPokemon]] = field(default_factory=dict)

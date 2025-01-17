@@ -4,10 +4,10 @@ a more efficient serialization of a pokemon
 """
 
 import sys
+from collections import OrderedDict
 from copy import copy
 from dataclasses import dataclass, field
 from typing import Dict, List, Mapping, Optional, Union
-from collections import OrderedDict
 
 from poke_env.environment.effect import Effect
 from poke_env.environment.move import Move
