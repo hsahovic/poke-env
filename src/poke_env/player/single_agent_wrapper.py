@@ -13,15 +13,6 @@ class SingleAgentWrapper(Env[ObsType, ActionType]):
         self.observation_space = list(env.observation_spaces.values())[0]
         self.action_space = list(env.action_spaces.values())[0]
 
-    def reset(
-        self,
-        *,
-        seed: Optional[int] = None,
-        options: Optional[Dict[str, Any]] = None,
-    ) -> Tuple[ObsType, Dict[str, Any]]:
-        obs, infos = self.env.reset(seed, options)
-        return obs[self.env.agent1.username], infos[self.env.agent1.username]
-
     def step(
         self, action: ActionType
     ) -> Tuple[ObsType, float, bool, bool, Dict[str, Any]]:
@@ -41,6 +32,15 @@ class SingleAgentWrapper(Env[ObsType, ActionType]):
             truncs[self.env.agent1.username],
             infos[self.env.agent1.username],
         )
+
+    def reset(
+        self,
+        *,
+        seed: Optional[int] = None,
+        options: Optional[Dict[str, Any]] = None,
+    ) -> Tuple[ObsType, Dict[str, Any]]:
+        obs, infos = self.env.reset(seed, options)
+        return obs[self.env.agent1.username], infos[self.env.agent1.username]
 
     def render(self, mode="human"):
         return self.env.render(mode)
