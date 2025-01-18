@@ -216,12 +216,8 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         elif isinstance(order, ForfeitBattleOrder):
             return np.array([-1, -1])
         assert isinstance(order, DoubleBattleOrder)
-        action1 = DoublesEnv._order_to_action_individual(
-            order.first_order, battle, 0
-        )
-        action2 = DoublesEnv._order_to_action_individual(
-            order.second_order, battle, 1
-        )
+        action1 = DoublesEnv._order_to_action_individual(order.first_order, battle, 0)
+        action2 = DoublesEnv._order_to_action_individual(order.second_order, battle, 1)
         return np.array([action1, action2])
 
     @staticmethod
@@ -268,7 +264,9 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 assert order.order.id in [
                     m.id for m in battle.available_moves[pos]
                 ], "invalid pick"
-                move = [m for m in battle.available_moves[pos] if m.id == order.order.id][0]
+                move = [
+                    m for m in battle.available_moves[pos] if m.id == order.order.id
+                ][0]
                 assert order.move_target in battle.get_possible_showdown_targets(
                     move, active_mon
                 ), "invalid pick"
@@ -281,8 +279,9 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             return np.int64(action)
         except AssertionError as e:
             if str(e) == "invalid pick":
-                return DoublesEnv._order_to_action_individual(
-                    Player.choose_random_move(battle), battle, pos
-                )
+                order = Player.choose_random_move(battle)
+                assert isinstance(order, DoubleBattleOrder)
+                orders = [order.first_order, order.second_order]
+                return DoublesEnv._order_to_action_individual(orders[pos], battle, pos)
             else:
                 raise e
