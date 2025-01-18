@@ -203,8 +203,6 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
             return np.int64(action)
         except AssertionError as e:
             if str(e) == "invalid pick":
-                return SinglesEnv.order_to_action(
-                    Player.choose_random_move(battle), battle
-                )
+                return np.int64(-2)
             else:
                 raise e
