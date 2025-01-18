@@ -59,7 +59,7 @@ class ObservedPokemon:
         if self.stats:
             for stat in self.stats:
                 if isinstance(self.stats[stat], int):
-                    mon._stats[stat] = self.stats[stat]  # pyright: ignore
+                    mon._stats[stat] = self.stats[stat]  # type: ignore
 
         mon._gender = self.gender
         mon._shiny = self.shiny
