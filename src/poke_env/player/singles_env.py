@@ -176,6 +176,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
                 and battle.available_moves[0].id in ["struggle", "recharge"]
                 else list(active_mon.moves.values())
             )
+            print(order.order, active_mon.moves)
             action = [m.id for m in mvs].index(order.order.id)
             if order.mega:
                 gimmick = 1
