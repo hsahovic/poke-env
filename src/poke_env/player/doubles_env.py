@@ -143,8 +143,6 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 [order1] if order1 is not None else [],
                 [order2] if order2 is not None else [],
             )[0]
-        except IndexError:
-            return Player.choose_random_move(battle)
         except AssertionError as e:
             if str(e) == "invalid pick":
                 return Player.choose_random_move(battle)
@@ -173,6 +171,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 and battle.available_moves[pos][0].id in ["struggle", "recharge"]
                 else list(active_mon.moves.values())
             )
+            assert (action - 7) % 4 in range(len(mvs)), "invalid pick"
             order = Player.create_order(
                 mvs[(action - 7) % 4],
                 move_target=(action.item() - 7) % 20 // 4 - 2,
@@ -212,14 +211,26 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         :return: The action for the given battle order in context of the current battle.
         :rtype: ndarray[int64]
         """
-        if isinstance(order, DefaultBattleOrder):
-            return np.array([-2, -2])
-        elif isinstance(order, ForfeitBattleOrder):
-            return np.array([-1, -1])
-        assert isinstance(order, DoubleBattleOrder)
-        action1 = DoublesEnv._order_to_action_individual(order.first_order, battle, 0)
-        action2 = DoublesEnv._order_to_action_individual(order.second_order, battle, 1)
-        return np.array([action1, action2])
+        try:
+            if isinstance(order, DefaultBattleOrder):
+                return np.array([-2, -2])
+            elif isinstance(order, ForfeitBattleOrder):
+                return np.array([-1, -1])
+            assert isinstance(order, DoubleBattleOrder)
+            action1 = DoublesEnv._order_to_action_individual(
+                order.first_order, battle, 0
+            )
+            action2 = DoublesEnv._order_to_action_individual(
+                order.second_order, battle, 1
+            )
+            return np.array([action1, action2])
+        except AssertionError as e:
+            if str(e) == "invalid pick":
+                return DoublesEnv.order_to_action(
+                    Player.choose_random_move(battle), battle
+                )
+            else:
+                raise e
 
     @staticmethod
     def _order_to_action_individual(
@@ -247,6 +258,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 and battle.available_moves[pos][0].id in ["struggle", "recharge"]
                 else list(active_mon.moves.values())
             )
+            assert order.order.id in [m.id for m in mvs], "invalid pick"
             action = [m.id for m in mvs].index(order.order.id)
             target = order.move_target + 2
             if order.mega:
