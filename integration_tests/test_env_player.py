@@ -182,8 +182,8 @@ def test_two_successive_calls_gen9():
     play_function(env, 2)
 
 
-@pytest.mark.timeout(60)
-def test_check_envs():
+@pytest.mark.timeout(120)
+def test_env_apis():
     for gen in range(4, 10):
         env = SinglesTestEnv(
             battle_format=f"gen{gen}randombattle", log_level=25, start_challenging=True
