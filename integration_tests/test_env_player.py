@@ -182,7 +182,7 @@ def test_two_successive_calls_gen9():
     play_function(env, 2)
 
 
-@pytest.mark.timeout(120)
+@pytest.mark.timeout(60)
 def test_env_apis():
     for gen in range(4, 10):
         env = SinglesTestEnv(
@@ -190,6 +190,7 @@ def test_env_apis():
         )
         parallel_api_test(env)
         env.close()
+        env.start_challenging()
         single_agent_env = SingleAgentWrapper(env, RandomPlayer())
         check_env(single_agent_env)
         single_agent_env.close()
@@ -201,6 +202,7 @@ def test_env_apis():
         )
         parallel_api_test(env)
         env.close()
+        env.start_challenging()
         single_agent_env = SingleAgentWrapper(env, RandomPlayer())
         check_env(single_agent_env)
         single_agent_env.close()
