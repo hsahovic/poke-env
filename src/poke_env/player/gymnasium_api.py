@@ -9,6 +9,7 @@ from typing import Any, Awaitable, Dict, Generic, List, Optional, Tuple, TypeVar
 from weakref import WeakKeyDictionary
 
 from gymnasium.spaces import Space
+from gymnasium.utils import seeding
 from pettingzoo.utils.env import ParallelEnv  # type: ignore[import-untyped]
 
 from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
@@ -274,7 +275,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         options: Optional[Dict[str, Any]] = None,
     ) -> Tuple[Dict[str, ObsType], Dict[str, Dict[str, Any]]]:
         self.agents = [self.agent1.username, self.agent2.username]
-        # TODO: use the seed
+        if seed is not None:
+            self._np_random, seed = seeding.np_random(seed)
         # forfeit any still-running battle between agent1 and agent2
         if self.battle1 and not self.battle1.finished:
             if self.battle1 == self.agent1.battle:
