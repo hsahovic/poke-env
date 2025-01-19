@@ -40,6 +40,7 @@ class SingleAgentWrapper(Env[ObsType, ActionType]):
         options: Optional[Dict[str, Any]] = None,
     ) -> Tuple[ObsType, Dict[str, Any]]:
         obs, infos = self.env.reset(seed, options)
+        self._np_random = self.env._np_random
         return obs[self.env.agent1.username], infos[self.env.agent1.username]
 
     def render(self, mode="human"):
