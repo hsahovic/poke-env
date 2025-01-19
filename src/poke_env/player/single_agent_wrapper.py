@@ -39,6 +39,7 @@ class SingleAgentWrapper(Env[ObsType, ActionType]):
         seed: Optional[int] = None,
         options: Optional[Dict[str, Any]] = None,
     ) -> Tuple[ObsType, Dict[str, Any]]:
+        super().reset(seed=seed, options=options)
         obs, infos = self.env.reset(seed, options)
         return obs[self.env.agent1.username], infos[self.env.agent1.username]
 
