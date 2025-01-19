@@ -10,6 +10,7 @@ from weakref import WeakKeyDictionary
 
 from gymnasium.spaces import Space
 from gymnasium.utils import seeding
+from numpy.random import Generator
 from pettingzoo.utils.env import ParallelEnv  # type: ignore[import-untyped]
 
 from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
@@ -216,6 +217,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         )
         self.agents: List[str] = []
         self.possible_agents = [self.agent1.username, self.agent2.username]
+        self._np_random: Optional[Generator] = None
         self._reward_buffer: WeakKeyDictionary[AbstractBattle, float] = (
             WeakKeyDictionary()
         )
