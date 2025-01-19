@@ -43,8 +43,8 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         start_challenging: bool = False,
     ):
         super().__init__(
-            account_configuration1,
-            account_configuration2,
+            account_configuration1=account_configuration1,
+            account_configuration2=account_configuration2,
             avatar=avatar,
             battle_format=battle_format,
             log_level=log_level,
