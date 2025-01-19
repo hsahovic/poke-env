@@ -183,12 +183,29 @@ def test_two_successive_calls_gen9():
 
 
 @pytest.mark.timeout(60)
-def test_env_apis():
+def test_pettingzoo_api():
     for gen in range(4, 10):
         env = SinglesTestEnv(
             battle_format=f"gen{gen}randombattle", log_level=25, start_challenging=True
         )
         parallel_api_test(env)
+        env.close()
+    for gen in range(8, 10):
+        env = DoublesTestEnv(
+            battle_format=f"gen{gen}randomdoublesbattle",
+            log_level=25,
+            start_challenging=True,
+        )
+        parallel_api_test(env)
+        env.close()
+
+
+@pytest.mark.timeout(60)
+def test_single_agent_wrapper_api():
+    for gen in range(4, 10):
+        env = SinglesTestEnv(
+            battle_format=f"gen{gen}randombattle", log_level=25, start_challenging=True
+        )
         single_agent_env = SingleAgentWrapper(env, RandomPlayer())
         check_env(single_agent_env)
         single_agent_env.close()
@@ -198,7 +215,6 @@ def test_env_apis():
             log_level=25,
             start_challenging=True,
         )
-        parallel_api_test(env)
         single_agent_env = SingleAgentWrapper(env, RandomPlayer())
         check_env(single_agent_env)
         single_agent_env.close()
