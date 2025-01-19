@@ -28,8 +28,8 @@ class SingleAgentWrapper(Env[ObsType, ActionType]):
         return (
             obs[self.env.agent1.username],
             rewards[self.env.agent1.username],
-            terms[self.env.agent1.username],
-            truncs[self.env.agent1.username],
+            any(terms.values()),
+            any(truncs.values()),
             infos[self.env.agent1.username],
         )
 
