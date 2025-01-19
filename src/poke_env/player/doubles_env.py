@@ -125,7 +125,9 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
 
         """
         try:
-            if action[0] == -1 or action[1] == -1:
+            if action[0] == -2 or action[1] == -2:
+                return DefaultBattleOrder()
+            elif action[0] == -1 or action[1] == -1:
                 return ForfeitBattleOrder()
             dont_respond1 = any(battle.force_switch) and not battle.force_switch[0]
             dont_respond2 = any(battle.force_switch) and not battle.force_switch[1]
@@ -154,9 +156,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         action: np.int64, battle: DoubleBattle, pos: int
     ) -> Optional[BattleOrder]:
         order: Optional[BattleOrder]
-        if action == -2:
-            order = DefaultBattleOrder()
-        elif action == 0:
+        if action == 0:
             order = None
         elif action < 7:
             order = Player.create_order(list(battle.team.values())[action - 1])
@@ -217,8 +217,12 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             elif isinstance(order, ForfeitBattleOrder):
                 return np.array([-1, -1])
             assert isinstance(order, DoubleBattleOrder)
-            action1 = DoublesEnv._order_to_action_individual(order.first_order, battle, 0)
-            action2 = DoublesEnv._order_to_action_individual(order.second_order, battle, 1)
+            action1 = DoublesEnv._order_to_action_individual(
+                order.first_order, battle, 0
+            )
+            action2 = DoublesEnv._order_to_action_individual(
+                order.second_order, battle, 1
+            )
             return np.array([action1, action2])
         except AssertionError as e:
             if str(e) == "invalid pick":
@@ -269,9 +273,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             assert order.order.id in [
                 m.id for m in battle.available_moves[pos]
             ], "invalid pick"
-            move = [
-                m for m in battle.available_moves[pos] if m.id == order.order.id
-            ][0]
+            move = [m for m in battle.available_moves[pos] if m.id == order.order.id][0]
             assert order.move_target in battle.get_possible_showdown_targets(
                 move, active_mon
             ), "invalid pick"
