@@ -189,8 +189,6 @@ def test_env_apis():
             battle_format=f"gen{gen}randombattle", log_level=25, start_challenging=True
         )
         parallel_api_test(env)
-        env.close()
-        env.start_challenging()
         single_agent_env = SingleAgentWrapper(env, RandomPlayer())
         check_env(single_agent_env)
         single_agent_env.close()
@@ -201,8 +199,6 @@ def test_env_apis():
             start_challenging=True,
         )
         parallel_api_test(env)
-        env.close()
-        env.start_challenging()
         single_agent_env = SingleAgentWrapper(env, RandomPlayer())
         check_env(single_agent_env)
         single_agent_env.close()
