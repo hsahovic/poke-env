@@ -684,7 +684,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 if self.agent1.waiting and not self.agent2.waiting:
                     await self.agent1.order_queue.async_put(ForfeitBattleOrder())
                 elif self.agent2.waiting and not self.agent1.waiting:
-                    await self.agent1.order_queue.async_put(ForfeitBattleOrder())
+                    await self.agent2.order_queue.async_put(ForfeitBattleOrder())
                 else:
                     await self.agent1.order_queue.async_put(ForfeitBattleOrder())
                     await self.agent2.order_queue.async_put(DefaultBattleOrder())
