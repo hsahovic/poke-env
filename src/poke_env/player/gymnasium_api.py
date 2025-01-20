@@ -10,6 +10,8 @@ from typing import Any, Awaitable, Dict, Generic, List, Optional, Tuple, TypeVar
 from weakref import WeakKeyDictionary
 
 from gymnasium.spaces import Space
+from gymnasium.utils import seeding
+from numpy.random import Generator
 from pettingzoo.utils.env import ParallelEnv  # type: ignore[import-untyped]
 
 from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
@@ -161,6 +163,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
 
     def __init__(
         self,
+        *,
         account_configuration1: Optional[AccountConfiguration] = None,
         account_configuration2: Optional[AccountConfiguration] = None,
         avatar: Optional[int] = None,
@@ -263,6 +266,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         )
         self.agents: List[str] = []
         self.possible_agents = [self.agent1.username, self.agent2.username]
+        self._np_random: Optional[Generator] = None
         self._reward_buffer: WeakKeyDictionary[AbstractBattle, float] = (
             WeakKeyDictionary()
         )
@@ -322,12 +326,18 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         options: Optional[Dict[str, Any]] = None,
     ) -> Tuple[Dict[str, ObsType], Dict[str, Dict[str, Any]]]:
         self.agents = [self.agent1.username, self.agent2.username]
-        # TODO: use the seed
+        if seed is not None:
+            self._np_random, seed = seeding.np_random(seed)
         # forfeit any still-running battle between agent1 and agent2
         if self.battle1 and not self.battle1.finished:
             if self.battle1 == self.agent1.battle:
-                self.agent1.order_queue.put(ForfeitBattleOrder())
-                self.agent2.order_queue.put(DefaultBattleOrder())
+                if self.agent1.waiting and not self.agent2.waiting:
+                    self.agent1.order_queue.put(ForfeitBattleOrder())
+                elif self.agent2.waiting and not self.agent1.waiting:
+                    self.agent2.order_queue.put(ForfeitBattleOrder())
+                else:
+                    self.agent1.order_queue.put(ForfeitBattleOrder())
+                    self.agent2.order_queue.put(DefaultBattleOrder())
                 self.agent1.battle_queue.get()
                 self.agent2.battle_queue.get()
             else:
@@ -719,8 +729,13 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                     await self.agent1.battle_queue.async_get()
                 if not self.agent2.battle_queue.empty():
                     await self.agent2.battle_queue.async_get()
-                await self.agent1.order_queue.async_put(ForfeitBattleOrder())
-                await self.agent2.order_queue.async_put(DefaultBattleOrder())
+                if self.agent1.waiting and not self.agent2.waiting:
+                    await self.agent1.order_queue.async_put(ForfeitBattleOrder())
+                elif self.agent2.waiting and not self.agent1.waiting:
+                    await self.agent2.order_queue.async_put(ForfeitBattleOrder())
+                else:
+                    await self.agent1.order_queue.async_put(ForfeitBattleOrder())
+                    await self.agent2.order_queue.async_put(DefaultBattleOrder())
 
         if wait and self._challenge_task:
             while not self._challenge_task.done():

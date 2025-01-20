@@ -1,7 +1,6 @@
 from typing import Any, Awaitable, Dict, Optional, Tuple
 
 from gymnasium import Env
-from gymnasium.spaces import Space
 
 from poke_env.player.gymnasium_api import ActionType, ObsType, PokeEnv
 from poke_env.player.player import Player
@@ -14,25 +13,16 @@ class SingleAgentWrapper(Env[ObsType, ActionType]):
         self.observation_space = list(env.observation_spaces.values())[0]
         self.action_space = list(env.action_spaces.values())[0]
 
-    def reset(
-        self,
-        *,
-        seed: Optional[int] = None,
-        options: Optional[Dict[str, Any]] = None,
-    ) -> Tuple[ObsType, Dict[str, Any]]:
-        obs, infos = self.env.reset(seed, options)
-        return obs[self.env.agent1.username], infos[self.env.agent1.username]
-
     def step(
         self, action: ActionType
     ) -> Tuple[ObsType, float, bool, bool, Dict[str, Any]]:
-        assert self.env.battle1 is not None
-        opp_order = self.opponent.choose_move(self.env.battle1)
+        assert self.env.agent2.battle is not None
+        opp_order = self.opponent.choose_move(self.env.agent2.battle)
         assert not isinstance(opp_order, Awaitable)
-        opp_action = self.env.order_to_action(opp_order, self.env.battle1)
+        opp_action = self.env.order_to_action(opp_order, self.env.agent2.battle)
         actions = {
             self.env.agent1.username: action,
-            self.opponent.username: opp_action,
+            self.env.agent2.username: opp_action,
         }
         obs, rewards, terms, truncs, infos = self.env.step(actions)
         return (
@@ -42,6 +32,16 @@ class SingleAgentWrapper(Env[ObsType, ActionType]):
             truncs[self.env.agent1.username],
             infos[self.env.agent1.username],
         )
+
+    def reset(
+        self,
+        *,
+        seed: Optional[int] = None,
+        options: Optional[Dict[str, Any]] = None,
+    ) -> Tuple[ObsType, Dict[str, Any]]:
+        obs, infos = self.env.reset(seed, options)
+        self._np_random = self.env._np_random
+        return obs[self.env.agent1.username], infos[self.env.agent1.username]
 
     def render(self, mode="human"):
         return self.env.render(mode)
