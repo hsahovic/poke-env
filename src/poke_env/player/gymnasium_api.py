@@ -104,16 +104,15 @@ class _EnvPlayer(Player):
             return self.random_teampreview(battle)
         elif isinstance(battle, DoubleBattle):
             order1 = await self._env_move(battle)
+            action1 = PokeEnv.order_to_action(order1, battle)
+            battle2 = copy.deepcopy(battle)
             assert isinstance(order1, DoubleBattleOrder)
-            pokemon1 = None if order1.first_order is None else order1.first_order.order
-            pokemon2 = (
-                None if order1.second_order is None else order1.second_order.order
-            )
+            assert order1.first_order is not None
+            assert order1.second_order is not None
+            pokemon1 = order1.first_order.order
+            pokemon2 = order1.second_order.order
             assert isinstance(pokemon1, Pokemon)
             assert isinstance(pokemon2, Pokemon)
-            action1 = [p.name for p in battle.team.values()].index(pokemon1.name) + 1
-            action2 = [p.name for p in battle.team.values()].index(pokemon2.name) + 1
-            battle2 = copy.deepcopy(battle)
             battle2.switch(
                 f"{battle2.player_role}a: {pokemon1.base_species.capitalize()}",
                 "",
@@ -125,24 +124,14 @@ class _EnvPlayer(Player):
                 f"{pokemon2.current_hp}/{pokemon2.max_hp}",
             )
             order2 = await self._env_move(battle2)
-            assert isinstance(order2, DoubleBattleOrder)
-            pokemon3 = None if order2.first_order is None else order2.first_order.order
-            pokemon4 = (
-                None if order2.second_order is None else order2.second_order.order
-            )
-            assert isinstance(pokemon3, Pokemon)
-            assert isinstance(pokemon4, Pokemon)
-            action3 = [p.name for p in battle2.team.values()].index(pokemon3.name) + 1
-            action4 = [p.name for p in battle2.team.values()].index(pokemon4.name) + 1
-            return f"/team {action1}{action2}{action3}{action4}"
+            action2 = PokeEnv.order_to_action(order2, battle2)
+            return f"/team {action1[0]}{action1[1]}{action2[0]}{action2[1]}"
         else:
             raise TypeError()
 
     async def _env_move(self, battle: AbstractBattle) -> BattleOrder:
         if not self.battle or self.battle.finished:
             self.battle = battle
-        if not self.battle == battle:
-            raise RuntimeError("Using different battles for queues")
         await self.battle_queue.async_put(battle)
         self.waiting = True
         action = await self.order_queue.async_get()
@@ -260,6 +249,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             accept_open_team_sheet=accept_open_team_sheet,
             start_timer_on_battle_start=start_timer_on_battle_start,
             start_listening=start_listening,
+            open_timeout=open_timeout,
             ping_interval=ping_interval,
             ping_timeout=ping_timeout,
             team=team,
