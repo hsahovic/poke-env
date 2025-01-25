@@ -104,7 +104,7 @@ class _EnvPlayer(Player):
             return self.random_teampreview(battle)
         elif isinstance(battle, DoubleBattle):
             order1 = await self._env_move(battle)
-            action1 = PokeEnv.order_to_action(order1, battle)
+            action1 = self.order_to_action(order1, battle)  # type: ignore
             battle2 = copy.deepcopy(battle)
             assert isinstance(order1, DoubleBattleOrder)
             assert order1.first_order is not None
@@ -124,7 +124,7 @@ class _EnvPlayer(Player):
                 f"{pokemon2.current_hp}/{pokemon2.max_hp}",
             )
             order2 = await self._env_move(battle2)
-            action2 = PokeEnv.order_to_action(order2, battle2)
+            action2 = self.order_to_action(order2, battle2)  # type: ignore
             return f"/team {action1[0]}{action1[1]}{action2[0]}{action2[1]}"
         else:
             raise TypeError()
@@ -237,6 +237,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             ping_timeout=ping_timeout,
             team=team,
         )
+        self.agent1.action_to_order = self.action_to_order  # type: ignore
+        self.agent1.order_to_action = self.order_to_action  # type: ignore
         self.agent2 = _EnvPlayer(
             username=self.__class__.__name__,  # type: ignore
             account_configuration=account_configuration2,
@@ -254,6 +256,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             ping_timeout=ping_timeout,
             team=team,
         )
+        self.agent2.action_to_order = self.action_to_order  # type: ignore
+        self.agent2.order_to_action = self.order_to_action  # type: ignore
         self.agents: List[str] = []
         self.possible_agents = [self.agent1.username, self.agent2.username]
         self._np_random: Optional[Generator] = None
