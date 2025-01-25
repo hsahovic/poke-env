@@ -2,6 +2,7 @@ import asyncio
 import unittest
 from unittest.mock import patch
 
+import numpy as np
 from gymnasium.spaces import Discrete
 
 from poke_env import AccountConfiguration, ServerConfiguration
