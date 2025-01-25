@@ -71,8 +71,8 @@ class _AsyncQueue(Generic[ItemType]):
 
 
 class _EnvPlayer(Player):
-    order_queue: _AsyncQueue[BattleOrder]
     battle_queue: _AsyncQueue[AbstractBattle]
+    order_queue: _AsyncQueue[BattleOrder]
 
     def __init__(
         self,
