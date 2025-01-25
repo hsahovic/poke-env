@@ -2,6 +2,7 @@ import asyncio
 import sys
 from io import StringIO
 
+import numpy as np
 from pettingzoo.utils.env import ObsType
 
 from poke_env.environment import AbstractBattle, Battle, Pokemon
