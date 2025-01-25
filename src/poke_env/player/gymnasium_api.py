@@ -5,7 +5,6 @@ For a black-box implementation consider using the module env_player.
 from __future__ import annotations
 
 import asyncio
-import copy
 import time
 from abc import abstractmethod
 from typing import Any, Awaitable, Dict, List, Optional, Tuple, Union
