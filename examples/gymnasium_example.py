@@ -9,6 +9,7 @@ from poke_env.player import (
     Gen8EnvSinglePlayer,
     GymnasiumEnv,
     ObservationType,
+    Player,
     RandomPlayer,
 )
 
@@ -31,10 +32,10 @@ class TestEnv(GymnasiumEnv):
     def embed_battle(self, battle):
         return np.array([1.0, 2.0, 3.0], dtype=np.float64)
 
-    def action_to_move(self, action, battle):
-        return self.agent.choose_random_move(battle)
+    def action_to_order(self, action, battle):
+        return Player.choose_random_move(battle)
 
-    def calc_reward(self, last_battle, current_battle):
+    def calc_reward(self, battle):
         return 0.25
 
 
@@ -43,8 +44,8 @@ class Gen8(Gen8EnvSinglePlayer):
         super().__init__(**kwargs)
         self.observation_spaces = {agent: Box(np.array([0, 0]), np.array([6, 6]), dtype=int) for agent in self.possible_agents}
 
-    def calc_reward(self, last_battle, current_battle) -> float:
-        return self.reward_computing_helper(current_battle)
+    def calc_reward(self, battle) -> float:
+        return self.reward_computing_helper(battle)
 
     def embed_battle(self, battle: AbstractBattle) -> ObservationType:
         to_embed = []

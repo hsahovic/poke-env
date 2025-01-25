@@ -455,7 +455,7 @@ class AbstractBattle(ABC):
                 if override_move == "Sleep Talk":
                     # Sleep talk was used, but also reveals another move
                     reveal_other_move = True
-                elif override_move in {"Copycat", "Metronome", "Nature Power"}:
+                elif override_move in {"Copycat", "Metronome", "Nature Power", "Round"}:
                     pass
                 elif override_move in {"Grass Pledge", "Water Pledge", "Fire Pledge"}:
                     override_move = None
@@ -523,7 +523,11 @@ class AbstractBattle(ABC):
                     )
             else:
                 pokemon, move, presumed_target = event[2:5]
-                if self.logger is not None:
+                if (
+                    presumed_target == ""
+                ):  # ['', 'move', 'p2a: 07ffb4c367', 'Teeter Dance', '', '[from] ability: Dancer']
+                    pass
+                elif self.logger is not None:
                     self.logger.warning(
                         "Unmanaged move message format received - cleaned up message %s in "
                         "battle %s turn %d",
@@ -619,7 +623,13 @@ class AbstractBattle(ABC):
             pokemon = self.get_pokemon(pokemon)  # type: ignore
 
             if effect == "typechange":
-                pokemon.start_effect(effect, details=event[4])  # type: ignore
+                if len(event) > 5 and event[5].startswith("[of] "):
+                    types = "/".join(
+                        map(lambda x: x.name, self.get_pokemon(event[5][5:]).types)
+                    )
+                else:
+                    types = event[4]
+                pokemon.start_effect(effect, details=types)  # type: ignore
             else:
                 pokemon.start_effect(effect)  # type: ignore
 
@@ -639,7 +649,7 @@ class AbstractBattle(ABC):
                 self.get_pokemon(target).start_effect(effect, event[4:6])
                 actor = event[6].replace("[of] ", "")
                 self.get_pokemon(actor).set_temporary_ability(event[5])
-            else:
+            elif target != "":  # ['', '-activate', '', 'move: Splash']
                 self.get_pokemon(target).start_effect(effect)
         elif event[1] == "-status":
             pokemon, status = event[2:4]
@@ -726,7 +736,7 @@ class AbstractBattle(ABC):
                     self.get_pokemon(magician).item = to_id_str(item)
                     self.get_pokemon(magician).ability = to_id_str("magician")
                     self.get_pokemon(victim).item = None
-                elif cause in {"[from] move: Thief"}:
+                elif cause in {"[from] move: Thief", "[from] move: Covet"}:
                     thief = event[2]
                     victim = event[5].replace("[of] ", "")
                     item = event[3]

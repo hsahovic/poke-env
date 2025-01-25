@@ -21,7 +21,7 @@ class RandomGen4EnvPlayer(Gen4EnvSinglePlayer):
             for agent in self.possible_agents
         }
 
-    def calc_reward(self, last_battle, current_battle) -> float:
+    def calc_reward(self, battle) -> float:
         return 0.0
 
     def embed_battle(self, battle):
@@ -36,7 +36,7 @@ class RandomGen5EnvPlayer(Gen5EnvSinglePlayer):
             for agent in self.possible_agents
         }
 
-    def calc_reward(self, last_battle, current_battle) -> float:
+    def calc_reward(self, battle) -> float:
         return 0.0
 
     def embed_battle(self, battle):
@@ -51,7 +51,7 @@ class RandomGen6EnvPlayer(Gen6EnvSinglePlayer):
             for agent in self.possible_agents
         }
 
-    def calc_reward(self, last_battle, current_battle) -> float:
+    def calc_reward(self, battle) -> float:
         return 0.0
 
     def embed_battle(self, battle):
@@ -66,7 +66,7 @@ class RandomGen7EnvPlayer(Gen7EnvSinglePlayer):
             for agent in self.possible_agents
         }
 
-    def calc_reward(self, last_battle, current_battle) -> float:
+    def calc_reward(self, battle) -> float:
         return 0.0
 
     def embed_battle(self, battle):
@@ -81,7 +81,7 @@ class RandomGen8EnvPlayer(Gen8EnvSinglePlayer):
             for agent in self.possible_agents
         }
 
-    def calc_reward(self, last_battle, current_battle) -> float:
+    def calc_reward(self, battle) -> float:
         return 0.0
 
     def embed_battle(self, battle):
@@ -96,7 +96,7 @@ class RandomGen9EnvPlayer(Gen9EnvSinglePlayer):
             for agent in self.possible_agents
         }
 
-    def calc_reward(self, last_battle, current_battle) -> float:
+    def calc_reward(self, battle) -> float:
         return 0.0
 
     def embed_battle(self, battle):
