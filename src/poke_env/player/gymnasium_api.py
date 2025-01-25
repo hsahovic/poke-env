@@ -359,15 +359,12 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
     @abstractmethod
     def calc_reward(self, battle: AbstractBattle) -> float:
         """
-        Returns the reward for the current battle state. The battle state in the previous
-        turn is given as well and can be used for comparisons.
+        Returns the reward for the current battle state.
 
-        :param last_battle: The battle state in the previous turn.
-        :type last_battle: AbstractBattle
-        :param current_battle: The current battle state.
-        :type current_battle: AbstractBattle
+        :param battle: The current battle state.
+        :type battle: AbstractBattle
 
-        :return: The reward for current_battle.
+        :return: The reward for battle.
         :rtype: float
         """
         pass
@@ -604,9 +601,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         :param n_challenges: The number of challenges to send. If empty it will run until
             stopped.
         :type n_challenges: int, optional
-        :param callback: The function to callback after each challenge with a copy of
-            the final battle state.
-        :type callback: Callable[[AbstractBattle], None], optional
         """
         if self._challenge_task and not self._challenge_task.done():
             count = self._SWITCH_CHALLENGE_TASK_RETRIES
@@ -640,9 +634,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         :param n_challenges: The number of ladder games to play. If empty it
             will run until stopped.
         :type n_challenges: int, optional
-        :param callback: The function to callback after each challenge with a
-            copy of the final battle state.
-        :type callback: Callable[[AbstractBattle], None], optional
         """
         if self._challenge_task and not self._challenge_task.done():
             count = self._SWITCH_CHALLENGE_TASK_RETRIES

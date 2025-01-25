@@ -10,8 +10,8 @@ from time import perf_counter
 from typing import Any, List, Optional, Set
 
 import requests
-import websockets.client as ws
-from websockets.client import WebSocketClientProtocol
+import websockets as ws
+from websockets import ClientConnection
 from websockets.exceptions import ConnectionClosedOK
 
 from poke_env.concurrency import (
@@ -84,7 +84,7 @@ class PSClient:
         self._logged_in: Event = create_in_poke_loop(Event)
         self._sending_lock = create_in_poke_loop(Lock)
 
-        self.websocket: WebSocketClientProtocol
+        self.websocket: ClientConnection
         self._logger: Logger = self._create_logger(log_level)
 
         if start_listening:

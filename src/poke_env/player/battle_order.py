@@ -54,6 +54,15 @@ class DefaultBattleOrder(BattleOrder):
         return self.DEFAULT_ORDER
 
 
+class StringBattleOrder(BattleOrder):
+    def __init__(self, string: str):
+        self._message = string
+
+    @property
+    def message(self) -> str:
+        return self._message
+
+
 @dataclass
 class DoubleBattleOrder(BattleOrder):
     def __init__(
