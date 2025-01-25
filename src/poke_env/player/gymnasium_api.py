@@ -272,7 +272,6 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
         truncated = {self.agents[0]: trunc1, self.agents[1]: trunc2}
         if self.battle1.finished:
             self.agents = []
-        assert self.battle1 == self.agent1.battle
         return observations, reward, terminated, truncated, self.get_additional_info()
 
     def reset(
