@@ -8,7 +8,7 @@ import asyncio
 import copy
 import time
 from abc import abstractmethod
-from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Awaitable, Dict, List, Optional, Tuple, Union
 
 from gymnasium.spaces import Discrete, Space
 from pettingzoo.utils.env import (  # type: ignore[import-untyped]
@@ -112,7 +112,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
     _INIT_RETRIES = 100
     _TIME_BETWEEN_RETRIES = 0.5
     _SWITCH_CHALLENGE_TASK_RETRIES = 30
-    _TIME_BETWEEN_SWITCH_RETIRES = 1
+    _TIME_BETWEEN_SWITCH_RETRIES = 1
 
     def __init__(
         self,
@@ -513,38 +513,23 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
             self.agent1.accept_challenges(username, 1, self.agent1.next_team), POKE_LOOP
         )
 
-    async def _challenge_loop(
-        self,
-        n_challenges: Optional[int] = None,
-        callback: Optional[Callable[[AbstractBattle], None]] = None,
-    ):
+    async def _challenge_loop(self, n_challenges: Optional[int] = None):
         if not n_challenges:
             while self._keep_challenging:
                 await self.agent1.battle_against(self.agent2, n_battles=1)
-                if callback and self.current_battle1 is not None:
-                    callback(copy.deepcopy(self.current_battle1))
         elif n_challenges > 0:
             for _ in range(n_challenges):
                 await self.agent1.battle_against(self.agent2, n_battles=1)
-                if callback and self.current_battle1 is not None:
-                    callback(copy.deepcopy(self.current_battle1))
         else:
             raise ValueError(f"Number of challenges must be > 0. Got {n_challenges}")
 
-    def start_challenging(
-        self,
-        n_challenges: Optional[int] = None,
-        callback: Optional[Callable[[AbstractBattle], None]] = None,
-    ):
+    def start_challenging(self, n_challenges: Optional[int] = None):
         """
         Starts the challenge loop.
 
         :param n_challenges: The number of challenges to send. If empty it will run until
             stopped.
         :type n_challenges: int, optional
-        :param callback: The function to callback after each challenge with a copy of
-            the final battle state.
-        :type callback: Callable[[AbstractBattle], None], optional
         """
         if self._challenge_task and not self._challenge_task.done():
             count = self._SWITCH_CHALLENGE_TASK_RETRIES
@@ -552,18 +537,14 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
                 if count == 0:
                     raise RuntimeError("Agent is already challenging")
                 count -= 1
-                time.sleep(self._TIME_BETWEEN_SWITCH_RETIRES)
+                time.sleep(self._TIME_BETWEEN_SWITCH_RETRIES)
         if not n_challenges:
             self._keep_challenging = True
         self._challenge_task = asyncio.run_coroutine_threadsafe(
-            self._challenge_loop(n_challenges, callback), POKE_LOOP
+            self._challenge_loop(n_challenges), POKE_LOOP
         )
 
-    async def _ladder_loop(
-        self,
-        n_challenges: Optional[int] = None,
-        callback: Optional[Callable[[AbstractBattle], None]] = None,
-    ):
+    async def _ladder_loop(self, n_challenges: Optional[int] = None):
         if n_challenges:
             if n_challenges <= 0:
                 raise ValueError(
@@ -571,28 +552,17 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
                 )
             for _ in range(n_challenges):
                 await self.agent1.ladder(1)
-                if callback and self.current_battle1 is not None:
-                    callback(self.current_battle1)
         else:
             while self._keep_challenging:
                 await self.agent1.ladder(1)
-                if callback and self.current_battle1 is not None:
-                    callback(self.current_battle1)
 
-    def start_laddering(
-        self,
-        n_challenges: Optional[int] = None,
-        callback: Optional[Callable[[AbstractBattle], None]] = None,
-    ):
+    def start_laddering(self, n_challenges: Optional[int] = None):
         """
         Starts the laddering loop.
 
         :param n_challenges: The number of ladder games to play. If empty it
             will run until stopped.
         :type n_challenges: int, optional
-        :param callback: The function to callback after each challenge with a
-            copy of the final battle state.
-        :type callback: Callable[[AbstractBattle], None], optional
         """
         if self._challenge_task and not self._challenge_task.done():
             count = self._SWITCH_CHALLENGE_TASK_RETRIES
@@ -600,11 +570,11 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, ActionType]):
                 if count == 0:
                     raise RuntimeError("Agent is already challenging")
                 count -= 1
-                time.sleep(self._TIME_BETWEEN_SWITCH_RETIRES)
+                time.sleep(self._TIME_BETWEEN_SWITCH_RETRIES)
         if not n_challenges:
             self._keep_challenging = True
         self._challenge_task = asyncio.run_coroutine_threadsafe(
-            self._ladder_loop(n_challenges, callback), POKE_LOOP
+            self._ladder_loop(n_challenges), POKE_LOOP
         )
 
     async def _stop_challenge_loop(
