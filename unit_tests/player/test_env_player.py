@@ -1,11 +1,12 @@
 import asyncio
 import unittest
-from inspect import isawaitable
 from unittest.mock import patch
 
+import numpy as np
 from gymnasium.spaces import Discrete, Space
 
 from poke_env import AccountConfiguration, ServerConfiguration
+from poke_env.concurrency import POKE_LOOP
 from poke_env.environment import AbstractBattle, Battle, Move, Pokemon, Status
 from poke_env.player import (
     BattleOrder,
@@ -17,7 +18,7 @@ from poke_env.player import (
     Gen8EnvSinglePlayer,
     Gen9EnvSinglePlayer,
 )
-from poke_env.player.gymnasium_api import _AsyncPlayer
+from poke_env.player.gymnasium_api import _EnvPlayer
 
 account_configuration1 = AccountConfiguration("username1", "password1")
 account_configuration2 = AccountConfiguration("username2", "password2")
@@ -28,8 +29,8 @@ class CustomEnvPlayer(EnvPlayer):
     def calc_reward(self, battle) -> float:
         pass
 
-    def action_to_move(self, action: int, battle: AbstractBattle) -> BattleOrder:
-        return Gen7EnvSinglePlayer.action_to_move(self, action, battle)
+    def action_to_order(self, action: np.int64, battle: AbstractBattle) -> BattleOrder:
+        return Gen7EnvSinglePlayer.action_to_order(self, action, battle)
 
     def describe_embedding(self) -> Space:
         pass
@@ -50,21 +51,10 @@ def test_init():
     )
     player = gymnasium_env.agent1
     assert isinstance(gymnasium_env, CustomEnvPlayer)
-    assert isinstance(player, _AsyncPlayer)
+    assert isinstance(player, _EnvPlayer)
 
 
-class AsyncMock(unittest.mock.MagicMock):
-    async def __call__(self, *args, **kwargs):
-        return super(AsyncMock, self).__call__(*args, **kwargs)
-
-
-@patch(
-    "poke_env.player.gymnasium_api._AsyncQueue.async_get",
-    return_value=2,
-    new_callable=AsyncMock,
-)
-@patch("poke_env.player.gymnasium_api._AsyncQueue.async_put", new_callable=AsyncMock)
-def test_choose_move(queue_put_mock, queue_get_mock):
+async def run_test_choose_move():
     player = CustomEnvPlayer(
         account_configuration1=account_configuration1,
         account_configuration2=account_configuration2,
@@ -73,28 +63,24 @@ def test_choose_move(queue_put_mock, queue_get_mock):
         battle_format="gen7randombattles",
         start_challenging=False,
     )
+    # Create a mock battle and moves
     battle = Battle("bat1", player.agent1.username, player.agent1.logger, gen=8)
     battle._available_moves = [Move("flamethrower", gen=8)]
-    message = player.agent1.choose_move(battle)
-    player.agent2.choose_move(battle)
-
-    assert isawaitable(message)
-
-    message = asyncio.get_event_loop().run_until_complete(message)
-
+    # Test choosing a move
+    message = await player.agent1.choose_move(battle)
+    order = player.action_to_order(np.int64(6), battle)
+    player.agent1.order_queue.put(order)
     assert message.message == "/choose move flamethrower"
-
-    battle._available_moves = []
+    # Test switching Pokémon
     battle._available_switches = [Pokemon(species="charizard", gen=8)]
-
-    message = player.agent1.choose_move(battle)
-    player.agent2.choose_move(battle)
-
-    assert isawaitable(message)
-
-    message = asyncio.get_event_loop().run_until_complete(message)
-
+    message = await player.agent1.choose_move(battle)
+    order = player.action_to_order(np.int64(0), battle)
+    player.agent1.order_queue.put(order)
     assert message.message == "/choose switch charizard"
+
+
+def test_choose_move():
+    asyncio.run_coroutine_threadsafe(run_test_choose_move(), POKE_LOOP)
 
 
 def test_reward_computing_helper():
@@ -243,7 +229,7 @@ def test_action_space():
         ],
     ):
 
-        class CustomEnvClass(PlayerClass):
+        class CustomEnvPlayerClass(PlayerClass):
             def embed_battle(self, *args, **kwargs):
                 return []
 
@@ -253,7 +239,7 @@ def test_action_space():
             def describe_embedding(self):
                 return None
 
-        p = CustomEnvClass(start_listening=False, start_challenging=False)
+        p = CustomEnvPlayerClass(start_listening=False, start_challenging=False)
 
         assert p.action_space(p.possible_agents[0]) == Discrete(
             4 * sum([1, has_megas, has_z_moves, has_dynamax]) + 6
@@ -264,7 +250,7 @@ def test_action_space():
     "poke_env.environment.Pokemon.available_z_moves",
     new_callable=unittest.mock.PropertyMock,
 )
-def test_action_to_move(z_moves_mock):
+def test_action_to_order(z_moves_mock):
     for PlayerClass, (has_megas, has_z_moves, has_dynamax, has_tera) in zip(
         [
             Gen4EnvSinglePlayer,
@@ -284,7 +270,7 @@ def test_action_to_move(z_moves_mock):
         ],
     ):
 
-        class CustomEnvClass(PlayerClass):
+        class CustomEnvPlayerClass(PlayerClass):
             def embed_battle(self, *args, **kwargs):
                 return []
 
@@ -297,14 +283,14 @@ def test_action_to_move(z_moves_mock):
             def get_opponent(self):
                 return None
 
-        p = CustomEnvClass(start_listening=False, start_challenging=False)
+        p = CustomEnvPlayerClass(start_listening=False, start_challenging=False)
         battle = Battle("bat1", p.agent1.username, p.agent1.logger, gen=8)
-        assert p.action_to_move(-1, battle).message == "/forfeit"
+        assert p.action_to_order(-1, battle).message == "/forfeit"
         battle._available_moves = [Move("flamethrower", gen=8)]
-        assert p.action_to_move(0, battle).message == "/choose move flamethrower"
+        assert p.action_to_order(0, battle).message == "/choose move flamethrower"
         battle._available_switches = [Pokemon(species="charizard", gen=8)]
         assert (
-            p.action_to_move(
+            p.action_to_order(
                 4
                 + (4 * int(has_megas))
                 + (4 * int(has_z_moves))
@@ -315,11 +301,11 @@ def test_action_to_move(z_moves_mock):
             == "/choose switch charizard"
         )
         battle._available_switches = []
-        assert p.action_to_move(3, battle).message == "/choose move flamethrower"
+        assert p.action_to_order(3, battle).message == "/choose move flamethrower"
         if has_megas:
             battle._can_mega_evolve = True
             assert (
-                p.action_to_move(4 + (4 * int(has_z_moves)), battle).message
+                p.action_to_order(4 + (4 * int(has_z_moves)), battle).message
                 == "/choose move flamethrower mega"
             )
         if has_z_moves:
@@ -329,18 +315,19 @@ def test_action_to_move(z_moves_mock):
             battle._team = {"charizard": active_pokemon}
             z_moves_mock.return_value = [Move("flamethrower", gen=8)]
             assert (
-                p.action_to_move(4, battle).message == "/choose move flamethrower zmove"
+                p.action_to_order(4, battle).message
+                == "/choose move flamethrower zmove"
             )
             battle._team = {}
         if has_dynamax:
             battle._can_dynamax = True
             assert (
-                p.action_to_move(12, battle).message
+                p.action_to_order(12, battle).message
                 == "/choose move flamethrower dynamax"
             )
         if has_tera:
             battle._can_tera = True
             assert (
-                p.action_to_move(16, battle).message
+                p.action_to_order(16, battle).message
                 == "/choose move flamethrower terastallize"
             )
