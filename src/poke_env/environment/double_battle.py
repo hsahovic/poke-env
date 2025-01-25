@@ -511,7 +511,7 @@ class DoubleBattle(AbstractBattle):
         if isinstance(value, bool):
             self._opponent_can_mega_evolve = [value, value]
         else:
-            self._opponent_can_mega_evolve = value
+            self._opponent_can_mega_evolve = value  # type: ignore
 
     @property
     def opponent_can_z_move(self) -> List[bool]:
@@ -526,7 +526,7 @@ class DoubleBattle(AbstractBattle):
         if isinstance(value, bool):
             self._opponent_can_z_move = [value, value]
         else:
-            self._opponent_can_z_move = value
+            self._opponent_can_z_move = value  # type: ignore
 
     @property
     def trapped(self) -> List[bool]:

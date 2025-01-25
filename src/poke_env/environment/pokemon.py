@@ -402,7 +402,7 @@ class Pokemon:
         if effect.breaks_protect:
             self._protect_counter = 0
 
-        if effect == Effect.TYPECHANGE and details:
+        if effect == Effect.TYPECHANGE and details is not None:
             self._temporary_types = []
             for type_ in details.split("/"):
                 self._temporary_types.append(PokemonType.from_name(type_))
@@ -787,7 +787,7 @@ class Pokemon:
     @property
     def fainted(self) -> bool:
         """
-        :return: Wheter the pokemon has fainted.
+        :return: Whether the pokemon has fainted.
         :rtype: bool
         """
         return Status.FNT == self._status
@@ -795,7 +795,7 @@ class Pokemon:
     @property
     def first_turn(self) -> bool:
         """
-        :return: Wheter this is this pokemon's first action since its last switch in.
+        :return: Whether this is this pokemon's first action since its last switch in.
         :rtype: bool
         """
         return self._first_turn
