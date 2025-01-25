@@ -356,7 +356,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
     def observation_space(self, agent: str) -> Space[ObsType]:
         return self.observation_spaces[agent]
 
-    def action_space(self, agent: str) -> Space[ActionType]:
+    def action_space(self, agent: str) -> Space:
         return self.action_spaces[agent]
 
     ###################################################################################
