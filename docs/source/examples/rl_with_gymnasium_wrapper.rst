@@ -58,9 +58,9 @@ Our player will play the ``gen8randombattle`` format. We can therefore inherit f
     from poke_env.player import Gen8EnvSinglePlayer
 
     class SimpleRLPlayer(Gen8EnvSinglePlayer):
-        def calc_reward(self, last_battle, current_battle) -> float:
+        def calc_reward(self, battle) -> float:
             return self.reward_computing_helper(
-                current_battle, fainted_value=2.0, hp_value=1.0, victory_value=30.0
+                battle, fainted_value=2.0, hp_value=1.0, victory_value=30.0
             )
 
         def embed_battle(self, battle: AbstractBattle) -> ObservationType:
