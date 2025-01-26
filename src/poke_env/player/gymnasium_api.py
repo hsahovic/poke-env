@@ -270,7 +270,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
         term2, trunc2 = self.calc_term_trunc(battle2)
         terminated = {self.agents[0]: term1, self.agents[1]: term2}
         truncated = {self.agents[0]: trunc1, self.agents[1]: trunc2}
-        if self.battle1.finished:
+        if battle1.finished:
             self.agents = []
         return observations, reward, terminated, truncated, self.get_additional_info()
 
