@@ -300,11 +300,11 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
                 )
         while self.battle1 == self.agent1.battle:
             time.sleep(0.01)
-        obs1 = self.agent1.battle_queue.get()
-        obs2 = self.agent2.battle_queue.get()
+        battle1 = self.agent1.battle_queue.get()
+        battle2 = self.agent2.battle_queue.get()
         observations = {
-            self.agents[0]: self.embed_battle(obs1),
-            self.agents[1]: self.embed_battle(obs2),
+            self.agents[0]: self.embed_battle(battle1),
+            self.agents[1]: self.embed_battle(battle2),
         }
         self.battle1 = self.agent1.battle
         self.battle1.logger = None
