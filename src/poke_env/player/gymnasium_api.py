@@ -296,8 +296,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         if self.agent2.waiting:
             order2 = self.action_to_order(actions[self.agents[1]], self.battle2)
             self.agent2.order_queue.put(order2)
-        self.agent1.battle_queue.get(timeout=0.1, default=self.battle1)
-        self.agent2.battle_queue.get(timeout=0.1, default=self.battle2)
+        battle1 = self.agent1.battle_queue.get(timeout=0.1, default=self.battle1)
+        battle2 = self.agent2.battle_queue.get(timeout=0.1, default=self.battle2)
         observations = {
             self.agents[0]: self.embed_battle(battle1),
             self.agents[1]: self.embed_battle(battle2),
