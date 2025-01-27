@@ -104,30 +104,44 @@ class _EnvPlayer(Player):
             return self.random_teampreview(battle)
         elif isinstance(battle, DoubleBattle):
             order1 = await self._env_move(battle)
-            action1 = self.order_to_action(order1, battle)  # type: ignore
-            battle2 = copy.deepcopy(battle)
-            assert isinstance(order1, DoubleBattleOrder)
-            assert order1.first_order is not None
-            assert order1.second_order is not None
-            pokemon1 = order1.first_order.order
-            pokemon2 = order1.second_order.order
-            assert isinstance(pokemon1, Pokemon)
-            assert isinstance(pokemon2, Pokemon)
-            battle2.switch(
-                f"{battle2.player_role}a: {pokemon1.base_species.capitalize()}",
-                "",
-                f"{pokemon1.current_hp}/{pokemon1.max_hp}",
-            )
-            battle2.switch(
-                f"{battle2.player_role}b: {pokemon2.base_species.capitalize()}",
-                "",
-                f"{pokemon2.current_hp}/{pokemon2.max_hp}",
-            )
+            battle2 = self._simulate_teampreview_switchin(order1, battle)
             order2 = await self._env_move(battle2)
+            action1 = self.order_to_action(order1, battle)  # type: ignore
             action2 = self.order_to_action(order2, battle2)  # type: ignore
             return f"/team {action1[0]}{action1[1]}{action2[0]}{action2[1]}"
         else:
             raise TypeError()
+
+    def _simulate_teampreview_switchin(self, order: BattleOrder, battle: DoubleBattle):
+        assert isinstance(order, DoubleBattleOrder)
+        assert order.first_order is not None
+        assert order.second_order is not None
+        pokemon1 = order.first_order.order
+        pokemon2 = order.second_order.order
+        assert isinstance(pokemon1, Pokemon)
+        assert isinstance(pokemon2, Pokemon)
+        upd_battle = copy.deepcopy(battle)
+        upd_battle.switch(
+            f"{upd_battle.player_role}a: {pokemon1.base_species.capitalize()}",
+            "",
+            f"{pokemon1.current_hp}/{pokemon1.max_hp}",
+        )
+        upd_battle.switch(
+            f"{upd_battle.player_role}b: {pokemon2.base_species.capitalize()}",
+            "",
+            f"{pokemon2.current_hp}/{pokemon2.max_hp}",
+        )
+        upd_battle.available_switches[0] = [
+            p
+            for p in battle.available_switches[0]
+            if p.base_species not in [pokemon1.base_species, pokemon2.base_species]
+        ]
+        upd_battle.available_switches[1] = [
+            p
+            for p in battle.available_switches[1]
+            if p.base_species not in [pokemon1.base_species, pokemon2.base_species]
+        ]
+        return upd_battle
 
     async def _env_move(self, battle: AbstractBattle) -> BattleOrder:
         if not self.battle or self.battle.finished:
