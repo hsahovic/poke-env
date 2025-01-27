@@ -258,7 +258,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         )
         self.agent2.action_to_order = self.action_to_order  # type: ignore
         self.agent2.order_to_action = self.order_to_action  # type: ignore
-        self.agents: List[str] = []
+        self.agents = [self.agent1.username, self.agent2.username]
         self.possible_agents = [self.agent1.username, self.agent2.username]
         self._np_random: Optional[Generator] = None
         self._reward_buffer: WeakKeyDictionary[AbstractBattle, float] = (
@@ -296,8 +296,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         if self.agent2.waiting:
             order2 = self.action_to_order(actions[self.agents[1]], self.battle2)
             self.agent2.order_queue.put(order2)
-        battle1 = self.agent1.battle_queue.get(timeout=0.01, default=self.battle1)
-        battle2 = self.agent2.battle_queue.get(timeout=0.01, default=self.battle2)
+        self.agent1.battle_queue.get(timeout=0.1, default=self.battle1)
+        self.agent2.battle_queue.get(timeout=0.1, default=self.battle2)
         observations = {
             self.agents[0]: self.embed_battle(battle1),
             self.agents[1]: self.embed_battle(battle2),
@@ -310,8 +310,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         term2, trunc2 = self.calc_term_trunc(self.battle2)
         terminated = {self.agents[0]: term1, self.agents[1]: term2}
         truncated = {self.agents[0]: trunc1, self.agents[1]: trunc2}
-        if self.battle1.finished:
-            self.agents = []
         return observations, reward, terminated, truncated, self.get_additional_info()
 
     def reset(
@@ -319,7 +317,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         seed: Optional[int] = None,
         options: Optional[Dict[str, Any]] = None,
     ) -> Tuple[Dict[str, ObsType], Dict[str, Dict[str, Any]]]:
-        self.agents = [self.agent1.username, self.agent2.username]
         if seed is not None:
             self._np_random, seed = seeding.np_random(seed)
         # forfeit any still-running battle between agent1 and agent2
