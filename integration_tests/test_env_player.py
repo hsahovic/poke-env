@@ -22,6 +22,7 @@ class RandomGen4EnvPlayer(Gen4EnvSinglePlayer):
         return Box(np.array([0]), np.array([1]), dtype=int)
 
     def embed_battle(self, battle):
+        assert not battle.finished
         return np.array([0])
 
 
@@ -33,6 +34,7 @@ class RandomGen5EnvPlayer(Gen5EnvSinglePlayer):
         return Box(np.array([0]), np.array([1]), dtype=int)
 
     def embed_battle(self, battle):
+        assert not battle.finished
         return np.array([0])
 
 
@@ -44,6 +46,7 @@ class RandomGen6EnvPlayer(Gen6EnvSinglePlayer):
         return Box(np.array([0]), np.array([1]), dtype=int)
 
     def embed_battle(self, battle):
+        assert not battle.finished
         return np.array([0])
 
 
@@ -55,6 +58,7 @@ class RandomGen7EnvPlayer(Gen7EnvSinglePlayer):
         return Box(np.array([0]), np.array([1]), dtype=int)
 
     def embed_battle(self, battle):
+        assert not battle.finished
         return np.array([0])
 
 
@@ -66,6 +70,7 @@ class RandomGen8EnvPlayer(Gen8EnvSinglePlayer):
         return Box(np.array([0]), np.array([1]), dtype=int)
 
     def embed_battle(self, battle):
+        assert not battle.finished
         return np.array([0])
 
 
@@ -77,6 +82,7 @@ class RandomGen9EnvPlayer(Gen9EnvSinglePlayer):
         return Box(np.array([0]), np.array([1]), dtype=int)
 
     def embed_battle(self, battle):
+        assert not battle.finished
         return np.array([0])
 
 
