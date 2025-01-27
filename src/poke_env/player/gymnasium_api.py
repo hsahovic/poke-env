@@ -104,15 +104,16 @@ class _EnvPlayer(Player):
             return self.random_teampreview(battle)
         elif isinstance(battle, DoubleBattle):
             order1 = await self._env_move(battle)
-            battle2 = self._simulate_teampreview_switchin(order1, battle)
-            order2 = await self._env_move(battle2)
+            upd_battle = self._simulate_teampreview_switchin(order1, battle)
+            order2 = await self._env_move(upd_battle)
             action1 = self.order_to_action(order1, battle)  # type: ignore
-            action2 = self.order_to_action(order2, battle2)  # type: ignore
+            action2 = self.order_to_action(order2, upd_battle)  # type: ignore
             return f"/team {action1[0]}{action1[1]}{action2[0]}{action2[1]}"
         else:
             raise TypeError()
 
-    def _simulate_teampreview_switchin(self, order: BattleOrder, battle: DoubleBattle):
+    @staticmethod
+    def _simulate_teampreview_switchin(order: BattleOrder, battle: DoubleBattle):
         assert isinstance(order, DoubleBattleOrder)
         assert order.first_order is not None
         assert order.second_order is not None
