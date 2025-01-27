@@ -38,17 +38,9 @@ class _AsyncQueue(Generic[ItemType]):
     async def async_get(self) -> ItemType:
         return await self.queue.get()
 
-    def get(
-        self, timeout: Optional[float] = None, default: Optional[ItemType] = None
-    ) -> ItemType:
-        try:
-            res = asyncio.run_coroutine_threadsafe(
-                asyncio.wait_for(self.async_get(), timeout), POKE_LOOP
-            )
-            return res.result()
-        except asyncio.TimeoutError:
-            assert default is not None
-            return default
+    def get(self) -> ItemType:
+        res = asyncio.run_coroutine_threadsafe(self.async_get(), POKE_LOOP)
+        return res.result()
 
     async def async_put(self, item: ItemType):
         await self.queue.put(item)
@@ -69,7 +61,6 @@ class _AsyncQueue(Generic[ItemType]):
 
 
 class _EnvPlayer(Player):
-    battle_queue: _AsyncQueue[AbstractBattle]
     order_queue: _AsyncQueue[BattleOrder]
 
     def __init__(
@@ -80,27 +71,19 @@ class _EnvPlayer(Player):
         self.__class__.__name__ = username
         super().__init__(**kwargs)
         self.__class__.__name__ = "_EnvPlayer"
-        self.battle_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
         self.order_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
         self.battle: Optional[AbstractBattle] = None
-        self.waiting = False
+        self.waiting = asyncio.Event()
 
     def choose_move(self, battle: AbstractBattle) -> Awaitable[BattleOrder]:
         return self._env_move(battle)
 
     async def _env_move(self, battle: AbstractBattle) -> BattleOrder:
-        if not self.battle or self.battle.finished:
-            self.battle = battle
-        if not self.battle == battle:
-            raise RuntimeError("Using different battles for queues")
-        await self.battle_queue.async_put(battle)
-        self.waiting = True
+        self.battle = battle
+        self.waiting.set()
         action = await self.order_queue.async_get()
-        self.waiting = False
+        self.waiting.clear()
         return action
-
-    def _battle_finished_callback(self, battle: AbstractBattle):
-        asyncio.run_coroutine_threadsafe(self.battle_queue.async_put(battle), POKE_LOOP)
 
 
 class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
@@ -246,31 +229,35 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
         Dict[str, bool],
         Dict[str, Dict[str, Any]],
     ]:
-        assert self.battle1 is not None
-        assert self.battle2 is not None
-        if self.battle1.finished:
+        assert self.agent1.battle is not None
+        assert self.agent2.battle is not None
+        if self.agent1.battle.finished:
             raise RuntimeError("Battle is already finished, call reset")
         if self.agent1.waiting:
-            order1 = self.action_to_order(actions[self.agents[0]], self.battle1)
+            order1 = self.action_to_order(actions[self.agents[0]], self.agent1.battle)
             self.agent1.order_queue.put(order1)
         if self.agent2.waiting:
-            order2 = self.action_to_order(actions[self.agents[1]], self.battle2)
+            order2 = self.action_to_order(actions[self.agents[1]], self.agent2.battle)
             self.agent2.order_queue.put(order2)
-        battle1 = self.agent1.battle_queue.get(timeout=0.01, default=self.battle1)
-        battle2 = self.agent2.battle_queue.get(timeout=0.01, default=self.battle2)
+        asyncio.run_coroutine_threadsafe(
+            asyncio.wait_for(self.agent1.waiting.wait(), timeout=0.01), POKE_LOOP
+        )
+        asyncio.run_coroutine_threadsafe(
+            asyncio.wait_for(self.agent2.waiting.wait(), timeout=0.01), POKE_LOOP
+        )
         observations = {
-            self.agents[0]: self.embed_battle(battle1),
-            self.agents[1]: self.embed_battle(battle2),
+            self.agents[0]: self.embed_battle(self.agent1.battle),
+            self.agents[1]: self.embed_battle(self.agent2.battle),
         }
         reward = {
-            self.agents[0]: self.calc_reward(self.battle1),
-            self.agents[1]: self.calc_reward(self.battle2),
+            self.agents[0]: self.calc_reward(self.agent1.battle),
+            self.agents[1]: self.calc_reward(self.agent2.battle),
         }
-        term1, trunc1 = self.calc_term_trunc(self.battle1)
-        term2, trunc2 = self.calc_term_trunc(self.battle2)
+        term1, trunc1 = self.calc_term_trunc(self.agent1.battle)
+        term2, trunc2 = self.calc_term_trunc(self.agent2.battle)
         terminated = {self.agents[0]: term1, self.agents[1]: term2}
         truncated = {self.agents[0]: trunc1, self.agents[1]: trunc2}
-        if self.battle1.finished:
+        if self.agent1.battle.finished:
             self.agents = []
         return observations, reward, terminated, truncated, self.get_additional_info()
 
@@ -292,19 +279,17 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
             if self.battle1 == self.agent1.battle:
                 self.agent1.order_queue.put(ForfeitBattleOrder())
                 self.agent2.order_queue.put(DefaultBattleOrder())
-                self.agent1.battle_queue.get()
-                self.agent2.battle_queue.get()
             else:
                 raise RuntimeError(
                     "Environment and agent aren't synchronized. Try to restart"
                 )
         while self.battle1 == self.agent1.battle:
             time.sleep(0.01)
-        battle1 = self.agent1.battle_queue.get()
-        battle2 = self.agent2.battle_queue.get()
+        asyncio.run_coroutine_threadsafe(self.agent1.waiting.wait(), POKE_LOOP)
+        asyncio.run_coroutine_threadsafe(self.agent2.waiting.wait(), POKE_LOOP)
         observations = {
-            self.agents[0]: self.embed_battle(battle1),
-            self.agents[1]: self.embed_battle(battle2),
+            self.agents[0]: self.embed_battle(self.agent1.battle),
+            self.agents[1]: self.embed_battle(self.agent2.battle),
         }
         self.battle1 = self.agent1.battle
         self.battle1.logger = None
@@ -563,10 +548,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
 
         if force:
             if self.battle1 and not self.battle1.finished:
-                if not (
-                    self.agent1.battle_queue.empty()
-                    and self.agent2.battle_queue.empty()
-                ):
+                if self.agent1.waiting.is_set() or self.agent2.waiting.is_set():
                     await asyncio.sleep(2)
                     if not (
                         self.agent1.order_queue.empty()
@@ -577,10 +559,6 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
                             "Use this method only when training or "
                             "evaluation are over."
                         )
-                if not self.agent1.battle_queue.empty():
-                    await self.agent1.battle_queue.async_get()
-                if not self.agent2.battle_queue.empty():
-                    await self.agent2.battle_queue.async_get()
                 await self.agent1.order_queue.async_put(ForfeitBattleOrder())
                 await self.agent2.order_queue.async_put(DefaultBattleOrder())
 
@@ -598,10 +576,6 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
             await self.agent1.order_queue.async_get()
         while not self.agent2.order_queue.empty():
             await self.agent2.order_queue.async_get()
-        while not self.agent1.battle_queue.empty():
-            await self.agent1.battle_queue.async_get()
-        while not self.agent2.battle_queue.empty():
-            await self.agent2.battle_queue.async_get()
 
         if purge:
             self.reset_battles()

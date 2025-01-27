@@ -173,9 +173,6 @@ class Player(ABC):
             )
         return AccountConfiguration(username, None)
 
-    def _battle_finished_callback(self, battle: AbstractBattle):
-        pass
-
     def update_team(self, team: Union[Teambuilder, str]):
         """Updates the team used by the player.
 
@@ -295,7 +292,7 @@ class Player(ABC):
                     battle.tied()
                 await self._battle_count_queue.get()
                 self._battle_count_queue.task_done()
-                self._battle_finished_callback(battle)
+                self.battle = battle
                 async with self._battle_end_condition:
                     self._battle_end_condition.notify_all()
             elif split_message[1] == "error":
