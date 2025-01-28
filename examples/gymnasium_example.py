@@ -1,53 +1,24 @@
 import numpy as np
-from gymnasium import Space
+import numpy.typing as npt
 from gymnasium.spaces import Box
-from gymnasium.utils.env_checker import check_env
+from pettingzoo.test.parallel_test import parallel_api_test
 
-from poke_env import LocalhostServerConfiguration
 from poke_env.environment.abstract_battle import AbstractBattle
-from poke_env.player import (
-    Gen8EnvSinglePlayer,
-    GymnasiumEnv,
-    ObservationType,
-    Player,
-    RandomPlayer,
-)
+from poke_env.player import SinglesEnv
 
 
-class TestEnv(GymnasiumEnv):
+class TestEnv(SinglesEnv[npt.NDArray[np.float32]]):
     def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self.observation_spaces = {
-            agent: Box(
-                low=np.array([1, 1, float("-inf")]),
-                high=np.array([2, 4, float("+inf")]),
-                dtype=np.float64,
-            )
+            agent: Box(np.array([0, 0]), np.array([6, 6]), dtype=np.float32)
             for agent in self.possible_agents
         }
-        super().__init__(**kwargs)
-
-    def action_space_size(self):
-        return 21
-
-    def embed_battle(self, battle):
-        return np.array([1.0, 2.0, 3.0], dtype=np.float64)
-
-    def action_to_order(self, action, battle):
-        return Player.choose_random_move(battle)
-
-    def calc_reward(self, battle):
-        return 0.25
-
-
-class Gen8(Gen8EnvSinglePlayer):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.observation_spaces = {agent: Box(np.array([0, 0]), np.array([6, 6]), dtype=int) for agent in self.possible_agents}
 
     def calc_reward(self, battle) -> float:
         return self.reward_computing_helper(battle)
 
-    def embed_battle(self, battle: AbstractBattle) -> ObservationType:
+    def embed_battle(self, battle: AbstractBattle):
         to_embed = []
         fainted_mons = 0
         for mon in battle.team.values():
@@ -62,31 +33,10 @@ class Gen8(Gen8EnvSinglePlayer):
         return np.array(to_embed)
 
 
-def gymnasium_api():
+if __name__ == "__main__":
     gymnasium_env = TestEnv(
         battle_format="gen8randombattle",
-        server_configuration=LocalhostServerConfiguration,
         start_challenging=True,
     )
-    check_env(gymnasium_env)
+    parallel_api_test(gymnasium_env)
     gymnasium_env.close()
-
-
-def env_player():
-    opponent = RandomPlayer(
-        battle_format="gen8randombattle",
-        server_configuration=LocalhostServerConfiguration,
-    )
-    gymnasium_env = Gen8(
-        battle_format="gen8randombattle",
-        server_configuration=LocalhostServerConfiguration,
-        start_challenging=True,
-        opponent=opponent,
-    )
-    check_env(gymnasium_env)
-    gymnasium_env.close()
-
-
-if __name__ == "__main__":
-    gymnasium_api()
-    env_player()
