@@ -109,33 +109,9 @@ def test_two_successive_calls_gen9():
 
 @pytest.mark.timeout(60)
 def test_check_envs():
-    env_player_gen4 = SinglesTestEnv(
-        battle_format="gen4randombattle", log_level=25, start_challenging=True
-    )
-    parallel_api_test(env_player_gen4)
-    env_player_gen4.close()
-    env_player_gen5 = SinglesTestEnv(
-        battle_format="gen5randombattle", log_level=25, start_challenging=True
-    )
-    parallel_api_test(env_player_gen5)
-    env_player_gen5.close()
-    env_player_gen6 = SinglesTestEnv(
-        battle_format="gen6randombattle", log_level=25, start_challenging=True
-    )
-    parallel_api_test(env_player_gen6)
-    env_player_gen6.close()
-    env_player_gen7 = SinglesTestEnv(
-        battle_format="gen7randombattle", log_level=25, start_challenging=True
-    )
-    parallel_api_test(env_player_gen7)
-    env_player_gen7.close()
-    env_player_gen8 = SinglesTestEnv(
-        battle_format="gen8randombattle", log_level=25, start_challenging=True
-    )
-    parallel_api_test(env_player_gen8)
-    env_player_gen8.close()
-    env_player_gen9 = SinglesTestEnv(
-        battle_format="gen9randombattle", log_level=25, start_challenging=True
-    )
-    parallel_api_test(env_player_gen9)
-    env_player_gen9.close()
+    for gen in range(4, 10):
+        env = SinglesTestEnv(
+            battle_format=f"gen{gen}randombattle", log_level=25, start_challenging=True
+        )
+        parallel_api_test(env)
+        env.close()
