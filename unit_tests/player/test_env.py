@@ -1,9 +1,9 @@
 import asyncio
+import sys
+from io import StringIO
 
 import numpy as np
 import numpy.typing as npt
-import sys
-from io import StringIO
 from gymnasium.spaces import Discrete
 
 from poke_env import AccountConfiguration, ServerConfiguration
@@ -17,7 +17,7 @@ from poke_env.environment import (
     Status,
 )
 from poke_env.player import BattleOrder, ForfeitBattleOrder, Player, PokeEnv, SinglesEnv
-from poke_env.player.env import _EnvPlayer, _AsyncQueue
+from poke_env.player.env import _AsyncQueue, _EnvPlayer
 
 account_configuration1 = AccountConfiguration("username1", "password1")
 account_configuration2 = AccountConfiguration("username2", "password2")
@@ -103,7 +103,6 @@ def test_render():
     battle._team["2"] = other_mon
     expected = "  Turn    3. | [●●][ 60/120hp]  charizard -    pikachu [ 20%hp][●]\r"
     assert render(battle) == expected
-
 
 
 def test_init():
