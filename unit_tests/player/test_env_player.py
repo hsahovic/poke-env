@@ -7,32 +7,21 @@ from gymnasium.spaces import Discrete
 
 from poke_env import AccountConfiguration, ServerConfiguration
 from poke_env.concurrency import POKE_LOOP
-from poke_env.environment import AbstractBattle, Battle, Move, Pokemon, Status
+from poke_env.environment import Battle, Move, Pokemon, Status
 from poke_env.player import (
     BattleOrder,
-    EnvPlayer,
-    Gen4EnvSinglePlayer,
-    Gen5EnvSinglePlayer,
-    Gen6EnvSinglePlayer,
-    Gen7EnvSinglePlayer,
-    Gen8EnvSinglePlayer,
-    Gen9EnvSinglePlayer,
+    SinglesEnv
 )
-from poke_env.player.gymnasium_api import _EnvPlayer
+from poke_env.player.env import _EnvPlayer
 
 account_configuration1 = AccountConfiguration("username1", "password1")
 account_configuration2 = AccountConfiguration("username2", "password2")
 server_configuration = ServerConfiguration("server.url", "auth.url")
 
 
-class CustomEnvPlayer(EnvPlayer):
+class CustomEnvPlayer(SinglesEnv):
     def calc_reward(self, battle) -> float:
         pass
-
-    def action_to_order(self, action: np.int64, battle: AbstractBattle) -> BattleOrder:
-        return Gen7EnvSinglePlayer.action_to_order(self, action, battle)
-
-    _ACTION_SPACE = Gen7EnvSinglePlayer._ACTION_SPACE
 
     def embed_battle(self, battle):
         return None
