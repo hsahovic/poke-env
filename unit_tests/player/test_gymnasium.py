@@ -5,7 +5,7 @@ from typing import List
 
 from poke_env.environment import AbstractBattle, Battle, Pokemon
 from poke_env.player import ForfeitBattleOrder, SinglesEnv
-from poke_env.player.gymnasium_api import _AsyncQueue, _EnvPlayer
+from poke_env.player.env import _AsyncQueue, _EnvPlayer
 
 
 class DummyEnv(SinglesEnv):

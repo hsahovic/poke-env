@@ -2,7 +2,7 @@
 """
 
 from poke_env.concurrency import POKE_LOOP
-from poke_env.player import gymnasium_api, player, random_player, utils
+from poke_env.player import env, player, random_player, utils
 from poke_env.player.baselines import MaxBasePowerPlayer, SimpleHeuristicsPlayer
 from poke_env.player.battle_order import (
     BattleOrder,
@@ -11,7 +11,7 @@ from poke_env.player.battle_order import (
     ForfeitBattleOrder,
 )
 from poke_env.player.doubles_env import DoublesEnv
-from poke_env.player.gymnasium_api import ActionType, ObsType, PokeEnv
+from poke_env.player.env import ActionType, ObsType, PokeEnv
 from poke_env.player.player import Player
 from poke_env.player.random_player import RandomPlayer
 from poke_env.player.single_agent_wrapper import SingleAgentWrapper
@@ -25,7 +25,7 @@ from poke_env.player.utils import (
 from poke_env.ps_client import PSClient
 
 __all__ = [
-    "gymnasium_api",
+    "env",
     "player",
     "random_player",
     "utils",

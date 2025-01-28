@@ -22,7 +22,7 @@ from poke_env.player import (
     PokeEnv,
     SinglesEnv,
 )
-from poke_env.player.gymnasium_api import _EnvPlayer
+from poke_env.player.env import _EnvPlayer
 from poke_env.ps_client import AccountConfiguration, ServerConfiguration
 
 account_configuration1 = AccountConfiguration("username1", "password1")

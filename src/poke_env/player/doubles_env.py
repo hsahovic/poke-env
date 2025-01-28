@@ -11,7 +11,7 @@ from poke_env.player.battle_order import (
     DoubleBattleOrder,
     ForfeitBattleOrder,
 )
-from poke_env.player.gymnasium_api import ObsType, PokeEnv
+from poke_env.player.env import ObsType, PokeEnv
 from poke_env.player.player import Player
 from poke_env.ps_client import (
     AccountConfiguration,
