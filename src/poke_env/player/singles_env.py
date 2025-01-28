@@ -22,6 +22,7 @@ from poke_env.teambuilder import Teambuilder
 class SinglesEnv(PokeEnv[ObsType, np.int64]):
     def __init__(
         self,
+        *,
         account_configuration1: Optional[AccountConfiguration] = None,
         account_configuration2: Optional[AccountConfiguration] = None,
         avatar: Optional[int] = None,

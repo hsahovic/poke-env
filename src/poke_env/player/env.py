@@ -117,9 +117,9 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
 
     def __init__(
         self,
+        *,
         account_configuration1: Optional[AccountConfiguration] = None,
         account_configuration2: Optional[AccountConfiguration] = None,
-        *,
         avatar: Optional[int] = None,
         battle_format: str = "gen8randombattle",
         log_level: Optional[int] = None,
