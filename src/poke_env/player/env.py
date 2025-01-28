@@ -2,8 +2,6 @@
 For a black-box implementation consider using the module env_player.
 """
 
-from __future__ import annotations
-
 import asyncio
 import time
 from abc import abstractmethod
