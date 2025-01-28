@@ -42,7 +42,10 @@ class TestEnv(GymnasiumEnv):
 class Gen8(Gen8EnvSinglePlayer):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.observation_spaces = {agent: Box(np.array([0, 0]), np.array([6, 6]), dtype=int) for agent in self.possible_agents}
+        self.observation_spaces = {
+            agent: Box(np.array([0, 0]), np.array([6, 6]), dtype=int)
+            for agent in self.possible_agents
+        }
 
     def calc_reward(self, battle) -> float:
         return self.reward_computing_helper(battle)
