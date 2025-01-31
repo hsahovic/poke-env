@@ -32,13 +32,14 @@ def play_function(env, n_battles):
 
 
 @pytest.mark.timeout(60)
-def test_singles_env():
+def test_env_run():
     for gen in range(4, 10):
         env = SinglesTestEnv(
             battle_format=f"gen{gen}randombattle", log_level=25, start_challenging=False
         )
         env.start_challenging(3)
         play_function(env, 3)
+        env.close()
     env = SinglesTestEnv(
         battle_format="gen8randombattle", log_level=25, start_challenging=False
     )
@@ -46,6 +47,7 @@ def test_singles_env():
     play_function(env, 2)
     env.start_challenging(2)
     play_function(env, 2)
+    env.close()
     env = SinglesTestEnv(
         battle_format="gen9randombattle", log_level=25, start_challenging=False
     )
@@ -53,10 +55,11 @@ def test_singles_env():
     play_function(env, 2)
     env.start_challenging(2)
     play_function(env, 2)
+    env.close()
 
 
 @pytest.mark.timeout(60)
-def test_check_envs():
+def test_env_api():
     for gen in range(4, 10):
         env = SinglesTestEnv(
             battle_format=f"gen{gen}randombattle", log_level=25, start_challenging=True
