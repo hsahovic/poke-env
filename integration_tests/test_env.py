@@ -31,80 +31,28 @@ def play_function(env, n_battles):
             done = any(terminated.values()) or any(truncated.values())
 
 
-@pytest.mark.timeout(30)
-def test_random_gymnasium_players_gen4():
-    env_player = SinglesTestEnv(
-        battle_format="gen4randombattle", log_level=25, start_challenging=False
-    )
-    env_player.start_challenging(3)
-    play_function(env_player, 3)
-
-
-@pytest.mark.timeout(30)
-def test_random_gymnasium_players_gen5():
-    env_player = SinglesTestEnv(
-        battle_format="gen5randombattle", log_level=25, start_challenging=False
-    )
-    env_player.start_challenging(3)
-    play_function(env_player, 3)
-
-
-@pytest.mark.timeout(30)
-def test_random_gymnasium_players_gen6():
-    env_player = SinglesTestEnv(
-        battle_format="gen6randombattle", log_level=25, start_challenging=False
-    )
-    env_player.start_challenging(3)
-    play_function(env_player, 3)
-
-
-@pytest.mark.timeout(30)
-def test_random_gymnasium_players_gen7():
-    env_player = SinglesTestEnv(
-        battle_format="gen7randombattle", log_level=25, start_challenging=False
-    )
-    env_player.start_challenging(3)
-    play_function(env_player, 3)
-
-
-@pytest.mark.timeout(30)
-def test_random_gymnasium_players_gen8():
-    env_player = SinglesTestEnv(
+@pytest.mark.timeout(60)
+def test_singles_env():
+    for gen in range(4, 10):
+        env = SinglesTestEnv(
+            battle_format=f"gen{gen}randombattle", log_level=25, start_challenging=False
+        )
+        env.start_challenging(3)
+        play_function(env, 3)
+    env = SinglesTestEnv(
         battle_format="gen8randombattle", log_level=25, start_challenging=False
     )
-    env_player.start_challenging(3)
-    play_function(env_player, 3)
-
-
-@pytest.mark.timeout(30)
-def test_random_gymnasium_players_gen9():
-    env_player = SinglesTestEnv(
+    env.start_challenging(2)
+    play_function(env, 2)
+    env.start_challenging(2)
+    play_function(env, 2)
+    env = SinglesTestEnv(
         battle_format="gen9randombattle", log_level=25, start_challenging=False
     )
-    env_player.start_challenging(3)
-    play_function(env_player, 3)
-
-
-@pytest.mark.timeout(60)
-def test_two_successive_calls_gen8():
-    env_player = SinglesTestEnv(
-        battle_format="gen8randombattle", log_level=25, start_challenging=False
-    )
-    env_player.start_challenging(2)
-    play_function(env_player, 2)
-    env_player.start_challenging(2)
-    play_function(env_player, 2)
-
-
-@pytest.mark.timeout(60)
-def test_two_successive_calls_gen9():
-    env_player = SinglesTestEnv(
-        battle_format="gen9randombattle", log_level=25, start_challenging=False
-    )
-    env_player.start_challenging(2)
-    play_function(env_player, 2)
-    env_player.start_challenging(2)
-    play_function(env_player, 2)
+    env.start_challenging(2)
+    play_function(env, 2)
+    env.start_challenging(2)
+    play_function(env, 2)
 
 
 @pytest.mark.timeout(60)
