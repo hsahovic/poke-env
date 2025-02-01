@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import Any, List, Optional, Union
 
@@ -89,9 +91,11 @@ class DoubleBattleOrder(BattleOrder):
             return self.DEFAULT_ORDER
 
     @staticmethod
-    def join_orders(first_orders: List[BattleOrder], second_orders: List[BattleOrder]):
+    def join_orders(
+        first_orders: List[BattleOrder], second_orders: List[BattleOrder]
+    ) -> List[DoubleBattleOrder]:
         if first_orders and second_orders:
-            orders = [
+            return [
                 DoubleBattleOrder(first_order=first_order, second_order=second_order)
                 for first_order in first_orders
                 for second_order in second_orders
@@ -101,8 +105,6 @@ class DoubleBattleOrder(BattleOrder):
                 if not first_order.terastallize or not second_order.terastallize
                 if first_order.order != second_order.order
             ]
-            if orders:
-                return orders
         elif first_orders:
             return [DoubleBattleOrder(order, None) for order in first_orders]
         elif second_orders:
