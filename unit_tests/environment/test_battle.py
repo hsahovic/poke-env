@@ -426,10 +426,16 @@ def test_battle_request_and_interactions(example_request):
     )
     assert "precipiceblades" in battle.opponent_active_pokemon.moves
 
-    event = ["", "move", "p1: Groudon", "Teeter Dance", "[from]ability: Dancer"]
+    event = ["", "move", "p1: Groudon", "Teeter Dance", "[from] ability: Dancer"]
     battle.parse_message(event)
     assert "teeterdance" not in battle.opponent_active_pokemon.moves
-    assert event == ["", "move", "p1: Groudon", "Teeter Dance", "[from]ability: Dancer"]
+    assert event == [
+        "",
+        "move",
+        "p1: Groudon",
+        "Teeter Dance",
+        "[from] ability: Dancer",
+    ]
 
     battle._player_username = "ray"
     battle._opponent_username = "wolfe"

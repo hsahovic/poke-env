@@ -449,8 +449,8 @@ class AbstractBattle(ABC):
             if event[-1].startswith("[anim]"):
                 event = event[:-1]
 
-            if event[-1].startswith("[from]move: "):
-                override_move = event.pop()[12:]
+            if event[-1].startswith("[from] move: "):
+                override_move = event.pop()[13:]
 
                 if override_move == "Sleep Talk":
                     # Sleep talk was used, but also reveals another move
@@ -461,7 +461,7 @@ class AbstractBattle(ABC):
                     override_move = None
                 elif self.logger is not None:
                     self.logger.warning(
-                        "Unmanaged [from]move message received - move %s in cleaned up "
+                        "Unmanaged [from] move message received - move %s in cleaned up "
                         "message %s in battle %s turn %d",
                         override_move,
                         event,
@@ -472,8 +472,8 @@ class AbstractBattle(ABC):
             if event[-1] == "null":
                 event = event[:-1]
 
-            if event[-1].startswith("[from]ability: "):
-                revealed_ability = event.pop()[15:]
+            if event[-1].startswith("[from] ability: "):
+                revealed_ability = event.pop()[16:]
                 pokemon = event[2]
                 self.get_pokemon(pokemon).ability = revealed_ability
 
@@ -483,7 +483,7 @@ class AbstractBattle(ABC):
                     return
                 elif self.logger is not None:
                     self.logger.warning(
-                        "Unmanaged [from]ability: message received - ability %s in "
+                        "Unmanaged [from] ability: message received - ability %s in "
                         "cleaned up message %s in battle %s turn %d",
                         revealed_ability,
                         event,
