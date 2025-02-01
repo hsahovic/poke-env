@@ -567,7 +567,9 @@ class Player(ABC):
                     second_switch_in = random.choice(available_switches)
                     second_order = BattleOrder(second_switch_in)
 
-            return DoubleBattleOrder(first_order, second_order)
+            if first_order and second_order:
+                return DoubleBattleOrder(first_order, second_order)
+            return DoubleBattleOrder(first_order or second_order, None)
 
         for (
             orders,
