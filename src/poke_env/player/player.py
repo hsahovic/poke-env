@@ -155,6 +155,8 @@ class Player(ABC):
         self._challenge_queue: Queue[Any] = create_in_poke_loop(Queue)
         self._team: Optional[Teambuilder] = None
 
+        self.try_again = False
+
         if isinstance(team, Teambuilder):
             self._team = team
         elif isinstance(team, str):
