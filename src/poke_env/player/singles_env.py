@@ -104,7 +104,10 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
                 return ForfeitBattleOrder()
             elif action < 6:
                 order = Player.create_order(list(battle.team.values())[action])
-                assert order.order in battle.available_switches, "invalid pick"
+                assert isinstance(order.order, Pokemon)
+                assert order.order.base_species in [
+                    p.base_species for p in battle.available_switches
+                ], "invalid pick"
             else:
                 assert not battle.force_switch, "invalid pick"
                 active_mon = battle.active_pokemon
