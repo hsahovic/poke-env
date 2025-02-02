@@ -2,8 +2,9 @@ import numpy as np
 import pytest
 from gymnasium.spaces import Box
 from pettingzoo.test.parallel_test import parallel_api_test
+from gymnasium.utils.env_checker import check_env
 
-from poke_env.player import SinglesEnv
+from poke_env.player import SinglesEnv, SingleAgentWrapper, RandomPlayer
 
 
 class SinglesTestEnv(SinglesEnv):
@@ -31,6 +32,16 @@ def play_function(env, n_battles):
             done = any(terminated.values()) or any(truncated.values())
 
 
+def single_agent_play_function(env: SingleAgentWrapper, n_battles: int):
+    for _ in range(n_battles):
+        done = False
+        env.reset()
+        while not done:
+            action = env.action_space.sample()
+            _, _, terminated, truncated, _ = env.step(action)
+            done = terminated or truncated
+
+
 @pytest.mark.timeout(60)
 def test_env_run():
     for gen in range(4, 10):
@@ -40,6 +51,9 @@ def test_env_run():
         env.start_challenging(3)
         play_function(env, 3)
         env.close()
+        env = SingleAgentWrapper(env, RandomPlayer())
+        env.env.start_challenging(3)
+        single_agent_play_function(env, 3)
     env = SinglesTestEnv(
         battle_format="gen8randombattle", log_level=25, start_challenging=False
     )
@@ -65,4 +79,7 @@ def test_env_api():
             battle_format=f"gen{gen}randombattle", log_level=25, start_challenging=True
         )
         parallel_api_test(env)
+        env.close()
+        env = SingleAgentWrapper(env, RandomPlayer())
+        check_env(env)
         env.close()
