@@ -76,7 +76,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         }
 
     @staticmethod
-    def action_to_order(action: np.int64, battle: Battle) -> BattleOrder:
+    def action_to_order(action: np.int64, battle: Battle, strict: bool = True) -> BattleOrder:
         """
         Returns the BattleOrder relative to the given action.
 
@@ -141,13 +141,13 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
                 ), "invalid pick"
             return order
         except AssertionError as e:
-            if str(e) == "invalid pick":
+            if not strict and str(e) == "invalid pick":
                 return Player.choose_random_move(battle)
             else:
                 raise e
 
     @staticmethod
-    def order_to_action(order: BattleOrder, battle: Battle) -> np.int64:
+    def order_to_action(order: BattleOrder, battle: Battle, strict: bool = True) -> np.int64:
         """
         Returns the action relative to the given BattleOrder.
 
@@ -206,7 +206,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
                 ), "invalid pick"
             return np.int64(action)
         except AssertionError as e:
-            if str(e) == "invalid pick":
+            if not strict and str(e) == "invalid pick":
                 order = Player.choose_random_move(battle)
                 return SinglesEnv.order_to_action(order, battle)
             else:

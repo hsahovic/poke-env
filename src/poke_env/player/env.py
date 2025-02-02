@@ -220,6 +220,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         self.possible_agents = [self.agent1.username, self.agent2.username]
         self.battle1: Optional[AbstractBattle] = None
         self.battle2: Optional[AbstractBattle] = None
+        self.strict = True
         self._reward_buffer: WeakKeyDictionary[AbstractBattle, float] = (
             WeakKeyDictionary()
         )
@@ -247,10 +248,10 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         if self.battle1.finished:
             raise RuntimeError("Battle is already finished, call reset")
         if self.agent1.waiting:
-            order1 = self.action_to_order(actions[self.agents[0]], self.battle1)
+            order1 = self.action_to_order(actions[self.agents[0]], self.battle1, self.strict)
             self.agent1.order_queue.put(order1)
         if self.agent2.waiting:
-            order2 = self.action_to_order(actions[self.agents[1]], self.battle2)
+            order2 = self.action_to_order(actions[self.agents[1]], self.battle2, self.strict)
             self.agent2.order_queue.put(order2)
         battle1 = self.agent1.battle_queue.get(timeout=0.1, default=self.battle1)
         battle2 = self.agent2.battle_queue.get(timeout=0.1, default=self.battle2)
@@ -386,7 +387,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
 
     @staticmethod
     @abstractmethod
-    def action_to_order(action: ActionType, battle: Any) -> BattleOrder:
+    def action_to_order(action: ActionType, battle: Any, strict: bool = True) -> BattleOrder:
         """
         Returns the BattleOrder relative to the given action.
 
@@ -402,7 +403,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
 
     @staticmethod
     @abstractmethod
-    def order_to_action(order: BattleOrder, battle: Any) -> ActionType:
+    def order_to_action(order: BattleOrder, battle: Any, strict: bool = True) -> ActionType:
         """
         Returns the action relative to the given BattleOrder.
 

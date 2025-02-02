@@ -9,6 +9,7 @@ from poke_env.player import SinglesEnv
 class SinglesTestEnv(SinglesEnv):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.strict = False
         self.observation_spaces = {
             agent: Box(np.array([0]), np.array([1]), dtype=np.int64)
             for agent in self.possible_agents
