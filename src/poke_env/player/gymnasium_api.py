@@ -248,8 +248,12 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
         if self.agent2.waiting:
             order2 = self.action_to_order(actions[self.agents[1]], self.battle2)
             self.agent2.order_queue.put(order2)
-        battle1 = self.agent1.battle_queue.get()
-        battle2 = self.agent2.battle_queue.get()
+        battle1 = (
+            self.battle1 if self.agent2.try_again else self.agent1.battle_queue.get()
+        )
+        battle2 = (
+            self.battle2 if self.agent1.try_again else self.agent2.battle_queue.get()
+        )
         observations = {
             self.agents[0]: self.embed_battle(battle1),
             self.agents[1]: self.embed_battle(battle2),
