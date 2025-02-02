@@ -3,10 +3,25 @@ import pytest
 from gymnasium.spaces import Box
 from pettingzoo.test.parallel_test import parallel_api_test
 
-from poke_env.player import SinglesEnv
+from poke_env.player import DoublesEnv, SinglesEnv
 
 
 class SinglesTestEnv(SinglesEnv):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.observation_spaces = {
+            agent: Box(np.array([0]), np.array([1]), dtype=np.int64)
+            for agent in self.possible_agents
+        }
+
+    def calc_reward(self, battle) -> float:
+        return 0.0
+
+    def embed_battle(self, battle):
+        return np.array([0])
+
+
+class DoublesTestEnv(DoublesEnv):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.observation_spaces = {
@@ -40,6 +55,13 @@ def test_env_run():
         env.start_challenging(3)
         play_function(env, 3)
         env.close()
+    for gen in range(8, 10):
+        env = DoublesTestEnv(
+            battle_format=f"gen{gen}randomdoublesbattle", log_level=25, start_challenging=False
+        )
+        env.start_challenging(3)
+        play_function(env, 3)
+        env.close()
     env = SinglesTestEnv(
         battle_format="gen8randombattle", log_level=25, start_challenging=False
     )
@@ -63,6 +85,12 @@ def test_env_api():
     for gen in range(4, 10):
         env = SinglesTestEnv(
             battle_format=f"gen{gen}randombattle", log_level=25, start_challenging=True
+        )
+        parallel_api_test(env)
+        env.close()
+    for gen in range(8, 10):
+        env = SinglesTestEnv(
+            battle_format=f"gen{gen}randomdoublesbattle", log_level=25, start_challenging=True
         )
         parallel_api_test(env)
         env.close()
