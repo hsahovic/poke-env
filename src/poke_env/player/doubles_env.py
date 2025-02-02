@@ -155,7 +155,6 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
     def _action_to_order_individual(
         action: np.int64, battle: DoubleBattle, pos: int
     ) -> Optional[BattleOrder]:
-        order: Optional[BattleOrder]
         if action == 0:
             order = None
         elif action < 7:
