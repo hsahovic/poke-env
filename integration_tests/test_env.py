@@ -1,10 +1,10 @@
 import numpy as np
 import pytest
 from gymnasium.spaces import Box
-from pettingzoo.test.parallel_test import parallel_api_test
 from gymnasium.utils.env_checker import check_env
+from pettingzoo.test.parallel_test import parallel_api_test
 
-from poke_env.player import SinglesEnv, SingleAgentWrapper, RandomPlayer
+from poke_env.player import RandomPlayer, SingleAgentWrapper, SinglesEnv
 
 
 class SinglesTestEnv(SinglesEnv):
