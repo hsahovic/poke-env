@@ -91,7 +91,7 @@ def test_env_api():
         parallel_api_test(env)
         env.close()
     for gen in range(8, 10):
-        env = SinglesTestEnv(
+        env = DoublesTestEnv(
             battle_format=f"gen{gen}randomdoublesbattle",
             log_level=25,
             start_challenging=True,
