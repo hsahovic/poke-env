@@ -159,7 +159,10 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             order = None
         elif action < 7:
             order = Player.create_order(list(battle.team.values())[action - 1])
-            assert order.order in battle.available_switches[pos], "invalid pick"
+            assert isinstance(order.order, Pokemon)
+            assert order.order.base_species in [
+                p.base_species for p in battle.available_switches[pos]
+            ], "invalid pick"
         else:
             assert not battle.force_switch[pos], "invalid pick"
             active_mon = battle.active_pokemon[pos]
