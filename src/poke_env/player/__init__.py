@@ -6,13 +6,13 @@ from pettingzoo.utils.env import ActionType, ObsType  # type: ignore[import-unty
 from poke_env.concurrency import POKE_LOOP
 from poke_env.player import env, player, random_player, utils
 from poke_env.player.baselines import MaxBasePowerPlayer, SimpleHeuristicsPlayer
-from poke_env.player.doubles_env import DoublesEnv
 from poke_env.player.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
     DoubleBattleOrder,
     ForfeitBattleOrder,
 )
+from poke_env.player.doubles_env import DoublesEnv
 from poke_env.player.env import PokeEnv
 from poke_env.player.player import Player
 from poke_env.player.random_player import RandomPlayer
