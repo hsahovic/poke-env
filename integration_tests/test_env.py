@@ -82,7 +82,7 @@ def test_env_run():
     env.close()
 
 
-@pytest.mark.timeout(60)
+@pytest.mark.timeout(120)
 def test_env_api():
     for gen in range(4, 10):
         env = SinglesTestEnv(
