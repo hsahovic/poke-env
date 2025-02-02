@@ -79,7 +79,6 @@ def test_env_api():
             battle_format=f"gen{gen}randombattle", log_level=25, start_challenging=True
         )
         parallel_api_test(env)
-        env.close()
         env = SingleAgentWrapper(env, RandomPlayer())
         check_env(env)
         env.close()
