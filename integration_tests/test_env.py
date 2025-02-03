@@ -63,6 +63,7 @@ def test_env_run():
             battle_format=f"gen{gen}randomdoublesbattle",
             log_level=25,
             start_challenging=False,
+            strict=False,
         )
         env.start_challenging(3)
         play_function(env, 3)
@@ -107,6 +108,7 @@ def test_env_api():
             battle_format=f"gen{gen}randomdoublesbattle",
             log_level=25,
             start_challenging=True,
+            strict=False,
         )
         parallel_api_test(env)
         env.close()

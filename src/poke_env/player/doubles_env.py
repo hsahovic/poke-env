@@ -41,6 +41,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         ping_timeout: Optional[float] = 20.0,
         team: Optional[Union[str, Teambuilder]] = None,
         start_challenging: bool = False,
+        strict: bool = True
     ):
         super().__init__(
             account_configuration1=account_configuration1,
@@ -58,6 +59,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             ping_timeout=ping_timeout,
             team=team,
             start_challenging=start_challenging,
+            strict=strict,
         )
         num_switches = 6
         num_moves = 4
@@ -79,7 +81,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
 
     @staticmethod
     def action_to_order(
-        action: npt.NDArray[np.int64], battle: DoubleBattle
+        action: npt.NDArray[np.int64], battle: DoubleBattle, strict: bool = True
     ) -> BattleOrder:
         """
         Returns the BattleOrder relative to the given action.
@@ -146,7 +148,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 [order2] if order2 is not None else [],
             )[0]
         except AssertionError as e:
-            if str(e) == "invalid pick":
+            if not strict and str(e) == "invalid pick":
                 return Player.choose_random_move(battle)
             else:
                 raise e
@@ -200,7 +202,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
 
     @staticmethod
     def order_to_action(
-        order: BattleOrder, battle: DoubleBattle
+        order: BattleOrder, battle: DoubleBattle, strict: bool = True
     ) -> npt.NDArray[np.int64]:
         """
         Returns the action relative to the given BattleOrder.
@@ -227,7 +229,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             )
             return np.array([action1, action2])
         except AssertionError as e:
-            if str(e) == "invalid pick":
+            if not strict and str(e) == "invalid pick":
                 return np.array([-2, -2])
             else:
                 raise e
