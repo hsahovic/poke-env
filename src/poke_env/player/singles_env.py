@@ -40,6 +40,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         ping_timeout: Optional[float] = 20.0,
         team: Optional[Union[str, Teambuilder]] = None,
         start_challenging: bool = False,
+        strict: bool = True,
     ):
         super().__init__(
             account_configuration1=account_configuration1,
@@ -57,6 +58,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
             ping_timeout=ping_timeout,
             team=team,
             start_challenging=start_challenging,
+            strict=strict,
         )
         num_switches = 6
         num_moves = 4
