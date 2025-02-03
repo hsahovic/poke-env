@@ -76,7 +76,9 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         }
 
     @staticmethod
-    def action_to_order(action: np.int64, battle: Battle, strict: bool = True) -> BattleOrder:
+    def action_to_order(
+        action: np.int64, battle: Battle, strict: bool = True
+    ) -> BattleOrder:
         """
         Returns the BattleOrder relative to the given action.
 
@@ -147,7 +149,9 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
                 raise e
 
     @staticmethod
-    def order_to_action(order: BattleOrder, battle: Battle, strict: bool = True) -> np.int64:
+    def order_to_action(
+        order: BattleOrder, battle: Battle, strict: bool = True
+    ) -> np.int64:
         """
         Returns the action relative to the given BattleOrder.
 

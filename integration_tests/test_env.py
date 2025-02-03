@@ -9,7 +9,6 @@ from poke_env.player import SinglesEnv
 class SinglesTestEnv(SinglesEnv):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.strict = False
         self.observation_spaces = {
             agent: Box(np.array([0]), np.array([1]), dtype=np.int64)
             for agent in self.possible_agents
@@ -36,13 +35,19 @@ def play_function(env, n_battles):
 def test_env_run():
     for gen in range(4, 10):
         env = SinglesTestEnv(
-            battle_format=f"gen{gen}randombattle", log_level=25, start_challenging=False
+            battle_format=f"gen{gen}randombattle",
+            log_level=25,
+            start_challenging=False,
+            strict=False,
         )
         env.start_challenging(3)
         play_function(env, 3)
         env.close()
     env = SinglesTestEnv(
-        battle_format="gen8randombattle", log_level=25, start_challenging=False
+        battle_format="gen8randombattle",
+        log_level=25,
+        start_challenging=False,
+        strict=False,
     )
     env.start_challenging(2)
     play_function(env, 2)
@@ -50,7 +55,10 @@ def test_env_run():
     play_function(env, 2)
     env.close()
     env = SinglesTestEnv(
-        battle_format="gen9randombattle", log_level=25, start_challenging=False
+        battle_format="gen9randombattle",
+        log_level=25,
+        start_challenging=False,
+        strict=False,
     )
     env.start_challenging(2)
     play_function(env, 2)
@@ -63,7 +71,10 @@ def test_env_run():
 def test_env_api():
     for gen in range(4, 10):
         env = SinglesTestEnv(
-            battle_format=f"gen{gen}randombattle", log_level=25, start_challenging=True
+            battle_format=f"gen{gen}randombattle",
+            log_level=25,
+            start_challenging=True,
+            strict=False,
         )
         parallel_api_test(env)
         env.close()
