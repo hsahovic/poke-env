@@ -91,31 +91,26 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         element = -1: forfeit
         element = 0: pass
         1 <= element <= 6: switch
-        7 <= element <= 10: move with target = -2
-        11 <= element <= 14: move with target = -1
-        15 <= element <= 18: move with target = 0
-        19 <= element <= 22: move with target = 1
-        23 <= element <= 26: move with target = 2
-        27 <= element <= 30: move with target = -2 and mega evolve
-        31 <= element <= 34: move with target = -1 and mega evolve
-        35 <= element <= 38: move with target = 0 and mega evolve
-        39 <= element <= 42: move with target = 1 and mega evolve
-        43 <= element <= 46: move with target = 2 and mega evolve
-        47 <= element <= 50: move with target = -2 and z-move
-        51 <= element <= 54: move with target = -1 and z-move
-        55 <= element <= 58: move with target = 0 and z-move
-        59 <= element <= 62: move with target = 1 and z-move
-        63 <= element <= 66: move with target = 2 and z-move
-        67 <= element <= 70: move with target = -2 and dynamax
-        71 <= element <= 74: move with target = -1 and dynamax
-        75 <= element <= 78: move with target = 0 and dynamax
-        79 <= element <= 82: move with target = 1 and dynamax
-        83 <= element <= 86: move with target = 2 and dynamax
-        87 <= element <= 90: move with target = -2 and terastallize
-        91 <= element <= 94: move with target = -1 and terastallize
-        95 <= element <= 98: move with target = 0 and terastallize
-        99 <= element <= 102: move with target = 1 and terastallize
-        103 <= element <= 106: move with target = 2 and terastallize
+        7 <= element <= 11: move 1
+        12 <= element <= 16: move 2
+        17 <= element <= 21: move 3
+        22 <= element <= 26: move 4
+        27 <= element <= 31: move 1 and mega evolve
+        32 <= element <= 36: move 2 and mega evolve
+        37 <= element <= 41: move 3 and mega evolve
+        42 <= element <= 46: move 4 and mega evolve
+        47 <= element <= 51: move 1 and z-move
+        52 <= element <= 56: move 2 and z-move
+        57 <= element <= 61: move 3 and z-move
+        62 <= element <= 66: move 4 and z-move
+        67 <= element <= 71: move 1 and dynamax
+        72 <= element <= 76: move 2 and dynamax
+        77 <= element <= 81: move 3 and dynamax
+        82 <= element <= 86: move 4 and dynamax
+        87 <= element <= 91: move 1 and terastallize
+        92 <= element <= 96: move 2 and terastallize
+        97 <= element <= 101: move 3 and terastallize
+        102 <= element <= 106: move 4 and terastallize
 
         :param action: The action to take.
         :type action: ndarray[int64]
@@ -175,7 +170,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 and battle.available_moves[pos][0].id in ["struggle", "recharge"]
                 else list(active_mon.moves.values())
             )
-            assert (action - 7) % 4 in range(len(mvs)), "invalid pick"
+            assert (action - 7) % 20 // 5 in range(len(mvs)), "invalid pick"
             order = Player.create_order(
                 mvs[(action - 7) % 20 // 5],
                 move_target=(action.item() - 7) % 5 - 2,

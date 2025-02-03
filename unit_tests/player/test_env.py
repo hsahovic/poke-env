@@ -410,7 +410,7 @@ def test_doubles_action_order_conversions():
         check_action_order_roundtrip(p, ForfeitBattleOrder(), battle)
         battle._available_moves = [[move], []]
         assert (
-            p.action_to_order(np.array([7 + 12, 0]), battle).message
+            p.action_to_order(np.array([10, 0]), battle).message
             == "/choose move flamethrower 1, default"
         )
         check_action_order_roundtrip(
@@ -426,13 +426,13 @@ def test_doubles_action_order_conversions():
         )
         battle._available_switches = [[], []]
         assert (
-            p.action_to_order(np.array([10 + 12, 0]), battle, strict=False).message
+            p.action_to_order(np.array([25, 0]), battle, strict=False).message
             == "/choose move flamethrower 1, default"
         )
         if has_megas:
             battle._can_mega_evolve = [True, True]
             assert (
-                p.action_to_order(np.array([7 + 12 + 20, 0]), battle).message
+                p.action_to_order(np.array([30, 0]), battle).message
                 == "/choose move flamethrower mega 1, default"
             )
             check_action_order_roundtrip(
@@ -443,7 +443,7 @@ def test_doubles_action_order_conversions():
         if has_z_moves:
             battle._can_z_move = [True, True]
             assert (
-                p.action_to_order(np.array([7 + 12 + 20 + 20, 0]), battle).message
+                p.action_to_order(np.array([50, 0]), battle).message
                 == "/choose move flamethrower zmove 1, default"
             )
             check_action_order_roundtrip(
@@ -456,7 +456,7 @@ def test_doubles_action_order_conversions():
         if has_dynamax:
             battle._can_dynamax = [True, True]
             assert (
-                p.action_to_order(np.array([7 + 12 + 20 + 40, 0]), battle).message
+                p.action_to_order(np.array([70, 0]), battle).message
                 == "/choose move flamethrower dynamax 1, default"
             )
             check_action_order_roundtrip(
@@ -469,7 +469,7 @@ def test_doubles_action_order_conversions():
         if has_tera:
             battle._can_tera = [PokemonType.FIRE, PokemonType.FIRE]
             assert (
-                p.action_to_order(np.array([7 + 12 + 20 + 60, 0]), battle).message
+                p.action_to_order(np.array([90, 0]), battle).message
                 == "/choose move flamethrower terastallize 1, default"
             )
             check_action_order_roundtrip(
