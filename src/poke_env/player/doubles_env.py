@@ -170,7 +170,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 and battle.available_moves[pos][0].id in ["struggle", "recharge"]
                 else list(active_mon.moves.values())
             )
-            assert (action - 7) % 4 in range(len(mvs)), "invalid pick"
+            assert (action - 7) % 20 // 5 in range(len(mvs)), "invalid pick"
             order = Player.create_order(
                 mvs[(action - 7) % 20 // 5],
                 move_target=(action.item() - 7) % 5 - 2,
