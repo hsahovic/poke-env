@@ -5,7 +5,7 @@ Reinforcement learning with the Gymnasium wrapper
 
 The corresponding complete source code can be found `here <https://github.com/hsahovic/poke-env/blob/master/examples/rl_with_new_gymnasium_wrapper.py>`__.
 
-The goal of this example is to demonstrate how to use the `farama gymnasium <https://gymnasium.farama.org/>`__ interface proposed by ``EnvPlayer``, and to train a simple deep reinforcement learning agent comparable in performance to the ``MaxDamagePlayer`` we created in :ref:`max_damage_player`.
+The goal of this example is to demonstrate how to use the `farama gymnasium <https://gymnasium.farama.org/>`__ interface proposed by ``PokeEnv``, and to train a simple deep reinforcement learning agent comparable in performance to the ``MaxDamagePlayer`` we created in :ref:`max_damage_player`.
 
 .. note:: This example necessitates `keras-rl <https://github.com/keras-rl/keras-rl>`__ (compatible with Tensorflow 1.X) or `keras-rl2 <https://github.com/wau/keras-rl2>`__ (Tensorflow 2.X), which implement numerous reinforcement learning algorithms and offer a simple API fully compatible with the Gymnasium API. You can install them by running ``pip install keras-rl`` or ``pip install keras-rl2``. If you are unsure, ``pip install keras-rl2`` is recommended.
 
@@ -27,13 +27,13 @@ Observations are embeddings of the current state of the battle. They can be an a
 To define our observations, we will create a custom ``embed_battle`` method. It takes one argument, a ``Battle`` object, and returns our embedding.
 
 In addition to this, we also need to describe the embedding to the gymnasium interface.
-To achieve this, we need to implement the ``describe_embedding`` method where we specify the low bound and the high bound
+To achieve this, we need to initialize the ``observation_spaces`` field in the ``__init__`` method where we specify the low bound and the high bound
 for each component of the embedding vector and return them as a ``gymnasium.Space`` object.
 
 Defining rewards
 ^^^^^^^^^^^^^^^^
 
-Rewards are signals that the agent will use in its optimization process (a common objective is optimizing a discounted total reward). ``EnvPlayer`` objects provide a helper method, ``reward_computing_helper``, that can help defining simple symmetric rewards that take into account fainted pokemons, remaining hp, status conditions and victory.
+Rewards are signals that the agent will use in its optimization process (a common objective is optimizing a discounted total reward). ``PokeEnv`` objects provide a helper method, ``reward_computing_helper``, that can help defining simple symmetric rewards that take into account fainted pokemons, remaining hp, status conditions and victory.
 
 We will use this method to define the following reward:
 
@@ -58,9 +58,22 @@ Our player will play the ``gen8randombattle`` format. We can therefore inherit f
     from poke_env.player import Gen8EnvSinglePlayer
 
     class SimpleRLPlayer(Gen8EnvSinglePlayer):
-        def calc_reward(self, last_battle, current_battle) -> float:
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+            low = [-1, -1, -1, -1, 0, 0, 0, 0, 0, 0]
+            high = [3, 3, 3, 3, 4, 4, 4, 4, 1, 1]
+            self.observation_spaces = {
+                agent: Box(
+                    np.array(low, dtype=np.float32),
+                    np.array(high, dtype=np.float32),
+                    dtype=np.float32,
+                )
+                for agent in self.possible_agents
+            }
+
+        def calc_reward(self, battle) -> float:
             return self.reward_computing_helper(
-                current_battle, fainted_value=2.0, hp_value=1.0, victory_value=30.0
+                battle, fainted_value=2.0, hp_value=1.0, victory_value=30.0
             )
 
         def embed_battle(self, battle: AbstractBattle) -> ObservationType:
@@ -94,15 +107,6 @@ Our player will play the ``gen8randombattle`` format. We can therefore inherit f
             )
             return np.float32(final_vector)
 
-        def describe_embedding(self) -> Space:
-            low = [-1, -1, -1, -1, 0, 0, 0, 0, 0, 0]
-            high = [3, 3, 3, 3, 4, 4, 4, 4, 1, 1]
-            return Box(
-                np.array(low, dtype=np.float32),
-                np.array(high, dtype=np.float32),
-                dtype=np.float32,
-            )
-
     ...
 
 Instantiating and testing a player
@@ -131,8 +135,6 @@ Instantiating train environment and evaluation environment
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Normally, to ensure isolation between training and testing, two different environments are created.
-The base class ``EnvPlayer`` allows you to choose the opponent either when you instantiate it or replace it during training
-with the ``set_opponent`` method.
 If you don't want the player to start challenging the opponent you can set ``start_challenging=False`` when creating it.
 In this case, we want them to start challenging right away:
 
@@ -266,7 +268,7 @@ This can be done with the following code:
     )
     ...
 
-The ``reset_env`` method of the ``EnvPlayer`` class allows you to reset the environment
+The ``reset_env`` method of the ``PokeEnv`` class allows you to reset the environment
 to a clean state, including internal counters for victories, battles, etc.
 
 It takes two optional parameters:
@@ -297,7 +299,7 @@ In order to evaluate the player with the provided method, we need to use a backg
 
 The ``result`` method of the ``Future`` object will block until the task is done and will return the result.
 
-.. warning:: ``background_evaluate_player`` requires the challenge loop to be stopped. To ensure this use method ``reset_env(restart=False)`` of ``EnvPlayer``.
+.. warning:: ``background_evaluate_player`` requires the challenge loop to be stopped. To ensure this use method ``reset_env(restart=False)`` of ``PokeEnv``.
 
 .. warning:: If you call ``result`` before the task is finished, the main thread will be blocked. Only do that if the agent is operating on a different thread than the one asking for the result.
 
@@ -333,7 +335,7 @@ To use the ``cross_evaluate`` method, the strategy is the same to the one used f
     print(tabulate(table))
     ...
 
-.. warning:: ``background_cross_evaluate`` requires the challenge loop to be stopped. To ensure this use method ``reset_env(restart=False)`` of ``EnvPlayer``.
+.. warning:: ``background_cross_evaluate`` requires the challenge loop to be stopped. To ensure this use method ``reset_env(restart=False)`` of ``PokeEnv``.
 
 .. warning:: If you call ``result`` before the task is finished, the main thread will be blocked. Only do that if the agent is operating on a different thread than the one asking for the result.
 

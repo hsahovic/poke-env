@@ -1,8 +1,12 @@
 import asyncio
+import sys
+from io import StringIO
 
 import numpy as np
-from gymnasium.spaces import Box, Discrete
+import numpy.typing as npt
+from gymnasium.spaces import Discrete
 
+from poke_env import AccountConfiguration, ServerConfiguration
 from poke_env.concurrency import POKE_LOOP
 from poke_env.environment import (
     AbstractBattle,
@@ -22,24 +26,92 @@ from poke_env.player import (
     PokeEnv,
     SinglesEnv,
 )
-from poke_env.player.gymnasium_api import _EnvPlayer
-from poke_env.ps_client import AccountConfiguration, ServerConfiguration
+from poke_env.player.env import _AsyncQueue, _EnvPlayer
 
 account_configuration1 = AccountConfiguration("username1", "password1")
 account_configuration2 = AccountConfiguration("username2", "password2")
 server_configuration = ServerConfiguration("server.url", "auth.url")
 
 
-class CustomEnv(SinglesEnv):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.observation_spaces = {agent: Box(-1, 1) for agent in self.possible_agents}
+class CustomEnv(SinglesEnv[npt.NDArray[np.float32]]):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
-    def calc_reward(self, battle) -> float:
-        return 0.0
+    def calc_reward(self, battle: AbstractBattle) -> float:
+        return 69.42
 
-    def embed_battle(self, battle):
-        return []
+    def embed_battle(self, battle: AbstractBattle) -> npt.NDArray[np.float32]:
+        return np.array([0, 1, 2])
+
+
+def test_init_queue():
+    q = _AsyncQueue(asyncio.Queue())
+    assert isinstance(q, _AsyncQueue)
+
+
+def test_queue():
+    q = _AsyncQueue(asyncio.Queue())
+    assert q.empty()
+    q.put(1)
+    assert q.queue.qsize() == 1
+    asyncio.get_event_loop().run_until_complete(q.async_put(2))
+    assert q.queue.qsize() == 2
+    item = q.get()
+    q.queue.task_done()
+    assert q.queue.qsize() == 1
+    assert item == 1
+    item = asyncio.get_event_loop().run_until_complete(q.async_get())
+    q.queue.task_done()
+    assert q.empty()
+    assert item == 2
+    asyncio.get_event_loop().run_until_complete(q.async_join())
+    q.join()
+
+
+def test_async_player():
+    def embed_battle(battle):
+        return "battle"
+
+    player = _EnvPlayer(start_listening=False, username="usr")
+    battle = Battle("bat1", player.username, player.logger, gen=8)
+    player.order_queue.put(ForfeitBattleOrder())
+    order = asyncio.get_event_loop().run_until_complete(player._env_move(battle))
+    assert isinstance(order, ForfeitBattleOrder)
+    assert embed_battle(player.battle_queue.get()) == "battle"
+
+
+def render(battle):
+    player = CustomEnv(start_listening=False)
+    captured_output = StringIO()
+    sys.stdout = captured_output
+    player.battle1 = battle
+    player.render()
+    sys.stdout = sys.__stdout__
+    return captured_output.getvalue()
+
+
+def test_render():
+    battle = Battle("bat1", "usr", None, gen=8)
+    battle._turn = 3
+    active_mon = Pokemon(species="charizard", gen=8)
+    active_mon._active = True
+    battle._team = {"1": active_mon}
+    opponent_mon = Pokemon(species="pikachu", gen=8)
+    opponent_mon._active = True
+    battle._opponent_team = {"1": opponent_mon}
+    expected = "  Turn    3. | [●][  0/  0hp]  charizard -    pikachu [  0%hp][●]\r"
+    assert render(battle) == expected
+    active_mon._max_hp = 120
+    active_mon._current_hp = 60
+    expected = "  Turn    3. | [●][ 60/120hp]  charizard -    pikachu [  0%hp][●]\r"
+    assert render(battle) == expected
+    opponent_mon._current_hp = 20
+    expected = "  Turn    3. | [●][ 60/120hp]  charizard -    pikachu [ 20%hp][●]\r"
+    assert render(battle) == expected
+    other_mon = Pokemon(species="pichu", gen=8)
+    battle._team["2"] = other_mon
+    expected = "  Turn    3. | [●●][ 60/120hp]  charizard -    pikachu [ 20%hp][●]\r"
+    assert render(battle) == expected
 
 
 def test_init():
@@ -64,24 +136,19 @@ async def run_test_choose_move():
         battle_format="gen7randombattles",
         start_challenging=False,
     )
-
     # Create a mock battle and moves
     battle = Battle("bat1", player.agent1.username, player.agent1.logger, gen=8)
     battle._available_moves = [Move("flamethrower", gen=8)]
-
     # Test choosing a move
     message = await player.agent1.choose_move(battle)
     order = player.action_to_order(np.int64(6), battle)
     player.agent1.order_queue.put(order)
-
     assert message.message == "/choose move flamethrower"
-
     # Test switching Pokémon
     battle._available_switches = [Pokemon(species="charizard", gen=8)]
     message = await player.agent1.choose_move(battle)
     order = player.action_to_order(np.int64(0), battle)
     player.agent1.order_queue.put(order)
-
     assert message.message == "/choose switch charizard"
 
 
@@ -213,19 +280,21 @@ def test_reward_computing_helper():
 
 
 def test_action_space():
-    player = CustomEnv(start_listening=False)
-    assert player.action_space(player.possible_agents[0]) == Discrete(4 * 4 + 6)
-    for i, (has_megas, has_z_moves, has_dynamax) in enumerate(
+    player = CustomEnv(battle_format="gen7randombattle", start_listening=False)
+    assert player.action_space(player.possible_agents[0]) == Discrete(18)
+
+    for gen, (has_megas, has_z_moves, has_dynamax) in enumerate(
         [
             (False, False, False),
             (False, False, False),
             (True, False, False),
             (True, True, False),
             (True, True, True),
-        ]
+        ],
+        start=4,
     ):
-        p = CustomEnv(
-            battle_format=f"gen{i + 4}randombattle",
+        p = SinglesEnv(
+            battle_format=f"gen{gen}randombattle",
             start_listening=False,
             start_challenging=False,
         )
@@ -273,7 +342,7 @@ def test_singles_action_order_conversions():
         check_action_order_roundtrip(p, Player.create_order(active_pokemon), battle)
         battle._available_switches = []
         assert (
-            p.action_to_order(np.int64(9), battle).message
+            p.action_to_order(np.int64(9), battle, strict=False).message
             == "/choose move flamethrower"
         )
         if has_megas:
@@ -357,7 +426,7 @@ def test_doubles_action_order_conversions():
         )
         battle._available_switches = [[], []]
         assert (
-            p.action_to_order(np.array([10 + 12, 0]), battle).message
+            p.action_to_order(np.array([10 + 12, 0]), battle, strict=False).message
             == "/choose move flamethrower 1, default"
         )
         if has_megas:

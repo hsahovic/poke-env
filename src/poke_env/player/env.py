@@ -76,8 +76,8 @@ class _AsyncQueue(Generic[ItemType]):
 
 
 class _EnvPlayer(Player):
-    order_queue: _AsyncQueue[BattleOrder]
     battle_queue: _AsyncQueue[AbstractBattle]
+    order_queue: _AsyncQueue[BattleOrder]
 
     def __init__(
         self,
@@ -185,6 +185,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         ping_timeout: Optional[float] = 20.0,
         team: Optional[Union[str, Teambuilder]] = None,
         start_challenging: bool = False,
+        strict: bool = True,
     ):
         """
         :param account_configuration: Player configuration. If empty, defaults to an
@@ -275,15 +276,15 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         self.agent2.order_to_action = self.order_to_action  # type: ignore
         self.agents = [self.agent1.username, self.agent2.username]
         self.possible_agents = [self.agent1.username, self.agent2.username]
+        self.battle1: Optional[AbstractBattle] = None
+        self.battle2: Optional[AbstractBattle] = None
+        self.strict = strict
         self._np_random: Optional[Generator] = None
         self._reward_buffer: WeakKeyDictionary[AbstractBattle, float] = (
             WeakKeyDictionary()
         )
-        self.battle1: Optional[AbstractBattle] = None
-        self.battle2: Optional[AbstractBattle] = None
         self._keep_challenging: bool = False
         self._challenge_task = None
-        self._seed_initialized: bool = False
         if start_challenging:
             self._keep_challenging = True
             self._challenge_task = asyncio.run_coroutine_threadsafe(
@@ -306,10 +307,14 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         if self.battle1.finished:
             raise RuntimeError("Battle is already finished, call reset")
         if self.agent1.waiting:
-            order1 = self.action_to_order(actions[self.agents[0]], self.battle1)
+            order1 = self.action_to_order(
+                actions[self.agents[0]], self.battle1, self.strict
+            )
             self.agent1.order_queue.put(order1)
         if self.agent2.waiting:
-            order2 = self.action_to_order(actions[self.agents[1]], self.battle2)
+            order2 = self.action_to_order(
+                actions[self.agents[1]], self.battle2, self.strict
+            )
             self.agent2.order_queue.put(order2)
         battle1 = self.agent1.battle_queue.get(timeout=0.1, default=self.battle1)
         battle2 = self.agent2.battle_queue.get(timeout=0.1, default=self.battle2)
@@ -350,11 +355,11 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 raise RuntimeError(
                     "Environment and agent aren't synchronized. Try to restart"
                 )
-        obs1 = self.agent1.battle_queue.get()
-        obs2 = self.agent2.battle_queue.get()
+        battle1 = self.agent1.battle_queue.get()
+        battle2 = self.agent2.battle_queue.get()
         observations = {
-            self.agents[0]: self.embed_battle(obs1),
-            self.agents[1]: self.embed_battle(obs2),
+            self.agents[0]: self.embed_battle(battle1),
+            self.agents[1]: self.embed_battle(battle2),
         }
         self.battle1 = self.agent1.battle
         self.battle2 = self.agent2.battle
@@ -413,15 +418,12 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
     @abstractmethod
     def calc_reward(self, battle: AbstractBattle) -> float:
         """
-        Returns the reward for the current battle state. The battle state in the previous
-        turn is given as well and can be used for comparisons.
+        Returns the reward for the current battle state.
 
-        :param last_battle: The battle state in the previous turn.
-        :type last_battle: AbstractBattle
-        :param current_battle: The current battle state.
-        :type current_battle: AbstractBattle
+        :param battle: The current battle state.
+        :type battle: AbstractBattle
 
-        :return: The reward for current_battle.
+        :return: The reward for battle.
         :rtype: float
         """
         pass
@@ -441,7 +443,9 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
 
     @staticmethod
     @abstractmethod
-    def action_to_order(action: ActionType, battle: Any) -> BattleOrder:
+    def action_to_order(
+        action: ActionType, battle: Any, strict: bool = True
+    ) -> BattleOrder:
         """
         Returns the BattleOrder relative to the given action.
 
@@ -457,7 +461,9 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
 
     @staticmethod
     @abstractmethod
-    def order_to_action(order: BattleOrder, battle: Any) -> ActionType:
+    def order_to_action(
+        order: BattleOrder, battle: Any, strict: bool = True
+    ) -> ActionType:
         """
         Returns the action relative to the given BattleOrder.
 
@@ -658,9 +664,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         :param n_challenges: The number of challenges to send. If empty it will run until
             stopped.
         :type n_challenges: int, optional
-        :param callback: The function to callback after each challenge with a copy of
-            the final battle state.
-        :type callback: Callable[[AbstractBattle], None], optional
         """
         if self._challenge_task and not self._challenge_task.done():
             count = self._SWITCH_CHALLENGE_TASK_RETRIES
@@ -694,9 +697,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         :param n_challenges: The number of ladder games to play. If empty it
             will run until stopped.
         :type n_challenges: int, optional
-        :param callback: The function to callback after each challenge with a
-            copy of the final battle state.
-        :type callback: Callable[[AbstractBattle], None], optional
         """
         if self._challenge_task and not self._challenge_task.done():
             count = self._SWITCH_CHALLENGE_TASK_RETRIES

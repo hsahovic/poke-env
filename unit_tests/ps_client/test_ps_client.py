@@ -137,7 +137,7 @@ async def test_listen(handle_message_mock):
 
     semaphore = asyncio.Semaphore()
 
-    async def showdown_server_mock(websocket, path):
+    async def showdown_server_mock(websocket):
         semaphore.release()
         await websocket.ping()
         await websocket.send("error|test 1")

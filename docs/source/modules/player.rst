@@ -13,14 +13,6 @@ Player
    :undoc-members:
    :show-inheritance:
 
-PokeEnv
-************
-
-.. automodule:: poke_env.player.gymnasium_api
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Random Player
 *************
 
@@ -28,4 +20,3 @@ Random Player
    :members:
    :undoc-members:
    :show-inheritance:
-
