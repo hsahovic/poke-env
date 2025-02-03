@@ -46,7 +46,10 @@ def single_agent_play_function(env: SingleAgentWrapper, n_battles: int):
 def test_env_run():
     for gen in range(4, 10):
         env = SinglesTestEnv(
-            battle_format=f"gen{gen}randombattle", log_level=25, start_challenging=False
+            battle_format=f"gen{gen}randombattle",
+            log_level=25,
+            start_challenging=False,
+            strict=False,
         )
         env.start_challenging(3)
         play_function(env, 3)
@@ -55,7 +58,10 @@ def test_env_run():
         env.env.start_challenging(3)
         single_agent_play_function(env, 3)
     env = SinglesTestEnv(
-        battle_format="gen8randombattle", log_level=25, start_challenging=False
+        battle_format="gen8randombattle",
+        log_level=25,
+        start_challenging=False,
+        strict=False,
     )
     env.start_challenging(2)
     play_function(env, 2)
@@ -63,7 +69,10 @@ def test_env_run():
     play_function(env, 2)
     env.close()
     env = SinglesTestEnv(
-        battle_format="gen9randombattle", log_level=25, start_challenging=False
+        battle_format="gen9randombattle",
+        log_level=25,
+        start_challenging=False,
+        strict=False,
     )
     env.start_challenging(2)
     play_function(env, 2)
@@ -76,7 +85,10 @@ def test_env_run():
 def test_env_api():
     for gen in range(4, 10):
         env = SinglesTestEnv(
-            battle_format=f"gen{gen}randombattle", log_level=25, start_challenging=True
+            battle_format=f"gen{gen}randombattle",
+            log_level=25,
+            start_challenging=True,
+            strict=False,
         )
         parallel_api_test(env)
         env = SingleAgentWrapper(env, RandomPlayer())

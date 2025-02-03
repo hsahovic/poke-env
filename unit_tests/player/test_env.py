@@ -333,7 +333,7 @@ def test_singles_action_order_conversions():
         check_action_order_roundtrip(p, Player.create_order(active_pokemon), battle)
         battle._available_switches = []
         assert (
-            p.action_to_order(np.int64(9), battle).message
+            p.action_to_order(np.int64(9), battle, strict=False).message
             == "/choose move flamethrower"
         )
         if has_megas:
