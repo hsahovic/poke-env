@@ -177,8 +177,8 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             )
             assert (action - 7) % 4 in range(len(mvs)), "invalid pick"
             order = Player.create_order(
-                mvs[(action - 7) % 4],
-                move_target=(action.item() - 7) % 20 // 4 - 2,
+                mvs[(action - 7) % 20 // 5],
+                move_target=(action.item() - 7) % 5 - 2,
                 mega=(action - 7) // 20 == 1,
                 z_move=(action - 7) // 20 == 2,
                 dynamax=(action - 7) // 20 == 3,
@@ -273,7 +273,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 gimmick = 4
             else:
                 gimmick = 0
-            action = 1 + 6 + action + 4 * target + 20 * gimmick
+            action = 1 + 6 + 5 * action + target + 20 * gimmick
             assert order.order.id in [
                 m.id for m in battle.available_moves[pos]
             ], "invalid pick"
