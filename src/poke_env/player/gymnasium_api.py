@@ -564,8 +564,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
         if force:
             if self.battle1 and not self.battle1.finished:
                 if not (
-                    self.agent1.order_queue.empty()
-                    and self.agent2.order_queue.empty()
+                    self.agent1.order_queue.empty() and self.agent2.order_queue.empty()
                 ):
                     await asyncio.sleep(2)
                     if not (
