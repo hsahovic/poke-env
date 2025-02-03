@@ -41,7 +41,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         ping_timeout: Optional[float] = 20.0,
         team: Optional[Union[str, Teambuilder]] = None,
         start_challenging: bool = False,
-        strict: bool = True
+        strict: bool = True,
     ):
         super().__init__(
             account_configuration1=account_configuration1,

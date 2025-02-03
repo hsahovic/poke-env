@@ -426,7 +426,7 @@ def test_doubles_action_order_conversions():
         )
         battle._available_switches = [[], []]
         assert (
-            p.action_to_order(np.array([10 + 12, 0]), battle).message
+            p.action_to_order(np.array([10 + 12, 0]), battle, strict=False).message
             == "/choose move flamethrower 1, default"
         )
         if has_megas:
