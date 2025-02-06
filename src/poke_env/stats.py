@@ -1,5 +1,4 @@
-"""This module contains utility functions and objects related to stats.
-"""
+"""This module contains utility functions and objects related to stats."""
 
 import math
 from typing import List

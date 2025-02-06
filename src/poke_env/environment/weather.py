@@ -1,5 +1,4 @@
-"""This module defines the Weather class, which represents a in-battle weather.
-"""
+"""This module defines the Weather class, which represents a in-battle weather."""
 
 import logging
 from enum import Enum, auto, unique
