@@ -1,5 +1,4 @@
-"""This module contains objects related to player configuration.
-"""
+"""This module contains objects related to player configuration."""
 
 from typing import Counter, NamedTuple, Optional
 
