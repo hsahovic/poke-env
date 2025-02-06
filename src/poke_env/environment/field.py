@@ -1,5 +1,4 @@
-"""This module defines the Field class, which represents a battle field.
-"""
+"""This module defines the Field class, which represents a battle field."""
 
 from __future__ import annotations
 
