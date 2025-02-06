@@ -5910,7 +5910,7 @@
   },
   "condition": {
    "onSideStart": "onSideStart",
-   "onEntryHazard": "onEntryHazard"
+   "onSwitchIn": "onSwitchIn"
   },
   "secondary": null,
   "target": "adjacentFoe",
@@ -6689,6 +6689,7 @@
   "selfdestruct": "ifHit",
   "slotCondition": "healingwish",
   "condition": {
+   "onSwitchIn": "onSwitchIn",
    "onSwap": "onSwap"
   },
   "secondary": null,
@@ -8562,6 +8563,7 @@
   "selfdestruct": "ifHit",
   "slotCondition": "lunardance",
   "condition": {
+   "onSwitchIn": "onSwitchIn",
    "onSwap": "onSwap"
   },
   "secondary": null,
@@ -13986,7 +13988,7 @@
   "condition": {
    "onSideStart": "onSideStart",
    "onSideRestart": "onSideRestart",
-   "onEntryHazard": "onEntryHazard"
+   "onSwitchIn": "onSwitchIn"
   },
   "secondary": null,
   "target": "foeSide",
@@ -14230,7 +14232,7 @@
   "sideCondition": "stealthrock",
   "condition": {
    "onSideStart": "onSideStart",
-   "onEntryHazard": "onEntryHazard"
+   "onSwitchIn": "onSwitchIn"
   },
   "secondary": null,
   "target": "foeSide",
@@ -14338,7 +14340,7 @@
   "sideCondition": "stickyweb",
   "condition": {
    "onSideStart": "onSideStart",
-   "onEntryHazard": "onEntryHazard"
+   "onSwitchIn": "onSwitchIn"
   },
   "secondary": null,
   "target": "foeSide",
@@ -15754,7 +15756,7 @@
   "condition": {
    "onSideStart": "onSideStart",
    "onSideRestart": "onSideRestart",
-   "onEntryHazard": "onEntryHazard"
+   "onSwitchIn": "onSwitchIn"
   },
   "secondary": null,
   "target": "foeSide",
@@ -16657,9 +16659,9 @@
   "condition": {
    "onStart": "onStart",
    "onResidualOrder": 4,
-   onResidual("side": any) {
+   onResidual("target": Pokemon) {
     if (this.getOverflowedTurnCount() <= this.effectState.startingTurn) return;
-    side.removeSlotCondition(this.getAtSlot(this.effectState.sourceSlot), "wish");
+    target.side.removeSlotCondition(this.getAtSlot(this.effectState.sourceSlot), "wish");
    },
    "onEnd": "onEnd"
   },

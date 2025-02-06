@@ -1,5 +1,4 @@
-"""poke_env.player module init.
-"""
+"""poke_env.player module init."""
 
 from pettingzoo.utils.env import ActionType, ObsType  # type: ignore[import-untyped]
 
