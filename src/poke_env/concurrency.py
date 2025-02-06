@@ -6,7 +6,7 @@ from threading import Thread
 from typing import Any, List
 
 
-def __run_loop(loop: asyncio.AbstractEventLoop):
+def run_loop(loop: asyncio.AbstractEventLoop):
     asyncio.set_event_loop(loop)
     loop.run_forever()
 
@@ -67,6 +67,6 @@ async def handle_threaded_coroutines(coro: Any):
 
 POKE_LOOP = asyncio.new_event_loop()
 py_ver = sys.version_info
-_t = Thread(target=__run_loop, args=(POKE_LOOP,), daemon=True)
+_t = Thread(target=run_loop, args=(POKE_LOOP,), daemon=True)
 _t.start()
 atexit.register(__clear_loop)

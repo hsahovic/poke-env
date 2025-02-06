@@ -15,7 +15,7 @@ import numpy as np
 from gymnasium.spaces import Discrete, Space
 from pettingzoo.utils.env import ObsType, ParallelEnv  # type: ignore[import-untyped]
 
-from poke_env.concurrency import __run_loop
+from poke_env.concurrency import run_loop
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.player.battle_order import (
     BattleOrder,
@@ -189,7 +189,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
         :type start_challenging: bool
         """
         self.loop = asyncio.new_event_loop()
-        _t = Thread(target=__run_loop, args=(self.loop,), daemon=True)
+        _t = Thread(target=run_loop, args=(self.loop,), daemon=True)
         _t.start()
         self.agent1 = _EnvPlayer(
             username=self.__class__.__name__,  # type: ignore
