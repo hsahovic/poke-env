@@ -1,30 +1,22 @@
 import asyncio
 import sys
 from io import StringIO
-
-import numpy as np
-from pettingzoo.utils.env import ObsType
+from typing import List
 
 from poke_env.environment import AbstractBattle, Battle, Pokemon
-from poke_env.player import BattleOrder, ForfeitBattleOrder, GymnasiumEnv
-from poke_env.player.gymnasium_api import _AsyncQueue, _EnvPlayer
+from poke_env.player import ForfeitBattleOrder, SinglesEnv
+from poke_env.player.env import _AsyncQueue, _EnvPlayer
 
 
-class DummyEnv(GymnasiumEnv[ObsType]):
+class DummyEnv(SinglesEnv):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     def calc_reward(self, battle: AbstractBattle) -> float:
         return 69.42
 
-    def action_to_order(self, action: np.int64, battle: AbstractBattle) -> BattleOrder:
-        return ForfeitBattleOrder()
-
-    def embed_battle(self, battle: AbstractBattle) -> ObsType:
+    def embed_battle(self, battle: AbstractBattle) -> List[int]:
         return [0, 1, 2]
-
-    def action_space_size(self) -> int:
-        return 1
 
 
 def test_init_queue():
@@ -55,11 +47,10 @@ def test_async_player():
     def embed_battle(battle):
         return "battle"
 
-    player = _EnvPlayer(start_listening=False, username="usr")
+    player = _EnvPlayer(username="usr", start_listening=False)
     battle = Battle("bat1", player.username, player.logger, gen=8)
     player.order_queue.put(ForfeitBattleOrder())
-    order = asyncio.get_event_loop().run_until_complete(player._env_move(battle))
-    assert isinstance(order, ForfeitBattleOrder)
+    asyncio.get_event_loop().run_until_complete(player._env_move(battle))
     assert embed_battle(player.battle_queue.get()) == "battle"
 
 
