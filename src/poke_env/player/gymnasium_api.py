@@ -7,13 +7,15 @@ from __future__ import annotations
 import asyncio
 import time
 from abc import abstractmethod
+from asyncio import AbstractEventLoop
+from threading import Thread
 from typing import Any, Awaitable, Dict, Generic, List, Optional, Tuple, TypeVar, Union
 
 import numpy as np
 from gymnasium.spaces import Discrete, Space
 from pettingzoo.utils.env import ObsType, ParallelEnv  # type: ignore[import-untyped]
 
-from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
+from poke_env.concurrency import __run_loop
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.player.battle_order import (
     BattleOrder,
@@ -32,8 +34,9 @@ ItemType = TypeVar("ItemType")
 
 
 class _AsyncQueue(Generic[ItemType]):
-    def __init__(self, queue: asyncio.Queue[ItemType]):
+    def __init__(self, queue: asyncio.Queue[ItemType], loop: AbstractEventLoop):
         self.queue = queue
+        self.loop = loop
 
     async def async_get(self) -> ItemType:
         return await self.queue.get()
@@ -43,7 +46,7 @@ class _AsyncQueue(Generic[ItemType]):
     ) -> ItemType:
         try:
             res = asyncio.run_coroutine_threadsafe(
-                asyncio.wait_for(self.async_get(), timeout), POKE_LOOP
+                asyncio.wait_for(self.async_get(), timeout), self.loop
             )
             return res.result()
         except asyncio.TimeoutError:
@@ -54,14 +57,14 @@ class _AsyncQueue(Generic[ItemType]):
         await self.queue.put(item)
 
     def put(self, item: ItemType):
-        task = asyncio.run_coroutine_threadsafe(self.queue.put(item), POKE_LOOP)
+        task = asyncio.run_coroutine_threadsafe(self.queue.put(item), self.loop)
         task.result()
 
     def empty(self):
         return self.queue.empty()
 
     def join(self):
-        task = asyncio.run_coroutine_threadsafe(self.queue.join(), POKE_LOOP)
+        task = asyncio.run_coroutine_threadsafe(self.queue.join(), self.loop)
         task.result()
 
     async def async_join(self):
@@ -75,13 +78,15 @@ class _EnvPlayer(Player):
     def __init__(
         self,
         username: str,
+        loop: AbstractEventLoop,
         **kwargs: Any,
     ):
         self.__class__.__name__ = username
         super().__init__(**kwargs)
         self.__class__.__name__ = "_EnvPlayer"
-        self.battle_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
-        self.order_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
+        self.loop = loop
+        self.battle_queue = _AsyncQueue(asyncio.Queue(maxsize=1), loop)
+        self.order_queue = _AsyncQueue(asyncio.Queue(maxsize=1), loop)
         self.battle: Optional[AbstractBattle] = None
         self.waiting = False
 
@@ -100,7 +105,7 @@ class _EnvPlayer(Player):
         return action
 
     def _battle_finished_callback(self, battle: AbstractBattle):
-        asyncio.run_coroutine_threadsafe(self.battle_queue.async_put(battle), POKE_LOOP)
+        asyncio.run_coroutine_threadsafe(self.battle_queue.async_put(battle), self.loop)
 
 
 class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
@@ -216,6 +221,9 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
             ping_timeout=ping_timeout,
             team=team,
         )
+        self.loop = asyncio.new_event_loop()
+        _t = Thread(target=__run_loop, args=(self.loop,), daemon=True)
+        _t.start()
         self.agents: List[str] = []
         self.possible_agents = [self.agent1.username, self.agent2.username]
         self.action_spaces = {
@@ -229,7 +237,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
         if start_challenging:
             self._keep_challenging = True
             self._challenge_task = asyncio.run_coroutine_threadsafe(
-                self._challenge_loop(), POKE_LOOP
+                self._challenge_loop(), self.loop
             )
 
     ###################################################################################
@@ -346,7 +354,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
             if self.battle2 != self.agent2.battle:
                 self.battle2 = self.agent2.battle
         closing_task = asyncio.run_coroutine_threadsafe(
-            self._stop_challenge_loop(purge=purge), POKE_LOOP
+            self._stop_challenge_loop(purge=purge), self.loop
         )
         closing_task.result()
 
@@ -457,7 +465,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
                 "'await agent.stop_challenge_loop()' to clear the task."
             )
         self._challenge_task = asyncio.run_coroutine_threadsafe(
-            self.agent1.send_challenges(username, 1), POKE_LOOP
+            self.agent1.send_challenges(username, 1), self.loop
         )
 
     def background_accept_challenge(self, username: str):
@@ -475,7 +483,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
                 "'await agent.stop_challenge_loop()' to clear the task."
             )
         self._challenge_task = asyncio.run_coroutine_threadsafe(
-            self.agent1.accept_challenges(username, 1, self.agent1.next_team), POKE_LOOP
+            self.agent1.accept_challenges(username, 1, self.agent1.next_team), self.loop
         )
 
     async def _challenge_loop(self, n_challenges: Optional[int] = None):
@@ -506,7 +514,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
         if not n_challenges:
             self._keep_challenging = True
         self._challenge_task = asyncio.run_coroutine_threadsafe(
-            self._challenge_loop(n_challenges), POKE_LOOP
+            self._challenge_loop(n_challenges), self.loop
         )
 
     async def _ladder_loop(self, n_challenges: Optional[int] = None):
@@ -539,7 +547,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
         if not n_challenges:
             self._keep_challenging = True
         self._challenge_task = asyncio.run_coroutine_threadsafe(
-            self._ladder_loop(n_challenges), POKE_LOOP
+            self._ladder_loop(n_challenges), self.loop
         )
 
     async def _stop_challenge_loop(

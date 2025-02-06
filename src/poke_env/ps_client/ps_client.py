@@ -3,7 +3,7 @@
 import asyncio
 import json
 import logging
-from asyncio import CancelledError, Event, Lock, create_task, sleep
+from asyncio import AbstractEventLoop, CancelledError, Event, Lock, create_task, sleep
 from logging import Logger
 from time import perf_counter
 from typing import Any, List, Optional, Set
@@ -13,11 +13,6 @@ import websockets as ws
 from websockets import ClientConnection
 from websockets.exceptions import ConnectionClosedOK
 
-from poke_env.concurrency import (
-    POKE_LOOP,
-    create_in_poke_loop,
-    handle_threaded_coroutines,
-)
 from poke_env.exceptions import ShowdownException
 from poke_env.ps_client.account_configuration import AccountConfiguration
 from poke_env.ps_client.server_configuration import ServerConfiguration
@@ -35,6 +30,7 @@ class PSClient:
     def __init__(
         self,
         account_configuration: AccountConfiguration,
+        loop: AbstractEventLoop,
         *,
         avatar: Optional[str] = None,
         log_level: Optional[int] = None,
@@ -70,6 +66,7 @@ class PSClient:
             If None pings will never time out.
         :type ping_timeout: float, optional
         """
+        self.loop = loop
         self._active_tasks: Set[Any] = set()
         self._open_timeout = open_timeout
         self._ping_interval = ping_interval
@@ -80,15 +77,15 @@ class PSClient:
 
         self._avatar = avatar
 
-        self._logged_in: Event = create_in_poke_loop(Event)
-        self._sending_lock = create_in_poke_loop(Lock)
+        self._logged_in: Event = Event()
+        self._sending_lock = Lock()
 
         self.websocket: ClientConnection
         self._logger: Logger = self._create_logger(log_level)
 
         if start_listening:
             self._listening_coroutine = asyncio.run_coroutine_threadsafe(
-                self.listen(), POKE_LOOP
+                self.listen(), loop
             )
 
     async def accept_challenge(self, username: str, packed_team: Optional[str]):
@@ -297,7 +294,7 @@ class PSClient:
             await self.send_message("/utm null")
 
     async def stop_listening(self):
-        await handle_threaded_coroutines(self._stop_listening())
+        asyncio.run_coroutine_threadsafe(self._stop_listening(), self.loop)
 
     async def wait_for_login(self, checking_interval: float = 0.001, wait_for: int = 5):
         start = perf_counter()

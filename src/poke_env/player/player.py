@@ -5,14 +5,18 @@ from __future__ import annotations
 import asyncio
 import random
 from abc import ABC, abstractmethod
-from asyncio import Condition, Event, Queue, Semaphore
+from asyncio import AbstractEventLoop, Condition, Event, Queue, Semaphore
 from logging import Logger
 from time import perf_counter
 from typing import Any, Awaitable, Dict, List, Optional, Union
 
 import orjson
 
-from poke_env.concurrency import create_in_poke_loop, handle_threaded_coroutines
+from poke_env.concurrency import (
+    POKE_LOOP,
+    create_in_poke_loop,
+    handle_threaded_coroutines,
+)
 from poke_env.data import GenData, to_id_str
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.battle import Battle
@@ -66,6 +70,7 @@ class Player(ABC):
         ping_interval: Optional[float] = 20.0,
         ping_timeout: Optional[float] = 20.0,
         team: Optional[Union[str, Teambuilder]] = None,
+        loop: AbstractEventLoop = POKE_LOOP,
     ):
         """
         :param account_configuration: Player configuration. If empty, defaults to an
@@ -124,6 +129,7 @@ class Player(ABC):
 
         self.ps_client = PSClient(
             account_configuration=account_configuration,
+            loop=loop,
             avatar=avatar,
             log_level=log_level,
             server_configuration=server_configuration,
