@@ -253,13 +253,11 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
         if self.agent2.waiting:
             order2 = self.action_to_order(actions[self.agents[1]], self.battle2)
             self.agent2.order_queue.put(order2)
+        battle1 = self.agent1.battle_queue.get(timeout=0.1, default=self.battle1)
+        battle2 = self.agent2.battle_queue.get(timeout=0.1, default=self.battle2)
         observations = {
-            self.agents[0]: self.agent1.battle_queue.get(
-                timeout=0.1, default=self.embed_battle(self.battle1)
-            ),
-            self.agents[1]: self.agent2.battle_queue.get(
-                timeout=0.1, default=self.embed_battle(self.battle2)
-            ),
+            self.agents[0]: self.embed_battle(battle1),
+            self.agents[1]: self.embed_battle(battle2),
         }
         reward = {
             self.agents[0]: self.calc_reward(self.battle1),
@@ -271,7 +269,6 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
         truncated = {self.agents[0]: trunc1, self.agents[1]: trunc2}
         if self.battle1.finished:
             self.agents = []
-        assert self.battle1 == self.agent1.battle
         return observations, reward, terminated, truncated, self.get_additional_info()
 
     def reset(
@@ -300,11 +297,11 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
                 )
         while self.battle1 == self.agent1.battle:
             time.sleep(0.01)
-        obs1 = self.agent1.battle_queue.get()
-        obs2 = self.agent2.battle_queue.get()
+        battle1 = self.agent1.battle_queue.get()
+        battle2 = self.agent2.battle_queue.get()
         observations = {
-            self.agents[0]: self.embed_battle(obs1),
-            self.agents[1]: self.embed_battle(obs2),
+            self.agents[0]: self.embed_battle(battle1),
+            self.agents[1]: self.embed_battle(battle2),
         }
         self.battle1 = self.agent1.battle
         self.battle1.logger = None
@@ -553,8 +550,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
         if force:
             if self.battle1 and not self.battle1.finished:
                 if not (
-                    self.agent1.battle_queue.empty()
-                    and self.agent2.battle_queue.empty()
+                    self.agent1.order_queue.empty() and self.agent2.order_queue.empty()
                 ):
                     await asyncio.sleep(2)
                     if not (
