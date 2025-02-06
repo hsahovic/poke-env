@@ -199,4 +199,6 @@ def test_check_envs():
 
 def test_pickle():
     env = RandomGen4EnvPlayer(log_level=25, start_challenging=True)
+    pickle.loads(pickle.dumps(env.agent1.ps_client))
+    pickle.loads(pickle.dumps(env.agent1))
     pickle.loads(pickle.dumps(env))
