@@ -6,7 +6,7 @@ import logging
 from asyncio import CancelledError, Event, Lock, create_task, sleep
 from logging import Logger
 from time import perf_counter
-from typing import Any, List, Optional, Set
+from typing import Any, Dict, List, Optional, Set
 
 import requests
 import websockets as ws
@@ -19,7 +19,10 @@ from poke_env.concurrency import (
     handle_threaded_coroutines,
 )
 from poke_env.exceptions import ShowdownException
-from poke_env.ps_client.account_configuration import AccountConfiguration
+from poke_env.ps_client.account_configuration import (
+    CONFIGURATION_FROM_PLAYER_COUNTER,
+    AccountConfiguration,
+)
 from poke_env.ps_client.server_configuration import ServerConfiguration
 
 
@@ -90,6 +93,33 @@ class PSClient:
             self._listening_coroutine = asyncio.run_coroutine_threadsafe(
                 self.listen(), POKE_LOOP
             )
+
+    def __getstate__(self) -> Dict[str, Any]:
+        state = self.__dict__.copy()
+        state["_active_tasks"] = None
+        state["_logged_in"] = None
+        state["_sending_lock"] = None
+        state["websocket"] = None
+        state["_listening_coroutine"] = None
+        return state
+
+    def __setstate__(self, state: Dict[str, Any]):
+        self.__dict__.update(state)
+        key = " ".join(self._account_configuration.username.split()[:-1])
+        CONFIGURATION_FROM_PLAYER_COUNTER.update([key])
+        username = "%s %d" % (key, CONFIGURATION_FROM_PLAYER_COUNTER[key])
+        if len(username) > 18:
+            username = "%s %d" % (
+                key[: 18 - len(username)],
+                CONFIGURATION_FROM_PLAYER_COUNTER[key],
+            )
+        self._account_configuration = AccountConfiguration(username, None)
+        self._active_tasks = set()
+        self._logged_in = create_in_poke_loop(Event)
+        self._sending_lock = create_in_poke_loop(Lock)
+        self._listening_coroutine = asyncio.run_coroutine_threadsafe(
+            self.listen(), POKE_LOOP
+        )
 
     async def accept_challenge(self, username: str, packed_team: Optional[str]):
         assert self.logged_in.is_set(), f"Expected {self.username} to be logged in."
