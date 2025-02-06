@@ -173,12 +173,12 @@ class Player(ABC):
     def __setstate__(self, state: Dict[str, Any]):
         self.__dict__.update(state)
         self._battle_semaphore = create_in_poke_loop(Semaphore, 0)
-        self._battle_start_condition: Condition = create_in_poke_loop(Condition)
-        self._battle_count_queue: Queue[Any] = create_in_poke_loop(
+        self._battle_start_condition = create_in_poke_loop(Condition)
+        self._battle_count_queue = create_in_poke_loop(
             Queue, state["_max_concurrent_battles"]
         )
-        self._battle_end_condition: Condition = create_in_poke_loop(Condition)
-        self._challenge_queue: Queue[Any] = create_in_poke_loop(Queue)
+        self._battle_end_condition = create_in_poke_loop(Condition)
+        self._challenge_queue = create_in_poke_loop(Queue)
 
     def _create_account_configuration(self) -> AccountConfiguration:
         key = type(self).__name__
