@@ -87,14 +87,14 @@ class _EnvPlayer(Player):
 
     def __getstate__(self) -> Dict[str, Any]:
         state = self.__dict__.copy()
-        state["observations"] = None
-        state["actions"] = None
+        state["battle_queue"] = None
+        state["order_queue"] = None
         return state
 
     def __setstate__(self, state: Dict[str, Any]):
         self.__dict__.update(state)
-        self.observations = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
-        self.actions = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
+        self.battle_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
+        self.order_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
 
     def choose_move(self, battle: AbstractBattle) -> Awaitable[BattleOrder]:
         return self._env_move(battle)
