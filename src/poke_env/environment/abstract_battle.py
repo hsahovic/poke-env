@@ -461,14 +461,20 @@ class AbstractBattle(ABC):
             if event[-1].startswith("[spread]"):
                 event = event[:-1]
 
-            if event[-1] in {"[from]lockedmove", "[from]Pursuit", "[zeffect]"}:
+            if event[-1] in {
+                "[from] lockedmove",
+                "[from] Pursuit",
+                "[from]lockedmove",
+                "[from]Pursuit",
+                "[zeffect]",
+            }:
                 event = event[:-1]
 
             if event[-1].startswith("[anim]"):
                 event = event[:-1]
 
-            if event[-1].startswith("[from]move: "):
-                override_move = event.pop()[12:]
+            if event[-1].startswith(("[from] move: ", "[from]move: ")):
+                override_move = event.pop().split(": ")[-1]
 
                 if override_move == "Sleep Talk":
                     # Sleep talk was used, but also reveals another move
@@ -479,7 +485,7 @@ class AbstractBattle(ABC):
                     override_move = None
                 elif self.logger is not None:
                     self.logger.warning(
-                        "Unmanaged [from]move message received - move %s in cleaned up "
+                        "Unmanaged [from] move message received - move %s in cleaned up "
                         "message %s in battle %s turn %d",
                         override_move,
                         event,
@@ -490,8 +496,9 @@ class AbstractBattle(ABC):
             if event[-1] == "null":
                 event = event[:-1]
 
-            if event[-1].startswith("[from]ability: "):
-                revealed_ability = event.pop()[15:]
+            if event[-1].startswith(("[from] ability: ", "[from]ability: ")):
+                revealed_ability = event.pop().split(": ")[-1]
+
                 pokemon = event[2]
                 self.get_pokemon(pokemon).ability = revealed_ability
 
@@ -501,14 +508,14 @@ class AbstractBattle(ABC):
                     return
                 elif self.logger is not None:
                     self.logger.warning(
-                        "Unmanaged [from]ability: message received - ability %s in "
+                        "Unmanaged [from] ability: message received - ability %s in "
                         "cleaned up message %s in battle %s turn %d",
                         revealed_ability,
                         event,
                         self.battle_tag,
                         self.turn,
                     )
-            if event[-1] == "[from]Magic Coat":
+            if event[-1] == "[from] Magic Coat":
                 return
 
             while event[-1] == "[still]":

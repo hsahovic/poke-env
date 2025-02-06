@@ -1,5 +1,4 @@
-"""poke_env.player module init.
-"""
+"""poke_env.player module init."""
 
 from poke_env.concurrency import POKE_LOOP
 from poke_env.player import env, player, random_player, utils
