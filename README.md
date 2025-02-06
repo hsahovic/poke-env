@@ -70,8 +70,7 @@ git clone https://github.com/hsahovic/poke-env.git
 Dependencies and development dependencies can then be installed with:
 
 ```
-pip install -r requirements.txt
-pip install -r requirements-dev.txt
+pip install .[dev]
 ```
 
 ## Acknowledgements

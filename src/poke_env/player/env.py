@@ -254,8 +254,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         if self.agent2.waiting:
             order2 = self.action_to_order(actions[self.agents[1]], self.battle2)
             self.agent2.order_queue.put(order2)
-        battle1 = self.agent1.battle_queue.get(timeout=0.01, default=self.battle1)
-        battle2 = self.agent2.battle_queue.get(timeout=0.01, default=self.battle2)
+        battle1 = self.agent1.battle_queue.get(timeout=0.1, default=self.battle1)
+        battle2 = self.agent2.battle_queue.get(timeout=0.1, default=self.battle2)
         observations = {
             self.agents[0]: self.embed_battle(battle1),
             self.agents[1]: self.embed_battle(battle2),
@@ -296,11 +296,11 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 raise RuntimeError(
                     "Environment and agent aren't synchronized. Try to restart"
                 )
-        obs1 = self.agent1.battle_queue.get()
-        obs2 = self.agent2.battle_queue.get()
+        battle1 = self.agent1.battle_queue.get()
+        battle2 = self.agent2.battle_queue.get()
         observations = {
-            self.agents[0]: self.embed_battle(obs1),
-            self.agents[1]: self.embed_battle(obs2),
+            self.agents[0]: self.embed_battle(battle1),
+            self.agents[1]: self.embed_battle(battle2),
         }
         self.battle1 = self.agent1.battle
         self.battle2 = self.agent2.battle
