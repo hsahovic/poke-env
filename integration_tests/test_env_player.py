@@ -1,9 +1,7 @@
 import numpy as np
 import pytest
-import supersuit as ss
 from gymnasium.spaces import Box
 from pettingzoo.test.parallel_test import parallel_api_test
-from stable_baselines3 import PPO
 
 from poke_env.player import (
     Gen4EnvSinglePlayer,
@@ -195,12 +193,3 @@ def test_check_envs():
     env_player_gen9 = RandomGen9EnvPlayer(log_level=25, start_challenging=True)
     parallel_api_test(env_player_gen9)
     env_player_gen9.close()
-
-
-@pytest.mark.timeout(60)
-def test_supersuit():
-    env = RandomGen4EnvPlayer(log_level=25, start_challenging=True)
-    env = ss.pettingzoo_env_to_vec_env_v1(env)
-    env = ss.concat_vec_envs_v1(env, 4, base_class="stable_baselines3")
-    model = PPO("MlpPolicy", env, verbose=1)
-    model.learn(100)

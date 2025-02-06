@@ -1,4 +1,5 @@
 import asyncio
+import pickle
 import unittest
 from unittest.mock import patch
 
@@ -49,6 +50,11 @@ def test_init():
     player = gymnasium_env.agent1
     assert isinstance(gymnasium_env, CustomEnvPlayer)
     assert isinstance(player, _EnvPlayer)
+
+
+def test_pickle():
+    env = Gen4EnvSinglePlayer(log_level=25, start_challenging=True)
+    pickle.loads(pickle.dumps(env))
 
 
 async def run_test_choose_move():
