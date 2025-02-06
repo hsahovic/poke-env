@@ -245,13 +245,11 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
 
     def __getstate__(self) -> Dict[str, Any]:
         state = self.__dict__.copy()
-        state["_reward_buffer"] = None
         state["_challenge_task"] = None
         return state
 
     def __setstate__(self, state: Dict[str, Any]):
         self.__dict__.update(state)
-        self._reward_buffer = WeakKeyDictionary()
         self._challenge_task = asyncio.run_coroutine_threadsafe(
             self._challenge_loop(), POKE_LOOP
         )
