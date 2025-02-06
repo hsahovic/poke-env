@@ -188,8 +188,12 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
             leave it inactive.
         :type start_challenging: bool
         """
+        self.loop = asyncio.new_event_loop()
+        _t = Thread(target=__run_loop, args=(self.loop,), daemon=True)
+        _t.start()
         self.agent1 = _EnvPlayer(
             username=self.__class__.__name__,  # type: ignore
+            loop=self.loop,
             account_configuration=account_configuration1,
             avatar=avatar,
             battle_format=battle_format,
@@ -207,6 +211,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
         )
         self.agent2 = _EnvPlayer(
             username=self.__class__.__name__,  # type: ignore
+            loop=self.loop,
             account_configuration=account_configuration2,
             avatar=avatar,
             battle_format=battle_format,
@@ -221,9 +226,6 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
             ping_timeout=ping_timeout,
             team=team,
         )
-        self.loop = asyncio.new_event_loop()
-        _t = Thread(target=__run_loop, args=(self.loop,), daemon=True)
-        _t.start()
         self.agents: List[str] = []
         self.possible_agents = [self.agent1.username, self.agent2.username]
         self.action_spaces = {
