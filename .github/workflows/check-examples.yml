@@ -30,11 +30,8 @@ jobs:
           pip install ipykernel
           python -m ipykernel install --user --name python3
 
-      - name: Install dev dependencies
-        run: pip install -r requirements-dev.txt
-
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install .[dev]
 
       - name: Build package
         run: |
