@@ -23,11 +23,12 @@ jobs:
       - name: Checkout repository code
         uses: actions/checkout@v4
 
-      # Setup Python (faster than using Python container)
+      # Setup Python with caching
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.version }}
+          cache: 'pip'
 
       - name: Install dependencies
         run: pip install .[dev]
