@@ -6,7 +6,6 @@ from gymnasium.spaces import Box
 from pettingzoo.test.parallel_test import parallel_api_test
 
 from poke_env.player import (
-    EnvPlayer,
     Gen4EnvSinglePlayer,
     Gen5EnvSinglePlayer,
     Gen6EnvSinglePlayer,
