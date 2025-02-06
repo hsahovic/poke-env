@@ -1,6 +1,6 @@
 """This module defines a player class exposing the Gymnasium API with utility functions."""
 
-from typing import List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 from weakref import WeakKeyDictionary
 
 import numpy as np
@@ -113,6 +113,15 @@ class EnvPlayer(GymnasiumEnv):
             ping_timeout=ping_timeout,
             start_challenging=start_challenging,
         )
+
+    def __getstate__(self) -> Dict[str, Any]:
+        state = self.__dict__.copy()
+        state["_reward_buffer"] = None
+        return state
+
+    def __setstate__(self, state: Dict[str, Any]):
+        self.__dict__.update(state)
+        self._reward_buffer = WeakKeyDictionary()
 
     def reward_computing_helper(
         self,
