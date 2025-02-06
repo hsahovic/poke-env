@@ -1,8 +1,8 @@
 import numpy as np
 import pytest
+import supersuit as ss
 from gymnasium.spaces import Box
 from pettingzoo.test.parallel_test import parallel_api_test
-import supersuit as ss
 from stable_baselines3 import PPO
 
 from poke_env.player import (
