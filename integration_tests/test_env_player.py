@@ -1,9 +1,12 @@
+import pickle
+
 import numpy as np
 import pytest
 from gymnasium.spaces import Box
 from pettingzoo.test.parallel_test import parallel_api_test
 
 from poke_env.player import (
+    EnvPlayer,
     Gen4EnvSinglePlayer,
     Gen5EnvSinglePlayer,
     Gen6EnvSinglePlayer,
@@ -193,3 +196,8 @@ def test_check_envs():
     env_player_gen9 = RandomGen9EnvPlayer(log_level=25, start_challenging=True)
     parallel_api_test(env_player_gen9)
     env_player_gen9.close()
+
+
+def test_pickle():
+    env = EnvPlayer(log_level=25, start_challenging=True)
+    pickle.loads(pickle.dumps(env))
