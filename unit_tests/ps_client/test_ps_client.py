@@ -19,8 +19,10 @@ server_configuration = ServerConfiguration(
 
 
 def test_init_and_properties():
+    loop = asyncio.new_event_loop()
     client = PSClient(
         account_configuration=account_configuration,
+        loop=loop,
         server_configuration=server_configuration,
         start_listening=False,
     )
@@ -30,8 +32,10 @@ def test_init_and_properties():
 
 
 def test_create_logger():
+    loop = asyncio.new_event_loop()
     client = PSClient(
         account_configuration=account_configuration,
+        loop=loop,
         server_configuration=server_configuration,
         start_listening=False,
         log_level=38,
@@ -52,8 +56,12 @@ def test_create_logger():
     return_value=requests_tuple(':{"assertion":"content"}'),
 )
 async def testlog_in(post_mock):
+    loop = asyncio.new_event_loop()
+    _t = Thread(target=run_loop, args=(loop,), daemon=True)
+    _t.start()
     client = PSClient(
         account_configuration=account_configuration,
+        loop=loop,
         avatar=12,
         server_configuration=server_configuration,
         log_level=38,
@@ -72,8 +80,12 @@ async def testlog_in(post_mock):
 
 @pytest.mark.asyncio
 async def test_change_avatar():
+    loop = asyncio.new_event_loop()
+    _t = Thread(target=run_loop, args=(loop,), daemon=True)
+    _t.start()
     client = PSClient(
         account_configuration=account_configuration,
+        loop=loop,
         avatar=12,
         server_configuration=server_configuration,
         start_listening=False,
