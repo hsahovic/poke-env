@@ -1,12 +1,14 @@
 import asyncio
 import logging
 from collections import namedtuple
+from threading import Thread
 from unittest.mock import AsyncMock, PropertyMock, patch
 
 import pytest
 import websockets
 
 from poke_env import AccountConfiguration, ServerConfiguration
+from poke_env.concurrency import run_loop
 from poke_env.player import PSClient
 
 account_configuration = AccountConfiguration("username", "password")
@@ -87,8 +89,12 @@ async def test_change_avatar():
 
 @pytest.mark.asyncio
 async def test_handle_message():
+    loop = asyncio.new_event_loop()
+    _t = Thread(target=run_loop, args=(loop,), daemon=True)
+    _t.start()
     client = PSClient(
         account_configuration=account_configuration,
+        loop=loop,
         avatar=12,
         server_configuration=server_configuration,
         start_listening=False,
@@ -122,8 +128,12 @@ async def test_handle_message():
 @patch("poke_env.ps_client.ps_client.PSClient._handle_message")
 @pytest.mark.asyncio
 async def test_listen(handle_message_mock):
+    loop = asyncio.new_event_loop()
+    _t = Thread(target=run_loop, args=(loop,), daemon=True)
+    _t.start()
     client = PSClient(
         account_configuration=account_configuration,
+        loop=loop,
         avatar=12,
         server_configuration=server_configuration,
         start_listening=False,
@@ -154,8 +164,12 @@ async def test_listen(handle_message_mock):
 
 @pytest.mark.asyncio
 async def test_send_message():
+    loop = asyncio.new_event_loop()
+    _t = Thread(target=run_loop, args=(loop,), daemon=True)
+    _t.start()
     client = PSClient(
         account_configuration=account_configuration,
+        loop=loop,
         avatar=12,
         server_configuration=server_configuration,
         start_listening=False,
