@@ -106,6 +106,8 @@ class PSClient:
         state["_handle_battle_message"] = None
         state["_update_challenges"] = None
         state["_handle_challenge_request"] = None
+        state["_account_configuration"] = None
+        state["_server_configuration"] = None
         print(state)
         return state
 
