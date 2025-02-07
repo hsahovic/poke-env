@@ -88,6 +88,6 @@ def test_pickle():
         start_challenging=True,
         strict=False,
     )
-    cloudpickle.dumps(env.agent1.ps_client)
-    cloudpickle.dumps(env.agent1)
-    cloudpickle.dumps(env)
+    cloudpickle.loads(cloudpickle.dumps(env.agent1.ps_client))
+    cloudpickle.loads(cloudpickle.dumps(env.agent1))
+    cloudpickle.loads(cloudpickle.dumps(env))

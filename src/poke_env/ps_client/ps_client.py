@@ -108,7 +108,6 @@ class PSClient:
         state["_handle_challenge_request"] = None
         state["username"] = self.username
         state["_account_configuration"] = None
-        print(state)
         return state
 
     def __setstate__(self, state: Dict[str, Any]):

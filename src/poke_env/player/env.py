@@ -197,8 +197,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             leave it inactive.
         :type start_challenging: bool
         """
-        self.metadata = {"name": "showdown_v0", "render_modes": ["human"]}
-        self.render_mode: str | None = None
         self.agent1 = _EnvPlayer(
             username=self.__class__.__name__,  # type: ignore
             account_configuration=account_configuration1,
