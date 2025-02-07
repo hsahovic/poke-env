@@ -2,16 +2,14 @@
 For a black-box implementation consider using the module env_player.
 """
 
-from __future__ import annotations
-
 import asyncio
 import time
 from abc import abstractmethod
 from typing import Any, Awaitable, Dict, Generic, List, Optional, Tuple, TypeVar, Union
+from weakref import WeakKeyDictionary
 
-import numpy as np
-from gymnasium.spaces import Discrete, Space
-from pettingzoo.utils.env import ObsType, ParallelEnv  # type: ignore[import-untyped]
+from gymnasium.spaces import Space
+from pettingzoo.utils.env import ParallelEnv  # type: ignore[import-untyped]
 
 from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
 from poke_env.environment.abstract_battle import AbstractBattle
@@ -29,6 +27,8 @@ from poke_env.ps_client.server_configuration import (
 from poke_env.teambuilder.teambuilder import Teambuilder
 
 ItemType = TypeVar("ItemType")
+ObsType = TypeVar("ObsType")
+ActionType = TypeVar("ActionType")
 
 
 class _AsyncQueue(Generic[ItemType]):
@@ -114,7 +114,7 @@ class _EnvPlayer(Player):
         asyncio.run_coroutine_threadsafe(self.battle_queue.async_put(battle), POKE_LOOP)
 
 
-class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
+class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
     """
     Base class implementing the Gymnasium API on the main thread.
     """
@@ -126,9 +126,9 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
 
     def __init__(
         self,
+        *,
         account_configuration1: Optional[AccountConfiguration] = None,
         account_configuration2: Optional[AccountConfiguration] = None,
-        *,
         avatar: Optional[int] = None,
         battle_format: str = "gen8randombattle",
         log_level: Optional[int] = None,
@@ -144,6 +144,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
         ping_timeout: Optional[float] = 20.0,
         team: Optional[Union[str, Teambuilder]] = None,
         start_challenging: bool = False,
+        strict: bool = True,
     ):
         """
         :param account_configuration: Player configuration. If empty, defaults to an
@@ -231,14 +232,14 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
         )
         self.agents: List[str] = []
         self.possible_agents = [self.agent1.username, self.agent2.username]
-        self.action_spaces = {
-            name: Discrete(self.action_space_size()) for name in self.possible_agents
-        }
         self.battle1: Optional[AbstractBattle] = None
         self.battle2: Optional[AbstractBattle] = None
+        self.strict = strict
+        self._reward_buffer: WeakKeyDictionary[AbstractBattle, float] = (
+            WeakKeyDictionary()
+        )
         self._keep_challenging: bool = False
         self._challenge_task = None
-        self._seed_initialized: bool = False
         if start_challenging:
             self._keep_challenging = True
             self._challenge_task = asyncio.run_coroutine_threadsafe(
@@ -247,11 +248,13 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
 
     def __getstate__(self) -> Dict[str, Any]:
         state = self.__dict__.copy()
+        state["_reward_buffer"] = None
         state["_challenge_task"] = None
         return state
 
     def __setstate__(self, state: Dict[str, Any]):
         self.__dict__.update(state)
+        self._reward_buffer = WeakKeyDictionary()
         self._challenge_task = asyncio.run_coroutine_threadsafe(
             self._challenge_loop(), POKE_LOOP
         )
@@ -260,7 +263,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
     # PettingZoo API
     # https://pettingzoo.farama.org/api/parallel/#parallelenv
 
-    def step(self, actions: Dict[str, np.int64]) -> Tuple[
+    def step(self, actions: Dict[str, ActionType]) -> Tuple[
         Dict[str, ObsType],
         Dict[str, float],
         Dict[str, bool],
@@ -272,10 +275,14 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
         if self.battle1.finished:
             raise RuntimeError("Battle is already finished, call reset")
         if self.agent1.waiting:
-            order1 = self.action_to_order(actions[self.agents[0]], self.battle1)
+            order1 = self.action_to_order(
+                actions[self.agents[0]], self.battle1, self.strict
+            )
             self.agent1.order_queue.put(order1)
         if self.agent2.waiting:
-            order2 = self.action_to_order(actions[self.agents[1]], self.battle2)
+            order2 = self.action_to_order(
+                actions[self.agents[1]], self.battle2, self.strict
+            )
             self.agent2.order_queue.put(order2)
         battle1 = self.agent1.battle_queue.get(timeout=0.1, default=self.battle1)
         battle2 = self.agent2.battle_queue.get(timeout=0.1, default=self.battle2)
@@ -377,7 +384,7 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
     def observation_space(self, agent: str) -> Space[ObsType]:
         return self.observation_spaces[agent]
 
-    def action_space(self, agent: str) -> Space[np.int64]:
+    def action_space(self, agent: str) -> Space[ActionType]:
         return self.action_spaces[agent]
 
     ###################################################################################
@@ -397,21 +404,6 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
         pass
 
     @abstractmethod
-    def action_to_order(self, action: np.int64, battle: AbstractBattle) -> BattleOrder:
-        """
-        Returns the BattleOrder relative to the given action.
-
-        :param action: The action to take.
-        :type action: int
-        :param battle: The current battle state
-        :type battle: AbstractBattle
-
-        :return: The battle order for the given action in context of the current battle.
-        :rtype: BattleOrder
-        """
-        pass
-
-    @abstractmethod
     def embed_battle(self, battle: AbstractBattle) -> ObsType:
         """
         Returns the embedding of the current battle state in a format compatible with
@@ -424,19 +416,147 @@ class GymnasiumEnv(ParallelEnv[str, ObsType, np.int64]):
         """
         pass
 
+    @staticmethod
     @abstractmethod
-    def action_space_size(self) -> int:
+    def action_to_order(
+        action: ActionType, battle: Any, strict: bool = True
+    ) -> BattleOrder:
         """
-        Returns the size of the action space. Given size x, the action space goes
-        from 0 to x - 1.
+        Returns the BattleOrder relative to the given action.
 
-        :return: The action space size.
-        :rtype: int
+        :param action: The action to take.
+        :type action: ActionType
+        :param battle: The current battle state
+        :type battle: AbstractBattle
+
+        :return: The battle order for the given action in context of the current battle.
+        :rtype: BattleOrder
+        """
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def order_to_action(
+        order: BattleOrder, battle: Any, strict: bool = True
+    ) -> ActionType:
+        """
+        Returns the action relative to the given BattleOrder.
+
+        :param order: The order to take.
+        :type order: BattleOrder
+        :param battle: The current battle state
+        :type battle: AbstractBattle
+
+        :return: The action for the given battle order in context of the current battle.
+        :rtype: ActionType
         """
         pass
 
     ###################################################################################
     # Helper methods
+
+    def reward_computing_helper(
+        self,
+        battle: AbstractBattle,
+        *,
+        fainted_value: float = 0.0,
+        hp_value: float = 0.0,
+        number_of_pokemons: int = 6,
+        starting_value: float = 0.0,
+        status_value: float = 0.0,
+        victory_value: float = 1.0,
+    ) -> float:
+        """A helper function to compute rewards.
+
+        The reward is computed by computing the value of a game state, and by comparing
+        it to the last state.
+
+        State values are computed by weighting different factor. Fainted pokemons,
+        their remaining HP, inflicted statuses and winning are taken into account.
+
+        For instance, if the last time this function was called for battle A it had
+        a state value of 8 and this call leads to a value of 9, the returned reward will
+        be 9 - 8 = 1.
+
+        Consider a single battle where each player has 6 pokemons. No opponent pokemon
+        has fainted, but our team has one fainted pokemon. Three opposing pokemons are
+        burned. We have one pokemon missing half of its HP, and our fainted pokemon has
+        no HP left.
+
+        The value of this state will be:
+
+        - With fainted value: 1, status value: 0.5, hp value: 1:
+            = - 1 (fainted) + 3 * 0.5 (status) - 1.5 (our hp) = -1
+        - With fainted value: 3, status value: 0, hp value: 1:
+            = - 3 + 3 * 0 - 1.5 = -4.5
+
+        :param battle: The battle for which to compute rewards.
+        :type battle: AbstractBattle
+        :param fainted_value: The reward weight for fainted pokemons. Defaults to 0.
+        :type fainted_value: float
+        :param hp_value: The reward weight for hp per pokemon. Defaults to 0.
+        :type hp_value: float
+        :param number_of_pokemons: The number of pokemons per team. Defaults to 6.
+        :type number_of_pokemons: int
+        :param starting_value: The default reference value evaluation. Defaults to 0.
+        :type starting_value: float
+        :param status_value: The reward value per non-fainted status. Defaults to 0.
+        :type status_value: float
+        :param victory_value: The reward value for winning. Defaults to 1.
+        :type victory_value: float
+        :return: The reward.
+        :rtype: float
+        """
+        if battle not in self._reward_buffer:
+            self._reward_buffer[battle] = starting_value
+        current_value = 0.0
+
+        for mon in battle.team.values():
+            current_value += mon.current_hp_fraction * hp_value
+            if mon.fainted:
+                current_value -= fainted_value
+            elif mon.status is not None:
+                current_value -= status_value
+
+        current_value += (number_of_pokemons - len(battle.team)) * hp_value
+
+        for mon in battle.opponent_team.values():
+            current_value -= mon.current_hp_fraction * hp_value
+            if mon.fainted:
+                current_value += fainted_value
+            elif mon.status is not None:
+                current_value += status_value
+
+        current_value -= (number_of_pokemons - len(battle.opponent_team)) * hp_value
+
+        if battle.won:
+            current_value += victory_value
+        elif battle.lost:
+            current_value -= victory_value
+
+        to_return = current_value - self._reward_buffer[battle]
+        self._reward_buffer[battle] = current_value
+
+        return to_return
+
+    def reset_env(self, restart: bool = True):
+        """
+        Resets the environment to an inactive state: it will forfeit all unfinished
+        battles, reset the internal battle tracker and optionally change the next
+        opponent and restart the challenge loop.
+
+        :param opponent: The opponent to use for the next battles. If empty it
+            will not change opponent.
+        :type opponent: Player or str, optional
+        :param restart: If True the challenge loop will be restarted before returning,
+            otherwise the challenge loop will be left inactive and can be
+            started manually.
+        :type restart: bool
+        """
+        self.close(purge=False)
+        self.reset_battles()
+        if restart:
+            self.start_challenging()
 
     def get_additional_info(self) -> Dict[str, Dict[str, Any]]:
         """
