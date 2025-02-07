@@ -103,6 +103,9 @@ class PSClient:
         state["websocket"] = None
         state["_logger"] = None
         state["_listening_coroutine"] = None
+        state["_handle_battle_message"] = None
+        state["_update_challenges"] = None
+        state["_handle_challenge_request"] = None
         state["username"] = self.username
         state["_account_configuration"] = None
         print(state)
