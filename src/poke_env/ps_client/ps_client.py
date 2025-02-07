@@ -103,17 +103,15 @@ class PSClient:
         state["websocket"] = None
         state["_logger"] = None
         state["_listening_coroutine"] = None
-        state["_handle_battle_message"] = None
-        state["_update_challenges"] = None
-        state["_handle_challenge_request"] = None
+        state["username"] = self.username
         state["_account_configuration"] = None
-        state["_server_configuration"] = None
         print(state)
         return state
 
     def __setstate__(self, state: Dict[str, Any]):
+        username = state.pop("username")
         self.__dict__.update(state)
-        key = " ".join(self._account_configuration.username.split()[:-1])
+        key = " ".join(username.split()[:-1])
         CONFIGURATION_FROM_PLAYER_COUNTER.update([key])
         username = "%s %d" % (key, CONFIGURATION_FROM_PLAYER_COUNTER[key])
         if len(username) > 18:
