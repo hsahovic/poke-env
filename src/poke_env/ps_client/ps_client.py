@@ -105,7 +105,6 @@ class PSClient:
         state["_listening_coroutine"] = None
         state["username"] = self.username
         state["_account_configuration"] = None
-        print(state)
         return state
 
     def __setstate__(self, state: Dict[str, Any]):

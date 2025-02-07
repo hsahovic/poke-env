@@ -117,6 +117,7 @@ class EnvPlayer(GymnasiumEnv):
     def __getstate__(self) -> Dict[str, Any]:
         state = self.__dict__.copy()
         state["_reward_buffer"] = None
+        print(state)
         return state
 
     def __setstate__(self, state: Dict[str, Any]):
