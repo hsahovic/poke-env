@@ -172,6 +172,9 @@ class Player(ABC):
 
     def __setstate__(self, state: Dict[str, Any]):
         self.__dict__.update(state)
+        self.ps_client._handle_battle_message = self._handle_battle_message  # type: ignore
+        self.ps_client._update_challenges = self._update_challenges  # type: ignore
+        self.ps_client._handle_challenge_request = self._handle_challenge_request  # type: ignore
         self._battle_semaphore = create_in_poke_loop(Semaphore, 0)
         self._battle_start_condition = create_in_poke_loop(Condition)
         self._battle_count_queue = create_in_poke_loop(
