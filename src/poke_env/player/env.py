@@ -86,13 +86,15 @@ class _EnvPlayer(Player):
         self.waiting = False
 
     def __getstate__(self) -> Dict[str, Any]:
-        state = self.__dict__.copy()
+        state = super().__getstate__()
         state["battle_queue"] = None
         state["order_queue"] = None
+        state["battle"] = None
+        state["waiting"] = False
         return state
 
     def __setstate__(self, state: Dict[str, Any]):
-        self.__dict__.update(state)
+        super().__setstate__(state)
         self.battle_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
         self.order_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
 
