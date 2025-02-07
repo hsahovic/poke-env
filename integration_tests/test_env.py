@@ -1,5 +1,4 @@
 import cloudpickle
-
 import numpy as np
 import pytest
 from gymnasium.spaces import Box
