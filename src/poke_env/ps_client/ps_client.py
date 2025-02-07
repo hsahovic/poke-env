@@ -101,6 +101,7 @@ class PSClient:
         state["_sending_lock"] = None
         state["websocket"] = None
         state["_listening_coroutine"] = None
+        print(state)
         return state
 
     def __setstate__(self, state: Dict[str, Any]):
