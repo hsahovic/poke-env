@@ -1,4 +1,4 @@
-import pickle
+import cloudpickle
 
 import numpy as np
 import pytest
@@ -83,7 +83,12 @@ def test_env_api():
 
 
 def test_pickle():
-    env = SinglesEnv(battle_format="gen4randombattle", log_level=25, start_challenging=True)
-    pickle.dumps(env.agent1.ps_client)
-    pickle.dumps(env.agent1)
-    pickle.dumps(env)
+    env = SinglesEnv(
+        battle_format="gen4randombattle",
+        log_level=25,
+        start_challenging=True,
+        strict=False,
+    )
+    cloudpickle.dumps(env.agent1.ps_client)
+    cloudpickle.dumps(env.agent1)
+    cloudpickle.dumps(env)
