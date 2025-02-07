@@ -92,6 +92,19 @@ class _EnvPlayer(Player):
         self.battle: Optional[AbstractBattle] = None
         self.waiting = False
 
+    def __getstate__(self) -> Dict[str, Any]:
+        state = super().__getstate__()
+        state["battle_queue"] = None
+        state["order_queue"] = None
+        state["battle"] = None
+        state["waiting"] = False
+        return state
+
+    def __setstate__(self, state: Dict[str, Any]):
+        super().__setstate__(state)
+        self.battle_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
+        self.order_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
+
     def choose_move(self, battle: AbstractBattle) -> Awaitable[BattleOrder]:
         return self._env_move(battle)
 
@@ -290,6 +303,19 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             self._challenge_task = asyncio.run_coroutine_threadsafe(
                 self._challenge_loop(), POKE_LOOP
             )
+
+    def __getstate__(self) -> Dict[str, Any]:
+        state = self.__dict__.copy()
+        state["_reward_buffer"] = None
+        state["_challenge_task"] = None
+        return state
+
+    def __setstate__(self, state: Dict[str, Any]):
+        self.__dict__.update(state)
+        self._reward_buffer = WeakKeyDictionary()
+        self._challenge_task = asyncio.run_coroutine_threadsafe(
+            self._challenge_loop(), POKE_LOOP
+        )
 
     ###################################################################################
     # PettingZoo API

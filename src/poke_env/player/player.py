@@ -163,6 +163,28 @@ class Player(ABC):
 
         self.logger.debug("Player initialisation finished")
 
+    def __getstate__(self) -> Dict[str, Any]:
+        state = self.__dict__.copy()
+        state["_battle_semaphore"] = None
+        state["_battle_start_condition"] = None
+        state["_battle_count_queue"] = None
+        state["_battle_end_condition"] = None
+        state["_challenge_queue"] = None
+        return state
+
+    def __setstate__(self, state: Dict[str, Any]):
+        self.__dict__.update(state)
+        self.ps_client._handle_battle_message = self._handle_battle_message  # type: ignore
+        self.ps_client._update_challenges = self._update_challenges  # type: ignore
+        self.ps_client._handle_challenge_request = self._handle_challenge_request  # type: ignore
+        self._battle_semaphore = create_in_poke_loop(Semaphore, 0)
+        self._battle_start_condition = create_in_poke_loop(Condition)
+        self._battle_count_queue = create_in_poke_loop(
+            Queue, state["_max_concurrent_battles"]
+        )
+        self._battle_end_condition = create_in_poke_loop(Condition)
+        self._challenge_queue = create_in_poke_loop(Queue)
+
     def _create_account_configuration(self) -> AccountConfiguration:
         key = type(self).__name__
         CONFIGURATION_FROM_PLAYER_COUNTER.update([key])

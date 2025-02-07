@@ -1,3 +1,4 @@
+import cloudpickle
 import numpy as np
 import pytest
 from gymnasium.spaces import Box
@@ -112,3 +113,15 @@ def test_env_api():
         )
         parallel_api_test(env)
         env.close()
+
+
+def test_pickle():
+    env = SinglesEnv(
+        battle_format="gen4randombattle",
+        log_level=25,
+        start_challenging=True,
+        strict=False,
+    )
+    cloudpickle.loads(cloudpickle.dumps(env.agent1.ps_client))
+    cloudpickle.loads(cloudpickle.dumps(env.agent1))
+    cloudpickle.loads(cloudpickle.dumps(env))
