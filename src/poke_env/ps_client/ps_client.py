@@ -74,6 +74,7 @@ class PSClient:
         :type ping_timeout: float, optional
         """
         self._active_tasks: Set[Any] = set()
+        self.log_level = log_level
         self._open_timeout = open_timeout
         self._ping_interval = ping_interval
         self._ping_timeout = ping_timeout
@@ -100,6 +101,7 @@ class PSClient:
         state["_logged_in"] = None
         state["_sending_lock"] = None
         state["websocket"] = None
+        state["_logger"] = None
         state["_listening_coroutine"] = None
         print(state)
         return state
@@ -118,6 +120,7 @@ class PSClient:
         self._active_tasks = set()
         self._logged_in = create_in_poke_loop(Event)
         self._sending_lock = create_in_poke_loop(Lock)
+        self._logger = self._create_logger(self.log_level)
         self._listening_coroutine = asyncio.run_coroutine_threadsafe(
             self.listen(), POKE_LOOP
         )
