@@ -156,6 +156,8 @@ class Player(ABC):
         self._challenge_queue: Queue[Any] = create_in_poke_loop(Queue)
         self._team: Optional[Teambuilder] = None
 
+        self.try_again = False
+
         if isinstance(team, Teambuilder):
             self._team = team
         elif isinstance(team, str):
@@ -376,6 +378,7 @@ class Player(ABC):
                 ):
                     battle.trapped = True
                     will_move = True
+                    self.try_again = True
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't switch: You can't switch to an active "
                     "Pokémon"
@@ -473,8 +476,8 @@ class Player(ABC):
             if isinstance(choice, Awaitable):
                 choice = await choice
             message = choice.message
-
-        if hasattr(self.ps_client, "websocket"):
+        self.try_again = False
+        if hasattr(self.ps_client, "websocket") and not battle._wait:
             await self.ps_client.send_message(message, battle.battle_tag)
 
     async def _handle_challenge_request(self, split_message: List[str]):
