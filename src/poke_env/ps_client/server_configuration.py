@@ -1,5 +1,4 @@
-"""This module contains objects related to server configuration.
-"""
+"""This module contains objects related to server configuration."""
 
 from typing import NamedTuple
 

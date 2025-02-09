@@ -3,7 +3,6 @@ import sys
 from io import StringIO
 
 import numpy as np
-from gymnasium import Space
 from pettingzoo.utils.env import ObsType
 
 from poke_env.environment import AbstractBattle, Battle, Pokemon
@@ -13,7 +12,6 @@ from poke_env.player.gymnasium_api import _AsyncQueue, _EnvPlayer
 
 class DummyEnv(GymnasiumEnv[ObsType]):
     def __init__(self, *args, **kwargs):
-        self.opponent = None
         super().__init__(*args, **kwargs)
 
     def calc_reward(self, battle: AbstractBattle) -> float:
@@ -24,9 +22,6 @@ class DummyEnv(GymnasiumEnv[ObsType]):
 
     def embed_battle(self, battle: AbstractBattle) -> ObsType:
         return [0, 1, 2]
-
-    def describe_embedding(self) -> Space:
-        return "Space"
 
     def action_space_size(self) -> int:
         return 1

@@ -1,7 +1,0 @@
-gymnasium
-numpy
-orjson
-pettingzoo
-requests
-tabulate
-websockets==14.2

@@ -1,5 +1,4 @@
-"""This module defines a base class for communicating with showdown servers.
-"""
+"""This module defines a base class for communicating with showdown servers."""
 
 import asyncio
 import json
