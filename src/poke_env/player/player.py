@@ -154,7 +154,7 @@ class Player(ABC):
         self._challenge_queue: Queue[Any] = create_in_poke_loop(Queue)
         self._team: Optional[Teambuilder] = None
 
-        self.try_again = False
+        self.trying_again = Event()
 
         if isinstance(team, Teambuilder):
             self._team = team
@@ -315,9 +315,8 @@ class Player(ABC):
                     "[Invalid choice] Can't switch: The active Pokémon is trapped"
                 ):
                     battle.trapped = True
-                    self.try_again = True
+                    self.trying_again.set()
                     await self._handle_battle_request(battle)
-                    self.try_again = False
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't switch: You can't switch to an active "
                     "Pokémon"
