@@ -43,9 +43,11 @@ class _AsyncQueue(Generic[ItemType]):
         return res.result()
 
     def get_timeout(self, timeout_flag: asyncio.Event) -> Optional[ItemType]:
+        task_get = asyncio.create_task(self.async_get())
+        task_wait = asyncio.create_task(timeout_flag.wait())
         done, pending = asyncio.run_coroutine_threadsafe(
             asyncio.wait(
-                [self.async_get(), timeout_flag.wait()],
+                [task_get, task_wait],
                 return_when=asyncio.FIRST_COMPLETED,
             ),
             POKE_LOOP,
