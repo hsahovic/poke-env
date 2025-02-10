@@ -307,6 +307,7 @@ class Player(ABC):
                     "[Invalid choice] Sorry, too late to make a different move"
                 ):
                     if battle.trapped:
+                        self.trying_again.set()
                         await self._handle_battle_request(battle)
                 elif split_message[2].startswith(
                     "[Unavailable choice] Can't switch: The active Pokémon is "
@@ -321,32 +322,39 @@ class Player(ABC):
                     "[Invalid choice] Can't switch: You can't switch to an active "
                     "Pokémon"
                 ):
+                    self.trying_again.set()
                     await self._handle_battle_request(battle, maybe_default_order=True)
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't switch: You can't switch to a fainted "
                     "Pokémon"
                 ):
+                    self.trying_again.set()
                     await self._handle_battle_request(battle, maybe_default_order=True)
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: Invalid target for"
                 ):
+                    self.trying_again.set()
                     await self._handle_battle_request(battle, maybe_default_order=True)
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: You can't choose a target for"
                 ):
+                    self.trying_again.set()
                     await self._handle_battle_request(battle, maybe_default_order=True)
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: "
                 ) and split_message[2].endswith("needs a target"):
+                    self.trying_again.set()
                     await self._handle_battle_request(battle, maybe_default_order=True)
                 elif (
                     split_message[2].startswith("[Invalid choice] Can't move: Your")
                     and " doesn't have a move matching " in split_message[2]
                 ):
+                    self.trying_again.set()
                     await self._handle_battle_request(battle, maybe_default_order=True)
                 elif split_message[2].startswith(
                     "[Invalid choice] Incomplete choice: "
                 ):
+                    self.trying_again.set()
                     await self._handle_battle_request(battle, maybe_default_order=True)
                 elif split_message[2].startswith(
                     "[Unavailable choice]"
@@ -360,10 +368,12 @@ class Player(ABC):
                     "[Invalid choice] Can't move: You sent more choices than unfainted"
                     " Pokémon."
                 ):
+                    self.trying_again.set()
                     await self._handle_battle_request(battle, maybe_default_order=True)
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: You can only Terastallize once per battle."
                 ):
+                    self.trying_again.set()
                     await self._handle_battle_request(battle, maybe_default_order=True)
                 else:
                     self.logger.critical("Unexpected error message: %s", split_message)
