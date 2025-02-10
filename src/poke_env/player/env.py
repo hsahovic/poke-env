@@ -49,6 +49,27 @@ class _AsyncQueue(Generic[ItemType]):
         res = asyncio.run_coroutine_threadsafe(self.async_get(), POKE_LOOP)
         return res.result()
 
+    def get_timeout(self, timeout_flag: asyncio.Event) -> Optional[ItemType]:
+        tasks = [
+            asyncio.ensure_future(self.async_get(), loop=POKE_LOOP),
+            asyncio.ensure_future(timeout_flag.wait(), loop=POKE_LOOP),
+        ]
+        done, pending = asyncio.run_coroutine_threadsafe(
+            asyncio.wait(
+                tasks,
+                return_when=asyncio.FIRST_COMPLETED,
+            ),
+            POKE_LOOP,
+        ).result()
+        for task in pending:
+            task.cancel()
+        result = list(done)[0].result()
+        timeout_flag.clear()
+        if result is True:
+            return None
+        else:
+            return result
+
     async def async_put(self, item: ItemType):
         await self.queue.put(item)
 
@@ -337,10 +358,12 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             )
             self.agent2.order_queue.put(order2)
         battle1 = (
-            self.battle1 if self.agent2.try_again else self.agent1.battle_queue.get()
+            self.agent1.battle_queue.get_timeout(self.agent2.trying_again)
+            or self.battle1
         )
         battle2 = (
-            self.battle2 if self.agent1.try_again else self.agent2.battle_queue.get()
+            self.agent2.battle_queue.get_timeout(self.agent1.trying_again)
+            or self.battle2
         )
         observations = {
             self.agents[0]: self.embed_battle(battle1),

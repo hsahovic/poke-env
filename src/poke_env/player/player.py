@@ -156,7 +156,7 @@ class Player(ABC):
         self._challenge_queue: Queue[Any] = create_in_poke_loop(Queue)
         self._team: Optional[Teambuilder] = None
 
-        self.try_again = False
+        self.trying_again = create_in_poke_loop(Event)
 
         if isinstance(team, Teambuilder):
             self._team = team
@@ -370,6 +370,7 @@ class Player(ABC):
                 ):
                     if battle.trapped:
                         will_move = True
+                        self.trying_again.set()
                 elif split_message[2].startswith(
                     "[Unavailable choice] Can't switch: The active Pokémon is "
                     "trapped"
@@ -378,45 +379,52 @@ class Player(ABC):
                 ):
                     battle.trapped = True
                     will_move = True
-                    self.try_again = True
+                    self.trying_again.set()
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't switch: You can't switch to an active "
                     "Pokémon"
                 ):
                     will_move = True
                     maybe_default_order = True
+                    self.trying_again.set()
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't switch: You can't switch to a fainted "
                     "Pokémon"
                 ):
                     will_move = True
                     maybe_default_order = True
+                    self.trying_again.set()
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: Invalid target for"
                 ):
                     will_move = True
                     maybe_default_order = True
+                    self.trying_again.set()
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: You can't choose a target for"
                 ):
                     will_move = True
                     maybe_default_order = True
+                    self.trying_again.set()
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: "
                 ) and split_message[2].endswith("needs a target"):
                     will_move = True
                     maybe_default_order = True
+                    self.trying_again.set()
                 elif (
                     split_message[2].startswith("[Invalid choice] Can't move: Your")
                     and " doesn't have a move matching " in split_message[2]
                 ):
                     will_move = True
                     maybe_default_order = True
+                    self.trying_again.set()
                 elif split_message[2].startswith(
                     "[Invalid choice] Incomplete choice: "
                 ):
                     will_move = True
                     maybe_default_order = True
+                    self.trying_again.set()
                 elif split_message[2].startswith(
                     "[Unavailable choice]"
                 ) and split_message[2].endswith("is disabled"):
@@ -431,11 +439,13 @@ class Player(ABC):
                 ):
                     will_move = True
                     maybe_default_order = True
+                    self.trying_again.set()
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: You can only Terastallize once per battle."
                 ):
                     will_move = True
                     maybe_default_order = True
+                    self.trying_again.set()
                 else:
                     self.logger.critical("Unexpected error message: %s", split_message)
             elif split_message[1] == "turn":
