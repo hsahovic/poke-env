@@ -428,13 +428,15 @@ class Player(ABC):
                 elif split_message[2].startswith(
                     "[Unavailable choice]"
                 ) and split_message[2].endswith("is disabled"):
+                    will_move = True
+                    maybe_default_order = True
                     self.trying_again.set()
-                    await self._handle_battle_request(battle, maybe_default_order=True)
                 elif split_message[2].startswith("[Invalid choice]") and split_message[
                     2
                 ].endswith("is disabled"):
+                    will_move = True
+                    maybe_default_order = True
                     self.trying_again.set()
-                    await self._handle_battle_request(battle, maybe_default_order=True)
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: You sent more choices than unfainted"
                     " Pokémon."
