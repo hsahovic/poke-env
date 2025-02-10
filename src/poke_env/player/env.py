@@ -55,9 +55,12 @@ class _AsyncQueue(Generic[ItemType]):
             asyncio.ensure_future(timeout_flag.wait(), loop=POKE_LOOP),
         ]
         done, pending = asyncio.run_coroutine_threadsafe(
-            asyncio.wait(
-                tasks,
-                return_when=asyncio.FIRST_COMPLETED,
+            asyncio.wait_for(
+                asyncio.wait(
+                    tasks,
+                    return_when=asyncio.FIRST_COMPLETED,
+                ),
+                timeout=10,
             ),
             POKE_LOOP,
         ).result()
