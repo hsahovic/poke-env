@@ -108,19 +108,6 @@ class _EnvPlayer(Player):
         self.battle: Optional[AbstractBattle] = None
         self.waiting = False
 
-    def __getstate__(self) -> Dict[str, Any]:
-        state = super().__getstate__()
-        state["battle_queue"] = None
-        state["order_queue"] = None
-        state["battle"] = None
-        state["waiting"] = False
-        return state
-
-    def __setstate__(self, state: Dict[str, Any]):
-        super().__setstate__(state)
-        self.battle_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
-        self.order_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
-
     def choose_move(self, battle: AbstractBattle) -> Awaitable[BattleOrder]:
         return self._env_move(battle)
 
@@ -267,6 +254,22 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             leave it inactive.
         :type start_challenging: bool
         """
+        self._account_configuration1 = account_configuration1
+        self._account_configuration2 = account_configuration2
+        self._avatar = avatar
+        self._battle_format = battle_format
+        self._log_level = log_level
+        self._save_replays = save_replays
+        self._server_configuration = server_configuration
+        self._accept_open_team_sheet = accept_open_team_sheet
+        self._start_timer_on_battle_start = start_timer_on_battle_start
+        self._start_listening = start_listening
+        self._open_timeout = open_timeout
+        self._ping_interval = ping_interval
+        self._ping_timeout = ping_timeout
+        self._team = team
+        self._start_challenging = start_challenging
+        self._strict = strict
         self.agent1 = _EnvPlayer(
             username=self.__class__.__name__,  # type: ignore
             account_configuration=account_configuration1,
@@ -309,7 +312,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         self.possible_agents = [self.agent1.username, self.agent2.username]
         self.battle1: Optional[AbstractBattle] = None
         self.battle2: Optional[AbstractBattle] = None
-        self.strict = strict
         self._np_random: Optional[Generator] = None
         self._reward_buffer: WeakKeyDictionary[AbstractBattle, float] = (
             WeakKeyDictionary()
@@ -324,12 +326,47 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
 
     def __getstate__(self) -> Dict[str, Any]:
         state = self.__dict__.copy()
+        state["agent1"] = None
+        state["agent2"] = None
         state["_reward_buffer"] = None
         state["_challenge_task"] = None
         return state
 
     def __setstate__(self, state: Dict[str, Any]):
         self.__dict__.update(state)
+        self.agent1 = _EnvPlayer(
+            username=self.__class__.__name__,  # type: ignore
+            account_configuration=self._account_configuration1,
+            avatar=self._avatar,
+            battle_format=self._battle_format,
+            log_level=self._log_level,
+            max_concurrent_battles=1,
+            save_replays=self._save_replays,
+            server_configuration=self._server_configuration,
+            accept_open_team_sheet=self._accept_open_team_sheet,
+            start_timer_on_battle_start=self._start_timer_on_battle_start,
+            start_listening=self._start_listening,
+            open_timeout=self._open_timeout,
+            ping_interval=self._ping_interval,
+            ping_timeout=self._ping_timeout,
+            team=self._team,
+        )
+        self.agent2 = _EnvPlayer(
+            username=self.__class__.__name__,  # type: ignore
+            account_configuration=self._account_configuration2,
+            avatar=self._avatar,
+            battle_format=self._battle_format,
+            log_level=self._log_level,
+            max_concurrent_battles=1,
+            save_replays=self._save_replays,
+            server_configuration=self._server_configuration,
+            accept_open_team_sheet=self._accept_open_team_sheet,
+            start_timer_on_battle_start=self._start_timer_on_battle_start,
+            start_listening=self._start_listening,
+            ping_interval=self._ping_interval,
+            ping_timeout=self._ping_timeout,
+            team=self._team,
+        )
         self._reward_buffer = WeakKeyDictionary()
         self._challenge_task = asyncio.run_coroutine_threadsafe(
             self._challenge_loop(), POKE_LOOP
@@ -352,12 +389,12 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             raise RuntimeError("Battle is already finished, call reset")
         if self.agent1.waiting:
             order1 = self.action_to_order(
-                actions[self.agents[0]], self.battle1, self.strict
+                actions[self.agents[0]], self.battle1, self._strict
             )
             self.agent1.order_queue.put(order1)
         if self.agent2.waiting:
             order2 = self.action_to_order(
-                actions[self.agents[1]], self.battle2, self.strict
+                actions[self.agents[1]], self.battle2, self._strict
             )
             self.agent2.order_queue.put(order2)
         battle1 = (
