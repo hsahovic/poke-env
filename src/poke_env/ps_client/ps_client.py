@@ -95,41 +95,6 @@ class PSClient:
                 self.listen(), POKE_LOOP
             )
 
-    def __getstate__(self) -> Dict[str, Any]:
-        state = self.__dict__.copy()
-        state["_active_tasks"] = None
-        state["_logged_in"] = None
-        state["_sending_lock"] = None
-        state["websocket"] = None
-        state["_logger"] = None
-        state["_listening_coroutine"] = None
-        state["_handle_battle_message"] = None
-        state["_update_challenges"] = None
-        state["_handle_challenge_request"] = None
-        state["username"] = self.username
-        state["_account_configuration"] = None
-        return state
-
-    def __setstate__(self, state: Dict[str, Any]):
-        username = state.pop("username")
-        self.__dict__.update(state)
-        key = " ".join(username.split()[:-1])
-        CONFIGURATION_FROM_PLAYER_COUNTER.update([key])
-        username = "%s %d" % (key, CONFIGURATION_FROM_PLAYER_COUNTER[key])
-        if len(username) > 18:
-            username = "%s %d" % (
-                key[: 18 - len(username)],
-                CONFIGURATION_FROM_PLAYER_COUNTER[key],
-            )
-        self._account_configuration = AccountConfiguration(username, None)
-        self._active_tasks = set()
-        self._logged_in = create_in_poke_loop(Event)
-        self._sending_lock = create_in_poke_loop(Lock)
-        self._logger = self._create_logger(self.log_level)
-        self._listening_coroutine = asyncio.run_coroutine_threadsafe(
-            self.listen(), POKE_LOOP
-        )
-
     async def accept_challenge(self, username: str, packed_team: Optional[str]):
         assert self.logged_in.is_set(), f"Expected {self.username} to be logged in."
         await self.set_team(packed_team)
