@@ -1,4 +1,5 @@
-import cloudpickle
+import pickle
+
 import numpy as np
 import pytest
 from gymnasium.spaces import Box
@@ -88,4 +89,4 @@ def test_pickle():
         start_challenging=True,
         strict=False,
     )
-    cloudpickle.loads(cloudpickle.dumps(env))
+    pickle.loads(pickle.dumps(env))
