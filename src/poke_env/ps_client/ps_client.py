@@ -6,7 +6,7 @@ import logging
 from asyncio import CancelledError, Event, Lock, create_task, sleep
 from logging import Logger
 from time import perf_counter
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, List, Optional, Set
 
 import requests
 import websockets as ws
