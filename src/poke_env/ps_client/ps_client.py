@@ -19,10 +19,7 @@ from poke_env.concurrency import (
     handle_threaded_coroutines,
 )
 from poke_env.exceptions import ShowdownException
-from poke_env.ps_client.account_configuration import (
-    CONFIGURATION_FROM_PLAYER_COUNTER,
-    AccountConfiguration,
-)
+from poke_env.ps_client.account_configuration import AccountConfiguration
 from poke_env.ps_client.server_configuration import ServerConfiguration
 
 
