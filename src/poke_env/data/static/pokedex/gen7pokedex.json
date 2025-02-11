@@ -17003,7 +17003,7 @@
         "heightm": 0.8,
         "name": "Lycanroc-Dusk",
         "num": 745,
-        "prevo": "Rockruff",
+        "prevo": "Rockruff-Dusk",
         "types": [
             "Rock"
         ],
@@ -25652,15 +25652,46 @@
         ],
         "evos": [
             "Lycanroc",
-            "Lycanroc-Midnight",
-            "Lycanroc-Dusk"
+            "Lycanroc-Midnight"
         ],
         "formeOrder": [
             "Rockruff",
-            "Rockruff"
+            "Rockruff-Dusk"
         ],
         "heightm": 0.5,
         "name": "Rockruff",
+        "num": 744,
+        "otherFormes": [
+            "Rockruff-Dusk"
+        ],
+        "types": [
+            "Rock"
+        ],
+        "weightkg": 9.2
+    },
+    "rockruffdusk": {
+        "abilities": {
+            "0": "Own Tempo"
+        },
+        "baseSpecies": "Rockruff",
+        "baseStats": {
+            "atk": 65,
+            "def": 40,
+            "hp": 45,
+            "spa": 30,
+            "spd": 40,
+            "spe": 60
+        },
+        "color": "Brown",
+        "eggGroups": [
+            "Field"
+        ],
+        "evos": [
+            "Lycanroc-Dusk"
+        ],
+        "forme": "Dusk",
+        "heightm": 0.5,
+        "name": "Rockruff-Dusk",
         "num": 744,
         "types": [
             "Rock"
