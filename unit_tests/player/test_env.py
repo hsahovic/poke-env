@@ -1,4 +1,5 @@
 import asyncio
+import pickle
 import sys
 from io import StringIO
 
@@ -116,6 +117,17 @@ def test_init():
     player = gymnasium_env.agent1
     assert isinstance(gymnasium_env, CustomEnv)
     assert isinstance(player, _EnvPlayer)
+
+
+def test_pickle():
+    env = CustomEnv(
+        account_configuration1=account_configuration1,
+        account_configuration2=account_configuration2,
+        server_configuration=server_configuration,
+        start_listening=False,
+        battle_format="gen7randombattles",
+    )
+    pickle.loads(pickle.dumps(env))
 
 
 async def run_test_choose_move():

@@ -1,5 +1,3 @@
-import pickle
-
 import numpy as np
 import pytest
 from gymnasium.spaces import Box
@@ -80,13 +78,3 @@ def test_env_api():
         )
         parallel_api_test(env)
         env.close()
-
-
-def test_pickle():
-    env = SinglesEnv(
-        battle_format="gen4randombattle",
-        log_level=25,
-        start_challenging=True,
-        strict=False,
-    )
-    pickle.loads(pickle.dumps(env))
