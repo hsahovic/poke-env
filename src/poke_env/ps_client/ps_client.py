@@ -165,11 +165,15 @@ class PSClient:
                 await asyncio.shield(self._wrap_future(self._listening_coroutine))
             except Exception as e:
                 self.logger.info("Exception while stopping listening: %s", e)
-        
+
         # Only if we created a dedicated loop do we cancel pending tasks and stop the loop.
         if getattr(self, "_dedicated_loop", False):
             # Optionally, gather all tasks and cancel them.
-            pending = [t for t in asyncio.all_tasks(loop=self.loop) if t is not asyncio.current_task()]
+            pending = [
+                t
+                for t in asyncio.all_tasks(loop=self.loop)
+                if t is not asyncio.current_task()
+            ]
             if pending:
                 for task in pending:
                     task.cancel()
@@ -178,6 +182,8 @@ class PSClient:
             # Now, stop the dedicated loop and join the thread.
             self.loop.call_soon_threadsafe(self.loop.stop)
             self._thread.join()
+        # close the connection
+        await self.websocket.close()
 
     async def accept_challenge(self, username: str, packed_team: Optional[str]):
         assert self.logged_in.is_set(), f"Expected {self.username} to be logged in."
