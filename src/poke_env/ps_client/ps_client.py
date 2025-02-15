@@ -150,6 +150,35 @@ class PSClient:
         external_future.add_done_callback(callback)
         return new_future
 
+    async def stop_listening(self) -> None:
+        """
+        Cancel the listening coroutine and all pending tasks,
+        then stop the event loop if it was dedicated.
+        """
+        # Cancel the listening task, if it exists.
+        if hasattr(self, "_listening_coroutine"):
+            self._listening_coroutine.cancel()
+            try:
+                await self._wrap_future(self._listening_coroutine)
+            except Exception:
+                pass
+
+        # Optionally, cancel other pending tasks on self.loop.
+        pending = [t for t in asyncio.all_tasks(loop=self.loop) if t is not asyncio.current_task()]
+        for task in pending:
+            task.cancel()
+        # Wait briefly for tasks to cancel.
+        if pending:
+            try:
+                await asyncio.gather(*pending, return_exceptions=True)
+            except Exception:
+                pass
+
+        # If we created a dedicated loop, stop and join its thread.
+        if self._dedicated_loop:
+            self.loop.call_soon_threadsafe(self.loop.stop)
+            self._thread.join()
+
     async def accept_challenge(self, username: str, packed_team: Optional[str]):
         assert self.logged_in.is_set(), f"Expected {self.username} to be logged in."
         await self.set_team(packed_team)
@@ -255,9 +284,6 @@ class PSClient:
             )
             raise exception
 
-    async def _stop_listening(self):
-        await self.websocket.close()
-
     async def change_avatar(self, avatar_name: Optional[str]):
         """Changes the account's avatar.
 
@@ -354,9 +380,6 @@ class PSClient:
             await self.send_message(f"/utm {packed_team}")
         else:
             await self.send_message("/utm null")
-
-    async def stop_listening(self):
-        await self.handle_threaded_coroutines(self._stop_listening())
 
     async def wait_for_login(self, checking_interval: float = 0.001, wait_for: int = 5):
         start = perf_counter()
