@@ -52,17 +52,17 @@ def test_queue():
     assert q.empty()
     q.put(1)
     assert q.queue.qsize() == 1
-    asyncio.run_coroutine_threadsafe(q.async_put(2), loop)
+    asyncio.run_coroutine_threadsafe(q.async_put(2), loop).result()
     assert q.queue.qsize() == 2
     item = q.get()
     q.queue.task_done()
     assert q.queue.qsize() == 1
     assert item == 1
-    item = asyncio.run_coroutine_threadsafe(q.async_get(), loop)
+    item = asyncio.run_coroutine_threadsafe(q.async_get(), loop).result()
     q.queue.task_done()
     assert q.empty()
     assert item == 2
-    asyncio.run_coroutine_threadsafe(q.async_join(), loop)
+    asyncio.run_coroutine_threadsafe(q.async_join(), loop).result()
     q.join()
 
 
@@ -75,7 +75,7 @@ def test_async_player():
     player.order_queue.put(ForfeitBattleOrder())
     order = asyncio.run_coroutine_threadsafe(
         player._env_move(battle), player.ps_client.loop
-    )
+    ).result()
     assert isinstance(order, ForfeitBattleOrder)
     assert embed_battle(player.battle_queue.get()) == "battle"
 
