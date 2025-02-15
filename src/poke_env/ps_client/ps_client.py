@@ -122,7 +122,7 @@ class PSClient:
 
     async def handle_threaded_coroutines(self, coro: Any):
         task = asyncio.run_coroutine_threadsafe(coro, self.loop)
-        await asyncio.wrap_future(task, loop=asyncio.get_running_loop())
+        await asyncio.wrap_future(task)
         return task.result()
 
     async def accept_challenge(self, username: str, packed_team: Optional[str]):
