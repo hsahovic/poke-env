@@ -144,7 +144,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             )[0]
         except AssertionError as e:
             if not strict and str(e) == "invalid pick":
-                return Player.choose_random_move(battle)
+                return DefaultBattleOrder()
             else:
                 raise e
 
