@@ -162,8 +162,7 @@ class PSClient:
                 await self._wrap_future(self._listening_coroutine)
             except Exception:
                 pass
-
-        # Optionally, cancel other pending tasks on self.loop.
+        # Cancel other tasks on self.loop if needed.
         pending = [t for t in asyncio.all_tasks(loop=self.loop) if t is not asyncio.current_task()]
         for task in pending:
             task.cancel()
@@ -173,9 +172,8 @@ class PSClient:
                 await asyncio.gather(*pending, return_exceptions=True)
             except Exception:
                 pass
-
-        # If we created a dedicated loop, stop and join its thread.
-        if self._dedicated_loop:
+        # Only stop the loop if we created a dedicated loop.
+        if getattr(self, "_dedicated_loop", False):
             self.loop.call_soon_threadsafe(self.loop.stop)
             self._thread.join()
 
