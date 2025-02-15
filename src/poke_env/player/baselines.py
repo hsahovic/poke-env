@@ -15,7 +15,18 @@ from poke_env.player.battle_order import (
 from poke_env.player.player import Player
 
 
+class RandomPlayer(Player):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def choose_move(self, battle: AbstractBattle) -> BattleOrder:
+        return self.choose_random_move(battle)
+
+
 class MaxBasePowerPlayer(Player):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
     def choose_move(self, battle: AbstractBattle):
         if self.format_is_doubles:
             return self.choose_doubles_move(battle)  # type: ignore
@@ -90,6 +101,9 @@ class MaxBasePowerPlayer(Player):
 
 
 class SimpleHeuristicsPlayer(Player):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
     ENTRY_HAZARDS = {
         "spikes": SideCondition.SPIKES,
         "stealhrock": SideCondition.STEALTH_ROCK,
