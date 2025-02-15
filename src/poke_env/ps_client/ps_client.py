@@ -163,7 +163,11 @@ class PSClient:
             except Exception:
                 pass
         # Cancel other tasks on self.loop if needed.
-        pending = [t for t in asyncio.all_tasks(loop=self.loop) if t is not asyncio.current_task()]
+        pending = [
+            t
+            for t in asyncio.all_tasks(loop=self.loop)
+            if t is not asyncio.current_task()
+        ]
         for task in pending:
             task.cancel()
         # Wait briefly for tasks to cancel.
@@ -212,7 +216,6 @@ class PSClient:
         return logger
 
     async def _handle_message(self, message: str):
-        print(message)
         """Handle received messages.
 
         :param message: The message to parse.
