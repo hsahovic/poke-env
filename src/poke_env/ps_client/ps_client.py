@@ -152,32 +152,30 @@ class PSClient:
 
     async def stop_listening(self) -> None:
         """
-        Cancel the listening coroutine and all pending tasks,
-        then stop the event loop if it was dedicated.
+        Gracefully shut down the PSClient.
+        If the client is using a dedicated event loop, cancel only the listening task,
+        wait for it to finish, then stop and join the loop.
+        If it’s using a shared (global) loop (as in tests), leave the loop running.
         """
-        # Cancel the listening task, if it exists.
+        # Cancel only the listening coroutine.
         if hasattr(self, "_listening_coroutine"):
-            self._listening_coroutine.cancel()
             try:
-                await self._wrap_future(self._listening_coroutine)
-            except Exception:
-                pass
-        # Cancel other tasks on self.loop if needed.
-        pending = [
-            t
-            for t in asyncio.all_tasks(loop=self.loop)
-            if t is not asyncio.current_task()
-        ]
-        for task in pending:
-            task.cancel()
-        # Wait briefly for tasks to cancel.
-        if pending:
-            try:
-                await asyncio.gather(*pending, return_exceptions=True)
-            except Exception:
-                pass
-        # Only stop the loop if we created a dedicated loop.
+                self._listening_coroutine.cancel()
+                # Shield the wait so cancellation of the outer task doesn't leak in.
+                await asyncio.shield(self._wrap_future(self._listening_coroutine))
+            except Exception as e:
+                self.logger.info("Exception while stopping listening: %s", e)
+        
+        # Only if we created a dedicated loop do we cancel pending tasks and stop the loop.
         if getattr(self, "_dedicated_loop", False):
+            # Optionally, gather all tasks and cancel them.
+            pending = [t for t in asyncio.all_tasks(loop=self.loop) if t is not asyncio.current_task()]
+            if pending:
+                for task in pending:
+                    task.cancel()
+                # Wait for tasks to cancel, but shield so that cancellation of stop_listening doesn't propagate.
+                await asyncio.shield(asyncio.gather(*pending, return_exceptions=True))
+            # Now, stop the dedicated loop and join the thread.
             self.loop.call_soon_threadsafe(self.loop.stop)
             self._thread.join()
 
