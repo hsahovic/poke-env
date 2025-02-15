@@ -145,7 +145,9 @@ class Player(ABC):
         self._battles: Dict[str, AbstractBattle] = {}
         self._battle_semaphore: Semaphore = self.ps_client.create_in_loop(Semaphore, 0)
 
-        self._battle_start_condition: Condition = self.ps_client.create_in_loop(Condition)
+        self._battle_start_condition: Condition = self.ps_client.create_in_loop(
+            Condition
+        )
         self._battle_count_queue: Queue[Any] = self.ps_client.create_in_loop(
             Queue, max_concurrent_battles
         )

@@ -80,8 +80,12 @@ class _EnvPlayer(Player):
         self.__class__.__name__ = username
         super().__init__(**kwargs)
         self.__class__.__name__ = "_EnvPlayer"
-        self.battle_queue = _AsyncQueue(self.ps_client.create_in_loop(asyncio.Queue, 1), self.ps_client._loop)
-        self.order_queue = _AsyncQueue(self.ps_client.create_in_loop(asyncio.Queue, 1), self.ps_client._loop)
+        self.battle_queue = _AsyncQueue(
+            self.ps_client.create_in_loop(asyncio.Queue, 1), self.ps_client._loop
+        )
+        self.order_queue = _AsyncQueue(
+            self.ps_client.create_in_loop(asyncio.Queue, 1), self.ps_client._loop
+        )
         self.battle: Optional[AbstractBattle] = None
         self.waiting = False
 
@@ -100,7 +104,9 @@ class _EnvPlayer(Player):
         return action
 
     def _battle_finished_callback(self, battle: AbstractBattle):
-        asyncio.run_coroutine_threadsafe(self.battle_queue.async_put(battle), self.ps_client._loop)
+        asyncio.run_coroutine_threadsafe(
+            self.battle_queue.async_put(battle), self.ps_client._loop
+        )
 
 
 class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
@@ -593,7 +599,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 "'await agent.stop_challenge_loop()' to clear the task."
             )
         self._challenge_task = asyncio.run_coroutine_threadsafe(
-            self.agent1.accept_challenges(username, 1, self.agent1.next_team), self.agent1.ps_client._loop
+            self.agent1.accept_challenges(username, 1, self.agent1.next_team),
+            self.agent1.ps_client._loop,
         )
 
     async def _challenge_loop(self, n_challenges: Optional[int] = None):
