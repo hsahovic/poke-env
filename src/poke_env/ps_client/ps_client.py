@@ -83,13 +83,13 @@ class PSClient:
         self._logger: Logger = self._create_logger(log_level)
 
         # Create a dedicated event loop and start it in a background thread.
-        self._loop = asyncio.new_event_loop()
-        self._thread = Thread(target=self._run_loop, args=(self._loop,), daemon=True)
+        self.loop = asyncio.new_event_loop()
+        self._thread = Thread(target=self._run_loop, args=(self.loop,), daemon=True)
         self._thread.start()
 
         if start_listening:
             self._listening_coroutine = asyncio.run_coroutine_threadsafe(
-                self.listen(), self._loop
+                self.listen(), self.loop
             )
 
     @staticmethod
@@ -112,16 +112,16 @@ class PSClient:
             current_loop = asyncio.get_running_loop()
         except RuntimeError:
             current_loop = None
-        if current_loop == self._loop:
+        if current_loop == self.loop:
             return cls_(*args, **kwargs)
         else:
             future = asyncio.run_coroutine_threadsafe(
-                self._create_async(cls_, *args, **kwargs), self._loop
+                self._create_async(cls_, *args, **kwargs), self.loop
             )
             return future.result()
 
     async def handle_threaded_coroutines(self, coro: Any):
-        task = asyncio.run_coroutine_threadsafe(coro, self._loop)
+        task = asyncio.run_coroutine_threadsafe(coro, self.loop)
         await asyncio.wrap_future(task)
         return task.result()
 
