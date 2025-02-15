@@ -3,7 +3,7 @@
 import asyncio
 import json
 import logging
-from asyncio import CancelledError, Event, Lock, create_task, sleep
+from asyncio import AbstractEventLoop, CancelledError, Event, Lock, create_task, sleep
 from concurrent.futures import Future
 from logging import Logger
 from threading import Thread
@@ -40,6 +40,7 @@ class PSClient:
         open_timeout: Optional[float] = 10.0,
         ping_interval: Optional[float] = 20.0,
         ping_timeout: Optional[float] = 20.0,
+        loop: Optional[AbstractEventLoop] = None,
     ):
         """
         :param account_configuration: Account configuration.
@@ -78,14 +79,20 @@ class PSClient:
         self._avatar = avatar
 
         # Instead of always creating a dedicated loop, try to use the current one.
-        try:
-            self.loop = asyncio.get_running_loop()
-            self._dedicated_loop = False
-        except RuntimeError:
-            self.loop = asyncio.new_event_loop()
-            self._thread = Thread(target=self._run_loop, args=(self.loop,), daemon=True)
-            self._thread.start()
+        if loop is not None:
+            self.loop = loop
             self._dedicated_loop = True
+        else:
+            try:
+                self.loop = asyncio.get_running_loop()
+                self._dedicated_loop = False
+            except RuntimeError:
+                self.loop = asyncio.new_event_loop()
+                self._thread = Thread(
+                    target=self._run_loop, args=(self.loop,), daemon=True
+                )
+                self._thread.start()
+                self._dedicated_loop = True
 
         self._logged_in: Event = self.create_in_loop(Event)
         self._sending_lock: Lock = self.create_in_loop(Lock)

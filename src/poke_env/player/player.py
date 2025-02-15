@@ -64,6 +64,7 @@ class Player(ABC):
         open_timeout: Optional[float] = 10.0,
         ping_interval: Optional[float] = 20.0,
         ping_timeout: Optional[float] = 20.0,
+        loop: Optional[asyncio.AbstractEventLoop] = None,
         team: Optional[Union[str, Teambuilder]] = None,
     ):
         """
@@ -130,6 +131,7 @@ class Player(ABC):
             open_timeout=open_timeout,
             ping_interval=ping_interval,
             ping_timeout=ping_timeout,
+            loop=loop,
         )
 
         self.ps_client._handle_battle_message = self._handle_battle_message  # type: ignore

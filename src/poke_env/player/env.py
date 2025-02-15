@@ -11,6 +11,7 @@ from weakref import WeakKeyDictionary
 from gymnasium.spaces import Space
 from pettingzoo.utils.env import ParallelEnv  # type: ignore[import-untyped]
 
+from threading import Thread
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.player.battle_order import (
     BattleOrder,
@@ -18,7 +19,7 @@ from poke_env.player.battle_order import (
     ForfeitBattleOrder,
 )
 from poke_env.player.player import Player
-from poke_env.ps_client import AccountConfiguration
+from poke_env.ps_client import AccountConfiguration, PSClient
 from poke_env.ps_client.server_configuration import (
     LocalhostServerConfiguration,
     ServerConfiguration,
@@ -190,6 +191,11 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             leave it inactive.
         :type start_challenging: bool
         """
+        self.loop = asyncio.new_event_loop()
+        self._thread = Thread(
+            target=PSClient._run_loop, args=(self.loop,), daemon=True
+        )
+        self._thread.start()
         self.agent1 = _EnvPlayer(
             username=self.__class__.__name__,  # type: ignore
             account_configuration=account_configuration1,
@@ -205,6 +211,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             open_timeout=open_timeout,
             ping_interval=ping_interval,
             ping_timeout=ping_timeout,
+            loop=self.loop,
             team=team,
         )
         self.agent2 = _EnvPlayer(
@@ -221,6 +228,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             start_listening=start_listening,
             ping_interval=ping_interval,
             ping_timeout=ping_timeout,
+            loop=self.loop,
             team=team,
         )
         self.agents: List[str] = []
@@ -236,7 +244,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         if start_challenging:
             self._keep_challenging = True
             self._challenge_task = asyncio.run_coroutine_threadsafe(
-                self._challenge_loop(), self.agent1.ps_client.loop
+                self._challenge_loop(), self.loop
             )
 
     ###################################################################################
@@ -357,7 +365,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             if self.battle2 != self.agent2.battle:
                 self.battle2 = self.agent2.battle
         closing_task = asyncio.run_coroutine_threadsafe(
-            self._stop_challenge_loop(purge=purge), self.agent1.ps_client.loop
+            self._stop_challenge_loop(purge=purge), self.loop
         )
         closing_task.result()
 
@@ -581,7 +589,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 "'await agent.stop_challenge_loop()' to clear the task."
             )
         self._challenge_task = asyncio.run_coroutine_threadsafe(
-            self.agent1.send_challenges(username, 1), self.agent1.ps_client.loop
+            self.agent1.send_challenges(username, 1), self.loop
         )
 
     def background_accept_challenge(self, username: str):
@@ -600,7 +608,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             )
         self._challenge_task = asyncio.run_coroutine_threadsafe(
             self.agent1.accept_challenges(username, 1, self.agent1.next_team),
-            self.agent1.ps_client.loop,
+            self.loop,
         )
 
     async def _challenge_loop(self, n_challenges: Optional[int] = None):
@@ -631,7 +639,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         if not n_challenges:
             self._keep_challenging = True
         self._challenge_task = asyncio.run_coroutine_threadsafe(
-            self._challenge_loop(n_challenges), self.agent1.ps_client.loop
+            self._challenge_loop(n_challenges), self.loop
         )
 
     async def _ladder_loop(self, n_challenges: Optional[int] = None):
@@ -664,7 +672,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         if not n_challenges:
             self._keep_challenging = True
         self._challenge_task = asyncio.run_coroutine_threadsafe(
-            self._ladder_loop(n_challenges), self.agent1.ps_client.loop
+            self._ladder_loop(n_challenges), self.loop
         )
 
     async def _stop_challenge_loop(
