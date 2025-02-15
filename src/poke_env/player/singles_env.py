@@ -146,7 +146,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
             return order
         except AssertionError as e:
             if not strict and str(e) == "invalid pick":
-                return Player.choose_random_move(battle)
+                return DefaultBattleOrder()
             else:
                 raise e
 
@@ -213,7 +213,6 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
             return np.int64(action)
         except AssertionError as e:
             if not strict and str(e) == "invalid pick":
-                order = Player.choose_random_move(battle)
-                return SinglesEnv.order_to_action(order, battle)
+                return np.int64(-2)
             else:
                 raise e
