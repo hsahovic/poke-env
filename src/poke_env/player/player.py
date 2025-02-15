@@ -26,10 +26,7 @@ from poke_env.player.battle_order import (
     DoubleBattleOrder,
 )
 from poke_env.ps_client import PSClient
-from poke_env.ps_client.account_configuration import (
-    CONFIGURATION_FROM_PLAYER_COUNTER,
-    AccountConfiguration,
-)
+from poke_env.ps_client.account_configuration import AccountConfiguration
 from poke_env.ps_client.server_configuration import (
     LocalhostServerConfiguration,
     ServerConfiguration,
@@ -117,7 +114,7 @@ class Player(ABC):
         :type team: str or Teambuilder, optional
         """
         if account_configuration is None:
-            account_configuration = self._create_account_configuration()
+            account_configuration = AccountConfiguration.generate_config(10)
 
         if server_configuration is None:
             server_configuration = LocalhostServerConfiguration
@@ -160,17 +157,6 @@ class Player(ABC):
             self._team = ConstantTeambuilder(team)
 
         self.logger.debug("Player initialisation finished")
-
-    def _create_account_configuration(self) -> AccountConfiguration:
-        key = type(self).__name__
-        CONFIGURATION_FROM_PLAYER_COUNTER.update([key])
-        username = "%s %d" % (key, CONFIGURATION_FROM_PLAYER_COUNTER[key])
-        if len(username) > 18:
-            username = "%s %d" % (
-                key[: 18 - len(username)],
-                CONFIGURATION_FROM_PLAYER_COUNTER[key],
-            )
-        return AccountConfiguration(username, None)
 
     def _battle_finished_callback(self, battle: AbstractBattle):
         pass
