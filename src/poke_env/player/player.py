@@ -275,7 +275,7 @@ class Player(ABC):
         else:
             battle = await self._get_battle(battle_tag)
         request = self._reqs.pop(battle_tag, None)
-        if split_messages[1][1] == "request":
+        if len(split_messages[1]) > 1 and split_messages[1][1] == "request":
             protocol = None
             self._reqs[battle_tag] = split_messages
         else:
