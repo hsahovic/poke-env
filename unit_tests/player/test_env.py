@@ -1,6 +1,7 @@
 import asyncio
 import sys
 from io import StringIO
+from threading import Thread
 
 import numpy as np
 import numpy.typing as npt
@@ -17,6 +18,7 @@ from poke_env.environment import (
 )
 from poke_env.player import BattleOrder, ForfeitBattleOrder, Player, PokeEnv, SinglesEnv
 from poke_env.player.env import _AsyncQueue, _EnvPlayer
+from poke_env.ps_client import PSClient
 
 account_configuration1 = AccountConfiguration("username1", "password1")
 account_configuration2 = AccountConfiguration("username2", "password2")
@@ -36,6 +38,8 @@ class CustomEnv(SinglesEnv[npt.NDArray[np.float32]]):
 
 def test_init_queue():
     loop = asyncio.get_event_loop()
+    thread = Thread(target=PSClient._run_loop, args=(loop,), daemon=True)
+    thread.start()
     q = _AsyncQueue(asyncio.Queue(), loop)
     assert isinstance(q, _AsyncQueue)
 
@@ -146,6 +150,8 @@ async def run_test_choose_move():
 
 def test_choose_move():
     loop = asyncio.get_event_loop()
+    thread = Thread(target=PSClient._run_loop, args=(loop,), daemon=True)
+    thread.start()
     asyncio.run_coroutine_threadsafe(run_test_choose_move(), loop)
 
 
