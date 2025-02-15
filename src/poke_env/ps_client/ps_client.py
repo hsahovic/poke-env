@@ -5,13 +5,13 @@ import json
 import logging
 from asyncio import CancelledError, Event, Lock, create_task, sleep
 from logging import Logger
+from threading import Thread
 from time import perf_counter
 from typing import Any, List, Optional, Set
 
 import requests
 import websockets as ws
 from websockets import ClientConnection
-from threading import Thread
 from websockets.exceptions import ConnectionClosedOK
 
 from poke_env.exceptions import ShowdownException
