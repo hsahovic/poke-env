@@ -1,5 +1,4 @@
 from poke_env.player import Player, RandomPlayer
-from poke_env.ps_client.account_configuration import CONFIGURATION_FROM_PLAYER_COUNTER
 
 
 class CustomPlayer(Player):
@@ -8,8 +7,6 @@ class CustomPlayer(Player):
 
 
 def test_default_player_configuration():
-    CONFIGURATION_FROM_PLAYER_COUNTER.clear()
-
     usernames = set()
 
     for k in range(5):
