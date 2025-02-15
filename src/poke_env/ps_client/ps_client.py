@@ -76,16 +76,16 @@ class PSClient:
 
         self._avatar = avatar
 
+        # Create a dedicated event loop and start it in a background thread.
+        self.loop = asyncio.new_event_loop()
+        self._thread = Thread(target=self._run_loop, args=(self.loop,), daemon=True)
+        self._thread.start()
+
         self._logged_in: Event = self.create_in_loop(Event)
         self._sending_lock: Lock = self.create_in_loop(Lock)
 
         self.websocket: ClientConnection
         self._logger: Logger = self._create_logger(log_level)
-
-        # Create a dedicated event loop and start it in a background thread.
-        self.loop = asyncio.new_event_loop()
-        self._thread = Thread(target=self._run_loop, args=(self.loop,), daemon=True)
-        self._thread.start()
 
         if start_listening:
             self._listening_coroutine = asyncio.run_coroutine_threadsafe(
