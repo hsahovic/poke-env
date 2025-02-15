@@ -11,13 +11,9 @@ from typing import Any, List, Optional, Set
 import requests
 import websockets as ws
 from websockets import ClientConnection
+from threading import Thread
 from websockets.exceptions import ConnectionClosedOK
 
-from poke_env.concurrency import (
-    POKE_LOOP,
-    create_in_poke_loop,
-    handle_threaded_coroutines,
-)
 from poke_env.exceptions import ShowdownException
 from poke_env.ps_client.account_configuration import AccountConfiguration
 from poke_env.ps_client.server_configuration import ServerConfiguration
@@ -80,16 +76,54 @@ class PSClient:
 
         self._avatar = avatar
 
-        self._logged_in: Event = create_in_poke_loop(Event)
-        self._sending_lock = create_in_poke_loop(Lock)
+        self._logged_in: Event = self.create_in_loop(Event)
+        self._sending_lock: Lock = self.create_in_loop(Lock)
 
         self.websocket: ClientConnection
         self._logger: Logger = self._create_logger(log_level)
 
+        # Create a dedicated event loop and start it in a background thread.
+        self._loop = asyncio.new_event_loop()
+        self._thread = Thread(target=self._run_loop, args=(self._loop,), daemon=True)
+        self._thread.start()
+
         if start_listening:
             self._listening_coroutine = asyncio.run_coroutine_threadsafe(
-                self.listen(), POKE_LOOP
+                self.listen(), self._loop
             )
+
+    @staticmethod
+    def _run_loop(loop: asyncio.AbstractEventLoop) -> None:
+        """Set and run the given event loop forever in a separate thread."""
+        asyncio.set_event_loop(loop)
+        loop.run_forever()
+
+    async def _create_async(self, cls_: Any, *args: Any, **kwargs: Any) -> Any:
+        """Helper coroutine to instantiate a class asynchronously."""
+        return cls_(*args, **kwargs)
+
+    def create_in_loop(self, cls_: Any, *args: Any, **kwargs: Any) -> Any:
+        """
+        Instantiate an asynchronous primitive (or any callable) on self._loop.
+        If the current running loop is already self._loop, just instantiate directly.
+        Otherwise, schedule a coroutine on self._loop and wait for the result.
+        """
+        try:
+            current_loop = asyncio.get_running_loop()
+        except RuntimeError:
+            current_loop = None
+        if current_loop == self._loop:
+            return cls_(*args, **kwargs)
+        else:
+            future = asyncio.run_coroutine_threadsafe(
+                self._create_async(cls_, *args, **kwargs), self._loop
+            )
+            return future.result()
+
+    async def handle_threaded_coroutines(self, coro: Any):
+        task = asyncio.run_coroutine_threadsafe(coro, self._loop)
+        await asyncio.wrap_future(task)
+        return task.result()
 
     async def accept_challenge(self, username: str, packed_team: Optional[str]):
         assert self.logged_in.is_set(), f"Expected {self.username} to be logged in."
@@ -297,7 +331,7 @@ class PSClient:
             await self.send_message("/utm null")
 
     async def stop_listening(self):
-        await handle_threaded_coroutines(self._stop_listening())
+        await self.handle_threaded_coroutines(self._stop_listening())
 
     async def wait_for_login(self, checking_interval: float = 0.001, wait_for: int = 5):
         start = perf_counter()
