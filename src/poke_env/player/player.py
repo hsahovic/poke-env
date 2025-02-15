@@ -159,7 +159,7 @@ class Player(ABC):
         self._challenge_queue: Queue[Any] = self.ps_client.create_in_loop(Queue)
         self._team: Optional[Teambuilder] = None
 
-        self.trying_again = create_in_poke_loop(Event)
+        self.trying_again = self.ps_client.create_in_loop(Event)
 
         if isinstance(team, Teambuilder):
             self._team = team
