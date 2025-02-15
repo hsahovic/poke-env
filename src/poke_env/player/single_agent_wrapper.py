@@ -19,7 +19,9 @@ class SingleAgentWrapper(Env[ObsType, ActionType]):
         assert self.env.agent2.battle is not None
         opp_order = self.opponent.choose_move(self.env.agent2.battle)
         assert not isinstance(opp_order, Awaitable)
-        opp_action = self.env.order_to_action(opp_order, self.env.agent2.battle)
+        opp_action = self.env.order_to_action(
+            opp_order, self.env.agent2.battle, strict=self.env.strict
+        )
         actions = {
             self.env.agent1.username: action,
             self.env.agent2.username: opp_action,
