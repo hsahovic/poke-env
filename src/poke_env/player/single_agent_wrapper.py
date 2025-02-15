@@ -30,10 +30,9 @@ class SingleAgentWrapper(Env[ObsType, ActionType]):
             assert not isinstance(opp_order, Awaitable)
             self.first_teampreview_order = opp_order
         else:
-            assert self.last_order is not None
             assert isinstance(self.env.agent2.battle, DoubleBattle)
             battle = _EnvPlayer._simulate_teampreview_switchin(
-                self.last_order, self.env.agent2.battle
+                self.first_teampreview_order, self.env.agent2.battle
             )
             opp_order = self.opponent.choose_move(battle)
             assert not isinstance(opp_order, Awaitable)
@@ -44,7 +43,6 @@ class SingleAgentWrapper(Env[ObsType, ActionType]):
             self.env.agent2.username: opp_action,
         }
         obs, rewards, terms, truncs, infos = self.env.step(actions)
-        self.last_order = opp_order
         return (
             obs[self.env.agent1.username],
             rewards[self.env.agent1.username],
