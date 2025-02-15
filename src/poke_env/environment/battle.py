@@ -94,6 +94,16 @@ class Battle(AbstractBattle):
             self._teampreview = False
         self._update_team_from_request(request["side"])
 
+        if self.active_pokemon is not None:
+            active_mon = self.get_pokemon(
+                request["side"]["pokemon"][0]["ident"],
+                force_self_team=True,
+                details=request["side"]["pokemon"][0]["details"],
+            )
+            if active_mon != self.active_pokemon:
+                self.active_pokemon.switch_out()
+                active_mon.switch_in()
+
         if "active" in request:
             active_request = request["active"][0]
 

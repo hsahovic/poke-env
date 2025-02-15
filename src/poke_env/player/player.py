@@ -8,7 +8,7 @@ from abc import ABC, abstractmethod
 from asyncio import Condition, Event, Queue, Semaphore
 from logging import Logger
 from time import perf_counter
-from typing import Any, Awaitable, Dict, List, Optional, Union
+from typing import Any, Awaitable, Dict, List, Optional, Tuple, Union
 
 import orjson
 
@@ -18,8 +18,6 @@ from poke_env.environment.battle import Battle
 from poke_env.environment.double_battle import DoubleBattle
 from poke_env.environment.move import Move
 from poke_env.environment.pokemon import Pokemon
-from poke_env.environment.pokemon_gender import PokemonGender
-from poke_env.environment.pokemon_type import PokemonType
 from poke_env.exceptions import ShowdownException
 from poke_env.player.battle_order import (
     BattleOrder,
@@ -145,6 +143,7 @@ class Player(ABC):
 
         self._battles: Dict[str, AbstractBattle] = {}
         self._battle_semaphore: Semaphore = self.ps_client.create_in_loop(Semaphore, 0)
+        self._reqs: Dict[str, List[List[str]]] = {}
 
         self._battle_start_condition: Condition = self.ps_client.create_in_loop(
             Condition
@@ -266,177 +265,192 @@ class Player(ABC):
         :type split_message: str
         """
         # Battle messages can be multiline
-        will_move = False
-        from_teampreview_request = False
-        maybe_default_order = False
+        battle_tag = split_messages[0][0]
         if (
             len(split_messages) > 1
             and len(split_messages[1]) > 1
             and split_messages[1][1] == "init"
         ):
-            battle_info = split_messages[0][0].split("-")
+            battle_info = battle_tag.split("-")
             battle = await self._create_battle(battle_info)
         else:
-            battle = await self._get_battle(split_messages[0][0])
-
-        for split_message in split_messages[1:]:
-            if len(split_message) <= 1:
-                continue
-            elif split_message[1] == "":
-                battle.parse_message(split_message)
-            elif split_message[1] in self.MESSAGES_TO_IGNORE:
-                pass
-            elif split_message[1] == "request":
-                if split_message[2]:
-                    request = orjson.loads(split_message[2])
-                    if "teamPreview" in request and request["teamPreview"]:
-                        for p in request["side"]["pokemon"]:
-                            p["active"] = False
-                    battle.parse_request(request)
-                    if battle.move_on_next_request:
-                        will_move = True
-                        battle.move_on_next_request = False
-            elif split_message[1] == "showteam":
-                if not battle.team or split_message[2] == battle.opponent_role:
-                    split_pokemon_messages = [
-                        m.split("|") for m in "|".join(split_message[3:]).split("]")
-                    ]
-                    message_dict = {m[0]: m[1:] for m in split_pokemon_messages}
-                    role = split_message[2]
-                    battle._update_team_from_open_sheets(message_dict, role)
-                # only handle battle request after all open sheets are processed
-                if (
-                    battle.team
-                    and battle.opponent_team
-                    and all(
-                        [
-                            p.moves
-                            for p in list(battle.team.values())
-                            + list(battle.opponent_team.values())
-                        ]
-                    )
-                ):
-                    will_move = True
-                    from_teampreview_request = True
-            elif split_message[1] == "win" or split_message[1] == "tie":
-                if split_message[1] == "win":
-                    battle.won_by(split_message[2])
-                else:
-                    battle.tied()
-                await self._battle_count_queue.get()
-                self._battle_count_queue.task_done()
-                self._battle_finished_callback(battle)
-                async with self._battle_end_condition:
-                    self._battle_end_condition.notify_all()
-            elif split_message[1] == "error":
-                self.logger.log(
-                    25, "Error message received: %s", "|".join(split_message)
+            battle = await self._get_battle(battle_tag)
+        request = self._reqs.pop(battle_tag, None)
+        if split_messages[1][1] == "request":
+            protocol = None
+            self._reqs[battle_tag] = split_messages
+        else:
+            protocol = split_messages
+        if protocol is not None or request is not None:
+            split_messages = protocol or [[f">{battle_tag}"]]
+            if request is not None:
+                split_messages += [request[1]]
+            results = [
+                await self._process_split_message(m, battle) for m in split_messages
+            ]
+            should_process_request = any([r[0] for r in results])
+            is_from_teampreview = any([r[1] for r in results])
+            should_maybe_default = any([r[2] for r in results])
+            if should_process_request:
+                await self._handle_battle_request(
+                    battle,
+                    from_teampreview_request=is_from_teampreview,
+                    maybe_default_order=should_maybe_default,
                 )
-                if split_message[2].startswith(
-                    "[Invalid choice] Sorry, too late to make a different move"
-                ):
-                    if battle.trapped:
-                        will_move = True
-                        self.trying_again.set()
-                elif split_message[2].startswith(
-                    "[Unavailable choice] Can't switch: The active Pokémon is "
-                    "trapped"
-                ) or split_message[2].startswith(
-                    "[Invalid choice] Can't switch: The active Pokémon is trapped"
-                ):
-                    battle.trapped = True
-                    will_move = True
-                    self.trying_again.set()
-                elif split_message[2].startswith(
-                    "[Invalid choice] Can't switch: You can't switch to an active "
-                    "Pokémon"
-                ):
-                    will_move = True
-                    maybe_default_order = True
-                    self.trying_again.set()
-                elif split_message[2].startswith(
-                    "[Invalid choice] Can't switch: You can't switch to a fainted "
-                    "Pokémon"
-                ):
-                    will_move = True
-                    maybe_default_order = True
-                    self.trying_again.set()
-                elif split_message[2].startswith(
-                    "[Invalid choice] Can't move: Invalid target for"
-                ):
-                    will_move = True
-                    maybe_default_order = True
-                    self.trying_again.set()
-                elif split_message[2].startswith(
-                    "[Invalid choice] Can't move: You can't choose a target for"
-                ):
-                    will_move = True
-                    maybe_default_order = True
-                    self.trying_again.set()
-                elif split_message[2].startswith(
-                    "[Invalid choice] Can't move: "
-                ) and split_message[2].endswith("needs a target"):
-                    will_move = True
-                    maybe_default_order = True
-                    self.trying_again.set()
-                elif (
-                    split_message[2].startswith("[Invalid choice] Can't move: Your")
-                    and " doesn't have a move matching " in split_message[2]
-                ):
-                    will_move = True
-                    maybe_default_order = True
-                    self.trying_again.set()
-                elif split_message[2].startswith(
-                    "[Invalid choice] Incomplete choice: "
-                ):
-                    will_move = True
-                    maybe_default_order = True
-                    self.trying_again.set()
-                elif split_message[2].startswith(
-                    "[Unavailable choice]"
-                ) and split_message[2].endswith("is disabled"):
-                    will_move = True
-                    maybe_default_order = True
-                    self.trying_again.set()
-                elif split_message[2].startswith("[Invalid choice]") and split_message[
-                    2
-                ].endswith("is disabled"):
-                    will_move = True
-                    maybe_default_order = True
-                    self.trying_again.set()
-                elif split_message[2].startswith(
-                    "[Invalid choice] Can't move: You sent more choices than unfainted"
-                    " Pokémon."
-                ):
-                    will_move = True
-                    maybe_default_order = True
-                    self.trying_again.set()
-                elif split_message[2].startswith(
-                    "[Invalid choice] Can't move: You can only Terastallize once per battle."
-                ):
-                    will_move = True
-                    maybe_default_order = True
-                    self.trying_again.set()
-                else:
-                    self.logger.critical("Unexpected error message: %s", split_message)
-            elif split_message[1] == "turn":
-                battle.parse_message(split_message)
-                will_move = True
-            elif split_message[1] == "teampreview":
-                battle.parse_message(split_message)
-                if not self.accept_open_team_sheet:
-                    will_move = True
-                    from_teampreview_request = True
-            elif split_message[1] == "bigerror":
-                self.logger.warning("Received 'bigerror' message: %s", split_message)
+
+    async def _process_split_message(
+        self, split_message: List[str], battle: AbstractBattle
+    ) -> Tuple[bool, bool, bool]:
+        should_process_request = False
+        is_from_teampreview = False
+        should_maybe_default = False
+        if len(split_message) <= 1:
+            pass
+        elif split_message[1] == "":
+            battle.parse_message(split_message)
+        elif split_message[1] in self.MESSAGES_TO_IGNORE:
+            pass
+        elif split_message[1] == "request":
+            if split_message[2]:
+                request = orjson.loads(split_message[2])
+                if "teamPreview" in request and request["teamPreview"]:
+                    for p in request["side"]["pokemon"]:
+                        p["active"] = False
+                battle.parse_request(request)
+                if battle.move_on_next_request:
+                    should_process_request = True
+                    battle.move_on_next_request = False
+        elif split_message[1] == "showteam":
+            if not battle.team or split_message[2] == battle.opponent_role:
+                split_pokemon_messages = [
+                    m.split("|") for m in "|".join(split_message[3:]).split("]")
+                ]
+                message_dict = {m[0]: m[1:] for m in split_pokemon_messages}
+                role = split_message[2]
+                battle._update_team_from_open_sheets(message_dict, role)
+            # only handle battle request after all open sheets are processed
+            if (
+                battle.team
+                and battle.opponent_team
+                and all(
+                    [
+                        p.moves
+                        for p in list(battle.team.values())
+                        + list(battle.opponent_team.values())
+                    ]
+                )
+            ):
+                should_process_request = True
+                is_from_teampreview = True
+        elif split_message[1] == "win" or split_message[1] == "tie":
+            if split_message[1] == "win":
+                battle.won_by(split_message[2])
             else:
-                battle.parse_message(split_message)
-        if will_move:
-            await self._handle_battle_request(
-                battle,
-                from_teampreview_request=from_teampreview_request,
-                maybe_default_order=maybe_default_order,
-            )
+                battle.tied()
+            await self._battle_count_queue.get()
+            self._battle_count_queue.task_done()
+            self._battle_finished_callback(battle)
+            async with self._battle_end_condition:
+                self._battle_end_condition.notify_all()
+        elif split_message[1] == "error":
+            self.logger.log(25, "Error message received: %s", "|".join(split_message))
+            if split_message[2].startswith(
+                "[Invalid choice] Sorry, too late to make a different move"
+            ):
+                if battle.trapped:
+                    should_process_request = True
+                    self.trying_again.set()
+            elif split_message[2].startswith(
+                "[Unavailable choice] Can't switch: The active Pokémon is " "trapped"
+            ) or split_message[2].startswith(
+                "[Invalid choice] Can't switch: The active Pokémon is trapped"
+            ):
+                battle.trapped = True
+                should_process_request = True
+                self.trying_again.set()
+            elif split_message[2].startswith(
+                "[Invalid choice] Can't switch: You can't switch to an active "
+                "Pokémon"
+            ):
+                should_process_request = True
+                should_maybe_default = True
+                self.trying_again.set()
+            elif split_message[2].startswith(
+                "[Invalid choice] Can't switch: You can't switch to a fainted "
+                "Pokémon"
+            ):
+                should_process_request = True
+                should_maybe_default = True
+                self.trying_again.set()
+            elif split_message[2].startswith(
+                "[Invalid choice] Can't move: Invalid target for"
+            ):
+                should_process_request = True
+                should_maybe_default = True
+                self.trying_again.set()
+            elif split_message[2].startswith(
+                "[Invalid choice] Can't move: You can't choose a target for"
+            ):
+                should_process_request = True
+                should_maybe_default = True
+                self.trying_again.set()
+            elif split_message[2].startswith(
+                "[Invalid choice] Can't move: "
+            ) and split_message[2].endswith("needs a target"):
+                should_process_request = True
+                should_maybe_default = True
+                self.trying_again.set()
+            elif (
+                split_message[2].startswith("[Invalid choice] Can't move: Your")
+                and " doesn't have a move matching " in split_message[2]
+            ):
+                should_process_request = True
+                should_maybe_default = True
+                self.trying_again.set()
+            elif split_message[2].startswith("[Invalid choice] Incomplete choice: "):
+                should_process_request = True
+                should_maybe_default = True
+                self.trying_again.set()
+            elif split_message[2].startswith("[Unavailable choice]") and split_message[
+                2
+            ].endswith("is disabled"):
+                should_process_request = True
+                should_maybe_default = True
+                self.trying_again.set()
+            elif split_message[2].startswith("[Invalid choice]") and split_message[
+                2
+            ].endswith("is disabled"):
+                should_process_request = True
+                should_maybe_default = True
+                self.trying_again.set()
+            elif split_message[2].startswith(
+                "[Invalid choice] Can't move: You sent more choices than unfainted"
+                " Pokémon."
+            ):
+                should_process_request = True
+                should_maybe_default = True
+                self.trying_again.set()
+            elif split_message[2].startswith(
+                "[Invalid choice] Can't move: You can only Terastallize once per battle."
+            ):
+                should_process_request = True
+                should_maybe_default = True
+                self.trying_again.set()
+            else:
+                self.logger.critical("Unexpected error message: %s", split_message)
+        elif split_message[1] == "turn":
+            battle.parse_message(split_message)
+            should_process_request = True
+        elif split_message[1] == "teampreview":
+            battle.parse_message(split_message)
+            if not self.accept_open_team_sheet:
+                should_process_request = True
+                is_from_teampreview = True
+        elif split_message[1] == "bigerror":
+            self.logger.warning("Received 'bigerror' message: %s", split_message)
+        else:
+            battle.parse_message(split_message)
+        return should_process_request, is_from_teampreview, should_maybe_default
 
     async def _handle_battle_request(
         self,
@@ -449,9 +463,11 @@ class Player(ABC):
         elif battle.teampreview:
             if not from_teampreview_request:
                 return
-            message = self.teampreview(battle)
-            if isinstance(message, Awaitable):
-                message = await message
+            teampreview_choice = self.teampreview(battle)
+            if isinstance(teampreview_choice, Awaitable):
+                message = await teampreview_choice
+            else:
+                message = teampreview_choice
         else:
             choice = self.choose_move(battle)
             if isinstance(choice, Awaitable):

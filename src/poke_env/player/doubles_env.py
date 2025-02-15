@@ -35,12 +35,10 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         ] = LocalhostServerConfiguration,
         accept_open_team_sheet: Optional[bool] = False,
         start_timer_on_battle_start: bool = False,
-        start_listening: bool = True,
         open_timeout: Optional[float] = 10.0,
         ping_interval: Optional[float] = 20.0,
         ping_timeout: Optional[float] = 20.0,
         team: Optional[Union[str, Teambuilder]] = None,
-        start_challenging: bool = False,
         strict: bool = True,
     ):
         super().__init__(
@@ -53,12 +51,10 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             server_configuration=server_configuration,
             accept_open_team_sheet=accept_open_team_sheet,
             start_timer_on_battle_start=start_timer_on_battle_start,
-            start_listening=start_listening,
             open_timeout=open_timeout,
             ping_interval=ping_interval,
             ping_timeout=ping_timeout,
             team=team,
-            start_challenging=start_challenging,
             strict=strict,
         )
         num_switches = 6

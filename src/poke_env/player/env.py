@@ -7,7 +7,7 @@ import copy
 import time
 from abc import abstractmethod
 from threading import Thread
-from typing import Any, Awaitable, Dict, Generic, List, Optional, Tuple, TypeVar, Union
+from typing import Any, Awaitable, Dict, Generic, Optional, Tuple, TypeVar, Union
 from weakref import WeakKeyDictionary
 
 from gymnasium.spaces import Space

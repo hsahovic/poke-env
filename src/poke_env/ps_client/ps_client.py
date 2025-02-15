@@ -8,7 +8,7 @@ from concurrent.futures import Future
 from logging import Logger
 from threading import Thread
 from time import perf_counter
-from typing import Any, List, Optional, Set
+from typing import Any, Dict, List, Optional, Set
 
 import requests
 import websockets as ws
@@ -167,7 +167,10 @@ class PSClient:
         If it’s using a shared (global) loop (as in tests), leave the loop running.
         """
         # Cancel only the listening coroutine.
-        if hasattr(self, "_listening_coroutine"):
+        if (
+            hasattr(self, "_listening_coroutine")
+            and self._listening_coroutine is not None
+        ):
             try:
                 self._listening_coroutine.cancel()
                 # Shield the wait so cancellation of the outer task doesn't leak in.
