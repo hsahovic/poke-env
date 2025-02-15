@@ -7,6 +7,7 @@ from asyncio import CancelledError, Event, Lock, create_task, sleep
 from logging import Logger
 from threading import Thread
 from time import perf_counter
+from concurrent.futures import Future
 from typing import Any, List, Optional, Set
 
 import requests
@@ -120,10 +121,29 @@ class PSClient:
             )
             return future.result()
 
-    async def handle_threaded_coroutines(self, coro: Any):
+    async def handle_threaded_coroutines(self, coro: Any) -> Any:
         task = asyncio.run_coroutine_threadsafe(coro, self.loop)
-        await asyncio.wrap_future(task)
+        await self._wrap_future(task)
         return task.result()
+
+    def _wrap_future(self, external_future: Future) -> asyncio.Future:
+        """
+        Wrap a concurrent.futures.Future (created on PSClient.loop) so that it can
+        be awaited on the current (caller’s) event loop.
+        """
+        loop = asyncio.get_running_loop()
+        new_future = loop.create_future()
+
+        def callback(fut: Future) -> None:
+            try:
+                result = fut.result()
+            except Exception as e:
+                loop.call_soon_threadsafe(new_future.set_exception, e)
+            else:
+                loop.call_soon_threadsafe(new_future.set_result, result)
+
+        external_future.add_done_callback(callback)
+        return new_future
 
     async def accept_challenge(self, username: str, packed_team: Optional[str]):
         assert self.logged_in.is_set(), f"Expected {self.username} to be logged in."
