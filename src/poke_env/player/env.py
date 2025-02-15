@@ -9,6 +9,8 @@ from typing import Any, Awaitable, Dict, Generic, List, Optional, Tuple, TypeVar
 from weakref import WeakKeyDictionary
 
 from gymnasium.spaces import Space
+from gymnasium.utils import seeding
+from numpy.random import Generator
 from pettingzoo.utils.env import ParallelEnv  # type: ignore[import-untyped]
 
 from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
@@ -222,6 +224,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         self.battle1: Optional[AbstractBattle] = None
         self.battle2: Optional[AbstractBattle] = None
         self.strict = strict
+        self._np_random: Optional[Generator] = None
         self._reward_buffer: WeakKeyDictionary[AbstractBattle, float] = (
             WeakKeyDictionary()
         )
@@ -282,7 +285,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         options: Optional[Dict[str, Any]] = None,
     ) -> Tuple[Dict[str, ObsType], Dict[str, Dict[str, Any]]]:
         self.agents = [self.agent1.username, self.agent2.username]
-        # TODO: use the seed
+        if seed is not None:
+            self._np_random, seed = seeding.np_random(seed)
         if not self.agent1.battle or not self.agent2.battle:
             count = self._INIT_RETRIES
             while not self.agent1.battle or not self.agent2.battle:
