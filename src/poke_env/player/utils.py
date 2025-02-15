@@ -5,9 +5,12 @@ import math
 from concurrent.futures import Future
 from typing import Dict, List, Optional, Tuple
 
-from poke_env.player.baselines import MaxBasePowerPlayer, SimpleHeuristicsPlayer
+from poke_env.player.baselines import (
+    MaxBasePowerPlayer,
+    RandomPlayer,
+    SimpleHeuristicsPlayer,
+)
 from poke_env.player.player import Player
-from poke_env.player.random_player import RandomPlayer
 
 _EVALUATION_RATINGS = {
     RandomPlayer: 1,
