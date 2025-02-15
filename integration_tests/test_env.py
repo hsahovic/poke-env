@@ -34,7 +34,6 @@ def play_function(env, n_battles):
 @pytest.mark.timeout(60)
 def test_env_run():
     for gen in range(4, 10):
-        print(gen)
         env = SinglesTestEnv(
             battle_format=f"gen{gen}randombattle",
             log_level=25,
