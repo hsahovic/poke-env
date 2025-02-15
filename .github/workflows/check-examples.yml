@@ -19,22 +19,20 @@ jobs:
       - name: Checkout repository code
         uses: actions/checkout@v4
 
-      # Setup Python (faster than using Python container)
+      # Setup Python with caching
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: 3.11
+          cache: 'pip'
 
       - name: Install Python Kernel
         run: |
           pip install ipykernel
           python -m ipykernel install --user --name python3
 
-      - name: Install dev dependencies
-        run: pip install -r requirements-dev.txt
-
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install .[dev]
 
       - name: Build package
         run: |

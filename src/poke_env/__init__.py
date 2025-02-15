@@ -1,5 +1,4 @@
-"""poke_env module init.
-"""
+"""poke_env module init."""
 
 import logging
 

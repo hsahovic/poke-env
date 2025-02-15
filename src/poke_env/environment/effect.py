@@ -1,5 +1,4 @@
-"""This module defines the Effect class, which represents in-game effects.
-"""
+"""This module defines the Effect class, which represents in-game effects."""
 
 from __future__ import annotations
 
@@ -77,6 +76,7 @@ class Effect(Enum):
     GLAIVE_RUSH = auto()
     GRAVITY = auto()
     GRUDGE = auto()
+    GUARD_DOG = auto()
     GUARD_SPLIT = auto()
     GULP_MISSILE = auto()
     G_MAX_CENTIFERNO = auto()
@@ -391,6 +391,7 @@ _FROM_ABILITY_EFFECTS: Set[Effect] = {
     Effect.FLASH_FIRE,
     Effect.FLOWER_VEIL,
     Effect.FOREWARN,
+    Effect.GUARD_DOG,
     Effect.GULP_MISSILE,
     Effect.HADRON_ENGINE,
     Effect.HEALER,
@@ -728,6 +729,7 @@ _ENDS_ON_MOVE_EFFECTS = {
     Effect.DESTINY_BOND,
     Effect.RAGE,
     Effect.INSTRUCT,
+    Effect.FOCUS_PUNCH,
 }
 
 _ENDS_ON_SWITCH_EFFECTS = {
@@ -768,6 +770,7 @@ _ENDS_ON_TURN_EFFECTS = {
     Effect.SPOTLIGHT,
     Effect.WIDE_GUARD,
     Effect.INSTRUCT,
+    Effect.FOCUS_PUNCH,
 }
 
 _ACTION_COUNTER_EFFECTS: Set[Effect] = {Effect.RAGE, Effect.STOCKPILE}
@@ -834,6 +837,7 @@ _FROM_DATA: Dict[str, Effect] = {
     "FOREWARN": Effect.FOREWARN,
     "FUTURESIGHT": Effect.FUTURE_SIGHT,
     "GASTROACID": Effect.GASTRO_ACID,
+    "GUARDDOG": Effect.GUARD_DOG,
     "GLAIVERUSH": Effect.GLAIVE_RUSH,
     "GRAVITY": Effect.GRAVITY,
     "GRUDGE": Effect.GRUDGE,

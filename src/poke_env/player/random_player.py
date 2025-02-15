@@ -1,5 +1,4 @@
-"""This module defines a random players baseline
-"""
+"""This module defines a random players baseline"""
 
 from poke_env.environment import AbstractBattle
 from poke_env.player.battle_order import BattleOrder
