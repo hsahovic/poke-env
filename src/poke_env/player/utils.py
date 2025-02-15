@@ -5,10 +5,12 @@ import math
 from concurrent.futures import Future
 from typing import Dict, List, Optional, Tuple
 
-from poke_env.concurrency import POKE_LOOP
-from poke_env.player.baselines import MaxBasePowerPlayer, SimpleHeuristicsPlayer
+from poke_env.player.baselines import (
+    MaxBasePowerPlayer,
+    RandomPlayer,
+    SimpleHeuristicsPlayer,
+)
 from poke_env.player.player import Player
-from poke_env.player.random_player import RandomPlayer
 
 _EVALUATION_RATINGS = {
     RandomPlayer: 1,
@@ -21,7 +23,7 @@ def background_cross_evaluate(
     players: List[Player], n_challenges: int
 ) -> "Future[Dict[str, Dict[str, Optional[float]]]]":
     return asyncio.run_coroutine_threadsafe(
-        cross_evaluate(players, n_challenges), POKE_LOOP
+        cross_evaluate(players, n_challenges), players[0].ps_client.loop
     )
 
 
@@ -92,7 +94,7 @@ def background_evaluate_player(
     player: Player, n_battles: int = 1000, n_placement_battles: int = 30
 ) -> "Future[Tuple[float, Tuple[float, float]]]":
     return asyncio.run_coroutine_threadsafe(
-        evaluate_player(player, n_battles, n_placement_battles), POKE_LOOP
+        evaluate_player(player, n_battles, n_placement_battles), player.ps_client.loop
     )
 
 

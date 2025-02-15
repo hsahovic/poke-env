@@ -2,13 +2,13 @@ import asyncio
 import pickle
 import sys
 from io import StringIO
+from threading import Thread
 
 import numpy as np
 import numpy.typing as npt
 from gymnasium.spaces import Discrete
 
 from poke_env import AccountConfiguration, ServerConfiguration
-from poke_env.concurrency import POKE_LOOP
 from poke_env.environment import (
     AbstractBattle,
     Battle,
@@ -28,6 +28,7 @@ from poke_env.player import (
     SinglesEnv,
 )
 from poke_env.player.env import _AsyncQueue, _EnvPlayer
+from poke_env.ps_client import PSClient
 
 account_configuration1 = AccountConfiguration("username1", "password1")
 account_configuration2 = AccountConfiguration("username2", "password2")
@@ -46,27 +47,37 @@ class CustomEnv(SinglesEnv[npt.NDArray[np.float32]]):
 
 
 def test_init_queue():
-    q = _AsyncQueue(asyncio.Queue())
+    loop = asyncio.new_event_loop()
+    thread = Thread(target=PSClient._run_loop, args=(loop,), daemon=True)
+    thread.start()
+    q = _AsyncQueue(asyncio.Queue(), loop)
     assert isinstance(q, _AsyncQueue)
+    loop.call_soon_threadsafe(loop.stop)
+    thread.join()
 
 
 def test_queue():
-    q = _AsyncQueue(asyncio.Queue())
+    loop = asyncio.new_event_loop()
+    thread = Thread(target=PSClient._run_loop, args=(loop,), daemon=True)
+    thread.start()
+    q = _AsyncQueue(asyncio.Queue(), loop)
     assert q.empty()
     q.put(1)
     assert q.queue.qsize() == 1
-    asyncio.get_event_loop().run_until_complete(q.async_put(2))
+    asyncio.run_coroutine_threadsafe(q.async_put(2), loop).result()
     assert q.queue.qsize() == 2
     item = q.get()
     q.queue.task_done()
     assert q.queue.qsize() == 1
     assert item == 1
-    item = asyncio.get_event_loop().run_until_complete(q.async_get())
+    item = asyncio.run_coroutine_threadsafe(q.async_get(), loop).result()
     q.queue.task_done()
     assert q.empty()
     assert item == 2
-    asyncio.get_event_loop().run_until_complete(q.async_join())
+    asyncio.run_coroutine_threadsafe(q.async_join(), loop).result()
     q.join()
+    loop.call_soon_threadsafe(loop.stop)
+    thread.join()
 
 
 def test_async_player():
@@ -76,7 +87,9 @@ def test_async_player():
     player = _EnvPlayer(start_listening=False, username="usr")
     battle = Battle("bat1", player.username, player.logger, gen=8)
     player.order_queue.put(ForfeitBattleOrder())
-    order = asyncio.get_event_loop().run_until_complete(player._env_move(battle))
+    order = asyncio.run_coroutine_threadsafe(
+        player._env_move(battle), player.ps_client.loop
+    ).result()
     assert isinstance(order, ForfeitBattleOrder)
     assert embed_battle(player.battle_queue.get()) == "battle"
 
@@ -165,7 +178,12 @@ async def run_test_choose_move():
 
 
 def test_choose_move():
-    asyncio.run_coroutine_threadsafe(run_test_choose_move(), POKE_LOOP)
+    loop = asyncio.new_event_loop()
+    thread = Thread(target=PSClient._run_loop, args=(loop,), daemon=True)
+    thread.start()
+    asyncio.run_coroutine_threadsafe(run_test_choose_move(), loop)
+    loop.call_soon_threadsafe(loop.stop)
+    thread.join()
 
 
 def test_reward_computing_helper():
