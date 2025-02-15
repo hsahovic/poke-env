@@ -37,15 +37,17 @@ class CustomEnv(SinglesEnv[npt.NDArray[np.float32]]):
 
 
 def test_init_queue():
-    loop = asyncio.get_event_loop()
+    loop = asyncio.new_event_loop()
     thread = Thread(target=PSClient._run_loop, args=(loop,), daemon=True)
     thread.start()
     q = _AsyncQueue(asyncio.Queue(), loop)
     assert isinstance(q, _AsyncQueue)
+    loop.call_soon_threadsafe(loop.stop)
+    thread.join()
 
 
 def test_queue():
-    loop = asyncio.get_event_loop()
+    loop = asyncio.new_event_loop()
     thread = Thread(target=PSClient._run_loop, args=(loop,), daemon=True)
     thread.start()
     q = _AsyncQueue(asyncio.Queue(), loop)
@@ -64,6 +66,8 @@ def test_queue():
     assert item == 2
     asyncio.run_coroutine_threadsafe(q.async_join(), loop).result()
     q.join()
+    loop.call_soon_threadsafe(loop.stop)
+    thread.join()
 
 
 def test_async_player():
@@ -153,10 +157,12 @@ async def run_test_choose_move():
 
 
 def test_choose_move():
-    loop = asyncio.get_event_loop()
+    loop = asyncio.new_event_loop()
     thread = Thread(target=PSClient._run_loop, args=(loop,), daemon=True)
     thread.start()
     asyncio.run_coroutine_threadsafe(run_test_choose_move(), loop)
+    loop.call_soon_threadsafe(loop.stop)
+    thread.join()
 
 
 def test_reward_computing_helper():

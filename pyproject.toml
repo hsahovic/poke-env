@@ -74,5 +74,8 @@ multi_line_output = 3
 include = ["src"]
 pythonVersion = "3.7"
 
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
 [tool.setuptools.dynamic]
 dependencies = { file = ["requirements.txt"] }
