@@ -77,10 +77,15 @@ class PSClient:
 
         self._avatar = avatar
 
-        # Create a dedicated event loop and start it in a background thread.
-        self.loop = asyncio.new_event_loop()
-        self._thread = Thread(target=self._run_loop, args=(self.loop,), daemon=True)
-        self._thread.start()
+        # Instead of always creating a dedicated loop, try to use the current one.
+        try:
+            self.loop = asyncio.get_running_loop()
+            self._dedicated_loop = False
+        except RuntimeError:
+            self.loop = asyncio.new_event_loop()
+            self._thread = Thread(target=self._run_loop, args=(self.loop,), daemon=True)
+            self._thread.start()
+            self._dedicated_loop = True
 
         self._logged_in: Event = self.create_in_loop(Event)
         self._sending_lock: Lock = self.create_in_loop(Lock)
