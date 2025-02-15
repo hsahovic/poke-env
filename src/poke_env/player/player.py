@@ -756,7 +756,9 @@ class Player(ABC):
         self.logger.info("Event logged in received in send challenge")
 
         if to_wait is not None:
-            future_wait = asyncio.run_coroutine_threadsafe(to_wait.wait(), self.ps_client.loop)
+            future_wait = asyncio.run_coroutine_threadsafe(
+                to_wait.wait(), self.ps_client.loop
+            )
             await self.ps_client._wrap_future(future_wait)
 
         start_time = perf_counter()
