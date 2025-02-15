@@ -46,6 +46,8 @@ def test_init_queue():
 
 def test_queue():
     loop = asyncio.get_event_loop()
+    thread = Thread(target=PSClient._run_loop, args=(loop,), daemon=True)
+    thread.start()
     q = _AsyncQueue(asyncio.Queue(), loop)
     assert q.empty()
     q.put(1)
