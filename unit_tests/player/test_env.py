@@ -7,7 +7,6 @@ import numpy.typing as npt
 from gymnasium.spaces import Discrete
 
 from poke_env import AccountConfiguration, ServerConfiguration
-from poke_env.concurrency import POKE_LOOP
 from poke_env.environment import (
     AbstractBattle,
     Battle,
@@ -36,12 +35,14 @@ class CustomEnv(SinglesEnv[npt.NDArray[np.float32]]):
 
 
 def test_init_queue():
-    q = _AsyncQueue(asyncio.Queue())
+    loop = asyncio.get_event_loop()
+    q = _AsyncQueue(asyncio.Queue(), loop)
     assert isinstance(q, _AsyncQueue)
 
 
 def test_queue():
-    q = _AsyncQueue(asyncio.Queue())
+    loop = asyncio.get_event_loop()
+    q = _AsyncQueue(asyncio.Queue(), loop)
     assert q.empty()
     q.put(1)
     assert q.queue.qsize() == 1
@@ -144,7 +145,8 @@ async def run_test_choose_move():
 
 
 def test_choose_move():
-    asyncio.run_coroutine_threadsafe(run_test_choose_move(), POKE_LOOP)
+    loop = asyncio.get_event_loop()
+    asyncio.run_coroutine_threadsafe(run_test_choose_move(), loop)
 
 
 def test_reward_computing_helper():
