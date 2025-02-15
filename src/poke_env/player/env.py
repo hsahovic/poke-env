@@ -369,6 +369,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             loop=self.loop,
             team=self._team,
         )
+        self.agent1.action_to_order = self.action_to_order  # type: ignore
+        self.agent1.order_to_action = self.order_to_action  # type: ignore
         self.agent2 = _EnvPlayer(
             username=self.__class__.__name__,  # type: ignore
             account_configuration=self._account_configuration2,
@@ -386,6 +388,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             loop=self.loop,
             team=self._team,
         )
+        self.agent2.action_to_order = self.action_to_order  # type: ignore
+        self.agent2.order_to_action = self.order_to_action  # type: ignore
         self._reward_buffer = WeakKeyDictionary()
         self._challenge_task = asyncio.run_coroutine_threadsafe(
             self._challenge_loop(), self.loop
