@@ -5,13 +5,13 @@ For a black-box implementation consider using the module env_player.
 import asyncio
 import time
 from abc import abstractmethod
+from threading import Thread
 from typing import Any, Awaitable, Dict, Generic, List, Optional, Tuple, TypeVar, Union
 from weakref import WeakKeyDictionary
 
 from gymnasium.spaces import Space
 from pettingzoo.utils.env import ParallelEnv  # type: ignore[import-untyped]
 
-from threading import Thread
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.player.battle_order import (
     BattleOrder,
@@ -192,9 +192,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         :type start_challenging: bool
         """
         self.loop = asyncio.new_event_loop()
-        self._thread = Thread(
-            target=PSClient._run_loop, args=(self.loop,), daemon=True
-        )
+        self._thread = Thread(target=PSClient._run_loop, args=(self.loop,), daemon=True)
         self._thread.start()
         self.agent1 = _EnvPlayer(
             username=self.__class__.__name__,  # type: ignore
