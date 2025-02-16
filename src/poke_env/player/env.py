@@ -15,6 +15,7 @@ from gymnasium.utils import seeding
 from numpy.random import Generator
 from pettingzoo.utils.env import ParallelEnv  # type: ignore[import-untyped]
 
+from poke_env.concurrency import create_in_poke_loop
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.battle import Battle
 from poke_env.environment.double_battle import DoubleBattle
@@ -26,7 +27,7 @@ from poke_env.player.battle_order import (
     ForfeitBattleOrder,
 )
 from poke_env.player.player import Player
-from poke_env.ps_client import AccountConfiguration, PSClient
+from poke_env.ps_client import AccountConfiguration
 from poke_env.ps_client.server_configuration import (
     LocalhostServerConfiguration,
     ServerConfiguration,
@@ -39,7 +40,11 @@ ActionType = TypeVar("ActionType")
 
 
 class _AsyncQueue(Generic[ItemType]):
-    def __init__(self, queue: asyncio.Queue[ItemType], loop: asyncio.AbstractEventLoop):
+    def __init__(
+        self,
+        queue: asyncio.Queue[ItemType],
+        loop: asyncio.AbstractEventLoop,
+    ):
         self.queue = queue
         self.loop = loop
 
@@ -96,19 +101,15 @@ class _EnvPlayer(Player):
     battle_queue: _AsyncQueue[AbstractBattle]
     order_queue: _AsyncQueue[BattleOrder]
 
-    def __init__(
-        self,
-        username: str,
-        **kwargs: Any,
-    ):
-        self.__class__.__name__ = username
+    def __init__(self, **kwargs: Any):
         super().__init__(**kwargs)
-        self.__class__.__name__ = "_EnvPlayer"
         self.battle_queue = _AsyncQueue(
-            self.ps_client.create_in_loop(asyncio.Queue, 1), self.ps_client.loop
+            create_in_poke_loop(asyncio.Queue, self.ps_client.loop, 1),
+            self.ps_client.loop,
         )
         self.order_queue = _AsyncQueue(
-            self.ps_client.create_in_loop(asyncio.Queue, 1), self.ps_client.loop
+            create_in_poke_loop(asyncio.Queue, self.ps_client.loop, 1),
+            self.ps_client.loop,
         )
         self.battle: Optional[AbstractBattle] = None
         self.waiting = False
@@ -278,10 +279,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         self._start_challenging = start_challenging
         self._strict = strict
         self.loop = asyncio.new_event_loop()
-        self._thread = Thread(target=PSClient._run_loop, args=(self.loop,), daemon=True)
-        self._thread.start()
+        Thread(target=self.loop.run_forever, daemon=True).start()
         self.agent1 = _EnvPlayer(
-            username=self.__class__.__name__,  # type: ignore
             account_configuration=account_configuration1,
             avatar=avatar,
             battle_format=battle_format,
@@ -301,7 +300,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         self.agent1.action_to_order = self.action_to_order  # type: ignore
         self.agent1.order_to_action = self.order_to_action  # type: ignore
         self.agent2 = _EnvPlayer(
-            username=self.__class__.__name__,  # type: ignore
             account_configuration=account_configuration2,
             avatar=avatar,
             battle_format=battle_format,
@@ -339,7 +337,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
     def __getstate__(self) -> Dict[str, Any]:
         state = self.__dict__.copy()
         state["loop"] = None
-        state["_thread"] = None
         state["agent1"] = None
         state["agent2"] = None
         state["_reward_buffer"] = None
@@ -349,10 +346,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
     def __setstate__(self, state: Dict[str, Any]):
         self.__dict__.update(state)
         self.loop = asyncio.new_event_loop()
-        self._thread = Thread(target=PSClient._run_loop, args=(self.loop,), daemon=True)
-        self._thread.start()
+        Thread(target=self.loop.run_forever, daemon=True).start()
         self.agent1 = _EnvPlayer(
-            username=self.__class__.__name__,  # type: ignore
             account_configuration=self._account_configuration1,
             avatar=self._avatar,
             battle_format=self._battle_format,
@@ -370,7 +365,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             team=self._team,
         )
         self.agent2 = _EnvPlayer(
-            username=self.__class__.__name__,  # type: ignore
             account_configuration=self._account_configuration2,
             avatar=self._avatar,
             battle_format=self._battle_format,
@@ -447,14 +441,16 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             self._np_random, seed = seeding.np_random(seed)
         # forfeit any still-running battle between agent1 and agent2
         if self.battle1 and not self.battle1.finished:
+            assert self.battle2 is not None
             if self.battle1 == self.agent1.battle:
-                if self.agent1.waiting and not self.agent2.waiting:
+                if self.agent1.waiting and not (self.battle1._wait or False):
                     self.agent1.order_queue.put(ForfeitBattleOrder())
-                elif self.agent2.waiting and not self.agent1.waiting:
+                    if self.agent2.waiting:
+                        self.agent2.order_queue.put(DefaultBattleOrder())
+                elif self.agent2.waiting and not (self.battle2._wait or False):
                     self.agent2.order_queue.put(ForfeitBattleOrder())
-                else:
-                    self.agent1.order_queue.put(ForfeitBattleOrder())
-                    self.agent2.order_queue.put(DefaultBattleOrder())
+                    if self.agent1.waiting:
+                        self.agent1.order_queue.put(DefaultBattleOrder())
                 self.agent1.battle_queue.get()
                 self.agent2.battle_queue.get()
             else:
@@ -825,6 +821,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
 
         if force:
             if self.battle1 and not self.battle1.finished:
+                assert self.battle2 is not None
                 if not (
                     self.agent1.order_queue.empty() and self.agent2.order_queue.empty()
                 ):
@@ -842,13 +839,14 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                     await self.agent1.battle_queue.async_get()
                 if not self.agent2.battle_queue.empty():
                     await self.agent2.battle_queue.async_get()
-                if self.agent1.waiting and not self.agent2.waiting:
+                if self.agent1.waiting and not (self.battle1._wait or False):
                     await self.agent1.order_queue.async_put(ForfeitBattleOrder())
-                elif self.agent2.waiting and not self.agent1.waiting:
+                    if self.agent2.waiting:
+                        await self.agent2.order_queue.async_put(DefaultBattleOrder())
+                elif self.agent2.waiting and not (self.battle2._wait or False):
                     await self.agent2.order_queue.async_put(ForfeitBattleOrder())
-                else:
-                    await self.agent1.order_queue.async_put(ForfeitBattleOrder())
-                    await self.agent2.order_queue.async_put(DefaultBattleOrder())
+                    if self.agent1.waiting:
+                        await self.agent1.order_queue.async_put(DefaultBattleOrder())
 
         if wait and self._challenge_task:
             while not self._challenge_task.done():

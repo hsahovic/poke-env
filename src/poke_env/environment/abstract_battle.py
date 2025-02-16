@@ -224,13 +224,11 @@ class AbstractBattle(ABC):
         team = self._team if is_mine or force_self_team else self._opponent_team
 
         # if the pokemon has a nickname, this ensures we recognize it
+        split_details = [
+            to_id_str(detail) for detail in re.split(r"[^a-zA-Z0-9]+", details)
+        ]
         matches = [
-            i
-            for i, p in enumerate(team.values())
-            if p.base_species in to_id_str(details.split(",")[0])
-            and not (
-                p.base_species == "mew" and to_id_str(details.split(",")[0]) == "mewtwo"
-            )
+            i for i, p in enumerate(team.values()) if p.base_species in split_details
         ]
         assert len(matches) < 2
         if identifier not in team and matches:
@@ -243,9 +241,6 @@ class AbstractBattle(ABC):
             else:
                 self._opponent_team = dict(items)
         team = self._team if is_mine or force_self_team else self._opponent_team
-
-        if identifier in team:
-            return team[identifier]
 
         if self._team_size and len(team) >= self._team_size[player_role]:
             raise ValueError(

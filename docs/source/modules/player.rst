@@ -16,7 +16,7 @@ Player
 Random Player
 *************
 
-.. automodule:: poke_env.player.baselines
+.. automodule:: poke_env.player.random_player
    :members:
    :undoc-members:
    :show-inheritance:

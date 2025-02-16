@@ -12,6 +12,11 @@ from typing import Any, Awaitable, Dict, List, Optional, Union
 
 import orjson
 
+from poke_env.concurrency import (
+    POKE_LOOP,
+    create_in_poke_loop,
+    handle_threaded_coroutines,
+)
 from poke_env.data import GenData, to_id_str
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.battle import Battle
@@ -63,7 +68,7 @@ class Player(ABC):
         open_timeout: Optional[float] = 10.0,
         ping_interval: Optional[float] = 20.0,
         ping_timeout: Optional[float] = 20.0,
-        loop: Optional[asyncio.AbstractEventLoop] = None,
+        loop: asyncio.AbstractEventLoop = POKE_LOOP,
         team: Optional[Union[str, Teambuilder]] = None,
     ):
         """
@@ -144,19 +149,17 @@ class Player(ABC):
         self._accept_open_team_sheet: bool = accept_open_team_sheet
 
         self._battles: Dict[str, AbstractBattle] = {}
-        self._battle_semaphore: Semaphore = self.ps_client.create_in_loop(Semaphore, 0)
+        self._battle_semaphore: Semaphore = create_in_poke_loop(Semaphore, loop, 0)
 
-        self._battle_start_condition: Condition = self.ps_client.create_in_loop(
-            Condition
+        self._battle_start_condition: Condition = create_in_poke_loop(Condition, loop)
+        self._battle_count_queue: Queue[Any] = create_in_poke_loop(
+            Queue, loop, max_concurrent_battles
         )
-        self._battle_count_queue: Queue[Any] = self.ps_client.create_in_loop(
-            Queue, max_concurrent_battles
-        )
-        self._battle_end_condition: Condition = self.ps_client.create_in_loop(Condition)
-        self._challenge_queue: Queue[Any] = self.ps_client.create_in_loop(Queue)
+        self._battle_end_condition: Condition = create_in_poke_loop(Condition, loop)
+        self._challenge_queue: Queue[Any] = create_in_poke_loop(Queue, loop)
         self._team: Optional[Teambuilder] = None
 
-        self.trying_again = self.ps_client.create_in_loop(Event)
+        self.trying_again = create_in_poke_loop(Event, loop)
 
         if isinstance(team, Teambuilder):
             self._team = team
@@ -508,8 +511,9 @@ class Player(ABC):
         :packed_team: Team to use. Defaults to generating a team with the agent's teambuilder.
         :type packed_team: string, optional.
         """
-        await self.ps_client.handle_threaded_coroutines(
-            self._accept_challenges(opponent, n_challenges, packed_team)
+        await handle_threaded_coroutines(
+            self._accept_challenges(opponent, n_challenges, packed_team),
+            self.ps_client.loop,
         )
 
     async def _accept_challenges(
@@ -734,7 +738,7 @@ class Player(ABC):
         :param n_games: Number of battles that will be played
         :type n_games: int
         """
-        await self.ps_client.handle_threaded_coroutines(self._ladder(n_games))
+        await handle_threaded_coroutines(self._ladder(n_games), self.ps_client.loop)
 
     async def _ladder(self, n_games: int):
         await self.ps_client.logged_in.wait()
@@ -765,8 +769,8 @@ class Player(ABC):
         :param n_battles: The number of games to play. Defaults to 1.
         :type n_battles: int
         """
-        await self.ps_client.handle_threaded_coroutines(
-            self._battle_against(*opponents, n_battles=n_battles)
+        await handle_threaded_coroutines(
+            self._battle_against(*opponents, n_battles=n_battles), self.ps_client.loop
         )
 
     async def _battle_against(self, *opponents: Player, n_battles: int):
@@ -799,8 +803,8 @@ class Player(ABC):
         :param to_wait: Optional event to wait before launching challenges.
         :type to_wait: Event, optional.
         """
-        await self.ps_client.handle_threaded_coroutines(
-            self._send_challenges(opponent, n_challenges, to_wait)
+        await handle_threaded_coroutines(
+            self._send_challenges(opponent, n_challenges, to_wait), self.ps_client.loop
         )
 
     async def _send_challenges(
@@ -810,10 +814,7 @@ class Player(ABC):
         self.logger.info("Event logged in received in send challenge")
 
         if to_wait is not None:
-            future_wait = asyncio.run_coroutine_threadsafe(
-                to_wait.wait(), self.ps_client.loop
-            )
-            await self.ps_client._wrap_future(future_wait)
+            await to_wait.wait()
 
         start_time = perf_counter()
 
