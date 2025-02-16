@@ -1,5 +1,4 @@
-"""This module defines a base class for players.
-"""
+"""This module defines a base class for players."""
 
 from __future__ import annotations
 

@@ -1,5 +1,4 @@
-"""This module contains utility functions and objects related to Player classes.
-"""
+"""This module contains utility functions and objects related to Player classes."""
 
 import asyncio
 import math

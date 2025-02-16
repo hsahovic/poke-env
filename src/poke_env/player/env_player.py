@@ -1,5 +1,4 @@
-"""This module defines a player class exposing the Gymnasium API with utility functions.
-"""
+"""This module defines a player class exposing the Gymnasium API with utility functions."""
 
 from typing import List, Optional, Union
 from weakref import WeakKeyDictionary
