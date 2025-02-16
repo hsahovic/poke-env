@@ -60,11 +60,9 @@ def create_in_poke_loop(
         ).result()
 
 
-async def handle_threaded_coroutines(
-    coro: Any, loop: asyncio.AbstractEventLoop
-):
+async def handle_threaded_coroutines(coro: Any, loop: asyncio.AbstractEventLoop):
     task = asyncio.run_coroutine_threadsafe(coro, loop)
-    await asyncio.wrap_future(task, loop=loop)
+    await asyncio.wrap_future(task)
     return task.result()
 
 
