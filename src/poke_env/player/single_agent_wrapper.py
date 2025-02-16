@@ -37,7 +37,7 @@ class SingleAgentWrapper(Env[ObsType, ActionType]):
             opp_order = self.opponent.choose_move(battle)
             assert not isinstance(opp_order, Awaitable)
             self.first_teampreview_order = None
-        opp_action = self.env.order_to_action(opp_order, battle)
+        opp_action = self.env.order_to_action(opp_order, battle, strict=self.env._strict)
         actions = {
             self.env.agent1.username: action,
             self.env.agent2.username: opp_action,
