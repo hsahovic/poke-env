@@ -275,7 +275,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         self.loop = asyncio.new_event_loop()
         Thread(target=self.loop.run_forever, daemon=True).start()
         self.agent1 = _EnvPlayer(
-            username=self.__class__.__name__,  # type: ignore
             account_configuration=self._account_configuration1,
             avatar=self._avatar,
             battle_format=self._battle_format,
@@ -293,7 +292,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             team=self._team,
         )
         self.agent2 = _EnvPlayer(
-            username=self.__class__.__name__,  # type: ignore
             account_configuration=self._account_configuration2,
             avatar=self._avatar,
             battle_format=self._battle_format,
