@@ -231,6 +231,10 @@ class AbstractBattle(ABC):
             and not (
                 p.base_species == "mew" and "mewtwo" in to_id_str(details.split(",")[0])
             )
+            and not (
+                p.base_species == "kabuto"
+                and "kabutops" in to_id_str(details.split(",")[0])
+            )
         ]
         assert len(matches) < 2
         if identifier not in team and matches:
