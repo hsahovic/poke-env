@@ -36,12 +36,12 @@ class CustomEnv(SinglesEnv[npt.NDArray[np.float32]]):
 
 
 def test_init_queue():
-    q = _AsyncQueue(asyncio.Queue())
+    q = _AsyncQueue(asyncio.Queue(), POKE_LOOP)
     assert isinstance(q, _AsyncQueue)
 
 
 def test_queue():
-    q = _AsyncQueue(asyncio.Queue())
+    q = _AsyncQueue(asyncio.Queue(), POKE_LOOP)
     assert q.empty()
     q.put(1)
     assert q.queue.qsize() == 1
