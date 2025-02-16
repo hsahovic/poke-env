@@ -71,7 +71,6 @@ class PSClient:
         :type ping_timeout: float, optional
         """
         self._active_tasks: Set[Any] = set()
-        self.log_level = log_level
         self._open_timeout = open_timeout
         self._ping_interval = ping_interval
         self._ping_timeout = ping_timeout
