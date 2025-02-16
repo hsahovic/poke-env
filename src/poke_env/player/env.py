@@ -271,6 +271,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
 
     def __getstate__(self) -> Dict[str, Any]:
         state = self.__dict__.copy()
+        state["loop"] = None
         state["agent1"] = None
         state["agent2"] = None
         state["_reward_buffer"] = None
