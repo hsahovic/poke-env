@@ -4,7 +4,6 @@ import asyncio
 import json
 import logging
 from asyncio import AbstractEventLoop, CancelledError, Event, Lock, create_task, sleep
-from concurrent.futures import Future
 from logging import Logger
 from time import perf_counter
 from typing import Any, List, Optional, Set
