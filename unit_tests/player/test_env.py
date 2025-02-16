@@ -334,7 +334,7 @@ def test_singles_action_order_conversions():
         battle._available_switches = []
         assert (
             p.action_to_order(np.int64(9), battle, strict=False).message
-            == "/choose move flamethrower"
+            == "/choose move default"
         )
         if has_megas:
             battle._can_mega_evolve = True
