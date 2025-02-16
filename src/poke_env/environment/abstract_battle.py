@@ -218,6 +218,11 @@ class AbstractBattle(ABC):
         if identifier[3] != " ":
             identifier = identifier[:2] + identifier[3:]
 
+        if identifier in self._team:
+            return self._team[identifier]
+        elif identifier in self._opponent_team:
+            return self._opponent_team[identifier]
+
         player_role = identifier[:2]
         name = identifier[3:].strip()
         is_mine = player_role == self._player_role
