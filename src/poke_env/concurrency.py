@@ -1,7 +1,6 @@
 import asyncio
 import atexit
 import sys
-from concurrent.futures import Future
 from logging import CRITICAL, disable
 from threading import Thread
 from typing import Any, List
