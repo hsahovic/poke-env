@@ -5,6 +5,7 @@ For a black-box implementation consider using the module env_player.
 import asyncio
 import time
 from abc import abstractmethod
+from threading import Thread
 from typing import Any, Awaitable, Dict, Generic, List, Optional, Tuple, TypeVar, Union
 from weakref import WeakKeyDictionary
 
@@ -197,9 +198,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             leave it inactive.
         :type start_challenging: bool
         """
-        # self.loop = asyncio.new_event_loop()
-        # Thread(target=self.loop.run_forever, daemon=True).start()
-        self.loop = POKE_LOOP
+        self.loop = asyncio.new_event_loop()
+        Thread(target=self.loop.run_forever, daemon=True).start()
         self.agent1 = _EnvPlayer(
             username=self.__class__.__name__,  # type: ignore
             account_configuration=account_configuration1,
