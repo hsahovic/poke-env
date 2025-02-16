@@ -350,6 +350,10 @@ class Player(ABC):
                     battle.trapped = True
                     will_move = True
                     self.trying_again.set()
+                elif split_message[2].startswith("[Invalid choice] Can't pass: "):
+                    will_move = True
+                    maybe_default_order = True
+                    self.trying_again.set()
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't switch: You can't switch to an active "
                     "Pokémon"

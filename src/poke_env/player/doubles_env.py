@@ -138,10 +138,12 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 if dont_respond2
                 else DoublesEnv._action_to_order_individual(action[1], battle, 1)
             )
-            return DoubleBattleOrder.join_orders(
+            joined_orders = DoubleBattleOrder.join_orders(
                 [order1] if order1 is not None else [],
                 [order2] if order2 is not None else [],
-            )[0]
+            )
+            assert len(joined_orders) == 1, "invalid pick"
+            return joined_orders[0]
         except AssertionError as e:
             if not strict and str(e) == "invalid pick":
                 return DefaultBattleOrder()

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import Any, List, Optional, Union
 
@@ -89,12 +91,12 @@ class DoubleBattleOrder(BattleOrder):
         elif self.second_order:
             return "/choose pass, " + self.second_order.message.replace("/choose ", "")
         else:
-            return self.DEFAULT_ORDER
+            return "/choose pass, pass"
 
     @staticmethod
     def join_orders(
         first_orders: List[BattleOrder], second_orders: List[BattleOrder]
-    ) -> List[BattleOrder]:
+    ) -> List[DoubleBattleOrder]:
         if first_orders and second_orders:
             return [
                 DoubleBattleOrder(first_order=first_order, second_order=second_order)
