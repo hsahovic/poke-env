@@ -218,6 +218,11 @@ class AbstractBattle(ABC):
         if identifier[3] != " ":
             identifier = identifier[:2] + identifier[3:]
 
+        if identifier in self._team:
+            return self._team[identifier]
+        elif identifier in self._opponent_team:
+            return self._opponent_team[identifier]
+
         player_role = identifier[:2]
         name = identifier[3:].strip()
         is_mine = player_role == self._player_role
@@ -241,9 +246,6 @@ class AbstractBattle(ABC):
             else:
                 self._opponent_team = dict(items)
         team = self._team if is_mine or force_self_team else self._opponent_team
-
-        if identifier in team:
-            return team[identifier]
 
         if self._team_size and len(team) >= self._team_size[player_role]:
             raise ValueError(
