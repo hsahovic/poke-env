@@ -12,6 +12,7 @@ from weakref import WeakKeyDictionary
 from gymnasium.spaces import Space
 from pettingzoo.utils.env import ParallelEnv  # type: ignore[import-untyped]
 
+from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.player.battle_order import (
     BattleOrder,
@@ -19,7 +20,7 @@ from poke_env.player.battle_order import (
     ForfeitBattleOrder,
 )
 from poke_env.player.player import Player
-from poke_env.ps_client import AccountConfiguration, PSClient
+from poke_env.ps_client import AccountConfiguration
 from poke_env.ps_client.server_configuration import (
     LocalhostServerConfiguration,
     ServerConfiguration,
@@ -32,7 +33,11 @@ ActionType = TypeVar("ActionType")
 
 
 class _AsyncQueue(Generic[ItemType]):
-    def __init__(self, queue: asyncio.Queue[ItemType], loop: asyncio.AbstractEventLoop):
+    def __init__(
+        self,
+        queue: asyncio.Queue[ItemType],
+        loop: asyncio.AbstractEventLoop,
+    ):
         self.queue = queue
         self.loop = loop
 
@@ -82,10 +87,12 @@ class _EnvPlayer(Player):
         super().__init__(**kwargs)
         self.__class__.__name__ = "_EnvPlayer"
         self.battle_queue = _AsyncQueue(
-            self.ps_client.create_in_loop(asyncio.Queue, 1), self.ps_client.loop
+            create_in_poke_loop(asyncio.Queue, self.ps_client.loop, 1),
+            self.ps_client.loop,
         )
         self.order_queue = _AsyncQueue(
-            self.ps_client.create_in_loop(asyncio.Queue, 1), self.ps_client.loop
+            create_in_poke_loop(asyncio.Queue, self.ps_client.loop, 1),
+            self.ps_client.loop,
         )
         self.battle: Optional[AbstractBattle] = None
         self.waiting = False
@@ -191,9 +198,9 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             leave it inactive.
         :type start_challenging: bool
         """
-        self.loop = asyncio.new_event_loop()
-        self._thread = Thread(target=PSClient._run_loop, args=(self.loop,), daemon=True)
-        self._thread.start()
+        # self.loop = asyncio.new_event_loop()
+        # Thread(target=self.loop.run_forever, daemon=True).start()
+        self.loop = POKE_LOOP
         self.agent1 = _EnvPlayer(
             username=self.__class__.__name__,  # type: ignore
             account_configuration=account_configuration1,
