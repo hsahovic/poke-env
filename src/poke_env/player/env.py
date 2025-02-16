@@ -46,17 +46,33 @@ class _AsyncQueue(Generic[ItemType]):
     async def async_get(self) -> ItemType:
         return await self.queue.get()
 
-    def get(
-        self, timeout: Optional[float] = None, default: Optional[ItemType] = None
-    ) -> ItemType:
-        try:
-            res = asyncio.run_coroutine_threadsafe(
-                asyncio.wait_for(self.async_get(), timeout), self.loop
-            )
-            return res.result()
-        except asyncio.TimeoutError:
-            assert default is not None
-            return default
+    def get(self) -> ItemType:
+        res = asyncio.run_coroutine_threadsafe(self.async_get(), self.loop)
+        return res.result()
+
+    def get_timeout(self, timeout_flag: asyncio.Event) -> Optional[ItemType]:
+        tasks = [
+            asyncio.ensure_future(self.async_get(), loop=self.loop),
+            asyncio.ensure_future(timeout_flag.wait(), loop=self.loop),
+        ]
+        done, pending = asyncio.run_coroutine_threadsafe(
+            asyncio.wait_for(
+                asyncio.wait(
+                    tasks,
+                    return_when=asyncio.FIRST_COMPLETED,
+                ),
+                timeout=10,
+            ),
+            self.loop,
+        ).result()
+        for task in pending:
+            task.cancel()
+        result = list(done)[0].result()
+        timeout_flag.clear()
+        if result is True:
+            return None
+        else:
+            return result
 
     async def async_put(self, item: ItemType):
         await self.queue.put(item)
@@ -337,8 +353,14 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 actions[self.agents[1]], self.battle2, self._strict
             )
             self.agent2.order_queue.put(order2)
-        battle1 = self.agent1.battle_queue.get(timeout=0.1, default=self.battle1)
-        battle2 = self.agent2.battle_queue.get(timeout=0.1, default=self.battle2)
+        battle1 = (
+            self.agent1.battle_queue.get_timeout(self.agent2.trying_again)
+            or self.battle1
+        )
+        battle2 = (
+            self.agent2.battle_queue.get_timeout(self.agent1.trying_again)
+            or self.battle2
+        )
         observations = {
             self.agents[0]: self.embed_battle(battle1),
             self.agents[1]: self.embed_battle(battle2),
