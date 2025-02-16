@@ -6,7 +6,6 @@ import logging
 from asyncio import AbstractEventLoop, CancelledError, Event, Lock, create_task, sleep
 from concurrent.futures import Future
 from logging import Logger
-from threading import Thread
 from time import perf_counter
 from typing import Any, List, Optional, Set
 
@@ -15,6 +14,11 @@ import websockets as ws
 from websockets import ClientConnection
 from websockets.exceptions import ConnectionClosedOK
 
+from poke_env.concurrency import (
+    POKE_LOOP,
+    create_in_poke_loop,
+    handle_threaded_coroutines,
+)
 from poke_env.exceptions import ShowdownException
 from poke_env.ps_client.account_configuration import AccountConfiguration
 from poke_env.ps_client.server_configuration import ServerConfiguration
@@ -40,7 +44,7 @@ class PSClient:
         open_timeout: Optional[float] = 10.0,
         ping_interval: Optional[float] = 20.0,
         ping_timeout: Optional[float] = 20.0,
-        loop: Optional[AbstractEventLoop] = None,
+        loop: AbstractEventLoop = POKE_LOOP,
     ):
         """
         :param account_configuration: Account configuration.
@@ -78,24 +82,9 @@ class PSClient:
 
         self._avatar = avatar
 
-        # Instead of always creating a dedicated loop, try to use the current one.
-        if loop is not None:
-            self.loop = loop
-            self._dedicated_loop = True
-        else:
-            try:
-                self.loop = asyncio.get_running_loop()
-                self._dedicated_loop = False
-            except RuntimeError:
-                self.loop = asyncio.new_event_loop()
-                self._thread = Thread(
-                    target=self._run_loop, args=(self.loop,), daemon=True
-                )
-                self._thread.start()
-                self._dedicated_loop = True
-
-        self._logged_in: Event = self.create_in_loop(Event)
-        self._sending_lock: Lock = self.create_in_loop(Lock)
+        self.loop = loop
+        self._logged_in: Event = create_in_poke_loop(Event, loop)
+        self._sending_lock: Lock = create_in_poke_loop(Lock, loop)
 
         self.websocket: ClientConnection
         self._logger: Logger = self._create_logger(log_level)
@@ -104,93 +93,6 @@ class PSClient:
             self._listening_coroutine = asyncio.run_coroutine_threadsafe(
                 self.listen(), self.loop
             )
-
-    @staticmethod
-    def _run_loop(loop: asyncio.AbstractEventLoop) -> None:
-        """Set and run the given event loop forever in a separate thread."""
-        asyncio.set_event_loop(loop)
-        loop.run_forever()
-
-    async def _create_async(self, cls_: Any, *args: Any, **kwargs: Any) -> Any:
-        """Helper coroutine to instantiate a class asynchronously."""
-        return cls_(*args, **kwargs)
-
-    def create_in_loop(self, cls_: Any, *args: Any, **kwargs: Any) -> Any:
-        """
-        Instantiate an asynchronous primitive (or any callable) on self._loop.
-        If the current running loop is already self._loop, just instantiate directly.
-        Otherwise, schedule a coroutine on self._loop and wait for the result.
-        """
-        try:
-            current_loop = asyncio.get_running_loop()
-        except RuntimeError:
-            current_loop = None
-        if current_loop == self.loop:
-            return cls_(*args, **kwargs)
-        else:
-            future = asyncio.run_coroutine_threadsafe(
-                self._create_async(cls_, *args, **kwargs), self.loop
-            )
-            return future.result()
-
-    async def handle_threaded_coroutines(self, coro: Any) -> Any:
-        task = asyncio.run_coroutine_threadsafe(coro, self.loop)
-        await self._wrap_future(task)
-        return task.result()
-
-    def _wrap_future(self, external_future: Future) -> asyncio.Future:
-        """
-        Wrap a concurrent.futures.Future (created on PSClient.loop) so that it can
-        be awaited on the current (caller’s) event loop.
-        """
-        loop = asyncio.get_running_loop()
-        new_future = loop.create_future()
-
-        def callback(fut: Future) -> None:
-            try:
-                result = fut.result()
-            except Exception as e:
-                loop.call_soon_threadsafe(new_future.set_exception, e)
-            else:
-                loop.call_soon_threadsafe(new_future.set_result, result)
-
-        external_future.add_done_callback(callback)
-        return new_future
-
-    async def stop_listening(self) -> None:
-        """
-        Gracefully shut down the PSClient.
-        If the client is using a dedicated event loop, cancel only the listening task,
-        wait for it to finish, then stop and join the loop.
-        If it’s using a shared (global) loop (as in tests), leave the loop running.
-        """
-        # Cancel only the listening coroutine.
-        if hasattr(self, "_listening_coroutine"):
-            try:
-                self._listening_coroutine.cancel()
-                # Shield the wait so cancellation of the outer task doesn't leak in.
-                await asyncio.shield(self._wrap_future(self._listening_coroutine))
-            except Exception as e:
-                self.logger.info("Exception while stopping listening: %s", e)
-
-        # Only if we created a dedicated loop do we cancel pending tasks and stop the loop.
-        if getattr(self, "_dedicated_loop", False):
-            # Optionally, gather all tasks and cancel them.
-            pending = [
-                t
-                for t in asyncio.all_tasks(loop=self.loop)
-                if t is not asyncio.current_task()
-            ]
-            if pending:
-                for task in pending:
-                    task.cancel()
-                # Wait for tasks to cancel, but shield so that cancellation of stop_listening doesn't propagate.
-                await asyncio.shield(asyncio.gather(*pending, return_exceptions=True))
-            # Now, stop the dedicated loop and join the thread.
-            self.loop.call_soon_threadsafe(self.loop.stop)
-            self._thread.join()
-        # close the connection
-        await self.websocket.close()
 
     async def accept_challenge(self, username: str, packed_team: Optional[str]):
         assert self.logged_in.is_set(), f"Expected {self.username} to be logged in."
@@ -297,6 +199,9 @@ class PSClient:
             )
             raise exception
 
+    async def _stop_listening(self):
+        await self.websocket.close()
+
     async def change_avatar(self, avatar_name: Optional[str]):
         """Changes the account's avatar.
 
@@ -393,6 +298,9 @@ class PSClient:
             await self.send_message(f"/utm {packed_team}")
         else:
             await self.send_message("/utm null")
+
+    async def stop_listening(self):
+        await handle_threaded_coroutines(self._stop_listening(), self.loop)
 
     async def wait_for_login(self, checking_interval: float = 0.001, wait_for: int = 5):
         start = perf_counter()
