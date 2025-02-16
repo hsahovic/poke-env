@@ -30,6 +30,8 @@ __all__ = [
     "player",
     "random_player",
     "utils",
+    "ActionType",
+    "ObsType",
     "ForfeitBattleOrder",
     "POKE_LOOP",
     "PokeEnv",

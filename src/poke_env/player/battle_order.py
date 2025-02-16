@@ -75,9 +75,6 @@ class DoubleBattleOrder(BattleOrder):
         self.first_order = first_order
         self.second_order = second_order
 
-    def __repr__(self) -> str:
-        return self.message
-
     @property
     def message(self) -> str:
         if self.first_order and self.second_order:
