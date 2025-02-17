@@ -247,6 +247,9 @@ class AbstractBattle(ABC):
                 self._opponent_team = dict(items)
         team = self._team if is_mine or force_self_team else self._opponent_team
 
+        if identifier in team:
+            return team[identifier]
+
         if self._team_size and len(team) >= self._team_size[player_role]:
             raise ValueError(
                 "%s's team already has %d pokemons: cannot add %s to %s"
