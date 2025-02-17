@@ -847,6 +847,7 @@ class AbstractBattle(ABC):
                     else:
                         raise RuntimeError(f"Invalid player message: {event}")
                 return
+            print(self.battle_tag, self.player_username, event)
             if username == self._player_username:
                 self._player_role = player
             if rating is not None:
