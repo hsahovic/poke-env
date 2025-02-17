@@ -223,7 +223,11 @@ class AbstractBattle(ABC):
         player_role = identifier[:2]
         name = identifier[3:].strip()
         assert force_self_team or self.player_role is not None
-        team = self._team if player_role == self.player_role or force_self_team else self._opponent_team
+        team = (
+            self._team
+            if force_self_team or player_role == self.player_role
+            else self._opponent_team
+        )
 
         if self._team_size and len(team) >= self._team_size[player_role]:
             raise ValueError(
