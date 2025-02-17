@@ -222,7 +222,6 @@ class AbstractBattle(ABC):
 
         player_role = identifier[:2]
         name = identifier[3:].strip()
-        assert force_self_team or self.player_role is not None
         team = (
             self._team
             if force_self_team or player_role == self.player_role
