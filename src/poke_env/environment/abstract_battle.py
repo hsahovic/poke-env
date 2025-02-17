@@ -246,7 +246,6 @@ class AbstractBattle(ABC):
             else:
                 self._opponent_team = dict(items)
         team = self._team if is_mine or force_self_team else self._opponent_team
-
         if identifier in team:
             return team[identifier]
 
