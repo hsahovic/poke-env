@@ -148,12 +148,12 @@ class _EnvPlayer(Player):
         upd_battle = copy.deepcopy(battle)
         upd_battle.switch(
             f"{upd_battle.player_role}a: {pokemon1.base_species.capitalize()}",
-            "",
+            pokemon1._last_details,
             f"{pokemon1.current_hp}/{pokemon1.max_hp}",
         )
         upd_battle.switch(
             f"{upd_battle.player_role}b: {pokemon2.base_species.capitalize()}",
-            "",
+            pokemon2._last_details,
             f"{pokemon2.current_hp}/{pokemon2.max_hp}",
         )
         upd_battle.available_switches[0] = [
