@@ -38,7 +38,7 @@ def test_env_run():
             battle_format=f"gen{gen}randombattle",
             log_level=25,
             start_challenging=False,
-            strict=False,
+            fake=True,
         )
         env.start_challenging(3)
         play_function(env, 3)
@@ -47,7 +47,7 @@ def test_env_run():
         battle_format="gen8randombattle",
         log_level=25,
         start_challenging=False,
-        strict=False,
+        fake=True,
     )
     env.start_challenging(2)
     play_function(env, 2)
@@ -58,7 +58,7 @@ def test_env_run():
         battle_format="gen9randombattle",
         log_level=25,
         start_challenging=False,
-        strict=False,
+        fake=True,
     )
     env.start_challenging(2)
     play_function(env, 2)
@@ -74,7 +74,7 @@ def test_env_api():
             battle_format=f"gen{gen}randombattle",
             log_level=25,
             start_challenging=True,
-            strict=False,
+            fake=True,
         )
         parallel_api_test(env)
         env.close()
