@@ -222,12 +222,11 @@ class AbstractBattle(ABC):
 
         player_role = identifier[:2]
         name = identifier[3:].strip()
-        is_mine = player_role == self._player_role
-
-        if is_mine or force_self_team:
-            team: Dict[str, Pokemon] = self._team
-        else:
-            team: Dict[str, Pokemon] = self._opponent_team  # type: ignore
+        team = (
+            self._team
+            if force_self_team or player_role == self.player_role
+            else self._opponent_team
+        )
 
         if self._team_size and len(team) >= self._team_size[player_role]:
             raise ValueError(
@@ -849,6 +848,8 @@ class AbstractBattle(ABC):
                 return
             if username == self._player_username:
                 self._player_role = player
+            else:
+                self._player_role = "p1" if player == "p2" else "p2"
             if rating is not None:
                 return self._players.append(
                     {
