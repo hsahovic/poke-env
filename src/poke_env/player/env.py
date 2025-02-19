@@ -393,7 +393,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
     @staticmethod
     @abstractmethod
     def action_to_order(
-        action: ActionType, battle: Any, strict: bool = True
+        action: ActionType, battle: Any, fake: bool = False, strict: bool = True
     ) -> BattleOrder:
         """
         Returns the BattleOrder relative to the given action.
@@ -411,7 +411,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
     @staticmethod
     @abstractmethod
     def order_to_action(
-        order: BattleOrder, battle: Any, strict: bool = True
+        order: BattleOrder, battle: Any, fake: bool = False, strict: bool = True
     ) -> ActionType:
         """
         Returns the action relative to the given BattleOrder.
