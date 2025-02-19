@@ -128,6 +128,8 @@ class _EnvPlayer(Player):
             order1 = await self._env_move(battle)
             if not isinstance(order1, DoubleBattleOrder):
                 return order1.message
+            elif order1.first_order is None or order1.second_order is None:
+                return self.random_teampreview(battle)
             upd_battle = self._simulate_teampreview_switchin(order1, battle)
             order2 = await self._env_move(upd_battle)
             action1 = self.order_to_action(order1, battle)  # type: ignore
