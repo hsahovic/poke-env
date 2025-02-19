@@ -147,7 +147,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 [order1] if order1 is not None else [],
                 [order2] if order2 is not None else [],
             )
-            assert len(joined_orders) == 1, "invalid pick"
+            assert len(joined_orders) == 1, "invalid action"
             return joined_orders[0]
         except AssertionError as e:
             if not strict and str(e) == "invalid action":
