@@ -25,9 +25,6 @@ server_configuration = ServerConfiguration("server.url", "auth.url")
 
 
 class CustomEnv(SinglesEnv[npt.NDArray[np.float32]]):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     def calc_reward(self, battle: AbstractBattle) -> float:
         return 69.42
 
