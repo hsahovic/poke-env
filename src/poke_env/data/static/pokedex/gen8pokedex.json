@@ -5845,15 +5845,49 @@
             "Dragon",
             "Mineral"
         ],
+        "evoLevel": 46,
         "gen": 9,
         "heightm": 6.2,
         "name": "Chuggalong",
         "num": -75,
+        "prevo": "Draggalong",
         "types": [
             "Dragon",
             "Poison"
         ],
         "weightkg": 201.6
+    },
+    "chuggon": {
+        "abilities": {
+            "0": "Shell Armor",
+            "1": "White Smoke",
+            "H": "Slow Start"
+        },
+        "baseStats": {
+            "atk": 23,
+            "def": 77,
+            "hp": 30,
+            "spa": 55,
+            "spd": 65,
+            "spe": 30
+        },
+        "color": "Black",
+        "eggGroups": [
+            "Dragon",
+            "Mineral"
+        ],
+        "evos": [
+            "Draggalong"
+        ],
+        "gen": 9,
+        "heightm": 1,
+        "name": "Chuggon",
+        "num": -73,
+        "types": [
+            "Dragon",
+            "Poison"
+        ],
+        "weightkg": 50
     },
     "cinccino": {
         "abilities": {
@@ -8979,6 +9013,40 @@
             "Ghost"
         ],
         "weightkg": 50
+    },
+    "draggalong": {
+        "abilities": {
+            "0": "Armor Tail",
+            "1": "White Smoke",
+            "H": "Slow Start"
+        },
+        "baseStats": {
+            "atk": 33,
+            "def": 92,
+            "hp": 40,
+            "spa": 95,
+            "spd": 80,
+            "spe": 85
+        },
+        "color": "Black",
+        "eggGroups": [
+            "Dragon",
+            "Mineral"
+        ],
+        "evoLevel": 36,
+        "evos": [
+            "Chuggalong"
+        ],
+        "gen": 9,
+        "heightm": 2.5,
+        "name": "Draggalong",
+        "num": -74,
+        "prevo": "Chuggon",
+        "types": [
+            "Dragon",
+            "Poison"
+        ],
+        "weightkg": 110
     },
     "dragonair": {
         "abilities": {
@@ -19242,7 +19310,7 @@
         "heightm": 0.8,
         "name": "Lycanroc-Dusk",
         "num": 745,
-        "prevo": "Rockruff",
+        "prevo": "Rockruff-Dusk",
         "types": [
             "Rock"
         ],
@@ -28456,15 +28524,46 @@
         ],
         "evos": [
             "Lycanroc",
-            "Lycanroc-Midnight",
-            "Lycanroc-Dusk"
+            "Lycanroc-Midnight"
         ],
         "formeOrder": [
             "Rockruff",
-            "Rockruff"
+            "Rockruff-Dusk"
         ],
         "heightm": 0.5,
         "name": "Rockruff",
+        "num": 744,
+        "otherFormes": [
+            "Rockruff-Dusk"
+        ],
+        "types": [
+            "Rock"
+        ],
+        "weightkg": 9.2
+    },
+    "rockruffdusk": {
+        "abilities": {
+            "0": "Own Tempo"
+        },
+        "baseSpecies": "Rockruff",
+        "baseStats": {
+            "atk": 65,
+            "def": 40,
+            "hp": 45,
+            "spa": 30,
+            "spd": 40,
+            "spe": 60
+        },
+        "color": "Brown",
+        "eggGroups": [
+            "Field"
+        ],
+        "evos": [
+            "Lycanroc-Dusk"
+        ],
+        "forme": "Dusk",
+        "heightm": 0.5,
+        "name": "Rockruff-Dusk",
         "num": 744,
         "types": [
             "Rock"
@@ -30711,14 +30810,15 @@
     "shox": {
         "abilities": {
             "0": "Electromorphosis",
-            "1": "Sticky Hold"
+            "1": "Sticky Hold",
+            "H": "Cud Chew"
         },
         "baseStats": {
-            "atk": 73,
-            "def": 81,
+            "atk": 55,
+            "def": 87,
             "hp": 136,
-            "spa": 90,
-            "spd": 98,
+            "spa": 108,
+            "spd": 108,
             "spe": 56
         },
         "color": "Brown",

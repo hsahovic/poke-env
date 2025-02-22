@@ -1603,15 +1603,48 @@
             "Dragon",
             "Mineral"
         ],
+        "evoLevel": 46,
         "gen": 9,
         "heightm": 6.2,
         "name": "Chuggalong",
         "num": -75,
+        "prevo": "Draggalong",
         "types": [
             "Dragon",
             "Poison"
         ],
         "weightkg": 201.6
+    },
+    "chuggon": {
+        "abilities": {
+            "0": "Shell Armor",
+            "1": "White Smoke"
+        },
+        "baseStats": {
+            "atk": 23,
+            "def": 77,
+            "hp": 30,
+            "spa": 55,
+            "spd": 65,
+            "spe": 30
+        },
+        "color": "Black",
+        "eggGroups": [
+            "Dragon",
+            "Mineral"
+        ],
+        "evos": [
+            "Draggalong"
+        ],
+        "gen": 9,
+        "heightm": 1,
+        "name": "Chuggon",
+        "num": -73,
+        "types": [
+            "Dragon",
+            "Poison"
+        ],
+        "weightkg": 50
     },
     "clefable": {
         "abilities": {
@@ -2422,6 +2455,39 @@
             "Ground"
         ],
         "weightkg": 145
+    },
+    "draggalong": {
+        "abilities": {
+            "0": "Armor Tail",
+            "1": "White Smoke"
+        },
+        "baseStats": {
+            "atk": 33,
+            "def": 92,
+            "hp": 40,
+            "spa": 95,
+            "spd": 80,
+            "spe": 85
+        },
+        "color": "Black",
+        "eggGroups": [
+            "Dragon",
+            "Mineral"
+        ],
+        "evoLevel": 36,
+        "evos": [
+            "Chuggalong"
+        ],
+        "gen": 9,
+        "heightm": 2.5,
+        "name": "Draggalong",
+        "num": -74,
+        "prevo": "Chuggon",
+        "types": [
+            "Dragon",
+            "Poison"
+        ],
+        "weightkg": 110
     },
     "dragonair": {
         "abilities": {
@@ -10604,11 +10670,11 @@
             "1": "Sticky Hold"
         },
         "baseStats": {
-            "atk": 73,
-            "def": 81,
+            "atk": 55,
+            "def": 87,
             "hp": 136,
-            "spa": 90,
-            "spd": 98,
+            "spa": 108,
+            "spd": 108,
             "spe": 56
         },
         "color": "Brown",
