@@ -296,11 +296,11 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         )
         self.agents = [self.agent1.username, self.agent2.username]
         self.possible_agents = [self.agent1.username, self.agent2.username]
-        self.observation_spaces = {
+        self.observation_spaces: Dict[str, Space[ObsType]] = {
             self.possible_agents[i]: list(self.observation_spaces.values())[i]
             for i in range(len(self.possible_agents))
         }
-        self.action_spaces = {
+        self.action_spaces: Dict[str, Space[ActionType]] = {
             self.possible_agents[i]: list(self.action_spaces.values())[i]
             for i in range(len(self.possible_agents))
         }
