@@ -1990,7 +1990,7 @@
   "pp": 10,
   "priority": 0,
   "flags": {},
-  "weather": "snow",
+  "weather": "snowscape",
   "selfSwitch": true,
   "secondary": null,
   "target": "all",
@@ -13722,7 +13722,7 @@
   "pp": 10,
   "priority": 0,
   "flags": {},
-  "weather": "snow",
+  "weather": "snowscape",
   "secondary": null,
   "target": "all",
   "type": "Ice"
