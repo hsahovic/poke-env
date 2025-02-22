@@ -225,8 +225,11 @@ class AbstractBattle(ABC):
 
         player_role = identifier[:2]
         name = identifier[3:].strip()
-        is_mine = player_role == self._player_role
-        team = self._team if is_mine or force_self_team else self._opponent_team
+        team = (
+            self._team
+            if player_role == self._player_role or force_self_team
+            else self._opponent_team
+        )
 
         # if the pokemon has a nickname, this ensures we recognize it
         split_details = [
@@ -245,11 +248,15 @@ class AbstractBattle(ABC):
             items = list(team.items())
             items[i] = (identifier, items[i][1])
             items[i][1]._name = identifier[4:]
-            if is_mine or force_self_team:
+            if player_role == self._player_role or force_self_team:
                 self._team = dict(items)
             else:
                 self._opponent_team = dict(items)
-        team = self._team if is_mine or force_self_team else self._opponent_team
+        team = (
+            self._team
+            if player_role == self._player_role or force_self_team
+            else self._opponent_team
+        )
         if identifier in team:
             return team[identifier]
 
@@ -873,6 +880,8 @@ class AbstractBattle(ABC):
                 return
             if username == self._player_username:
                 self._player_role = player
+            else:
+                self._player_role = "p1" if player == "p2" else "p2"
             if rating is not None:
                 return self._players.append(
                     {

@@ -1,22 +1,22 @@
-.. _player:
+.. _env:
 
-The player object and related subclasses
+The env object and related subclasses
 ========================================
 
 .. contents:: :local:
 
-Player
+PokeEnv
 ******
 
-.. automodule:: poke_env.player.player
+.. automodule:: poke_env.player.env
    :members:
    :undoc-members:
    :show-inheritance:
 
-Random Player
+SinglesEnv
 *************
 
-.. automodule:: poke_env.player.random_player
+.. automodule:: poke_env.player.singles_env
    :members:
    :undoc-members:
    :show-inheritance:
