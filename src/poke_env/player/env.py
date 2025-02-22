@@ -294,6 +294,16 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             ping_timeout=self._ping_timeout,
             team=self._team,
         )
+        self.agents = [self.agent1.username, self.agent2.username]
+        self.possible_agents = [self.agent1.username, self.agent2.username]
+        self.observation_spaces = {
+            self.possible_agents[i]: list(self.observation_spaces.values())[i]
+            for i in range(len(self.possible_agents))
+        }
+        self.action_spaces = {
+            self.possible_agents[i]: list(self.action_spaces.values())[i]
+            for i in range(len(self.possible_agents))
+        }
         self._reward_buffer = WeakKeyDictionary()
         self._challenge_task = asyncio.run_coroutine_threadsafe(
             self._challenge_loop(), POKE_LOOP
