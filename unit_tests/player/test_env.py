@@ -1,10 +1,11 @@
 import asyncio
+import pickle
 import sys
 from io import StringIO
 
 import numpy as np
 import numpy.typing as npt
-from gymnasium.spaces import Discrete
+from gymnasium.spaces import Box, Discrete
 
 from poke_env import AccountConfiguration, ServerConfiguration
 from poke_env.concurrency import POKE_LOOP
@@ -25,6 +26,12 @@ server_configuration = ServerConfiguration("server.url", "auth.url")
 
 
 class CustomEnv(SinglesEnv[npt.NDArray[np.float32]]):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.observation_spaces = {
+            agent: Box(0, 1, dtype=np.float32) for agent in self.possible_agents
+        }
+
     def calc_reward(self, battle: AbstractBattle) -> float:
         return 69.42
 
@@ -113,6 +120,17 @@ def test_init():
     player = gymnasium_env.agent1
     assert isinstance(gymnasium_env, CustomEnv)
     assert isinstance(player, _EnvPlayer)
+
+
+def test_pickle():
+    env = CustomEnv(
+        account_configuration1=account_configuration1,
+        account_configuration2=account_configuration2,
+        server_configuration=server_configuration,
+        start_listening=False,
+        battle_format="gen7randombattles",
+    )
+    pickle.loads(pickle.dumps(env))
 
 
 async def run_test_choose_move():
