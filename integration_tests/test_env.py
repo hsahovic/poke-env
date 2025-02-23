@@ -85,6 +85,10 @@ def test_env_run():
         env = SingleAgentWrapper(env, RandomPlayer())
         env.env.start_challenging(3)
         single_agent_play_function(env, 3)
+
+
+@pytest.mark.timeout(60)
+def test_repeated_runs():
     env = SinglesTestEnv(
         battle_format="gen8randombattle",
         log_level=25,

@@ -207,6 +207,13 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         :param start_challenging: Whether to automatically start the challenge loop or
             leave it inactive.
         :type start_challenging: bool
+        :param fake: If true, action-order converters will try to avoid returning a default
+            output if at all possible, even if the output isn't a legal decision. Defaults
+            to False.
+        :type fake: bool
+        :param strict: If true, action-order converters will throw an error if the move is
+            illegal. Otherwise, it will return default. Defaults to True.
+        :type: strict: bool
         """
         self._account_configuration1 = account_configuration1
         self._account_configuration2 = account_configuration2
