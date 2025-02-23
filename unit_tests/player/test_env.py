@@ -60,7 +60,7 @@ def test_async_player():
     def embed_battle(battle):
         return "battle"
 
-    player = _EnvPlayer(start_listening=False, username="usr")
+    player = _EnvPlayer(start_listening=False)
     battle = Battle("bat1", player.username, player.logger, gen=8)
     player.order_queue.put(ForfeitBattleOrder())
     order = asyncio.get_event_loop().run_until_complete(player._env_move(battle))
