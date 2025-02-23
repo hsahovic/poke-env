@@ -12,7 +12,11 @@ from typing import Any, Awaitable, Dict, List, Optional, Union
 
 import orjson
 
-from poke_env.concurrency import create_in_poke_loop, handle_threaded_coroutines
+from poke_env.concurrency import (
+    POKE_LOOP,
+    create_in_poke_loop,
+    handle_threaded_coroutines,
+)
 from poke_env.data import GenData, to_id_str
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.battle import Battle
@@ -26,10 +30,7 @@ from poke_env.player.battle_order import (
     DoubleBattleOrder,
 )
 from poke_env.ps_client import PSClient
-from poke_env.ps_client.account_configuration import (
-    CONFIGURATION_FROM_PLAYER_COUNTER,
-    AccountConfiguration,
-)
+from poke_env.ps_client.account_configuration import AccountConfiguration
 from poke_env.ps_client.server_configuration import (
     LocalhostServerConfiguration,
     ServerConfiguration,
@@ -65,6 +66,7 @@ class Player(ABC):
         open_timeout: Optional[float] = 10.0,
         ping_interval: Optional[float] = 20.0,
         ping_timeout: Optional[float] = 20.0,
+        loop: asyncio.AbstractEventLoop = POKE_LOOP,
         team: Optional[Union[str, Teambuilder]] = None,
     ):
         """
@@ -117,7 +119,7 @@ class Player(ABC):
         :type team: str or Teambuilder, optional
         """
         if account_configuration is None:
-            account_configuration = self._create_account_configuration()
+            account_configuration = AccountConfiguration.generate_config(10)
 
         if server_configuration is None:
             server_configuration = LocalhostServerConfiguration
@@ -131,6 +133,7 @@ class Player(ABC):
             open_timeout=open_timeout,
             ping_interval=ping_interval,
             ping_timeout=ping_timeout,
+            loop=loop,
         )
 
         self.ps_client._handle_battle_message = self._handle_battle_message  # type: ignore
@@ -144,17 +147,17 @@ class Player(ABC):
         self._accept_open_team_sheet: bool = accept_open_team_sheet
 
         self._battles: Dict[str, AbstractBattle] = {}
-        self._battle_semaphore: Semaphore = create_in_poke_loop(Semaphore, 0)
+        self._battle_semaphore: Semaphore = create_in_poke_loop(Semaphore, loop, 0)
 
-        self._battle_start_condition: Condition = create_in_poke_loop(Condition)
+        self._battle_start_condition: Condition = create_in_poke_loop(Condition, loop)
         self._battle_count_queue: Queue[Any] = create_in_poke_loop(
-            Queue, max_concurrent_battles
+            Queue, loop, max_concurrent_battles
         )
-        self._battle_end_condition: Condition = create_in_poke_loop(Condition)
-        self._challenge_queue: Queue[Any] = create_in_poke_loop(Queue)
+        self._battle_end_condition: Condition = create_in_poke_loop(Condition, loop)
+        self._challenge_queue: Queue[Any] = create_in_poke_loop(Queue, loop)
         self._team: Optional[Teambuilder] = None
 
-        self.trying_again = create_in_poke_loop(Event)
+        self.trying_again = create_in_poke_loop(Event, loop)
 
         if isinstance(team, Teambuilder):
             self._team = team
@@ -162,17 +165,6 @@ class Player(ABC):
             self._team = ConstantTeambuilder(team)
 
         self.logger.debug("Player initialisation finished")
-
-    def _create_account_configuration(self) -> AccountConfiguration:
-        key = type(self).__name__
-        CONFIGURATION_FROM_PLAYER_COUNTER.update([key])
-        username = "%s %d" % (key, CONFIGURATION_FROM_PLAYER_COUNTER[key])
-        if len(username) > 18:
-            username = "%s %d" % (
-                key[: 18 - len(username)],
-                CONFIGURATION_FROM_PLAYER_COUNTER[key],
-            )
-        return AccountConfiguration(username, None)
 
     def _battle_finished_callback(self, battle: AbstractBattle):
         pass
@@ -243,6 +235,16 @@ class Player(ABC):
                 if self._start_timer_on_battle_start:
                     await self.ps_client.send_message("/timer on", battle.battle_tag)
 
+                if hasattr(self.ps_client, "websocket") and "vgc" in self.format:
+                    if self.accept_open_team_sheet:
+                        await self.ps_client.send_message(
+                            "/acceptopenteamsheets", room=battle_tag
+                        )
+                    else:
+                        await self.ps_client.send_message(
+                            "/rejectopenteamsheets", room=battle_tag
+                        )
+
                 return battle
         else:
             self.logger.critical(
@@ -289,6 +291,30 @@ class Player(ABC):
                     if battle.move_on_next_request:
                         await self._handle_battle_request(battle)
                         battle.move_on_next_request = False
+            elif split_message[1] == "showteam":
+                # only need open sheets data for opponent
+                if split_message[2] == battle.opponent_role:
+                    split_pokemon_messages = [
+                        m.split("|") for m in "|".join(split_message[3:]).split("]")
+                    ]
+                    message_dict = {m[0]: m[1:] for m in split_pokemon_messages}
+                    role = split_message[2]
+                    battle._update_team_from_open_sheets(message_dict, role)
+                # only handle battle request after all open sheets are processed
+                if (
+                    battle.team
+                    and battle.opponent_team
+                    and all(
+                        [
+                            p.moves
+                            for p in list(battle.team.values())
+                            + list(battle.opponent_team.values())
+                        ]
+                    )
+                ):
+                    await self._handle_battle_request(
+                        battle, from_teampreview_request=True
+                    )
             elif split_message[1] == "win" or split_message[1] == "tie":
                 if split_message[1] == "win":
                     battle.won_by(split_message[2])
@@ -319,6 +345,7 @@ class Player(ABC):
                     self.trying_again.set()
                     await self._handle_battle_request(battle)
                 elif split_message[2].startswith("[Invalid choice] Can't pass: "):
+                    self.trying_again.set()
                     await self._handle_battle_request(battle, maybe_default_order=True)
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't switch: You can't switch to an active "
@@ -386,11 +413,13 @@ class Player(ABC):
                 await self._handle_battle_request(battle)
             elif split_message[1] == "teampreview":
                 battle.parse_message(split_message)
-                await self._handle_battle_request(battle, from_teampreview_request=True)
+                # wait for open sheets to be processed before handling battle request
+                if not self.accept_open_team_sheet:
+                    await self._handle_battle_request(
+                        battle, from_teampreview_request=True
+                    )
             elif split_message[1] == "bigerror":
                 self.logger.warning("Received 'bigerror' message: %s", split_message)
-            elif split_message[1] == "uhtml" and split_message[2] == "otsrequest":
-                await self._handle_ots_request(battle.battle_tag)
             else:
                 battle.parse_message(split_message)
 
@@ -423,13 +452,6 @@ class Player(ABC):
             if len(split_message) >= 6:
                 if split_message[5] == self._format:
                     await self._challenge_queue.put(challenging_player)
-
-    async def _handle_ots_request(self, battle_tag: str):
-        """Handles an Open Team Sheet request."""
-        if self.accept_open_team_sheet:
-            await self.ps_client.send_message("/acceptopenteamsheets", room=battle_tag)
-        else:
-            await self.ps_client.send_message("/rejectopenteamsheets", room=battle_tag)
 
     async def _update_challenges(self, split_message: List[str]):
         """Update internal challenge state.
@@ -470,7 +492,8 @@ class Player(ABC):
         :type packed_team: string, optional.
         """
         await handle_threaded_coroutines(
-            self._accept_challenges(opponent, n_challenges, packed_team)
+            self._accept_challenges(opponent, n_challenges, packed_team),
+            self.ps_client.loop,
         )
 
     async def _accept_challenges(
@@ -695,7 +718,7 @@ class Player(ABC):
         :param n_games: Number of battles that will be played
         :type n_games: int
         """
-        await handle_threaded_coroutines(self._ladder(n_games))
+        await handle_threaded_coroutines(self._ladder(n_games), self.ps_client.loop)
 
     async def _ladder(self, n_games: int):
         await self.ps_client.logged_in.wait()
@@ -727,7 +750,7 @@ class Player(ABC):
         :type n_battles: int
         """
         await handle_threaded_coroutines(
-            self._battle_against(*opponents, n_battles=n_battles)
+            self._battle_against(*opponents, n_battles=n_battles), self.ps_client.loop
         )
 
     async def _battle_against(self, *opponents: Player, n_battles: int):
@@ -761,7 +784,7 @@ class Player(ABC):
         :type to_wait: Event, optional.
         """
         await handle_threaded_coroutines(
-            self._send_challenges(opponent, n_challenges, to_wait)
+            self._send_challenges(opponent, n_challenges, to_wait), self.ps_client.loop
         )
 
     async def _send_challenges(
