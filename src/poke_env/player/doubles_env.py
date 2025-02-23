@@ -270,7 +270,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                     and battle.force_switch == [True, True]
                     and pos == 1
                 )
-            ), "invalid action"
+            ), "invalid order"
             action = 0
         elif isinstance(order, DefaultBattleOrder):
             action = -2
