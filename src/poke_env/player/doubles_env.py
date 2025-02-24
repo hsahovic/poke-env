@@ -158,7 +158,9 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 )
                 or battle.force_switch == [[False, True], [True, False]][pos]
                 or (
-                    len(battle.available_switches[0]) == 1
+                    len(battle.available_switches[0])
+                    == len(battle.available_switches[1])
+                    == 1
                     and battle.force_switch == [True, True]
                     and pos == 1
                 )
@@ -266,7 +268,9 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 )
                 or battle.force_switch == [[False, True], [True, False]][pos]
                 or (
-                    len(battle.available_switches[0]) == 1
+                    len(battle.available_switches[0])
+                    == len(battle.available_switches[1])
+                    == 1
                     and battle.force_switch == [True, True]
                     and pos == 1
                 )
