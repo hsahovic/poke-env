@@ -36,6 +36,7 @@ from poke_env.ps_client.server_configuration import (
 )
 from poke_env.teambuilder.constant_teambuilder import ConstantTeambuilder
 from poke_env.teambuilder.teambuilder import Teambuilder
+from poke_env.teambuilder.teambuilder_pokemon import TeambuilderPokemon
 
 
 class Player(ABC):
@@ -300,14 +301,11 @@ class Player(ABC):
                         await self._handle_battle_request(battle)
                         battle.move_on_next_request = False
             elif split_message[1] == "showteam":
-                # only need open sheets data for opponent
-                if split_message[2] == battle.opponent_role:
-                    split_pokemon_messages = [
-                        m.split("|") for m in "|".join(split_message[3:]).split("]")
-                    ]
-                    message_dict = {m[0]: m[1:] for m in split_pokemon_messages}
-                    role = split_message[2]
-                    battle._update_team_from_open_sheets(message_dict, role)
+                pokemon_messages = "|".join(split_message[3:]).split("]")
+                for msg in pokemon_messages:
+                    mon = battle.get_pokemon(f"{split_message[2]}: {msg[:msg.index('|')]}")
+                    teambuilder = TeambuilderPokemon.from_showteam(msg)
+                    mon._update_from_teambuilder(teambuilder)
                 # only handle battle request after all open sheets are processed
                 if (
                     battle.team
