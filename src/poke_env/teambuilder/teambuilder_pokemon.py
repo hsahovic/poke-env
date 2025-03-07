@@ -77,8 +77,8 @@ class TeambuilderPokemon:
         return self.formatted
 
     @classmethod
-    def from_showteam(cls, showteam_msg: str) -> TeambuilderPokemon:
-        split_msg = showteam_msg.split("|")
+    def parse_showteam_pkmn_substr(cls, substr: str) -> TeambuilderPokemon:
+        split_msg = substr.split("|")
         return TeambuilderPokemon(
             nickname=split_msg[0] or None,
             species=to_id_str(split_msg[1]) if split_msg[1] else None,
