@@ -303,7 +303,9 @@ class Player(ABC):
             elif split_message[1] == "showteam":
                 pokemon_messages = "|".join(split_message[3:]).split("]")
                 for msg in pokemon_messages:
-                    mon = battle.get_pokemon(f"{split_message[2]}: {msg[:msg.index('|')]}")
+                    mon = battle.get_pokemon(
+                        f"{split_message[2]}: {msg[:msg.index('|')]}"
+                    )
                     teambuilder = TeambuilderPokemon.from_showteam(msg)
                     mon._update_from_teambuilder(teambuilder)
                 # only handle battle request after all open sheets are processed

@@ -7,12 +7,9 @@ from typing import Any, Dict, List, Optional, Set, Tuple, Union
 from poke_env.data import GenData, to_id_str
 from poke_env.data.replay_template import REPLAY_TEMPLATE
 from poke_env.environment.field import Field
-from poke_env.environment.move import Move
 from poke_env.environment.observation import Observation
 from poke_env.environment.observed_pokemon import ObservedPokemon
 from poke_env.environment.pokemon import Pokemon
-from poke_env.environment.pokemon_gender import PokemonGender
-from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.side_condition import STACKABLE_CONDITIONS, SideCondition
 from poke_env.environment.weather import Weather
 
@@ -227,7 +224,7 @@ class AbstractBattle(ABC):
         name = identifier[3:].strip()
         team = (
             self._team
-            if player_role == self._player_role or force_self_team
+            if force_self_team or player_role == self._player_role
             else self._opponent_team
         )
 

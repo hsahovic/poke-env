@@ -84,14 +84,26 @@ class TeambuilderPokemon:
         split_msg = showteam_msg.split("|")
         return TeambuilderPokemon(
             nickname=split_msg[0] or None,
-            species = to_id_str(split_msg[1]) if split_msg[1] else None,
+            species=to_id_str(split_msg[1]) if split_msg[1] else None,
             item=to_id_str(split_msg[2]) if split_msg[2] else None,
             ability=to_id_str(split_msg[3]) if split_msg[3] else None,
-            moves=[to_id_str(m) for m in split_msg[4].split(",")] if split_msg[4] else None,
+            moves=(
+                [to_id_str(m) for m in split_msg[4].split(",")]
+                if split_msg[4]
+                else None
+            ),
             nature=split_msg[5] or None,
-            evs=[int(e) if e != "" else 0 for e in split_msg[6].split(",")] if split_msg[6] else None,
+            evs=(
+                [int(e) if e != "" else 0 for e in split_msg[6].split(",")]
+                if split_msg[6]
+                else None
+            ),
             gender=split_msg[7] or None,
-            ivs=[int(i) if i != "" else 31 for i in split_msg[8].split(",")] if split_msg[8] else None,
+            ivs=(
+                [int(i) if i != "" else 31 for i in split_msg[8].split(",")]
+                if split_msg[8]
+                else None
+            ),
             shiny=split_msg[9] == "S" if split_msg[9] else None,
             level=int(split_msg[10]) if split_msg[10] else None,
             tera_type=split_msg[11].split(",")[-1] if split_msg[11] else None,
