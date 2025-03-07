@@ -7,9 +7,6 @@ from __future__ import annotations
 from typing import List, Optional
 
 from poke_env.data import to_id_str
-from poke_env.environment.move import Move
-from poke_env.environment.pokemon_gender import PokemonGender
-from poke_env.environment.pokemon_type import PokemonType
 
 
 class TeambuilderPokemon:

@@ -224,7 +224,7 @@ class AbstractBattle(ABC):
         name = identifier[3:].strip()
         team = (
             self._team
-            if force_self_team or player_role == self._player_role
+            if force_self_team or player_role == self.player_role
             else self._opponent_team
         )
 
