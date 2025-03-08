@@ -797,11 +797,19 @@ class AbstractBattle(ABC):
             source, target, stats = event[2:5]
             source_mon = self.get_pokemon(source)
             target_mon = self.get_pokemon(target)
-            for stat in stats.split(", "):
-                source_mon.boosts[stat], target_mon.boosts[stat] = (
-                    target_mon.boosts[stat],
-                    source_mon.boosts[stat],
-                )
+            if "[from]" in stats:
+                all_stats = ["accuracy", "atk", "def", "evasion", "spa", "spd", "spe"]
+                for stat in all_stats:
+                    source_mon.boosts[stat], target_mon.boosts[stat] = (
+                        target_mon.boosts[stat],
+                        source_mon.boosts[stat],
+                    )
+            else:
+                for stat in stats.split(", "):
+                    source_mon.boosts[stat], target_mon.boosts[stat] = (
+                        target_mon.boosts[stat],
+                        source_mon.boosts[stat],
+                    )
         elif event[1] == "-transform":
             pokemon, into = event[2:4]
             self.get_pokemon(pokemon).transform(self.get_pokemon(into))
