@@ -40,7 +40,7 @@ class Weather(Enum):
             if message.upper() == "SNOW":
                 # Backwards compatibility with out-of-date PS servers that still use "snow" as the weather
                 return Weather.SNOWSCAPE
-            
+
             logging.getLogger("poke-env").warning(
                 "Unexpected weather '%s' received. Weather.UNKNOWN will be used "
                 "instead. If this is unexpected, please open an issue at "
