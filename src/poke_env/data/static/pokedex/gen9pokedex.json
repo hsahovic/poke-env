@@ -19112,12 +19112,12 @@
             "H": "Trace"
         },
         "baseStats": {
-            "atk": 117,
+            "atk": 103,
             "def": 85,
             "hp": 80,
             "spa": 55,
             "spd": 80,
-            "spe": 128
+            "spe": 120
         },
         "color": "Gray",
         "eggGroups": [
