@@ -184,6 +184,7 @@ def test_side_condition_build():
 
 def test_weather_str():
     assert str(Weather["HAIL"])
+    assert Weather.SNOW == Weather.SNOWSCAPE
     assert Weather["UNKNOWN"] == Weather.from_showdown_message("hehehe")
 
 

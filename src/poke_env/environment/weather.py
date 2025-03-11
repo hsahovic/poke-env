@@ -1,10 +1,9 @@
 """This module defines the Weather class, which represents a in-battle weather."""
 
 import logging
-from enum import Enum, auto, unique
+from enum import Enum, auto
 
 
-@unique
 class Weather(Enum):
     """Enumeration, represent a non null weather in a battle."""
 
@@ -15,7 +14,7 @@ class Weather(Enum):
     PRIMORDIALSEA = auto()
     RAINDANCE = auto()
     SANDSTORM = auto()
-    SNOWSCAPE = auto()
+    SNOWSCAPE = SNOW = auto()
     SUNNYDAY = auto()
 
     def __str__(self) -> str:
