@@ -1,10 +1,9 @@
 """This module defines the Weather class, which represents a in-battle weather."""
 
 import logging
-from enum import Enum, auto, unique
+from enum import Enum, auto
 
 
-@unique
 class Weather(Enum):
     """Enumeration, represent a non null weather in a battle."""
 
@@ -15,7 +14,7 @@ class Weather(Enum):
     PRIMORDIALSEA = auto()
     RAINDANCE = auto()
     SANDSTORM = auto()
-    SNOWSCAPE = auto()
+    SNOWSCAPE = SNOW = auto()
     SUNNYDAY = auto()
 
     def __str__(self) -> str:
@@ -37,10 +36,6 @@ class Weather(Enum):
         try:
             return Weather[message.upper()]
         except KeyError:
-            if message.upper() == "SNOW":
-                # Backwards compatibility with out-of-date PS servers that still use "snow" as the weather
-                return Weather.SNOWSCAPE
-
             logging.getLogger("poke-env").warning(
                 "Unexpected weather '%s' received. Weather.UNKNOWN will be used "
                 "instead. If this is unexpected, please open an issue at "
