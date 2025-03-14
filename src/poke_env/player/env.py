@@ -449,11 +449,11 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             self.agents[1]: self.embed_battle(battle2),
         }
         reward = {
-            self.agents[0]: self.calc_reward(battle1),
-            self.agents[1]: self.calc_reward(battle2),
+            self.agents[0]: self.calc_reward(self.battle1),
+            self.agents[1]: self.calc_reward(self.battle2),
         }
-        term1, trunc1 = self.calc_term_trunc(battle1)
-        term2, trunc2 = self.calc_term_trunc(battle2)
+        term1, trunc1 = self.calc_term_trunc(self.battle1)
+        term2, trunc2 = self.calc_term_trunc(self.battle2)
         terminated = {self.agents[0]: term1, self.agents[1]: term2}
         truncated = {self.agents[0]: trunc1, self.agents[1]: trunc2}
         return observations, reward, terminated, truncated, self.get_additional_info()
