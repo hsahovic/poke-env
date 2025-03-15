@@ -62,6 +62,8 @@ class AbstractBattle(ABC):
         "upkeep",
         "uhtml",
         "zbroken",
+        "badge",
+        "hidelines",
         "",
     }
 
@@ -948,8 +950,6 @@ class AbstractBattle(ABC):
         elif event[1] == "title":
             player_1, player_2 = event[2].split(" vs. ")
             self.players = player_1, player_2
-        elif event[1] == "badge":
-            pass
         elif event[1] == "-terastallize":
             pokemon, type_ = event[2:]
             pokemon = self.get_pokemon(pokemon)  # type: ignore
