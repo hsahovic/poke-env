@@ -100,6 +100,7 @@ class PseudoBattle(Battle):
         self._available_moves = battle.available_moves[active_id]
         self._available_switches = battle.available_switches[active_id]
         self._side_conditions = battle.side_conditions
+        self._opponent_side_conditions = battle.opponent_side_conditions
         self._can_mega_evolve = battle.can_mega_evolve[active_id]
         self._can_z_move = battle.can_z_move[active_id]
         self._can_dynamax = battle.can_dynamax[active_id]
