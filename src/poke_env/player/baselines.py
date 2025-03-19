@@ -359,12 +359,11 @@ class SimpleHeuristicsPlayer(Player):
             return self.choose_move_in_1v1(battle)[0]  # type: ignore
         orders = []
         for active_id in [0, 1]:
-            possible_orders, scores = zip(
-                *[
-                    self.choose_move_in_1v1(PseudoBattle(battle, active_id, opp_id))
-                    for opp_id in [0, 1]
-                ]
-            )
+            results = [self.choose_move_in_1v1(PseudoBattle(battle, active_id, opp_id))
+                for opp_id in [0, 1]
+            ]
+            possible_orders = [r[0] for r in results]
+            scores = [r[1] for r in results]
             for order in possible_orders:
                 mon = battle.active_pokemon[active_id]
                 if (
