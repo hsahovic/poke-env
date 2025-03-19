@@ -359,7 +359,8 @@ class SimpleHeuristicsPlayer(Player):
             return self.choose_move_in_1v1(battle)[0]  # type: ignore
         orders = []
         for active_id in [0, 1]:
-            results = [self.choose_move_in_1v1(PseudoBattle(battle, active_id, opp_id))
+            results = [
+                self.choose_move_in_1v1(PseudoBattle(battle, active_id, opp_id))
                 for opp_id in [0, 1]
             ]
             possible_orders = [r[0] for r in results]
