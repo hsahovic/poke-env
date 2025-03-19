@@ -385,12 +385,13 @@ class SimpleHeuristicsPlayer(Player):
                 * self.get_double_target_multiplier(battle, possible_orders[i])
                 for i in [0, 1]
             ]
-            order = (
-                max(zip(possible_orders, scores), key=lambda a: a[1])[0]
-                if battle.force_switch != [[False, True], [True, False]][active_id]
-                else None
-            )
-            orders += [order]
+            orders += [
+                (
+                    max(zip(possible_orders, scores), key=lambda a: a[1])[0]
+                    if battle.force_switch != [[False, True], [True, False]][active_id]
+                    else None
+                )
+            ]
         joined_orders = DoubleBattleOrder.join_orders(
             [orders[0]] if orders[0] else [],
             [orders[1]] if orders[1] else [],
