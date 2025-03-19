@@ -294,7 +294,7 @@ class SimpleHeuristicsPlayer(Player):
                     ):
                         return self.create_order(move), 0
 
-            def get_score(m: Move):
+            def get_score(m: Move) -> float:
                 return (
                     m.base_power
                     * (1.5 if m.type in active.types else 1)
@@ -387,7 +387,7 @@ class SimpleHeuristicsPlayer(Player):
             ]
             orders += [
                 (
-                    max(zip(possible_orders, scores), key=lambda a: a[1])[0]
+                    max(results, key=lambda a: a[1])[0]
                     if battle.force_switch != [[False, True], [True, False]][active_id]
                     else None
                 )
