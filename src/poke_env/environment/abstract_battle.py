@@ -220,6 +220,7 @@ class AbstractBattle(ABC):
         elif identifier in self._opponent_team:
             return self._opponent_team[identifier]
 
+        print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", identifier)
         player_role = identifier[:2]
         name = identifier[3:].strip()
         team = (
