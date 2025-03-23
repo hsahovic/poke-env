@@ -847,7 +847,6 @@ class AbstractBattle(ABC):
                         raise RuntimeError(f"Invalid player message: {event}")
                 return
             if username == self._player_username:
-                print(event)
                 self._player_role = player
             else:
                 self._player_role = "p1" if player == "p2" else "p2"
