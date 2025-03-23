@@ -241,8 +241,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         )
         self.agents: List[str] = []
         self.possible_agents = [self.agent1.username, self.agent2.username]
-        self.battle1: Optional[AbstractBattle] = None
-        self.battle2: Optional[AbstractBattle] = None
+        self._current_battle1: Optional[AbstractBattle] = None
+        self._current_battle2: Optional[AbstractBattle] = None
         self.fake = fake
         self.strict = strict
         self._reward_buffer: WeakKeyDictionary[AbstractBattle, float] = (
@@ -312,13 +312,13 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
     ) -> Tuple[Dict[str, ObsType], Dict[str, Dict[str, Any]]]:
         self.agents = [self.agent1.username, self.agent2.username]
         # TODO: use the seed
-        if self.battle1 and not self.battle1.finished:
-            assert self.battle2 is not None
-            if self.agent1.waiting and not self.battle1._wait:
+        if self._current_battle1 and not self._current_battle1.finished:
+            assert self._current_battle2 is not None
+            if self.agent1.waiting and not self._current_battle1._wait:
                 self.agent1.order_queue.put(ForfeitBattleOrder())
                 if self.agent2.waiting:
                     self.agent2.order_queue.put(DefaultBattleOrder())
-            elif self.agent2.waiting and not self.battle2._wait:
+            elif self.agent2.waiting and not self._current_battle2._wait:
                 self.agent2.order_queue.put(ForfeitBattleOrder())
                 if self.agent1.waiting:
                     self.agent1.order_queue.put(DefaultBattleOrder())
@@ -334,11 +334,11 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                     raise RuntimeError("Agent is not challenging")
                 count -= 1
                 time.sleep(self._TIME_BETWEEN_RETRIES)
-        self.battle1 = self.agent1.battle_queue.get()
-        self.battle2 = self.agent2.battle_queue.get()
+        self._current_battle1 = self.agent1.battle_queue.get()
+        self._current_battle2 = self.agent2.battle_queue.get()
         observations = {
-            self.agents[0]: self.embed_battle(self.battle1),
-            self.agents[1]: self.embed_battle(self.battle2),
+            self.agents[0]: self.embed_battle(self._current_battle1),
+            self.agents[1]: self.embed_battle(self._current_battle2),
         }
         return observations, self.get_additional_info()
 
