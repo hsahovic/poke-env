@@ -769,8 +769,10 @@ class AbstractBattle(ABC):
         elif event[1] == "-prepare":
             try:
                 attacker, move, defender = event[2:5]
-                defender_mon = self.get_pokemon(defender)
-                if to_id_str(move) == "skydrop":
+                defender_mon = (
+                    self.get_pokemon(defender) if defender != "[premajor]" else None
+                )
+                if defender_mon is not None and to_id_str(move) == "skydrop":
                     defender_mon.start_effect("Sky Drop")
             except ValueError:
                 attacker, move = event[2:4]
