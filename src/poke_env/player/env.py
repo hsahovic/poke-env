@@ -247,6 +247,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         self._reward_buffer: WeakKeyDictionary[AbstractBattle, float] = (
             WeakKeyDictionary()
         )
+        self._challenge_task = None
 
     ###################################################################################
     # PettingZoo API
