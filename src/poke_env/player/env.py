@@ -591,8 +591,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         if self._challenge_task and not self._challenge_task.done():
             raise RuntimeError(
                 "Agent is already challenging opponents with the challenging loop. "
-                "Try to specify 'start_challenging=True' during instantiation or call "
-                "'await agent.stop_challenge_loop()' to clear the task."
+                "Try to call 'await agent.stop_challenge_loop()' to clear the task."
             )
         self._challenge_task = asyncio.run_coroutine_threadsafe(
             self.agent1.send_challenges(username, 1), POKE_LOOP
@@ -609,8 +608,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         if self._challenge_task and not self._challenge_task.done():
             raise RuntimeError(
                 "Agent is already challenging opponents with the challenging loop. "
-                "Try to specify 'start_challenging=True' during instantiation or call "
-                "'await agent.stop_challenge_loop()' to clear the task."
+                "Try to call 'await agent.stop_challenge_loop()' to clear the task."
             )
         self._challenge_task = asyncio.run_coroutine_threadsafe(
             self.agent1.accept_challenges(username, 1, self.agent1.next_team), POKE_LOOP

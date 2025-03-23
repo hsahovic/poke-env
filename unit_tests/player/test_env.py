@@ -122,7 +122,6 @@ async def run_test_choose_move():
         server_configuration=server_configuration,
         start_listening=False,
         battle_format="gen7randombattles",
-        start_challenging=False,
     )
     # Create a mock battle and moves
     battle = Battle("bat1", player.agent1.username, player.agent1.logger, gen=8)
@@ -284,7 +283,6 @@ def test_action_space():
         p = SinglesEnv(
             battle_format=f"gen{gen}randombattle",
             start_listening=False,
-            start_challenging=False,
         )
         assert p.action_space(p.possible_agents[0]) == Discrete(
             4 * sum([1, has_megas, has_z_moves, has_dynamax]) + 6
@@ -306,7 +304,6 @@ def test_singles_action_order_conversions():
         p = SinglesEnv(
             battle_format=f"gen{gen}randombattle",
             start_listening=False,
-            start_challenging=False,
         )
         battle = Battle("bat1", p.agent1.username, p.agent1.logger, gen=gen)
         active_pokemon = Pokemon(species="charizard", gen=gen)
