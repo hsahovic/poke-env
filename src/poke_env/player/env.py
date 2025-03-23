@@ -5,6 +5,7 @@ For a black-box implementation consider using the module env_player.
 import asyncio
 import time
 from abc import abstractmethod
+from concurrent.futures import Future
 from typing import Any, Awaitable, Dict, Generic, List, Optional, Tuple, TypeVar, Union
 from weakref import WeakKeyDictionary
 
@@ -247,7 +248,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         self._reward_buffer: WeakKeyDictionary[AbstractBattle, float] = (
             WeakKeyDictionary()
         )
-        self._challenge_task = None
+        self._challenge_task: Optional[Future[Any]] = None
 
     ###################################################################################
     # PettingZoo API
