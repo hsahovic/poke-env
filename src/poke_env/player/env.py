@@ -204,9 +204,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             team string, a showdown packed team string, of a ShowdownTeam object.
             Defaults to None.
         :type team: str or Teambuilder, optional
-        :param start_challenging: Whether to automatically start the challenge loop or
-            leave it inactive.
-        :type start_challenging: bool
         :param fake: If true, action-order converters will try to avoid returning a default
             output if at all possible, even if the output isn't a legal decision. Defaults
             to False.
