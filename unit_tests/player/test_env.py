@@ -88,7 +88,7 @@ def render(battle):
     player = CustomEnv(start_listening=False)
     captured_output = StringIO()
     sys.stdout = captured_output
-    player.battle1 = battle
+    player.agent1.battle = battle
     player.render()
     sys.stdout = sys.__stdout__
     return captured_output.getvalue()
@@ -149,7 +149,6 @@ async def run_test_choose_move():
         server_configuration=server_configuration,
         start_listening=False,
         battle_format="gen7randombattles",
-        start_challenging=False,
     )
     # Create a mock battle and moves
     battle = Battle("bat1", player.agent1.username, player.agent1.logger, gen=8)
@@ -311,7 +310,6 @@ def test_action_space():
         p = SinglesEnv(
             battle_format=f"gen{gen}randombattle",
             start_listening=False,
-            start_challenging=False,
         )
         assert p.action_space(p.possible_agents[0]) == Discrete(
             4 * sum([1, has_megas, has_z_moves, has_dynamax]) + 6
@@ -333,7 +331,6 @@ def test_singles_action_order_conversions():
         p = SinglesEnv(
             battle_format=f"gen{gen}randombattle",
             start_listening=False,
-            start_challenging=False,
         )
         battle = Battle("bat1", p.agent1.username, p.agent1.logger, gen=gen)
         active_pokemon = Pokemon(species="charizard", gen=gen)
@@ -409,7 +406,6 @@ def test_doubles_action_order_conversions():
         p = DoublesEnv(
             battle_format=f"gen{gen}randomdoublesbattle",
             start_listening=False,
-            start_challenging=False,
         )
         battle = DoubleBattle("bat1", p.agent1.username, p.agent1.logger, gen=gen)
         battle._player_role = "p1"
