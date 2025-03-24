@@ -149,22 +149,6 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
     def _action_to_order_individual(
         action: np.int64, battle: DoubleBattle, fake: bool, pos: int
     ) -> Optional[BattleOrder]:
-        if not fake:
-            assert (action == 0) == (
-                battle._wait
-                or (
-                    battle.active_pokemon[pos] is None
-                    and not battle.available_switches[pos]
-                )
-                or battle.force_switch == [[False, True], [True, False]][pos]
-                or (
-                    len(battle.available_switches[0])
-                    == len(battle.available_switches[1])
-                    == 1
-                    and battle.force_switch == [True, True]
-                    and pos == 1
-                )
-            ), "invalid action"
         if action == 0:
             order = None
         elif action < 7:
@@ -259,22 +243,6 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
     def _order_to_action_individual(
         order: Optional[BattleOrder], battle: DoubleBattle, fake: bool, pos: int
     ) -> np.int64:
-        if not fake:
-            assert (order is None) == (
-                battle._wait
-                or (
-                    battle.active_pokemon[pos] is None
-                    and not battle.available_switches[pos]
-                )
-                or battle.force_switch == [[False, True], [True, False]][pos]
-                or (
-                    len(battle.available_switches[0])
-                    == len(battle.available_switches[1])
-                    == 1
-                    and battle.force_switch == [True, True]
-                    and pos == 1
-                )
-            ), "invalid order"
         if order is None:
             action = 0
         elif isinstance(order, DefaultBattleOrder):
