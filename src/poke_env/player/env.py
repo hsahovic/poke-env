@@ -194,9 +194,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             team string, a showdown packed team string, of a ShowdownTeam object.
             Defaults to None.
         :type team: str or Teambuilder, optional
-        :param start_challenging: Whether to automatically start the challenge loop or
-            leave it inactive.
-        :type start_challenging: bool
         :param fake: If true, action-order converters will try to avoid returning a default
             output if at all possible, even if the output isn't a legal decision. Defaults
             to False.
@@ -241,8 +238,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         )
         self.agents: List[str] = []
         self.possible_agents = [self.agent1.username, self.agent2.username]
-        self._current_battle1: Optional[AbstractBattle] = None
-        self._current_battle2: Optional[AbstractBattle] = None
+        self.battle1: Optional[AbstractBattle] = None
+        self.battle2: Optional[AbstractBattle] = None
         self.fake = fake
         self.strict = strict
         self._reward_buffer: WeakKeyDictionary[AbstractBattle, float] = (
@@ -263,7 +260,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
     ]:
         assert self.agent1.battle is not None
         assert self.agent2.battle is not None
-        if self.agent1.battle.finished:
+        if self.battle1.finished or self.battle2.finished:
             raise RuntimeError("Battle is already finished, call reset")
         if self.agent1.waiting:
             order1 = self.action_to_order(
@@ -283,11 +280,11 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             self.agent2.order_queue.put(order2)
         battle1 = (
             self.agent1.battle_queue.get_timeout(self.agent2.trying_again)
-            or self.agent1.battle
+            or self.battle1
         )
         battle2 = (
             self.agent2.battle_queue.get_timeout(self.agent1.trying_again)
-            or self.agent2.battle
+            or self.battle2
         )
         observations = {
             self.agents[0]: self.embed_battle(battle1),
@@ -334,20 +331,15 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                     raise RuntimeError("Agent is not challenging")
                 count -= 1
                 time.sleep(self._TIME_BETWEEN_RETRIES)
-        while (
-            self._current_battle1 == self.agent1.battle
-            or self._current_battle2 == self.agent2.battle
-        ):
-            time.sleep(0.01)
-        self._current_battle1 = self.agent1.battle_queue.get()
-        self._current_battle2 = self.agent2.battle_queue.get()
-        while self._current_battle1 != self.agent1.battle:
-            self._current_battle1 = self.agent1.battle_queue.get()
-        while self._current_battle2 != self.agent2.battle:
-            self._current_battle2 = self.agent2.battle_queue.get()
+        self.battle1 = self.agent1.battle_queue.get()
+        self.battle2 = self.agent2.battle_queue.get()
+        while self.battle1 != self.agent1.battle:
+            self.battle1 = self.agent1.battle_queue.get()
+        while self.battle2 != self.agent2.battle:
+            self.battle2 = self.agent2.battle_queue.get()
         observations = {
-            self.agents[0]: self.embed_battle(self._current_battle1),
-            self.agents[1]: self.embed_battle(self._current_battle2),
+            self.agents[0]: self.embed_battle(self.battle1),
+            self.agents[1]: self.embed_battle(self.battle2),
         }
         return observations, self.get_additional_info()
 
