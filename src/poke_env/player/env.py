@@ -467,8 +467,21 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         self._challenge_task = asyncio.run_coroutine_threadsafe(
             self.agent1.battle_against(self.agent2, n_battles=1), self.loop
         )
+        while (
+            self._current_battle1 == self.agent1.battle
+            or self._current_battle2 == self.agent2.battle
+        ):
+            time.sleep(0.01)
         self._current_battle1 = self.agent1.battle_queue.get()
         self._current_battle2 = self.agent2.battle_queue.get()
+        assert (
+            self._current_battle1 == self.agent1.battle
+            and not self._current_battle1.finished
+        )
+        assert (
+            self._current_battle2 == self.agent2.battle
+            and not self._current_battle2.finished
+        )
         observations = {
             self.agents[0]: self.embed_battle(self._current_battle1),
             self.agents[1]: self.embed_battle(self._current_battle2),
