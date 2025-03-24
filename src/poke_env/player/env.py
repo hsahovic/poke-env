@@ -260,12 +260,12 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
     ]:
         assert self.battle1 is not None
         assert self.battle2 is not None
-        if self.battle1.finished or self.battle2.finished:
+        if self.battle1.finished:
             raise RuntimeError("Battle is already finished, call reset")
         if self.agent1.waiting:
             order1 = self.action_to_order(
                 actions[self.agents[0]],
-                self.agent1.battle,
+                self.battle1,
                 fake=self.fake,
                 strict=self.strict,
             )
@@ -273,7 +273,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         if self.agent2.waiting:
             order2 = self.action_to_order(
                 actions[self.agents[1]],
-                self.agent2.battle,
+                self.battle2,
                 fake=self.fake,
                 strict=self.strict,
             )
@@ -344,37 +344,41 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         return observations, self.get_additional_info()
 
     def render(self, mode: str = "human"):
-        if self.agent1.battle is not None:
+        if self.battle1 is not None:
             print(
                 "  Turn %4d. | [%s][%3d/%3dhp] %10.10s - %10.10s [%3d%%hp][%s]"
                 % (
-                    self.agent1.battle.turn,
+                    self.battle1.turn,
                     "".join(
                         [
                             "⦻" if mon.fainted else "●"
-                            for mon in self.agent1.battle.team.values()
+                            for mon in self.battle1.team.values()
                         ]
                     ),
-                    self.agent1.battle.active_pokemon.current_hp or 0,
-                    self.agent1.battle.active_pokemon.max_hp or 0,
-                    self.agent1.battle.active_pokemon.species,
-                    self.agent1.battle.opponent_active_pokemon.species,
-                    self.agent1.battle.opponent_active_pokemon.current_hp or 0,
+                    self.battle1.active_pokemon.current_hp or 0,
+                    self.battle1.active_pokemon.max_hp or 0,
+                    self.battle1.active_pokemon.species,
+                    self.battle1.opponent_active_pokemon.species,
+                    self.battle1.opponent_active_pokemon.current_hp or 0,
                     "".join(
                         [
                             "⦻" if mon.fainted else "●"
-                            for mon in self.agent1.battle.opponent_team.values()
+                            for mon in self.battle1.opponent_team.values()
                         ]
                     ),
                 ),
-                end="\n" if self.agent1.battle.finished else "\r",
+                end="\n" if self.battle1.finished else "\r",
             )
 
     def close(self, purge: bool = True):
-        if self.agent1.battle is None or self.agent1.battle.finished:
+        if self.battle1 is None or self.battle1.finished:
             time.sleep(1)
-        if self.agent2.battle is None or self.agent2.battle.finished:
+            if self.battle1 != self.agent1.battle:	
+                self.battle1 = self.agent1.battle
+        if self.battle2 is None or self.battle2.finished:
             time.sleep(1)
+            if self.battle2 != self.agent2.battle:	
+                self.battle2 = self.agent2.battle
         closing_task = asyncio.run_coroutine_threadsafe(
             self._stop_challenge_loop(purge=purge), POKE_LOOP
         )
