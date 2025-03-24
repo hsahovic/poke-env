@@ -258,8 +258,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         Dict[str, bool],
         Dict[str, Dict[str, Any]],
     ]:
-        assert self.agent1.battle is not None
-        assert self.agent2.battle is not None
+        assert self.battle1 is not None
+        assert self.battle2 is not None
         if self.battle1.finished or self.battle2.finished:
             raise RuntimeError("Battle is already finished, call reset")
         if self.agent1.waiting:
@@ -309,13 +309,13 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
     ) -> Tuple[Dict[str, ObsType], Dict[str, Dict[str, Any]]]:
         self.agents = [self.agent1.username, self.agent2.username]
         # TODO: use the seed
-        if self._current_battle1 and not self._current_battle1.finished:
-            assert self._current_battle2 is not None
-            if self.agent1.waiting and not self._current_battle1._wait:
+        if self.battle1 and not self.battle1.finished:
+            assert self.battle2 is not None
+            if self.agent1.waiting and not self.battle1._wait:
                 self.agent1.order_queue.put(ForfeitBattleOrder())
                 if self.agent2.waiting:
                     self.agent2.order_queue.put(DefaultBattleOrder())
-            elif self.agent2.waiting and not self._current_battle2._wait:
+            elif self.agent2.waiting and not self.battle2._wait:
                 self.agent2.order_queue.put(ForfeitBattleOrder())
                 if self.agent1.waiting:
                     self.agent1.order_queue.put(DefaultBattleOrder())
