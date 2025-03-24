@@ -373,11 +373,11 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
     def close(self, purge: bool = True):
         if self.battle1 is None or self.battle1.finished:
             time.sleep(1)
-            if self.battle1 != self.agent1.battle:	
+            if self.battle1 != self.agent1.battle:
                 self.battle1 = self.agent1.battle
         if self.battle2 is None or self.battle2.finished:
             time.sleep(1)
-            if self.battle2 != self.agent2.battle:	
+            if self.battle2 != self.agent2.battle:
                 self.battle2 = self.agent2.battle
         closing_task = asyncio.run_coroutine_threadsafe(
             self._stop_challenge_loop(purge=purge), POKE_LOOP
