@@ -660,8 +660,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         self._keep_challenging = False
 
         if force:
-            if self.agent1.battle and not self.agent1.battle.finished:
-                assert self.agent2.battle is not None
+            if self.battle1 and not self.battle1.finished:
+                assert self.battle2 is not None
                 if not (
                     self.agent1.order_queue.empty() and self.agent2.order_queue.empty()
                 ):
@@ -679,11 +679,11 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                     await self.agent1.battle_queue.async_get()
                 if not self.agent2.battle_queue.empty():
                     await self.agent2.battle_queue.async_get()
-                if self.agent1.waiting and not self.agent1.battle._wait:
+                if self.agent1.waiting and not self.battle1._wait:
                     await self.agent1.order_queue.async_put(ForfeitBattleOrder())
                     if self.agent2.waiting:
                         await self.agent2.order_queue.async_put(DefaultBattleOrder())
-                elif self.agent2.waiting and not self.agent2.battle._wait:
+                elif self.agent2.waiting and not self.battle2._wait:
                     await self.agent2.order_queue.async_put(ForfeitBattleOrder())
                     if self.agent1.waiting:
                         await self.agent1.order_queue.async_put(DefaultBattleOrder())
@@ -694,8 +694,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             self._challenge_task.result()
 
         self._challenge_task = None
-        self.agent1.battle = None
-        self.agent2.battle = None
+        self.battle1 = None
+        self.battle2 = None
         self.agent1.battle = None
         self.agent2.battle = None
         while not self.agent1.order_queue.empty():
