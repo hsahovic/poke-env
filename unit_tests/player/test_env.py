@@ -88,7 +88,7 @@ def render(battle):
     player = CustomEnv(start_listening=False)
     captured_output = StringIO()
     sys.stdout = captured_output
-    player.agent1.battle = battle
+    player.battle1 = battle
     player.render()
     sys.stdout = sys.__stdout__
     return captured_output.getvalue()
