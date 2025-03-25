@@ -419,10 +419,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 time.sleep(self._TIME_BETWEEN_RETRIES)
         self.battle1 = self.agent1.battle_queue.get()
         self.battle2 = self.agent2.battle_queue.get()
-        while self.battle1 != self.agent1.battle:
-            self.battle1 = self.agent1.battle_queue.get()
-        while self.battle2 != self.agent2.battle:
-            self.battle2 = self.agent2.battle_queue.get()
         observations = {
             self.agents[0]: self.embed_battle(self.battle1),
             self.agents[1]: self.embed_battle(self.battle2),
