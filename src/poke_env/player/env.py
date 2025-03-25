@@ -371,10 +371,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             self.agent2.battle_queue.get_timeout(self.agent1.trying_again)
             or self.battle2
         )
-        finishing = battle1.is_finishing or battle2.is_finishing
-        if finishing:
-            while not (battle1.finished and battle2.finished):
-                time.sleep(0.01)
         observations = {
             self.agents[0]: self.embed_battle(battle1),
             self.agents[1]: self.embed_battle(battle2),
@@ -383,11 +379,10 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             self.agents[0]: self.calc_reward(battle1),
             self.agents[1]: self.calc_reward(battle2),
         }
-        terminated = {self.agents[0]: finishing, self.agents[1]: finishing}
-        truncated = {
-            self.agents[0]: battle1.finished and not finishing,
-            self.agents[1]: battle2.finished and not finishing,
-        }
+        term1, trunc1 = self.calc_term_trunc(battle1)
+        term2, trunc2 = self.calc_term_trunc(battle2)
+        terminated = {self.agents[0]: term1, self.agents[1]: term2}
+        truncated = {self.agents[0]: trunc1, self.agents[1]: trunc2}
         if battle1.finished:
             self.agents = []
         return observations, reward, terminated, truncated, self.get_additional_info()
@@ -659,6 +654,24 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         :rtype: Dict
         """
         return {self.possible_agents[0]: {}, self.possible_agents[1]: {}}
+
+    @staticmethod
+    def calc_term_trunc(battle: AbstractBattle):
+        terminated = False
+        truncated = False
+        if battle.finished:
+            size = battle.team_size
+            remaining_mons = size - len(
+                [mon for mon in battle.team.values() if mon.fainted]
+            )
+            remaining_opponent_mons = size - len(
+                [mon for mon in battle.opponent_team.values() if mon.fainted]
+            )
+            if (remaining_mons == 0) != (remaining_opponent_mons == 0):
+                terminated = True
+            else:
+                truncated = True
+        return terminated, truncated
 
     def background_send_challenge(self, username: str):
         """
