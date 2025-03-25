@@ -357,7 +357,6 @@ class Player(ABC):
                         "[Invalid choice] Can't move: You can only Terastallize once per battle."
                     )
                 ):
-                    self.trying_again.set()
                     await self.ps_client.send_message(
                         "/choose default", battle.battle_tag
                     )
