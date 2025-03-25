@@ -288,8 +288,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         )
         finishing = battle1.is_finishing or battle2.is_finishing
         if finishing:
-            while not (battle1.finished and battle2.finished):
-                time.sleep(0.01)
+            battle1 = self.agent1.battle_queue.get()
+            battle2 = self.agent1.battle_queue.get()
         observations = {
             self.agents[0]: self.embed_battle(battle1),
             self.agents[1]: self.embed_battle(battle2),
