@@ -303,6 +303,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             self.agents[0]: battle1.finished and not finishing,
             self.agents[1]: battle2.finished and not finishing,
         }
+        if battle1.finished:
+            self.agents = []
         return observations, reward, terminated, truncated, self.get_additional_info()
 
     def reset(
