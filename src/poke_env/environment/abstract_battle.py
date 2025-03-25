@@ -1111,6 +1111,11 @@ class AbstractBattle(ABC):
         return self._finished
 
     @property
+    def is_finishing(self) -> bool:
+        size = 4 if self.format is not None and "vgc" in self.format else self.team_size
+        return len([mon for mon in self.team.values() if mon.fainted]) == size
+
+    @property
     @abstractmethod
     def force_switch(self) -> Any:
         pass
