@@ -329,12 +329,22 @@ class Pokemon:
         # Handle silent effect ending
         if Effect.GLAIVE_RUSH in self.effects:
             self.end_effect("Glaive Rush")
-        if (
+        elif (
             Effect.CHARGE in self.effects
             and isinstance(move, Move)
+            and move.base_power > 0
             and move.type == PokemonType.ELECTRIC
+            and use
         ):
             self.end_effect("Charge")
+        elif (
+            Effect.FLASH_FIRE in self.effects
+            and isinstance(move, Move)
+            and move.base_power > 0
+            and move.type == PokemonType.FIRE
+            and use
+        ):
+            self.end_effect("Flash Fire")
 
     def prepare(self, move_id: str, target: Optional[Pokemon]):
         self.moved(move_id, use=False)
@@ -842,7 +852,7 @@ class Pokemon:
 
     @item.setter
     def item(self, item: Optional[str]):
-        self._item = item
+        self._item = to_id_str(item) if item is not None else None
 
     @property
     def level(self) -> int:
@@ -897,6 +907,13 @@ class Pokemon:
                 return dex_entry["name"]
             else:
                 return dex_entry["baseSpecies"]
+
+    @property
+    def original_types(self) -> List[PokemonType]:
+        if self._type_2 is None:
+            return [self._type_1]
+        else:
+            return [self._type_1, self._type_2]
 
     @property
     def pokeball(self) -> Optional[str]:
