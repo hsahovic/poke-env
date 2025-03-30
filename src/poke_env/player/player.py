@@ -49,6 +49,10 @@ class Player(ABC):
 
     MESSAGES_TO_IGNORE = {"t:", "expire", "uhtmlchange"}
 
+    # When an error resulting from an invalid choice is made, the next order has this
+    # chance of being showdown's default order to prevent infinite loops
+    DEFAULT_CHOICE_CHANCE = 1 / 1000
+
     def __init__(
         self,
         account_configuration: Optional[AccountConfiguration] = None,
@@ -268,6 +272,7 @@ class Player(ABC):
         # Battle messages can be multiline
         will_move = False
         from_teampreview_request = False
+        try_again = False
         if (
             len(split_messages) > 1
             and len(split_messages[1]) > 1
@@ -356,54 +361,68 @@ class Player(ABC):
                     battle.trapped = True
                     will_move = True
                     self.trying_again.set()
-                elif (
-                    split_message[2].startswith("[Invalid choice] Can't pass: ")
-                    or split_message[2].startswith(
-                        "[Invalid choice] Can't switch: You can't switch to an active "
-                        "Pokémon"
-                    )
-                    or split_message[2].startswith(
-                        "[Invalid choice] Can't switch: You can't switch to a fainted "
-                        "Pokémon"
-                    )
-                    or split_message[2].startswith(
-                        "[Invalid choice] Can't move: Invalid target for"
-                    )
-                    or split_message[2].startswith(
-                        "[Invalid choice] Can't move: You can't choose a target for"
-                    )
-                    or (
-                        split_message[2].startswith("[Invalid choice] Can't move: ")
-                        and split_message[2].endswith("needs a target")
-                    )
-                    or (
-                        split_message[2].startswith("[Invalid choice] Can't move: Your")
-                        and " doesn't have a move matching " in split_message[2]
-                    )
-                    or split_message[2].startswith(
-                        "[Invalid choice] Incomplete choice: "
-                    )
-                    or (
-                        split_message[2].startswith("[Unavailable choice]")
-                        and split_message[2].endswith("is disabled")
-                    )
-                    or (
-                        split_message[2].startswith("[Invalid choice]")
-                        and split_message[2].endswith("is disabled")
-                    )
-                    or split_message[2].startswith(
-                        "[Invalid choice] Can't move: You sent more choices than unfainted"
-                        " Pokémon."
-                    )
-                    or split_message[2].startswith(
-                        "[Invalid choice] Can't move: You can only Terastallize once per battle."
-                    )
+                elif split_message[2].startswith("[Invalid choice] Can't pass: "):
+                    will_move = True
+                    try_again = True
+                elif split_message[2].startswith(
+                    "[Invalid choice] Can't switch: You can't switch to an active "
+                    "Pokémon"
                 ):
                     will_move = True
-                    self.trying_again.set()
-                    await self.ps_client.send_message(
-                        "/choose default", battle.battle_tag
-                    )
+                    try_again = True
+                elif split_message[2].startswith(
+                    "[Invalid choice] Can't switch: You can't switch to a fainted "
+                    "Pokémon"
+                ):
+                    will_move = True
+                    try_again = True
+                elif split_message[2].startswith(
+                    "[Invalid choice] Can't move: Invalid target for"
+                ):
+                    will_move = True
+                    try_again = True
+                elif split_message[2].startswith(
+                    "[Invalid choice] Can't move: You can't choose a target for"
+                ):
+                    will_move = True
+                    try_again = True
+                elif split_message[2].startswith(
+                    "[Invalid choice] Can't move: "
+                ) and split_message[2].endswith("needs a target"):
+                    will_move = True
+                    try_again = True
+                elif (
+                    split_message[2].startswith("[Invalid choice] Can't move: Your")
+                    and " doesn't have a move matching " in split_message[2]
+                ):
+                    will_move = True
+                    try_again = True
+                elif split_message[2].startswith(
+                    "[Invalid choice] Incomplete choice: "
+                ):
+                    will_move = True
+                    try_again = True
+                elif split_message[2].startswith(
+                    "[Unavailable choice]"
+                ) and split_message[2].endswith("is disabled"):
+                    will_move = True
+                    try_again = True
+                elif split_message[2].startswith("[Invalid choice]") and split_message[
+                    2
+                ].endswith("is disabled"):
+                    will_move = True
+                    try_again = True
+                elif split_message[2].startswith(
+                    "[Invalid choice] Can't move: You sent more choices than unfainted"
+                    " Pokémon."
+                ):
+                    will_move = True
+                    try_again = True
+                elif split_message[2].startswith(
+                    "[Invalid choice] Can't move: You can only Terastallize once per battle."
+                ):
+                    will_move = True
+                    try_again = True
                 else:
                     self.logger.critical("Unexpected error message: %s", split_message)
             elif split_message[1] == "turn":
@@ -420,21 +439,28 @@ class Player(ABC):
                 battle.parse_message(split_message)
         if will_move:
             await self._handle_battle_request(
-                battle, from_teampreview_request=from_teampreview_request
+                battle,
+                from_teampreview_request=from_teampreview_request,
+                try_again=try_again,
             )
 
     async def _handle_battle_request(
         self,
         battle: AbstractBattle,
         from_teampreview_request: bool = False,
+        try_again: bool = False,
     ):
-        if battle.teampreview:
+        if try_again and random.random() < self.DEFAULT_CHOICE_CHANCE:
+            message = self.choose_default_move().message
+        elif battle.teampreview:
             if not from_teampreview_request:
                 return
             message = self.teampreview(battle)
             if isinstance(message, Awaitable):
                 message = await message
         else:
+            if try_again:
+                self.trying_again.set()
             choice = self.choose_move(battle)
             if isinstance(choice, Awaitable):
                 choice = await choice
