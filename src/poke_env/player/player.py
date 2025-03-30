@@ -435,9 +435,10 @@ class Player(ABC):
         elif battle.teampreview:
             if not from_teampreview_request:
                 return
-            message = self.teampreview(battle)
-            if isinstance(message, Awaitable):
-                message = await message
+            m = self.teampreview(battle)
+            if isinstance(m, Awaitable):
+                m = await m
+            message = m
         else:
             if try_again:
                 self.trying_again.set()
