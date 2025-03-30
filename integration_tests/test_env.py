@@ -53,6 +53,7 @@ def test_env_run():
         )
         env.start_challenging(3)
         play_function(env, 3)
+        env.close()
         env = SingleAgentWrapper(env, RandomPlayer())
         env.env.start_challenging(3)
         single_agent_play_function(env, 3)
@@ -95,6 +96,7 @@ def test_env_api():
             strict=False,
         )
         parallel_api_test(env)
+        env.close()
         env = SingleAgentWrapper(env, RandomPlayer())
         check_env(env)
         env.close()
