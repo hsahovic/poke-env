@@ -228,7 +228,8 @@ async def return_move():
 @patch("poke_env.ps_client.ps_client.PSClient.send_message")
 @pytest.mark.asyncio
 async def test_awaitable_move(send_message_patch):
-    player = SimplePlayer()
+    player = SimplePlayer(start_listening=False)
+    player.ps_client.websocket = AsyncMock()
     battle = Battle("bat1", player.username, player.logger, 8)
     battle._teampreview = False
 
