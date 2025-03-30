@@ -9,18 +9,18 @@ from poke_env.player.player import Player
 
 
 class _EnvPlayerWrapper(_EnvPlayer):
-    def __init__(self, player: Player):
+    def __init__(self, agent: _EnvPlayer, player: Player):
+        self.agent = agent
         self.player = player
-        self.setup()
 
     def __getattr__(self, name: str):
-        return getattr(self.player, name)
+        return getattr(self.agent, name)
 
     def __setattr__(self, name, value):
         if name == "player" or name in self.__dict__:
             super().__setattr__(name, value)
         else:
-            setattr(self.player, name, value)
+            setattr(self.agent, name, value)
 
     async def _env_move(self, battle: AbstractBattle) -> BattleOrder:
         await super()._env_move(battle)
@@ -33,7 +33,7 @@ class _EnvPlayerWrapper(_EnvPlayer):
 class SingleAgentWrapper(Env[ObsType, ActionType]):
     def __init__(self, env: PokeEnv[ObsType, ActionType], opponent: Player):
         self.env = env
-        self.env.agent2 = _EnvPlayerWrapper(opponent)
+        self.env.agent2 = _EnvPlayerWrapper(self.env.agent2, opponent)
         self.observation_space = list(env.observation_spaces.values())[0]
         self.action_space = list(env.action_spaces.values())[0]
 

@@ -473,7 +473,6 @@ class Player(ABC):
         n_challenges: int,
         packed_team: Optional[str],
     ):
-        print("$$$$$$$$$$$$$$$$$$$$", self.username)
         if opponent:
             if isinstance(opponent, list):
                 opponent = [to_id_str(o) for o in opponent]
