@@ -16,6 +16,12 @@ class _EnvPlayerWrapper(_EnvPlayer):
     def __getattr__(self, name: str):
         return getattr(self.player, name)
 
+    def __setattr__(self, name, value):
+        if name == "player" or name in self.__dict__:
+            super().__setattr__(name, value)
+        else:
+            setattr(self.player, name, value)
+
     async def _env_move(self, battle: AbstractBattle) -> BattleOrder:
         await super()._env_move(battle)
         order = self.player.choose_move(battle)
