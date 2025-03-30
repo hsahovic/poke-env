@@ -22,8 +22,8 @@ async def simple_cross_evaluation(n_battles, players):
 async def test_random_players():
     players = [RandomPlayer(), RandomPlayer()]
     await asyncio.wait_for(
-        simple_cross_evaluation(5, players=players),
-        timeout=5,
+        simple_cross_evaluation(100, players=players),
+        timeout=100,
     )
 
 
