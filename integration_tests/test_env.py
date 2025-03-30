@@ -96,6 +96,30 @@ def test_repeated_runs():
     env.close()
 
 
+def test_env_with_teams(showdown_format_teams):
+    for format_, teams in showdown_format_teams.items():
+        for team in teams:
+            if "doubles" in format_ or "vgc" in format_:
+                env = DoublesTestEnv(
+                    battle_format=format_,
+                    log_level=25,
+                    team=team,
+                    start_challenging=True,
+                    strict=False,
+                )
+            else:
+                env = SinglesTestEnv(
+                    battle_format=format_,
+                    log_level=25,
+                    team=team,
+                    start_challenging=True,
+                    strict=False,
+                )
+            env.start_challenging(3)
+            play_function(env, 3)
+            env.close()
+
+
 @pytest.mark.timeout(120)
 def test_env_api():
     for gen in range(4, 10):

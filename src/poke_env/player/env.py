@@ -3,6 +3,7 @@ For a black-box implementation consider using the module env_player.
 """
 
 import asyncio
+import copy
 import time
 from abc import abstractmethod
 from typing import Any, Awaitable, Dict, Generic, List, Optional, Tuple, TypeVar, Union
@@ -13,9 +14,13 @@ from pettingzoo.utils.env import ParallelEnv  # type: ignore[import-untyped]
 
 from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
 from poke_env.environment.abstract_battle import AbstractBattle
+from poke_env.environment.battle import Battle
+from poke_env.environment.double_battle import DoubleBattle
+from poke_env.environment.pokemon import Pokemon
 from poke_env.player.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
+    DoubleBattleOrder,
     ForfeitBattleOrder,
 )
 from poke_env.player.player import Player
@@ -100,6 +105,59 @@ class _EnvPlayer(Player):
 
     def choose_move(self, battle: AbstractBattle) -> Awaitable[BattleOrder]:
         return self._env_move(battle)
+
+    def teampreview(self, battle: AbstractBattle) -> Awaitable[str]:
+        return self._teampreview(battle)
+
+    async def _teampreview(self, battle: AbstractBattle) -> str:
+        self.battle = battle
+        if isinstance(battle, Battle):
+            return self.random_teampreview(battle)
+        elif isinstance(battle, DoubleBattle):
+            order1 = await self._env_move(battle)
+            if not isinstance(order1, DoubleBattleOrder):
+                return order1.message
+            upd_battle = self._simulate_teampreview_switchin(order1, battle)
+            order2 = await self._env_move(upd_battle)
+            action1 = self.order_to_action(order1, battle)  # type: ignore
+            action2 = self.order_to_action(order2, upd_battle)  # type: ignore
+            assert all(1 <= action1) and all(action1 <= 6)
+            assert all(1 <= action2) and all(action2 <= 6)
+            return f"/team {action1[0]}{action1[1]}{action2[0]}{action2[1]}"
+        else:
+            raise TypeError()
+
+    @staticmethod
+    def _simulate_teampreview_switchin(order: BattleOrder, battle: DoubleBattle):
+        assert isinstance(order, DoubleBattleOrder)
+        assert order.first_order is not None
+        assert order.second_order is not None
+        pokemon1 = order.first_order.order
+        pokemon2 = order.second_order.order
+        assert isinstance(pokemon1, Pokemon)
+        assert isinstance(pokemon2, Pokemon)
+        upd_battle = copy.deepcopy(battle)
+        upd_battle.switch(
+            f"{upd_battle.player_role}a: {pokemon1.base_species.capitalize()}",
+            pokemon1._last_details,
+            f"{pokemon1.current_hp}/{pokemon1.max_hp}",
+        )
+        upd_battle.switch(
+            f"{upd_battle.player_role}b: {pokemon2.base_species.capitalize()}",
+            pokemon2._last_details,
+            f"{pokemon2.current_hp}/{pokemon2.max_hp}",
+        )
+        upd_battle.available_switches[0] = [
+            p
+            for p in battle.available_switches[0]
+            if p.base_species not in [pokemon1.base_species, pokemon2.base_species]
+        ]
+        upd_battle.available_switches[1] = [
+            p
+            for p in battle.available_switches[1]
+            if p.base_species not in [pokemon1.base_species, pokemon2.base_species]
+        ]
+        return upd_battle
 
     async def _env_move(self, battle: AbstractBattle) -> BattleOrder:
         if not self.battle or self.battle.finished:
