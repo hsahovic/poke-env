@@ -11,9 +11,13 @@ from poke_env.player.player import Player
 class _EnvPlayerWrapper(_EnvPlayer):
     def __init__(self, player: Player):
         self.player = player
+        self.setup()
 
     def __getattr__(self, name):
-        return getattr(self.player, name)
+        if hasattr(self, name):
+            return getattr(self, name)
+        else:
+            return getattr(self.player, name)
 
     async def _env_move(self, battle: AbstractBattle) -> BattleOrder:
         await super()._env_move(battle)
