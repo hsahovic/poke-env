@@ -12,6 +12,9 @@ class _EnvPlayerWrapper(_EnvPlayer):
     def __init__(self, player: Player):
         self.player = player
 
+    def __getattr__(self, name):
+        return getattr(self.player, name)
+
     async def _env_move(self, battle: AbstractBattle) -> BattleOrder:
         await super()._env_move(battle)
         order = self.player.choose_move(battle)
@@ -32,7 +35,7 @@ class SingleAgentWrapper(Env[ObsType, ActionType]):
     ) -> Tuple[ObsType, float, bool, bool, Dict[str, Any]]:
         actions = {
             self.env.agent1.username: action,
-            self.env.agent2.player.username: 0,  # type: ignore
+            self.env.agent2.username: 0,  # type: ignore
         }
         obs, rewards, terms, truncs, infos = self.env.step(actions)
         return (
