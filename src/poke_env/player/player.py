@@ -317,55 +317,55 @@ class Player(ABC):
                     battle.trapped = True
                     await self._handle_battle_request(battle)
                 elif split_message[2].startswith("[Invalid choice] Can't pass: "):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    await self._handle_battle_request(battle, try_again=True)
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't switch: You can't switch to an active "
                     "Pokémon"
                 ):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    await self._handle_battle_request(battle, try_again=True)
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't switch: You can't switch to a fainted "
                     "Pokémon"
                 ):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    await self._handle_battle_request(battle, try_again=True)
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: Invalid target for"
                 ):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    await self._handle_battle_request(battle, try_again=True)
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: You can't choose a target for"
                 ):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    await self._handle_battle_request(battle, try_again=True)
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: "
                 ) and split_message[2].endswith("needs a target"):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    await self._handle_battle_request(battle, try_again=True)
                 elif (
                     split_message[2].startswith("[Invalid choice] Can't move: Your")
                     and " doesn't have a move matching " in split_message[2]
                 ):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    await self._handle_battle_request(battle, try_again=True)
                 elif split_message[2].startswith(
                     "[Invalid choice] Incomplete choice: "
                 ):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    await self._handle_battle_request(battle, try_again=True)
                 elif split_message[2].startswith(
                     "[Unavailable choice]"
                 ) and split_message[2].endswith("is disabled"):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    await self._handle_battle_request(battle, try_again=True)
                 elif split_message[2].startswith("[Invalid choice]") and split_message[
                     2
                 ].endswith("is disabled"):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    await self._handle_battle_request(battle, try_again=True)
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: You sent more choices than unfainted"
                     " Pokémon."
                 ):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    await self._handle_battle_request(battle, try_again=True)
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: You can only Terastallize once per battle."
                 ):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    await self._handle_battle_request(battle, try_again=True)
                 else:
                     self.logger.critical("Unexpected error message: %s", split_message)
             elif split_message[1] == "turn":
@@ -385,16 +385,17 @@ class Player(ABC):
         self,
         battle: AbstractBattle,
         from_teampreview_request: bool = False,
-        maybe_default_order: bool = False,
+        try_again: bool = False,
     ):
-        if maybe_default_order and random.random() < self.DEFAULT_CHOICE_CHANCE:
+        if try_again and random.random() < self.DEFAULT_CHOICE_CHANCE:
             message = self.choose_default_move().message
         elif battle.teampreview:
             if not from_teampreview_request:
                 return
             message = self.teampreview(battle)
         else:
-            self.trying_again.set()
+            if try_again:
+                self.trying_again.set()
             choice = self.choose_move(battle)
             if isinstance(choice, Awaitable):
                 choice = await choice
