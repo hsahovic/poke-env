@@ -121,8 +121,6 @@ class _EnvPlayer(Player):
             order2 = await self._env_move(upd_battle)
             action1 = self.order_to_action(order1, battle)  # type: ignore
             action2 = self.order_to_action(order2, upd_battle)  # type: ignore
-            assert all(1 <= action1) and all(action1 <= 6)
-            assert all(1 <= action2) and all(action2 <= 6)
             return f"/team {action1[0]}{action1[1]}{action2[0]}{action2[1]}"
         else:
             raise TypeError()
@@ -162,8 +160,6 @@ class _EnvPlayer(Player):
     async def _env_move(self, battle: AbstractBattle) -> BattleOrder:
         if not self.battle or self.battle.finished:
             self.battle = battle
-        if not self.battle == battle:
-            raise RuntimeError("Using different battles for queues")
         await self.battle_queue.async_put(battle)
         self.waiting = True
         action = await self.order_queue.async_get()
