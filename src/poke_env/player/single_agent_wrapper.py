@@ -17,7 +17,7 @@ class _EnvPlayerWrapper(_EnvPlayer):
         return getattr(self.agent, name)
 
     async def _env_move(self, battle: AbstractBattle) -> BattleOrder:
-        await super()._env_move(battle)
+        await self.agent._env_move(battle)
         order = self.player.choose_move(battle)
         if isinstance(order, Awaitable):
             order = await order
