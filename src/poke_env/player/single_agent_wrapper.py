@@ -13,11 +13,8 @@ class _EnvPlayerWrapper(_EnvPlayer):
         self.player = player
         self.setup()
 
-    def __getattr__(self, name):
-        if hasattr(self, name):
-            return getattr(self, name)
-        else:
-            return getattr(self.player, name)
+    def __getattr__(self, name: str):
+        return getattr(self.player, name)
 
     async def _env_move(self, battle: AbstractBattle) -> BattleOrder:
         await super()._env_move(battle)
