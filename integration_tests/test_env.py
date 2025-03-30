@@ -98,5 +98,6 @@ def test_env_api():
         parallel_api_test(env)
         env.close()
         env = SingleAgentWrapper(env, RandomPlayer())
+        env.env.start_challenging()
         check_env(env)
         env.close()
