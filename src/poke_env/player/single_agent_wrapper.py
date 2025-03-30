@@ -64,4 +64,4 @@ class SingleAgentWrapper(Env[ObsType, ActionType]):
         self.env.close()
 
     def set_opp_policy(self, policy):
-        self.opponent.set_policy(policy)  # type: ignore
+        self.env.agent2.player.set_policy(policy)  # type: ignore
