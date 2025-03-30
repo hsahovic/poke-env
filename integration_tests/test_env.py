@@ -96,7 +96,6 @@ def test_repeated_runs():
     env.close()
 
 
-@pytest.mark.timeout(120)
 def test_env_with_teams(showdown_format_teams):
     for format_, teams in showdown_format_teams.items():
         for team in teams:
@@ -112,7 +111,7 @@ def test_env_with_teams(showdown_format_teams):
                 start_challenging=True,
                 strict=False,
             )
-            play_function(env, 3)
+            play_function(env, 10)
             env.close()
 
 
