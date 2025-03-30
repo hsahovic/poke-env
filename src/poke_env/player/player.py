@@ -288,6 +288,9 @@ class Player(ABC):
             elif split_message[1] == "request":
                 if split_message[2]:
                     request = orjson.loads(split_message[2])
+                    if "teamPreview" in request and request["teamPreview"]:
+                        for p in request["side"]["pokemon"]:
+                            p["active"] = False
                     battle.parse_request(request)
                     if battle.move_on_next_request:
                         await self._handle_battle_request(battle)
@@ -433,6 +436,8 @@ class Player(ABC):
             if not from_teampreview_request:
                 return
             message = self.teampreview(battle)
+            if isinstance(message, Awaitable):
+                message = await message
         else:
             if try_again:
                 self.trying_again.set()
@@ -441,7 +446,7 @@ class Player(ABC):
                 choice = await choice
             message = choice.message
 
-        if not battle._wait:
+        if hasattr(self.ps_client, "websocket") and not battle._wait:
             await self.ps_client.send_message(message, battle.battle_tag)
 
     async def _handle_challenge_request(self, split_message: List[str]):
@@ -829,7 +834,7 @@ class Player(ABC):
                 )
         self._battles = {}
 
-    def teampreview(self, battle: AbstractBattle) -> str:
+    def teampreview(self, battle: AbstractBattle) -> Union[str, Awaitable[str]]:
         """Returns a teampreview order for the given battle.
 
         This order must be of the form /team TEAM, where TEAM is a string defining the

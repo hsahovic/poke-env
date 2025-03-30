@@ -62,6 +62,8 @@ class AbstractBattle(ABC):
         "upkeep",
         "uhtml",
         "zbroken",
+        "badge",
+        "hidelines",
         "",
     }
 
@@ -828,6 +830,8 @@ class AbstractBattle(ABC):
             source, target, stats = event[2:5]
             source_mon = self.get_pokemon(source)
             target_mon = self.get_pokemon(target)
+            if "[from]" in stats:
+                stats = "accuracy, atk, def, evasion, spa, spd, spe"
             for stat in stats.split(", "):
                 source_mon.boosts[stat], target_mon.boosts[stat] = (
                     target_mon.boosts[stat],
@@ -903,20 +907,21 @@ class AbstractBattle(ABC):
             player, details = event[2:4]
             self._register_teampreview_pokemon(player, details)
         elif event[1] == "raw":
-            username, rating_info = event[2].split("'s rating: ")
-            rating_int = int(rating_info[:4])
-            if username == self.player_username:
-                self._rating = rating_int
-            elif username == self.opponent_username:
-                self._opponent_rating = rating_int
-            elif self.logger is not None:
-                self.logger.warning(
-                    "Rating information regarding an unrecognized username received. "
-                    "Received '%s', while only known players are '%s' and '%s'",
-                    username,
-                    self.player_username,
-                    self.opponent_username,
-                )
+            if "'s rating: " in event[2]:
+                username, rating_info = event[2].split("'s rating: ")
+                rating_int = int(rating_info[:4])
+                if username == self.player_username:
+                    self._rating = rating_int
+                elif username == self.opponent_username:
+                    self._opponent_rating = rating_int
+                elif self.logger is not None:
+                    self.logger.warning(
+                        "Rating information regarding an unrecognized username received. "
+                        "Received '%s', while only known players are '%s' and '%s'",
+                        username,
+                        self.player_username,
+                        self.opponent_username,
+                    )
         elif event[1] == "replace":
             pokemon = event[2]
             details = event[3]
@@ -963,9 +968,11 @@ class AbstractBattle(ABC):
         pass
 
     def _register_teampreview_pokemon(self, player: str, details: str):
+        mon = Pokemon(details=details, gen=self._data.gen)
         if player != self._player_role:
-            mon = Pokemon(details=details, gen=self._data.gen)
             self._teampreview_opponent_team.add(mon)
+        elif mon.name not in [p.name for p in self.teampreview_team]:
+            self._teampreview_team.add(mon)
 
     def side_end(self, side: str, condition_str: str):
         if side[:2] == self._player_role:

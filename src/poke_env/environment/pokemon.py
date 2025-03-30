@@ -271,6 +271,7 @@ class Pokemon:
         self._clear_effects()
 
     def forme_change(self, species: str):
+        self._last_details = species
         species = species.split(",")[0]
         self._update_from_pokedex(species, store_species=False)
 
@@ -406,7 +407,7 @@ class Pokemon:
             self._temporary_types = []
             for type_ in details.split("/"):
                 self._temporary_types.append(PokemonType.from_name(type_))
-        elif effect == Effect.SKILL_SWAP and details:
+        elif effect == Effect.SKILL_SWAP and details and details[0]:
             self.set_temporary_ability(details[0])
 
             # Skill Swap reveals a mon's ability
@@ -458,6 +459,9 @@ class Pokemon:
         self._update_from_pokedex(into.species, store_species=False)
         self._current_hp = int(current_hp)
         self._boosts = into.boosts.copy()
+        self._moves = {m.id: Move(m.id, m._gen) for m in into.moves.values()}
+        for m in self._moves.values():
+            m._current_pp = 5
 
     def _update_from_pokedex(self, species: str, store_species: bool = True):
         species = to_id_str(species)
