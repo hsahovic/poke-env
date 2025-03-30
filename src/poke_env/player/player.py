@@ -390,7 +390,7 @@ class Player(ABC):
         try_again: bool = False,
     ):
         if try_again and (
-            "zoroark" in [p.base_species for p in battle.team.values()]
+            "illusion" in [p.ability for p in battle.team.values()]
             or random.random() < self.DEFAULT_CHOICE_CHANCE
         ):
             message = self.choose_default_move().message
