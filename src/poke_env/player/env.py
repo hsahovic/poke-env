@@ -171,8 +171,6 @@ class _EnvPlayer(Player):
     async def _env_move(self, battle: AbstractBattle) -> BattleOrder:
         if not self.battle or self.battle.finished:
             self.battle = battle
-        if not self.battle == battle:
-            raise RuntimeError("Using different battles for queues")
         await self.battle_queue.async_put(battle)
         self.waiting = True
         action = await self.order_queue.async_get()
