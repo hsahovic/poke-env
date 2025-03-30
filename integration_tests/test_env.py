@@ -115,7 +115,6 @@ def test_env_with_teams(showdown_format_teams):
                     start_challenging=True,
                     strict=False,
                 )
-            env.start_challenging(3)
             play_function(env, 3)
             env.close()
 
