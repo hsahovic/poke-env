@@ -315,17 +315,7 @@ class Player(ABC):
                     teambuilder = TeambuilderPokemon.parse_showteam_pkmn_substr(msg)
                     mon._update_from_teambuilder(teambuilder)
                 # only handle battle request after all open sheets are processed
-                if (
-                    battle.team
-                    and battle.opponent_team
-                    and all(
-                        [
-                            p.moves
-                            for p in list(battle.team.values())
-                            + list(battle.opponent_team.values())
-                        ]
-                    )
-                ):
+                if role == "p2":
                     await self._handle_battle_request(
                         battle, from_teampreview_request=True
                     )
