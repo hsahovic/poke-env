@@ -11,13 +11,14 @@ from poke_env.player.player import Player
 class _EnvPlayerWrapper(_EnvPlayer):
     def __init__(self, agent: _EnvPlayer, player: Player):
         self.agent = agent
+        self.agent._env_move = self._env_move  # type: ignore [method-assign]
         self.player = player
 
     def __getattr__(self, name: str):
         return getattr(self.agent, name)
 
     async def _env_move(self, battle: AbstractBattle) -> BattleOrder:
-        await self.agent._env_move(battle)
+        await _EnvPlayer._env_move(self.agent, battle)
         order = self.player.choose_move(battle)
         if isinstance(order, Awaitable):
             order = await order
