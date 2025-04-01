@@ -59,7 +59,6 @@ class _AsyncQueue(Generic[ItemType]):
         for task in pending:
             task.cancel()
         result = list(done)[0].result()
-        timeout_flag.clear()
         if result is True:
             return None
         else:
@@ -271,9 +270,9 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         Dict[str, Dict[str, Any]],
     ]:
         assert self.battle1 is not None
+        assert not self.battle1.finished
         assert self.battle2 is not None
-        if self.battle1.finished:
-            raise RuntimeError("Battle is already finished, call reset")
+        assert not self.battle2.finished
         if self.agent1.waiting:
             order1 = self.action_to_order(
                 actions[self.agents[0]],
