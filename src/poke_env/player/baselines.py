@@ -357,7 +357,7 @@ class SimpleHeuristicsPlayer(Player):
     def choose_move(self, battle: AbstractBattle):
         if not isinstance(battle, DoubleBattle):
             return self.choose_move_in_1v1(battle)[0]  # type: ignore
-        orders = []
+        orders: List[Optional[BattleOrder]] = []
         for active_id in [0, 1]:
             results = [
                 self.choose_move_in_1v1(PseudoBattle(battle, active_id, opp_id))
@@ -389,12 +389,17 @@ class SimpleHeuristicsPlayer(Player):
                 (
                     max(results, key=lambda a: a[1])[0]
                     if battle.force_switch != [[False, True], [True, False]][active_id]
+                    and not (
+                        len(battle.available_switches[active_id]) == 1
+                        and battle.force_switch == [True, True]
+                        and active_id == 1
+                    )
                     else None
                 )
             ]
         joined_orders = DoubleBattleOrder.join_orders(
-            [orders[0]] if orders[0] else [],
-            [orders[1]] if orders[1] else [],
+            [orders[0]] if orders[0] is not None else [],
+            [orders[1]] if orders[1] is not None else [],
         )
         if joined_orders:
             return joined_orders[0]
