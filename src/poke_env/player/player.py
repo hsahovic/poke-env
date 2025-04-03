@@ -45,10 +45,6 @@ class Player(ABC):
 
     MESSAGES_TO_IGNORE = {"t:", "expire", "uhtmlchange"}
 
-    # When an error resulting from an invalid choice is made, the next order has this
-    # chance of being showdown's default order to prevent infinite loops
-    DEFAULT_CHOICE_CHANCE = 1 / 1000
-
     def __init__(
         self,
         account_configuration: Optional[AccountConfiguration] = None,
@@ -153,8 +149,6 @@ class Player(ABC):
         self._battle_end_condition: Condition = create_in_poke_loop(Condition)
         self._challenge_queue: Queue[Any] = create_in_poke_loop(Queue)
         self._team: Optional[Teambuilder] = None
-
-        self.trying_again: Event = create_in_poke_loop(Event)
 
         if isinstance(team, Teambuilder):
             self._team = team
@@ -309,7 +303,6 @@ class Player(ABC):
                     if (isinstance(battle.trapped, bool) and battle.trapped) or (
                         isinstance(battle.trapped, List) and any(battle.trapped)
                     ):
-                        self.trying_again.set()
                         await self._handle_battle_request(battle)
                 elif split_message[2].startswith(
                     "[Unavailable choice] Can't switch: The active Pokémon is "
@@ -318,63 +311,88 @@ class Player(ABC):
                     "[Invalid choice] Can't switch: The active Pokémon is trapped"
                 ):
                     battle.trapped = True
-                    self.trying_again.set()
                     await self._handle_battle_request(battle)
                 elif split_message[2].startswith("[Invalid choice] Can't pass: "):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    await self.ps_client.send_message(
+                        self.choose_default_move().message, battle.battle_tag
+                    )
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't switch: You can't switch to an active "
                     "Pokémon"
                 ):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    await self.ps_client.send_message(
+                        self.choose_default_move().message, battle.battle_tag
+                    )
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't switch: You can't switch to a fainted "
                     "Pokémon"
                 ):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    await self.ps_client.send_message(
+                        self.choose_default_move().message, battle.battle_tag
+                    )
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't switch: You sent more switches than "
                     "Pokémon that need to switch"
                 ):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    await self.ps_client.send_message(
+                        self.choose_default_move().message, battle.battle_tag
+                    )
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: Invalid target for"
                 ):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    await self.ps_client.send_message(
+                        self.choose_default_move().message, battle.battle_tag
+                    )
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: You can't choose a target for"
                 ):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    await self.ps_client.send_message(
+                        self.choose_default_move().message, battle.battle_tag
+                    )
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: "
                 ) and split_message[2].endswith("needs a target"):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    await self.ps_client.send_message(
+                        self.choose_default_move().message, battle.battle_tag
+                    )
                 elif (
                     split_message[2].startswith("[Invalid choice] Can't move: Your")
                     and " doesn't have a move matching " in split_message[2]
                 ):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    await self.ps_client.send_message(
+                        self.choose_default_move().message, battle.battle_tag
+                    )
                 elif split_message[2].startswith(
                     "[Invalid choice] Incomplete choice: "
                 ):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    await self.ps_client.send_message(
+                        self.choose_default_move().message, battle.battle_tag
+                    )
                 elif split_message[2].startswith(
                     "[Unavailable choice]"
                 ) and split_message[2].endswith("is disabled"):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    await self.ps_client.send_message(
+                        self.choose_default_move().message, battle.battle_tag
+                    )
                 elif split_message[2].startswith("[Invalid choice]") and split_message[
                     2
                 ].endswith("is disabled"):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    await self.ps_client.send_message(
+                        self.choose_default_move().message, battle.battle_tag
+                    )
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: You sent more choices than unfainted"
                     " Pokémon."
                 ):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    await self.ps_client.send_message(
+                        self.choose_default_move().message, battle.battle_tag
+                    )
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: You can only Terastallize once per battle."
                 ):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
+                    await self.ps_client.send_message(
+                        self.choose_default_move().message, battle.battle_tag
+                    )
                 else:
                     self.logger.critical("Unexpected error message: %s", split_message)
             elif split_message[1] == "turn":
@@ -391,28 +409,17 @@ class Player(ABC):
                 battle.parse_message(split_message)
 
     async def _handle_battle_request(
-        self,
-        battle: AbstractBattle,
-        from_teampreview_request: bool = False,
-        maybe_default_order: bool = False,
+        self, battle: AbstractBattle, from_teampreview_request: bool = False
     ):
-        if maybe_default_order and (
-            "illusion" in [p.ability for p in battle.team.values()]
-            or random.random() < self.DEFAULT_CHOICE_CHANCE
-        ):
-            message = self.choose_default_move().message
-        elif battle.teampreview:
+        if battle.teampreview:
             if not from_teampreview_request:
                 return
             message = self.teampreview(battle)
         else:
-            if maybe_default_order:
-                self.trying_again.set()
             choice = self.choose_move(battle)
             if isinstance(choice, Awaitable):
                 choice = await choice
             message = choice.message
-        self.trying_again.clear()
         if not battle._wait:
             await self.ps_client.send_message(message, battle.battle_tag)
 
