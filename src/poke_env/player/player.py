@@ -338,6 +338,12 @@ class Player(ABC):
                         self.choose_default_move().message, battle.battle_tag
                     )
                 elif split_message[2].startswith(
+                    "[Invalid choice] Can't move: You need a switch response"
+                ):
+                    await self.ps_client.send_message(
+                        self.choose_default_move().message, battle.battle_tag
+                    )
+                elif split_message[2].startswith(
                     "[Invalid choice] Can't move: Invalid target for"
                 ):
                     await self.ps_client.send_message(
