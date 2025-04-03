@@ -303,7 +303,9 @@ class Player(ABC):
                 if split_message[2].startswith(
                     "[Invalid choice] Sorry, too late to make a different move"
                 ):
-                    if battle.trapped:
+                    if (isinstance(battle.trapped, bool) and battle.trapped) or (
+                        isinstance(battle.trapped, List) and any(battle.trapped)
+                    ):
                         self.trying_again.set()
                         await self._handle_battle_request(battle)
                 elif split_message[2].startswith(
