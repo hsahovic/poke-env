@@ -42,6 +42,26 @@ class _AsyncQueue(Generic[ItemType]):
         res = asyncio.run_coroutine_threadsafe(self.async_get(), POKE_LOOP)
         return res.result()
 
+    def get_timeout(self, timeout_flag: asyncio.Event) -> Optional[ItemType]:
+        tasks = [
+            asyncio.ensure_future(self.async_get(), loop=POKE_LOOP),
+            asyncio.ensure_future(timeout_flag.wait(), loop=POKE_LOOP),
+        ]
+        done, pending = asyncio.run_coroutine_threadsafe(
+            asyncio.wait(
+                tasks,
+                return_when=asyncio.FIRST_COMPLETED,
+            ),
+            POKE_LOOP,
+        ).result()
+        for task in pending:
+            task.cancel()
+        result = list(done)[0].result()
+        if result is True:
+            return None
+        else:
+            return result
+
     async def async_put(self, item: ItemType):
         await self.queue.put(item)
 
@@ -76,6 +96,7 @@ class _EnvPlayer(Player):
         self.order_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
         self.battle: Optional[AbstractBattle] = None
         self.waiting = False
+        self.resetting: asyncio.Event = create_in_poke_loop(asyncio.Event)
 
     def choose_move(self, battle: AbstractBattle) -> Awaitable[BattleOrder]:
         return self._env_move(battle)
@@ -88,9 +109,18 @@ class _EnvPlayer(Player):
             return DefaultBattleOrder()
         await self.battle_queue.async_put(battle)
         self.waiting = True
-        action = await self.order_queue.async_get()
+        done, pending = await asyncio.wait(
+            [self.order_queue.async_get(), self.resetting.wait()],
+            return_when=asyncio.FIRST_COMPLETED,
+        )
         self.waiting = False
-        return action
+        for task in pending:
+            task.cancel()
+        result = list(done)[0].result()
+        if result is True:
+            return DefaultBattleOrder()
+        else:
+            return result
 
     def _battle_finished_callback(self, battle: AbstractBattle):
         asyncio.run_coroutine_threadsafe(self.battle_queue.async_put(battle), POKE_LOOP)
@@ -267,8 +297,14 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 strict=self.strict,
             )
             self.agent2.order_queue.put(order2)
-        battle1 = self.agent1.battle_queue.get()
-        battle2 = self.agent2.battle_queue.get()
+        battle1 = (
+            self.agent1.battle_queue.get_timeout(self.agent2.trying_again)
+            or self.battle1
+        )
+        battle2 = (
+            self.agent2.battle_queue.get_timeout(self.agent1.trying_again)
+            or self.battle2
+        )
         observations = {
             self.agents[0]: self.embed_battle(battle1),
             self.agents[1]: self.embed_battle(battle2),
@@ -316,18 +352,22 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 raise RuntimeError(
                     "Environment and agent aren't synchronized. Try to restart"
                 )
-        while self.battle1 == self.agent1.battle:
+        self.agent1.resetting.set()
+        self.agent2.resetting.set()
+        while self.battle1 == self.agent1.battle or self.battle2 == self.agent2.battle:
             time.sleep(0.01)
-        battle1 = self.agent1.battle_queue.get()
-        battle2 = self.agent2.battle_queue.get()
+        self.battle1 = self.agent1.battle_queue.get()
+        while self.battle1 != self.agent1.battle:
+            self.battle1 = self.agent1.battle_queue.get()
+        self.battle2 = self.agent2.battle_queue.get()
+        while self.battle2 != self.agent2.battle:
+            self.battle2 = self.agent2.battle_queue.get()
+        self.agent1.resetting.clear()
+        self.agent2.resetting.clear()
         observations = {
-            self.agents[0]: self.embed_battle(battle1),
-            self.agents[1]: self.embed_battle(battle2),
+            self.agents[0]: self.embed_battle(self.battle1),
+            self.agents[1]: self.embed_battle(self.battle2),
         }
-        self.battle1 = self.agent1.battle
-        self.battle1.logger = None
-        self.battle2 = self.agent2.battle
-        self.battle2.logger = None
         return observations, self.get_additional_info()
 
     def render(self, mode: str = "human"):
