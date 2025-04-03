@@ -286,6 +286,9 @@ class Player(ABC):
                 if split_message[2]:
                     request = orjson.loads(split_message[2])
                     battle.parse_request(request)
+                    if battle.move_on_next_request:
+                        await self._handle_battle_request(battle)
+                        battle.move_on_next_request = False
             elif split_message[1] == "win" or split_message[1] == "tie":
                 if split_message[1] == "win":
                     battle.won_by(split_message[2])
@@ -386,9 +389,6 @@ class Player(ABC):
                 await self._handle_ots_request(battle.battle_tag)
             else:
                 battle.parse_message(split_message)
-                if split_messages[-1] == split_message and battle.move_on_next_request:
-                    await self._handle_battle_request(battle)
-                    battle.move_on_next_request = False
 
     async def _handle_battle_request(
         self,
