@@ -42,9 +42,8 @@ class _AsyncQueue(Generic[ItemType]):
         res = asyncio.run_coroutine_threadsafe(self.async_get(), POKE_LOOP)
         return res.result()
 
-    def get_race(self, event: asyncio.Event, username: Optional[str] = None) -> Optional[ItemType]:
-        print(username, "start get_race")
-        async def _get_race() -> Optional[ItemType]:
+    def race_get(self, event: asyncio.Event, username: Optional[str] = None) -> Optional[ItemType]:
+        async def _race_get() -> Optional[ItemType]:
             get_task = asyncio.create_task(self.async_get())
             wait_task = asyncio.create_task(event.wait())
             done, _ = await asyncio.wait(
@@ -53,14 +52,12 @@ class _AsyncQueue(Generic[ItemType]):
             )
             if get_task in done:
                 wait_task.cancel()
-                print(username, "got it")
                 return get_task.result()
             else:
                 get_task.cancel()
-                print(username, "gave up")
                 return None
 
-        res = asyncio.run_coroutine_threadsafe(_get_race(), POKE_LOOP)
+        res = asyncio.run_coroutine_threadsafe(_race_get(), POKE_LOOP)
         return res.result()
 
     async def async_put(self, item: ItemType):
@@ -93,8 +90,8 @@ class _EnvPlayer(Player):
         self.__class__.__name__ = username
         super().__init__(**kwargs)
         self.__class__.__name__ = "_EnvPlayer"
-        self.battle_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1000))
-        self.order_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1000))
+        self.battle_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
+        self.order_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
         self.battle: Optional[AbstractBattle] = None
 
     def choose_move(self, battle: AbstractBattle) -> Awaitable[BattleOrder]:
@@ -269,8 +266,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         assert not self.battle1.finished
         assert self.battle2 is not None
         assert not self.battle2.finished
-        assert self.agent1.order_queue.empty()
-        assert self.agent2.order_queue.empty()
         if not self.battle1._wait.is_set():
             order1 = self.action_to_order(
                 actions[self.agents[0]],
@@ -289,10 +284,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             )
             self.agent2.order_queue.put(order2)
         self.battle2._wait.clear()
-        battle1 = self.agent1.battle_queue.get_race(self.battle1._wait, self.agent1.username) or self.battle1
-        battle2 = self.agent2.battle_queue.get_race(self.battle2._wait, self.agent2.username) or self.battle2
-        assert self.agent1.battle_queue.empty(), self.agent1.username
-        assert self.agent2.battle_queue.empty(), self.agent2.username
+        battle1 = self.agent1.battle_queue.race_get(self.battle1._wait) or self.battle1
+        battle2 = self.agent2.battle_queue.race_get(self.battle2._wait) or self.battle2
         observations = {
             self.agents[0]: self.embed_battle(battle1),
             self.agents[1]: self.embed_battle(battle2),
@@ -340,22 +333,12 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 raise RuntimeError(
                     "Environment and agent aren't synchronized. Try to restart"
                 )
-        while self.battle1 == self.agent1.battle or self.battle2 == self.agent2.battle:
-            time.sleep(0.01)
         self.battle1 = self.agent1.battle_queue.get()
         self.battle2 = self.agent2.battle_queue.get()
-        while self.battle1 != self.agent1.battle:
-            self.agent1.order_queue.put(DefaultBattleOrder())
-            self.battle1 = self.agent1.battle_queue.get()
-        while self.battle2 != self.agent2.battle:
-            self.agent2.order_queue.put(DefaultBattleOrder())
-            self.battle2 = self.agent2.battle_queue.get()
         observations = {
             self.agents[0]: self.embed_battle(self.battle1),
             self.agents[1]: self.embed_battle(self.battle2),
         }
-        self.battle1.logger = None
-        self.battle2.logger = None
         return observations, self.get_additional_info()
 
     def render(self, mode: str = "human"):
