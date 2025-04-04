@@ -346,12 +346,12 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             time.sleep(0.01)
         self.battle1 = self.agent1.battle_queue.get()
         self.battle2 = self.agent2.battle_queue.get()
-        assert (
-            self.battle1 == self.agent1.battle
-        ), f"{self.battle1.battle_tag} != {self.agent1.battle.battle_tag}"
-        assert (
-            self.battle2 == self.agent2.battle
-        ), f"{self.battle2.battle_tag} != {self.agent2.battle.battle_tag}"
+        while self.battle1 != self.agent1.battle:
+            self.agent1.order_queue.put(DefaultBattleOrder())
+            self.battle1 = self.agent1.battle_queue.get()
+        while self.battle2 != self.agent2.battle:
+            self.agent2.order_queue.put(DefaultBattleOrder())
+            self.battle2 = self.agent2.battle_queue.get()
         observations = {
             self.agents[0]: self.embed_battle(self.battle1),
             self.agents[1]: self.embed_battle(self.battle2),

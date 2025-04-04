@@ -432,7 +432,7 @@ class Player(ABC):
             if isinstance(choice, Awaitable):
                 choice = await choice
             message = choice.message
-        if not battle._wait:
+        if not battle._wait and not battle.finished:
             await self.ps_client.send_message(message, battle.battle_tag)
 
     async def _handle_challenge_request(self, split_message: List[str]):
