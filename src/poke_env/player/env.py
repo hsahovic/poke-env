@@ -106,7 +106,6 @@ class _EnvPlayer(Player):
             return DefaultBattleOrder()
         await self.battle_queue.async_put(battle)
         order = await self.order_queue.async_get()
-        self.battle._wait.clear()
         return order
 
     def _battle_finished_callback(self, battle: AbstractBattle):
@@ -282,6 +281,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 strict=self.strict,
             )
             self.agent1.order_queue.put(order1)
+        self.battle1._wait.clear()
         if not (battle2_wait or agent1_trying_again):
             order2 = self.action_to_order(
                 actions[self.agents[1]],
@@ -290,6 +290,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 strict=self.strict,
             )
             self.agent2.order_queue.put(order2)
+        self.battle2._wait.clear()
         battle1 = (
             self.agent1.battle_queue.race_get(
                 self.battle1._wait, self.agent2._trying_again
