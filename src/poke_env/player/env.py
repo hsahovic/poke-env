@@ -42,6 +42,17 @@ class _AsyncQueue(Generic[ItemType]):
         res = asyncio.run_coroutine_threadsafe(self.async_get(), POKE_LOOP)
         return res.result()
 
+    def get_unless_waiting(self, battle: AbstractBattle) -> Optional[ItemType]:
+        while not battle._wait:
+            try:
+                res = asyncio.run_coroutine_threadsafe(
+                    asyncio.wait_for(self.async_get(), timeout=0.01), POKE_LOOP
+                )
+                return res.result()
+            except asyncio.TimeoutError:
+                continue
+        return None
+
     async def async_put(self, item: ItemType):
         await self.queue.put(item)
 
@@ -248,22 +259,28 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         assert not self.battle1.finished
         assert self.battle2 is not None
         assert not self.battle2.finished
-        order1 = self.action_to_order(
-            actions[self.agents[0]],
-            self.battle1,
-            fake=self.fake,
-            strict=self.strict,
+        if not self.battle1._wait:
+            order1 = self.action_to_order(
+                actions[self.agents[0]],
+                self.battle1,
+                fake=self.fake,
+                strict=self.strict,
+            )
+            self.agent1.order_queue.put(order1)
+        if not self.battle2._wait:
+            order2 = self.action_to_order(
+                actions[self.agents[1]],
+                self.battle2,
+                fake=self.fake,
+                strict=self.strict,
+            )
+            self.agent2.order_queue.put(order2)
+        battle1 = (
+            self.agent1.battle_queue.get_unless_waiting(self.battle1) or self.battle1
         )
-        order2 = self.action_to_order(
-            actions[self.agents[1]],
-            self.battle2,
-            fake=self.fake,
-            strict=self.strict,
+        battle2 = (
+            self.agent2.battle_queue.get_unless_waiting(self.battle2) or self.battle1
         )
-        self.agent1.order_queue.put(order1)
-        self.agent2.order_queue.put(order2)
-        battle1 = self.agent1.battle_queue.get()
-        battle2 = self.agent2.battle_queue.get()
         observations = {
             self.agents[0]: self.embed_battle(battle1),
             self.agents[1]: self.embed_battle(battle2),
