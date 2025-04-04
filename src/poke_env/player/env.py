@@ -51,6 +51,7 @@ class _AsyncQueue(Generic[ItemType]):
                 return res.result()
             except asyncio.TimeoutError:
                 continue
+        print(battle.player_username, "gave up")
         return None
 
     async def async_put(self, item: ItemType):
