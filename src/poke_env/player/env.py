@@ -267,11 +267,9 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         assert not self.battle1.finished
         assert self.battle2 is not None
         assert not self.battle2.finished
-        battle1_wait = self.battle1._wait.is_set()
-        battle2_wait = self.battle2._wait.is_set()
         agent1_trying_again = self.agent1._trying_again.is_set()
         agent2_trying_again = self.agent2._trying_again.is_set()
-        if not (battle1_wait or agent2_trying_again):
+        if not (self.battle1._wait.is_set() or agent2_trying_again):
             order1 = self.action_to_order(
                 actions[self.agents[0]],
                 self.battle1,
@@ -280,7 +278,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             )
             self.agent1.order_queue.put(order1)
         self.battle1._wait.clear()
-        if not (battle2_wait or agent1_trying_again):
+        if not (self.battle2._wait.is_set() or agent1_trying_again):
             order2 = self.action_to_order(
                 actions[self.agents[1]],
                 self.battle2,
