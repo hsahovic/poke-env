@@ -152,6 +152,7 @@ class Player(ABC):
         )
         self._battle_end_condition: Condition = create_in_poke_loop(Condition)
         self._challenge_queue: Queue[Any] = create_in_poke_loop(Queue)
+        self._waiting: Event = create_in_poke_loop(Event)
         self._trying_again: Event = create_in_poke_loop(Event)
         self._team: Optional[Teambuilder] = None
 
@@ -285,6 +286,8 @@ class Player(ABC):
                 if split_message[2]:
                     request = orjson.loads(split_message[2])
                     battle.parse_request(request)
+                    if battle._wait:
+                        self._waiting.set()
                     if battle.move_on_next_request:
                         await self._handle_battle_request(battle)
                         battle.move_on_next_request = False

@@ -1,11 +1,9 @@
-import asyncio
 import os
 import re
 from abc import ABC, abstractmethod
 from logging import Logger
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
-from poke_env.concurrency import create_in_poke_loop
 from poke_env.data import GenData, to_id_str
 from poke_env.data.replay_template import REPLAY_TEMPLATE
 from poke_env.environment.field import Field
@@ -155,7 +153,7 @@ class AbstractBattle(ABC):
         # Turn choice attributes
         self.in_team_preview: bool = False
         self._move_on_next_request: bool = False
-        self._wait: asyncio.Event = create_in_poke_loop(asyncio.Event)
+        self._wait: Optional[bool] = None
 
         # Battle state attributes
         self._dynamax_turn: Optional[int] = None
