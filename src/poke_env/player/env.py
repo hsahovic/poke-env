@@ -42,7 +42,7 @@ class _AsyncQueue(Generic[ItemType]):
         res = asyncio.run_coroutine_threadsafe(self.async_get(), POKE_LOOP)
         return res.result()
 
-    def race_get(self, event: asyncio.Event, username: Optional[str] = None) -> Optional[ItemType]:
+    def race_get(self, event: asyncio.Event) -> Optional[ItemType]:
         async def _race_get() -> Optional[ItemType]:
             get_task = asyncio.create_task(self.async_get())
             wait_task = asyncio.create_task(event.wait())
