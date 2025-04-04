@@ -42,8 +42,8 @@ class _AsyncQueue(Generic[ItemType]):
         res = asyncio.run_coroutine_threadsafe(self.async_get(), POKE_LOOP)
         return res.result()
 
-    def get_race(self, event: asyncio.Event) -> Optional[ItemType]:
-        print("start get_race")
+    def get_race(self, event: asyncio.Event, username: Optional[str] = None) -> Optional[ItemType]:
+        print(username, "start get_race")
         async def _get_race() -> Optional[ItemType]:
             get_task = asyncio.create_task(self.async_get())
             wait_task = asyncio.create_task(event.wait())
@@ -53,11 +53,11 @@ class _AsyncQueue(Generic[ItemType]):
             )
             if get_task in done:
                 wait_task.cancel()
-                print("got it")
+                print(username, "got it")
                 return get_task.result()
             else:
                 get_task.cancel()
-                print("gave up")
+                print(username, "gave up")
                 return None
 
         res = asyncio.run_coroutine_threadsafe(_get_race(), POKE_LOOP)
@@ -287,8 +287,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 strict=self.strict,
             )
             self.agent2.order_queue.put(order2)
-        battle1 = self.agent1.battle_queue.get_race(self.battle1._wait) or self.battle1
-        battle2 = self.agent2.battle_queue.get_race(self.battle2._wait) or self.battle2
+        battle1 = self.agent1.battle_queue.get_race(self.battle1._wait, self.agent1.username) or self.battle1
+        battle2 = self.agent2.battle_queue.get_race(self.battle2._wait, self.agent2.username) or self.battle2
         assert self.agent1.battle_queue.empty(), self.agent1.username
         assert self.agent2.battle_queue.empty(), self.agent2.username
         observations = {
