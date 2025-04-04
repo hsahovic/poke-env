@@ -268,8 +268,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         assert not self.battle1.finished
         assert self.battle2 is not None
         assert not self.battle2.finished
-        battle1_wait = self.battle1._wait
-        battle2_wait = self.battle2._wait
+        battle1_wait = self.battle1._wait.is_set()
+        battle2_wait = self.battle2._wait.is_set()
         agent1_trying_again = self.agent1._trying_again.is_set()
         agent2_trying_again = self.agent2._trying_again.is_set()
         if not (battle1_wait or agent2_trying_again):
