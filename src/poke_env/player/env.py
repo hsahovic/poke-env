@@ -286,14 +286,14 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             self.agents[1]: self.embed_battle(battle2),
         }
         reward = {
-            self.agents[0]: self.calc_reward(self.battle1),
-            self.agents[1]: self.calc_reward(self.battle2),
+            self.agents[0]: self.calc_reward(battle1),
+            self.agents[1]: self.calc_reward(battle2),
         }
-        term1, trunc1 = self.calc_term_trunc(self.battle1)
-        term2, trunc2 = self.calc_term_trunc(self.battle2)
+        term1, trunc1 = self.calc_term_trunc(battle1)
+        term2, trunc2 = self.calc_term_trunc(battle2)
         terminated = {self.agents[0]: term1, self.agents[1]: term2}
         truncated = {self.agents[0]: trunc1, self.agents[1]: trunc2}
-        if self.battle1.finished:
+        if battle1.finished:
             self.agents = []
         return observations, reward, terminated, truncated, self.get_additional_info()
 
@@ -316,10 +316,12 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             if self.battle1 == self.agent1.battle:
                 if not self.battle1._wait:
                     self.agent1.order_queue.put(ForfeitBattleOrder())
-                    self.agent2.order_queue.put(DefaultBattleOrder())
+                    if not self.battle2._wait:
+                        self.agent2.order_queue.put(DefaultBattleOrder())
                 elif not self.battle2._wait:
                     self.agent2.order_queue.put(ForfeitBattleOrder())
-                    self.agent1.order_queue.put(DefaultBattleOrder())
+                    if not self.battle1._wait:
+                        self.agent1.order_queue.put(DefaultBattleOrder())
                 self.agent1.battle_queue.get()
                 self.agent2.battle_queue.get()
             else:
@@ -715,10 +717,12 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                     await self.agent2.battle_queue.async_get()
                 if not self.battle1._wait:
                     await self.agent1.order_queue.async_put(ForfeitBattleOrder())
-                    await self.agent2.order_queue.async_put(DefaultBattleOrder())
+                    if not self.battle2._wait:
+                        await self.agent2.order_queue.async_put(DefaultBattleOrder())
                 elif not self.battle2._wait:
                     await self.agent2.order_queue.async_put(ForfeitBattleOrder())
-                    await self.agent1.order_queue.async_put(DefaultBattleOrder())
+                    if not self.battle1._wait:
+                        await self.agent1.order_queue.async_put(DefaultBattleOrder())
 
         if wait and self._challenge_task:
             while not self._challenge_task.done():
