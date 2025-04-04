@@ -283,8 +283,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         battle2 = (
             self.agent2.battle_queue.get_unless_waiting(self.battle2) or self.battle2
         )
-        assert self.agent1.battle_queue.empty()
-        assert self.agent2.battle_queue.empty()
+        assert self.agent1.battle_queue.empty(), self.agent1.username
+        assert self.agent2.battle_queue.empty(), self.agent2.username
         observations = {
             self.agents[0]: self.embed_battle(battle1),
             self.agents[1]: self.embed_battle(battle2),
