@@ -349,6 +349,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             self.agents[0]: self.embed_battle(self.battle1),
             self.agents[1]: self.embed_battle(self.battle2),
         }
+        self.battle1.logger = None
+        self.battle2.logger = None
         return observations, self.get_additional_info()
 
     def render(self, mode: str = "human"):
