@@ -280,9 +280,11 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 strict=self.strict,
             )
             self.agent2.order_queue.put(order2)
+        print(self.agent1.username, "calling get_unless_waiting")
         battle1 = (
             self.agent1.battle_queue.get_unless_waiting(self.battle1) or self.battle1
         )
+        print(self.agent2.username, "calling get_unless_waiting")
         battle2 = (
             self.agent2.battle_queue.get_unless_waiting(self.battle2) or self.battle2
         )
