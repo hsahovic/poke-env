@@ -281,7 +281,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             self.agent1.battle_queue.get_unless_waiting(self.battle1) or self.battle1
         )
         battle2 = (
-            self.agent2.battle_queue.get_unless_waiting(self.battle2) or self.battle1
+            self.agent2.battle_queue.get_unless_waiting(self.battle2) or self.battle2
         )
         assert self.agent1.battle_queue.empty()
         assert self.agent2.battle_queue.empty()
