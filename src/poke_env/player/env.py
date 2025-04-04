@@ -43,11 +43,13 @@ class _AsyncQueue(Generic[ItemType]):
         return res.result()
 
     def get_unless_waiting(self, battle: AbstractBattle) -> Optional[ItemType]:
+        print(battle.player_username, "searching")
         while not battle._wait:
             try:
                 res = asyncio.run_coroutine_threadsafe(
                     asyncio.wait_for(self.async_get(), timeout=0.01), POKE_LOOP
                 )
+                print(battle.player_username, "got it")
                 return res.result()
             except asyncio.TimeoutError:
                 continue
