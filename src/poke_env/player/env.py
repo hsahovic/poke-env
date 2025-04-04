@@ -43,17 +43,17 @@ class _AsyncQueue(Generic[ItemType]):
         return res.result()
 
     def get_unless_waiting(self, battle: AbstractBattle) -> Optional[ItemType]:
-        print(battle.player_username, "searching")
+        print(battle.player_username, "searching", flush=True)
         while not battle._wait:
             try:
                 res = asyncio.run_coroutine_threadsafe(
                     asyncio.wait_for(self.async_get(), timeout=0.01), POKE_LOOP
                 )
-                print(battle.player_username, "got it")
+                print(battle.player_username, "got it", flush=True)
                 return res.result()
             except asyncio.TimeoutError:
                 continue
-        print(battle.player_username, "gave up")
+        print(battle.player_username, "gave up", flush=True)
         return None
 
     async def async_put(self, item: ItemType):
@@ -280,11 +280,9 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 strict=self.strict,
             )
             self.agent2.order_queue.put(order2)
-        print(self.agent1.username, "calling get_unless_waiting")
         battle1 = (
             self.agent1.battle_queue.get_unless_waiting(self.battle1) or self.battle1
         )
-        print(self.agent2.username, "calling get_unless_waiting")
         battle2 = (
             self.agent2.battle_queue.get_unless_waiting(self.battle2) or self.battle2
         )
