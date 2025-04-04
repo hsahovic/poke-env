@@ -42,19 +42,25 @@ class _AsyncQueue(Generic[ItemType]):
         res = asyncio.run_coroutine_threadsafe(self.async_get(), POKE_LOOP)
         return res.result()
 
-    def get_unless_waiting(self, battle: AbstractBattle) -> Optional[ItemType]:
-        print(battle.player_username, "searching", flush=True)
-        while not battle._wait:
-            try:
-                res = asyncio.run_coroutine_threadsafe(
-                    asyncio.wait_for(self.async_get(), timeout=0.01), POKE_LOOP
-                )
-                print(battle.player_username, "got it", flush=True)
-                return res.result()
-            except asyncio.TimeoutError:
-                continue
-        print(battle.player_username, "gave up", flush=True)
-        return None
+    def get_race(self, event: asyncio.Event) -> Optional[ItemType]:
+        tasks = [
+            asyncio.ensure_future(self.async_get(), loop=POKE_LOOP),
+            asyncio.ensure_future(event.wait(), loop=POKE_LOOP),
+        ]
+        done, pending = asyncio.run_coroutine_threadsafe(
+            asyncio.wait(
+                tasks,
+                return_when=asyncio.FIRST_COMPLETED,
+            ),
+            POKE_LOOP,
+        ).result()
+        for task in pending:
+            task.cancel()
+        result = list(done)[0].result()
+        if result is True:
+            return None
+        else:
+            return result
 
     async def async_put(self, item: ItemType):
         await self.queue.put(item)
@@ -280,12 +286,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 strict=self.strict,
             )
             self.agent2.order_queue.put(order2)
-        battle1 = (
-            self.agent1.battle_queue.get_unless_waiting(self.battle1) or self.battle1
-        )
-        battle2 = (
-            self.agent2.battle_queue.get_unless_waiting(self.battle2) or self.battle2
-        )
+        battle1 = self.agent1.battle_queue.get_race(self.battle1._wait) or self.battle1
+        battle2 = self.agent2.battle_queue.get_race(self.battle2._wait) or self.battle2
         assert self.agent1.battle_queue.empty(), self.agent1.username
         assert self.agent2.battle_queue.empty(), self.agent2.username
         observations = {

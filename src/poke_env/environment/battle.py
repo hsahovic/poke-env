@@ -62,9 +62,9 @@ class Battle(AbstractBattle):
         :type request: dict
         """
         if "wait" in request and request["wait"]:
-            self._wait = True
+            self._wait.set()
         else:
-            self._wait = False
+            self._wait.clear()
 
         side = request["side"]
 
