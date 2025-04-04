@@ -42,26 +42,6 @@ class _AsyncQueue(Generic[ItemType]):
         res = asyncio.run_coroutine_threadsafe(self.async_get(), POKE_LOOP)
         return res.result()
 
-    def get_timeout(self, timeout_flag: asyncio.Event) -> Optional[ItemType]:
-        tasks = [
-            asyncio.ensure_future(self.async_get(), loop=POKE_LOOP),
-            asyncio.ensure_future(timeout_flag.wait(), loop=POKE_LOOP),
-        ]
-        done, pending = asyncio.run_coroutine_threadsafe(
-            asyncio.wait(
-                tasks,
-                return_when=asyncio.FIRST_COMPLETED,
-            ),
-            POKE_LOOP,
-        ).result()
-        for task in pending:
-            task.cancel()
-        result = list(done)[0].result()
-        if result is True:
-            return None
-        else:
-            return result
-
     async def async_put(self, item: ItemType):
         await self.queue.put(item)
 
@@ -95,7 +75,6 @@ class _EnvPlayer(Player):
         self.battle_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1000))
         self.order_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1000))
         self.battle: Optional[AbstractBattle] = None
-        self.waiting = False
 
     def choose_move(self, battle: AbstractBattle) -> Awaitable[BattleOrder]:
         return self._env_move(battle)
@@ -107,9 +86,7 @@ class _EnvPlayer(Player):
             self.logger.warning(f"Zombie battle {battle.battle_tag}")
             return DefaultBattleOrder()
         await self.battle_queue.async_put(battle)
-        self.waiting = True
         order = await self.order_queue.async_get()
-        self.waiting = False
         return order
 
     def _battle_finished_callback(self, battle: AbstractBattle):
@@ -271,30 +248,22 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         assert not self.battle1.finished
         assert self.battle2 is not None
         assert not self.battle2.finished
-        if self.agent1.waiting:
-            order1 = self.action_to_order(
-                actions[self.agents[0]],
-                self.battle1,
-                fake=self.fake,
-                strict=self.strict,
-            )
-            self.agent1.order_queue.put(order1)
-        if self.agent2.waiting:
-            order2 = self.action_to_order(
-                actions[self.agents[1]],
-                self.battle2,
-                fake=self.fake,
-                strict=self.strict,
-            )
-            self.agent2.order_queue.put(order2)
-        battle1 = (
-            self.agent1.battle_queue.get_timeout(self.agent2.trying_again)
-            or self.battle1
+        order1 = self.action_to_order(
+            actions[self.agents[0]],
+            self.battle1,
+            fake=self.fake,
+            strict=self.strict,
         )
-        battle2 = (
-            self.agent2.battle_queue.get_timeout(self.agent1.trying_again)
-            or self.battle2
+        order2 = self.action_to_order(
+            actions[self.agents[1]],
+            self.battle2,
+            fake=self.fake,
+            strict=self.strict,
         )
+        self.agent1.order_queue.put(order1)
+        self.agent2.order_queue.put(order2)
+        battle1 = self.agent1.battle_queue.get()
+        battle2 = self.agent2.battle_queue.get()
         observations = {
             self.agents[0]: self.embed_battle(battle1),
             self.agents[1]: self.embed_battle(battle2),
@@ -328,14 +297,12 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         if self.battle1 and not self.battle1.finished:
             assert self.battle2 is not None
             if self.battle1 == self.agent1.battle:
-                if self.agent1.waiting and not self.battle1._wait:
+                if not self.battle1._wait:
                     self.agent1.order_queue.put(ForfeitBattleOrder())
-                    if self.agent2.waiting:
-                        self.agent2.order_queue.put(DefaultBattleOrder())
-                elif self.agent2.waiting and not self.battle2._wait:
+                    self.agent2.order_queue.put(DefaultBattleOrder())
+                elif not self.battle2._wait:
                     self.agent2.order_queue.put(ForfeitBattleOrder())
-                    if self.agent1.waiting:
-                        self.agent1.order_queue.put(DefaultBattleOrder())
+                    self.agent1.order_queue.put(DefaultBattleOrder())
                 self.agent1.battle_queue.get()
                 self.agent2.battle_queue.get()
             else:
@@ -729,14 +696,12 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                     await self.agent1.battle_queue.async_get()
                 if not self.agent2.battle_queue.empty():
                     await self.agent2.battle_queue.async_get()
-                if self.agent1.waiting and not self.battle1._wait:
+                if not self.battle1._wait:
                     await self.agent1.order_queue.async_put(ForfeitBattleOrder())
-                    if self.agent2.waiting:
-                        await self.agent2.order_queue.async_put(DefaultBattleOrder())
-                elif self.agent2.waiting and not self.battle2._wait:
+                    await self.agent2.order_queue.async_put(DefaultBattleOrder())
+                elif not self.battle2._wait:
                     await self.agent2.order_queue.async_put(ForfeitBattleOrder())
-                    if self.agent1.waiting:
-                        await self.agent1.order_queue.async_put(DefaultBattleOrder())
+                    await self.agent1.order_queue.async_put(DefaultBattleOrder())
 
         if wait and self._challenge_task:
             while not self._challenge_task.done():
