@@ -42,16 +42,17 @@ class _AsyncQueue(Generic[ItemType]):
         res = asyncio.run_coroutine_threadsafe(self.async_get(), POKE_LOOP)
         return res.result()
 
-    def race_get(self, event: asyncio.Event) -> Optional[ItemType]:
+    def race_get(self, *events: asyncio.Event) -> Optional[ItemType]:
         async def _race_get() -> Optional[ItemType]:
             get_task = asyncio.create_task(self.async_get())
-            wait_task = asyncio.create_task(event.wait())
+            wait_tasks = [asyncio.create_task(e.wait()) for e in events]
             done, _ = await asyncio.wait(
-                {get_task, wait_task},
+                {get_task, *wait_tasks},
                 return_when=asyncio.FIRST_COMPLETED,
             )
+            for t in wait_tasks:
+                t.cancel()
             if get_task in done:
-                wait_task.cancel()
                 return get_task.result()
             else:
                 get_task.cancel()
@@ -105,6 +106,7 @@ class _EnvPlayer(Player):
             return DefaultBattleOrder()
         await self.battle_queue.async_put(battle)
         order = await self.order_queue.async_get()
+        self.battle._wait.clear()
         return order
 
     def _battle_finished_callback(self, battle: AbstractBattle):
@@ -274,7 +276,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 strict=self.strict,
             )
             self.agent1.order_queue.put(order1)
-        self.battle1._wait.clear()
         if not self.battle2._wait.is_set():
             order2 = self.action_to_order(
                 actions[self.agents[1]],
@@ -283,7 +284,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 strict=self.strict,
             )
             self.agent2.order_queue.put(order2)
-        self.battle2._wait.clear()
         battle1 = self.agent1.battle_queue.race_get(self.battle1._wait) or self.battle1
         battle2 = self.agent2.battle_queue.race_get(self.battle2._wait) or self.battle2
         observations = {
