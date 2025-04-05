@@ -269,6 +269,10 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         agent2_waiting = self.agent2._waiting.is_set()
         agent1_trying_again = self.agent1._trying_again.is_set()
         agent2_trying_again = self.agent2._trying_again.is_set()
+        self.agent1._waiting.clear()
+        self.agent2._waiting.clear()
+        self.agent1._trying_again.clear()
+        self.agent2._trying_again.clear()
         if not (agent1_waiting or agent2_trying_again):
             order1 = self.action_to_order(
                 actions[self.agents[0]],
@@ -277,7 +281,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 strict=self.strict,
             )
             self.agent1.order_queue.put(order1)
-        self.agent1._waiting.clear()
         if not (agent2_waiting or agent1_trying_again):
             order2 = self.action_to_order(
                 actions[self.agents[1]],
@@ -286,7 +289,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 strict=self.strict,
             )
             self.agent2.order_queue.put(order2)
-        self.agent2._waiting.clear()
         battle1 = (
             self.agent1.battle_queue.race_get(
                 self.agent1._waiting, self.agent2._trying_again
