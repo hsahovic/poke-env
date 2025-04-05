@@ -331,14 +331,18 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 time.sleep(self._TIME_BETWEEN_RETRIES)
         if self.battle1 and not self.battle1.finished:
             assert self.battle2 is not None
+            agent1_waiting = self.agent1._waiting.is_set()
+            agent2_waiting = self.agent2._waiting.is_set()
+            agent1_trying_again = self.agent1._trying_again.is_set()
+            agent2_trying_again = self.agent2._trying_again.is_set()
             if self.battle1 == self.agent1.battle:
-                if not self.agent1._waiting.is_set():
+                if not (agent1_waiting or agent2_trying_again):
                     self.agent1.order_queue.put(ForfeitBattleOrder())
-                    if not self.agent2._waiting.is_set():
+                    if not (agent2_waiting or agent1_trying_again):
                         self.agent2.order_queue.put(DefaultBattleOrder())
-                elif not self.agent2._waiting.is_set():
+                elif not (agent2_waiting or agent1_trying_again):
                     self.agent2.order_queue.put(ForfeitBattleOrder())
-                    if not self.agent1._waiting.is_set():
+                    if not (agent1_waiting or agent2_trying_again):
                         self.agent1.order_queue.put(DefaultBattleOrder())
                 self.agent1.battle_queue.get()
                 self.agent2.battle_queue.get()
@@ -725,13 +729,17 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                     await self.agent1.battle_queue.async_get()
                 if not self.agent2.battle_queue.empty():
                     await self.agent2.battle_queue.async_get()
-                if not self.agent1._waiting.is_set():
+                agent1_waiting = self.agent1._waiting.is_set()
+                agent2_waiting = self.agent2._waiting.is_set()
+                agent1_trying_again = self.agent1._trying_again.is_set()
+                agent2_trying_again = self.agent2._trying_again.is_set()
+                if not (agent1_waiting or agent2_trying_again):
                     await self.agent1.order_queue.async_put(ForfeitBattleOrder())
-                    if not self.agent2._waiting.is_set():
+                    if not (agent2_waiting or agent1_trying_again):
                         await self.agent2.order_queue.async_put(DefaultBattleOrder())
-                elif not self.agent2._waiting.is_set():
+                elif not (agent2_waiting or agent1_trying_again):
                     await self.agent2.order_queue.async_put(ForfeitBattleOrder())
-                    if not self.agent1._waiting.is_set():
+                    if not (agent1_waiting or agent2_trying_again):
                         await self.agent1.order_queue.async_put(DefaultBattleOrder())
 
         if wait and self._challenge_task:
