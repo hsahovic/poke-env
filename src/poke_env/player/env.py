@@ -101,9 +101,7 @@ class _EnvPlayer(Player):
     async def _env_move(self, battle: AbstractBattle) -> BattleOrder:
         if not self.battle or self.battle.finished:
             self.battle = battle
-        if self.battle.battle_tag != battle.battle_tag:
-            self.logger.warning(f"Zombie battle {battle.battle_tag}")
-            return DefaultBattleOrder()
+        assert self.battle.battle_tag == battle.battle_tag
         await self.battle_queue.async_put(battle)
         order = await self.order_queue.async_get()
         return order
