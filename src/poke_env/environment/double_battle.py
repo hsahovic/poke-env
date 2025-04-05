@@ -114,7 +114,7 @@ class DoubleBattle(AbstractBattle):
             [mon.get("reviving") for mon in request["side"]["pokemon"]]
         )
 
-        if any(self._force_switch) or self._wait:
+        if any(self._force_switch):
             self._move_on_next_request = True
 
         self._last_request = request

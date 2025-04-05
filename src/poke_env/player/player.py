@@ -152,9 +152,9 @@ class Player(ABC):
         )
         self._battle_end_condition: Condition = create_in_poke_loop(Condition)
         self._challenge_queue: Queue[Any] = create_in_poke_loop(Queue)
+        self._waiting: Event = create_in_poke_loop(Event)
+        self._trying_again: Event = create_in_poke_loop(Event)
         self._team: Optional[Teambuilder] = None
-
-        self.trying_again: Event = create_in_poke_loop(Event)
 
         if isinstance(team, Teambuilder):
             self._team = team
@@ -286,6 +286,8 @@ class Player(ABC):
                 if split_message[2]:
                     request = orjson.loads(split_message[2])
                     battle.parse_request(request)
+                    if battle._wait:
+                        self._waiting.set()
                     if battle.move_on_next_request:
                         await self._handle_battle_request(battle)
                         battle.move_on_next_request = False
@@ -306,8 +308,10 @@ class Player(ABC):
                 if split_message[2].startswith(
                     "[Invalid choice] Sorry, too late to make a different move"
                 ):
-                    if battle.trapped:
-                        self.trying_again.set()
+                    if (isinstance(battle.trapped, bool) and battle.trapped) or (
+                        isinstance(battle.trapped, List) and any(battle.trapped)
+                    ):
+                        self._trying_again.set()
                         await self._handle_battle_request(battle)
                 elif split_message[2].startswith(
                     "[Unavailable choice] Can't switch: The active Pokémon is "
@@ -316,7 +320,7 @@ class Player(ABC):
                     "[Invalid choice] Can't switch: The active Pokémon is trapped"
                 ):
                     battle.trapped = True
-                    self.trying_again.set()
+                    self._trying_again.set()
                     await self._handle_battle_request(battle)
                 elif split_message[2].startswith("[Invalid choice] Can't pass: "):
                     await self._handle_battle_request(battle, maybe_default_order=True)
@@ -328,11 +332,6 @@ class Player(ABC):
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't switch: You can't switch to a fainted "
                     "Pokémon"
-                ):
-                    await self._handle_battle_request(battle, maybe_default_order=True)
-                elif split_message[2].startswith(
-                    "[Invalid choice] Can't switch: You sent more switches than "
-                    "Pokémon that need to switch"
                 ):
                     await self._handle_battle_request(battle, maybe_default_order=True)
                 elif split_message[2].startswith(
@@ -405,14 +404,13 @@ class Player(ABC):
             message = self.teampreview(battle)
         else:
             if maybe_default_order:
-                self.trying_again.set()
+                self._trying_again.set()
             choice = self.choose_move(battle)
             if isinstance(choice, Awaitable):
                 choice = await choice
             message = choice.message
-        self.trying_again.clear()
-        if not battle._wait:
-            await self.ps_client.send_message(message, battle.battle_tag)
+        self._trying_again.clear()
+        await self.ps_client.send_message(message, battle.battle_tag)
 
     async def _handle_challenge_request(self, split_message: List[str]):
         """Handles an individual challenge."""
