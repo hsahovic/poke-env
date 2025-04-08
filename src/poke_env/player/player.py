@@ -321,7 +321,6 @@ class Player(ABC):
                 ) or split_message[2].startswith(
                     "[Invalid choice] Can't switch: The active Pokémon is trapped"
                 ):
-                    battle.trapped = True
                     self._trying_again.set()
                     should_process_request = True
                 elif split_message[2].startswith("[Invalid choice] Can't pass: "):
