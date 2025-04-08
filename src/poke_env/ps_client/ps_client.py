@@ -154,8 +154,10 @@ class PSClient:
                 else:
                     protocol = split_messages
                     self._handle_error = (
-                        "|error|" in message
-                        and "The active Pokémon is trapped" in message
+                        "|error|[Unavailable choice] Can't switch: The active Pokémon is trapped"
+                        in message
+                        or "|error|[Invalid choice] Can't switch: The active Pokémon is trapped"
+                        in message
                     )
                 # Battle update
                 if protocol is not None or request is not None:
