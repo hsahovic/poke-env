@@ -324,7 +324,7 @@ class Player(ABC):
                     self._trying_again.set()
                     await self._handle_battle_request(battle)
                 elif split_message[2].startswith("[Invalid choice] Can't pass: "):
-                    await self._handle_battle_request(battle)
+                    await self._handle_battle_request(battle, maybe_default_order=True)
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't switch: You can't switch to an active "
                     "Pokémon"
