@@ -84,8 +84,8 @@ class PSClient:
         self._sending_lock = create_in_poke_loop(Lock)
 
         self.websocket: ClientConnection
-        self._reqs: Dict[str, List[List[str]]] = {}
-        self._handle_error: bool = False
+        self._protocols: Dict[str, List[List[str]]] = {}
+        self._requests: Dict[str, List[List[str]]] = {}
         self._logger: Logger = self._create_logger(log_level)
 
         if start_listening:
@@ -143,22 +143,22 @@ class PSClient:
             if split_messages[0][0].startswith(">battle"):
                 # Determine protocol and request
                 battle_tag = split_messages[0][0][1:]
-                request = self._reqs.pop(battle_tag, None)
+                protocol = None
+                request = None
                 if "|request|" in message:
-                    protocol = None
-                    if self._handle_error:
+                    if battle_tag in self._protocols:
+                        protocol = self._protocols.pop(battle_tag)
                         request = split_messages
-                        self._handle_error = False
                     else:
-                        self._reqs[battle_tag] = split_messages
+                        self._requests[battle_tag] = split_messages
                 else:
-                    protocol = split_messages
-                    self._handle_error = (
-                        "|error|[Unavailable choice] Can't switch: The active Pokémon is trapped"
-                        in message
-                        or "|error|[Invalid choice] Can't switch: The active Pokémon is trapped"
-                        in message
-                    )
+                    if battle_tag in self._requests:
+                        protocol = split_messages
+                        request = self._requests.pop(battle_tag)
+                    elif "Can't switch: The active Pokémon is trapped" in message:
+                        self._protocols[battle_tag] = split_messages
+                    else:
+                        protocol = split_messages
                 # Battle update
                 if protocol is not None or request is not None:
                     split_messages = protocol or [[f">{battle_tag}"]]
