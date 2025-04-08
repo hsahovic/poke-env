@@ -128,7 +128,6 @@ class PSClient:
         return logger
 
     async def _handle_message(self, message: str):
-        print(message)
         """Handle received messages.
 
         :param message: The message to parse.
