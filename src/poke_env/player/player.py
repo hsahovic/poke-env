@@ -265,9 +265,6 @@ class Player(ABC):
         :type split_message: str
         """
         # Battle messages can be multiline
-        should_process_request = False
-        is_from_teampreview = False
-
         if (
             len(split_messages) > 1
             and len(split_messages[1]) > 1

@@ -84,7 +84,8 @@ class PSClient:
         self._sending_lock = create_in_poke_loop(Lock)
 
         self.websocket: ClientConnection
-        self.reqs: Dict[str, List[List[str]]] = {}
+        self._reqs: Dict[str, List[List[str]]] = {}
+        self._handle_error: bool = False
         self._logger: Logger = self._create_logger(log_level)
 
         if start_listening:
@@ -127,7 +128,6 @@ class PSClient:
         return logger
 
     async def _handle_message(self, message: str):
-        print(message)
         """Handle received messages.
 
         :param message: The message to parse.
@@ -142,12 +142,17 @@ class PSClient:
             if split_messages[0][0].startswith(">battle"):
                 # Determine protocol and request
                 battle_tag = split_messages[0][0][1:]
-                request = self.reqs.pop(battle_tag, None)
+                request = self._reqs.pop(battle_tag, None)
                 if "|request|" in message:
                     protocol = None
-                    self.reqs[battle_tag] = split_messages
+                    if self._handle_error:
+                        request = split_messages
+                        self._handle_error = False
+                    else:
+                        self._reqs[battle_tag] = split_messages
                 else:
                     protocol = split_messages
+                    self._handle_error = "|error|" in message and "The active Pokémon is trapped" in message
                 # Battle update
                 if protocol is not None or request is not None:
                     split_messages = protocol or [[f">{battle_tag}"]]
