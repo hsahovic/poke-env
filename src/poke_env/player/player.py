@@ -289,11 +289,10 @@ class Player(ABC):
                 if split_message[2]:
                     request = orjson.loads(split_message[2])
                     battle.parse_request(request)
+                    should_process_request = True
                     if battle._wait:
+                        should_process_request = False
                         self._waiting.set()
-                    if battle.move_on_next_request:
-                        should_process_request = True
-                        battle.move_on_next_request = False
             elif split_message[1] == "win" or split_message[1] == "tie":
                 if split_message[1] == "win":
                     battle.won_by(split_message[2])
@@ -313,16 +312,13 @@ class Player(ABC):
                 ):
                     if battle.trapped:
                         self._trying_again.set()
-                        await self._handle_battle_request(battle)
                 elif split_message[2].startswith(
                     "[Unavailable choice] Can't switch: The active Pokémon is "
                     "trapped"
                 ) or split_message[2].startswith(
                     "[Invalid choice] Can't switch: The active Pokémon is trapped"
                 ):
-                    battle.trapped = True
                     self._trying_again.set()
-                    await self._handle_battle_request(battle)
                 elif split_message[2].startswith("[Invalid choice] Can't pass: "):
                     await self._handle_battle_request(battle, maybe_default_order=True)
                 elif split_message[2].startswith(
@@ -375,9 +371,6 @@ class Player(ABC):
                     await self._handle_battle_request(battle, maybe_default_order=True)
                 else:
                     self.logger.critical("Unexpected error message: %s", split_message)
-            elif split_message[1] == "turn":
-                battle.parse_message(split_message)
-                should_process_request = True
             elif split_message[1] == "teampreview":
                 battle.parse_message(split_message)
                 should_process_request = True
