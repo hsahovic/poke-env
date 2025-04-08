@@ -154,6 +154,8 @@ class Player(ABC):
         self._challenge_queue: Queue[Any] = create_in_poke_loop(Queue)
         self._team: Optional[Teambuilder] = None
 
+        self.trying_again = create_in_poke_loop(Event)
+
         if isinstance(team, Teambuilder):
             self._team = team
         elif isinstance(team, str):
@@ -309,6 +311,7 @@ class Player(ABC):
                     "[Invalid choice] Sorry, too late to make a different move"
                 ):
                     if battle.trapped:
+                        self.trying_again.set()
                         should_process_request = True
                 elif split_message[2].startswith(
                     "[Unavailable choice] Can't switch: The active Pokémon is "
@@ -317,62 +320,79 @@ class Player(ABC):
                     "[Invalid choice] Can't switch: The active Pokémon is trapped"
                 ):
                     battle.trapped = True
+                    self.trying_again.set()
                     should_process_request = True
+                elif split_message[2].startswith("[Invalid choice] Can't pass: "):
+                    should_process_request = True
+                    should_maybe_default = True
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't switch: You can't switch to an active "
                     "Pokémon"
                 ):
+                    self.trying_again.set()
                     should_process_request = True
                     should_maybe_default = True
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't switch: You can't switch to a fainted "
                     "Pokémon"
                 ):
+                    self.trying_again.set()
                     should_process_request = True
                     should_maybe_default = True
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: Invalid target for"
                 ):
+                    self.trying_again.set()
                     should_process_request = True
                     should_maybe_default = True
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: You can't choose a target for"
                 ):
+                    self.trying_again.set()
                     should_process_request = True
                     should_maybe_default = True
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: "
                 ) and split_message[2].endswith("needs a target"):
+                    self.trying_again.set()
                     should_process_request = True
                     should_maybe_default = True
                 elif (
                     split_message[2].startswith("[Invalid choice] Can't move: Your")
                     and " doesn't have a move matching " in split_message[2]
                 ):
+                    self.trying_again.set()
                     should_process_request = True
                     should_maybe_default = True
                 elif split_message[2].startswith(
                     "[Invalid choice] Incomplete choice: "
                 ):
+                    self.trying_again.set()
                     should_process_request = True
                     should_maybe_default = True
                 elif split_message[2].startswith(
                     "[Unavailable choice]"
                 ) and split_message[2].endswith("is disabled"):
-                    battle.move_on_next_request = True
+                    self.trying_again.set()
+                    should_process_request = True
+                    should_maybe_default = True
                 elif split_message[2].startswith("[Invalid choice]") and split_message[
                     2
                 ].endswith("is disabled"):
-                    battle.move_on_next_request = True
+                    self.trying_again.set()
+                    should_process_request = True
+                    should_maybe_default = True
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: You sent more choices than unfainted"
                     " Pokémon."
                 ):
+                    self.trying_again.set()
                     should_process_request = True
                     should_maybe_default = True
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: You can only Terastallize once per battle."
                 ):
+                    self.trying_again.set()
                     should_process_request = True
                     should_maybe_default = True
                 else:
@@ -415,7 +435,8 @@ class Player(ABC):
                 choice = await choice
             message = choice.message
 
-        await self.ps_client.send_message(message, battle.battle_tag)
+        if not battle._wait:
+            await self.ps_client.send_message(message, battle.battle_tag)
 
     async def _handle_challenge_request(self, split_message: List[str]):
         """Handles an individual challenge."""
@@ -551,9 +572,7 @@ class Player(ABC):
                     second_switch_in = random.choice(available_switches)
                     second_order = BattleOrder(second_switch_in)
 
-            if first_order and second_order:
-                return DoubleBattleOrder(first_order, second_order)
-            return DoubleBattleOrder(first_order or second_order, None)
+            return DoubleBattleOrder(first_order, second_order)
 
         for (
             orders,
