@@ -128,6 +128,7 @@ class PSClient:
         return logger
 
     async def _handle_message(self, message: str):
+        print(message)
         """Handle received messages.
 
         :param message: The message to parse.
@@ -152,7 +153,10 @@ class PSClient:
                         self._reqs[battle_tag] = split_messages
                 else:
                     protocol = split_messages
-                    self._handle_error = "|error|" in message and "The active Pokémon is trapped" in message
+                    self._handle_error = (
+                        "|error|" in message
+                        and "The active Pokémon is trapped" in message
+                    )
                 # Battle update
                 if protocol is not None or request is not None:
                     split_messages = protocol or [[f">{battle_tag}"]]
