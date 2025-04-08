@@ -267,7 +267,6 @@ class Player(ABC):
         # Battle messages can be multiline
         should_process_request = False
         is_from_teampreview = False
-        should_maybe_default = False
 
         if (
             len(split_messages) > 1
@@ -324,67 +323,55 @@ class Player(ABC):
                     self._trying_again.set()
                     should_process_request = True
                 elif split_message[2].startswith("[Invalid choice] Can't pass: "):
-                    should_process_request = True
-                    should_maybe_default = True
+                    await self._handle_battle_request(battle, maybe_default_order=True)
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't switch: You can't switch to an active "
                     "Pokémon"
                 ):
-                    should_process_request = True
-                    should_maybe_default = True
+                    await self._handle_battle_request(battle, maybe_default_order=True)
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't switch: You can't switch to a fainted "
                     "Pokémon"
                 ):
-                    should_process_request = True
-                    should_maybe_default = True
+                    await self._handle_battle_request(battle, maybe_default_order=True)
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: Invalid target for"
                 ):
-                    should_process_request = True
-                    should_maybe_default = True
+                    await self._handle_battle_request(battle, maybe_default_order=True)
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: You can't choose a target for"
                 ):
-                    should_process_request = True
-                    should_maybe_default = True
+                    await self._handle_battle_request(battle, maybe_default_order=True)
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: "
                 ) and split_message[2].endswith("needs a target"):
-                    should_process_request = True
-                    should_maybe_default = True
+                    await self._handle_battle_request(battle, maybe_default_order=True)
                 elif (
                     split_message[2].startswith("[Invalid choice] Can't move: Your")
                     and " doesn't have a move matching " in split_message[2]
                 ):
-                    should_process_request = True
-                    should_maybe_default = True
+                    await self._handle_battle_request(battle, maybe_default_order=True)
                 elif split_message[2].startswith(
                     "[Invalid choice] Incomplete choice: "
                 ):
-                    should_process_request = True
-                    should_maybe_default = True
+                    await self._handle_battle_request(battle, maybe_default_order=True)
                 elif split_message[2].startswith(
                     "[Unavailable choice]"
                 ) and split_message[2].endswith("is disabled"):
-                    should_process_request = True
-                    should_maybe_default = True
+                    await self._handle_battle_request(battle, maybe_default_order=True)
                 elif split_message[2].startswith("[Invalid choice]") and split_message[
                     2
                 ].endswith("is disabled"):
-                    should_process_request = True
-                    should_maybe_default = True
+                    await self._handle_battle_request(battle, maybe_default_order=True)
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: You sent more choices than unfainted"
                     " Pokémon."
                 ):
-                    should_process_request = True
-                    should_maybe_default = True
+                    await self._handle_battle_request(battle, maybe_default_order=True)
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: You can only Terastallize once per battle."
                 ):
-                    should_process_request = True
-                    should_maybe_default = True
+                    await self._handle_battle_request(battle, maybe_default_order=True)
                 else:
                     self.logger.critical("Unexpected error message: %s", split_message)
             elif split_message[1] == "turn":
@@ -402,9 +389,7 @@ class Player(ABC):
                 battle.parse_message(split_message)
         if should_process_request:
             await self._handle_battle_request(
-                battle,
-                from_teampreview_request=is_from_teampreview,
-                maybe_default_order=should_maybe_default,
+                battle, from_teampreview_request=is_from_teampreview
             )
 
     async def _handle_battle_request(
