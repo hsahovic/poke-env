@@ -273,6 +273,8 @@ def test_name(example_doubles_request):
     assert mon.species == "zamazentacrowned"
     assert mon.name == "Nickname"
 
+    assert mon.identifier("p1") == "p1: Nickname"
+
 
 def test_stats(example_request, showdown_format_teams):
     request_mons = example_request["side"]["pokemon"]

@@ -826,6 +826,15 @@ class Pokemon:
         """
         return self._heightm
 
+    def identifier(self, player_role: str) -> str:
+        """ "
+        :param player_role: The player's role in the battle (p1 or p2)
+        :type player_role: str
+        :return: The pokemon's identifier, which can be used to identify it in Showdown logs
+        """
+        assert player_role in ["p1", "p2"]
+        return player_role + ": " + self.name
+
     @property
     def is_dynamaxed(self) -> bool:
         """
