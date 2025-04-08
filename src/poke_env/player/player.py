@@ -289,10 +289,10 @@ class Player(ABC):
                 if split_message[2]:
                     request = orjson.loads(split_message[2])
                     battle.parse_request(request)
-                    should_process_request = True
                     if battle._wait:
-                        should_process_request = False
                         self._waiting.set()
+                    else:
+                        await self._handle_battle_request(battle)
             elif split_message[1] == "win" or split_message[1] == "tie":
                 if split_message[1] == "win":
                     battle.won_by(split_message[2])
@@ -371,25 +371,16 @@ class Player(ABC):
                     await self._handle_battle_request(battle, maybe_default_order=True)
                 else:
                     self.logger.critical("Unexpected error message: %s", split_message)
-            elif split_message[1] == "teampreview":
-                battle.parse_message(split_message)
-                should_process_request = True
-                is_from_teampreview = True
             elif split_message[1] == "bigerror":
                 self.logger.warning("Received 'bigerror' message: %s", split_message)
             elif split_message[1] == "uhtml" and split_message[2] == "otsrequest":
                 await self._handle_ots_request(battle.battle_tag)
             else:
                 battle.parse_message(split_message)
-        if should_process_request:
-            await self._handle_battle_request(
-                battle, from_teampreview_request=is_from_teampreview
-            )
 
     async def _handle_battle_request(
         self,
         battle: AbstractBattle,
-        from_teampreview_request: bool = False,
         maybe_default_order: bool = False,
     ):
         if maybe_default_order and (
@@ -398,8 +389,6 @@ class Player(ABC):
         ):
             message = self.choose_default_move().message
         elif battle.teampreview:
-            if not from_teampreview_request:
-                return
             message = self.teampreview(battle)
         else:
             if maybe_default_order:
