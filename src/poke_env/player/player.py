@@ -308,9 +308,7 @@ class Player(ABC):
                 if split_message[2].startswith(
                     "[Invalid choice] Sorry, too late to make a different move"
                 ):
-                    if (isinstance(battle.trapped, bool) and battle.trapped) or (
-                        isinstance(battle.trapped, List) and any(battle.trapped)
-                    ):
+                    if battle.trapped:
                         self._trying_again.set()
                         await self._handle_battle_request(battle)
                 elif split_message[2].startswith(
@@ -409,7 +407,6 @@ class Player(ABC):
             if isinstance(choice, Awaitable):
                 choice = await choice
             message = choice.message
-        self._trying_again.clear()
         await self.ps_client.send_message(message, battle.battle_tag)
 
     async def _handle_challenge_request(self, split_message: List[str]):
