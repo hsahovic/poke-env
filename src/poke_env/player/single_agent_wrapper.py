@@ -3,7 +3,7 @@ from typing import Any, Awaitable, Dict, Optional, Tuple
 from gymnasium import Env
 
 from poke_env.environment.abstract_battle import AbstractBattle
-from poke_env.player.battle_order import BattleOrder
+from poke_env.player.battle_order import BattleOrder, ForfeitBattleOrder
 from poke_env.player.env import ActionType, ObsType, PokeEnv, _EnvPlayer
 from poke_env.player.player import Player
 
@@ -18,7 +18,9 @@ class _EnvPlayerWrapper(_EnvPlayer):
         return getattr(self.agent, name)
 
     async def _env_move(self, battle: AbstractBattle) -> BattleOrder:
-        await _EnvPlayer._env_move(self.agent, battle)
+        env_player_order = await _EnvPlayer._env_move(self.agent, battle)
+        if isinstance(env_player_order, ForfeitBattleOrder):
+            return env_player_order
         order = self.player.choose_move(battle)
         if isinstance(order, Awaitable):
             order = await order
