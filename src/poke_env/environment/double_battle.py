@@ -114,9 +114,6 @@ class DoubleBattle(AbstractBattle):
             [mon.get("reviving") for mon in request["side"]["pokemon"]]
         )
 
-        if any(self._force_switch):
-            self._move_on_next_request = True
-
         self._last_request = request
 
         if request.get("teamPreview", False):
@@ -130,6 +127,13 @@ class DoubleBattle(AbstractBattle):
         if side["pokemon"]:
             self._player_role = side["pokemon"][0]["ident"][:2]
         self._update_team_from_request(side)
+        if self.player_role is not None:
+            self._active_pokemon[f"{self.player_role}a"] = self.team[
+                request["side"]["pokemon"][0]["ident"]
+            ]
+            self._active_pokemon[f"{self.player_role}b"] = self.team[
+                request["side"]["pokemon"][1]["ident"]
+            ]
 
         if "active" in request:
             for active_pokemon_number, active_request in enumerate(request["active"]):
@@ -139,41 +143,6 @@ class DoubleBattle(AbstractBattle):
                     force_self_team=True,
                     details=pokemon_dict["details"],
                 )
-                if self.player_role is not None:
-                    if (
-                        active_pokemon_number == 0
-                        and f"{self.player_role}a" not in self._active_pokemon
-                    ):
-                        self._active_pokemon[f"{self.player_role}a"] = active_pokemon
-                    elif f"{self.player_role}b" not in self._active_pokemon:
-                        self._active_pokemon[f"{self.player_role}b"] = active_pokemon
-                    elif (
-                        active_pokemon_number == 0
-                        and self._active_pokemon[f"{self.player_role}a"].fainted
-                        and self._active_pokemon[f"{self.player_role}b"]
-                        == active_pokemon
-                    ):
-                        (
-                            self._active_pokemon[f"{self.player_role}a"],
-                            self._active_pokemon[f"{self.player_role}b"],
-                        ) = (
-                            self._active_pokemon[f"{self.player_role}b"],
-                            self._active_pokemon[f"{self.player_role}a"],
-                        )
-                    elif (
-                        active_pokemon_number == 1
-                        and self._active_pokemon[f"{self.player_role}b"].fainted
-                        and not active_pokemon.fainted
-                        and self._active_pokemon[f"{self.player_role}a"]
-                        == active_pokemon
-                    ):
-                        (
-                            self._active_pokemon[f"{self.player_role}a"],
-                            self._active_pokemon[f"{self.player_role}b"],
-                        ) = (
-                            self._active_pokemon[f"{self.player_role}b"],
-                            self._active_pokemon[f"{self.player_role}a"],
-                        )
 
                 if active_pokemon.fainted:
                     continue
