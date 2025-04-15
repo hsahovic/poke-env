@@ -16,14 +16,7 @@ from poke_env.environment import (
     PokemonType,
     Status,
 )
-from poke_env.player import (
-    BattleOrder,
-    DefaultBattleOrder,
-    ForfeitBattleOrder,
-    Player,
-    PokeEnv,
-    SinglesEnv,
-)
+from poke_env.player import BattleOrder, ForfeitBattleOrder, Player, PokeEnv, SinglesEnv
 from poke_env.player.env import _AsyncQueue, _EnvPlayer
 
 account_configuration1 = AccountConfiguration("username1", "password1")
