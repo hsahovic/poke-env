@@ -233,6 +233,14 @@ class Battle(AbstractBattle):
         return self._force_switch
 
     @property
+    def grounded(self) -> bool:
+        """
+        :return: A boolean indicating whether the active pokemon is grounded
+        :rtype: bool
+        """
+        return self.is_grounded(self.active_pokemon) if self.active_pokemon else True
+
+    @property
     def maybe_trapped(self) -> bool:
         """
         :return: A boolean indicating whether the active pokemon is maybe trapped by the

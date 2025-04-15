@@ -742,6 +742,7 @@ _ENDS_ON_SWITCH_EFFECTS = {
     Effect.PERISH1,
     Effect.PERISH2,
     Effect.PERISH3,
+    Effect.FLASH_FIRE,
 }
 
 _ENDS_ON_TURN_EFFECTS = {
