@@ -6,10 +6,12 @@ from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 from poke_env.data import GenData, to_id_str
 from poke_env.data.replay_template import REPLAY_TEMPLATE
+from poke_env.environment.effect import Effect
 from poke_env.environment.field import Field
 from poke_env.environment.observation import Observation
 from poke_env.environment.observed_pokemon import ObservedPokemon
 from poke_env.environment.pokemon import Pokemon
+from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.side_condition import STACKABLE_CONDITIONS, SideCondition
 from poke_env.environment.weather import Weather
 
@@ -408,6 +410,23 @@ class AbstractBattle(ABC):
                 f.write(formatted_replay)
 
         self._finished = True
+
+    def is_grounded(self, mon: Pokemon):
+        if Field.GRAVITY in self.fields:
+            return True
+        elif mon.item == "ironball":
+            return True
+        elif mon.ability == "levitate":
+            return False
+        elif mon.ability is None and "levitate" in mon.possible_abilities:
+            return False
+        elif mon.item == "airballoon":
+            return False
+        elif mon.type_1 == PokemonType.FLYING or mon.type_2 == PokemonType.FLYING:
+            return False
+        elif Effect.MAGNET_RISE in mon.effects:
+            return False
+        return True
 
     def parse_message(self, split_message: List[str]):
         self._current_observation.events.append(split_message)
@@ -1107,6 +1126,11 @@ class AbstractBattle(ABC):
         :rtype: int
         """
         return self._gen
+
+    @property
+    @abstractmethod
+    def grounded(self) -> Any:
+        pass
 
     @property
     def last_request(self) -> Dict[str, Any]:
