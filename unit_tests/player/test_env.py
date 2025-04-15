@@ -78,21 +78,7 @@ def test_env_reset_and_step():
         start_listening=False,
         strict=False,
     )
-    # Define the agent order.
-    env.agents = [env.agent1.username, env.agent2.username]
-
     # --- Part 1: Test reset() ---
-    # To ensure reset() does not wait indefinitely, simulate that each agent
-    # already has a battle assigned (allowing reset() to exit its wait loop).
-    battle_old1 = Battle("old_battle1", env.agent1.username, env.agent1.logger, gen=8)
-    battle_old2 = Battle("old_battle2", env.agent2.username, env.agent2.logger, gen=8)
-    env.agent1.battle = battle_old1
-    env.agent2.battle = battle_old2
-
-    # Reset the environment battles so reset() will fetch new ones.
-    env.battle1 = None
-    env.battle2 = None
-
     # Pre-populate each agent's battle_queue with a new battle.
     battle_new1 = Battle("new_battle1", env.agent1.username, env.agent1.logger, gen=8)
     battle_new2 = Battle("new_battle2", env.agent2.username, env.agent2.logger, gen=8)
@@ -113,12 +99,6 @@ def test_env_reset_and_step():
     assert add_info == {env.agents[0]: {}, env.agents[1]: {}}
 
     # --- Part 2: Test step() ---
-    # Simulate that each agent is ready for a new step. Clear any waiting flags.
-    env.agent1._waiting.clear()
-    env.agent2._waiting.clear()
-    env.agent1._trying_again.clear()
-    env.agent2._trying_again.clear()
-
     # Pre-fill the battle queues again to simulate battle updates.
     env.agent1.battle_queue.put(env.battle1)
     env.agent2.battle_queue.put(env.battle2)
@@ -127,7 +107,6 @@ def test_env_reset_and_step():
     # converted to an order via env.action_to_order (calc_reward and embed_battle
     # are defined in CustomEnv).
     actions = {env.agents[0]: np.int64(6), env.agents[1]: np.int64(6)}
-
     obs_step, rew, term, trunc, add_info_step = env.step(actions)
 
     # Check that observations are as expected.
@@ -146,15 +125,19 @@ def test_env_reset_and_step():
 
     # --- Part 3: Additional Cycle: reset, step again, and then close ---
     # Simulate a new cycle by preparing new battles.
-    cycle_battle1 = Battle("cycle_battle1", env.agent1.username, env.agent1.logger, gen=8)
-    cycle_battle2 = Battle("cycle_battle2", env.agent2.username, env.agent2.logger, gen=8)
-
-    # Pre-populate each agent's battle_queue with the cycle battles.
+    cycle_battle1 = Battle(
+        "cycle_battle1", env.agent1.username, env.agent1.logger, gen=8
+    )
+    cycle_battle2 = Battle(
+        "cycle_battle2", env.agent2.username, env.agent2.logger, gen=8
+    )
     env.agent1.battle_queue.put(cycle_battle1)
     env.agent2.battle_queue.put(cycle_battle2)
 
     # Call reset() again.
     obs_cycle, add_info_cycle = env.reset()
+    env.agent1.battle = cycle_battle1
+    env.agent2.battle = cycle_battle2
 
     # Verify that the environment's battles have been updated.
     assert env.battle1.battle_tag == "cycle_battle1"
@@ -169,7 +152,9 @@ def test_env_reset_and_step():
 
     # Prepare dummy actions for the new step.
     new_actions = {env.agents[0]: np.int64(6), env.agents[1]: np.int64(6)}
-    obs_cycle_step, rew_cycle, term_cycle, trunc_cycle, add_info_cycle_step = env.step(new_actions)
+    obs_cycle_step, rew_cycle, term_cycle, trunc_cycle, add_info_cycle_step = env.step(
+        new_actions
+    )
 
     # Verify the step outcome.
     np.testing.assert_array_equal(obs_cycle_step[env.agents[0]], np.array([0, 1, 2]))
