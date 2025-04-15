@@ -73,9 +73,10 @@ def test_env_reset_and_step():
     env = CustomEnv(
         account_configuration1=account_configuration1,
         account_configuration2=account_configuration2,
+        battle_format="gen8randombattles",
         server_configuration=server_configuration,
         start_listening=False,
-        battle_format="gen7randombattles",
+        strict=False,
     )
     # Define the agent order.
     env.agents = [env.agent1.username, env.agent2.username]
