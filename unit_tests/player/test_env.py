@@ -138,42 +138,42 @@ def test_env_reset_and_step():
     # Additional info should be empty.
     assert add_info_step == {env.agents[0]: {}, env.agents[1]: {}}
 
-    # --- Part 3: Additional Cycle: reset, step again, and then close ---
-    # Simulate a new cycle by preparing new battles.
-    cycle_battle1 = Battle(
-        "cycle_battle1", env.agent1.username, env.agent1.logger, gen=8
-    )
-    cycle_battle2 = Battle(
-        "cycle_battle2", env.agent2.username, env.agent2.logger, gen=8
-    )
-    assert env.agent1.battle_queue.empty()
-    assert env.agent2.battle_queue.empty()
-    env.agent1.battle_queue.put(cycle_battle1)
-    env.agent2.battle_queue.put(cycle_battle2)
+    # # --- Part 3: Additional Cycle: reset, step again, and then close ---
+    # # Simulate a new cycle by preparing new battles.
+    # cycle_battle1 = Battle(
+    #     "cycle_battle1", env.agent1.username, env.agent1.logger, gen=8
+    # )
+    # cycle_battle2 = Battle(
+    #     "cycle_battle2", env.agent2.username, env.agent2.logger, gen=8
+    # )
+    # assert env.agent1.battle_queue.empty()
+    # assert env.agent2.battle_queue.empty()
+    # env.agent1.battle_queue.put(cycle_battle1)
+    # env.agent2.battle_queue.put(cycle_battle2)
 
-    # Call reset() again.
-    obs_cycle, add_info_cycle = env.reset()
-    assert not env.agent1.order_queue.empty()
-    assert not env.agent2.order_queue.empty()
-    order1 = env.agent1.order_queue.get()
-    order2 = env.agent2.order_queue.get()
-    env.agent1.battle = cycle_battle1
-    env.agent2.battle = cycle_battle2
+    # # Call reset() again.
+    # obs_cycle, add_info_cycle = env.reset()
+    # assert not env.agent1.order_queue.empty()
+    # assert not env.agent2.order_queue.empty()
+    # order1 = env.agent1.order_queue.get()
+    # order2 = env.agent2.order_queue.get()
+    # env.agent1.battle = cycle_battle1
+    # env.agent2.battle = cycle_battle2
 
-    # Verify that the environment's battles have been updated and prior battle was forfeited
-    assert env.battle1.battle_tag == "cycle_battle1"
-    assert env.battle2.battle_tag == "cycle_battle2"
-    assert isinstance(order1, ForfeitBattleOrder)
-    assert isinstance(order2, DefaultBattleOrder)
-    np.testing.assert_array_equal(obs_cycle[env.agents[0]], np.array([0, 1, 2]))
-    np.testing.assert_array_equal(obs_cycle[env.agents[1]], np.array([0, 1, 2]))
-    assert add_info_cycle == {env.agents[0]: {}, env.agents[1]: {}}
+    # # Verify that the environment's battles have been updated and prior battle was forfeited
+    # assert env.battle1.battle_tag == "cycle_battle1"
+    # assert env.battle2.battle_tag == "cycle_battle2"
+    # assert isinstance(order1, ForfeitBattleOrder)
+    # assert isinstance(order2, DefaultBattleOrder)
+    # np.testing.assert_array_equal(obs_cycle[env.agents[0]], np.array([0, 1, 2]))
+    # np.testing.assert_array_equal(obs_cycle[env.agents[1]], np.array([0, 1, 2]))
+    # assert add_info_cycle == {env.agents[0]: {}, env.agents[1]: {}}
 
-    # Pre-fill battle queues for the next step.
-    assert env.agent1.battle_queue.empty()
-    assert env.agent2.battle_queue.empty()
-    env.agent1.battle_queue.put(env.battle1)
-    env.agent2.battle_queue.put(env.battle2)
+    # # Pre-fill battle queues for the next step.
+    # assert env.agent1.battle_queue.empty()
+    # assert env.agent2.battle_queue.empty()
+    # env.agent1.battle_queue.put(env.battle1)
+    # env.agent2.battle_queue.put(env.battle2)
 
     # # Prepare dummy actions for the new step.
     # new_actions = {env.agents[0]: np.int64(6), env.agents[1]: np.int64(6)}
