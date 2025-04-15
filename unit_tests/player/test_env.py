@@ -142,6 +142,44 @@ def test_env_reset_and_step():
     # Additional info should be empty.
     assert add_info_step == {env.agents[0]: {}, env.agents[1]: {}}
 
+    # --- Part 3: Additional Cycle: reset, step again, and then close ---
+    # Simulate a new cycle by preparing new battles.
+    cycle_battle1 = Battle("cycle_battle1", env.agent1.username, env.agent1.logger, gen=8)
+    cycle_battle2 = Battle("cycle_battle2", env.agent2.username, env.agent2.logger, gen=8)
+
+    # Pre-populate each agent's battle_queue with the cycle battles.
+    env.agent1.battle_queue.put(cycle_battle1)
+    env.agent2.battle_queue.put(cycle_battle2)
+
+    # Call reset() again.
+    obs_cycle, add_info_cycle = env.reset()
+
+    # Verify that the environment's battles have been updated.
+    assert env.battle1.battle_tag == "cycle_battle1"
+    assert env.battle2.battle_tag == "cycle_battle2"
+    np.testing.assert_array_equal(obs_cycle[env.agents[0]], np.array([0, 1, 2]))
+    np.testing.assert_array_equal(obs_cycle[env.agents[1]], np.array([0, 1, 2]))
+    assert add_info_cycle == {env.agents[0]: {}, env.agents[1]: {}}
+
+    # Clear waiting flags and pre-fill battle queues for the next step.
+    env.agent1.battle_queue.put(env.battle1)
+    env.agent2.battle_queue.put(env.battle2)
+
+    # Prepare dummy actions for the new step.
+    new_actions = {env.agents[0]: np.int64(6), env.agents[1]: np.int64(6)}
+    obs_cycle_step, rew_cycle, term_cycle, trunc_cycle, add_info_cycle_step = env.step(new_actions)
+
+    # Verify the step outcome.
+    np.testing.assert_array_equal(obs_cycle_step[env.agents[0]], np.array([0, 1, 2]))
+    np.testing.assert_array_equal(obs_cycle_step[env.agents[1]], np.array([0, 1, 2]))
+    assert rew_cycle[env.agents[0]] == 69.42
+    assert rew_cycle[env.agents[1]] == 69.42
+    assert not term_cycle[env.agents[0]]
+    assert not term_cycle[env.agents[1]]
+    assert not trunc_cycle[env.agents[0]]
+    assert not trunc_cycle[env.agents[1]]
+    assert add_info_cycle_step == {env.agents[0]: {}, env.agents[1]: {}}
+
 
 def render(battle):
     player = CustomEnv(start_listening=False)
