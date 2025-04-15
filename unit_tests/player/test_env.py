@@ -107,7 +107,7 @@ def test_env_reset_and_step():
     # Verify that embed_battle returns the expected observations.
     np.testing.assert_array_equal(obs[env.agents[0]], np.array([0, 1, 2]))
     np.testing.assert_array_equal(obs[env.agents[1]], np.array([0, 1, 2]))
-    assert add_info == {}
+    assert add_info == {env.agents[0]: {}, env.agents[1]: {}}
 
     # --- Part 2: Test step() ---
     # Simulate that each agent is ready for a new step. Clear any waiting flags.
@@ -139,7 +139,7 @@ def test_env_reset_and_step():
     assert not trunc[env.agents[0]]
     assert not trunc[env.agents[1]]
     # Additional info should be empty.
-    assert add_info_step == {}
+    assert add_info_step == {env.agents[0]: {}, env.agents[1]: {}}
 
 
 def render(battle):
