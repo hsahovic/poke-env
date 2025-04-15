@@ -68,6 +68,85 @@ def test_async_player():
     assert embed_battle(player.battle_queue.get()) == "battle"
 
 
+def test_env_step():
+    env = CustomEnv(
+        account_configuration1=account_configuration1,
+        account_configuration2=account_configuration2,
+        server_configuration=server_configuration,
+        start_listening=False,
+        battle_format="gen7randombattles",
+    )
+    # Create dummy battles for the two agents.
+    battle1 = Battle("battle1", env.agent1.username, env.agent1.logger, gen=8)
+    battle2 = Battle("battle2", env.agent2.username, env.agent2.logger, gen=8)
+    # Ensure battles are not finished.
+    battle1._finished = False
+    battle2._finished = False
+    # Set the environment battles.
+    env.battle1 = battle1
+    env.battle2 = battle2
+
+    # Pre-fill the battle queues for each agent.
+    env.agent1.battle_queue.put(battle1)
+    env.agent2.battle_queue.put(battle2)
+
+    # Prepare dummy actions.
+    actions = {env.agents[0]: np.int64(6), env.agents[1]: np.int64(6)}
+    obs, rew, term, trunc, add_info = env.step(actions)
+
+    # Verify that embed_battle produces the expected arrays.
+    np.testing.assert_array_equal(obs[env.agents[0]], np.array([0, 1, 2]))
+    np.testing.assert_array_equal(obs[env.agents[1]], np.array([0, 1, 2]))
+    # Check reward as defined in calc_reward.
+    assert rew[env.agents[0]] == 69.42
+    assert rew[env.agents[1]] == 69.42
+    # Termination and truncation flags should be False.
+    assert not term[env.agents[0]]
+    assert not term[env.agents[1]]
+    assert not trunc[env.agents[0]]
+    assert not trunc[env.agents[1]]
+    # Additional info should be empty.
+    assert add_info == {}
+
+
+def test_env_reset():
+    env = CustomEnv(
+        account_configuration1=account_configuration1,
+        account_configuration2=account_configuration2,
+        server_configuration=server_configuration,
+        start_listening=False,
+        battle_format="gen7randombattles",
+    )
+    # Reset the agent list.
+    env.agents = [env.agent1.username, env.agent2.username]
+
+    # Simulate that each agent already has a battle.
+    battle_old1 = Battle("old_battle1", env.agent1.username, env.agent1.logger, gen=8)
+    battle_old2 = Battle("old_battle2", env.agent2.username, env.agent2.logger, gen=8)
+    env.agent1.battle = battle_old1
+    env.agent2.battle = battle_old2
+
+    # Set the environment battles to None so reset() will wait.
+    env.battle1 = None
+    env.battle2 = None
+    # Pre-populate the battle queues with new battles.
+    battle_new1 = Battle("new_battle1", env.agent1.username, env.agent1.logger, gen=8)
+    battle_new2 = Battle("new_battle2", env.agent2.username, env.agent2.logger, gen=8)
+    env.agent1.battle_queue.put(battle_new1)
+    env.agent2.battle_queue.put(battle_new2)
+
+    obs, add_info = env.reset()
+
+    # Verify that the environment's battles have been updated.
+    assert env.battle1.battle_tag == "new_battle1"
+    assert env.battle2.battle_tag == "new_battle2"
+    # Verify that embed_battle returns the expected arrays.
+    np.testing.assert_array_equal(obs[env.agents[0]], np.array([0, 1, 2]))
+    np.testing.assert_array_equal(obs[env.agents[1]], np.array([0, 1, 2]))
+    # Additional info should be empty.
+    assert add_info == {}
+
+
 def render(battle):
     player = CustomEnv(start_listening=False)
     captured_output = StringIO()
