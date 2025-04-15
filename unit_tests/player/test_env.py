@@ -108,6 +108,8 @@ def test_env_reset_and_step():
     # are defined in CustomEnv).
     actions = {env.agents[0]: np.int64(6), env.agents[1]: np.int64(6)}
     obs_step, rew, term, trunc, add_info_step = env.step(actions)
+    assert not env.agent1.order_queue.empty()
+    assert not env.agent2.order_queue.empty()
     env.agent1.order_queue.get()
     env.agent2.order_queue.get()
 
@@ -138,6 +140,8 @@ def test_env_reset_and_step():
 
     # Call reset() again.
     obs_cycle, add_info_cycle = env.reset()
+    assert not env.agent1.order_queue.empty()
+    assert not env.agent2.order_queue.empty()
     order1 = env.agent1.order_queue.get()
     order2 = env.agent2.order_queue.get()
     env.agent1.battle = cycle_battle1
@@ -161,6 +165,10 @@ def test_env_reset_and_step():
     obs_cycle_step, rew_cycle, term_cycle, trunc_cycle, add_info_cycle_step = env.step(
         new_actions
     )
+    assert not env.agent1.order_queue.empty()
+    assert not env.agent2.order_queue.empty()
+    env.agent1.order_queue.get()
+    env.agent2.order_queue.get()
 
     # Verify the step outcome.
     np.testing.assert_array_equal(obs_cycle_step[env.agents[0]], np.array([0, 1, 2]))
