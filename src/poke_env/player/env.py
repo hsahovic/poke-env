@@ -349,18 +349,14 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                     self.agent1.order_queue.put(ForfeitBattleOrder())
                     if not (agent2_waiting or agent1_trying_again):
                         self.agent2.order_queue.put(DefaultBattleOrder())
-                elif not (agent2_waiting or agent1_trying_again):
+                else:
                     self.agent2.order_queue.put(ForfeitBattleOrder())
-                    if not (agent1_waiting or agent2_trying_again):
-                        self.agent1.order_queue.put(DefaultBattleOrder())
                 self.agent1.battle_queue.get()
                 self.agent2.battle_queue.get()
             else:
                 raise RuntimeError(
                     "Environment and agent aren't synchronized. Try to restart"
                 )
-        while self.battle1 == self.agent1.battle or self.battle2 == self.agent2.battle:
-            time.sleep(0.01)
         self.battle1 = self.agent1.battle_queue.get()
         self.battle2 = self.agent2.battle_queue.get()
         observations = {
@@ -752,10 +748,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                     await self.agent1.order_queue.async_put(ForfeitBattleOrder())
                     if not (agent2_waiting or agent1_trying_again):
                         await self.agent2.order_queue.async_put(DefaultBattleOrder())
-                elif not (agent2_waiting or agent1_trying_again):
+                else:
                     await self.agent2.order_queue.async_put(ForfeitBattleOrder())
-                    if not (agent1_waiting or agent2_trying_again):
-                        await self.agent1.order_queue.async_put(DefaultBattleOrder())
 
         if wait and self._challenge_task:
             while not self._challenge_task.done():
