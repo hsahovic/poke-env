@@ -743,12 +743,10 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 self.agent1._trying_again.clear()
                 self.agent2._trying_again.clear()
                 if not (agent1_waiting or agent2_trying_again):
-                    print("$$$$$$$$$$$$$$$$$$$$$$$$$$$")
                     await self.agent1.order_queue.async_put(ForfeitBattleOrder())
                     if not (agent2_waiting or agent1_trying_again):
                         await self.agent2.order_queue.async_put(DefaultBattleOrder())
                 elif not (agent2_waiting or agent1_trying_again):
-                    print("###########################")
                     await self.agent2.order_queue.async_put(ForfeitBattleOrder())
                     if not (agent1_waiting or agent2_trying_again):
                         await self.agent1.order_queue.async_put(DefaultBattleOrder())

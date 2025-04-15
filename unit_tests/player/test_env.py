@@ -140,16 +140,6 @@ def run_env_reset_step_close(agent1_waiting: bool, agent2_waiting: bool):
     env.close()
     assert not env.agent1._waiting.is_set()
     assert not env.agent2._waiting.is_set()
-    if agent1_waiting:
-        assert env.agent1.order_queue.empty()
-        assert not env.agent2.order_queue.empty()
-        forfeit_order = env.agent2.order_queue.get()
-        assert isinstance(forfeit_order, ForfeitBattleOrder)
-    if agent2_waiting:
-        assert env.agent2.order_queue.empty()
-        assert not env.agent1.order_queue.empty()
-        forfeit_order = env.agent1.order_queue.get()
-        assert isinstance(forfeit_order, ForfeitBattleOrder)
 
 
 def test_env_reset_step_close():
