@@ -16,7 +16,7 @@ from poke_env.environment import (
     PokemonType,
     Status,
 )
-from poke_env.player import BattleOrder, ForfeitBattleOrder, Player, PokeEnv, SinglesEnv
+from poke_env.player import BattleOrder, DefaultBattleOrder, ForfeitBattleOrder, Player, PokeEnv, SinglesEnv
 from poke_env.player.env import _AsyncQueue, _EnvPlayer
 
 account_configuration1 = AccountConfiguration("username1", "password1")
@@ -84,11 +84,11 @@ def test_env_reset_and_step():
     battle_new2 = Battle("new_battle2", env.agent2.username, env.agent2.logger, gen=8)
     env.agent1.battle_queue.put(battle_new1)
     env.agent2.battle_queue.put(battle_new2)
+    env.agent1.battle = battle_new1
+    env.agent2.battle = battle_new2
 
     # Call reset().
     obs, add_info = env.reset()
-    env.agent1.battle = battle_new1
-    env.agent2.battle = battle_new2
 
     # Verify that the environment's battles have been updated.
     assert env.battle1.battle_tag == "new_battle1"
@@ -108,6 +108,8 @@ def test_env_reset_and_step():
     # are defined in CustomEnv).
     actions = {env.agents[0]: np.int64(6), env.agents[1]: np.int64(6)}
     obs_step, rew, term, trunc, add_info_step = env.step(actions)
+    env.agent1.order_queue.get()
+    env.agent2.order_queue.get()
 
     # Check that observations are as expected.
     np.testing.assert_array_equal(obs_step[env.agents[0]], np.array([0, 1, 2]))
@@ -136,17 +138,21 @@ def test_env_reset_and_step():
 
     # Call reset() again.
     obs_cycle, add_info_cycle = env.reset()
+    order1 = env.agent1.order_queue.get()
+    order2 = env.agent2.order_queue.get()
     env.agent1.battle = cycle_battle1
     env.agent2.battle = cycle_battle2
 
-    # Verify that the environment's battles have been updated.
+    # Verify that the environment's battles have been updated and prior battle was forfeited
     assert env.battle1.battle_tag == "cycle_battle1"
     assert env.battle2.battle_tag == "cycle_battle2"
+    assert isinstance(order1, ForfeitBattleOrder)
+    assert isinstance(order2, DefaultBattleOrder)
     np.testing.assert_array_equal(obs_cycle[env.agents[0]], np.array([0, 1, 2]))
     np.testing.assert_array_equal(obs_cycle[env.agents[1]], np.array([0, 1, 2]))
     assert add_info_cycle == {env.agents[0]: {}, env.agents[1]: {}}
 
-    # Clear waiting flags and pre-fill battle queues for the next step.
+    # Pre-fill battle queues for the next step.
     env.agent1.battle_queue.put(env.battle1)
     env.agent2.battle_queue.put(env.battle2)
 
