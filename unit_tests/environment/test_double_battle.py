@@ -2,7 +2,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from poke_env.environment import DoubleBattle, Move, Pokemon, PokemonType, Field, Effect
+from poke_env.environment import DoubleBattle, Effect, Field, Move, Pokemon, PokemonType
 
 
 def test_battle_request_parsing(example_doubles_request):
@@ -394,7 +394,9 @@ def test_is_grounded():
     furret = Pokemon(gen=9, species="furret")
     battle.team = {"p1: Furret": furret}
 
-    battle.parse_message(["", "switch", "p1a: Furret", "Furret, L50, F", "100/100"],)
+    battle.parse_message(
+        ["", "switch", "p1a: Furret", "Furret, L50, F", "100/100"],
+    )
     assert battle.grounded == [True, True]
 
     furret._type_2 = PokemonType.FLYING
