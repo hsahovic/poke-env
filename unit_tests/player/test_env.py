@@ -101,6 +101,8 @@ def test_env_reset_and_step():
 
     # Call reset().
     obs, add_info = env.reset()
+    env.agent1.battle = battle_new1
+    env.agent2.battle = battle_new2
 
     # Verify that the environment's battles have been updated.
     assert env.battle1.battle_tag == "new_battle1"
