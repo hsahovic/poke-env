@@ -68,7 +68,8 @@ def test_async_player():
     assert embed_battle(player.battle_queue.get()) == "battle"
 
 
-def test_env_reset_step_close():
+def run_env_reset_step_close(agent1_waiting: bool, agent2_waiting: bool):
+    assert not (agent1_waiting and agent2_waiting)
     # Create a CustomEnv instance.
     env = CustomEnv(
         account_configuration1=account_configuration1,
@@ -132,7 +133,29 @@ def test_env_reset_step_close():
     assert add_info_step == {env.agents[0]: {}, env.agents[1]: {}}
 
     # --- Part 2: Test close() ---
+    if agent1_waiting:
+        env.agent1._waiting.set()
+    if agent2_waiting:
+        env.agent2._waiting.set()
     env.close()
+    assert not env.agent1._waiting.is_set()
+    assert not env.agent2._waiting.is_set()
+    if agent1_waiting:
+        assert env.agent1.order_queue.empty()
+        assert not env.agent2.order_queue.empty()
+        forfeit_order = env.agent2.order_queue.get()
+        assert isinstance(forfeit_order, ForfeitBattleOrder)
+    if agent2_waiting:
+        assert env.agent2.order_queue.empty()
+        assert not env.agent1.order_queue.empty()
+        forfeit_order = env.agent1.order_queue.get()
+        assert isinstance(forfeit_order, ForfeitBattleOrder)
+
+
+def test_env_reset_step_close():
+    run_env_reset_step_close(False, False)
+    run_env_reset_step_close(True, False)
+    run_env_reset_step_close(False, True)
 
 
 def render(battle):
