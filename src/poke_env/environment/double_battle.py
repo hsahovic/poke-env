@@ -114,7 +114,7 @@ class DoubleBattle(AbstractBattle):
             [mon.get("reviving") for mon in request["side"]["pokemon"]]
         )
 
-        if any(self._force_switch) or self._wait:
+        if any(self._force_switch):
             self._move_on_next_request = True
 
         self._last_request = request
@@ -459,6 +459,14 @@ class DoubleBattle(AbstractBattle):
         :rtype: List[bool]
         """
         return self._force_switch
+
+    @property
+    def grounded(self) -> List[bool]:
+        """
+        :return: A boolean indicating whether the active pokemon are grounded
+        :rtype: List[bool]
+        """
+        return [self.is_grounded(mon) if mon else True for mon in self.active_pokemon]
 
     @property
     def maybe_trapped(self) -> List[bool]:
