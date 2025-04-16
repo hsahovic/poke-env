@@ -82,14 +82,8 @@ class _EnvPlayer(Player):
     battle_queue: _AsyncQueue[AbstractBattle]
     order_queue: _AsyncQueue[BattleOrder]
 
-    def __init__(
-        self,
-        username: str,
-        **kwargs: Any,
-    ):
-        self.__class__.__name__ = username
+    def __init__(self, **kwargs: Any):
         super().__init__(**kwargs)
-        self.__class__.__name__ = "_EnvPlayer"
         self.battle_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
         self.order_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
         self.battle: Optional[AbstractBattle] = None
@@ -199,7 +193,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         :type: strict: bool
         """
         self.agent1 = _EnvPlayer(
-            username=self.__class__.__name__,  # type: ignore
             account_configuration=account_configuration1,
             avatar=avatar,
             battle_format=battle_format,
@@ -216,7 +209,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             team=team,
         )
         self.agent2 = _EnvPlayer(
-            username=self.__class__.__name__,  # type: ignore
             account_configuration=account_configuration2,
             avatar=avatar,
             battle_format=battle_format,
