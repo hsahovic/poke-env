@@ -364,11 +364,6 @@ class Player(ABC):
             elif split_message[1] == "turn":
                 battle.parse_message(split_message)
                 await self._handle_battle_request(battle)
-            elif split_message[1] == "upkeep":
-                battle.parse_message(split_message)
-                if battle.move_on_next_request:
-                    await self._handle_battle_request(battle)
-                    battle.move_on_next_request = False
             elif split_message[1] == "teampreview":
                 battle.parse_message(split_message)
                 await self._handle_battle_request(battle, from_teampreview_request=True)
@@ -378,6 +373,9 @@ class Player(ABC):
                 await self._handle_ots_request(battle.battle_tag)
             else:
                 battle.parse_message(split_message)
+                if split_message == split_messages[-1] and battle.move_on_next_request:
+                    await self._handle_battle_request(battle)
+                    battle.move_on_next_request = False
 
     async def _handle_battle_request(
         self,
