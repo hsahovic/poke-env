@@ -492,7 +492,7 @@ class Move:
         return self.entry["priority"]
 
     @property
-    def pseudo_weather(self) -> str:
+    def pseudo_weather(self) -> Optional[str]:
         """
         :return: Pseudo-weather activated by this move.
         :rtype: str
