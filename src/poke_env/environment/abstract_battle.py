@@ -6,10 +6,12 @@ from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 from poke_env.data import GenData, to_id_str
 from poke_env.data.replay_template import REPLAY_TEMPLATE
+from poke_env.environment.effect import Effect
 from poke_env.environment.field import Field
 from poke_env.environment.observation import Observation
 from poke_env.environment.observed_pokemon import ObservedPokemon
 from poke_env.environment.pokemon import Pokemon
+from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.side_condition import STACKABLE_CONDITIONS, SideCondition
 from poke_env.environment.weather import Weather
 
@@ -438,6 +440,23 @@ class AbstractBattle(ABC):
 
         self._finished = True
 
+    def is_grounded(self, mon: Pokemon):
+        if Field.GRAVITY in self.fields:
+            return True
+        elif mon.item == "ironball":
+            return True
+        elif mon.ability == "levitate":
+            return False
+        elif mon.ability is None and "levitate" in mon.possible_abilities:
+            return False
+        elif mon.item == "airballoon":
+            return False
+        elif mon.type_1 == PokemonType.FLYING or mon.type_2 == PokemonType.FLYING:
+            return False
+        elif Effect.MAGNET_RISE in mon.effects:
+            return False
+        return True
+
     def parse_message(self, split_message: List[str]):
         self._current_observation.events.append(split_message)
 
@@ -797,8 +816,10 @@ class AbstractBattle(ABC):
         elif event[1] == "-prepare":
             try:
                 attacker, move, defender = event[2:5]
-                defender_mon = self.get_pokemon(defender)
-                if to_id_str(move) == "skydrop":
+                defender_mon = (
+                    self.get_pokemon(defender) if defender != "[premajor]" else None
+                )
+                if defender_mon is not None and to_id_str(move) == "skydrop":
                     defender_mon.start_effect("Sky Drop")
             except ValueError:
                 attacker, move = event[2:4]
@@ -826,11 +847,19 @@ class AbstractBattle(ABC):
             source, target, stats = event[2:5]
             source_mon = self.get_pokemon(source)
             target_mon = self.get_pokemon(target)
-            for stat in stats.split(", "):
-                source_mon.boosts[stat], target_mon.boosts[stat] = (
-                    target_mon.boosts[stat],
-                    source_mon.boosts[stat],
-                )
+            if "[from]" in stats:
+                all_stats = ["accuracy", "atk", "def", "evasion", "spa", "spd", "spe"]
+                for stat in all_stats:
+                    source_mon.boosts[stat], target_mon.boosts[stat] = (
+                        target_mon.boosts[stat],
+                        source_mon.boosts[stat],
+                    )
+            else:
+                for stat in stats.split(", "):
+                    source_mon.boosts[stat], target_mon.boosts[stat] = (
+                        target_mon.boosts[stat],
+                        source_mon.boosts[stat],
+                    )
         elif event[1] == "-transform":
             pokemon, into = event[2:4]
             self.get_pokemon(pokemon).transform(self.get_pokemon(into))
@@ -1129,6 +1158,11 @@ class AbstractBattle(ABC):
         :rtype: int
         """
         return self._gen
+
+    @property
+    @abstractmethod
+    def grounded(self) -> Any:
+        pass
 
     @property
     def last_request(self) -> Dict[str, Any]:
