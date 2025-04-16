@@ -378,6 +378,11 @@ class Player(ABC):
                     "[Invalid choice] Can't move: "
                 ) and split_message[2].endswith("needs a target"):
                     await self._handle_battle_request(battle, maybe_default_order=True)
+                elif (
+                    split_message[2].startswith("[Invalid choice] Can't move: Your")
+                    and " doesn't have a move matching " in split_message[2]
+                ):
+                    await self._handle_battle_request(battle, maybe_default_order=True)
                 elif split_message[2].startswith(
                     "[Invalid choice] Incomplete choice: "
                 ):
