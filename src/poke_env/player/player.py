@@ -304,9 +304,15 @@ class Player(ABC):
                     self._battle_end_condition.notify_all()
             elif split_message[1] == "error":
                 self.logger.log(
-                    25, f"{time.time()}, Error message received: %s", "|".join(split_message)
+                    25, "Error message received: %s", "|".join(split_message)
                 )
                 if split_message[2].startswith(
+                    "[Invalid choice] Sorry, too late to make a different move"
+                ):
+                    if battle.trapped:
+                        self._trying_again.set()
+                        await self._handle_battle_request(battle)
+                elif split_message[2].startswith(
                     "[Unavailable choice] Can't switch: The active Pokémon is "
                     "trapped"
                 ) or split_message[2].startswith(
