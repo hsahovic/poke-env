@@ -373,7 +373,7 @@ def test_pledge_moves():
             "p2a: Primarina",
             "Water Pledge",
             "p1b: Hatterene",
-            "[from]move: Grass Pledge",
+            "[from] move: Grass Pledge",
         ],
         ["", "-combine"],
         ["", "-damage", "p1b: Hatterene", "0 fnt"],

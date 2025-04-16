@@ -3,10 +3,10 @@
 import asyncio
 import json
 import logging
-from asyncio import CancelledError, Event, Lock, create_task, sleep
+from asyncio import AbstractEventLoop, CancelledError, Event, Lock, create_task, sleep
 from logging import Logger
 from time import perf_counter
-from typing import Any, List, Optional, Set
+from typing import Any, Dict, List, Optional, Set
 
 import requests
 import websockets as ws
@@ -43,6 +43,7 @@ class PSClient:
         open_timeout: Optional[float] = 10.0,
         ping_interval: Optional[float] = 20.0,
         ping_timeout: Optional[float] = 20.0,
+        loop: AbstractEventLoop = POKE_LOOP,
     ):
         """
         :param account_configuration: Account configuration.
@@ -80,15 +81,18 @@ class PSClient:
 
         self._avatar = avatar
 
-        self._logged_in: Event = create_in_poke_loop(Event)
-        self._sending_lock = create_in_poke_loop(Lock)
+        self.loop = loop
+        self._logged_in: Event = create_in_poke_loop(Event, loop)
+        self._sending_lock: Lock = create_in_poke_loop(Lock, loop)
 
         self.websocket: ClientConnection
+        self._protocols: Dict[str, List[List[str]]] = {}
+        self._requests: Dict[str, List[List[str]]] = {}
         self._logger: Logger = self._create_logger(log_level)
 
         if start_listening:
             self._listening_coroutine = asyncio.run_coroutine_threadsafe(
-                self.listen(), POKE_LOOP
+                self.listen(), self.loop
             )
 
     async def accept_challenge(self, username: str, packed_team: Optional[str]):
@@ -138,8 +142,30 @@ class PSClient:
             # For battles, this is the zero-th entry
             # Otherwise it is the one-th entry
             if split_messages[0][0].startswith(">battle"):
+                # Determine protocol and request
+                battle_tag = split_messages[0][0][1:]
+                protocol = None
+                request = None
+                if "|request|" in message:
+                    if battle_tag in self._protocols:
+                        protocol = self._protocols.pop(battle_tag)
+                        request = split_messages
+                    else:
+                        self._requests[battle_tag] = split_messages
+                else:
+                    if battle_tag in self._requests:
+                        protocol = split_messages
+                        request = self._requests.pop(battle_tag)
+                    elif "Can't switch: The active Pokémon is trapped" in message:
+                        self._protocols[battle_tag] = split_messages
+                    else:
+                        protocol = split_messages
                 # Battle update
-                await self._handle_battle_message(split_messages)  # type: ignore
+                if protocol is not None or request is not None:
+                    split_messages = protocol or [[f">{battle_tag}"]]
+                    if request is not None:
+                        split_messages += [request[1]]
+                    await self._handle_battle_message(split_messages)  # type: ignore
             elif split_messages[0][1] == "challstr":
                 # Confirms connection to the server: we can login
                 await self.log_in(split_messages[0])
@@ -297,7 +323,7 @@ class PSClient:
             await self.send_message("/utm null")
 
     async def stop_listening(self):
-        await handle_threaded_coroutines(self._stop_listening())
+        await handle_threaded_coroutines(self._stop_listening(), self.loop)
 
     async def wait_for_login(self, checking_interval: float = 0.001, wait_for: int = 5):
         start = perf_counter()

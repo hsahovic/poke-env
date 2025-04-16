@@ -88,7 +88,6 @@ class AbstractBattle(ABC):
         "_last_request",
         "_max_team_size",
         "_maybe_trapped",
-        "_move_on_next_request",
         "_observations",
         "_opponent_can_dynamax",
         "_opponent_can_mega_evolve",
@@ -154,7 +153,6 @@ class AbstractBattle(ABC):
 
         # Turn choice attributes
         self.in_team_preview: bool = False
-        self._move_on_next_request: bool = False
         self._wait: Optional[bool] = None
 
         # Battle state attributes
@@ -229,6 +227,35 @@ class AbstractBattle(ABC):
             if force_self_team or player_role == self.player_role
             else self._opponent_team
         )
+
+        # if the pokemon has a nickname, this ensures we recognize it
+        split_details = [
+            to_id_str(detail) for detail in re.split(r"[^a-zA-Z0-9]+", details)
+        ]
+        matches = [
+            i for i, p in enumerate(team.values()) if p.base_species in split_details
+        ] or [
+            i
+            for i, p in enumerate(team.values())
+            if p.base_species in to_id_str(details)
+        ]
+        assert len(matches) < 2
+        if identifier not in team and matches:
+            i = matches[0]
+            items = list(team.items())
+            items[i] = (identifier, items[i][1])
+            items[i][1]._name = identifier[4:]
+            if player_role == self._player_role or force_self_team:
+                self._team = dict(items)
+            else:
+                self._opponent_team = dict(items)
+        team = (
+            self._team
+            if player_role == self._player_role or force_self_team
+            else self._opponent_team
+        )
+        if identifier in team:
+            return team[identifier]
 
         if self._team_size and len(team) >= self._team_size[player_role]:
             raise ValueError(
@@ -740,8 +767,7 @@ class AbstractBattle(ABC):
                     else:
                         if mon == self.active_pokemon:
                             self.opponent_active_pokemon.item = to_id_str(item)
-                        else:
-                            assert mon == self.opponent_active_pokemon
+                        elif mon == self.opponent_active_pokemon:
                             self.active_pokemon.item = to_id_str(item)
 
                     mon.ability = to_id_str("frisk")
@@ -1002,7 +1028,10 @@ class AbstractBattle(ABC):
                 self._team[pokemon["ident"]].update_from_request(pokemon)
             else:
                 self.get_pokemon(
-                    pokemon["ident"], force_self_team=True, request=pokemon
+                    pokemon["ident"],
+                    force_self_team=True,
+                    details=pokemon["details"],
+                    request=pokemon,
                 )
 
     def won_by(self, player_name: str):
@@ -1429,19 +1458,6 @@ class AbstractBattle(ABC):
         :rtype: Optional[bool]
         """
         return self._won
-
-    @property
-    def move_on_next_request(self) -> bool:
-        """
-        :return: Wheter the next received request should yield a move order directly.
-            This can happen when a switch is forced, or an error is encountered.
-        :rtype: bool
-        """
-        return self._move_on_next_request
-
-    @move_on_next_request.setter
-    def move_on_next_request(self, value: bool):
-        self._move_on_next_request = value
 
     @property
     def reviving(self) -> bool:
