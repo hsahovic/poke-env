@@ -36,6 +36,7 @@ from poke_env.ps_client.server_configuration import (
 )
 from poke_env.teambuilder.constant_teambuilder import ConstantTeambuilder
 from poke_env.teambuilder.teambuilder import Teambuilder
+from poke_env.teambuilder.teambuilder_pokemon import TeambuilderPokemon
 
 
 class Player(ABC):
@@ -243,6 +244,16 @@ class Player(ABC):
                 if self._start_timer_on_battle_start:
                     await self.ps_client.send_message("/timer on", battle.battle_tag)
 
+                if hasattr(self.ps_client, "websocket") and "vgc" in self.format:
+                    if self.accept_open_team_sheet:
+                        await self.ps_client.send_message(
+                            "/acceptopenteamsheets", room=battle_tag
+                        )
+                    else:
+                        await self.ps_client.send_message(
+                            "/rejectopenteamsheets", room=battle_tag
+                        )
+
                 return battle
         else:
             self.logger.critical(
@@ -291,6 +302,29 @@ class Player(ABC):
                     if battle.move_on_next_request:
                         await self._handle_battle_request(battle)
                         battle.move_on_next_request = False
+            elif split_message[1] == "showteam":
+                role = split_message[2]
+                pokemon_messages = "|".join(split_message[3:]).split("]")
+                for msg in pokemon_messages:
+                    name, *_ = msg.split("|")
+                    teampreview_team = (
+                        battle.teampreview_team
+                        if role == battle.player_role
+                        else battle.teampreview_opponent_team
+                    )
+                    teampreview_mon = [
+                        p for p in teampreview_team if p.base_species in to_id_str(name)
+                    ][0]
+                    mon = battle.get_pokemon(
+                        f"{role}: {name}", details=teampreview_mon._last_details
+                    )
+                    teambuilder = TeambuilderPokemon.parse_showteam_pkmn_substr(msg)
+                    mon._update_from_teambuilder(teambuilder)
+                # only handle battle request after all open sheets are processed
+                if role == "p2":
+                    await self._handle_battle_request(
+                        battle, from_teampreview_request=True
+                    )
             elif split_message[1] == "win" or split_message[1] == "tie":
                 if split_message[1] == "win":
                     battle.won_by(split_message[2])
@@ -377,11 +411,13 @@ class Player(ABC):
                 await self._handle_battle_request(battle)
             elif split_message[1] == "teampreview":
                 battle.parse_message(split_message)
-                await self._handle_battle_request(battle, from_teampreview_request=True)
+                # wait for open sheets to be processed before handling battle request
+                if not self.accept_open_team_sheet:
+                    await self._handle_battle_request(
+                        battle, from_teampreview_request=True
+                    )
             elif split_message[1] == "bigerror":
                 self.logger.warning("Received 'bigerror' message: %s", split_message)
-            elif split_message[1] == "uhtml" and split_message[2] == "otsrequest":
-                await self._handle_ots_request(battle.battle_tag)
             else:
                 battle.parse_message(split_message)
 
@@ -417,13 +453,6 @@ class Player(ABC):
             if len(split_message) >= 6:
                 if split_message[5] == self._format:
                     await self._challenge_queue.put(challenging_player)
-
-    async def _handle_ots_request(self, battle_tag: str):
-        """Handles an Open Team Sheet request."""
-        if self.accept_open_team_sheet:
-            await self.ps_client.send_message("/acceptopenteamsheets", room=battle_tag)
-        else:
-            await self.ps_client.send_message("/rejectopenteamsheets", room=battle_tag)
 
     async def _update_challenges(self, split_message: List[str]):
         """Update internal challenge state.
