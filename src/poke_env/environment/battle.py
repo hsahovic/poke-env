@@ -81,7 +81,7 @@ class Battle(AbstractBattle):
         self._trapped = False
         self._force_switch = request.get("forceSwitch", [False])[0]
 
-        if self._force_switch or self._wait:
+        if self._force_switch:
             self._move_on_next_request = True
 
         self._last_request = request
@@ -224,6 +224,14 @@ class Battle(AbstractBattle):
         :rtype: Optional[bool]
         """
         return self._force_switch
+
+    @property
+    def grounded(self) -> bool:
+        """
+        :return: A boolean indicating whether the active pokemon is grounded
+        :rtype: bool
+        """
+        return self.is_grounded(self.active_pokemon) if self.active_pokemon else True
 
     @property
     def maybe_trapped(self) -> bool:

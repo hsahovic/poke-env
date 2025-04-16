@@ -2,7 +2,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from poke_env.environment import DoubleBattle, Move, Pokemon
+from poke_env.environment import DoubleBattle, Effect, Field, Move, Pokemon, PokemonType
 
 
 def test_battle_request_parsing(example_doubles_request):
@@ -385,3 +385,46 @@ def test_pledge_moves():
 
     assert "grasspledge" not in battle.team["p2: Primarina"].moves
     assert "waterpledge" in battle.team["p2: Primarina"].moves
+
+
+def test_is_grounded():
+    gen = 9
+    battle = DoubleBattle("tag", "username", MagicMock(), gen=gen)
+    battle.player_role = "p1"
+    furret = Pokemon(gen=9, species="furret")
+    battle.team = {"p1: Furret": furret}
+
+    battle.parse_message(
+        ["", "switch", "p1a: Furret", "Furret, L50, F", "100/100"],
+    )
+    assert battle.grounded == [True, True]
+
+    furret._type_2 = PokemonType.FLYING
+    assert battle.grounded == [False, True]
+
+    furret._type_2 = None
+    furret._ability = "levitate"
+    assert battle.grounded == [False, True]
+
+    furret._ability = "frisk"
+    assert battle.grounded == [True, True]
+
+    furret._effects = {Effect.MAGNET_RISE: 1}
+    assert battle.grounded == [False, True]
+
+    furret._effects = {}
+    furret.item = "airballoon"
+    assert battle.grounded == [False, True]
+
+    battle._fields = {Field.GRAVITY: 1}
+    assert battle.grounded == [True, True]
+
+    furret._ability = "levitate"
+    assert battle.grounded == [True, True]
+
+    battle._fields = {}
+    assert battle.grounded == [False, True]
+
+    furret.item = "ironball"
+    assert battle.grounded == [True, True]
+    assert battle.is_grounded(furret)
