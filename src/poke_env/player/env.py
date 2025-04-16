@@ -198,6 +198,23 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             illegal. Otherwise, it will return default. Defaults to True.
         :type: strict: bool
         """
+        self._account_configuration1 = account_configuration1
+        self._account_configuration2 = account_configuration2
+        self._avatar = avatar
+        self._battle_format = battle_format
+        self._log_level = log_level
+        self._save_replays = save_replays
+        self._server_configuration = server_configuration
+        self._accept_open_team_sheet = accept_open_team_sheet
+        self._start_timer_on_battle_start = start_timer_on_battle_start
+        self._start_listening = start_listening
+        self._open_timeout = open_timeout
+        self._ping_interval = ping_interval
+        self._ping_timeout = ping_timeout
+        self._team = team
+        self._start_challenging = start_challenging
+        self._fake = fake
+        self._strict = strict
         self.agent1 = _EnvPlayer(
             username=self.__class__.__name__,  # type: ignore
             account_configuration=account_configuration1,
@@ -236,8 +253,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         self.possible_agents = [self.agent1.username, self.agent2.username]
         self.battle1: Optional[AbstractBattle] = None
         self.battle2: Optional[AbstractBattle] = None
-        self.fake = fake
-        self.strict = strict
         self._reward_buffer: WeakKeyDictionary[AbstractBattle, float] = (
             WeakKeyDictionary()
         )
@@ -248,6 +263,64 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             self._challenge_task = asyncio.run_coroutine_threadsafe(
                 self._challenge_loop(), POKE_LOOP
             )
+
+    def __getstate__(self) -> Dict[str, Any]:
+        state = self.__dict__.copy()
+        state["agent1"] = None
+        state["agent2"] = None
+        state["_reward_buffer"] = None
+        state["_challenge_task"] = None
+        return state
+
+    def __setstate__(self, state: Dict[str, Any]):
+        self.__dict__.update(state)
+        self.agent1 = _EnvPlayer(
+            username=self.__class__.__name__,  # type: ignore
+            account_configuration=self._account_configuration1,
+            avatar=self._avatar,
+            battle_format=self._battle_format,
+            log_level=self._log_level,
+            max_concurrent_battles=1,
+            save_replays=self._save_replays,
+            server_configuration=self._server_configuration,
+            accept_open_team_sheet=self._accept_open_team_sheet,
+            start_timer_on_battle_start=self._start_timer_on_battle_start,
+            start_listening=self._start_listening,
+            open_timeout=self._open_timeout,
+            ping_interval=self._ping_interval,
+            ping_timeout=self._ping_timeout,
+            team=self._team,
+        )
+        self.agent2 = _EnvPlayer(
+            username=self.__class__.__name__,  # type: ignore
+            account_configuration=self._account_configuration2,
+            avatar=self._avatar,
+            battle_format=self._battle_format,
+            log_level=self._log_level,
+            max_concurrent_battles=1,
+            save_replays=self._save_replays,
+            server_configuration=self._server_configuration,
+            accept_open_team_sheet=self._accept_open_team_sheet,
+            start_timer_on_battle_start=self._start_timer_on_battle_start,
+            start_listening=self._start_listening,
+            ping_interval=self._ping_interval,
+            ping_timeout=self._ping_timeout,
+            team=self._team,
+        )
+        self.agents = [self.agent1.username, self.agent2.username]
+        self.possible_agents = [self.agent1.username, self.agent2.username]
+        self.observation_spaces: Dict[str, Space[ObsType]] = {
+            self.possible_agents[i]: list(self.observation_spaces.values())[i]
+            for i in range(len(self.possible_agents))
+        }
+        self.action_spaces: Dict[str, Space[ActionType]] = {
+            self.possible_agents[i]: list(self.action_spaces.values())[i]
+            for i in range(len(self.possible_agents))
+        }
+        self._reward_buffer = WeakKeyDictionary()
+        self._challenge_task = asyncio.run_coroutine_threadsafe(
+            self._challenge_loop(), POKE_LOOP
+        )
 
     ###################################################################################
     # PettingZoo API
@@ -276,16 +349,16 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             order1 = self.action_to_order(
                 actions[self.agents[0]],
                 self.battle1,
-                fake=self.fake,
-                strict=self.strict,
+                fake=self._fake,
+                strict=self._strict,
             )
             self.agent1.order_queue.put(order1)
         if not (agent2_waiting or agent1_trying_again):
             order2 = self.action_to_order(
                 actions[self.agents[1]],
                 self.battle2,
-                fake=self.fake,
-                strict=self.strict,
+                fake=self._fake,
+                strict=self._strict,
             )
             self.agent2.order_queue.put(order2)
         battle1 = (
