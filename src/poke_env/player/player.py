@@ -288,9 +288,6 @@ class Player(ABC):
                     battle.parse_request(request)
                     if battle._wait:
                         self._waiting.set()
-                    if battle.move_on_next_request:
-                        await self._handle_battle_request(battle)
-                        battle.move_on_next_request = False
             elif split_message[1] == "win" or split_message[1] == "tie":
                 if split_message[1] == "win":
                     battle.won_by(split_message[2])
@@ -306,20 +303,12 @@ class Player(ABC):
                     25, "Error message received: %s", "|".join(split_message)
                 )
                 if split_message[2].startswith(
-                    "[Invalid choice] Sorry, too late to make a different move"
-                ):
-                    if battle.trapped:
-                        self._trying_again.set()
-                        await self._handle_battle_request(battle)
-                elif split_message[2].startswith(
                     "[Unavailable choice] Can't switch: The active Pokémon is "
                     "trapped"
                 ) or split_message[2].startswith(
                     "[Invalid choice] Can't switch: The active Pokémon is trapped"
                 ):
-                    battle.trapped = True
                     self._trying_again.set()
-                    await self._handle_battle_request(battle)
                 elif split_message[2].startswith("[Invalid choice] Can't pass: "):
                     await self._handle_battle_request(battle, maybe_default_order=True)
                 elif split_message[2].startswith(
@@ -375,6 +364,11 @@ class Player(ABC):
             elif split_message[1] == "turn":
                 battle.parse_message(split_message)
                 await self._handle_battle_request(battle)
+            elif split_message[1] == "upkeep":
+                battle.parse_message(split_message)
+                if battle.move_on_next_request:
+                    await self._handle_battle_request(battle)
+                    battle.move_on_next_request = False
             elif split_message[1] == "teampreview":
                 battle.parse_message(split_message)
                 await self._handle_battle_request(battle, from_teampreview_request=True)
