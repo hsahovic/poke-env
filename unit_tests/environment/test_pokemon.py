@@ -79,7 +79,7 @@ def test_powerherb_ends_move_preparation():
     mon = Pokemon(species="roserade", gen=8)
     mon.item = "powerherb"
 
-    mon.prepare("solarbeam", "talonflame")
+    mon.prepare("solarbeam", None)
     assert mon.preparing
 
     mon.end_item("powerherb")
@@ -177,6 +177,9 @@ def test_tera_type():
     assert charizard.tera_type is None
     charizard.terastallize("bug")
     assert charizard.tera_type == PokemonType.BUG
+    assert charizard.types == [PokemonType.BUG]
+    assert PokemonType.FIRE in charizard.original_types
+    assert PokemonType.FLYING in charizard.original_types
 
 
 def test_details():
@@ -269,6 +272,8 @@ def test_name(example_doubles_request):
     mon = Pokemon(9, teambuilder=tb_mons[0])
     assert mon.species == "zamazentacrowned"
     assert mon.name == "Nickname"
+
+    assert mon.identifier("p1") == "p1: Nickname"
 
 
 def test_stats(example_request, showdown_format_teams):
