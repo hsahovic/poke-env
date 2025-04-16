@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import random
+import time
 from abc import ABC, abstractmethod
 from asyncio import Condition, Event, Queue, Semaphore
 from logging import Logger
@@ -303,7 +304,7 @@ class Player(ABC):
                     self._battle_end_condition.notify_all()
             elif split_message[1] == "error":
                 self.logger.log(
-                    25, "Error message received: %s", "|".join(split_message)
+                    25, f"{time.time()}, Error message received: %s", "|".join(split_message)
                 )
                 if split_message[2].startswith(
                     "[Unavailable choice] Can't switch: The active Pokémon is "
