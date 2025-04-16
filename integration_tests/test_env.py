@@ -37,10 +37,8 @@ def test_env_run():
         env = SinglesTestEnv(
             battle_format=f"gen{gen}randombattle",
             log_level=25,
-            start_challenging=False,
             strict=False,
         )
-        env.start_challenging(3)
         play_function(env, 3)
         env.close()
 
@@ -50,23 +48,17 @@ def test_repeated_runs():
     env = SinglesTestEnv(
         battle_format="gen8randombattle",
         log_level=25,
-        start_challenging=False,
         strict=False,
     )
-    env.start_challenging(2)
     play_function(env, 2)
-    env.start_challenging(2)
     play_function(env, 2)
     env.close()
     env = SinglesTestEnv(
         battle_format="gen9randombattle",
         log_level=25,
-        start_challenging=False,
         strict=False,
     )
-    env.start_challenging(2)
     play_function(env, 2)
-    env.start_challenging(2)
     play_function(env, 2)
     env.close()
 
@@ -77,7 +69,6 @@ def test_env_api():
         env = SinglesTestEnv(
             battle_format=f"gen{gen}randombattle",
             log_level=25,
-            start_challenging=True,
             strict=False,
         )
         parallel_api_test(env)

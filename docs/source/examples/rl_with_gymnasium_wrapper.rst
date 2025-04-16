@@ -122,7 +122,7 @@ Now that our custom class is defined, we can instantiate our RL player and test 
 
     opponent = RandomPlayer(battle_format="gen8randombattle")
     test_env = SimpleRLPlayer(
-        battle_format="gen8randombattle", opponent=opponent, start_challenging=True
+        battle_format="gen8randombattle", opponent=opponent
     )
     check_env(test_env)
     test_env.close()
@@ -135,8 +135,6 @@ Instantiating train environment and evaluation environment
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Normally, to ensure isolation between training and testing, two different environments are created.
-If you don't want the player to start challenging the opponent you can set ``start_challenging=False`` when creating it.
-In this case, we want them to start challenging right away:
 
 .. code-block:: python
 
@@ -145,11 +143,11 @@ In this case, we want them to start challenging right away:
 
     opponent = RandomPlayer(battle_format="gen8randombattle")
     train_env = SimpleRLPlayer(
-        battle_format="gen8randombattle", opponent=opponent, start_challenging=True
+        battle_format="gen8randombattle", opponent=opponent
     )
     opponent = RandomPlayer(battle_format="gen8randombattle")
     eval_env = SimpleRLPlayer(
-        battle_format="gen8randombattle", opponent=opponent, start_challenging=True
+        battle_format="gen8randombattle", opponent=opponent
     )
     ...
 
