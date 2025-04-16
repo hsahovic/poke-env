@@ -740,8 +740,7 @@ class AbstractBattle(ABC):
                     else:
                         if mon == self.active_pokemon:
                             self.opponent_active_pokemon.item = to_id_str(item)
-                        else:
-                            assert mon == self.opponent_active_pokemon
+                        elif mon == self.opponent_active_pokemon:
                             self.active_pokemon.item = to_id_str(item)
 
                     mon.ability = to_id_str("frisk")
