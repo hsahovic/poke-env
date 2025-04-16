@@ -112,6 +112,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
             elif action < 6:
                 order = Player.create_order(list(battle.team.values())[action])
                 if not fake:
+                    assert not battle.trapped, "invalid action"
                     assert isinstance(order.order, Pokemon)
                     assert order.order.base_species in [
                         p.base_species for p in battle.available_switches
@@ -183,6 +184,11 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
             elif order.order is None:
                 raise ValueError()
             elif isinstance(order.order, Pokemon):
+                if not fake:
+                    assert not battle.trapped, "invalid order"
+                    assert order.order.base_species in [
+                        p.base_species for p in battle.available_switches
+                    ], "invalid order"
                 action = [p.base_species for p in battle.team.values()].index(
                     order.order.base_species
                 )
