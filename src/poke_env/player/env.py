@@ -275,7 +275,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         self.agent2._waiting.clear()
         self.agent1._trying_again.clear()
         self.agent2._trying_again.clear()
-        if not agent1_waiting and (agent1_trying_again or not agent2_trying_again):
+        if not (agent1_waiting or agent2_trying_again) or agent1_trying_again:
             order1 = self.action_to_order(
                 actions[self.agents[0]],
                 self.battle1,
@@ -283,7 +283,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 strict=self.strict,
             )
             self.agent1.order_queue.put(order1)
-        if not agent2_waiting and (agent2_trying_again or not agent1_trying_again):
+        if not (agent2_waiting or agent1_trying_again) or agent2_trying_again:
             order2 = self.action_to_order(
                 actions[self.agents[1]],
                 self.battle2,
@@ -351,12 +351,11 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 self.agent2._waiting.clear()
                 self.agent1._trying_again.clear()
                 self.agent2._trying_again.clear()
-                if not agent1_waiting and (
-                    agent1_trying_again or not agent2_trying_again
-                ):
+                if not (agent1_waiting or agent2_trying_again) or agent1_trying_again:
                     self.agent1.order_queue.put(ForfeitBattleOrder())
-                    if not agent2_waiting and (
-                        agent2_trying_again or not agent1_trying_again
+                    if (
+                        not (agent2_waiting or agent1_trying_again)
+                        or agent2_trying_again
                     ):
                         self.agent2.order_queue.put(DefaultBattleOrder())
                 else:
@@ -754,12 +753,11 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 self.agent2._waiting.clear()
                 self.agent1._trying_again.clear()
                 self.agent2._trying_again.clear()
-                if not agent1_waiting and (
-                    agent1_trying_again or not agent2_trying_again
-                ):
+                if not (agent1_waiting or agent2_trying_again) or agent1_trying_again:
                     await self.agent1.order_queue.async_put(ForfeitBattleOrder())
-                    if not agent2_waiting and (
-                        agent2_trying_again or not agent1_trying_again
+                    if (
+                        not (agent2_waiting or agent1_trying_again)
+                        or agent2_trying_again
                     ):
                         await self.agent2.order_queue.async_put(DefaultBattleOrder())
                 else:
