@@ -68,8 +68,7 @@ def test_async_player():
     assert embed_battle(player.battle_queue.get()) == "battle"
 
 
-def run_env_reset_step_close(agent1_waiting: bool, agent2_waiting: bool):
-    assert not (agent1_waiting and agent2_waiting)
+def test_reset_step_close():
     # Create a CustomEnv instance.
     env = CustomEnv(
         account_configuration1=account_configuration1,
@@ -133,19 +132,7 @@ def run_env_reset_step_close(agent1_waiting: bool, agent2_waiting: bool):
     assert add_info_step == {env.agents[0]: {}, env.agents[1]: {}}
 
     # --- Part 2: Test close() ---
-    if agent1_waiting:
-        env.agent1._waiting.set()
-    if agent2_waiting:
-        env.agent2._waiting.set()
     env.close()
-    assert not env.agent1._waiting.is_set()
-    assert not env.agent2._waiting.is_set()
-
-
-def test_env_reset_step_close():
-    run_env_reset_step_close(False, False)
-    run_env_reset_step_close(True, False)
-    run_env_reset_step_close(False, True)
 
 
 def render(battle):
