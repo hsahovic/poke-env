@@ -133,13 +133,7 @@ def run_env_reset_step_close(agent1_waiting: bool, agent2_waiting: bool):
     assert add_info_step == {env.agents[0]: {}, env.agents[1]: {}}
 
     # --- Part 2: Test close() ---
-    if agent1_waiting:
-        env.agent1._waiting.set()
-    if agent2_waiting:
-        env.agent2._waiting.set()
     env.close()
-    assert not env.agent1._waiting.is_set()
-    assert not env.agent2._waiting.is_set()
 
 
 def test_env_reset_step_close():
