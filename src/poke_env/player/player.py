@@ -404,6 +404,7 @@ class Player(ABC):
             if maybe_default_order:
                 self._trying_again.set()
             choice = self.choose_move(battle)
+            self._trying_again.clear()
             if isinstance(choice, Awaitable):
                 choice = await choice
             message = choice.message
