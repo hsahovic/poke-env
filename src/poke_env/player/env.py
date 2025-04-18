@@ -263,8 +263,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         Dict[str, Dict[str, Any]],
     ]:
         assert self.battle1 is not None
-        assert not self.battle1.finished
         assert self.battle2 is not None
+        assert not self.battle1.finished
         assert not self.battle2.finished
         if self.agent1_to_move:
             self.agent1_to_move = False
