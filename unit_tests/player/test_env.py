@@ -68,7 +68,7 @@ def test_async_player():
     assert embed_battle(player.battle_queue.get()) == "battle"
 
 
-def test_env_reset_step_close():
+def test_reset_step_close():
     # Create a CustomEnv instance.
     env = CustomEnv(
         account_configuration1=account_configuration1,
