@@ -266,8 +266,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         assert not self.battle1.finished
         assert self.battle2 is not None
         assert not self.battle2.finished
-        self.agent1._waiting.clear()
-        self.agent2._waiting.clear()
         if self.agent1_to_move:
             self.agent1_to_move = False
             order1 = self.action_to_order(
@@ -294,9 +292,13 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         )
         self.agent1_to_move = battle1 is not None
         self.agent2_to_move = battle2 is not None
+        self.agent1._waiting.clear()
+        self.agent2._waiting.clear()
         if battle1 is None:
+            self.agent2._trying_again.clear()
             battle1 = self.battle1
         if battle2 is None:
+            self.agent1._trying_again.clear()
             battle2 = self.battle2
         observations = {
             self.agents[0]: self.embed_battle(battle1),
@@ -331,8 +333,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         if self.battle1 and not self.battle1.finished:
             assert self.battle2 is not None
             if self.battle1 == self.agent1.battle:
-                self.agent1._waiting.clear()
-                self.agent2._waiting.clear()
                 if self.agent1_to_move:
                     self.agent1_to_move = False
                     self.agent1.order_queue.put(ForfeitBattleOrder())
@@ -730,8 +730,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                     await self.agent1.battle_queue.async_get()
                 if not self.agent2.battle_queue.empty():
                     await self.agent2.battle_queue.async_get()
-                self.agent1._waiting.clear()
-                self.agent2._waiting.clear()
                 if self.agent1_to_move:
                     self.agent1_to_move = False
                     await self.agent1.order_queue.async_put(ForfeitBattleOrder())
