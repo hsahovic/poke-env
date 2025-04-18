@@ -31,7 +31,7 @@ def play_function(env, n_battles):
             done = any(terminated.values()) or any(truncated.values())
 
 
-@pytest.mark.timeout(300)
+@pytest.mark.timeout(600)
 def test_env_run():
     for gen in range(4, 10):
         env = SinglesTestEnv(
@@ -40,8 +40,8 @@ def test_env_run():
             start_challenging=False,
             strict=False,
         )
-        env.start_challenging(100)
-        play_function(env, 100)
+        env.start_challenging(200)
+        play_function(env, 200)
         env.close()
 
 
