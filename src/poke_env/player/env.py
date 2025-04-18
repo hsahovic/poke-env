@@ -351,6 +351,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 )
         self.battle1 = self.agent1.battle_queue.get()
         self.battle2 = self.agent2.battle_queue.get()
+        self.agent1_to_move = True
+        self.agent2_to_move = True
         observations = {
             self.agents[0]: self.embed_battle(self.battle1),
             self.agents[1]: self.embed_battle(self.battle2),
