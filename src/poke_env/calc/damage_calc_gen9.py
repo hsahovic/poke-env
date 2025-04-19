@@ -519,7 +519,7 @@ def calculate_base_power(
         map(lambda x: x and x.ability == "neutralizinggas", battle.all_active_pokemons)
     )
 
-    base_power = move.base_power
+    base_power = move.base_power * 1.0
 
     defender_ability = defender.ability
     if move.id in MOVE_IGNORES_ABILITY or (
@@ -1017,10 +1017,10 @@ def calculate_attack(
         or (is_critical and attack_source.boosts[attack_stat] < 0)
         or defender.ability == "unaware"
     ):
-        attack = attack_source.stats[attack_stat]
+        attack = attack_source.stats[attack_stat]  # type: ignore
     elif attack_source.stats[attack_stat] is not None:
         attack = math.floor(
-            attack_source.stats[attack_stat]
+            attack_source.stats[attack_stat]  # type: ignore
             * BOOST_MULTIPLIERS[attack_source.boosts[attack_stat]]
         )
 
@@ -1254,10 +1254,10 @@ def calculate_defense(
         or move.ignore_defensive
         or attacker.ability == "unaware"
     ):
-        defense = defender.stats[defense_stat]
+        defense = defender.stats[defense_stat]  # type: ignore
     elif defender.stats[defense_stat] is not None:
         defense = math.floor(
-            defender.stats[defense_stat]
+            defender.stats[defense_stat]  # type: ignore
             * BOOST_MULTIPLIERS[defender.boosts[defense_stat]]
         )
 
@@ -1644,7 +1644,7 @@ def get_final_damage(
     stab_mod: int,
     final_mod: int,
 ) -> float:
-    damage_amount = math.floor(base_amount * (85 + i) / 100)
+    damage_amount = math.floor(base_amount * (85 + i) / 100) * 1.0
     if stab_mod != 4096:
         damage_amount = (damage_amount * stab_mod) / 4096
 
