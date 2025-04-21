@@ -97,7 +97,7 @@ def test_repeated_runs():
     env.close()
 
 
-@pytest.mark.timeout(120)
+@pytest.mark.timeout(60)
 def test_env_api():
     for gen in range(4, 10):
         env = SinglesTestEnv(
