@@ -19,9 +19,14 @@ def test_constant_teambuilder_yields_showdown(
         for showdown_team, packed_team in zip(
             showdown_format_teams[format_], packed_format_teams[format_]
         ):
-            tb = ConstantTeambuilder(showdown_team)
+            ps_tb = ConstantTeambuilder(showdown_team)
+            packed_tb = ConstantTeambuilder(packed_team)
+
             for _ in range(10):
-                assert tb.yield_team() == packed_team
+                assert ps_tb.yield_team() == packed_team
+                assert packed_tb.yield_team() == packed_team
+
+            assert ps_tb.join_team(ps_tb.team) == packed_tb.join_team(packed_tb.team)
 
 
 def test_showdown_team_parsing_works_without_items():

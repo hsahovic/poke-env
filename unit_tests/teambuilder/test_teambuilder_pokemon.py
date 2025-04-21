@@ -34,3 +34,30 @@ def test_teambuilder_pokemon_formatting():
         == "testy|dragonair|choiceband|shedskin|tackle,watergun,hiddenpower|Adamant||M"
         "||S|84|134,water,,G"
     )
+
+
+def test_teambuilder_pokemon_from_packed(packed_format_teams):
+    for _, teams in packed_format_teams.items():
+        for team in teams:
+            for packed_mon in team.split("]"):
+                assert (
+                    TeambuilderPokemon.from_packed(packed_mon).formatted == packed_mon
+                )
+
+
+def test_teambuilder_pokemon_from_showdown(
+    showdown_format_teams,
+    packed_format_teams,
+):
+    for format_, teams in showdown_format_teams.items():
+        for showdown_team, packed_team in zip(
+            showdown_format_teams[format_], packed_format_teams[format_]
+        ):
+            showdown_mons = showdown_team.split("\n\n")
+            packed_mons = packed_team.split("]")
+
+            for showdown_mon, packed_mon in zip(showdown_mons, packed_mons):
+                assert (
+                    TeambuilderPokemon.from_showdown(showdown_mon).formatted
+                    == packed_mon
+                )
