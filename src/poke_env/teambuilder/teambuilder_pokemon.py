@@ -83,7 +83,7 @@ class TeambuilderPokemon:
 
     @property
     def formatted_ivs(self) -> str:
-        f_ivs = ",".join([str(el) if el != 31 else "" for el in self.ivs])
+        f_ivs = ",".join([str(iv) if iv != 31 else "" for iv in self.ivs])
         if f_ivs == "," * 5:
             return ""
         return f_ivs
@@ -134,3 +134,98 @@ class TeambuilderPokemon:
                 and all([iv == 31 for iv in self.ivs])
             ):
                 self.ivs = list(self.HP_TO_IVS[move[11:]])
+
+    @staticmethod
+    def from_packed(packed_mon: str) -> "TeambuilderPokemon":
+        """Converts a packed-format pokemon string into a TeambuilderPokemon object.
+
+        :param packed_mon: The packed-format pokemon string to convert.
+        :type packed_mon: str
+        :return: The converted TeambuilderPokemon object.
+        :rtype: TeambuilderPokemon
+        """
+        (
+            raw_nickname,
+            raw_species,
+            raw_item,
+            raw_ability,
+            raw_moves,
+            raw_nature,
+            raw_evs,
+            raw_gender,
+            raw_ivs,
+            raw_shiny,
+            raw_level,
+            endstring,
+        ) = packed_mon.split("|")
+
+        gmax = False
+        tera_type = None
+        hiddenpowertype = None
+        happiness = None
+
+        if endstring:
+            split_endstring = endstring.split(",")
+
+            if split_endstring[0]:
+                happiness = int(split_endstring[0])
+
+            if len(split_endstring) == 1:
+                pass
+            elif split_endstring[-1] == "G":
+                gmax = True
+            elif split_endstring[-1] != "":
+                tera_type = split_endstring[-1]
+            elif len(split_endstring) >= 3:
+                hiddenpowertype = split_endstring[-2]
+
+        nickname = raw_nickname or None
+        species = raw_species or None
+        item = raw_item or None
+        ability = raw_ability or None
+        nature = raw_nature or None
+        gender = raw_gender or None
+
+        if raw_moves:
+            moves = raw_moves.split(",")
+        else:
+            moves = None
+
+        if raw_evs:
+            evs = [int(ev) if ev else 0 for ev in raw_evs.split(",")]
+        else:
+            evs = None
+
+        if raw_ivs:
+            ivs = [int(iv) if iv else 31 for iv in raw_ivs.split(",")]
+        else:
+            ivs = None
+
+        if raw_shiny:
+            assert raw_shiny == "S"
+            shiny = True
+        else:
+            shiny = False
+
+        if raw_level:
+            level = int(raw_level)
+        else:
+            level = None
+
+        return TeambuilderPokemon(
+            nickname=nickname,
+            species=species,
+            item=item,
+            ability=ability,
+            moves=moves,
+            nature=nature,
+            evs=evs,
+            gender=gender,
+            ivs=ivs,
+            shiny=shiny,
+            level=level,
+            happiness=happiness,
+            hiddenpowertype=hiddenpowertype,
+            gmax=gmax,
+            tera_type=tera_type,
+        )

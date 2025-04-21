@@ -34,3 +34,12 @@ def test_teambuilder_pokemon_formatting():
         == "testy|dragonair|choiceband|shedskin|tackle,watergun,hiddenpower|Adamant||M"
         "||S|84|134,water,,G"
     )
+
+
+def test_teambuilder_pokemon_from_packed(packed_format_teams):
+    for _, teams in packed_format_teams.items():
+        for team in teams:
+            for packed_mon in team.split("]"):
+                assert (
+                    TeambuilderPokemon.from_packed(packed_mon).formatted == packed_mon
+                )
