@@ -238,6 +238,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         self.possible_agents = [self.agent1.username, self.agent2.username]
         self.battle1: Optional[AbstractBattle] = None
         self.battle2: Optional[AbstractBattle] = None
+        self.agent1_to_move = False
+        self.agent2_to_move = False
         self.fake = fake
         self.strict = strict
         self._np_random: Optional[Generator] = None
@@ -264,18 +266,11 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         Dict[str, Dict[str, Any]],
     ]:
         assert self.battle1 is not None
-        assert not self.battle1.finished
         assert self.battle2 is not None
+        assert not self.battle1.finished
         assert not self.battle2.finished
-        agent1_waiting = self.agent1._waiting.is_set()
-        agent2_waiting = self.agent2._waiting.is_set()
-        agent1_trying_again = self.agent1._trying_again.is_set()
-        agent2_trying_again = self.agent2._trying_again.is_set()
-        self.agent1._waiting.clear()
-        self.agent2._waiting.clear()
-        self.agent1._trying_again.clear()
-        self.agent2._trying_again.clear()
-        if not (agent1_waiting or agent2_trying_again) or agent1_trying_again:
+        if self.agent1_to_move:
+            self.agent1_to_move = False
             order1 = self.action_to_order(
                 actions[self.agents[0]],
                 self.battle1,
@@ -283,7 +278,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 strict=self.strict,
             )
             self.agent1.order_queue.put(order1)
-        if not (agent2_waiting or agent1_trying_again) or agent2_trying_again:
+        if self.agent2_to_move:
+            self.agent2_to_move = False
             order2 = self.action_to_order(
                 actions[self.agents[1]],
                 self.battle2,
@@ -297,18 +293,16 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         battle2 = self.agent2.battle_queue.race_get(
             self.agent2._waiting, self.agent1._trying_again
         )
+        self.agent1_to_move = battle1 is not None
+        self.agent2_to_move = battle2 is not None
+        self.agent1._waiting.clear()
+        self.agent2._waiting.clear()
         if battle1 is None:
-            battle1 = (
-                self.agent1.battle_queue.get()
-                if self.agent1._trying_again.is_set()
-                else self.battle1
-            )
+            self.agent2._trying_again.clear()
+            battle1 = self.battle1
         if battle2 is None:
-            battle2 = (
-                self.agent2.battle_queue.get()
-                if self.agent2._trying_again.is_set()
-                else self.battle2
-            )
+            self.agent1._trying_again.clear()
+            battle2 = self.battle2
         observations = {
             self.agents[0]: self.embed_battle(battle1),
             self.agents[1]: self.embed_battle(battle2),
@@ -343,22 +337,15 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         if self.battle1 and not self.battle1.finished:
             assert self.battle2 is not None
             if self.battle1 == self.agent1.battle:
-                agent1_waiting = self.agent1._waiting.is_set()
-                agent2_waiting = self.agent2._waiting.is_set()
-                agent1_trying_again = self.agent1._trying_again.is_set()
-                agent2_trying_again = self.agent2._trying_again.is_set()
-                self.agent1._waiting.clear()
-                self.agent2._waiting.clear()
-                self.agent1._trying_again.clear()
-                self.agent2._trying_again.clear()
-                if not (agent1_waiting or agent2_trying_again) or agent1_trying_again:
+                if self.agent1_to_move:
+                    self.agent1_to_move = False
                     self.agent1.order_queue.put(ForfeitBattleOrder())
-                    if (
-                        not (agent2_waiting or agent1_trying_again)
-                        or agent2_trying_again
-                    ):
+                    if self.agent2_to_move:
+                        self.agent2_to_move = False
                         self.agent2.order_queue.put(DefaultBattleOrder())
                 else:
+                    assert self.agent2_to_move
+                    self.agent2_to_move = False
                     self.agent2.order_queue.put(ForfeitBattleOrder())
                 self.agent1.battle_queue.get()
                 self.agent2.battle_queue.get()
@@ -368,6 +355,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 )
         self.battle1 = self.agent1.battle_queue.get()
         self.battle2 = self.agent2.battle_queue.get()
+        self.agent1_to_move = True
+        self.agent2_to_move = True
         observations = {
             self.agents[0]: self.embed_battle(self.battle1),
             self.agents[1]: self.embed_battle(self.battle2),
@@ -462,6 +451,13 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         :type action: ActionType
         :param battle: The current battle state
         :type battle: AbstractBattle
+        :param fake: If true, action-order converters will try to avoid returning a default
+            output if at all possible, even if the output isn't a legal decision. Defaults
+            to False.
+        :type fake: bool
+        :param strict: If true, action-order converters will throw an error if the move is
+            illegal. Otherwise, it will return default. Defaults to True.
+        :type strict: bool
 
         :return: The battle order for the given action in context of the current battle.
         :rtype: BattleOrder
@@ -480,6 +476,13 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         :type order: BattleOrder
         :param battle: The current battle state
         :type battle: AbstractBattle
+        :param fake: If true, action-order converters will try to avoid returning a default
+            output if at all possible, even if the output isn't a legal decision. Defaults
+            to False.
+        :type fake: bool
+        :param strict: If true, action-order converters will throw an error if the move is
+            illegal. Otherwise, it will return default. Defaults to True.
+        :type strict: bool
 
         :return: The action for the given battle order in context of the current battle.
         :rtype: ActionType
@@ -745,22 +748,15 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                     await self.agent1.battle_queue.async_get()
                 if not self.agent2.battle_queue.empty():
                     await self.agent2.battle_queue.async_get()
-                agent1_waiting = self.agent1._waiting.is_set()
-                agent2_waiting = self.agent2._waiting.is_set()
-                agent1_trying_again = self.agent1._trying_again.is_set()
-                agent2_trying_again = self.agent2._trying_again.is_set()
-                self.agent1._waiting.clear()
-                self.agent2._waiting.clear()
-                self.agent1._trying_again.clear()
-                self.agent2._trying_again.clear()
-                if not (agent1_waiting or agent2_trying_again) or agent1_trying_again:
+                if self.agent1_to_move:
+                    self.agent1_to_move = False
                     await self.agent1.order_queue.async_put(ForfeitBattleOrder())
-                    if (
-                        not (agent2_waiting or agent1_trying_again)
-                        or agent2_trying_again
-                    ):
+                    if self.agent2_to_move:
+                        self.agent2_to_move = False
                         await self.agent2.order_queue.async_put(DefaultBattleOrder())
                 else:
+                    assert self.agent2_to_move
+                    self.agent_to_move = False
                     await self.agent2.order_queue.async_put(ForfeitBattleOrder())
 
         if wait and self._challenge_task:
