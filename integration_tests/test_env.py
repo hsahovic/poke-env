@@ -120,6 +120,5 @@ def test_single_agent_env_api():
             strict=False,
         )
         env = SingleAgentWrapper(env, RandomPlayer())
-        env.env.start_challenging()
         check_env(env)
         env.close()
