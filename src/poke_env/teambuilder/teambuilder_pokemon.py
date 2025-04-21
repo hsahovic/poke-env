@@ -5,6 +5,7 @@ format to specify pokemon builds in teambuilders custom classes.
 from typing import List, Optional
 
 from poke_env.data import to_id_str
+from poke_env.stats import STATS_TO_IDX
 
 
 class TeambuilderPokemon:
@@ -229,3 +230,82 @@ class TeambuilderPokemon:
             gmax=gmax,
             tera_type=tera_type,
         )
+
+    @staticmethod
+    def from_showdown(showdown_mon: str) -> "TeambuilderPokemon":
+        """Converts a showdown-format pokemon string into a TeambuilderPokemon object.
+
+        :param showdown_mon: The showdown-format pokemon string to convert.
+        :type showdown_mon: str
+        :return: The converted TeambuilderPokemon object.
+        :rtype: TeambuilderPokemon
+        """
+        mon = TeambuilderPokemon()
+
+        for line in showdown_mon.split("\n"):
+            while line and line.startswith(" "):
+                line = line[1:]
+
+            if not line:
+                continue
+            elif line.startswith("Ability"):
+                ability = line.replace("Ability: ", "")
+                mon.ability = ability.strip()
+            elif line.startswith("Level: "):
+                level = line.replace("Level: ", "")
+                mon.level = int(level.strip())
+            elif line.startswith("Happiness: "):
+                happiness = line.replace("Happiness: ", "")
+                mon.happiness = int(happiness.strip())
+            elif line.startswith("EVs: "):
+                evs = line.replace("EVs: ", "")
+                split_evs = evs.split(" / ")
+                for ev in split_evs:
+                    n, stat = ev.split(" ")[:2]
+                    idx = STATS_TO_IDX[stat.lower()]
+                    mon.evs[idx] = int(n)
+            elif line.startswith("IVs: "):
+                ivs = line.replace("IVs: ", "")
+                ivs_split = ivs.split(" / ")
+                for iv in ivs_split:
+                    n, stat = iv.split(" ")[:2]
+                    idx = STATS_TO_IDX[stat.lower()]
+                    mon.ivs[idx] = int(n)
+            elif line.startswith("- "):
+                line = line.replace("- ", "").strip()
+                mon.moves.append(line)
+            elif line.startswith("Shiny"):
+                mon.shiny = line.strip().endswith("Yes")
+            elif line.startswith("Gigantamax"):
+                mon.gmax = line.strip().endswith("Yes")
+            elif line.strip().endswith(" Nature"):
+                nature = line.strip().replace(" Nature", "")
+                mon.nature = nature
+            elif line.startswith("Hidden Power: "):
+                hp_type = line.replace("Hidden Power: ", "").strip()
+                mon.hiddenpowertype = hp_type
+            elif line.startswith("Tera Type: "):
+                tera_type = line.replace("Tera Type: ", "").strip()
+                mon.tera_type = tera_type
+            else:
+                if "@" in line:
+                    mon_info, item = line.split(" @ ")
+                    mon.item = item.strip()
+                else:
+                    mon_info = line
+                split_mon_info = mon_info.split(" ")
+                if split_mon_info[-1] == "(M)":
+                    mon.gender = "M"
+                    split_mon_info.pop()
+                if split_mon_info[-1] == "(F)":
+                    mon.gender = "F"
+                    split_mon_info.pop()
+                if split_mon_info[-1].endswith(")"):
+                    for i, info in enumerate(split_mon_info):
+                        if info[0] == "(":
+                            mon.species = " ".join(split_mon_info[i:])[1:-1]
+                            split_mon_info = split_mon_info[:i]
+                            break
+                mon.nickname = " ".join(split_mon_info)
+
+        return mon
