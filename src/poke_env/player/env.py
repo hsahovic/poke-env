@@ -447,6 +447,13 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         :type action: ActionType
         :param battle: The current battle state
         :type battle: AbstractBattle
+        :param fake: If true, action-order converters will try to avoid returning a default
+            output if at all possible, even if the output isn't a legal decision. Defaults
+            to False.
+        :type fake: bool
+        :param strict: If true, action-order converters will throw an error if the move is
+            illegal. Otherwise, it will return default. Defaults to True.
+        :type strict: bool
 
         :return: The battle order for the given action in context of the current battle.
         :rtype: BattleOrder
@@ -465,6 +472,13 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         :type order: BattleOrder
         :param battle: The current battle state
         :type battle: AbstractBattle
+        :param fake: If true, action-order converters will try to avoid returning a default
+            output if at all possible, even if the output isn't a legal decision. Defaults
+            to False.
+        :type fake: bool
+        :param strict: If true, action-order converters will throw an error if the move is
+            illegal. Otherwise, it will return default. Defaults to True.
+        :type strict: bool
 
         :return: The action for the given battle order in context of the current battle.
         :rtype: ActionType
