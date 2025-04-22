@@ -61,7 +61,7 @@ def test_env_run():
         env.close()
     for gen in range(8, 10):
         env = DoublesTestEnv(
-            battle_format=f"gen{gen}randombattle",
+            battle_format=f"gen{gen}randomdoublesbattle",
             log_level=25,
             start_challenging=False,
             strict=False,
@@ -169,7 +169,7 @@ def test_single_agent_env_api():
         env.close()
     for gen in range(8, 10):
         env = DoublesTestEnv(
-            battle_format=f"gen{gen}randombattle",
+            battle_format=f"gen{gen}randomdoublesbattle",
             log_level=25,
             start_challenging=True,
             strict=False,
