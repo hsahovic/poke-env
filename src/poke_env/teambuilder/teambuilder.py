@@ -5,7 +5,6 @@ Pokemon Showdown teams in the context of communicating with Pokemon Showdown.
 from abc import ABC, abstractmethod
 from typing import List
 
-from poke_env.stats import STATS_TO_IDX
 from poke_env.teambuilder.teambuilder_pokemon import TeambuilderPokemon
 
 
@@ -39,83 +38,35 @@ class Teambuilder(ABC):
         :return: The formatted team.
         :rtype: list of TeambuilderPokemon
         """
-        current_mon = TeambuilderPokemon()
-        current_mon_has_been_added = True
-        mons: List[TeambuilderPokemon] = []
+        mons = []
 
-        for line in team.split("\n"):
-            while line and line.startswith(" "):
-                line = line[1:]
+        for ps_mon in team.split("\n\n"):
+            if ps_mon == "":
+                continue
+            mons.append(TeambuilderPokemon.from_showdown(ps_mon))
 
-            if line == "":
-                if not current_mon_has_been_added:
-                    mons.append(current_mon)
-                current_mon_has_been_added = True
-            elif line.startswith("Ability"):
-                ability = line.replace("Ability: ", "")
-                current_mon.ability = ability.strip()
-            elif line.startswith("Level: "):
-                level = line.replace("Level: ", "")
-                current_mon.level = int(level.strip())
-            elif line.startswith("Happiness: "):
-                happiness = line.replace("Happiness: ", "")
-                current_mon.happiness = int(happiness.strip())
-            elif line.startswith("EVs: "):
-                evs = line.replace("EVs: ", "")
-                split_evs = evs.split(" / ")
-                for ev in split_evs:
-                    n, stat = ev.split(" ")[:2]
-                    idx = STATS_TO_IDX[stat.lower()]
-                    current_mon.evs[idx] = int(n)
-            elif line.startswith("IVs: "):
-                ivs = line.replace("IVs: ", "")
-                ivs_split = ivs.split(" / ")
-                for iv in ivs_split:
-                    n, stat = iv.split(" ")[:2]
-                    idx = STATS_TO_IDX[stat.lower()]
-                    current_mon.ivs[idx] = int(n)
-            elif line.startswith("- "):
-                line = line.replace("- ", "").strip()
-                current_mon.moves.append(line)
-            elif line.startswith("Shiny"):
-                current_mon.shiny = line.strip().endswith("Yes")
-            elif line.startswith("Gigantamax"):
-                current_mon.gmax = line.strip().endswith("Yes")
-            elif line.strip().endswith(" Nature"):
-                nature = line.strip().replace(" Nature", "")
-                current_mon.nature = nature
-            elif line.startswith("Hidden Power: "):
-                hp_type = line.replace("Hidden Power: ", "").strip()
-                current_mon.hiddenpowertype = hp_type
-            elif line.startswith("Tera Type: "):
-                tera_type = line.replace("Tera Type: ", "").strip()
-                current_mon.tera_type = tera_type
-            else:
-                current_mon = TeambuilderPokemon()
-                current_mon_has_been_added = False
-                if "@" in line:
-                    mon_info, item = line.split(" @ ")
-                    current_mon.item = item.strip()
-                else:
-                    mon_info = line
-                split_mon_info = mon_info.split(" ")
+        return mons
 
-                if split_mon_info[-1] == "(M)":
-                    current_mon.gender = "M"
-                    split_mon_info.pop()
-                if split_mon_info[-1] == "(F)":
-                    current_mon.gender = "F"
-                    split_mon_info.pop()
-                if split_mon_info[-1].endswith(")"):
-                    for i, info in enumerate(split_mon_info):
-                        if info[0] == "(":
-                            current_mon.species = " ".join(split_mon_info[i:])[1:-1]
-                            split_mon_info = split_mon_info[:i]
-                            break
-                    current_mon.nickname = " ".join(split_mon_info)
-                current_mon.nickname = " ".join(split_mon_info)
-        if not current_mon_has_been_added:
-            mons.append(current_mon)
+    @staticmethod
+    def parse_packed_team(team: str) -> List[TeambuilderPokemon]:
+        """Converts a packed-format team string into a list of TeambuilderPokemon
+        objects.
+
+        :param team: The packed-format team to convert.
+        :type team: str
+        :return: The formatted team.
+        :rtype: list of TeambuilderPokemon
+        """
+        packed_mons = team.split("]")
+
+        mons = []
+
+        for packed_mon in packed_mons:
+            if packed_mon == "":
+                continue
+
+            mons.append(TeambuilderPokemon.from_packed(packed_mon))
+
         return mons
 
     @staticmethod
@@ -127,4 +78,4 @@ class Teambuilder(ABC):
         :type team: list of TeambuilderPokemon
         :return: The formatted team string.
         :rtype: str"""
-        return "]".join([mon.formatted for mon in team])
+        return "]".join([mon.packed for mon in team])
