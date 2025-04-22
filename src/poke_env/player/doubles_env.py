@@ -154,6 +154,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         elif action < 7:
             order = Player.create_order(list(battle.team.values())[action - 1])
             if not fake:
+                assert not battle.trapped[pos], "invalid action"
                 assert isinstance(order.order, Pokemon)
                 assert order.order.base_species in [
                     p.base_species for p in battle.available_switches[pos]
@@ -252,6 +253,11 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         elif order.order is None:
             raise ValueError()
         elif isinstance(order.order, Pokemon):
+            if not fake:
+                assert not battle.trapped[pos], "invalid order"
+                assert order.order.base_species in [
+                    p.base_species for p in battle.available_switches[pos]
+                ], "invalid order"
             action = [p.base_species for p in battle.team.values()].index(
                 order.order.base_species
             ) + 1
