@@ -43,8 +43,6 @@ class Teambuilder(ABC):
         for ps_mon in team.split("\n\n"):
             if ps_mon == "":
                 continue
-            print(ps_mon)
-            print("--------------------------------")
             mons.append(TeambuilderPokemon.from_showdown(ps_mon))
 
         return mons
