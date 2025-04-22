@@ -84,8 +84,8 @@ class _EnvPlayer(Player):
     battle_queue: _AsyncQueue[AbstractBattle]
     order_queue: _AsyncQueue[BattleOrder]
 
-    def __init__(self, **kwargs: Any):
-        super().__init__(**kwargs)
+    def __init__(self, *args, **kwargs: Any):
+        super().__init__(*args, **kwargs)
         self.battle_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
         self.order_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
         self.battle: Optional[AbstractBattle] = None
