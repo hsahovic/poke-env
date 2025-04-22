@@ -70,31 +70,31 @@ class TeambuilderPokemon:
             self.moves = moves
 
     def __repr__(self) -> str:
-        return self.formatted
+        return self.packed
 
     def __str__(self) -> str:
-        return self.formatted
+        return self.packed
 
     @property
-    def formatted_evs(self) -> str:
+    def packed_evs(self) -> str:
         f_evs = ",".join([str(el) if el != 0 else "" for el in self.evs])
         if f_evs == "," * 5:
             return ""
         return f_evs
 
     @property
-    def formatted_ivs(self) -> str:
+    def packed_ivs(self) -> str:
         f_ivs = ",".join([str(iv) if iv != 31 else "" for iv in self.ivs])
         if f_ivs == "," * 5:
             return ""
         return f_ivs
 
     @property
-    def formatted_moves(self) -> str:
+    def packed_moves(self) -> str:
         return ",".join([to_id_str(move) for move in self.moves])
 
     @property
-    def formatted_endstring(self) -> str:
+    def packed_endstring(self) -> str:
         f_str = f",{self.hiddenpowertype or ''},"
 
         if self.gmax:
@@ -108,22 +108,22 @@ class TeambuilderPokemon:
         return ""
 
     @property
-    def formatted(self) -> str:
+    def packed(self) -> str:
         self._prepare_for_formatting()
         return "%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s%s" % (
             self.nickname or "",
             to_id_str(self.species) if self.species else "",
             to_id_str(self.item) if self.item else "",
             to_id_str(self.ability) if self.ability else "",
-            self.formatted_moves or "",
+            self.packed_moves or "",
             self.nature or "",
-            self.formatted_evs or "",
+            self.packed_evs or "",
             self.gender or "",
-            self.formatted_ivs or "",
+            self.packed_ivs or "",
             "S" if self.shiny else "",
             self.level or "",
             self.happiness or "",
-            self.formatted_endstring,
+            self.packed_endstring,
         )
 
     def _prepare_for_formatting(self):

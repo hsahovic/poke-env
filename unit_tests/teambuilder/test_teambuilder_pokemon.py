@@ -19,7 +19,7 @@ def test_teambuilder_pokemon_formatting():
         gmax=True,
     )
     assert (
-        tp.formatted
+        tp.packed
         == "testy|dragonair|choiceband|shedskin|tackle,watergun,hiddenpower|Adamant||M|\
 |S|84|134,water,,G"
     )
@@ -40,9 +40,7 @@ def test_teambuilder_pokemon_from_packed(packed_format_teams):
     for _, teams in packed_format_teams.items():
         for team in teams:
             for packed_mon in team.split("]"):
-                assert (
-                    TeambuilderPokemon.from_packed(packed_mon).formatted == packed_mon
-                )
+                assert TeambuilderPokemon.from_packed(packed_mon).packed == packed_mon
 
 
 def test_teambuilder_pokemon_from_showdown(
@@ -58,6 +56,5 @@ def test_teambuilder_pokemon_from_showdown(
 
             for showdown_mon, packed_mon in zip(showdown_mons, packed_mons):
                 assert (
-                    TeambuilderPokemon.from_showdown(showdown_mon).formatted
-                    == packed_mon
+                    TeambuilderPokemon.from_showdown(showdown_mon).packed == packed_mon
                 )

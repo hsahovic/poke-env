@@ -89,4 +89,4 @@ EVs: 252 HP / 126 Def / 126 SpD / 4 Spe
     team = ConstantTeambuilder(team).team
     assert isinstance(team[0], TeambuilderPokemon)
     for i, formatted_mon in enumerate(packed_team.split("]")):
-        assert team[i].formatted == formatted_mon
+        assert team[i].packed == formatted_mon

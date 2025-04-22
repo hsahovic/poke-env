@@ -80,4 +80,4 @@ class Teambuilder(ABC):
         :type team: list of TeambuilderPokemon
         :return: The formatted team string.
         :rtype: str"""
-        return "]".join([mon.formatted for mon in team])
+        return "]".join([mon.packed for mon in team])
