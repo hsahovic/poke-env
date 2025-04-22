@@ -15,6 +15,7 @@ from poke_env.player.doubles_env import DoublesEnv
 from poke_env.player.env import PokeEnv
 from poke_env.player.player import Player
 from poke_env.player.random_player import RandomPlayer
+from poke_env.player.single_agent_wrapper import SingleAgentWrapper
 from poke_env.player.singles_env import SinglesEnv
 from poke_env.player.utils import (
     background_cross_evaluate,
@@ -36,6 +37,7 @@ __all__ = [
     "PokeEnv",
     "SinglesEnv",
     "DoublesEnv",
+    "SingleAgentWrapper",
     "PSClient",
     "Player",
     "RandomPlayer",
