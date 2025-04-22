@@ -64,6 +64,9 @@ class Teambuilder(ABC):
         mons = []
 
         for packed_mon in packed_mons:
+            if packed_mon == "":
+                continue
+
             mons.append(TeambuilderPokemon.from_packed(packed_mon))
 
         return mons
