@@ -2884,6 +2884,7 @@
   "volatileStatus": "destinybond",
   "onPrepareHit": "onPrepareHit",
   "condition": {
+   "noCopy": true,
    "onStart": "onStart",
    "onFaint": "onFaint",
    "onBeforeMovePriority": -1,
