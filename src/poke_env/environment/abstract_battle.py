@@ -769,8 +769,7 @@ class AbstractBattle(ABC):
                     else:
                         if mon == self.active_pokemon:
                             self.opponent_active_pokemon.item = to_id_str(item)
-                        else:
-                            assert mon == self.opponent_active_pokemon
+                        elif mon == self.opponent_active_pokemon:
                             self.active_pokemon.item = to_id_str(item)
 
                     mon.ability = to_id_str("frisk")
@@ -930,6 +929,11 @@ class AbstractBattle(ABC):
             player, details = event[2:4]
             self._register_teampreview_pokemon(player, details)
         elif event[1] == "raw":
+            rating_splint_event = event[2].split("'s rating: ")
+
+            if len(rating_splint_event) != 2:
+                return
+
             username, rating_info = event[2].split("'s rating: ")
             rating_int = int(rating_info[:4])
             if username == self.player_username:

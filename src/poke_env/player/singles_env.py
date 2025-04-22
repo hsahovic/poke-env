@@ -100,6 +100,13 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         :type action: int64
         :param battle: The current battle state
         :type battle: AbstractBattle
+        :param fake: If true, action-order converters will try to avoid returning a default
+            output if at all possible, even if the output isn't a legal decision. Defaults
+            to False.
+        :type fake: bool
+        :param strict: If true, action-order converters will throw an error if the move is
+            illegal. Otherwise, it will return default. Defaults to True.
+        :type strict: bool
 
         :return: The battle order for the given action in context of the current battle.
         :rtype: BattleOrder
@@ -112,6 +119,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
             elif action < 6:
                 order = Player.create_order(list(battle.team.values())[action])
                 if not fake:
+                    assert not battle.trapped, "invalid action"
                     assert isinstance(order.order, Pokemon)
                     assert order.order.base_species in [
                         p.base_species for p in battle.available_switches
@@ -171,6 +179,13 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         :type order: BattleOrder
         :param battle: The current battle state
         :type battle: AbstractBattle
+        :param fake: If true, action-order converters will try to avoid returning a default
+            output if at all possible, even if the output isn't a legal decision. Defaults
+            to False.
+        :type fake: bool
+        :param strict: If true, action-order converters will throw an error if the move is
+            illegal. Otherwise, it will return default. Defaults to True.
+        :type strict: bool
 
         :return: The action for the given battle order in context of the current battle.
         :rtype: int64
@@ -183,6 +198,11 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
             elif order.order is None:
                 raise ValueError()
             elif isinstance(order.order, Pokemon):
+                if not fake:
+                    assert not battle.trapped, "invalid order"
+                    assert order.order.base_species in [
+                        p.base_species for p in battle.available_switches
+                    ], "invalid order"
                 action = [p.base_species for p in battle.team.values()].index(
                     order.order.base_species
                 )
