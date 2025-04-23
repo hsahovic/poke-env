@@ -113,19 +113,12 @@ class Player(ABC):
             Defaults to None.
         :type team: str or Teambuilder, optional
         """
-        if account_configuration is None:
-            account_configuration = AccountConfiguration.countgen(
-                self.__class__.__name__
-            )
-
-        if server_configuration is None:
-            server_configuration = LocalhostServerConfiguration
-
         self.ps_client = PSClient(
-            account_configuration=account_configuration,
+            account_configuration=account_configuration
+            or AccountConfiguration.countgen(self.__class__.__name__),
             avatar=avatar,
             log_level=log_level,
-            server_configuration=server_configuration,
+            server_configuration=server_configuration or LocalhostServerConfiguration,
             start_listening=start_listening,
             open_timeout=open_timeout,
             ping_interval=ping_interval,
