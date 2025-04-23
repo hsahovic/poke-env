@@ -197,7 +197,9 @@ def test_pickle():
         start_listening=False,
         battle_format="gen7randombattles",
     )
-    pickle.loads(pickle.dumps(env))
+    env2 = pickle.loads(pickle.dumps(env))
+    assert env.agent1.username != env2.agent1.username
+    assert env.agent2.username != env2.agent2.username
 
 
 async def run_test_choose_move():
