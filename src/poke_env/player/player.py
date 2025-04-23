@@ -26,10 +26,7 @@ from poke_env.player.battle_order import (
     DoubleBattleOrder,
 )
 from poke_env.ps_client import PSClient
-from poke_env.ps_client.account_configuration import (
-    CONFIGURATION_FROM_PLAYER_COUNTER,
-    AccountConfiguration,
-)
+from poke_env.ps_client.account_configuration import AccountConfiguration
 from poke_env.ps_client.server_configuration import (
     LocalhostServerConfiguration,
     ServerConfiguration,
