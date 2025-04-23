@@ -25,10 +25,10 @@ class AccountConfiguration(NamedTuple):
                 key[: 18 - len(username)],
                 CONFIGURATION_FROM_PLAYER_COUNTER[key],
             )
-        return AccountConfiguration(username, None)
+        return cls(username, None)
 
     @classmethod
     def randgen(cls, length: int) -> AccountConfiguration:
         char_space = string.ascii_lowercase + string.digits
         username = "".join(random.choices(char_space, k=length))
-        return AccountConfiguration(username, None)
+        return cls(username, None)
