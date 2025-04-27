@@ -5,7 +5,7 @@ For a black-box implementation consider using the module env_player.
 import asyncio
 import time
 from abc import abstractmethod
-from typing import Any, Awaitable, Dict, Generic, List, Optional, Tuple, TypeVar, Union
+from typing import Any, Awaitable, Dict, Generic, Optional, Tuple, TypeVar, Union
 from weakref import WeakKeyDictionary
 
 from gymnasium.spaces import Space
@@ -333,7 +333,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         if self.agent1_to_move:
             self.agent1_to_move = False
             order1 = self.action_to_order(
-                actions[self.possible_agents[0]],
+                actions[self.agents[0]],
                 self.battle1,
                 fake=self._fake,
                 strict=self._strict,
@@ -342,7 +342,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         if self.agent2_to_move:
             self.agent2_to_move = False
             order2 = self.action_to_order(
-                actions[self.possible_agents[1]],
+                actions[self.agents[1]],
                 self.battle2,
                 fake=self._fake,
                 strict=self._strict,
@@ -365,17 +365,17 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             self.agent1._trying_again.clear()
             battle2 = self.battle2
         observations = {
-            self.possible_agents[0]: self.embed_battle(battle1),
-            self.possible_agents[1]: self.embed_battle(battle2),
+            self.agents[0]: self.embed_battle(battle1),
+            self.agents[1]: self.embed_battle(battle2),
         }
         reward = {
-            self.possible_agents[0]: self.calc_reward(battle1),
-            self.possible_agents[1]: self.calc_reward(battle2),
+            self.agents[0]: self.calc_reward(battle1),
+            self.agents[1]: self.calc_reward(battle2),
         }
         term1, trunc1 = self.calc_term_trunc(battle1)
         term2, trunc2 = self.calc_term_trunc(battle2)
-        terminated = {self.possible_agents[0]: term1, self.possible_agents[1]: term2}
-        truncated = {self.possible_agents[0]: trunc1, self.possible_agents[1]: trunc2}
+        terminated = {self.agents[0]: term1, self.agents[1]: term2}
+        truncated = {self.agents[0]: trunc1, self.agents[1]: trunc2}
         if battle1.finished:
             self.agents = []
         return observations, reward, terminated, truncated, self.get_additional_info()
@@ -419,8 +419,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         self.agent1_to_move = True
         self.agent2_to_move = True
         observations = {
-            self.possible_agents[0]: self.embed_battle(self.battle1),
-            self.possible_agents[1]: self.embed_battle(self.battle2),
+            self.agents[0]: self.embed_battle(self.battle1),
+            self.agents[1]: self.embed_battle(self.battle2),
         }
         return observations, self.get_additional_info()
 
