@@ -243,7 +243,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             ping_timeout=ping_timeout,
             team=team,
         )
-        self.agents: List[str] = []
+        self.agents = []
         self.possible_agents = [self.agent1.username, self.agent2.username]
         self.battle1: Optional[AbstractBattle] = None
         self.battle2: Optional[AbstractBattle] = None
@@ -302,16 +302,12 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             ping_timeout=self._ping_timeout,
             team=self._team,
         )
-        self.agents = [self.agent1.username, self.agent2.username]
+        self.agents = []
+        old_names = self.possible_agents
         self.possible_agents = [self.agent1.username, self.agent2.username]
-        self.observation_spaces: Dict[str, Space[ObsType]] = {
-            self.possible_agents[i]: list(self.observation_spaces.values())[i]
-            for i in range(len(self.possible_agents))
-        }
-        self.action_spaces: Dict[str, Space[ActionType]] = {
-            self.possible_agents[i]: list(self.action_spaces.values())[i]
-            for i in range(len(self.possible_agents))
-        }
+        for old, new in zip(old_names, self.possible_agents):
+            self.observation_spaces[new] = self.observation_spaces.pop(old)
+            self.action_spaces[new] = self.action_spaces.pop(old)
         self._reward_buffer = WeakKeyDictionary()
         if self._start_challenging:
             self._keep_challenging = True
@@ -337,7 +333,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         if self.agent1_to_move:
             self.agent1_to_move = False
             order1 = self.action_to_order(
-                actions[self.agents[0]],
+                actions[self.possible_agents[0]],
                 self.battle1,
                 fake=self._fake,
                 strict=self._strict,
@@ -346,7 +342,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         if self.agent2_to_move:
             self.agent2_to_move = False
             order2 = self.action_to_order(
-                actions[self.agents[1]],
+                actions[self.possible_agents[1]],
                 self.battle2,
                 fake=self._fake,
                 strict=self._strict,
@@ -369,17 +365,17 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             self.agent1._trying_again.clear()
             battle2 = self.battle2
         observations = {
-            self.agents[0]: self.embed_battle(battle1),
-            self.agents[1]: self.embed_battle(battle2),
+            self.possible_agents[0]: self.embed_battle(battle1),
+            self.possible_agents[1]: self.embed_battle(battle2),
         }
         reward = {
-            self.agents[0]: self.calc_reward(battle1),
-            self.agents[1]: self.calc_reward(battle2),
+            self.possible_agents[0]: self.calc_reward(battle1),
+            self.possible_agents[1]: self.calc_reward(battle2),
         }
         term1, trunc1 = self.calc_term_trunc(battle1)
         term2, trunc2 = self.calc_term_trunc(battle2)
-        terminated = {self.agents[0]: term1, self.agents[1]: term2}
-        truncated = {self.agents[0]: trunc1, self.agents[1]: trunc2}
+        terminated = {self.possible_agents[0]: term1, self.possible_agents[1]: term2}
+        truncated = {self.possible_agents[0]: trunc1, self.possible_agents[1]: trunc2}
         if battle1.finished:
             self.agents = []
         return observations, reward, terminated, truncated, self.get_additional_info()
@@ -423,8 +419,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         self.agent1_to_move = True
         self.agent2_to_move = True
         observations = {
-            self.agents[0]: self.embed_battle(self.battle1),
-            self.agents[1]: self.embed_battle(self.battle2),
+            self.possible_agents[0]: self.embed_battle(self.battle1),
+            self.possible_agents[1]: self.embed_battle(self.battle2),
         }
         return observations, self.get_additional_info()
 
