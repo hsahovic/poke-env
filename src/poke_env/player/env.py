@@ -5,7 +5,7 @@ For a black-box implementation consider using the module env_player.
 import asyncio
 import time
 from abc import abstractmethod
-from typing import Any, Awaitable, Dict, Generic, Optional, Tuple, TypeVar, Union
+from typing import Any, Awaitable, Dict, Generic, List, Optional, Tuple, TypeVar, Union
 from weakref import WeakKeyDictionary
 
 from gymnasium.spaces import Space
@@ -243,7 +243,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             ping_timeout=ping_timeout,
             team=team,
         )
-        self.agents = []
+        self.agents: List[str] = []
         self.possible_agents = [self.agent1.username, self.agent2.username]
         self.battle1: Optional[AbstractBattle] = None
         self.battle2: Optional[AbstractBattle] = None
