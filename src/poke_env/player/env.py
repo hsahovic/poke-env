@@ -41,13 +41,13 @@ class _AsyncQueue(Generic[ItemType]):
         loop: asyncio.AbstractEventLoop,
     ):
         self.queue = queue
-        self.loop = loop
+        self._loop = loop
 
     async def async_get(self) -> ItemType:
         return await self.queue.get()
 
     def get(self) -> ItemType:
-        res = asyncio.run_coroutine_threadsafe(self.async_get(), self.loop)
+        res = asyncio.run_coroutine_threadsafe(self.async_get(), self._loop)
         return res.result()
 
     def race_get(self, *events: asyncio.Event) -> Optional[ItemType]:
@@ -65,21 +65,21 @@ class _AsyncQueue(Generic[ItemType]):
             else:
                 return None
 
-        res = asyncio.run_coroutine_threadsafe(_race_get(), self.loop)
+        res = asyncio.run_coroutine_threadsafe(_race_get(), self._loop)
         return res.result()
 
     async def async_put(self, item: ItemType):
         await self.queue.put(item)
 
     def put(self, item: ItemType):
-        task = asyncio.run_coroutine_threadsafe(self.queue.put(item), self.loop)
+        task = asyncio.run_coroutine_threadsafe(self.queue.put(item), self._loop)
         task.result()
 
     def empty(self):
         return self.queue.empty()
 
     def join(self):
-        task = asyncio.run_coroutine_threadsafe(self.queue.join(), self.loop)
+        task = asyncio.run_coroutine_threadsafe(self.queue.join(), self._loop)
         task.result()
 
     async def async_join(self):
@@ -214,8 +214,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             illegal. Otherwise, it will return default. Defaults to True.
         :type: strict: bool
         """
-        self.loop = asyncio.new_event_loop()
-        Thread(target=self.loop.run_forever, daemon=True).start()
+        self._loop = asyncio.new_event_loop()
+        Thread(target=self._loop.run_forever, daemon=True).start()
         self.agent1 = _EnvPlayer(
             username=self.__class__.__name__,  # type: ignore
             account_configuration=account_configuration1,
@@ -231,7 +231,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             open_timeout=open_timeout,
             ping_interval=ping_interval,
             ping_timeout=ping_timeout,
-            loop=self.loop,
+            loop=self._loop,
             team=team,
         )
         self.agent2 = _EnvPlayer(
@@ -249,7 +249,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             open_timeout=open_timeout,
             ping_interval=ping_interval,
             ping_timeout=ping_timeout,
-            loop=self.loop,
+            loop=self._loop,
             team=team,
         )
         self.agents: List[str] = []
@@ -269,7 +269,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         if start_challenging:
             self._keep_challenging = True
             self._challenge_task = asyncio.run_coroutine_threadsafe(
-                self._challenge_loop(), self.loop
+                self._challenge_loop(), self._loop
             )
 
     ###################################################################################
@@ -418,7 +418,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             if self.battle2 != self.agent2.battle:
                 self.battle2 = self.agent2.battle
         closing_task = asyncio.run_coroutine_threadsafe(
-            self._stop_challenge_loop(purge=purge), self.loop
+            self._stop_challenge_loop(purge=purge), self._loop
         )
         closing_task.result()
 
@@ -656,7 +656,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 "'await agent.stop_challenge_loop()' to clear the task."
             )
         self._challenge_task = asyncio.run_coroutine_threadsafe(
-            self.agent1.send_challenges(username, 1), self.loop
+            self.agent1.send_challenges(username, 1), self._loop
         )
 
     def background_accept_challenge(self, username: str):
@@ -675,7 +675,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             )
         self._challenge_task = asyncio.run_coroutine_threadsafe(
             self.agent1.accept_challenges(username, 1, self.agent1.next_team),
-            self.loop,
+            self._loop,
         )
 
     async def _challenge_loop(self, n_challenges: Optional[int] = None):
@@ -706,7 +706,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         if not n_challenges:
             self._keep_challenging = True
         self._challenge_task = asyncio.run_coroutine_threadsafe(
-            self._challenge_loop(n_challenges), self.loop
+            self._challenge_loop(n_challenges), self._loop
         )
 
     async def _ladder_loop(self, n_challenges: Optional[int] = None):
@@ -739,7 +739,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         if not n_challenges:
             self._keep_challenging = True
         self._challenge_task = asyncio.run_coroutine_threadsafe(
-            self._ladder_loop(n_challenges), self.loop
+            self._ladder_loop(n_challenges), self._loop
         )
 
     async def _stop_challenge_loop(
