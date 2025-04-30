@@ -13,7 +13,7 @@ async def test_laddering_sequential(send_message_mock):
         print(tuple(send_message_mock.call_args))
         if tuple(send_message_mock.call_args) == (("/utm null",), {}):
             return
-        elif tuple(send_message_mock.call_args)[0].startswith("/leave"):
+        elif tuple(send_message_mock.call_args)[0][0].startswith("/leave"):
             return
 
         interactions.append("Search start")
