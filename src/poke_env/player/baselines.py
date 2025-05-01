@@ -359,6 +359,12 @@ class SimpleHeuristicsPlayer(Player):
             return self.choose_move_in_1v1(battle)[0]  # type: ignore
         orders: List[Optional[BattleOrder]] = []
         for active_id in [0, 1]:
+            if (
+                battle.active_pokemon[active_id] is None
+                and not battle.available_switches[active_id]
+            ):
+                orders += [None]
+                continue
             results = [
                 self.choose_move_in_1v1(PseudoBattle(battle, active_id, opp_id))
                 for opp_id in [0, 1]
