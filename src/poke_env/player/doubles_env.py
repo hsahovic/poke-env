@@ -129,13 +129,23 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 return DefaultBattleOrder()
             elif action[0] == -1 or action[1] == -1:
                 return ForfeitBattleOrder()
+            if not fake:
+                assert not (
+                    len(battle.available_switches[0]) == 1
+                    and battle.force_switch == [True, True]
+                    and 1 <= action[0] <= 6
+                    and 1 <= action[1] <= 6
+                ), "invalid action"
             order1 = DoublesEnv._action_to_order_individual(action[0], battle, fake, 0)
             order2 = DoublesEnv._action_to_order_individual(action[1], battle, fake, 1)
             joined_orders = DoubleBattleOrder.join_orders(
                 [order1] if order1 is not None else [],
                 [order2] if order2 is not None else [],
             )
-            assert len(joined_orders) == 1, "invalid action"
+            if not fake:
+                assert len(joined_orders) == 1, "invalid action"
+            elif not joined_orders:
+                return DefaultBattleOrder()
             return joined_orders[0]
         except AssertionError as e:
             if not strict and str(e) == "invalid action":
@@ -147,11 +157,15 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
     def _action_to_order_individual(
         action: np.int64, battle: DoubleBattle, fake: bool, pos: int
     ) -> Optional[BattleOrder]:
+        assert (
+            battle.force_switch != [[False, True], [True, False]][pos] or action == 0
+        ), "invalid action"
         if action == 0:
             order = None
         elif action < 7:
             order = Player.create_order(list(battle.team.values())[action - 1])
             if not fake:
+                assert not battle.trapped[pos], "invalid action"
                 assert isinstance(order.order, Pokemon)
                 assert order.order.base_species in [
                     p.base_species for p in battle.available_switches[pos]
@@ -224,6 +238,13 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             elif isinstance(order, ForfeitBattleOrder):
                 return np.array([-1, -1])
             assert isinstance(order, DoubleBattleOrder)
+            if not fake:
+                assert not (
+                    len(battle.available_switches[0]) == 1
+                    and battle.force_switch == [True, True]
+                    and isinstance(order.first_order, Pokemon)
+                    and isinstance(order.second_order, Pokemon)
+                ), "invalid order"
             action1 = DoublesEnv._order_to_action_individual(
                 order.first_order, battle, fake, 0
             )
@@ -241,6 +262,9 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
     def _order_to_action_individual(
         order: Optional[BattleOrder], battle: DoubleBattle, fake: bool, pos: int
     ) -> np.int64:
+        assert (
+            battle.force_switch != [[False, True], [True, False]][pos] or order is None
+        ), "invalid order"
         if order is None:
             action = 0
         elif isinstance(order, DefaultBattleOrder):
@@ -250,6 +274,11 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         elif order.order is None:
             raise ValueError()
         elif isinstance(order.order, Pokemon):
+            if not fake:
+                assert not battle.trapped[pos], "invalid order"
+                assert order.order.base_species in [
+                    p.base_species for p in battle.available_switches[pos]
+                ], "invalid order"
             action = [p.base_species for p in battle.team.values()].index(
                 order.order.base_species
             ) + 1
