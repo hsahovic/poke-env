@@ -241,6 +241,7 @@ class AbstractBattle(ABC):
             for i, p in enumerate(team.values())
             if p.base_species in to_id_str(details)
         ]
+        print(details, split_details, team.keys(), matches)
         assert len(matches) < 2
         if identifier not in team and matches:
             i = matches[0]
