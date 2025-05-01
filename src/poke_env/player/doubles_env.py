@@ -137,7 +137,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                     and battle.force_switch == [True, True]
                     and 1 <= action[0] <= 6
                     and 1 <= action[1] <= 6
-                )
+                ), "invalid action"
             order1 = DoublesEnv._action_to_order_individual(action[0], battle, fake, 0)
             order2 = DoublesEnv._action_to_order_individual(action[1], battle, fake, 1)
             joined_orders = DoubleBattleOrder.join_orders(
@@ -159,6 +159,9 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
     def _action_to_order_individual(
         action: np.int64, battle: DoubleBattle, fake: bool, pos: int
     ) -> Optional[BattleOrder]:
+        assert (
+            battle.force_switch != [[False, True], [True, False]][pos] or action == 0
+        ), "invalid action"
         if action == 0:
             order = None
         elif action < 7:
@@ -243,7 +246,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                     and battle.force_switch == [True, True]
                     and isinstance(order.first_order, Pokemon)
                     and isinstance(order.second_order, Pokemon)
-                )
+                ), "invalid order"
             action1 = DoublesEnv._order_to_action_individual(
                 order.first_order, battle, fake, 0
             )
@@ -261,6 +264,9 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
     def _order_to_action_individual(
         order: Optional[BattleOrder], battle: DoubleBattle, fake: bool, pos: int
     ) -> np.int64:
+        assert (
+            battle.force_switch != [[False, True], [True, False]][pos] or order is None
+        ), "invalid order"
         if order is None:
             action = 0
         elif isinstance(order, DefaultBattleOrder):
