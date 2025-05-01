@@ -2,44 +2,29 @@ from typing import Any, Awaitable, Dict, Optional, Tuple
 
 from gymnasium import Env
 
-from poke_env.environment.abstract_battle import AbstractBattle
-from poke_env.player.battle_order import BattleOrder, ForfeitBattleOrder
-from poke_env.player.env import ActionType, ObsType, PokeEnv, _EnvPlayer
+from poke_env.player.env import ActionType, ObsType, PokeEnv
 from poke_env.player.player import Player
-
-
-class _EnvPlayerWrapper(_EnvPlayer):
-    def __init__(self, agent: _EnvPlayer, player: Player):
-        self.agent = agent
-        self.agent._env_move = self._env_move  # type: ignore [method-assign]
-        self.player = player
-
-    def __getattr__(self, name: str):
-        return getattr(self.agent, name)
-
-    async def _env_move(self, battle: AbstractBattle) -> BattleOrder:
-        env_player_order = await _EnvPlayer._env_move(self.agent, battle)
-        if isinstance(env_player_order, ForfeitBattleOrder):
-            return env_player_order
-        order = self.player.choose_move(battle)
-        if isinstance(order, Awaitable):
-            order = await order
-        return order
 
 
 class SingleAgentWrapper(Env[ObsType, ActionType]):
     def __init__(self, env: PokeEnv[ObsType, ActionType], opponent: Player):
         self.env = env
-        self.env.agent2 = _EnvPlayerWrapper(self.env.agent2, opponent)
+        self.opponent = opponent
         self.observation_space = list(env.observation_spaces.values())[0]
         self.action_space = list(env.action_spaces.values())[0]
 
     def step(
         self, action: ActionType
     ) -> Tuple[ObsType, float, bool, bool, Dict[str, Any]]:
+        assert self.env.battle2 is not None
+        opp_order = self.opponent.choose_move(self.env.battle2)
+        assert not isinstance(opp_order, Awaitable)
+        opp_action = self.env.order_to_action(
+            opp_order, self.env.battle2, fake=self.env.fake, strict=self.env.strict
+        )
         actions = {
             self.env.agent1.username: action,
-            self.env.agent2.username: self.action_space.sample(),
+            self.env.agent2.username: opp_action,
         }
         obs, rewards, terms, truncs, infos = self.env.step(actions)
         return (
