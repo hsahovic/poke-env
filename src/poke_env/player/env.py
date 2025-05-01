@@ -5,6 +5,8 @@ For a black-box implementation consider using the module env_player.
 import asyncio
 import time
 from abc import abstractmethod
+from concurrent.futures import Future
+from threading import Thread
 from typing import Any, Awaitable, Dict, Generic, List, Optional, Tuple, TypeVar, Union
 from weakref import WeakKeyDictionary
 
@@ -13,7 +15,7 @@ from gymnasium.utils import seeding
 from numpy.random import Generator
 from pettingzoo.utils.env import ParallelEnv  # type: ignore[import-untyped]
 
-from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
+from poke_env.concurrency import create_in_poke_loop
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.player.battle_order import (
     BattleOrder,
@@ -34,14 +36,19 @@ ActionType = TypeVar("ActionType")
 
 
 class _AsyncQueue(Generic[ItemType]):
-    def __init__(self, queue: asyncio.Queue[ItemType]):
+    def __init__(
+        self,
+        queue: asyncio.Queue[ItemType],
+        loop: asyncio.AbstractEventLoop,
+    ):
         self.queue = queue
+        self._loop = loop
 
     async def async_get(self) -> ItemType:
         return await self.queue.get()
 
     def get(self) -> ItemType:
-        res = asyncio.run_coroutine_threadsafe(self.async_get(), POKE_LOOP)
+        res = asyncio.run_coroutine_threadsafe(self.async_get(), self._loop)
         return res.result()
 
     def race_get(self, *events: asyncio.Event) -> Optional[ItemType]:
@@ -59,21 +66,21 @@ class _AsyncQueue(Generic[ItemType]):
             else:
                 return None
 
-        res = asyncio.run_coroutine_threadsafe(_race_get(), POKE_LOOP)
+        res = asyncio.run_coroutine_threadsafe(_race_get(), self._loop)
         return res.result()
 
     async def async_put(self, item: ItemType):
         await self.queue.put(item)
 
     def put(self, item: ItemType):
-        task = asyncio.run_coroutine_threadsafe(self.queue.put(item), POKE_LOOP)
+        task = asyncio.run_coroutine_threadsafe(self.queue.put(item), self._loop)
         task.result()
 
     def empty(self):
         return self.queue.empty()
 
     def join(self):
-        task = asyncio.run_coroutine_threadsafe(self.queue.join(), POKE_LOOP)
+        task = asyncio.run_coroutine_threadsafe(self.queue.join(), self._loop)
         task.result()
 
     async def async_join(self):
@@ -84,16 +91,16 @@ class _EnvPlayer(Player):
     battle_queue: _AsyncQueue[AbstractBattle]
     order_queue: _AsyncQueue[BattleOrder]
 
-    def __init__(
-        self,
-        username: str,
-        **kwargs: Any,
-    ):
-        self.__class__.__name__ = username
-        super().__init__(**kwargs)
-        self.__class__.__name__ = "_EnvPlayer"
-        self.battle_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
-        self.order_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
+    def __init__(self, *args: Any, **kwargs: Any):
+        super().__init__(*args, **kwargs)
+        self.battle_queue = _AsyncQueue(
+            create_in_poke_loop(asyncio.Queue, self.ps_client.loop, 1),
+            self.ps_client.loop,
+        )
+        self.order_queue = _AsyncQueue(
+            create_in_poke_loop(asyncio.Queue, self.ps_client.loop, 1),
+            self.ps_client.loop,
+        )
         self.battle: Optional[AbstractBattle] = None
 
     def choose_move(self, battle: AbstractBattle) -> Awaitable[BattleOrder]:
@@ -108,7 +115,9 @@ class _EnvPlayer(Player):
         return order
 
     def _battle_finished_callback(self, battle: AbstractBattle):
-        asyncio.run_coroutine_threadsafe(self.battle_queue.async_put(battle), POKE_LOOP)
+        asyncio.run_coroutine_threadsafe(
+            self.battle_queue.async_put(battle), self.ps_client.loop
+        )
 
 
 class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
@@ -140,7 +149,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         ping_interval: Optional[float] = 20.0,
         ping_timeout: Optional[float] = 20.0,
         team: Optional[Union[str, Teambuilder]] = None,
-        start_challenging: bool = False,
         fake: bool = False,
         strict: bool = True,
     ):
@@ -189,9 +197,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             team string, a showdown packed team string, of a ShowdownTeam object.
             Defaults to None.
         :type team: str or Teambuilder, optional
-        :param start_challenging: Whether to automatically start the challenge loop or
-            leave it inactive.
-        :type start_challenging: bool
         :param fake: If true, action-order converters will try to avoid returning a default
             output if at all possible, even if the output isn't a legal decision. Defaults
             to False.
@@ -200,9 +205,25 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             illegal. Otherwise, it will return default. Defaults to True.
         :type: strict: bool
         """
+        self._avatar = avatar
+        self._battle_format = battle_format
+        self._log_level = log_level
+        self._save_replays = save_replays
+        self._server_configuration = server_configuration
+        self._accept_open_team_sheet = accept_open_team_sheet
+        self._start_timer_on_battle_start = start_timer_on_battle_start
+        self._start_listening = start_listening
+        self._open_timeout = open_timeout
+        self._ping_interval = ping_interval
+        self._ping_timeout = ping_timeout
+        self._team = team
+        self._fake = fake
+        self._strict = strict
+        self._loop = asyncio.new_event_loop()
+        Thread(target=self._loop.run_forever, daemon=True).start()
         self.agent1 = _EnvPlayer(
-            username=self.__class__.__name__,  # type: ignore
-            account_configuration=account_configuration1,
+            account_configuration=account_configuration1
+            or AccountConfiguration.countgen(self.__class__.__name__),
             avatar=avatar,
             battle_format=battle_format,
             log_level=log_level,
@@ -215,11 +236,12 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             open_timeout=open_timeout,
             ping_interval=ping_interval,
             ping_timeout=ping_timeout,
+            loop=self._loop,
             team=team,
         )
         self.agent2 = _EnvPlayer(
-            username=self.__class__.__name__,  # type: ignore
-            account_configuration=account_configuration2,
+            account_configuration=account_configuration2
+            or AccountConfiguration.countgen(self.__class__.__name__),
             avatar=avatar,
             battle_format=battle_format,
             log_level=log_level,
@@ -232,6 +254,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             open_timeout=open_timeout,
             ping_interval=ping_interval,
             ping_timeout=ping_timeout,
+            loop=self._loop,
             team=team,
         )
         self.agents: List[str] = []
@@ -240,19 +263,65 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         self.battle2: Optional[AbstractBattle] = None
         self.agent1_to_move = False
         self.agent2_to_move = False
-        self.fake = fake
-        self.strict = strict
         self._np_random: Optional[Generator] = None
         self._reward_buffer: WeakKeyDictionary[AbstractBattle, float] = (
             WeakKeyDictionary()
         )
-        self._keep_challenging: bool = False
-        self._challenge_task = None
-        if start_challenging:
-            self._keep_challenging = True
-            self._challenge_task = asyncio.run_coroutine_threadsafe(
-                self._challenge_loop(), POKE_LOOP
-            )
+        self._challenge_task: Optional[Future[Any]] = None
+
+    def __getstate__(self) -> Dict[str, Any]:
+        state = self.__dict__.copy()
+        state["_loop"] = None
+        state["agent1"] = None
+        state["agent2"] = None
+        state["_reward_buffer"] = None
+        state["_challenge_task"] = None
+        return state
+
+    def __setstate__(self, state: Dict[str, Any]):
+        self.__dict__.update(state)
+        self._loop = asyncio.new_event_loop()
+        Thread(target=self._loop.run_forever, daemon=True).start()
+        self.agent1 = _EnvPlayer(
+            account_configuration=AccountConfiguration.randgen(10),
+            avatar=self._avatar,
+            battle_format=self._battle_format,
+            log_level=self._log_level,
+            max_concurrent_battles=1,
+            save_replays=self._save_replays,
+            server_configuration=self._server_configuration,
+            accept_open_team_sheet=self._accept_open_team_sheet,
+            start_timer_on_battle_start=self._start_timer_on_battle_start,
+            start_listening=self._start_listening,
+            open_timeout=self._open_timeout,
+            ping_interval=self._ping_interval,
+            ping_timeout=self._ping_timeout,
+            loop=self._loop,
+            team=self._team,
+        )
+        self.agent2 = _EnvPlayer(
+            account_configuration=AccountConfiguration.randgen(10),
+            avatar=self._avatar,
+            battle_format=self._battle_format,
+            log_level=self._log_level,
+            max_concurrent_battles=1,
+            save_replays=self._save_replays,
+            server_configuration=self._server_configuration,
+            accept_open_team_sheet=self._accept_open_team_sheet,
+            start_timer_on_battle_start=self._start_timer_on_battle_start,
+            start_listening=self._start_listening,
+            ping_interval=self._ping_interval,
+            ping_timeout=self._ping_timeout,
+            loop=self._loop,
+            team=self._team,
+        )
+        self.agents = []
+        old_names = self.possible_agents
+        self.possible_agents = [self.agent1.username, self.agent2.username]
+        for old, new in zip(old_names, self.possible_agents):
+            self.observation_spaces[new] = self.observation_spaces.pop(old)
+            self.action_spaces[new] = self.action_spaces.pop(old)
+        self._reward_buffer = WeakKeyDictionary()
 
     ###################################################################################
     # PettingZoo API
@@ -274,8 +343,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             order1 = self.action_to_order(
                 actions[self.agents[0]],
                 self.battle1,
-                fake=self.fake,
-                strict=self.strict,
+                fake=self._fake,
+                strict=self._strict,
             )
             self.agent1.order_queue.put(order1)
         if self.agent2_to_move:
@@ -283,8 +352,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             order2 = self.action_to_order(
                 actions[self.agents[1]],
                 self.battle2,
-                fake=self.fake,
-                strict=self.strict,
+                fake=self._fake,
+                strict=self._strict,
             )
             self.agent2.order_queue.put(order2)
         battle1 = self.agent1.battle_queue.race_get(
@@ -327,13 +396,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         self.agents = [self.agent1.username, self.agent2.username]
         if seed is not None:
             self._np_random, seed = seeding.np_random(seed)
-        if not self.agent1.battle or not self.agent2.battle:
-            count = self._INIT_RETRIES
-            while not self.agent1.battle or not self.agent2.battle:
-                if count == 0:
-                    raise RuntimeError("Agent is not challenging")
-                count -= 1
-                time.sleep(self._TIME_BETWEEN_RETRIES)
         if self.battle1 and not self.battle1.finished:
             assert self.battle2 is not None
             if self.battle1 == self.agent1.battle:
@@ -353,6 +415,16 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 raise RuntimeError(
                     "Environment and agent aren't synchronized. Try to restart"
                 )
+        self._challenge_task = asyncio.run_coroutine_threadsafe(
+            self.agent1.battle_against(self.agent2, n_battles=1), self._loop
+        )
+        if not self.agent1.battle or not self.agent2.battle:
+            count = self._INIT_RETRIES
+            while not self.agent1.battle or not self.agent2.battle:
+                if count == 0:
+                    raise RuntimeError("Agent is not challenging")
+                count -= 1
+                time.sleep(self._TIME_BETWEEN_RETRIES)
         self.battle1 = self.agent1.battle_queue.get()
         self.battle2 = self.agent2.battle_queue.get()
         self.agent1_to_move = True
@@ -400,7 +472,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             if self.battle2 != self.agent2.battle:
                 self.battle2 = self.agent2.battle
         closing_task = asyncio.run_coroutine_threadsafe(
-            self._stop_challenge_loop(purge=purge), POKE_LOOP
+            self._stop_challenge_loop(purge=purge), self._loop
         )
         closing_task.result()
 
@@ -576,7 +648,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
 
         return to_return
 
-    def reset_env(self, restart: bool = True):
+    def reset_env(self):
         """
         Resets the environment to an inactive state: it will forfeit all unfinished
         battles, reset the internal battle tracker and optionally change the next
@@ -592,8 +664,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         """
         self.close(purge=False)
         self.reset_battles()
-        if restart:
-            self.start_challenging()
 
     def get_additional_info(self) -> Dict[str, Dict[str, Any]]:
         """
@@ -634,11 +704,10 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         if self._challenge_task and not self._challenge_task.done():
             raise RuntimeError(
                 "Agent is already challenging opponents with the challenging loop. "
-                "Try to specify 'start_challenging=True' during instantiation or call "
-                "'await agent.stop_challenge_loop()' to clear the task."
+                "Try to call 'await agent.stop_challenge_loop()' to clear the task."
             )
         self._challenge_task = asyncio.run_coroutine_threadsafe(
-            self.agent1.send_challenges(username, 1), POKE_LOOP
+            self.agent1.send_challenges(username, 1), self._loop
         )
 
     def background_accept_challenge(self, username: str):
@@ -652,42 +721,11 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         if self._challenge_task and not self._challenge_task.done():
             raise RuntimeError(
                 "Agent is already challenging opponents with the challenging loop. "
-                "Try to specify 'start_challenging=True' during instantiation or call "
-                "'await agent.stop_challenge_loop()' to clear the task."
+                "Try to call 'await agent.stop_challenge_loop()' to clear the task."
             )
         self._challenge_task = asyncio.run_coroutine_threadsafe(
-            self.agent1.accept_challenges(username, 1, self.agent1.next_team), POKE_LOOP
-        )
-
-    async def _challenge_loop(self, n_challenges: Optional[int] = None):
-        if not n_challenges:
-            while self._keep_challenging:
-                await self.agent1.battle_against(self.agent2, n_battles=1)
-        elif n_challenges > 0:
-            for _ in range(n_challenges):
-                await self.agent1.battle_against(self.agent2, n_battles=1)
-        else:
-            raise ValueError(f"Number of challenges must be > 0. Got {n_challenges}")
-
-    def start_challenging(self, n_challenges: Optional[int] = None):
-        """
-        Starts the challenge loop.
-
-        :param n_challenges: The number of challenges to send. If empty it will run until
-            stopped.
-        :type n_challenges: int, optional
-        """
-        if self._challenge_task and not self._challenge_task.done():
-            count = self._SWITCH_CHALLENGE_TASK_RETRIES
-            while not self._challenge_task.done():
-                if count == 0:
-                    raise RuntimeError("Agent is already challenging")
-                count -= 1
-                time.sleep(self._TIME_BETWEEN_SWITCH_RETRIES)
-        if not n_challenges:
-            self._keep_challenging = True
-        self._challenge_task = asyncio.run_coroutine_threadsafe(
-            self._challenge_loop(n_challenges), POKE_LOOP
+            self.agent1.accept_challenges(username, 1, self.agent1.next_team),
+            self._loop,
         )
 
     async def _ladder_loop(self, n_challenges: Optional[int] = None):
@@ -720,7 +758,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         if not n_challenges:
             self._keep_challenging = True
         self._challenge_task = asyncio.run_coroutine_threadsafe(
-            self._ladder_loop(n_challenges), POKE_LOOP
+            self._ladder_loop(n_challenges), self._loop
         )
 
     async def _stop_challenge_loop(

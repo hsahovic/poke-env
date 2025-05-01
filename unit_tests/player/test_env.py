@@ -1,22 +1,33 @@
 import asyncio
+import pickle
 import sys
 from io import StringIO
+from unittest.mock import AsyncMock
 
 import numpy as np
 import numpy.typing as npt
-from gymnasium.spaces import Discrete
+from gymnasium.spaces import Box, Discrete
 
 from poke_env import AccountConfiguration, ServerConfiguration
 from poke_env.concurrency import POKE_LOOP
 from poke_env.environment import (
     AbstractBattle,
     Battle,
+    DoubleBattle,
     Move,
     Pokemon,
     PokemonType,
     Status,
 )
-from poke_env.player import BattleOrder, ForfeitBattleOrder, Player, PokeEnv, SinglesEnv
+from poke_env.player import (
+    BattleOrder,
+    DoubleBattleOrder,
+    DoublesEnv,
+    ForfeitBattleOrder,
+    Player,
+    PokeEnv,
+    SinglesEnv,
+)
 from poke_env.player.env import _AsyncQueue, _EnvPlayer
 
 account_configuration1 = AccountConfiguration("username1", "password1")
@@ -25,6 +36,12 @@ server_configuration = ServerConfiguration("server.url", "auth.url")
 
 
 class CustomEnv(SinglesEnv[npt.NDArray[np.float32]]):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.observation_spaces = {
+            agent: Box(0, 1, dtype=np.float32) for agent in self.possible_agents
+        }
+
     def calc_reward(self, battle: AbstractBattle) -> float:
         return 69.42
 
@@ -33,12 +50,12 @@ class CustomEnv(SinglesEnv[npt.NDArray[np.float32]]):
 
 
 def test_init_queue():
-    q = _AsyncQueue(asyncio.Queue())
+    q = _AsyncQueue(asyncio.Queue(), POKE_LOOP)
     assert isinstance(q, _AsyncQueue)
 
 
 def test_queue():
-    q = _AsyncQueue(asyncio.Queue())
+    q = _AsyncQueue(asyncio.Queue(), POKE_LOOP)
     assert q.empty()
     q.put(1)
     assert q.queue.qsize() == 1
@@ -60,7 +77,7 @@ def test_async_player():
     def embed_battle(battle):
         return "battle"
 
-    player = _EnvPlayer(start_listening=False, username="usr")
+    player = _EnvPlayer(start_listening=False)
     battle = Battle("bat1", player.username, player.logger, gen=8)
     player.order_queue.put(ForfeitBattleOrder())
     order = asyncio.get_event_loop().run_until_complete(player._env_move(battle))
@@ -78,6 +95,7 @@ def test_reset_step_close():
         start_listening=False,
         strict=False,
     )
+    env.agent1.battle_against = AsyncMock(return_value=None)
     # --- Part 1: Test reset() ---
     # Pre-populate each agent's battle_queue with a new battle.
     battle_new1 = Battle("new_battle1", env.agent1.username, env.agent1.logger, gen=8)
@@ -131,7 +149,7 @@ def test_reset_step_close():
     # Additional info should be empty.
     assert add_info_step == {env.agents[0]: {}, env.agents[1]: {}}
 
-    # --- Part 2: Test close() ---
+    # --- Part 3: Test close() ---
     env.close()
 
 
@@ -182,6 +200,19 @@ def test_init():
     assert isinstance(player, _EnvPlayer)
 
 
+def test_pickle():
+    env = CustomEnv(
+        account_configuration1=account_configuration1,
+        account_configuration2=account_configuration2,
+        server_configuration=server_configuration,
+        start_listening=False,
+        battle_format="gen7randombattles",
+    )
+    env2 = pickle.loads(pickle.dumps(env))
+    assert env.agent1.username != env2.agent1.username
+    assert env.agent2.username != env2.agent2.username
+
+
 async def run_test_choose_move():
     player = CustomEnv(
         account_configuration1=account_configuration1,
@@ -189,7 +220,6 @@ async def run_test_choose_move():
         server_configuration=server_configuration,
         start_listening=False,
         battle_format="gen7randombattles",
-        start_challenging=False,
     )
     # Create a mock battle and moves
     battle = Battle("bat1", player.agent1.username, player.agent1.logger, gen=8)
@@ -351,7 +381,6 @@ def test_action_space():
         p = SinglesEnv(
             battle_format=f"gen{gen}randombattle",
             start_listening=False,
-            start_challenging=False,
         )
         assert p.action_space(p.possible_agents[0]) == Discrete(
             4 * sum([1, has_megas, has_z_moves, has_dynamax]) + 6
@@ -373,7 +402,6 @@ def test_singles_action_order_conversions():
         p = SinglesEnv(
             battle_format=f"gen{gen}randombattle",
             start_listening=False,
-            start_challenging=False,
         )
         battle = Battle("bat1", p.agent1.username, p.agent1.logger, gen=gen)
         active_pokemon = Pokemon(species="charizard", gen=gen)
@@ -435,6 +463,103 @@ def test_singles_action_order_conversions():
             )
             check_action_order_roundtrip(
                 p, Player.create_order(move, terastallize=True), battle
+            )
+
+
+def test_doubles_action_order_conversions():
+    for gen, (has_megas, has_z_moves, has_dynamax, has_tera) in enumerate(
+        [
+            (True, True, True, False),
+            (True, True, True, True),
+        ],
+        start=8,
+    ):
+        p = DoublesEnv(
+            battle_format=f"gen{gen}randomdoublesbattle",
+            start_listening=False,
+        )
+        battle = DoubleBattle("bat1", p.agent1.username, p.agent1.logger, gen=gen)
+        battle._player_role = "p1"
+        active_pokemon = Pokemon(species="charizard", gen=gen)
+        move = Move("flamethrower", gen=gen)
+        active_pokemon._moves = {move.id: move}
+        active_pokemon._active = True
+        active_pokemon._item = "firiumz"
+        battle._team = {"charizard": active_pokemon}
+        battle._opponent_active_pokemon = {"p2a": active_pokemon}
+        battle._active_pokemon = {"p1a": active_pokemon}
+        assert p.action_to_order(np.array([-1, 0]), battle).message == "/forfeit"
+        check_action_order_roundtrip(p, ForfeitBattleOrder(), battle)
+        battle._available_moves = [[move], []]
+        assert (
+            p.action_to_order(np.array([10, 0]), battle).message
+            == "/choose move flamethrower 1, pass"
+        )
+        check_action_order_roundtrip(
+            p, DoubleBattleOrder(Player.create_order(move, move_target=1)), battle
+        )
+        battle._available_switches = [[active_pokemon], []]
+        assert (
+            p.action_to_order(np.array([1, 0]), battle).message
+            == "/choose switch charizard, pass"
+        )
+        check_action_order_roundtrip(
+            p, DoubleBattleOrder(Player.create_order(active_pokemon)), battle
+        )
+        battle._available_switches = [[], []]
+        assert (
+            p.action_to_order(np.array([25, 0]), battle, strict=False).message
+            == "/choose default"
+        )
+        if has_megas:
+            battle._can_mega_evolve = [True, True]
+            assert (
+                p.action_to_order(np.array([30, 0]), battle).message
+                == "/choose move flamethrower mega 1, pass"
+            )
+            check_action_order_roundtrip(
+                p,
+                DoubleBattleOrder(Player.create_order(move, mega=True, move_target=1)),
+                battle,
+            )
+        if has_z_moves:
+            battle._can_z_move = [True, True]
+            assert (
+                p.action_to_order(np.array([50, 0]), battle).message
+                == "/choose move flamethrower zmove 1, pass"
+            )
+            check_action_order_roundtrip(
+                p,
+                DoubleBattleOrder(
+                    Player.create_order(move, z_move=True, move_target=1)
+                ),
+                battle,
+            )
+        if has_dynamax:
+            battle._can_dynamax = [True, True]
+            assert (
+                p.action_to_order(np.array([70, 0]), battle).message
+                == "/choose move flamethrower dynamax 1, pass"
+            )
+            check_action_order_roundtrip(
+                p,
+                DoubleBattleOrder(
+                    Player.create_order(move, dynamax=True, move_target=1)
+                ),
+                battle,
+            )
+        if has_tera:
+            battle._can_tera = [PokemonType.FIRE, PokemonType.FIRE]
+            assert (
+                p.action_to_order(np.array([90, 0]), battle).message
+                == "/choose move flamethrower terastallize 1, pass"
+            )
+            check_action_order_roundtrip(
+                p,
+                DoubleBattleOrder(
+                    Player.create_order(move, terastallize=True, move_target=1)
+                ),
+                battle,
             )
 
 

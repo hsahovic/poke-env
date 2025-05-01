@@ -81,9 +81,6 @@ class Battle(AbstractBattle):
         self._trapped = False
         self._force_switch = request.get("forceSwitch", [False])[0]
 
-        if self._force_switch:
-            self._move_on_next_request = True
-
         self._last_request = request
 
         if request.get("teamPreview", False):
@@ -93,6 +90,16 @@ class Battle(AbstractBattle):
         else:
             self._teampreview = False
         self._update_team_from_request(request["side"])
+
+        if self.active_pokemon is not None:
+            active_mon = self.get_pokemon(
+                request["side"]["pokemon"][0]["ident"],
+                force_self_team=True,
+                details=request["side"]["pokemon"][0]["details"],
+            )
+            if active_mon != self.active_pokemon:
+                self.active_pokemon.switch_out()
+                active_mon.switch_in()
 
         if "active" in request:
             active_request = request["active"][0]
