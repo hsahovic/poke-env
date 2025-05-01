@@ -4,10 +4,25 @@ from gymnasium.spaces import Box
 from gymnasium.utils.env_checker import check_env
 from pettingzoo.test.parallel_test import parallel_api_test
 
-from poke_env.player import RandomPlayer, SingleAgentWrapper, SinglesEnv
+from poke_env.player import DoublesEnv, RandomPlayer, SingleAgentWrapper, SinglesEnv
 
 
 class SinglesTestEnv(SinglesEnv):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.observation_spaces = {
+            agent: Box(np.array([0]), np.array([1]), dtype=np.int64)
+            for agent in self.possible_agents
+        }
+
+    def calc_reward(self, battle) -> float:
+        return 0.0
+
+    def embed_battle(self, battle):
+        return np.array([0])
+
+
+class DoublesTestEnv(DoublesEnv):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.observation_spaces = {
@@ -44,6 +59,16 @@ def test_env_run():
         env.start_challenging(10)
         play_function(env, 10)
         env.close()
+    for gen in range(8, 10):
+        env = DoublesTestEnv(
+            battle_format=f"gen{gen}randomdoublesbattle",
+            log_level=25,
+            start_challenging=False,
+            strict=False,
+        )
+        env.start_challenging(10)
+        play_function(env, 10)
+        env.close()
 
 
 def single_agent_play_function(env: SingleAgentWrapper, n_battles: int):
@@ -56,11 +81,22 @@ def single_agent_play_function(env: SingleAgentWrapper, n_battles: int):
             done = terminated or truncated
 
 
-@pytest.mark.timeout(60)
+@pytest.mark.timeout(120)
 def test_single_agent_env_run():
     for gen in range(4, 10):
         env = SinglesTestEnv(
             battle_format=f"gen{gen}randombattle",
+            log_level=25,
+            start_challenging=False,
+            strict=False,
+        )
+        env = SingleAgentWrapper(env, RandomPlayer())
+        env.env.start_challenging(10)
+        single_agent_play_function(env, 10)
+        env.close()
+    for gen in range(8, 10):
+        env = DoublesTestEnv(
+            battle_format=f"gen{gen}randomdoublesbattle",
             log_level=25,
             start_challenging=False,
             strict=False,
@@ -108,6 +144,15 @@ def test_env_api():
         )
         parallel_api_test(env)
         env.close()
+    for gen in range(8, 10):
+        env = DoublesTestEnv(
+            battle_format=f"gen{gen}randomdoublesbattle",
+            log_level=25,
+            start_challenging=True,
+            strict=False,
+        )
+        parallel_api_test(env)
+        env.close()
 
 
 @pytest.mark.timeout(60)
@@ -115,6 +160,16 @@ def test_single_agent_env_api():
     for gen in range(4, 10):
         env = SinglesTestEnv(
             battle_format=f"gen{gen}randombattle",
+            log_level=25,
+            start_challenging=True,
+            strict=False,
+        )
+        env = SingleAgentWrapper(env, RandomPlayer())
+        check_env(env)
+        env.close()
+    for gen in range(8, 10):
+        env = DoublesTestEnv(
+            battle_format=f"gen{gen}randomdoublesbattle",
             log_level=25,
             start_challenging=True,
             strict=False,
