@@ -275,7 +275,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 actions[self.agents[0]],
                 self.battle1,
                 fake=self.fake,
-                strict=self.strict,
+                strict=False,
             )
             self.agent1.order_queue.put(order1)
         if self.agent2_to_move:
@@ -284,7 +284,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 actions[self.agents[1]],
                 self.battle2,
                 fake=self.fake,
-                strict=self.strict,
+                strict=False,
             )
             self.agent2.order_queue.put(order2)
         battle1 = self.agent1.battle_queue.race_get(

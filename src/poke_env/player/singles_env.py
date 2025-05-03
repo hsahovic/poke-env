@@ -111,24 +111,59 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         :return: The battle order for the given action in context of the current battle.
         :rtype: BattleOrder
         """
+        import logging
+        logger = logging.getLogger("poke_env.singles_env")
+        logger.debug(f"action_to_order called with action={action}, battle.finished={getattr(battle, 'finished', None)}")
+        # Prevent invalid actions if the battle is finished
+        if hasattr(battle, 'finished') and battle.finished:
+            logger.info("Returning DefaultBattleOrder: battle is finished.")
+            return DefaultBattleOrder()
         try:
             if action == -2:
+                logger.info("Returning DefaultBattleOrder: action == -2 (default action)")
                 return DefaultBattleOrder()
             elif action == -1:
+                logger.info("Returning ForfeitBattleOrder: action == -1 (forfeit action)")
                 return ForfeitBattleOrder()
             elif action < 6:
                 order = Player.create_order(list(battle.team.values())[action])
                 if not fake:
-                    assert not battle.trapped, "invalid action"
-                    assert isinstance(order.order, Pokemon)
-                    assert order.order.base_species in [
-                        p.base_species for p in battle.available_switches
-                    ], "invalid action"
+                    if battle.trapped:
+                        logger.warning(f"Invalid switch action: Pokemon is trapped. action={action}")
+                        if not strict:
+                            logger.info("Returning DefaultBattleOrder: invalid switch (trapped)")
+                            return DefaultBattleOrder()
+                        assert not battle.trapped, "invalid action"
+                    if not isinstance(order.order, Pokemon):
+                        logger.warning(f"Invalid switch action: order is not a Pokemon. action={action}")
+                        if not strict:
+                            logger.info("Returning DefaultBattleOrder: invalid switch (not a Pokemon)")
+                            return DefaultBattleOrder()
+                        assert isinstance(order.order, Pokemon)
+                    if order.order.base_species not in [p.base_species for p in battle.available_switches]:
+                        logger.warning(f"Invalid switch action: base_species not in available_switches. action={action}")
+                        if not strict:
+                            logger.info("Returning DefaultBattleOrder: invalid switch (not available)")
+                            return DefaultBattleOrder()
+                        assert order.order.base_species in [
+                            p.base_species for p in battle.available_switches
+                        ], "invalid action"
             else:
                 if not fake:
-                    assert not battle.force_switch, "invalid action"
-                    assert battle.active_pokemon is not None, "invalid action"
+                    if battle.force_switch:
+                        logger.warning(f"Invalid move action: force_switch is True. action={action}")
+                        if not strict:
+                            logger.info("Returning DefaultBattleOrder: invalid move (force_switch)")
+                            return DefaultBattleOrder()
+                        assert not battle.force_switch, "invalid action"
+                    if battle.active_pokemon is None:
+                        logger.warning(f"Invalid move action: active_pokemon is None. action={action}")
+                        if not strict:
+                            logger.info("Returning DefaultBattleOrder: invalid move (no active_pokemon)")
+                            return DefaultBattleOrder()
+                        assert battle.active_pokemon is not None, "invalid action"
                 elif battle.active_pokemon is None:
+                    logger.info("Returning DefaultBattleOrder: battle.active_pokemon is None")
                     return DefaultBattleOrder()
                 mvs = (
                     battle.available_moves
@@ -137,8 +172,14 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
                     else list(battle.active_pokemon.moves.values())
                 )
                 if not fake:
-                    assert (action - 6) % 4 in range(len(mvs)), "invalid action"
+                    if (action - 6) % 4 not in range(len(mvs)):
+                        logger.warning(f"Invalid move action: move index out of range. action={action}, len(mvs)={len(mvs)}")
+                        if not strict:
+                            logger.info("Returning DefaultBattleOrder: invalid move (index out of range)")
+                            return DefaultBattleOrder()
+                        assert (action - 6) % 4 in range(len(mvs)), "invalid action"
                 elif (action - 6) % 4 not in range(len(mvs)):
+                    logger.info("Returning DefaultBattleOrder: move index out of range")
                     return DefaultBattleOrder()
                 order = Player.create_order(
                     mvs[(action - 6) % 4],
@@ -148,22 +189,54 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
                     terastallize=22 <= action.item() < 26,
                 )
                 if not fake:
-                    assert isinstance(order.order, Move)
-                    assert order.order.id in [
-                        m.id for m in battle.available_moves
-                    ], "invalid action"
-                    assert not order.mega or battle.can_mega_evolve, "invalid action"
-                    assert not order.z_move or (
-                        battle.can_z_move
-                        and order.order in battle.active_pokemon.available_z_moves
-                    ), "invalid action"
-                    assert not order.dynamax or battle.can_dynamax, "invalid action"
-                    assert (
-                        not order.terastallize or battle.can_tera is not None
-                    ), "invalid action"
+                    if not isinstance(order.order, Move):
+                        logger.warning(f"Invalid move action: order is not a Move. action={action}")
+                        if not strict:
+                            logger.info("Returning DefaultBattleOrder: invalid move (not a Move)")
+                            return DefaultBattleOrder()
+                        assert isinstance(order.order, Move)
+                    if order.order.id not in [m.id for m in battle.available_moves]:
+                        logger.warning(f"Invalid move action: move id not in available_moves. action={action}, move_id={order.order.id}")
+                        if not strict:
+                            logger.info("Returning DefaultBattleOrder: invalid move (id not available)")
+                            return DefaultBattleOrder()
+                        assert order.order.id in [
+                            m.id for m in battle.available_moves
+                        ], "invalid action"
+                    if order.mega and not battle.can_mega_evolve:
+                        logger.warning(f"Invalid move action: tried mega evolve when not available. action={action}")
+                        if not strict:
+                            logger.info("Returning DefaultBattleOrder: invalid move (mega evolve not available)")
+                            return DefaultBattleOrder()
+                        assert not order.mega or battle.can_mega_evolve, "invalid action"
+                    if order.z_move and not (battle.can_z_move and order.order in battle.active_pokemon.available_z_moves):
+                        logger.warning(f"Invalid move action: tried z-move when not available. action={action}")
+                        if not strict:
+                            logger.info("Returning DefaultBattleOrder: invalid move (z-move not available)")
+                            return DefaultBattleOrder()
+                        assert not order.z_move or (
+                            battle.can_z_move
+                            and order.order in battle.active_pokemon.available_z_moves
+                        ), "invalid action"
+                    if order.dynamax and not battle.can_dynamax:
+                        logger.warning(f"Invalid move action: tried dynamax when not available. action={action}")
+                        if not strict:
+                            logger.info("Returning DefaultBattleOrder: invalid move (dynamax not available)")
+                            return DefaultBattleOrder()
+                        assert not order.dynamax or battle.can_dynamax, "invalid action"
+                    if order.terastallize and not (battle.can_tera is not None):
+                        logger.warning(f"Invalid move action: tried terastallize when not available. action={action}")
+                        if not strict:
+                            logger.info("Returning DefaultBattleOrder: invalid move (terastallize not available)")
+                            return DefaultBattleOrder()
+                        assert (
+                            not order.terastallize or battle.can_tera is not None
+                        ), "invalid action"
             return order
         except AssertionError as e:
+            logger.error(f"AssertionError in action_to_order: {e}, action={action}")
             if not strict and str(e) == "invalid action":
+                logger.info("Returning DefaultBattleOrder: assertion error and not strict mode")
                 return DefaultBattleOrder()
             else:
                 raise e
