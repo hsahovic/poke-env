@@ -19,7 +19,6 @@ class Pokemon:
     __slots__ = (
         "_ability",
         "_active",
-        "_active",
         "_base_stats",
         "_boosts",
         "_current_hp",
