@@ -123,6 +123,8 @@ class DoubleBattle(AbstractBattle):
         else:
             self._teampreview = False
 
+        # correcting for protocol possibly lying to us about what just switched in
+        # (in the case of Zoroark for example)
         side = request["side"]
         if side["pokemon"]:
             self._player_role = side["pokemon"][0]["ident"][:2]
