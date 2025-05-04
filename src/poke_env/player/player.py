@@ -374,7 +374,7 @@ class Player(ABC):
             else:
                 battle.parse_message(split_message)
 
-        if split_messages[1][1] == "request" and battle.move_on_protocol:
+        if split_messages[1][1] != "request" and battle.move_on_protocol:
             await self._handle_battle_request(battle)
             battle.move_on_protocol = False
 
