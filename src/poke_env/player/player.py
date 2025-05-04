@@ -289,8 +289,8 @@ class Player(ABC):
                     if battle._wait:
                         self._waiting.set()
                     elif battle.move_on_request:
-                        await self._handle_battle_request(battle)
                         battle.move_on_request = False
+                        await self._handle_battle_request(battle)
                     else:
                         battle.move_on_protocol = True
             elif split_message[1] == "win" or split_message[1] == "tie":
@@ -375,8 +375,8 @@ class Player(ABC):
                 battle.parse_message(split_message)
 
         if split_messages[1][1] != "request" and battle.move_on_protocol:
-            await self._handle_battle_request(battle)
             battle.move_on_protocol = False
+            await self._handle_battle_request(battle)
 
     async def _handle_battle_request(
         self,
