@@ -288,8 +288,11 @@ class Player(ABC):
                     battle.parse_request(request)
                     if battle._wait:
                         self._waiting.set()
-                    else:
+                    if battle.move_on_request:
                         await self._handle_battle_request(battle)
+                        battle.move_on_request = False
+                    else:
+                        battle.move_on_protocol = True
             elif split_message[1] == "win" or split_message[1] == "tie":
                 if split_message[1] == "win":
                     battle.won_by(split_message[2])
@@ -311,6 +314,7 @@ class Player(ABC):
                     "[Invalid choice] Can't switch: The active Pokémon is trapped"
                 ):
                     self._trying_again.set()
+                    battle.move_on_request = True
                 elif split_message[2].startswith("[Invalid choice] Can't pass: "):
                     await self._handle_battle_request(battle, maybe_default_order=True)
                 elif split_message[2].startswith(
@@ -369,6 +373,10 @@ class Player(ABC):
                 await self._handle_ots_request(battle.battle_tag)
             else:
                 battle.parse_message(split_message)
+
+        if battle.move_on_protocol:
+            await self._handle_battle_request(battle)
+            battle.move_on_protocol = False
 
     async def _handle_battle_request(
         self,

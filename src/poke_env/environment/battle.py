@@ -91,20 +91,6 @@ class Battle(AbstractBattle):
             self._teampreview = False
         self._update_team_from_request(request["side"])
 
-        # correcting for protocol possibly lying to us about what just switched in
-        # (in the case of Zoroark for example)
-        active_mon = self.get_pokemon(
-            request["side"]["pokemon"][0]["ident"],
-            force_self_team=True,
-            details=request["side"]["pokemon"][0]["details"],
-        )
-        if self.active_pokemon != active_mon:
-            self.switch(
-                request["side"]["pokemon"][0]["ident"],
-                details=request["side"]["pokemon"][0]["details"],
-                hp_status=f"{active_mon.current_hp}/{active_mon.max_hp}",
-            )
-
         if "active" in request:
             active_request = request["active"][0]
 
