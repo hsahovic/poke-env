@@ -288,7 +288,7 @@ class Player(ABC):
                     battle.parse_request(request)
                     if battle._wait:
                         self._waiting.set()
-                    if battle.move_on_request:
+                    elif battle.move_on_request:
                         await self._handle_battle_request(battle)
                         battle.move_on_request = False
                     else:
