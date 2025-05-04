@@ -98,12 +98,12 @@ class Battle(AbstractBattle):
             force_self_team=True,
             details=request["side"]["pokemon"][0]["details"],
         )
-        if active_mon != self.active_pokemon:
-            if self.active_pokemon is None:
-                active_mon.switch_in()
-            else:
-                self.active_pokemon.switch_out()
-                active_mon.switch_in()
+        if self.active_pokemon != active_mon:
+            self.switch(
+                request["side"]["pokemon"][0]["ident"],
+                details=request["side"]["pokemon"][0]["details"],
+                hp_status=f"{active_mon.current_hp}/{active_mon.max_hp}",
+            )
 
         if "active" in request:
             active_request = request["active"][0]
