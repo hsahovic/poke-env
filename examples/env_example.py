@@ -6,7 +6,6 @@ from pettingzoo.test.parallel_test import parallel_api_test
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.player import SinglesEnv
 
-
 class TestEnv(SinglesEnv[npt.NDArray[np.float32]]):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -14,6 +13,7 @@ class TestEnv(SinglesEnv[npt.NDArray[np.float32]]):
             agent: Box(np.array([0, 0]), np.array([6, 6]), dtype=np.float32)
             for agent in self.possible_agents
         }
+        self.strict = False
 
     def calc_reward(self, battle) -> float:
         return self.reward_computing_helper(battle)
@@ -35,7 +35,7 @@ class TestEnv(SinglesEnv[npt.NDArray[np.float32]]):
 
 if __name__ == "__main__":
     gymnasium_env = TestEnv(
-        battle_format="gen8randombattle",
+        battle_format="gen9randombattle",
         start_challenging=True,
     )
     parallel_api_test(gymnasium_env)
