@@ -88,7 +88,8 @@ class AbstractBattle(ABC):
         "_last_request",
         "_max_team_size",
         "_maybe_trapped",
-        "_move_on_next_request",
+        "_move_on_protocol",
+        "_move_on_request",
         "_observations",
         "_opponent_can_dynamax",
         "_opponent_can_mega_evolve",
@@ -154,7 +155,8 @@ class AbstractBattle(ABC):
 
         # Turn choice attributes
         self.in_team_preview: bool = False
-        self._move_on_next_request: bool = False
+        self._move_on_protocol: bool = False
+        self._move_on_request: bool = False
         self._wait: Optional[bool] = None
 
         # Battle state attributes
@@ -1435,17 +1437,30 @@ class AbstractBattle(ABC):
         return self._won
 
     @property
-    def move_on_next_request(self) -> bool:
+    def move_on_protocol(self) -> bool:
         """
-        :return: Wheter the next received request should yield a move order directly.
-            This can happen when a switch is forced, or an error is encountered.
+        :return: Whether the next received request should yield a move order directly.
+            This can happen when a switch is forced.
         :rtype: bool
         """
-        return self._move_on_next_request
+        return self._move_on_protocol
 
-    @move_on_next_request.setter
-    def move_on_next_request(self, value: bool):
-        self._move_on_next_request = value
+    @move_on_protocol.setter
+    def move_on_protocol(self, value: bool):
+        self._move_on_protocol = value
+
+    @property
+    def move_on_request(self) -> bool:
+        """
+        :return: Whether the next received request should yield a move order directly.
+            This can happen when an error is encountered.
+        :rtype: bool
+        """
+        return self._move_on_request
+
+    @move_on_request.setter
+    def move_on_request(self, value: bool):
+        self._move_on_request = value
 
     @property
     def reviving(self) -> bool:

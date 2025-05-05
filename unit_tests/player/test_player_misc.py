@@ -255,11 +255,11 @@ async def test_handle_ots_request(send_message_patch):
 @pytest.mark.asyncio
 async def test_create_teampreview_team(showdown_format_teams):
     player = SimplePlayer(
-        battle_format="gen9vgc2025regg",
-        team=showdown_format_teams["gen9vgc2025regg"][0],
+        battle_format="gen9vgc2025regi",
+        team=showdown_format_teams["gen9vgc2025regi"][0],
     )
 
-    battle = await player._create_battle(["", "gen9vgc2025regg", "uuu"])
+    battle = await player._create_battle(["", "gen9vgc2025regi", "uuu"])
 
     assert len(battle.teampreview_team) == 6
 
