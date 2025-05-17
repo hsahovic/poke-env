@@ -27997,6 +27997,7 @@
         "abilities": {
             "0": "RKS System"
         },
+        "baseForme": "Normal",
         "baseStats": {
             "atk": 95,
             "def": 95,

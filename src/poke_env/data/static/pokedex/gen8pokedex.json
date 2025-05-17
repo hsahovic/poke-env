@@ -523,7 +523,7 @@
             "0": "Sweet Veil",
             "H": "Aroma Veil"
         },
-        "baseForme": "Vanilla Cream",
+        "baseForme": "Vanilla-Cream",
         "baseStats": {
             "atk": 60,
             "def": 75,
@@ -10128,6 +10128,7 @@
         "abilities": {
             "0": "Ice Face"
         },
+        "baseForme": "Ice",
         "baseStats": {
             "atk": 80,
             "def": 110,
@@ -22099,6 +22100,7 @@
         "abilities": {
             "0": "Hunger Switch"
         },
+        "baseForme": "Full-Belly",
         "baseStats": {
             "atk": 95,
             "def": 58,
@@ -31011,6 +31013,7 @@
         "abilities": {
             "0": "RKS System"
         },
+        "baseForme": "Normal",
         "baseStats": {
             "atk": 95,
             "def": 95,
