@@ -2,6 +2,7 @@
 
 import logging
 
+import poke_env.calc as calc
 import poke_env.environment as environment
 import poke_env.exceptions as exceptions
 import poke_env.player as player
@@ -42,6 +43,7 @@ __all__ = [
     "ShowdownException",
     "ShowdownServerConfiguration",
     "SimpleHeuristicsPlayer",
+    "calc",
     "compute_raw_stats",
     "cross_evaluate",
     "environment",
