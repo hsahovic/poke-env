@@ -92,7 +92,7 @@ class AbstractBattle(ABC):
         "_observations",
         "_opponent_can_dynamax",
         "_opponent_can_mega_evolve",
-        "_opponent_can_terrastallize",
+        "_opponent_can_tera",
         "_opponent_can_z_move",
         "_opponent_dynamax_turn",
         "_opponent_rating",
@@ -163,10 +163,6 @@ class AbstractBattle(ABC):
         self._last_request: Dict[str, Any] = {}
         self.rules: List[str] = []
         self._turn: int = 0
-        self._opponent_can_terrastallize: bool = True
-        self._opponent_can_mega_evolve: Union[bool, List[bool]] = True
-        self._opponent_can_z_move: Union[bool, List[bool]] = True
-
         self._opponent_dynamax_turn: Optional[int] = None
         self._opponent_rating: Optional[int] = None
         self._rating: Optional[int] = None
@@ -667,7 +663,7 @@ class AbstractBattle(ABC):
                     and self._opponent_dynamax_turn is None
                 ):
                     self._opponent_dynamax_turn = self.turn
-                    self.opponent_can_dynamax = False
+                    self._opponent_can_dynamax = False
         elif event[1] == "-activate":
             target, effect = event[2:4]
             if target and effect == "move: Skill Swap":
@@ -956,7 +952,7 @@ class AbstractBattle(ABC):
 
             if pokemon.is_terastallized:  # type: ignore
                 if pokemon in set(self.opponent_team.values()):
-                    self._opponent_can_terrastallize = False
+                    self._opponent_can_tera = False
         else:
             raise NotImplementedError(event)
 
@@ -1053,17 +1049,17 @@ class AbstractBattle(ABC):
 
     @property
     @abstractmethod
-    def can_dynamax(self) -> Any:
-        pass
-
-    @property
-    @abstractmethod
     def can_mega_evolve(self) -> Any:
         pass
 
     @property
     @abstractmethod
     def can_z_move(self) -> Any:
+        pass
+
+    @property
+    @abstractmethod
+    def can_dynamax(self) -> Any:
         pass
 
     @property
@@ -1187,12 +1183,22 @@ class AbstractBattle(ABC):
 
     @property
     @abstractmethod
+    def opponent_can_mega_evolve(self) -> Any:
+        pass
+
+    @property
+    @abstractmethod
+    def opponent_can_z_move(self) -> Any:
+        pass
+
+    @property
+    @abstractmethod
     def opponent_can_dynamax(self) -> Any:
         pass
 
-    @opponent_can_dynamax.setter
+    @property
     @abstractmethod
-    def opponent_can_dynamax(self, value: bool) -> Any:
+    def opponent_can_tera(self) -> Any:
         pass
 
     @property
