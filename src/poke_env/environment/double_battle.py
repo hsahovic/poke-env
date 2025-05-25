@@ -34,10 +34,11 @@ class DoubleBattle(AbstractBattle):
         self._can_mega_evolve: List[bool] = [False, False]
         self._can_z_move: List[bool] = [False, False]
         self._can_dynamax: List[bool] = [False, False]
-        self._can_tera: List[Union[bool, PokemonType]] = [False, False]
-        self._opponent_can_dynamax: List[bool] = [True, True]
-        self._opponent_can_mega_evolve: List[bool] = [True, True]
-        self._opponent_can_z_move: List[bool] = [True, True]
+        self._can_tera: List[bool] = [False, False]
+        self._opponent_can_mega_evolve: bool = True
+        self._opponent_can_z_move: bool = True
+        self._opponent_can_dynamax: bool = True
+        self._opponent_can_tera: bool = True
         self._force_switch: List[bool] = [False, False]
         self._maybe_trapped: List[bool] = [False, False]
         self._trapped: List[bool] = [False, False]
@@ -106,16 +107,13 @@ class DoubleBattle(AbstractBattle):
         self._can_mega_evolve = [False, False]
         self._can_z_move = [False, False]
         self._can_dynamax = [False, False]
+        self._can_tera = [False, False]
         self._maybe_trapped = [False, False]
         self._trapped = [False, False]
-        self._can_tera = [False, False]
         self._force_switch = request.get("forceSwitch", [False, False])
         self._reviving = any(
             [mon.get("reviving") for mon in request["side"]["pokemon"]]
         )
-
-        if any(self._force_switch):
-            self._move_on_next_request = True
 
         self._last_request = request
 
@@ -131,6 +129,14 @@ class DoubleBattle(AbstractBattle):
             self._player_role = side["pokemon"][0]["ident"][:2]
         self._update_team_from_request(side)
 
+        if self.player_role is not None:
+            self._active_pokemon[f"{self.player_role}a"] = self.team[
+                request["side"]["pokemon"][0]["ident"]
+            ]
+            self._active_pokemon[f"{self.player_role}b"] = self.team[
+                request["side"]["pokemon"][1]["ident"]
+            ]
+
         if "active" in request:
             for active_pokemon_number, active_request in enumerate(request["active"]):
                 pokemon_dict = request["side"]["pokemon"][active_pokemon_number]
@@ -139,41 +145,6 @@ class DoubleBattle(AbstractBattle):
                     force_self_team=True,
                     details=pokemon_dict["details"],
                 )
-                if self.player_role is not None:
-                    if (
-                        active_pokemon_number == 0
-                        and f"{self.player_role}a" not in self._active_pokemon
-                    ):
-                        self._active_pokemon[f"{self.player_role}a"] = active_pokemon
-                    elif f"{self.player_role}b" not in self._active_pokemon:
-                        self._active_pokemon[f"{self.player_role}b"] = active_pokemon
-                    elif (
-                        active_pokemon_number == 0
-                        and self._active_pokemon[f"{self.player_role}a"].fainted
-                        and self._active_pokemon[f"{self.player_role}b"]
-                        == active_pokemon
-                    ):
-                        (
-                            self._active_pokemon[f"{self.player_role}a"],
-                            self._active_pokemon[f"{self.player_role}b"],
-                        ) = (
-                            self._active_pokemon[f"{self.player_role}b"],
-                            self._active_pokemon[f"{self.player_role}a"],
-                        )
-                    elif (
-                        active_pokemon_number == 1
-                        and self._active_pokemon[f"{self.player_role}b"].fainted
-                        and not active_pokemon.fainted
-                        and self._active_pokemon[f"{self.player_role}a"]
-                        == active_pokemon
-                    ):
-                        (
-                            self._active_pokemon[f"{self.player_role}a"],
-                            self._active_pokemon[f"{self.player_role}b"],
-                        ) = (
-                            self._active_pokemon[f"{self.player_role}b"],
-                            self._active_pokemon[f"{self.player_role}a"],
-                        )
 
                 if active_pokemon.fainted:
                     continue
@@ -192,9 +163,7 @@ class DoubleBattle(AbstractBattle):
                 if active_request.get("canDynamax", False):
                     self._can_dynamax[active_pokemon_number] = True
                 if active_request.get("canTerastallize", False):
-                    self._can_tera[active_pokemon_number] = PokemonType.from_name(
-                        active_request["canTerastallize"]
-                    )
+                    self._can_tera[active_pokemon_number] = True
                 if active_request.get("maybeTrapped", False):
                     self._maybe_trapped[active_pokemon_number] = True
 
@@ -444,7 +413,7 @@ class DoubleBattle(AbstractBattle):
         return self._can_dynamax
 
     @property
-    def can_tera(self) -> List[Union[bool, PokemonType]]:
+    def can_tera(self) -> List[bool]:
         """
         :return: Whether or not the current active pokemon can terastallize. If yes, will be a PokemonType.
         :rtype: List[Union[bool, PokemonType]]
@@ -492,49 +461,36 @@ class DoubleBattle(AbstractBattle):
         )
 
     @property
-    def opponent_can_dynamax(self) -> List[bool]:
-        """
-        :return: Whether or not opponent's current active pokemons can dynamax
-        :rtype: List[bool]
-        """
-        return self._opponent_can_dynamax
-
-    @opponent_can_dynamax.setter
-    def opponent_can_dynamax(self, value: Union[bool, List[bool]]):
-        if isinstance(value, bool):
-            self._opponent_can_dynamax = [value, value]
-        else:
-            self._opponent_can_dynamax = value
-
-    @property
-    def opponent_can_mega_evolve(self) -> List[bool]:
+    def opponent_can_mega_evolve(self) -> bool:
         """
         :return: Whether or not opponent's current active pokemons can mega evolve
-        :rtype: List[bool]
+        :rtype: bool
         """
         return self._opponent_can_mega_evolve
 
-    @opponent_can_mega_evolve.setter
-    def opponent_can_mega_evolve(self, value: Union[bool, List[bool]]):
-        if isinstance(value, bool):
-            self._opponent_can_mega_evolve = [value, value]
-        else:
-            self._opponent_can_mega_evolve = value  # type: ignore
-
     @property
-    def opponent_can_z_move(self) -> List[bool]:
+    def opponent_can_z_move(self) -> bool:
         """
         :return: Whether or not opponent's current active pokemons can z-move
-        :rtype: List[bool]
+        :rtype: bool
         """
         return self._opponent_can_z_move
 
-    @opponent_can_z_move.setter
-    def opponent_can_z_move(self, value: Union[bool, List[bool]]):
-        if isinstance(value, bool):
-            self._opponent_can_z_move = [value, value]
-        else:
-            self._opponent_can_z_move = value  # type: ignore
+    @property
+    def opponent_can_dynamax(self) -> bool:
+        """
+        :return: Whether or not opponent's current active pokemons can dynamax
+        :rtype: bool
+        """
+        return self._opponent_can_dynamax
+
+    @property
+    def opponent_can_tera(self) -> bool:
+        """
+        :return: Whether or not opponent's current active pokemon can terastallize
+        :rtype: bool
+        """
+        return self._opponent_can_tera
 
     @property
     def trapped(self) -> List[bool]:

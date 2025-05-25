@@ -88,11 +88,10 @@ class AbstractBattle(ABC):
         "_last_request",
         "_max_team_size",
         "_maybe_trapped",
-        "_move_on_next_request",
         "_observations",
         "_opponent_can_dynamax",
         "_opponent_can_mega_evolve",
-        "_opponent_can_terrastallize",
+        "_opponent_can_tera",
         "_opponent_can_z_move",
         "_opponent_dynamax_turn",
         "_opponent_rating",
@@ -154,7 +153,6 @@ class AbstractBattle(ABC):
 
         # Turn choice attributes
         self.in_team_preview: bool = False
-        self._move_on_next_request: bool = False
         self._wait: Optional[bool] = None
 
         # Battle state attributes
@@ -163,10 +161,6 @@ class AbstractBattle(ABC):
         self._last_request: Dict[str, Any] = {}
         self.rules: List[str] = []
         self._turn: int = 0
-        self._opponent_can_terrastallize: bool = True
-        self._opponent_can_mega_evolve: Union[bool, List[bool]] = True
-        self._opponent_can_z_move: Union[bool, List[bool]] = True
-
         self._opponent_dynamax_turn: Optional[int] = None
         self._opponent_rating: Optional[int] = None
         self._rating: Optional[int] = None
@@ -667,7 +661,7 @@ class AbstractBattle(ABC):
                     and self._opponent_dynamax_turn is None
                 ):
                     self._opponent_dynamax_turn = self.turn
-                    self.opponent_can_dynamax = False
+                    self._opponent_can_dynamax = False
         elif event[1] == "-activate":
             target, effect = event[2:4]
             if target and effect == "move: Skill Swap":
@@ -956,7 +950,7 @@ class AbstractBattle(ABC):
 
             if pokemon.is_terastallized:  # type: ignore
                 if pokemon in set(self.opponent_team.values()):
-                    self._opponent_can_terrastallize = False
+                    self._opponent_can_tera = False
         else:
             raise NotImplementedError(event)
 
@@ -1053,17 +1047,17 @@ class AbstractBattle(ABC):
 
     @property
     @abstractmethod
-    def can_dynamax(self) -> Any:
-        pass
-
-    @property
-    @abstractmethod
     def can_mega_evolve(self) -> Any:
         pass
 
     @property
     @abstractmethod
     def can_z_move(self) -> Any:
+        pass
+
+    @property
+    @abstractmethod
+    def can_dynamax(self) -> Any:
         pass
 
     @property
@@ -1187,12 +1181,22 @@ class AbstractBattle(ABC):
 
     @property
     @abstractmethod
-    def opponent_can_dynamax(self) -> Any:
+    def opponent_can_mega_evolve(self) -> bool:
         pass
 
-    @opponent_can_dynamax.setter
+    @property
     @abstractmethod
-    def opponent_can_dynamax(self, value: bool) -> Any:
+    def opponent_can_z_move(self) -> bool:
+        pass
+
+    @property
+    @abstractmethod
+    def opponent_can_dynamax(self) -> bool:
+        pass
+
+    @property
+    @abstractmethod
+    def opponent_can_tera(self) -> bool:
         pass
 
     @property
@@ -1433,19 +1437,6 @@ class AbstractBattle(ABC):
         :rtype: Optional[bool]
         """
         return self._won
-
-    @property
-    def move_on_next_request(self) -> bool:
-        """
-        :return: Wheter the next received request should yield a move order directly.
-            This can happen when a switch is forced, or an error is encountered.
-        :rtype: bool
-        """
-        return self._move_on_next_request
-
-    @move_on_next_request.setter
-    def move_on_next_request(self, value: bool):
-        self._move_on_next_request = value
 
     @property
     def reviving(self) -> bool:
