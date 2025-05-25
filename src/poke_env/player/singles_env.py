@@ -223,7 +223,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
             and pokemon.species in [p.species for p in battle.available_switches]
         ]
         if battle.active_pokemon is None:
-            return np.array(switch_space)
+            return switch_space
         move_space = [
             i + 6
             for i, move in enumerate(battle.active_pokemon.moves.values())
@@ -238,7 +238,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         ]
         dynamax_space = [i + 12 for i in move_space if battle.can_dynamax]
         tera_space = [i + 16 for i in move_space if battle.can_tera]
-        return np.array(
+        return (
             switch_space
             + move_space
             + mega_space
