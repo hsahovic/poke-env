@@ -288,7 +288,8 @@ class Player(ABC):
                     battle.parse_request(request)
                     if battle._wait:
                         self._waiting.set()
-                    await self._handle_battle_request(battle)
+                    else:
+                        await self._handle_battle_request(battle)
             elif split_message[1] == "win" or split_message[1] == "tie":
                 if split_message[1] == "win":
                     battle.won_by(split_message[2])
