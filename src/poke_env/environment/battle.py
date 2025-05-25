@@ -4,7 +4,6 @@ from typing import Any, Dict, List, Optional, Union
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.move import Move
 from poke_env.environment.pokemon import Pokemon
-from poke_env.environment.pokemon_type import PokemonType
 
 
 class Battle(AbstractBattle):
