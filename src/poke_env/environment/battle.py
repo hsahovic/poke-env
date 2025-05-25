@@ -248,7 +248,7 @@ class Battle(AbstractBattle):
         return None
 
     @property
-    def opponent_can_mega_evolve(self) -> Union[bool, List[bool]]:
+    def opponent_can_mega_evolve(self) -> bool:
         """
         :return: Whether or not opponent's current active pokemon can mega-evolve
         :rtype: bool
@@ -256,7 +256,7 @@ class Battle(AbstractBattle):
         return self._opponent_can_mega_evolve
 
     @property
-    def opponent_can_z_move(self) -> Union[bool, List[bool]]:
+    def opponent_can_z_move(self) -> bool:
         """
         :return: Whether or not opponent's current active pokemon can z-move
         :rtype: bool

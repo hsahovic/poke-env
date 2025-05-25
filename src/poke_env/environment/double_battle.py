@@ -35,10 +35,10 @@ class DoubleBattle(AbstractBattle):
         self._can_z_move: List[bool] = [False, False]
         self._can_dynamax: List[bool] = [False, False]
         self._can_tera: List[bool] = [False, False]
-        self._opponent_can_mega_evolve: List[bool] = [True, True]
-        self._opponent_can_z_move: List[bool] = [True, True]
-        self._opponent_can_dynamax: List[bool] = [True, True]
-        self._opponent_can_tera: List[bool] = [True, True]
+        self._opponent_can_mega_evolve: bool = True
+        self._opponent_can_z_move: bool = True
+        self._opponent_can_dynamax: bool = True
+        self._opponent_can_tera: bool = True
         self._force_switch: List[bool] = [False, False]
         self._maybe_trapped: List[bool] = [False, False]
         self._trapped: List[bool] = [False, False]
@@ -461,31 +461,31 @@ class DoubleBattle(AbstractBattle):
         )
 
     @property
-    def opponent_can_mega_evolve(self) -> List[bool]:
+    def opponent_can_mega_evolve(self) -> bool:
         """
         :return: Whether or not opponent's current active pokemons can mega evolve
-        :rtype: List[bool]
+        :rtype: bool
         """
         return self._opponent_can_mega_evolve
 
     @property
-    def opponent_can_z_move(self) -> List[bool]:
+    def opponent_can_z_move(self) -> bool:
         """
         :return: Whether or not opponent's current active pokemons can z-move
-        :rtype: List[bool]
+        :rtype: bool
         """
         return self._opponent_can_z_move
 
     @property
-    def opponent_can_dynamax(self) -> List[bool]:
+    def opponent_can_dynamax(self) -> bool:
         """
         :return: Whether or not opponent's current active pokemons can dynamax
-        :rtype: List[bool]
+        :rtype: bool
         """
         return self._opponent_can_dynamax
 
     @property
-    def opponent_can_tera(self) -> List[bool]:
+    def opponent_can_tera(self) -> bool:
         """
         :return: Whether or not opponent's current active pokemon can terastallize
         :rtype: bool

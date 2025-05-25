@@ -1181,22 +1181,22 @@ class AbstractBattle(ABC):
 
     @property
     @abstractmethod
-    def opponent_can_mega_evolve(self) -> Any:
+    def opponent_can_mega_evolve(self) -> bool:
         pass
 
     @property
     @abstractmethod
-    def opponent_can_z_move(self) -> Any:
+    def opponent_can_z_move(self) -> bool:
         pass
 
     @property
     @abstractmethod
-    def opponent_can_dynamax(self) -> Any:
+    def opponent_can_dynamax(self) -> bool:
         pass
 
     @property
     @abstractmethod
-    def opponent_can_tera(self) -> Any:
+    def opponent_can_tera(self) -> bool:
         pass
 
     @property
