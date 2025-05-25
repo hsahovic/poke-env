@@ -3,7 +3,7 @@ from typing import List, Optional, Union
 import numpy as np
 from gymnasium.spaces import Discrete
 
-from poke_env.environment import Battle, Move, Pokemon
+from poke_env.environment import Battle, Pokemon
 from poke_env.player.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
@@ -119,9 +119,9 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         elif not fake and action not in action_space:
             if strict:
                 raise ValueError(
-                    f"Invalid action {action} "
-                    f"from player {battle.player_username} "
-                    f"in battle {battle.battle_tag}"
+                    f"Invalid action from player {battle.player_username} "
+                    f"in battle {battle.battle_tag} - "
+                    f"action {action} not in action space {action_space}!"
                 )
             else:
                 return DefaultBattleOrder()
@@ -178,9 +178,9 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
             if battle.active_pokemon is None:
                 if strict:
                     raise ValueError(
-                        f"Invalid order {order} "
-                        f"from player {battle.player_username} "
-                        f"in battle {battle.battle_tag}"
+                        f"Invalid order from player {battle.player_username} "
+                        f"in battle {battle.battle_tag} - "
+                        f"type of order.order is Move but battle.active_pokemon is None!"
                     )
                 else:
                     return np.int64(-2)
@@ -206,9 +206,9 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         if not fake and action not in action_space:
             if strict:
                 raise ValueError(
-                    f"Invalid order {order} "
-                    f"from player {battle.player_username} "
-                    f"in battle {battle.battle_tag}"
+                    f"Invalid order from player {battle.player_username} "
+                    f"in battle {battle.battle_tag} - converted "
+                    f"action {action} not in action space {action_space}!"
                 )
             else:
                 action = -2
