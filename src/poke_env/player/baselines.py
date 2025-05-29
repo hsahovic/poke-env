@@ -109,8 +109,7 @@ class PseudoBattle(Battle):
         self._can_mega_evolve = battle.can_mega_evolve[active_id]
         self._can_z_move = battle.can_z_move[active_id]
         self._can_dynamax = battle.can_dynamax[active_id]
-        can_tera = battle.can_tera[active_id]
-        self._can_tera = None if isinstance(can_tera, bool) else can_tera
+        self._can_tera = battle.can_tera[active_id]
 
     @property
     def active_pokemon(self):
