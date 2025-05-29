@@ -389,6 +389,7 @@ def test_singles_action_order_conversions():
         active_pokemon._moves = {move.id: move}
         active_pokemon._active = True
         active_pokemon._item = "firiumz"
+        active_pokemon._terastallized_type = PokemonType.FIRE
         battle._team = {"charizard": active_pokemon}
         assert p.action_to_order(np.int64(-1), battle).message == "/forfeit"
         check_action_order_roundtrip(p, ForfeitBattleOrder(), battle)
@@ -436,7 +437,7 @@ def test_singles_action_order_conversions():
                 p, Player.create_order(move, dynamax=True), battle
             )
         if has_tera:
-            battle._can_tera = PokemonType.FIRE
+            battle._can_tera = True
             assert (
                 p.action_to_order(np.int64(6 + 4 + 12), battle).message
                 == "/choose move flamethrower terastallize"
