@@ -1,8 +1,10 @@
 import random
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from poke_env.environment.abstract_battle import AbstractBattle
+from poke_env.environment.battle import Battle
 from poke_env.environment.double_battle import DoubleBattle
+from poke_env.environment.move import Move
 from poke_env.environment.move_category import MoveCategory
 from poke_env.environment.pokemon import Pokemon
 from poke_env.environment.side_condition import SideCondition
@@ -94,6 +96,31 @@ class MaxBasePowerPlayer(Player):
         return self.choose_random_move(battle)
 
 
+class PseudoBattle(Battle):
+    def __init__(self, battle: DoubleBattle, active_id: int, opp_id: int):
+        self._active_pokemon = battle.active_pokemon[active_id]
+        self._opponent_active_pokemon = battle.opponent_active_pokemon[opp_id]
+        self._team = battle.team
+        self._opponent_team = battle.opponent_team
+        self._available_moves = battle.available_moves[active_id]
+        self._available_switches = battle.available_switches[active_id]
+        self._side_conditions = battle.side_conditions
+        self._opponent_side_conditions = battle.opponent_side_conditions
+        self._can_mega_evolve = battle.can_mega_evolve[active_id]
+        self._can_z_move = battle.can_z_move[active_id]
+        self._can_dynamax = battle.can_dynamax[active_id]
+        can_tera = battle.can_tera[active_id]
+        self._can_tera = None if isinstance(can_tera, bool) else can_tera
+
+    @property
+    def active_pokemon(self):
+        return self._active_pokemon
+
+    @property
+    def opponent_active_pokemon(self):
+        return self._opponent_active_pokemon
+
+
 class SimpleHeuristicsPlayer(Player):
     ENTRY_HAZARDS = {
         "spikes": SideCondition.SPIKES,
@@ -146,6 +173,33 @@ class SimpleHeuristicsPlayer(Player):
                 return True
         return False
 
+    def _should_terastallize(
+        self,
+        battle: Battle,
+        move: Move,
+        n_remaining_mons: int,
+    ):
+        if (
+            not battle.can_tera
+            or not battle.active_pokemon
+            or not battle.opponent_active_pokemon
+        ):
+            return False
+
+        if (
+            move.base_power >= 80
+            and battle.active_pokemon.current_hp_fraction == 1
+            and battle.opponent_active_pokemon.current_hp_fraction == 1
+        ):
+            return True
+        if n_remaining_mons == 1:
+            return True
+        # Example: if the Pokémon has a defined Tera type and switching its type grants STAB for this move.
+        if battle.active_pokemon.tera_type == move.type:
+            return True
+
+        return False
+
     def _should_switch_out(self, battle: AbstractBattle):
         active = battle.active_pokemon
         opponent = battle.opponent_active_pokemon
@@ -183,16 +237,13 @@ class SimpleHeuristicsPlayer(Player):
             boost = 2 / (2 - mon.boosts[stat])
         return ((2 * mon.base_stats[stat] + 31) + 5) * boost
 
-    def choose_move(self, battle: AbstractBattle):
-        if isinstance(battle, DoubleBattle):
-            return self.choose_random_doubles_move(battle)
-
+    def choose_move_in_1v1(self, battle: Battle) -> Tuple[BattleOrder, float]:
         # Main mons shortcuts
         active = battle.active_pokemon
         opponent = battle.opponent_active_pokemon
 
         if active is None or opponent is None:
-            return self.choose_random_move(battle)
+            return self.choose_random_move(battle), 0
 
         # Rough estimation of damage ratio
         physical_ratio = self._stat_estimation(active, "atk") / self._stat_estimation(
@@ -221,7 +272,7 @@ class SimpleHeuristicsPlayer(Player):
                     and self.ENTRY_HAZARDS[move.id]
                     not in battle.opponent_side_conditions
                 ):
-                    return self.create_order(move)
+                    return self.create_order(move), 0
 
                 # ...removal
                 elif (
@@ -229,7 +280,7 @@ class SimpleHeuristicsPlayer(Player):
                     and move.id in self.ANTI_HAZARDS_MOVES
                     and n_remaining_mons >= 2
                 ):
-                    return self.create_order(move)
+                    return self.create_order(move), 0
 
             # Setup moves
             if (
@@ -246,32 +297,138 @@ class SimpleHeuristicsPlayer(Player):
                         )
                         < 6
                     ):
-                        return self.create_order(move)
+                        return self.create_order(move), 0
 
-            move = max(
-                battle.available_moves,
-                key=lambda m: m.base_power
-                * (1.5 if m.type in active.types else 1)
-                * (
-                    physical_ratio
-                    if m.category == MoveCategory.PHYSICAL
-                    else special_ratio
+            def get_score(m: Move) -> float:
+                return (
+                    m.base_power
+                    * (1.5 if m.type in active.types else 1)
+                    * (
+                        physical_ratio
+                        if m.category == MoveCategory.PHYSICAL
+                        else special_ratio
+                    )
+                    * m.accuracy
+                    * m.expected_hits
+                    * opponent.damage_multiplier(m)
                 )
-                * m.accuracy
-                * m.expected_hits
-                * opponent.damage_multiplier(m),
-            )
-            return self.create_order(
-                move, dynamax=self._should_dynamax(battle, n_remaining_mons)
+
+            move = max(battle.available_moves, key=lambda m: get_score(m))
+            return (
+                self.create_order(
+                    move,
+                    dynamax=self._should_dynamax(battle, n_remaining_mons),
+                    terastallize=self._should_terastallize(
+                        battle, move, n_remaining_mons
+                    ),
+                ),
+                get_score(move),
             )
 
         if battle.available_switches:
             switches: List[Pokemon] = battle.available_switches
-            return self.create_order(
-                max(
-                    switches,
-                    key=lambda s: self._estimate_matchup(s, opponent),
-                )
+            return (
+                self.create_order(
+                    max(
+                        switches,
+                        key=lambda s: self._estimate_matchup(s, opponent),
+                    )
+                ),
+                0,
             )
 
-        return self.choose_random_move(battle)
+        return self.choose_random_move(battle), 0
+
+    @staticmethod
+    def get_double_target_multiplier(battle: DoubleBattle, order: BattleOrder):
+        can_target_first_opponent = (
+            battle.opponent_active_pokemon[0]
+            and not battle.opponent_active_pokemon[0].fainted
+        )
+        can_target_second_opponent = (
+            battle.opponent_active_pokemon[1]
+            and not battle.opponent_active_pokemon[1].fainted
+        )
+        can_double_target = can_target_first_opponent and can_target_second_opponent
+        return (
+            1
+            if not hasattr(order, "order")
+            or not isinstance(order.order, Move)
+            or order.order.target in {Target.NORMAL, Target.ANY}
+            or not can_double_target
+            else 2
+        )
+
+    def choose_move(self, battle: AbstractBattle):
+        if not isinstance(battle, DoubleBattle):
+            return self.choose_move_in_1v1(battle)[0]  # type: ignore
+        orders: List[Optional[BattleOrder]] = []
+        for active_id in [0, 1]:
+            if (
+                battle.active_pokemon[active_id] is None
+                and not battle.available_switches[active_id]
+            ):
+                orders += [None]
+                continue
+            results = [
+                self.choose_move_in_1v1(PseudoBattle(battle, active_id, opp_id))
+                for opp_id in [0, 1]
+            ]
+            possible_orders = [r[0] for r in results]
+            scores = [r[1] for r in results]
+            for order in possible_orders:
+                mon = battle.active_pokemon[active_id]
+                if (
+                    order is not None
+                    and hasattr(order, "order")
+                    and isinstance(order.order, Move)
+                    and mon is not None
+                ):
+                    target = [o for o in possible_orders].index(order) + 1
+                    possible_targets = battle.get_possible_showdown_targets(
+                        order.order, mon
+                    )
+                    if target not in possible_targets:
+                        target = possible_targets[0]
+                    order.move_target = target
+            scores = [
+                scores[i]
+                * self.get_double_target_multiplier(battle, possible_orders[i])
+                for i in [0, 1]
+            ]
+            orders += [
+                (
+                    max(results, key=lambda a: a[1])[0]
+                    if battle.force_switch != [[False, True], [True, False]][active_id]
+                    and not (
+                        len(battle.available_switches[active_id]) == 1
+                        and battle.force_switch == [True, True]
+                        and active_id == 1
+                    )
+                    else None
+                )
+            ]
+        joined_orders = DoubleBattleOrder.join_orders(
+            [orders[0]] if orders[0] is not None else [],
+            [orders[1]] if orders[1] is not None else [],
+        )
+        if joined_orders:
+            return joined_orders[0]
+        else:
+            return DoubleBattleOrder(orders[0], DefaultBattleOrder())
+
+    def teampreview(self, battle: AbstractBattle) -> str:
+        team = list(battle.team.values())
+        scored_team = []
+        for idx, mon in enumerate(team):
+            # Calculate a simple score based on speed, attack (atk+spa), and defense (def+spd)
+            attack = mon.base_stats.get("atk", 0) + mon.base_stats.get("spa", 0)
+            speed = mon.base_stats.get("spe", 0)
+            defense = (mon.base_stats.get("def", 0) + mon.base_stats.get("spd", 0)) / 2
+            score = speed + (attack / 2) + (defense / 4)
+            scored_team.append((idx + 1, score))
+        sorted_scored = sorted(scored_team, key=lambda x: x[1], reverse=True)
+        chosen = sorted_scored[:4]
+        chosen_sorted = sorted(chosen, key=lambda x: x[1], reverse=True)
+        team_order = "".join(str(index) for index, _ in chosen_sorted)
+        return f"/team {team_order}"
