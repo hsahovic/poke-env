@@ -81,9 +81,6 @@ class Battle(AbstractBattle):
         self._trapped = False
         self._force_switch = request.get("forceSwitch", [False])[0]
 
-        if self._force_switch:
-            self._move_on_next_request = True
-
         self._last_request = request
 
         if request.get("teamPreview", False):
