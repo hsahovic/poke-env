@@ -26,10 +26,7 @@ from poke_env.player.battle_order import (
     DoubleBattleOrder,
 )
 from poke_env.ps_client import PSClient
-from poke_env.ps_client.account_configuration import (
-    CONFIGURATION_FROM_PLAYER_COUNTER,
-    AccountConfiguration,
-)
+from poke_env.ps_client.account_configuration import AccountConfiguration
 from poke_env.ps_client.server_configuration import (
     LocalhostServerConfiguration,
     ServerConfiguration,
@@ -60,7 +57,7 @@ class Player(ABC):
         max_concurrent_battles: int = 1,
         accept_open_team_sheet: bool = False,
         save_replays: Union[bool, str] = False,
-        server_configuration: Optional[ServerConfiguration] = None,
+        server_configuration: ServerConfiguration = LocalhostServerConfiguration,
         start_timer_on_battle_start: bool = False,
         start_listening: bool = True,
         open_timeout: Optional[float] = 10.0,
@@ -92,7 +89,7 @@ class Player(ABC):
         :type save_replays: bool or str
         :param server_configuration: Server configuration. Defaults to Localhost Server
             Configuration.
-        :type server_configuration: ServerConfiguration, optional
+        :type server_configuration: ServerConfiguration
         :param start_listening: Whether to start listening to the server. Defaults to
             True.
         :type start_listening: bool
@@ -117,14 +114,9 @@ class Player(ABC):
             Defaults to None.
         :type team: str or Teambuilder, optional
         """
-        if account_configuration is None:
-            account_configuration = self._create_account_configuration()
-
-        if server_configuration is None:
-            server_configuration = LocalhostServerConfiguration
-
         self.ps_client = PSClient(
-            account_configuration=account_configuration,
+            account_configuration=account_configuration
+            or AccountConfiguration.generate(self.__class__.__name__),
             avatar=avatar,
             log_level=log_level,
             server_configuration=server_configuration,
@@ -163,17 +155,6 @@ class Player(ABC):
             self._team = ConstantTeambuilder(team)
 
         self.logger.debug("Player initialisation finished")
-
-    def _create_account_configuration(self) -> AccountConfiguration:
-        key = type(self).__name__
-        CONFIGURATION_FROM_PLAYER_COUNTER.update([key])
-        username = "%s %d" % (key, CONFIGURATION_FROM_PLAYER_COUNTER[key])
-        if len(username) > 18:
-            username = "%s %d" % (
-                key[: 18 - len(username)],
-                CONFIGURATION_FROM_PLAYER_COUNTER[key],
-            )
-        return AccountConfiguration(username, None)
 
     def _battle_finished_callback(self, battle: AbstractBattle):
         pass
