@@ -457,7 +457,6 @@ def test_doubles_action_order_conversions():
         p = DoublesEnv(
             battle_format=f"gen{gen}randomdoublesbattle",
             start_listening=False,
-            start_challenging=False,
         )
         battle = DoubleBattle("bat1", p.agent1.username, p.agent1.logger, gen=gen)
         battle._player_role = "p1"
