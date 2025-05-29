@@ -78,21 +78,15 @@ async def main():
     # First test the environment to ensure the class is consistent
     # with the Gymnasium API
     opponent = RandomPlayer(battle_format="gen8randombattle")
-    test_env = SimpleRLPlayer(
-        battle_format="gen8randombattle", start_challenging=True, opponent=opponent
-    )
+    test_env = SimpleRLPlayer(battle_format="gen8randombattle", opponent=opponent)
     check_env(test_env)
     test_env.close()
 
     # Create one environment for training and one for evaluation
     opponent = RandomPlayer(battle_format="gen8randombattle")
-    train_env = SimpleRLPlayer(
-        battle_format="gen8randombattle", opponent=opponent, start_challenging=True
-    )
+    train_env = SimpleRLPlayer(battle_format="gen8randombattle", opponent=opponent)
     opponent = RandomPlayer(battle_format="gen8randombattle")
-    eval_env = SimpleRLPlayer(
-        battle_format="gen8randombattle", opponent=opponent, start_challenging=True
-    )
+    eval_env = SimpleRLPlayer(battle_format="gen8randombattle", opponent=opponent)
 
     # Compute dimensions
     n_action = train_env.action_space.n
