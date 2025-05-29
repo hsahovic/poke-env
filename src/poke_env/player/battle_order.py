@@ -10,7 +10,7 @@ from poke_env.environment.pokemon import Pokemon
 
 @dataclass
 class BattleOrder:
-    order: Optional[Union[Move, Pokemon]]
+    order: Union[Move, Pokemon]
     mega: bool = False
     z_move: bool = False
     dynamax: bool = False
@@ -41,10 +41,8 @@ class BattleOrder:
             if self.move_target != DoubleBattle.EMPTY_TARGET_POSITION:
                 message += f" {self.move_target}"
             return message
-        elif isinstance(self.order, Pokemon):
-            return f"/choose switch {self.order.species}"
         else:
-            return ""
+            return f"/choose switch {self.order.species}"
 
 
 class DefaultBattleOrder(BattleOrder):
