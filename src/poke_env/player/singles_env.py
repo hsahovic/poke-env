@@ -227,6 +227,11 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         ]
         if battle.active_pokemon is None:
             return np.array(switch_space)
+        elif battle.reviving:
+            revive_space = [
+                i for i, pokemon in enumerate(battle.team.values()) if pokemon.fainted
+            ]
+            return np.array(revive_space)
         move_space = [
             i + 6
             for i, move in enumerate(battle.active_pokemon.moves.values())
