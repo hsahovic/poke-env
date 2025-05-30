@@ -88,7 +88,6 @@ class AbstractBattle(ABC):
         "_last_request",
         "_max_team_size",
         "_maybe_trapped",
-        "_move_on_next_request",
         "_observations",
         "_opponent_can_dynamax",
         "_opponent_can_mega_evolve",
@@ -154,8 +153,7 @@ class AbstractBattle(ABC):
 
         # Turn choice attributes
         self.in_team_preview: bool = False
-        self._move_on_next_request: bool = False
-        self._wait: Optional[bool] = None
+        self._wait: bool = False
 
         # Battle state attributes
         self._dynamax_turn: Optional[int] = None
@@ -1418,6 +1416,14 @@ class AbstractBattle(ABC):
         self._turn = turn
 
     @property
+    def wait(self) -> bool:
+        """
+        :return: Whether the player is not being prompted to make a decision this turn
+        :rtype: bool
+        """
+        return self._wait
+
+    @property
     def weather(self) -> Dict[Weather, int]:
         """
         :return: A Dict mapping the battle's weather (if any) to its starting turn
@@ -1433,19 +1439,6 @@ class AbstractBattle(ABC):
         :rtype: Optional[bool]
         """
         return self._won
-
-    @property
-    def move_on_next_request(self) -> bool:
-        """
-        :return: Wheter the next received request should yield a move order directly.
-            This can happen when a switch is forced, or an error is encountered.
-        :rtype: bool
-        """
-        return self._move_on_next_request
-
-    @move_on_next_request.setter
-    def move_on_next_request(self, value: bool):
-        self._move_on_next_request = value
 
     @property
     def reviving(self) -> bool:
