@@ -9,6 +9,8 @@ from concurrent.futures import Future
 from typing import Any, Awaitable, Dict, Generic, List, Optional, Tuple, TypeVar, Union
 from weakref import WeakKeyDictionary
 
+import numpy as np
+import numpy.typing as npt
 from gymnasium.spaces import Space
 from gymnasium.utils import seeding
 from numpy.random import Generator
@@ -477,6 +479,19 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         :rtype: ActionType
         """
         pass
+
+    @staticmethod
+    @abstractmethod
+    def get_action_space(battle: Any) -> npt.NDArray[np.int64]:
+        """
+        Returns list of valid actions to take in current battle state.
+
+        :param battle: The current battle state
+        :type battle: AbstractBattle
+
+        :return: The list of valid actions.
+        :rtype: List[int]
+        """
 
     ###################################################################################
     # Helper methods

@@ -179,9 +179,15 @@ class DoubleBattle(AbstractBattle):
                 if active_request.get("trapped"):
                     self._trapped[active_pokemon_number] = True
 
-                self._available_moves[active_pokemon_number] = (
-                    active_pokemon.available_moves_from_request(active_request)
-                )
+                # TODO: the illusion handling here works around Zoroark's
+                # difficulties. This should be properly handled at some point.
+                try:
+                    self._available_moves[active_pokemon_number] = (
+                        active_pokemon.available_moves_from_request(active_request)
+                    )
+                except AssertionError as e:
+                    if "illusion" not in [p.ability for p in self.team.values()]:
+                        raise e
 
                 if active_request.get("canMegaEvo", False):
                     self._can_mega_evolve[active_pokemon_number] = True
