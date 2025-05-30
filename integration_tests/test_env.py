@@ -74,6 +74,7 @@ def test_env_run():
             battle_format=f"gen{gen}randomdoublesbattle",
             log_level=25,
             start_challenging=False,
+            strict=False,
         )
         env.start_challenging(10)
         play_function(env, 10)
@@ -106,6 +107,7 @@ def test_single_agent_env_run():
             battle_format=f"gen{gen}randomdoublesbattle",
             log_level=25,
             start_challenging=False,
+            strict=False,
         )
         env = SingleAgentWrapper(env, RandomPlayer())
         env.env.start_challenging(10)
