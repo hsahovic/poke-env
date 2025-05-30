@@ -167,10 +167,13 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         :return: The action for the given battle order in context of the current battle.
         :rtype: int64
         """
-        if isinstance(order, DefaultBattleOrder):
-            return np.int64(-2)
-        elif isinstance(order, ForfeitBattleOrder):
-            return np.int64(-1)
+        if isinstance(order.order, str):
+            if isinstance(order, DefaultBattleOrder):
+                action = -2
+            elif isinstance(order, ForfeitBattleOrder):
+                action = -1
+            else:
+                raise ValueError(f"{order} not supported")
         elif isinstance(order.order, Pokemon):
             action = [p.base_species for p in battle.team.values()].index(
                 order.order.base_species
