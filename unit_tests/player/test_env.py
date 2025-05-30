@@ -484,11 +484,11 @@ def test_doubles_action_order_conversions():
         battle._team |= {"snorlax": other_pokemon}
         battle._available_switches = [[other_pokemon], []]
         assert (
-            p.action_to_order(np.array([1, 0]), battle).message
+            p.action_to_order(np.array([2, 0]), battle).message
             == "/choose switch snorlax, pass"
         )
         check_action_order_roundtrip(
-            p, DoubleBattleOrder(Player.create_order(active_pokemon)), battle
+            p, DoubleBattleOrder(Player.create_order(other_pokemon)), battle
         )
         battle._available_switches = [[], []]
         assert (
