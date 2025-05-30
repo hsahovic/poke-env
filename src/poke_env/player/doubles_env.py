@@ -164,7 +164,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
     ) -> Optional[BattleOrder]:
         action_space = DoublesEnv.get_action_space(battle, pos)
         if action == -2:
-            order = DefaultBattleOrder()
+            return DefaultBattleOrder()
         elif not fake and action not in action_space:
             raise ValueError(
                 f"Invalid action from player {battle.player_username} "
@@ -172,9 +172,9 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 f"action {action} not in action space {action_space}!"
             )
         elif action == 0:
-            order = None
+            return None
         elif action < 7:
-            order = Player.create_order(list(battle.team.values())[action - 1])
+            return Player.create_order(list(battle.team.values())[action - 1])
         else:
             active_mon = battle.active_pokemon[pos]
             assert active_mon is not None
@@ -184,7 +184,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 and battle.available_moves[pos][0].id in ["struggle", "recharge"]
                 else list(active_mon.moves.values())
             )
-            order = Player.create_order(
+            return Player.create_order(
                 mvs[(action - 7) % 20 // 5],
                 move_target=(action.item() - 7) % 5 - 2,
                 mega=(action - 7) // 20 == 1,
@@ -192,7 +192,6 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 dynamax=(action - 7) // 20 == 3,
                 terastallize=(action - 7) // 20 == 4,
             )
-        return order
 
     @staticmethod
     def order_to_action(

@@ -480,7 +480,8 @@ def test_doubles_action_order_conversions():
         check_action_order_roundtrip(
             p, DoubleBattleOrder(Player.create_order(move, move_target=1)), battle
         )
-        battle._available_switches = [[active_pokemon], []]
+        other_pokemon = Pokemon(species="snorlax", gen=gen)
+        battle._available_switches = [[other_pokemon], []]
         assert (
             p.action_to_order(np.array([1, 0]), battle).message
             == "/choose switch charizard, pass"
