@@ -191,12 +191,13 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         :rtype: int64
         """
         try:
-            if isinstance(order, DefaultBattleOrder):
-                action = -2
-            elif isinstance(order, ForfeitBattleOrder):
-                action = -1
-            elif order.order is None:
-                raise ValueError()
+            if isinstance(order.order, str):
+                if isinstance(order, DefaultBattleOrder):
+                    action = -2
+                elif isinstance(order, ForfeitBattleOrder):
+                    action = -1
+                else:
+                    raise ValueError(f"{order} not supported")
             elif isinstance(order.order, Pokemon):
                 if not fake:
                     assert not battle.trapped, "invalid order"
