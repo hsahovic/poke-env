@@ -260,12 +260,14 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                     f"in battle {battle.battle_tag} at position {pos} - "
                     f"type of order.order is Move but battle.active_pokemon[pos] is None!"
                 )
-            mvs = (
-                battle.available_moves[pos]
-                if len(battle.available_moves[pos]) == 1
-                and battle.available_moves[pos][0].id in ["struggle", "recharge"]
-                else list(active_mon.moves.values())
-            )
+            if len(battle.available_moves[pos]) == 1 and battle.available_moves[pos][
+                0
+            ].id in ["struggle", "recharge"]:
+                mvs = battle.available_moves[pos]
+            elif active_mon.is_dynamaxed:
+                mvs = [m.dynamaxed for m in active_mon.moves.values()]
+            else:
+                mvs = list(active_mon.moves.values())
             action = [m.id for m in mvs].index(order.order.id)
             target = order.move_target + 2
             if order.mega:
