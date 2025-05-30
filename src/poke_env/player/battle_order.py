@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, List, Optional, Union
+from typing import List, Optional, Union
 
 from poke_env.environment.double_battle import DoubleBattle
 from poke_env.environment.move import Move
@@ -10,14 +10,12 @@ from poke_env.environment.pokemon import Pokemon
 
 @dataclass
 class BattleOrder:
-    order: Optional[Union[Move, Pokemon]]
+    order: Union[Move, Pokemon, str]
     mega: bool = False
     z_move: bool = False
     dynamax: bool = False
     terastallize: bool = False
     move_target: int = DoubleBattle.EMPTY_TARGET_POSITION
-
-    DEFAULT_ORDER = "/choose default"
 
     def __str__(self) -> str:
         return self.message
@@ -44,28 +42,24 @@ class BattleOrder:
         elif isinstance(self.order, Pokemon):
             return f"/choose switch {self.order.species}"
         else:
-            return ""
+            return self.order
 
 
 class DefaultBattleOrder(BattleOrder):
-    def __init__(self, *args: Any, **kwargs: Any):
-        pass
+    def __init__(self):
+        super().__init__("/choose default")
 
-    @property
-    def message(self) -> str:
-        return self.DEFAULT_ORDER
+
+class ForfeitBattleOrder(BattleOrder):
+    def __init__(self):
+        super().__init__("/forfeit")
 
 
 class StringBattleOrder(BattleOrder):
     def __init__(self, string: str):
-        self._message = string
-
-    @property
-    def message(self) -> str:
-        return self._message
+        super().__init__(string)
 
 
-@dataclass
 class DoubleBattleOrder(BattleOrder):
     def __init__(
         self,
@@ -103,7 +97,8 @@ class DoubleBattleOrder(BattleOrder):
                 if not first_order.z_move or not second_order.z_move
                 if not first_order.dynamax or not second_order.dynamax
                 if not first_order.terastallize or not second_order.terastallize
-                if first_order.order != second_order.order
+                if isinstance(first_order.order, str)
+                or first_order.order != second_order.order
             ]
         elif first_orders:
             return [DoubleBattleOrder(order, None) for order in first_orders]
@@ -111,12 +106,3 @@ class DoubleBattleOrder(BattleOrder):
             return [DoubleBattleOrder(None, order) for order in second_orders]
         else:
             return [DoubleBattleOrder(None, None)]
-
-
-class ForfeitBattleOrder(BattleOrder):
-    def __init__(self, *args: Any, **kwargs: Any):
-        pass
-
-    @property
-    def message(self) -> str:
-        return "/forfeit"

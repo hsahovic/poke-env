@@ -81,9 +81,6 @@ class Battle(AbstractBattle):
         self._trapped = False
         self._force_switch = request.get("forceSwitch", [False])[0]
 
-        if self._force_switch:
-            self._move_on_next_request = True
-
         self._last_request = request
 
         if request.get("teamPreview", False):
@@ -101,9 +98,15 @@ class Battle(AbstractBattle):
                 self._trapped = True
 
             if self.active_pokemon is not None:
-                self._available_moves.extend(
-                    self.active_pokemon.available_moves_from_request(active_request)
-                )
+                # TODO: the illusion handling here works around Zoroark's
+                # difficulties. This should be properly handled at some point.
+                try:
+                    self._available_moves.extend(
+                        self.active_pokemon.available_moves_from_request(active_request)
+                    )
+                except AssertionError as e:
+                    if "illusion" not in [p.ability for p in self.team.values()]:
+                        raise e
             if active_request.get("canMegaEvo", False):
                 self._can_mega_evolve = True
             if active_request.get("canZMove", False):
