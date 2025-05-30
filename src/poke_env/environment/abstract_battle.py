@@ -153,7 +153,7 @@ class AbstractBattle(ABC):
 
         # Turn choice attributes
         self.in_team_preview: bool = False
-        self._wait: Optional[bool] = None
+        self._wait: bool = False
 
         # Battle state attributes
         self._dynamax_turn: Optional[int] = None
@@ -1414,6 +1414,14 @@ class AbstractBattle(ABC):
         :type turn: int
         """
         self._turn = turn
+
+    @property
+    def wait(self) -> bool:
+        """
+        :return: Whether the player is not being prompted to make a decision this turn
+        :rtype: bool
+        """
+        return self._wait
 
     @property
     def weather(self) -> Dict[Weather, int]:
