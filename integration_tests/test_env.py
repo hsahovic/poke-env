@@ -1,6 +1,7 @@
+import random
+
 import numpy as np
 import pytest
-import random
 from gymnasium.spaces import Box
 from gymnasium.utils.env_checker import check_env
 from pettingzoo.test.parallel_test import parallel_api_test

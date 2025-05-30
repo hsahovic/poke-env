@@ -1,6 +1,7 @@
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 import numpy as np
+import numpy.typing as npt
 from gymnasium.spaces import Discrete
 
 from poke_env.environment import Battle, Pokemon
@@ -215,7 +216,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         return np.int64(action)
 
     @staticmethod
-    def get_action_space(battle: Battle) -> List[int]:
+    def get_action_space(battle: Battle) -> npt.NDArray[np.int64]:
         switch_space = [
             i
             for i, pokemon in enumerate(battle.team.values())
@@ -223,7 +224,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
             and pokemon.species in [p.species for p in battle.available_switches]
         ]
         if battle.active_pokemon is None:
-            return switch_space
+            return np.array(switch_space)
         move_space = [
             i + 6
             for i, move in enumerate(battle.active_pokemon.moves.values())
@@ -238,7 +239,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         ]
         dynamax_space = [i + 12 for i in move_space if battle.can_dynamax]
         tera_space = [i + 16 for i in move_space if battle.can_tera]
-        return (
+        return np.array(
             switch_space
             + move_space
             + mega_space
