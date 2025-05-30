@@ -97,7 +97,7 @@ class DoubleBattleOrder(BattleOrder):
                 if not first_order.z_move or not second_order.z_move
                 if not first_order.dynamax or not second_order.dynamax
                 if not first_order.terastallize or not second_order.terastallize
-                if not isinstance(first_order.order, Pokemon)
+                if isinstance(first_order.order, str)
                 or first_order.order != second_order.order
             ]
         elif first_orders:
