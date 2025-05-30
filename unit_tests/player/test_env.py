@@ -481,6 +481,7 @@ def test_doubles_action_order_conversions():
             p, DoubleBattleOrder(Player.create_order(move, move_target=1)), battle
         )
         other_pokemon = Pokemon(species="snorlax", gen=gen)
+        battle._team |= {"snorlax": other_pokemon}
         battle._available_switches = [[other_pokemon], []]
         assert (
             p.action_to_order(np.array([1, 0]), battle).message
