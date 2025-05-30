@@ -169,9 +169,9 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         """
         if isinstance(order.order, str):
             if isinstance(order, DefaultBattleOrder):
-                action = -2
+                return np.int64(-2)
             elif isinstance(order, ForfeitBattleOrder):
-                action = -1
+                return np.int64(-1)
             else:
                 raise ValueError(f"{order} not supported")
         elif isinstance(order.order, Pokemon):
