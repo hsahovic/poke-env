@@ -79,7 +79,6 @@ def test_repeated_runs():
         battle_format="gen8randombattle",
         log_level=25,
         start_challenging=False,
-        strict=False,
     )
     env.start_challenging(2)
     play_function(env, 2)
@@ -90,7 +89,6 @@ def test_repeated_runs():
         battle_format="gen9randombattle",
         log_level=25,
         start_challenging=False,
-        strict=False,
     )
     env.start_challenging(2)
     play_function(env, 2)
