@@ -605,10 +605,10 @@ class Player(ABC):
 
         orders = DoubleBattleOrder.join_orders(*active_orders)
 
-        if orders:
-            return orders[int(random.random() * len(orders))]
-        else:
+        if battle._wait or not orders:
             return DefaultBattleOrder()
+        else:
+            return orders[int(random.random() * len(orders))]
 
     @staticmethod
     def choose_random_singles_move(battle: Battle) -> BattleOrder:
@@ -645,10 +645,10 @@ class Player(ABC):
                 ]
             )
 
-        if available_orders:
-            return available_orders[int(random.random() * len(available_orders))]
-        else:
+        if battle._wait or not available_orders:
             return Player.choose_default_move()
+        else:
+            return available_orders[int(random.random() * len(available_orders))]
 
     @staticmethod
     def choose_random_move(battle: AbstractBattle) -> BattleOrder:
