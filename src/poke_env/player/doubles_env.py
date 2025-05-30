@@ -178,12 +178,14 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         else:
             active_mon = battle.active_pokemon[pos]
             assert active_mon is not None
-            mvs = (
-                battle.available_moves[pos]
-                if len(battle.available_moves[pos]) == 1
-                and battle.available_moves[pos][0].id in ["struggle", "recharge"]
-                else list(active_mon.moves.values())
-            )
+            if len(battle.available_moves[pos]) == 1 and battle.available_moves[pos][
+                0
+            ].id in ["struggle", "recharge"]:
+                mvs = battle.available_moves[pos]
+            elif active_mon.is_dynamaxed:
+                mvs = [m.dynamaxed for m in active_mon.moves.values()]
+            else:
+                mvs = list(active_mon.moves.values())
             return Player.create_order(
                 mvs[(action - 7) % 20 // 5],
                 move_target=(action.item() - 7) % 5 - 2,
