@@ -217,6 +217,8 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
 
     @staticmethod
     def get_action_space(battle: Battle) -> npt.NDArray[np.int64]:
+        if battle._wait:
+            return np.array([-2])
         switch_space = [
             i
             for i, pokemon in enumerate(battle.team.values())
