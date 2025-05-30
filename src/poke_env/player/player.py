@@ -26,16 +26,14 @@ from poke_env.player.battle_order import (
     DoubleBattleOrder,
 )
 from poke_env.ps_client import PSClient
-from poke_env.ps_client.account_configuration import (
-    CONFIGURATION_FROM_PLAYER_COUNTER,
-    AccountConfiguration,
-)
+from poke_env.ps_client.account_configuration import AccountConfiguration
 from poke_env.ps_client.server_configuration import (
     LocalhostServerConfiguration,
     ServerConfiguration,
 )
 from poke_env.teambuilder.constant_teambuilder import ConstantTeambuilder
 from poke_env.teambuilder.teambuilder import Teambuilder
+from poke_env.teambuilder.teambuilder_pokemon import TeambuilderPokemon
 
 
 class Player(ABC):
@@ -59,7 +57,7 @@ class Player(ABC):
         max_concurrent_battles: int = 1,
         accept_open_team_sheet: bool = False,
         save_replays: Union[bool, str] = False,
-        server_configuration: Optional[ServerConfiguration] = None,
+        server_configuration: ServerConfiguration = LocalhostServerConfiguration,
         start_timer_on_battle_start: bool = False,
         start_listening: bool = True,
         open_timeout: Optional[float] = 10.0,
@@ -91,7 +89,7 @@ class Player(ABC):
         :type save_replays: bool or str
         :param server_configuration: Server configuration. Defaults to Localhost Server
             Configuration.
-        :type server_configuration: ServerConfiguration, optional
+        :type server_configuration: ServerConfiguration
         :param start_listening: Whether to start listening to the server. Defaults to
             True.
         :type start_listening: bool
@@ -116,14 +114,9 @@ class Player(ABC):
             Defaults to None.
         :type team: str or Teambuilder, optional
         """
-        if account_configuration is None:
-            account_configuration = self._create_account_configuration()
-
-        if server_configuration is None:
-            server_configuration = LocalhostServerConfiguration
-
         self.ps_client = PSClient(
-            account_configuration=account_configuration,
+            account_configuration=account_configuration
+            or AccountConfiguration.generate(self.__class__.__name__),
             avatar=avatar,
             log_level=log_level,
             server_configuration=server_configuration,
@@ -162,17 +155,6 @@ class Player(ABC):
             self._team = ConstantTeambuilder(team)
 
         self.logger.debug("Player initialisation finished")
-
-    def _create_account_configuration(self) -> AccountConfiguration:
-        key = type(self).__name__
-        CONFIGURATION_FROM_PLAYER_COUNTER.update([key])
-        username = "%s %d" % (key, CONFIGURATION_FROM_PLAYER_COUNTER[key])
-        if len(username) > 18:
-            username = "%s %d" % (
-                key[: 18 - len(username)],
-                CONFIGURATION_FROM_PLAYER_COUNTER[key],
-            )
-        return AccountConfiguration(username, None)
 
     def _battle_finished_callback(self, battle: AbstractBattle):
         pass
@@ -243,6 +225,16 @@ class Player(ABC):
                 if self._start_timer_on_battle_start:
                     await self.ps_client.send_message("/timer on", battle.battle_tag)
 
+                if hasattr(self.ps_client, "websocket") and "vgc" in self.format:
+                    if self.accept_open_team_sheet:
+                        await self.ps_client.send_message(
+                            "/acceptopenteamsheets", room=battle_tag
+                        )
+                    else:
+                        await self.ps_client.send_message(
+                            "/rejectopenteamsheets", room=battle_tag
+                        )
+
                 return battle
         else:
             self.logger.critical(
@@ -286,11 +278,31 @@ class Player(ABC):
                 if split_message[2]:
                     request = orjson.loads(split_message[2])
                     battle.parse_request(request)
-                    if battle._wait:
+                    if battle.wait:
                         self._waiting.set()
-                    if battle.move_on_next_request:
+                    elif not (battle.teampreview and self.accept_open_team_sheet):
                         await self._handle_battle_request(battle)
-                        battle.move_on_next_request = False
+            elif split_message[1] == "showteam":
+                role = split_message[2]
+                pokemon_messages = "|".join(split_message[3:]).split("]")
+                for msg in pokemon_messages:
+                    name, *_ = msg.split("|")
+                    teampreview_team = (
+                        battle.teampreview_team
+                        if role == battle.player_role
+                        else battle.teampreview_opponent_team
+                    )
+                    teampreview_mon = [
+                        p for p in teampreview_team if p.base_species in to_id_str(name)
+                    ][0]
+                    mon = battle.get_pokemon(
+                        f"{role}: {name}", details=teampreview_mon._last_details
+                    )
+                    teambuilder = TeambuilderPokemon.parse_showteam_pkmn_substr(msg)
+                    mon._update_from_teambuilder(teambuilder)
+                # only handle battle request after all open sheets are processed
+                if role == "p2":
+                    await self._handle_battle_request(battle)
             elif split_message[1] == "win" or split_message[1] == "tie":
                 if split_message[1] == "win":
                     battle.won_by(split_message[2])
@@ -301,6 +313,8 @@ class Player(ABC):
                 self._battle_finished_callback(battle)
                 async with self._battle_end_condition:
                     self._battle_end_condition.notify_all()
+                if hasattr(self.ps_client, "websocket"):
+                    await self.ps_client.send_message(f"/leave {battle.battle_tag}")
             elif split_message[1] == "error":
                 self.logger.log(
                     25, "Error message received: %s", "|".join(split_message)
@@ -310,16 +324,13 @@ class Player(ABC):
                 ):
                     if battle.trapped:
                         self._trying_again.set()
-                        await self._handle_battle_request(battle)
                 elif split_message[2].startswith(
                     "[Unavailable choice] Can't switch: The active Pokémon is "
                     "trapped"
                 ) or split_message[2].startswith(
                     "[Invalid choice] Can't switch: The active Pokémon is trapped"
                 ):
-                    battle.trapped = True
                     self._trying_again.set()
-                    await self._handle_battle_request(battle)
                 elif split_message[2].startswith("[Invalid choice] Can't pass: "):
                     await self._handle_battle_request(battle, maybe_default_order=True)
                 elif split_message[2].startswith(
@@ -372,23 +383,14 @@ class Player(ABC):
                     await self._handle_battle_request(battle, maybe_default_order=True)
                 else:
                     self.logger.critical("Unexpected error message: %s", split_message)
-            elif split_message[1] == "turn":
-                battle.parse_message(split_message)
-                await self._handle_battle_request(battle)
-            elif split_message[1] == "teampreview":
-                battle.parse_message(split_message)
-                await self._handle_battle_request(battle, from_teampreview_request=True)
             elif split_message[1] == "bigerror":
                 self.logger.warning("Received 'bigerror' message: %s", split_message)
-            elif split_message[1] == "uhtml" and split_message[2] == "otsrequest":
-                await self._handle_ots_request(battle.battle_tag)
             else:
                 battle.parse_message(split_message)
 
     async def _handle_battle_request(
         self,
         battle: AbstractBattle,
-        from_teampreview_request: bool = False,
         maybe_default_order: bool = False,
     ):
         if maybe_default_order and (
@@ -397,8 +399,6 @@ class Player(ABC):
         ):
             message = self.choose_default_move().message
         elif battle.teampreview:
-            if not from_teampreview_request:
-                return
             message = self.teampreview(battle)
         else:
             if maybe_default_order:
@@ -417,13 +417,6 @@ class Player(ABC):
             if len(split_message) >= 6:
                 if split_message[5] == self._format:
                     await self._challenge_queue.put(challenging_player)
-
-    async def _handle_ots_request(self, battle_tag: str):
-        """Handles an Open Team Sheet request."""
-        if self.accept_open_team_sheet:
-            await self.ps_client.send_message("/acceptopenteamsheets", room=battle_tag)
-        else:
-            await self.ps_client.send_message("/rejectopenteamsheets", room=battle_tag)
 
     async def _update_challenges(self, split_message: List[str]):
         """Update internal challenge state.
@@ -618,10 +611,10 @@ class Player(ABC):
 
         orders = DoubleBattleOrder.join_orders(*active_orders)
 
-        if orders:
-            return orders[int(random.random() * len(orders))]
-        else:
+        if battle.wait or not orders:
             return DefaultBattleOrder()
+        else:
+            return orders[int(random.random() * len(orders))]
 
     @staticmethod
     def choose_random_singles_move(battle: Battle) -> BattleOrder:
@@ -658,10 +651,10 @@ class Player(ABC):
                 ]
             )
 
-        if available_orders:
-            return available_orders[int(random.random() * len(available_orders))]
-        else:
+        if battle.wait or not available_orders:
             return Player.choose_default_move()
+        else:
+            return available_orders[int(random.random() * len(available_orders))]
 
     @staticmethod
     def choose_random_move(battle: AbstractBattle) -> BattleOrder:

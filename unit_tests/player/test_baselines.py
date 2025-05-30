@@ -19,10 +19,11 @@ def test_max_base_power_player():
             "can_dynamax",
             "can_tera",
             "can_mega_evolve",
+            "wait",
             "gen",
         ),
     )
-    battle = PseudoBattle([], [], False, False, False, False, 8)
+    battle = PseudoBattle([], [], False, False, False, False, False, 8)
 
     player_pkg.Battle = PseudoBattle
 
@@ -181,8 +182,10 @@ def test_simple_heuristics_player():
             "team",
             "opponent_team",
             "can_dynamax",
+            "can_tera",
             "side_conditions",
             "opponent_side_conditions",
+            "wait",
         ),
     )
     battle = PseudoBattle(
@@ -193,8 +196,10 @@ def test_simple_heuristics_player():
         {},
         {},
         True,
+        True,
         set(),
         set(),
+        False,
     )
     battle.active_pokemon.stats = {
         stat: 100 for stat in battle.active_pokemon.base_stats
@@ -234,10 +239,11 @@ def test_random_player():
             "can_dynamax",
             "can_tera",
             "can_mega_evolve",
+            "wait",
             "gen",
         ),
     )
-    battle = PseudoBattle([], [], False, False, False, False, 8)
+    battle = PseudoBattle([], [], False, False, False, False, False, 8)
 
     player_pkg.Battle = PseudoBattle
 

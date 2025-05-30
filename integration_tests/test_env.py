@@ -1,10 +1,18 @@
+import random
+
 import numpy as np
 import pytest
 from gymnasium.spaces import Box
 from gymnasium.utils.env_checker import check_env
 from pettingzoo.test.parallel_test import parallel_api_test
 
-from poke_env.player import RandomPlayer, SingleAgentWrapper, SinglesEnv
+from poke_env.player import (
+    DoublesEnv,
+    PokeEnv,
+    RandomPlayer,
+    SingleAgentWrapper,
+    SinglesEnv,
+)
 
 
 class SinglesTestEnv(SinglesEnv):
@@ -22,12 +30,32 @@ class SinglesTestEnv(SinglesEnv):
         return np.array([0])
 
 
-def play_function(env, n_battles):
+class DoublesTestEnv(DoublesEnv):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.observation_spaces = {
+            agent: Box(np.array([0]), np.array([1]), dtype=np.int64)
+            for agent in self.possible_agents
+        }
+
+    def calc_reward(self, battle) -> float:
+        return 0.0
+
+    def embed_battle(self, battle):
+        return np.array([0])
+
+
+def play_function(env: PokeEnv, n_battles: int):
     for _ in range(n_battles):
         done = False
         env.reset()
         while not done:
-            actions = {name: env.action_space(name).sample() for name in env.agents}
+            assert env.battle1 is not None
+            assert env.battle2 is not None
+            actions = {
+                env.agents[0]: random.choice(env.get_action_space(env.battle1)),
+                env.agents[1]: random.choice(env.get_action_space(env.battle2)),
+            }
             _, _, terminated, truncated, _ = env.step(actions)
             done = any(terminated.values()) or any(truncated.values())
 
@@ -35,13 +63,15 @@ def play_function(env, n_battles):
 @pytest.mark.timeout(120)
 def test_env_run():
     for gen in range(4, 10):
-        env = SinglesTestEnv(
-            battle_format=f"gen{gen}randombattle",
+        env = SinglesTestEnv(battle_format=f"gen{gen}randombattle", log_level=25)
+        play_function(env, 10)
+        env.close()
+    for gen in range(8, 10):
+        env = DoublesTestEnv(
+            battle_format=f"gen{gen}randomdoublesbattle",
             log_level=25,
-            start_challenging=False,
             strict=False,
         )
-        env.start_challenging(10)
         play_function(env, 10)
         env.close()
 
@@ -51,48 +81,38 @@ def single_agent_play_function(env: SingleAgentWrapper, n_battles: int):
         done = False
         env.reset()
         while not done:
-            action = env.action_space.sample()
+            assert env.env.battle1 is not None
+            action = random.choice(env.env.get_action_space(env.env.battle1))
             _, _, terminated, truncated, _ = env.step(action)
             done = terminated or truncated
 
 
-@pytest.mark.timeout(60)
+@pytest.mark.timeout(120)
 def test_single_agent_env_run():
     for gen in range(4, 10):
-        env = SinglesTestEnv(
-            battle_format=f"gen{gen}randombattle",
+        env = SinglesTestEnv(battle_format=f"gen{gen}randombattle", log_level=25)
+        env = SingleAgentWrapper(env, RandomPlayer())
+        single_agent_play_function(env, 10)
+        env.close()
+    for gen in range(8, 10):
+        env = DoublesTestEnv(
+            battle_format=f"gen{gen}randomdoublesbattle",
             log_level=25,
-            start_challenging=False,
             strict=False,
         )
         env = SingleAgentWrapper(env, RandomPlayer())
-        env.env.start_challenging(10)
         single_agent_play_function(env, 10)
         env.close()
 
 
 @pytest.mark.timeout(60)
 def test_repeated_runs():
-    env = SinglesTestEnv(
-        battle_format="gen8randombattle",
-        log_level=25,
-        start_challenging=False,
-        strict=False,
-    )
-    env.start_challenging(2)
+    env = SinglesTestEnv(battle_format="gen8randombattle", log_level=25)
     play_function(env, 2)
-    env.start_challenging(2)
     play_function(env, 2)
     env.close()
-    env = SinglesTestEnv(
-        battle_format="gen9randombattle",
-        log_level=25,
-        start_challenging=False,
-        strict=False,
-    )
-    env.start_challenging(2)
+    env = SinglesTestEnv(battle_format="gen9randombattle", log_level=25)
     play_function(env, 2)
-    env.start_challenging(2)
     play_function(env, 2)
     env.close()
 
@@ -103,7 +123,14 @@ def test_env_api():
         env = SinglesTestEnv(
             battle_format=f"gen{gen}randombattle",
             log_level=25,
-            start_challenging=True,
+            strict=False,
+        )
+        parallel_api_test(env)
+        env.close()
+    for gen in range(8, 10):
+        env = DoublesTestEnv(
+            battle_format=f"gen{gen}randomdoublesbattle",
+            log_level=25,
             strict=False,
         )
         parallel_api_test(env)
@@ -116,7 +143,15 @@ def test_single_agent_env_api():
         env = SinglesTestEnv(
             battle_format=f"gen{gen}randombattle",
             log_level=25,
-            start_challenging=True,
+            strict=False,
+        )
+        env = SingleAgentWrapper(env, RandomPlayer())
+        check_env(env)
+        env.close()
+    for gen in range(8, 10):
+        env = DoublesTestEnv(
+            battle_format=f"gen{gen}randomdoublesbattle",
+            log_level=25,
             strict=False,
         )
         env = SingleAgentWrapper(env, RandomPlayer())
