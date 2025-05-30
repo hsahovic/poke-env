@@ -246,8 +246,11 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
     ) -> np.int64:
         if order is None:
             action = 0
-        elif isinstance(order, DefaultBattleOrder):
-            action = -2
+        elif isinstance(order.order, str):
+            if isinstance(order, DefaultBattleOrder):
+                return np.int64(-2)
+            else:
+                raise ValueError(f"{order} not supported")
         elif isinstance(order.order, Pokemon):
             action = [p.base_species for p in battle.team.values()].index(
                 order.order.base_species
