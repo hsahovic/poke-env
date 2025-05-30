@@ -290,7 +290,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
     def get_action_space(battle: DoubleBattle) -> npt.NDArray[np.int64]:
         action_space1 = DoublesEnv.get_action_space_individual(battle, pos=0)
         action_space2 = DoublesEnv.get_action_space_individual(battle, pos=1)
-        return np.array([action_space1, action_space2])
+        return np.stack([[a1, a2] for a2 in action_space2 for a1 in action_space1])
 
     @staticmethod
     def get_action_space_individual(
