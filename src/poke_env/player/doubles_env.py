@@ -182,7 +182,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 0
             ].id in ["struggle", "recharge"]:
                 mvs = battle.available_moves[pos]
-            elif active_mon.is_dynamaxed:
+            elif active_mon.is_dynamaxed or (action - 7) // 20 == 3:
                 mvs = [m.dynamaxed for m in active_mon.moves.values()]
             else:
                 mvs = list(active_mon.moves.values())
@@ -267,7 +267,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 0
             ].id in ["struggle", "recharge"]:
                 mvs = battle.available_moves[pos]
-            elif active_mon.is_dynamaxed:
+            elif active_mon.is_dynamaxed or order.dynamax:
                 mvs = [m.dynamaxed for m in active_mon.moves.values()]
             else:
                 mvs = list(active_mon.moves.values())
@@ -316,6 +316,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         if active_mon is None:
             action_space = switch_space
         else:
+            print("##########", active_mon.is_dynamaxed, active_mon.moves.keys())
             move_spaces = [
                 [
                     7 + 5 * i + j + 2
@@ -348,4 +349,5 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 + dynamax_space
                 + tera_space
             )
+        print("$$$$$$$$$$$$$$", action_space or [0])
         return np.array(action_space or [0])
