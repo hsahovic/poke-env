@@ -286,7 +286,7 @@ class Player(ABC):
                 if split_message[2]:
                     request = orjson.loads(split_message[2])
                     battle.parse_request(request)
-                    if battle._wait:
+                    if battle.wait:
                         self._waiting.set()
                     else:
                         await self._handle_battle_request(battle)
@@ -605,7 +605,7 @@ class Player(ABC):
 
         orders = DoubleBattleOrder.join_orders(*active_orders)
 
-        if battle._wait or not orders:
+        if battle.wait or not orders:
             return DefaultBattleOrder()
         else:
             return orders[int(random.random() * len(orders))]
@@ -645,7 +645,7 @@ class Player(ABC):
                 ]
             )
 
-        if battle._wait or not available_orders:
+        if battle.wait or not available_orders:
             return Player.choose_default_move()
         else:
             return available_orders[int(random.random() * len(available_orders))]
