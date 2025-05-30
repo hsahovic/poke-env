@@ -292,9 +292,10 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         action_space2 = DoublesEnv.get_action_space_individual(battle, pos=1)
         return np.array([action_space1, action_space2])
 
-
     @staticmethod
-    def get_action_space_individual(battle: DoubleBattle, pos: int) -> npt.NDArray[np.int64]:
+    def get_action_space_individual(
+        battle: DoubleBattle, pos: int
+    ) -> npt.NDArray[np.int64]:
         assert pos in [0, 1]
         switch_space = [
             i + 1
@@ -317,6 +318,9 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 if move.id in [m.id for m in battle.available_moves[pos]]
             ]
             move_space = [i for s in move_spaces for i in s]
+            mega_space = [i + 20 for i in move_space if battle.can_mega_evolve[pos]]
+            zmove_space = [i + 40 for i in move_space if battle.can_z_move[pos]]
+            dynamax_space = [i + 60 for i in move_space if battle.can_dynamax[pos]]
             tera_space = [i + 80 for i in move_space if battle.can_tera[pos]]
             if (
                 not move_space
@@ -324,5 +328,12 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 and battle.available_moves[pos][0].id in ["struggle", "recharge"]
             ):
                 move_space = [9]
-            action_space = switch_space + move_space + tera_space
+            action_space = (
+                switch_space
+                + move_space
+                + mega_space
+                + zmove_space
+                + dynamax_space
+                + tera_space
+            )
         return np.array(action_space or [0])
