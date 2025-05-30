@@ -261,7 +261,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
                 + dynamax_space
                 + tera_space
             )
-        if "illusion" in [p.ability for p in battle.team.values()] and not action_space:
+        if "illusion" in [p.ability for p in battle.team.values()]:
             return np.array([-2])
         else:
             return action_space
