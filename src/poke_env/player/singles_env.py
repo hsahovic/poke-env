@@ -226,37 +226,42 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
             and pokemon.species in [p.species for p in battle.available_switches]
         ]
         if battle.active_pokemon is None:
-            return np.array(switch_space)
+            action_space = np.array(switch_space)
         elif battle.reviving:
             revive_space = [
                 i for i, pokemon in enumerate(battle.team.values()) if pokemon.fainted
             ]
-            return np.array(revive_space)
-        move_space = [
-            i + 6
-            for i, move in enumerate(battle.active_pokemon.moves.values())
-            if move.id in [m.id for m in battle.available_moves]
-        ]
-        mega_space = [i + 4 for i in move_space if battle.can_mega_evolve]
-        zmove_space = [
-            i + 14
-            for i, move in enumerate(battle.active_pokemon.moves.values())
-            if move.id in [m.id for m in battle.active_pokemon.available_z_moves]
-            and battle.can_z_move
-        ]
-        dynamax_space = [i + 12 for i in move_space if battle.can_dynamax]
-        tera_space = [i + 16 for i in move_space if battle.can_tera]
-        if (
-            not move_space
-            and len(battle.available_moves) == 1
-            and battle.available_moves[0].id in ["struggle", "recharge"]
-        ):
-            move_space = [6]
-        return np.array(
-            switch_space
-            + move_space
-            + mega_space
-            + zmove_space
-            + dynamax_space
-            + tera_space
-        )
+            action_space = np.array(revive_space)
+        else:
+            move_space = [
+                i + 6
+                for i, move in enumerate(battle.active_pokemon.moves.values())
+                if move.id in [m.id for m in battle.available_moves]
+            ]
+            mega_space = [i + 4 for i in move_space if battle.can_mega_evolve]
+            zmove_space = [
+                i + 14
+                for i, move in enumerate(battle.active_pokemon.moves.values())
+                if move.id in [m.id for m in battle.active_pokemon.available_z_moves]
+                and battle.can_z_move
+            ]
+            dynamax_space = [i + 12 for i in move_space if battle.can_dynamax]
+            tera_space = [i + 16 for i in move_space if battle.can_tera]
+            if (
+                not move_space
+                and len(battle.available_moves) == 1
+                and battle.available_moves[0].id in ["struggle", "recharge"]
+            ):
+                move_space = [6]
+            action_space = np.array(
+                switch_space
+                + move_space
+                + mega_space
+                + zmove_space
+                + dynamax_space
+                + tera_space
+            )
+        if "illusion" in [p.ability for p in battle.team.values()] and not action_space:
+            return np.array([-2])
+        else:
+            return action_space
