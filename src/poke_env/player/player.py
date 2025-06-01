@@ -299,9 +299,8 @@ class Player(ABC):
                     battle.parse_request(request)
                     if battle._wait:
                         self._waiting.set()
-                    if battle.move_on_next_request:
+                    elif not (battle.teampreview and self.accept_open_team_sheet):
                         await self._handle_battle_request(battle)
-                        battle.move_on_next_request = False
             elif split_message[1] == "showteam":
                 role = split_message[2]
                 pokemon_messages = "|".join(split_message[3:]).split("]")
@@ -322,9 +321,7 @@ class Player(ABC):
                     mon._update_from_teambuilder(teambuilder)
                 # only handle battle request after all open sheets are processed
                 if role == "p2":
-                    await self._handle_battle_request(
-                        battle, from_teampreview_request=True
-                    )
+                    await self._handle_battle_request(battle)
             elif split_message[1] == "win" or split_message[1] == "tie":
                 if split_message[1] == "win":
                     battle.won_by(split_message[2])
@@ -335,6 +332,8 @@ class Player(ABC):
                 self._battle_finished_callback(battle)
                 async with self._battle_end_condition:
                     self._battle_end_condition.notify_all()
+                if hasattr(self.ps_client, "websocket"):
+                    await self.ps_client.send_message(f"/leave {battle.battle_tag}")
             elif split_message[1] == "error":
                 self.logger.log(
                     25, "Error message received: %s", "|".join(split_message)
@@ -344,16 +343,13 @@ class Player(ABC):
                 ):
                     if battle.trapped:
                         self._trying_again.set()
-                        await self._handle_battle_request(battle)
                 elif split_message[2].startswith(
                     "[Unavailable choice] Can't switch: The active Pokémon is "
                     "trapped"
                 ) or split_message[2].startswith(
                     "[Invalid choice] Can't switch: The active Pokémon is trapped"
                 ):
-                    battle.trapped = True
                     self._trying_again.set()
-                    await self._handle_battle_request(battle)
                 elif split_message[2].startswith("[Invalid choice] Can't pass: "):
                     await self._handle_battle_request(battle, maybe_default_order=True)
                 elif split_message[2].startswith(
@@ -406,16 +402,6 @@ class Player(ABC):
                     await self._handle_battle_request(battle, maybe_default_order=True)
                 else:
                     self.logger.critical("Unexpected error message: %s", split_message)
-            elif split_message[1] == "turn":
-                battle.parse_message(split_message)
-                await self._handle_battle_request(battle)
-            elif split_message[1] == "teampreview":
-                battle.parse_message(split_message)
-                # wait for open sheets to be processed before handling battle request
-                if not self.accept_open_team_sheet:
-                    await self._handle_battle_request(
-                        battle, from_teampreview_request=True
-                    )
             elif split_message[1] == "bigerror":
                 self.logger.warning("Received 'bigerror' message: %s", split_message)
             else:
@@ -424,7 +410,6 @@ class Player(ABC):
     async def _handle_battle_request(
         self,
         battle: AbstractBattle,
-        from_teampreview_request: bool = False,
         maybe_default_order: bool = False,
     ):
         if maybe_default_order and (
@@ -433,8 +418,6 @@ class Player(ABC):
         ):
             message = self.choose_default_move().message
         elif battle.teampreview:
-            if not from_teampreview_request:
-                return
             message = self.teampreview(battle)
         else:
             if maybe_default_order:
