@@ -1110,6 +1110,7 @@ def calculate_atk_mods(
             and attacker_mons[1]  # type: ignore
             and attacker_mons[0].ability in ["plus", "minus"]  # type: ignore
             and attacker_mons[1].ability in ["plus", "minus"]  # type: ignore
+            and attacker_mons[0].ability != attacker_mons[1].ability  # type: ignore
             and not abilities_suppressed
         )
     ):
