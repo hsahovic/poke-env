@@ -3652,7 +3652,7 @@
   "pp": 15,
   "priority": 0,
   "flags": { "protect": 1, "mirror": 1, "sound": 1, "bypasssub": 1, "metronome": 1 },
-  "onTry": "onTry",
+  "onTryMove": "onTryMove",
   "condition": {
    "duration": 2,
    "onFieldStart": "onFieldStart",
@@ -13878,7 +13878,6 @@
   "priority": 0,
   "flags": { "protect": 1, "mirror": 1, "sound": 1, "bypasssub": 1, "metronome": 1 },
   "secondary": {
-   "dustproof": true,
    "chance": 100,
    "volatileStatus": "sparklingaria"
   },

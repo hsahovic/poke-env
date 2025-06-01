@@ -584,6 +584,8 @@ class Pokemon:
         elif tb.nickname is not None and tb.species is not None:
             self._update_from_pokedex(tb.species)
             self._name = tb.nickname
+        elif tb.nickname is None and tb.species is not None:
+            self._update_from_pokedex(tb.species)
         else:
             raise ValueError(
                 "TeambuilderPokemon must have either a nickname or species", tb
