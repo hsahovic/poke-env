@@ -317,7 +317,7 @@ class Player(ABC):
                     mon = battle.get_pokemon(
                         f"{role}: {name}", details=teampreview_mon._last_details
                     )
-                    teambuilder = TeambuilderPokemon.parse_showteam_pkmn_substr(msg)
+                    teambuilder = TeambuilderPokemon.from_packed(msg)
                     mon._update_from_teambuilder(teambuilder)
                 # only handle battle request after all open sheets are processed
                 if role == "p2":
