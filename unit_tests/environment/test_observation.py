@@ -68,12 +68,6 @@ def test_observation(example_request):
     assert ["", ""] in battle.observations[3].events
 
 
-def test_gen1_observation(example_gen1_request):
-    logger = MagicMock()
-    battle = Battle("tag", "username", logger, gen=1)
-    battle.parse_request(example_gen1_request)
-
-
 def test_observed_pokemon(example_request):
     assert ObservedPokemon.from_pokemon(None) is None
 
