@@ -2,8 +2,6 @@
 format to specify pokemon builds in teambuilders custom classes.
 """
 
-from __future__ import annotations
-
 from typing import List, Optional
 
 from poke_env.data import to_id_str
