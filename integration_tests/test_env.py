@@ -50,12 +50,13 @@ def play_function(env: PokeEnv, n_battles: int):
         done = False
         env.reset()
         while not done:
-            assert env.battle1 is not None
-            assert env.battle2 is not None
-            actions = {
-                env.agents[0]: random.choice(env.get_action_space(env.battle1)),
-                env.agents[1]: random.choice(env.get_action_space(env.battle2)),
-            }
+            if isinstance(env, SinglesEnv):
+                actions = {
+                    env.agents[0]: random.choice(env.get_action_space(env.battle1)),
+                    env.agents[1]: random.choice(env.get_action_space(env.battle2)),
+                }
+            else:
+                actions = {name: env.action_space(name).sample() for name in env.agents}
             _, _, terminated, truncated, _ = env.step(actions)
             done = any(terminated.values()) or any(truncated.values())
 
@@ -86,8 +87,10 @@ def single_agent_play_function(env: SingleAgentWrapper, n_battles: int):
         done = False
         env.reset()
         while not done:
-            assert env.env.battle1 is not None
-            action = random.choice(env.env.get_action_space(env.env.battle1))
+            if isinstance(env.env, SinglesEnv):
+                action = random.choice(env.env.get_action_space(env.env.battle1))
+            else:
+                action = env.action_space.sample()
             _, _, terminated, truncated, _ = env.step(action)
             done = terminated or truncated
 
