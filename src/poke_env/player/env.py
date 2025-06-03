@@ -491,19 +491,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         """
         pass
 
-    @staticmethod
-    @abstractmethod
-    def get_action_space(battle: Any) -> npt.NDArray[np.int64]:
-        """
-        Returns list of valid actions to take in current battle state.
-
-        :param battle: The current battle state
-        :type battle: AbstractBattle
-
-        :return: The list of valid actions.
-        :rtype: List[int]
-        """
-
     ###################################################################################
     # Helper methods
 
