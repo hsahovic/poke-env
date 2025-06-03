@@ -8,8 +8,6 @@ from abc import abstractmethod
 from typing import Any, Awaitable, Dict, Generic, List, Optional, Tuple, TypeVar, Union
 from weakref import WeakKeyDictionary
 
-import numpy as np
-import numpy.typing as npt
 from gymnasium.spaces import Space
 from gymnasium.utils import seeding
 from numpy.random import Generator
