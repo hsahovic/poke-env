@@ -162,7 +162,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
     def _action_to_order_individual(
         action: np.int64, battle: DoubleBattle, fake: bool, pos: int
     ) -> Optional[BattleOrder]:
-        action_space = DoublesEnv.get_action_space_individual(battle, pos)
+        action_space = DoublesEnv.get_action_space(battle, pos)
         if action == -2:
             return DefaultBattleOrder()
         elif not fake and action not in action_space:
@@ -284,7 +284,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             else:
                 gimmick = 0
             action = 1 + 6 + 5 * action + target + 20 * gimmick
-        action_space = DoublesEnv.get_action_space_individual(battle, pos)
+        action_space = DoublesEnv.get_action_space(battle, pos)
         if not fake and action not in action_space:
             raise ValueError(
                 f"Invalid order {order} from player {battle.player_username} "
@@ -294,13 +294,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         return np.int64(action)
 
     @staticmethod
-    def get_action_space(battle: DoubleBattle) -> npt.NDArray[np.int64]:
-        action_space1 = DoublesEnv.get_action_space_individual(battle, pos=0)
-        action_space2 = DoublesEnv.get_action_space_individual(battle, pos=1)
-        return np.stack([[a1, a2] for a2 in action_space2 for a1 in action_space1])
-
-    @staticmethod
-    def get_action_space_individual(
+    def get_action_space(
         battle: DoubleBattle, pos: int
     ) -> npt.NDArray[np.int64]:
         assert pos in [0, 1]
@@ -316,7 +310,6 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         if active_mon is None:
             action_space = switch_space
         else:
-            print("##########", active_mon.is_dynamaxed, active_mon.moves.keys())
             move_spaces = [
                 [
                     7 + 5 * i + j + 2
@@ -349,5 +342,4 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 + dynamax_space
                 + tera_space
             )
-        print("$$$$$$$$$$$$$$", action_space or [0])
         return np.array(action_space or [0])
