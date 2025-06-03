@@ -294,9 +294,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         return np.int64(action)
 
     @staticmethod
-    def get_action_space(
-        battle: DoubleBattle, pos: int
-    ) -> npt.NDArray[np.int64]:
+    def get_action_space(battle: DoubleBattle, pos: int) -> npt.NDArray[np.int64]:
         assert pos in [0, 1]
         switch_space = [
             i + 1
