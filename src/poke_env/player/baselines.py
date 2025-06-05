@@ -17,6 +17,11 @@ from poke_env.player.battle_order import (
 from poke_env.player.player import Player
 
 
+class RandomPlayer(Player):
+    def choose_move(self, battle: AbstractBattle) -> BattleOrder:
+        return self.choose_random_move(battle)
+
+
 class MaxBasePowerPlayer(Player):
     def choose_move(self, battle: AbstractBattle):
         if self.format_is_doubles:
