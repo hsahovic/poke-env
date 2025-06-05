@@ -129,6 +129,16 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         assert (action[0] == -1) == (action[1] == -1)
         if action[0] == -1 and action[1] == -1:
             return ForfeitBattleOrder()
+        if not fake and (
+            len(battle.available_switches[0]) == 1
+            and battle.force_switch == [True, True]
+            and 1 <= action[0] <= 6
+            and 1 <= action[1] <= 6
+        ):
+            if strict:
+                raise ValueError()
+            else:
+                return DefaultBattleOrder()
         try:
             order1 = DoublesEnv._action_to_order_individual(action[0], battle, fake, 0)
         except ValueError as e:
@@ -220,6 +230,16 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         assert isinstance(order, DoubleBattleOrder)
         assert not isinstance(order.first_order, ForfeitBattleOrder)
         assert not isinstance(order.second_order, ForfeitBattleOrder)
+        if not fake and (
+            len(battle.available_switches[0]) == 1
+            and battle.force_switch == [True, True]
+            and isinstance(order.first_order, Pokemon)
+            and isinstance(order.second_order, Pokemon)
+        ):
+            if strict:
+                raise ValueError()
+            else:
+                return DefaultBattleOrder()
         try:
             action1 = DoublesEnv._order_to_action_individual(
                 order.first_order, battle, fake, 0
