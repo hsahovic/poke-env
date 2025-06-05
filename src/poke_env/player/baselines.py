@@ -28,10 +28,11 @@ class MaxBasePowerPlayer(Player):
             return self.choose_singles_move(battle)
 
     def choose_singles_move(self, battle: AbstractBattle):
-        if battle.available_moves:
+        if battle.wait or not battle.available_moves:
+            return self.choose_random_move(battle)
+        else:
             best_move = max(battle.available_moves, key=lambda move: move.base_power)
             return self.create_order(best_move)
-        return self.choose_random_move(battle)
 
     def choose_doubles_move(self, battle: DoubleBattle):
         orders: List[Optional[BattleOrder]] = []
@@ -88,10 +89,10 @@ class MaxBasePowerPlayer(Player):
 
             orders.append(BattleOrder(best_move, move_target=target))
 
-        if orders[0] or orders[1]:
+        if battle.wait or not (orders[0] or orders[1]):
+            return self.choose_random_move(battle)
+        else:
             return DoubleBattleOrder(orders[0], orders[1])
-
-        return self.choose_random_move(battle)
 
 
 class SimpleHeuristicsPlayer(Player):
@@ -184,7 +185,9 @@ class SimpleHeuristicsPlayer(Player):
         return ((2 * mon.base_stats[stat] + 31) + 5) * boost
 
     def choose_move(self, battle: AbstractBattle):
-        if isinstance(battle, DoubleBattle):
+        if battle.wait:
+            return self.choose_random_move(battle)
+        elif isinstance(battle, DoubleBattle):
             return self.choose_random_doubles_move(battle)
 
         # Main mons shortcuts
