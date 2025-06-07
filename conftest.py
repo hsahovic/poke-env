@@ -42,12 +42,6 @@ def example_request():
 
 
 @fixture
-def example_gen1_request():
-    with open(os.path.join(FIXTURE_DIR, "example_gen1_request.json")) as f:
-        return orjson.loads(f.read())
-
-
-@fixture
 def force_switch_example_request():
     with open(os.path.join(FIXTURE_DIR, "force_switch_example_request.json")) as f:
         return orjson.loads(f.read())

@@ -33,7 +33,6 @@ from poke_env.ps_client.server_configuration import (
 )
 from poke_env.teambuilder.constant_teambuilder import ConstantTeambuilder
 from poke_env.teambuilder.teambuilder import Teambuilder
-from poke_env.teambuilder.teambuilder_pokemon import TeambuilderPokemon
 
 
 class Player(ABC):
@@ -284,22 +283,25 @@ class Player(ABC):
                         await self._handle_battle_request(battle)
             elif split_message[1] == "showteam":
                 role = split_message[2]
-                pokemon_messages = "|".join(split_message[3:]).split("]")
-                for msg in pokemon_messages:
-                    name, *_ = msg.split("|")
-                    teampreview_team = (
-                        battle.teampreview_team
-                        if role == battle.player_role
-                        else battle.teampreview_opponent_team
-                    )
-                    teampreview_mon = [
-                        p for p in teampreview_team if p.base_species in to_id_str(name)
+                teambuilder_team = Teambuilder.parse_packed_team(
+                    "|".join(split_message[3:])
+                )
+                teampreview_team = (
+                    battle.teampreview_team
+                    if role == battle.player_role
+                    else battle.teampreview_opponent_team
+                )
+                for preview_mon in teampreview_team:
+                    teambuilder_mon = [
+                        m
+                        for m in teambuilder_team
+                        if preview_mon.base_species in to_id_str(m.nickname)
                     ][0]
                     mon = battle.get_pokemon(
-                        f"{role}: {name}", details=teampreview_mon._last_details
+                        f"{role}: {teambuilder_mon.nickname}",
+                        details=preview_mon._last_details,
                     )
-                    teambuilder = TeambuilderPokemon.parse_showteam_pkmn_substr(msg)
-                    mon._update_from_teambuilder(teambuilder)
+                    mon._update_from_teambuilder(teambuilder_mon)
                 # only handle battle request after all open sheets are processed
                 if role == "p2":
                     await self._handle_battle_request(battle)
