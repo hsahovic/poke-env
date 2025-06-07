@@ -212,7 +212,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             team=team,
         )
         self.agent2 = _EnvPlayer(
-            account_configuration=account_configuration1
+            account_configuration=account_configuration2
             or AccountConfiguration.generate(self.__class__.__name__),
             avatar=avatar,
             battle_format=battle_format,
