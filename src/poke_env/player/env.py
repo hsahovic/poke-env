@@ -193,7 +193,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         """
         self.agent1 = _EnvPlayer(
             account_configuration=account_configuration1
-            or AccountConfiguration.generate(self.__class__.__name__),
+            or AccountConfiguration.generate(self.__class__.__name__, rand=True),
             avatar=avatar,
             battle_format=battle_format,
             log_level=log_level,
@@ -209,8 +209,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             team=team,
         )
         self.agent2 = _EnvPlayer(
-            account_configuration=account_configuration1
-            or AccountConfiguration.generate(self.__class__.__name__),
+            account_configuration=account_configuration2
+            or AccountConfiguration.generate(self.__class__.__name__, rand=True),
             avatar=avatar,
             battle_format=battle_format,
             log_level=log_level,
