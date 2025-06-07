@@ -20,10 +20,10 @@ class Battle(AbstractBattle):
         # Turn choice attributes
         self._available_moves: List[Move] = []
         self._available_switches: List[Pokemon] = []
-        self._can_mega_evolve = False
-        self._can_z_move = False
         self._can_dynamax = False
+        self._can_mega_evolve = False
         self._can_tera = False
+        self._can_z_move = False
         self._force_switch = False
         self._maybe_trapped = False
         self._trapped = False
