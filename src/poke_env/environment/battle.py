@@ -24,10 +24,6 @@ class Battle(AbstractBattle):
         self._can_z_move = False
         self._can_dynamax = False
         self._can_tera = False
-        self._opponent_can_mega_evolve = True
-        self._opponent_can_z_move = True
-        self._opponent_can_dynamax = True
-        self._opponent_can_tera = True
         self._force_switch = False
         self._maybe_trapped = False
         self._trapped = False
