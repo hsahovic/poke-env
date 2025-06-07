@@ -108,7 +108,7 @@ def test_battle_request_parsing_and_interactions(example_doubles_request):
     assert milotic.species == "milotic"
     assert tyranitar.species == "tyranitar"
 
-    assert all(battle.opponent_can_dynamax)
+    assert battle.opponent_can_dynamax
 
     assert battle.current_observation
     assert battle.current_observation.events[0] == ["", "swap", "p1b: Klinklang", ""]
