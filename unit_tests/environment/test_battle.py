@@ -460,7 +460,7 @@ def test_battle_request_and_interactions(example_request):
     assert msg_type in str(excinfo.value)
 
     assert not battle.maybe_trapped
-    assert battle.opponent_can_dynamax
+    assert not battle.opponent_used_dynamax
 
     assert battle.grounded
     assert battle.is_grounded(battle.opponent_active_pokemon)
