@@ -254,38 +254,6 @@ class Battle(AbstractBattle):
         return None
 
     @property
-    def opponent_can_mega_evolve(self) -> bool:
-        """
-        :return: Whether or not opponent's current active pokemon can mega-evolve
-        :rtype: bool
-        """
-        return self._opponent_can_mega_evolve
-
-    @property
-    def opponent_can_z_move(self) -> bool:
-        """
-        :return: Whether or not opponent's current active pokemon can z-move
-        :rtype: bool
-        """
-        return self._opponent_can_z_move
-
-    @property
-    def opponent_can_dynamax(self) -> bool:
-        """
-        :return: Whether or not opponent's current active pokemon can dynamax
-        :rtype: bool
-        """
-        return self._opponent_can_dynamax
-
-    @property
-    def opponent_can_tera(self) -> bool:
-        """
-        :return: Whether or not opponent's current active pokemon can terastallize
-        :rtype: bool
-        """
-        return self._opponent_can_tera
-
-    @property
     def trapped(self) -> bool:
         """
         :return: A boolean indicating whether the active pokemon is trapped, either by

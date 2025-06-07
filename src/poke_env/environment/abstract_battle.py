@@ -1208,24 +1208,36 @@ class AbstractBattle(ABC):
         pass
 
     @property
-    @abstractmethod
     def opponent_can_mega_evolve(self) -> bool:
-        pass
+        """
+        :return: Whether or not opponent's current active pokemon can mega-evolve
+        :rtype: bool
+        """
+        return self._opponent_can_mega_evolve
 
     @property
-    @abstractmethod
     def opponent_can_z_move(self) -> bool:
-        pass
+        """
+        :return: Whether or not opponent's current active pokemon can z-move
+        :rtype: bool
+        """
+        return self._opponent_can_z_move
 
     @property
-    @abstractmethod
     def opponent_can_dynamax(self) -> bool:
-        pass
+        """
+        :return: Whether or not opponent's current active pokemon can dynamax
+        :rtype: bool
+        """
+        return self._opponent_can_dynamax
 
     @property
-    @abstractmethod
     def opponent_can_tera(self) -> bool:
-        pass
+        """
+        :return: Whether or not opponent's current active pokemon can terastallize
+        :rtype: bool
+        """
+        return self._opponent_can_tera
 
     @property
     def opponent_dynamax_turns_left(self) -> Optional[int]:
