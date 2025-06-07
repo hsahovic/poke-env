@@ -225,10 +225,11 @@ class AbstractBattle(ABC):
         )
 
         # if the pokemon has a nickname, this ensures we recognize it
+        split_details = [to_id_str(det) for det in details.split(", ")[0].split("-")]
         matches = [
             i
             for i, p in enumerate(team.values())
-            if p.base_species in to_id_str(details.split(", ")[0])
+            if p.base_species in split_details + [to_id_str(details.split(", ")[0])]
         ]
         assert len(matches) < 2
         if identifier not in team and matches:
