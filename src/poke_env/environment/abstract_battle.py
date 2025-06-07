@@ -1195,38 +1195,6 @@ class AbstractBattle(ABC):
         pass
 
     @property
-    def opponent_used_mega_evolve(self) -> bool:
-        """
-        :return: Whether or not opponent's current active pokemon can mega-evolve
-        :rtype: bool
-        """
-        return self._opponent_used_mega_evolve
-
-    @property
-    def opponent_used_z_move(self) -> bool:
-        """
-        :return: Whether or not opponent's current active pokemon can z-move
-        :rtype: bool
-        """
-        return self._opponent_used_z_move
-
-    @property
-    def opponent_used_dynamax(self) -> bool:
-        """
-        :return: Whether or not opponent's current active pokemon can dynamax
-        :rtype: bool
-        """
-        return self._opponent_used_dynamax
-
-    @property
-    def opponent_used_tera(self) -> bool:
-        """
-        :return: Whether or not opponent's current active pokemon can terastallize
-        :rtype: bool
-        """
-        return self._opponent_used_tera
-
-    @property
     def opponent_dynamax_turns_left(self) -> Optional[int]:
         """
         :return: How many turns of dynamax are left for the opponent's pokemon.
@@ -1276,6 +1244,38 @@ class AbstractBattle(ABC):
             return self._opponent_team
         else:
             return {mon.species: mon for mon in self._teampreview_opponent_team}
+
+    @property
+    def opponent_used_dynamax(self) -> bool:
+        """
+        :return: Whether or not opponent's current active pokemon can dynamax
+        :rtype: bool
+        """
+        return self._opponent_used_dynamax
+
+    @property
+    def opponent_used_mega_evolve(self) -> bool:
+        """
+        :return: Whether or not opponent's current active pokemon can mega-evolve
+        :rtype: bool
+        """
+        return self._opponent_used_mega_evolve
+
+    @property
+    def opponent_used_tera(self) -> bool:
+        """
+        :return: Whether or not opponent's current active pokemon can terastallize
+        :rtype: bool
+        """
+        return self._opponent_used_tera
+
+    @property
+    def opponent_used_z_move(self) -> bool:
+        """
+        :return: Whether or not opponent's current active pokemon can z-move
+        :rtype: bool
+        """
+        return self._opponent_used_z_move
 
     @property
     def opponent_username(self) -> Optional[str]:
