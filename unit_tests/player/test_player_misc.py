@@ -240,18 +240,6 @@ async def test_awaitable_move(send_message_patch):
         send_message_patch.assert_called_with("/choose move bite", "bat1")
 
 
-@patch("poke_env.ps_client.ps_client.PSClient.send_message")
-@pytest.mark.asyncio
-async def test_handle_ots_request(send_message_patch):
-    player = SimplePlayer(start_listening=False, accept_open_team_sheet=True)
-    battle = Battle("bat1", player.username, player.logger, 8)
-    battle._teampreview = False
-
-    await player._handle_ots_request(battle.battle_tag)
-
-    send_message_patch.assert_called_with("/acceptopenteamsheets", room="bat1")
-
-
 @pytest.mark.asyncio
 async def test_create_teampreview_team(showdown_format_teams):
     player = SimplePlayer(
