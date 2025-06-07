@@ -31,14 +31,10 @@ class DoubleBattle(AbstractBattle):
         # Turn choice attributes
         self._available_moves: List[List[Move]] = [[], []]
         self._available_switches: List[List[Pokemon]] = [[], []]
-        self._can_mega_evolve: List[bool] = [False, False]
-        self._can_z_move: List[bool] = [False, False]
         self._can_dynamax: List[bool] = [False, False]
+        self._can_mega_evolve: List[bool] = [False, False]
         self._can_tera: List[bool] = [False, False]
-        self._opponent_can_mega_evolve: bool = True
-        self._opponent_can_z_move: bool = True
-        self._opponent_can_dynamax: bool = True
-        self._opponent_can_tera: bool = True
+        self._can_z_move: List[bool] = [False, False]
         self._force_switch: List[bool] = [False, False]
         self._maybe_trapped: List[bool] = [False, False]
         self._trapped: List[bool] = [False, False]
@@ -422,22 +418,6 @@ class DoubleBattle(AbstractBattle):
         return self._available_switches
 
     @property
-    def can_mega_evolve(self) -> List[bool]:
-        """
-        :return: Whether or not either current active pokemon can mega evolve.
-        :rtype: List[bool]
-        """
-        return self._can_mega_evolve
-
-    @property
-    def can_z_move(self) -> List[bool]:
-        """
-        :return: Whether or not the current active pokemon can z-move.
-        :rtype: List[bool]
-        """
-        return self._can_z_move
-
-    @property
     def can_dynamax(self) -> List[bool]:
         """
         :return: Whether or not the current active pokemon can dynamax
@@ -446,12 +426,28 @@ class DoubleBattle(AbstractBattle):
         return self._can_dynamax
 
     @property
+    def can_mega_evolve(self) -> List[bool]:
+        """
+        :return: Whether or not either current active pokemon can mega evolve.
+        :rtype: List[bool]
+        """
+        return self._can_mega_evolve
+
+    @property
     def can_tera(self) -> List[bool]:
         """
         :return: Whether or not the current active pokemon can terastallize. If yes, will be a PokemonType.
         :rtype: List[Union[bool, PokemonType]]
         """
         return self._can_tera
+
+    @property
+    def can_z_move(self) -> List[bool]:
+        """
+        :return: Whether or not the current active pokemon can z-move.
+        :rtype: List[bool]
+        """
+        return self._can_z_move
 
     @property
     def force_switch(self) -> List[bool]:

@@ -24,10 +24,6 @@ class Battle(AbstractBattle):
         self._can_z_move = False
         self._can_dynamax = False
         self._can_tera = False
-        self._opponent_can_mega_evolve = True
-        self._opponent_can_z_move = True
-        self._opponent_can_dynamax = True
-        self._opponent_can_tera = True
         self._force_switch = False
         self._maybe_trapped = False
         self._trapped = False
@@ -185,22 +181,6 @@ class Battle(AbstractBattle):
         return self._available_switches
 
     @property
-    def can_mega_evolve(self) -> bool:
-        """
-        :return: Whether or not the current active pokemon can mega evolve.
-        :rtype: bool
-        """
-        return self._can_mega_evolve
-
-    @property
-    def can_z_move(self) -> bool:
-        """
-        :return: Whether or not the current active pokemon can z-move.
-        :rtype: bool
-        """
-        return self._can_z_move
-
-    @property
     def can_dynamax(self) -> bool:
         """
         :return: Whether or not the current active pokemon can dynamax
@@ -209,12 +189,28 @@ class Battle(AbstractBattle):
         return self._can_dynamax
 
     @property
+    def can_mega_evolve(self) -> bool:
+        """
+        :return: Whether or not the current active pokemon can mega evolve.
+        :rtype: bool
+        """
+        return self._can_mega_evolve
+
+    @property
     def can_tera(self) -> bool:
         """
         :return: Whether or not the current active pokemon can terastallize
         :rtype: bool
         """
         return self._can_tera
+
+    @property
+    def can_z_move(self) -> bool:
+        """
+        :return: Whether or not the current active pokemon can z-move.
+        :rtype: bool
+        """
+        return self._can_z_move
 
     @property
     def force_switch(self) -> bool:
