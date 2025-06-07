@@ -15,6 +15,7 @@ from poke_env.player.battle_order import (
     DoubleBattleOrder,
     ForfeitBattleOrder,
 )
+from poke_env.player.doubles_env import DoublesEnv
 from poke_env.player.env import PokeEnv
 from poke_env.player.player import Player
 from poke_env.player.single_agent_wrapper import SingleAgentWrapper
@@ -37,6 +38,7 @@ __all__ = [
     "POKE_LOOP",
     "PokeEnv",
     "SinglesEnv",
+    "DoublesEnv",
     "SingleAgentWrapper",
     "PSClient",
     "Player",
