@@ -1,2 +1,2 @@
-tensorflow<2.19
-keras-rl2
+ray[rllib]==2.47.0
+torch
