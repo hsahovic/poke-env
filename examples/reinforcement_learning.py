@@ -14,7 +14,7 @@ from ray.rllib.env import ParallelPettingZooEnv
 from ray.tune.registry import register_env
 
 from poke_env.environment.abstract_battle import AbstractBattle
-from poke_env.player import SinglesEnv, SingleAgentWrapper, RandomPlayer
+from poke_env.player import RandomPlayer, SingleAgentWrapper, SinglesEnv
 
 
 class TestEnv(SinglesEnv[npt.NDArray[np.float32]]):
