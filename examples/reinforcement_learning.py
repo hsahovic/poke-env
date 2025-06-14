@@ -14,8 +14,7 @@ from ray.rllib.env import ParallelPettingZooEnv
 from ray.tune.registry import register_env
 
 from poke_env.environment.abstract_battle import AbstractBattle
-from poke_env.player import SinglesEnv
-from poke_env.ps_client import ServerConfiguration
+from poke_env.player import SinglesEnv, SingleAgentWrapper, RandomPlayer
 
 
 class TestEnv(SinglesEnv[npt.NDArray[np.float32]]):
@@ -27,12 +26,8 @@ class TestEnv(SinglesEnv[npt.NDArray[np.float32]]):
         }
 
     @classmethod
-    def create_env(cls, config: Dict[str, Any]) -> ParallelPettingZooEnv:
+    def create_multi_agent_env(cls, config: Dict[str, Any]) -> ParallelPettingZooEnv:
         env = cls(
-            server_configuration=ServerConfiguration(
-                "ws://localhost:8000/showdown/websocket",
-                "https://play.pokemonshowdown.com/action.php?",
-            ),
             battle_format=config["battle_format"],
             log_level=25,
             open_timeout=None,
@@ -40,6 +35,18 @@ class TestEnv(SinglesEnv[npt.NDArray[np.float32]]):
             strict=False,
         )
         return ParallelPettingZooEnv(env)
+
+    @classmethod
+    def create_single_agent_env(cls, config: Dict[str, Any]) -> SingleAgentWrapper:
+        env = cls(
+            battle_format=config["battle_format"],
+            log_level=25,
+            open_timeout=None,
+            start_challenging=True,
+            strict=False,
+        )
+        opponent = RandomPlayer()
+        return SingleAgentWrapper(env, opponent)
 
     def calc_reward(self, battle) -> float:
         return self.reward_computing_helper(battle)
@@ -93,8 +100,32 @@ class ActorCriticModule(TorchRLModule, ValueFunctionAPI):
         return self.critic(embeddings).squeeze(-1)
 
 
-if __name__ == "__main__":
-    register_env("showdown", TestEnv.create_env)
+def single_agent_train():
+    register_env("showdown", TestEnv.create_single_agent_env)
+    config = PPOConfig()
+    config = config.environment(
+        "showdown",
+        env_config={"battle_format": "gen9randombattle"},
+        disable_env_checking=True,
+    )
+    config = config.learners(num_learners=1)
+    config = config.rl_module(
+        rl_module_spec=RLModuleSpec(
+            module_class=ActorCriticModule,
+            observation_space=Box(0, 6, shape=(2,), dtype=np.float32),
+            action_space=Discrete(26),
+            model_config={},
+        )
+    )
+    config = config.training(
+        gamma=0.99, lr=1e-3, train_batch_size=1024, num_epochs=10, minibatch_size=64
+    )
+    algo = config.build_algo()
+    algo.train()
+
+
+def multi_agent_train():
+    register_env("showdown", TestEnv.create_multi_agent_env)
     config = PPOConfig()
     config = config.environment(
         "showdown",
@@ -119,5 +150,9 @@ if __name__ == "__main__":
         gamma=0.99, lr=1e-3, train_batch_size=1024, num_epochs=10, minibatch_size=64
     )
     algo = config.build_algo()
-    for _ in range(10):
-        algo.train()
+    algo.train()
+
+
+if __name__ == "__main__":
+    single_agent_train()
+    multi_agent_train()
