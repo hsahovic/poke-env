@@ -224,7 +224,7 @@ class AbstractBattle(ABC):
         name = identifier[3:].strip()
         team = (
             self._team
-            if force_self_team or player_role == self.player_role
+            if player_role == self.player_role or force_self_team
             else self._opponent_team
         )
 
@@ -241,14 +241,13 @@ class AbstractBattle(ABC):
             i = matches[0]
             items = list(team.items())
             items[i] = (identifier, items[i][1])
-            items[i][1]._name = identifier[4:]
-            if player_role == self._player_role or force_self_team:
+            if player_role == self.player_role or force_self_team:
                 self._team = dict(items)
             else:
                 self._opponent_team = dict(items)
         team = (
             self._team
-            if player_role == self._player_role or force_self_team
+            if player_role == self.player_role or force_self_team
             else self._opponent_team
         )
         if identifier in team:
