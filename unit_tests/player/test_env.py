@@ -1,6 +1,7 @@
 import asyncio
 import sys
 from io import StringIO
+from unittest.mock import AsyncMock
 
 import numpy as np
 import numpy.typing as npt
@@ -78,6 +79,7 @@ def test_reset_step_close():
         start_listening=False,
         strict=False,
     )
+    env.agent1.battle_against = AsyncMock(return_value=None)
     # --- Part 1: Test reset() ---
     # Pre-populate each agent's battle_queue with a new battle.
     battle_new1 = Battle("new_battle1", env.agent1.username, env.agent1.logger, gen=8)
@@ -131,7 +133,7 @@ def test_reset_step_close():
     # Additional info should be empty.
     assert add_info_step == {env.agents[0]: {}, env.agents[1]: {}}
 
-    # --- Part 2: Test close() ---
+    # --- Part 3: Test close() ---
     env.close()
 
 
@@ -189,7 +191,6 @@ async def run_test_choose_move():
         server_configuration=server_configuration,
         start_listening=False,
         battle_format="gen7randombattles",
-        start_challenging=False,
     )
     # Create a mock battle and moves
     battle = Battle("bat1", player.agent1.username, player.agent1.logger, gen=8)
@@ -351,7 +352,6 @@ def test_action_space():
         p = SinglesEnv(
             battle_format=f"gen{gen}randombattle",
             start_listening=False,
-            start_challenging=False,
         )
         assert p.action_space(p.possible_agents[0]) == Discrete(
             4 * sum([1, has_megas, has_z_moves, has_dynamax]) + 6
@@ -373,7 +373,6 @@ def test_singles_action_order_conversions():
         p = SinglesEnv(
             battle_format=f"gen{gen}randombattle",
             start_listening=False,
-            start_challenging=False,
         )
         battle = Battle("bat1", p.agent1.username, p.agent1.logger, gen=gen)
         active_pokemon = Pokemon(species="charizard", gen=gen)
