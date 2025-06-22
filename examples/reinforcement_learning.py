@@ -13,15 +13,22 @@ from ray.rllib.core.rl_module.torch import TorchRLModule
 from ray.rllib.env import ParallelPettingZooEnv
 from ray.tune.registry import register_env
 
-from poke_env.environment.abstract_battle import AbstractBattle
+from poke_env.environment import AbstractBattle, Battle
 from poke_env.player import RandomPlayer, SingleAgentWrapper, SinglesEnv
 
 
-class TestEnv(SinglesEnv[npt.NDArray[np.float32]]):
+class ExampleEnv(SinglesEnv[npt.NDArray[np.float32]]):
+    LOW = [-1, -1, -1, -1, 0, 0, 0, 0, 0, 0]
+    HIGH = [3, 3, 3, 3, 4, 4, 4, 4, 1, 1]
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.observation_spaces = {
-            agent: Box(0, 6, shape=(2,), dtype=np.float32)
+            agent: Box(
+                np.array(self.LOW, dtype=np.float32),
+                np.array(self.HIGH, dtype=np.float32),
+                dtype=np.float32,
+            )
             for agent in self.possible_agents
         }
 
@@ -31,7 +38,6 @@ class TestEnv(SinglesEnv[npt.NDArray[np.float32]]):
             battle_format=config["battle_format"],
             log_level=25,
             open_timeout=None,
-            start_challenging=True,
             strict=False,
         )
         return ParallelPettingZooEnv(env)
@@ -42,28 +48,48 @@ class TestEnv(SinglesEnv[npt.NDArray[np.float32]]):
             battle_format=config["battle_format"],
             log_level=25,
             open_timeout=None,
-            start_challenging=True,
             strict=False,
         )
         opponent = RandomPlayer()
         return SingleAgentWrapper(env, opponent)
 
     def calc_reward(self, battle) -> float:
-        return self.reward_computing_helper(battle)
+        return self.reward_computing_helper(
+            battle, fainted_value=2.0, hp_value=1.0, victory_value=30.0
+        )
 
     def embed_battle(self, battle: AbstractBattle):
-        to_embed = []
-        fainted_mons = 0
-        for mon in battle.team.values():
-            if mon.fainted:
-                fainted_mons += 1
-        to_embed.append(fainted_mons)
-        fainted_enemy_mons = 0
-        for mon in battle.opponent_team.values():
-            if mon.fainted:
-                fainted_enemy_mons += 1
-        to_embed.append(fainted_enemy_mons)
-        return np.array(to_embed, dtype=np.float32)
+        assert isinstance(battle, Battle)
+        # -1 indicates that the move does not have a base power
+        # or is not available
+        moves_base_power = -np.ones(4)
+        moves_dmg_multiplier = np.ones(4)
+        for i, move in enumerate(battle.available_moves):
+            moves_base_power[i] = (
+                move.base_power / 100
+            )  # Simple rescaling to facilitate learning
+            if battle.opponent_active_pokemon is not None:
+                moves_dmg_multiplier[i] = move.type.damage_multiplier(
+                    battle.opponent_active_pokemon.type_1,
+                    battle.opponent_active_pokemon.type_2,
+                    type_chart=battle.opponent_active_pokemon._data.type_chart,
+                )
+
+        # We count how many pokemons have fainted in each team
+        fainted_mon_team = len([mon for mon in battle.team.values() if mon.fainted]) / 6
+        fainted_mon_opponent = (
+            len([mon for mon in battle.opponent_team.values() if mon.fainted]) / 6
+        )
+
+        # Final vector with 10 components
+        final_vector = np.concatenate(
+            [
+                moves_base_power,
+                moves_dmg_multiplier,
+                [fainted_mon_team, fainted_mon_opponent],
+            ]
+        )
+        return np.float32(final_vector)
 
 
 class ActorCriticModule(TorchRLModule, ValueFunctionAPI):
@@ -82,9 +108,9 @@ class ActorCriticModule(TorchRLModule, ValueFunctionAPI):
             model_config=model_config,
             catalog_class=catalog_class,
         )
-        self.model = nn.Linear(2, 10)
-        self.actor = nn.Linear(10, 26)
-        self.critic = nn.Linear(10, 1)
+        self.model = nn.Linear(10, 100)
+        self.actor = nn.Linear(100, 26)
+        self.critic = nn.Linear(100, 1)
 
     def _forward(self, batch: Dict[str, Any], **kwargs) -> Dict[str, Any]:
         obs = batch[Columns.OBS]
@@ -101,7 +127,7 @@ class ActorCriticModule(TorchRLModule, ValueFunctionAPI):
 
 
 def single_agent_train():
-    register_env("showdown", TestEnv.create_single_agent_env)
+    register_env("showdown", ExampleEnv.create_single_agent_env)
     config = PPOConfig()
     config = config.environment(
         "showdown",
@@ -112,7 +138,11 @@ def single_agent_train():
     config = config.rl_module(
         rl_module_spec=RLModuleSpec(
             module_class=ActorCriticModule,
-            observation_space=Box(0, 6, shape=(2,), dtype=np.float32),
+            observation_space=Box(
+                np.array(ExampleEnv.LOW, dtype=np.float32),
+                np.array(ExampleEnv.HIGH, dtype=np.float32),
+                dtype=np.float32,
+            ),
             action_space=Discrete(26),
             model_config={},
         )
@@ -125,7 +155,7 @@ def single_agent_train():
 
 
 def multi_agent_train():
-    register_env("showdown", TestEnv.create_multi_agent_env)
+    register_env("showdown", ExampleEnv.create_multi_agent_env)
     config = PPOConfig()
     config = config.environment(
         "showdown",
@@ -141,7 +171,11 @@ def multi_agent_train():
     config = config.rl_module(
         rl_module_spec=RLModuleSpec(
             module_class=ActorCriticModule,
-            observation_space=Box(0, 6, shape=(2,), dtype=np.float32),
+            observation_space=Box(
+                np.array(ExampleEnv.LOW, dtype=np.float32),
+                np.array(ExampleEnv.HIGH, dtype=np.float32),
+                dtype=np.float32,
+            ),
             action_space=Discrete(26),
             model_config={},
         )
