@@ -232,9 +232,34 @@ class AbstractBattle(ABC):
         name = identifier[3:].strip()
         team = (
             self._team
-            if force_self_team or player_role == self.player_role
+            if player_role == self.player_role or force_self_team
             else self._opponent_team
         )
+
+        # if the pokemon has a nickname, this ensures we recognize it
+        name_det = details.split(", ")[0]
+        matches = [
+            i
+            for i, p in enumerate(team.values())
+            if p.base_species == to_id_str(name_det)
+            or p.base_species in [to_id_str(det) for det in name_det.split("-")]
+        ]
+        assert len(matches) < 2
+        if identifier not in team and matches:
+            i = matches[0]
+            items = list(team.items())
+            items[i] = (identifier, items[i][1])
+            if player_role == self.player_role or force_self_team:
+                self._team = dict(items)
+            else:
+                self._opponent_team = dict(items)
+        team = (
+            self._team
+            if player_role == self.player_role or force_self_team
+            else self._opponent_team
+        )
+        if identifier in team:
+            return team[identifier]
 
         if self._team_size and len(team) >= self._team_size[player_role]:
             raise ValueError(
@@ -1015,7 +1040,10 @@ class AbstractBattle(ABC):
                 self._team[pokemon["ident"]].update_from_request(pokemon)
             else:
                 self.get_pokemon(
-                    pokemon["ident"], force_self_team=True, request=pokemon
+                    pokemon["ident"],
+                    force_self_team=True,
+                    details=pokemon["details"],
+                    request=pokemon,
                 )
 
     def won_by(self, player_name: str):
