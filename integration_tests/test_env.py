@@ -38,10 +38,8 @@ def test_env_run():
         env = SinglesTestEnv(
             battle_format=f"gen{gen}randombattle",
             log_level=25,
-            start_challenging=False,
             strict=False,
         )
-        env.start_challenging(10)
         play_function(env, 10)
         env.close()
 
@@ -62,11 +60,9 @@ def test_single_agent_env_run():
         env = SinglesTestEnv(
             battle_format=f"gen{gen}randombattle",
             log_level=25,
-            start_challenging=False,
             strict=False,
         )
         env = SingleAgentWrapper(env, RandomPlayer())
-        env.env.start_challenging(10)
         single_agent_play_function(env, 10)
         env.close()
 
@@ -76,23 +72,17 @@ def test_repeated_runs():
     env = SinglesTestEnv(
         battle_format="gen8randombattle",
         log_level=25,
-        start_challenging=False,
         strict=False,
     )
-    env.start_challenging(2)
     play_function(env, 2)
-    env.start_challenging(2)
     play_function(env, 2)
     env.close()
     env = SinglesTestEnv(
         battle_format="gen9randombattle",
         log_level=25,
-        start_challenging=False,
         strict=False,
     )
-    env.start_challenging(2)
     play_function(env, 2)
-    env.start_challenging(2)
     play_function(env, 2)
     env.close()
 
@@ -103,7 +93,6 @@ def test_env_api():
         env = SinglesTestEnv(
             battle_format=f"gen{gen}randombattle",
             log_level=25,
-            start_challenging=True,
             strict=False,
         )
         parallel_api_test(env)
@@ -116,7 +105,6 @@ def test_single_agent_env_api():
         env = SinglesTestEnv(
             battle_format=f"gen{gen}randombattle",
             log_level=25,
-            start_challenging=True,
             strict=False,
         )
         env = SingleAgentWrapper(env, RandomPlayer())
