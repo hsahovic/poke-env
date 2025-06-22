@@ -267,8 +267,15 @@ class Player(ABC):
             battle = await self._get_battle(split_messages[0][0])
 
         for split_message in split_messages[1:]:
-            if len(split_message) <= 1:
+            if not split_message:
                 continue
+            elif len(split_message) == 1:
+                if (
+                    battle.teampreview
+                    and self.accept_open_team_sheet
+                    and "rejected open team sheets." in split_message[0]
+                ):
+                    await self._handle_battle_request(battle)
             elif split_message[1] == "":
                 battle.parse_message(split_message)
             elif split_message[1] in self.MESSAGES_TO_IGNORE:
