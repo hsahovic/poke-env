@@ -1,2 +1,2 @@
 ray[rllib]==2.47.0
-torch
+torch==2.7.1
