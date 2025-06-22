@@ -39,7 +39,6 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         ping_interval: Optional[float] = 20.0,
         ping_timeout: Optional[float] = 20.0,
         team: Optional[Union[str, Teambuilder]] = None,
-        start_challenging: bool = False,
         fake: bool = False,
         strict: bool = True,
     ):
@@ -58,7 +57,6 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
             ping_interval=ping_interval,
             ping_timeout=ping_timeout,
             team=team,
-            start_challenging=start_challenging,
             fake=fake,
             strict=strict,
         )
@@ -158,9 +156,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
                         and order.order in battle.active_pokemon.available_z_moves
                     ), "invalid action"
                     assert not order.dynamax or battle.can_dynamax, "invalid action"
-                    assert (
-                        not order.terastallize or battle.can_tera is not None
-                    ), "invalid action"
+                    assert not order.terastallize or battle.can_tera, "invalid action"
             return order
         except AssertionError as e:
             if not strict and str(e) == "invalid action":
@@ -242,9 +238,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
                         and order.order in battle.active_pokemon.available_z_moves
                     ), "invalid order"
                     assert not order.dynamax or battle.can_dynamax, "invalid order"
-                    assert (
-                        not order.terastallize or battle.can_tera is not None
-                    ), "invalid order"
+                    assert not order.terastallize or battle.can_tera, "invalid order"
             return np.int64(action)
         except AssertionError as e:
             if not strict and str(e) == "invalid order":
