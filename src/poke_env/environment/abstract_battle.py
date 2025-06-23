@@ -88,16 +88,15 @@ class AbstractBattle(ABC):
         "_last_request",
         "_max_team_size",
         "_maybe_trapped",
-        "_move_on_next_request",
         "_observations",
-        "_opponent_can_dynamax",
-        "_opponent_can_mega_evolve",
-        "_opponent_can_terrastallize",
-        "_opponent_can_z_move",
         "_opponent_dynamax_turn",
         "_opponent_rating",
         "_opponent_side_conditions",
         "_opponent_team",
+        "_opponent_used_dynamax",
+        "_opponent_used_mega_evolve",
+        "_opponent_used_tera",
+        "_opponent_used_z_move",
         "_opponent_username",
         "_player_role",
         "_player_username",
@@ -116,6 +115,10 @@ class AbstractBattle(ABC):
         "_teampreview",
         "_trapped",
         "_turn",
+        "_used_dynamax",
+        "_used_mega_evolve",
+        "_used_tera",
+        "_used_z_move",
         "_wait",
         "_weather",
         "_won",
@@ -154,7 +157,6 @@ class AbstractBattle(ABC):
 
         # Turn choice attributes
         self.in_team_preview: bool = False
-        self._move_on_next_request: bool = False
         self._wait: Optional[bool] = None
 
         # Battle state attributes
@@ -163,10 +165,6 @@ class AbstractBattle(ABC):
         self._last_request: Dict[str, Any] = {}
         self.rules: List[str] = []
         self._turn: int = 0
-        self._opponent_can_terrastallize: bool = True
-        self._opponent_can_mega_evolve: Union[bool, List[bool]] = True
-        self._opponent_can_z_move: Union[bool, List[bool]] = True
-
         self._opponent_dynamax_turn: Optional[int] = None
         self._opponent_rating: Optional[int] = None
         self._rating: Optional[int] = None
@@ -178,6 +176,14 @@ class AbstractBattle(ABC):
         self._opponent_side_conditions: Dict[SideCondition, int] = {}  # set()
         self._side_conditions: Dict[SideCondition, int] = {}  # set()
         self._reviving: bool = False
+        self._opponent_used_mega_evolve = False
+        self._opponent_used_z_move = False
+        self._opponent_used_dynamax = False
+        self._opponent_used_tera = False
+        self._used_mega_evolve = False
+        self._used_z_move = False
+        self._used_dynamax = False
+        self._used_tera = False
 
         # Pokemon attributes
         self._team: Dict[str, Pokemon] = {}
@@ -226,9 +232,34 @@ class AbstractBattle(ABC):
         name = identifier[3:].strip()
         team = (
             self._team
-            if force_self_team or player_role == self.player_role
+            if player_role == self.player_role or force_self_team
             else self._opponent_team
         )
+
+        # if the pokemon has a nickname, this ensures we recognize it
+        name_det = details.split(", ")[0]
+        matches = [
+            i
+            for i, p in enumerate(team.values())
+            if p.base_species == to_id_str(name_det)
+            or p.base_species in [to_id_str(det) for det in name_det.split("-")]
+        ]
+        assert len(matches) < 2
+        if identifier not in team and matches:
+            i = matches[0]
+            items = list(team.items())
+            items[i] = (identifier, items[i][1])
+            if player_role == self.player_role or force_self_team:
+                self._team = dict(items)
+            else:
+                self._opponent_team = dict(items)
+        team = (
+            self._team
+            if player_role == self.player_role or force_self_team
+            else self._opponent_team
+        )
+        if identifier in team:
+            return team[identifier]
 
         if self._team_size and len(team) >= self._team_size[player_role]:
             raise ValueError(
@@ -659,15 +690,15 @@ class AbstractBattle(ABC):
                 pokemon.start_effect(effect)  # type: ignore
 
             if pokemon.is_dynamaxed:  # type: ignore
-                if pokemon in set(self.team.values()) and self._dynamax_turn is None:
+                if pokemon in self.team.values() and self._dynamax_turn is None:
                     self._dynamax_turn = self.turn
-                # self._can_dynamax value is set via _parse_request()
+                    self._used_dynamax = True
                 elif (
-                    pokemon in set(self.opponent_team.values())
+                    pokemon in self.opponent_team.values()
                     and self._opponent_dynamax_turn is None
                 ):
                     self._opponent_dynamax_turn = self.turn
-                    self.opponent_can_dynamax = False
+                    self._opponent_used_dynamax = True
         elif event[1] == "-activate":
             target, effect = event[2:4]
             if target and effect == "move: Skill Swap":
@@ -774,10 +805,11 @@ class AbstractBattle(ABC):
                 pokemon, item = event[2:4]
                 self.get_pokemon(pokemon).item = to_id_str(item)
         elif event[1] == "-mega":
-            if self.player_role is not None and not event[2].startswith(
-                self.player_role
-            ):
-                self._opponent_can_mega_evolve = False
+            assert self.player_role is not None
+            if event[2].startswith(self.player_role):
+                self._used_mega_evolve = True
+            else:
+                self._opponent_used_mega_evolve = True
             pokemon, megastone = event[2:4]
             self.get_pokemon(pokemon).mega_evolve(megastone)
         elif event[1] == "-mustrecharge":
@@ -834,11 +866,11 @@ class AbstractBattle(ABC):
             pokemon, into = event[2:4]
             self.get_pokemon(pokemon).transform(self.get_pokemon(into))
         elif event[1] == "-zpower":
-            if self._player_role is not None and not event[2].startswith(
-                self._player_role
-            ):
-                self._opponent_can_z_move = False
-
+            assert self.player_role is not None
+            if event[2].startswith(self.player_role):
+                self._used_z_move = True
+            else:
+                self._opponent_used_z_move = True
             pokemon = event[2]
             self.get_pokemon(pokemon).used_z_move()
         elif event[1] == "clearpoke":
@@ -955,8 +987,10 @@ class AbstractBattle(ABC):
             pokemon.terastallize(type_)  # type: ignore
 
             if pokemon.is_terastallized:  # type: ignore
-                if pokemon in set(self.opponent_team.values()):
-                    self._opponent_can_terrastallize = False
+                if pokemon in self.team.values():
+                    self._used_tera = True
+                elif pokemon in self.opponent_team.values():
+                    self._opponent_used_tera = True
         else:
             raise NotImplementedError(event)
 
@@ -1006,7 +1040,10 @@ class AbstractBattle(ABC):
                 self._team[pokemon["ident"]].update_from_request(pokemon)
             else:
                 self.get_pokemon(
-                    pokemon["ident"], force_self_team=True, request=pokemon
+                    pokemon["ident"],
+                    force_self_team=True,
+                    details=pokemon["details"],
+                    request=pokemon,
                 )
 
     def won_by(self, player_name: str):
@@ -1063,12 +1100,12 @@ class AbstractBattle(ABC):
 
     @property
     @abstractmethod
-    def can_z_move(self) -> Any:
+    def can_tera(self) -> Any:
         pass
 
     @property
     @abstractmethod
-    def can_tera(self) -> Any:
+    def can_z_move(self) -> Any:
         pass
 
     @property
@@ -1186,16 +1223,6 @@ class AbstractBattle(ABC):
         pass
 
     @property
-    @abstractmethod
-    def opponent_can_dynamax(self) -> Any:
-        pass
-
-    @opponent_can_dynamax.setter
-    @abstractmethod
-    def opponent_can_dynamax(self, value: bool) -> Any:
-        pass
-
-    @property
     def opponent_dynamax_turns_left(self) -> Optional[int]:
         """
         :return: How many turns of dynamax are left for the opponent's pokemon.
@@ -1245,6 +1272,38 @@ class AbstractBattle(ABC):
             return self._opponent_team
         else:
             return {mon.species: mon for mon in self._teampreview_opponent_team}
+
+    @property
+    def opponent_used_dynamax(self) -> bool:
+        """
+        :return: Whether or not opponent's current active pokemon can dynamax
+        :rtype: bool
+        """
+        return self._opponent_used_dynamax
+
+    @property
+    def opponent_used_mega_evolve(self) -> bool:
+        """
+        :return: Whether or not opponent's current active pokemon can mega-evolve
+        :rtype: bool
+        """
+        return self._opponent_used_mega_evolve
+
+    @property
+    def opponent_used_tera(self) -> bool:
+        """
+        :return: Whether or not opponent's current active pokemon can terastallize
+        :rtype: bool
+        """
+        return self._opponent_used_tera
+
+    @property
+    def opponent_used_z_move(self) -> bool:
+        """
+        :return: Whether or not opponent's current active pokemon can z-move
+        :rtype: bool
+        """
+        return self._opponent_used_z_move
 
     @property
     def opponent_username(self) -> Optional[str]:
@@ -1418,6 +1477,38 @@ class AbstractBattle(ABC):
         self._turn = turn
 
     @property
+    def used_dynamax(self) -> bool:
+        """
+        :return: Whether or not the current active pokemon can dynamax
+        :rtype: bool
+        """
+        return self._used_dynamax
+
+    @property
+    def used_mega_evolve(self) -> bool:
+        """
+        :return: Whether or not the current active pokemon can mega evolve.
+        :rtype: bool
+        """
+        return self._used_mega_evolve
+
+    @property
+    def used_tera(self) -> bool:
+        """
+        :return: Whether or not the current active pokemon can terastallize
+        :rtype: bool
+        """
+        return self._used_tera
+
+    @property
+    def used_z_move(self) -> bool:
+        """
+        :return: Whether or not the current active pokemon can z-move.
+        :rtype: bool
+        """
+        return self._used_z_move
+
+    @property
     def weather(self) -> Dict[Weather, int]:
         """
         :return: A Dict mapping the battle's weather (if any) to its starting turn
@@ -1433,19 +1524,6 @@ class AbstractBattle(ABC):
         :rtype: Optional[bool]
         """
         return self._won
-
-    @property
-    def move_on_next_request(self) -> bool:
-        """
-        :return: Wheter the next received request should yield a move order directly.
-            This can happen when a switch is forced, or an error is encountered.
-        :rtype: bool
-        """
-        return self._move_on_next_request
-
-    @move_on_next_request.setter
-    def move_on_next_request(self, value: bool):
-        self._move_on_next_request = value
 
     @property
     def reviving(self) -> bool:

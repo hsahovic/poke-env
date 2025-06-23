@@ -4,7 +4,6 @@ from typing import Any, Dict, List, Optional, Union
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.move import Move
 from poke_env.environment.pokemon import Pokemon
-from poke_env.environment.pokemon_type import PokemonType
 
 
 class Battle(AbstractBattle):
@@ -21,17 +20,13 @@ class Battle(AbstractBattle):
         # Turn choice attributes
         self._available_moves: List[Move] = []
         self._available_switches: List[Pokemon] = []
-        self._can_dynamax: bool = False
-        self._can_mega_evolve: bool = False
-        self._can_tera: Optional[PokemonType] = None
-        self._can_z_move: bool = False
-        self._opponent_can_dynamax = True
-        self._opponent_can_mega_evolve = True
-        self._opponent_can_z_move = True
-        self._opponent_can_tera: bool = False
-        self._force_switch: bool = False
-        self._maybe_trapped: bool = False
-        self._trapped: bool = False
+        self._can_mega_evolve = False
+        self._can_z_move = False
+        self._can_dynamax = False
+        self._can_tera = False
+        self._force_switch = False
+        self._maybe_trapped = False
+        self._trapped = False
 
     def clear_all_boosts(self):
         if self.active_pokemon is not None:
@@ -73,16 +68,13 @@ class Battle(AbstractBattle):
         self._can_mega_evolve = False
         self._can_z_move = False
         self._can_dynamax = False
-        self._can_tera = None
+        self._can_tera = False
         self._maybe_trapped = False
         self._reviving = any(
             [m["reviving"] for m in side.get("pokemon", []) if "reviving" in m]
         )
         self._trapped = False
         self._force_switch = request.get("forceSwitch", [False])[0]
-
-        if self._force_switch:
-            self._move_on_next_request = True
 
         self._last_request = request
 
@@ -101,21 +93,25 @@ class Battle(AbstractBattle):
                 self._trapped = True
 
             if self.active_pokemon is not None:
-                self._available_moves.extend(
-                    self.active_pokemon.available_moves_from_request(active_request)
-                )
+                # TODO: the illusion handling here works around Zoroark's
+                # difficulties. This should be properly handled at some point.
+                try:
+                    self._available_moves.extend(
+                        self.active_pokemon.available_moves_from_request(active_request)
+                    )
+                except AssertionError as e:
+                    if "illusion" not in [p.ability for p in self.team.values()]:
+                        raise e
             if active_request.get("canMegaEvo", False):
                 self._can_mega_evolve = True
             if active_request.get("canZMove", False):
                 self._can_z_move = True
             if active_request.get("canDynamax", False):
                 self._can_dynamax = True
+            if active_request.get("canTerastallize", False):
+                self._can_tera = True
             if active_request.get("maybeTrapped", False):
                 self._maybe_trapped = True
-            if active_request.get("canTerastallize", False):
-                self._can_tera = PokemonType.from_name(
-                    active_request["canTerastallize"]
-                )
 
         if side["pokemon"]:
             self._player_role = side["pokemon"][0]["ident"][:2]
@@ -201,10 +197,10 @@ class Battle(AbstractBattle):
         return self._can_mega_evolve
 
     @property
-    def can_tera(self) -> Optional[PokemonType]:
+    def can_tera(self) -> bool:
         """
-        :return: None, or the type the active pokemon can terastallize into.
-        :rtype: PokemonType, optional
+        :return: Whether or not the current active pokemon can terastallize
+        :rtype: bool
         """
         return self._can_tera
 
@@ -252,50 +248,6 @@ class Battle(AbstractBattle):
             if pokemon.active:
                 return pokemon
         return None
-
-    @property
-    def opponent_can_dynamax(self) -> bool:
-        """
-        :return: Whether or not opponent's current active pokemon can dynamax
-        :rtype: bool
-        """
-        return self._opponent_can_dynamax
-
-    @opponent_can_dynamax.setter
-    def opponent_can_dynamax(self, value: bool):
-        self._opponent_can_dynamax = value
-
-    @property
-    def opponent_can_mega_evolve(self) -> Union[bool, List[bool]]:
-        """
-        :return: Whether or not opponent's current active pokemon can mega-evolve
-        :rtype: bool
-        """
-        return self._opponent_can_mega_evolve
-
-    @opponent_can_mega_evolve.setter
-    def opponent_can_mega_evolve(self, value: bool):
-        self._opponent_can_mega_evolve = value
-
-    @property
-    def opponent_can_tera(self) -> bool:
-        """
-        :return: Whether or not opponent's current active pokemon can terastallize
-        :rtype: bool
-        """
-        return self._opponent_can_tera
-
-    @property
-    def opponent_can_z_move(self) -> Union[bool, List[bool]]:
-        """
-        :return: Whether or not opponent's current active pokemon can z-move
-        :rtype: bool
-        """
-        return self._opponent_can_z_move
-
-    @opponent_can_z_move.setter
-    def opponent_can_z_move(self, value: bool):
-        self._opponent_can_z_move = value
 
     @property
     def trapped(self) -> bool:
