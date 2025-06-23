@@ -40,7 +40,6 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         ping_interval: Optional[float] = 20.0,
         ping_timeout: Optional[float] = 20.0,
         team: Optional[Union[str, Teambuilder]] = None,
-        start_challenging: bool = False,
         fake: bool = False,
         strict: bool = True,
     ):
@@ -59,7 +58,6 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             ping_interval=ping_interval,
             ping_timeout=ping_timeout,
             team=team,
-            start_challenging=start_challenging,
             fake=fake,
             strict=strict,
         )
