@@ -564,23 +564,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
 
         return to_return
 
-    def reset_env(self):
-        """
-        Resets the environment to an inactive state: it will forfeit all unfinished
-        battles, reset the internal battle tracker and optionally change the next
-        opponent and restart the challenge loop.
-
-        :param opponent: The opponent to use for the next battles. If empty it
-            will not change opponent.
-        :type opponent: Player or str, optional
-        :param restart: If True the challenge loop will be restarted before returning,
-            otherwise the challenge loop will be left inactive and can be
-            started manually.
-        :type restart: bool
-        """
-        self.close(purge=False)
-        self.reset_battles()
-
     def get_additional_info(self) -> Dict[str, Dict[str, Any]]:
         """
         Returns additional info for the reset method.
@@ -643,39 +626,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             self.agent1.accept_challenges(username, 1, self.agent1.next_team), POKE_LOOP
         )
 
-    async def _ladder_loop(self, n_challenges: Optional[int] = None):
-        if n_challenges:
-            if n_challenges <= 0:
-                raise ValueError(
-                    f"Number of challenges must be > 0. Got {n_challenges}"
-                )
-            for _ in range(n_challenges):
-                await self.agent1.ladder(1)
-        else:
-            while self._keep_challenging:
-                await self.agent1.ladder(1)
-
-    def start_laddering(self, n_challenges: Optional[int] = None):
-        """
-        Starts the laddering loop.
-
-        :param n_challenges: The number of ladder games to play. If empty it
-            will run until stopped.
-        :type n_challenges: int, optional
-        """
-        if self._challenge_task and not self._challenge_task.done():
-            count = self._SWITCH_CHALLENGE_TASK_RETRIES
-            while not self._challenge_task.done():
-                if count == 0:
-                    raise RuntimeError("Agent is already challenging")
-                count -= 1
-                time.sleep(self._TIME_BETWEEN_SWITCH_RETRIES)
-        if not n_challenges:
-            self._keep_challenging = True
-        self._challenge_task = asyncio.run_coroutine_threadsafe(
-            self._ladder_loop(n_challenges), POKE_LOOP
-        )
-
     async def _stop_challenge_loop(
         self, force: bool = True, wait: bool = True, purge: bool = False
     ):
@@ -733,6 +683,15 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
 
         if purge:
             self.reset_battles()
+
+    def reset_env(self):
+        """
+        Resets the environment to an inactive state: it will forfeit all unfinished
+        battles, reset the internal battle tracker and optionally change the next
+        opponent and restart the challenge loop.
+        """
+        self.close(purge=False)
+        self.reset_battles()
 
     def reset_battles(self):
         """Resets the player's inner battle tracker."""
