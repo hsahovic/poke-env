@@ -73,13 +73,6 @@ class _AsyncQueue(Generic[ItemType]):
     def empty(self):
         return self.queue.empty()
 
-    def join(self):
-        task = asyncio.run_coroutine_threadsafe(self.queue.join(), POKE_LOOP)
-        task.result()
-
-    async def async_join(self):
-        await self.queue.join()
-
 
 class _EnvPlayer(Player):
     battle_queue: _AsyncQueue[AbstractBattle]
