@@ -235,7 +235,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             if strict:
                 raise ValueError()
             else:
-                return np.int64(-2)
+                return np.array([-2, -2])
         try:
             action1 = DoublesEnv._order_to_action_individual(
                 order.first_order, battle, fake, 0
