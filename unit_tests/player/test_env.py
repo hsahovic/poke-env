@@ -14,15 +14,15 @@ from poke_env.environment import (
     Battle,
     BattleOrder,
     DoubleBattle,
+    DoubleBattleOrder,
+    ForfeitBattleOrder,
     Move,
     Pokemon,
     PokemonType,
     Status,
 )
 from poke_env.player import (
-    DoubleBattleOrder,
     DoublesEnv,
-    ForfeitBattleOrder,
     Player,
     PokeEnv,
     SinglesEnv,
