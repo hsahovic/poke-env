@@ -1,11 +1,11 @@
 from poke_env.environment import (
     abstract_battle,
     battle,
+    battle_order,
     double_battle,
     effect,
     field,
     move,
-    battle_order,
     move_category,
     observation,
     observed_pokemon,
@@ -20,8 +20,6 @@ from poke_env.environment import (
 )
 from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.environment.battle import Battle
-from poke_env.environment.double_battle import DoubleBattle
-from poke_env.environment.effect import Effect
 from poke_env.environment.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
@@ -29,6 +27,8 @@ from poke_env.environment.battle_order import (
     ForfeitBattleOrder,
     SingleBattleOrder,
 )
+from poke_env.environment.double_battle import DoubleBattle
+from poke_env.environment.effect import Effect
 from poke_env.environment.field import Field
 from poke_env.environment.move import SPECIAL_MOVES, EmptyMove, Move
 from poke_env.environment.move_category import MoveCategory
