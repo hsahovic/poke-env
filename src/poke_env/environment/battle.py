@@ -265,7 +265,7 @@ class Battle(AbstractBattle):
 
     @property
     def valid_orders(self) -> List[SingleBattleOrder]:
-        orders = []
+        orders: List[SingleBattleOrder] = []
         orders += [SingleBattleOrder(mon) for mon in self.available_switches]
         orders += [SingleBattleOrder(move) for move in self.available_moves]
         if self.can_mega_evolve:
