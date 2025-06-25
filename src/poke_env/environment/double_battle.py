@@ -533,6 +533,7 @@ class DoubleBattle(AbstractBattle):
                         for target in self.get_possible_showdown_targets(
                             move, active_mon
                         )
+                        if move in active_mon.available_z_moves
                     ]
                 if self.can_dynamax:
                     orders[i] += [

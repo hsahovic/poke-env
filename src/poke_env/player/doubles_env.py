@@ -209,7 +209,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             raise ValueError(
                 f"Invalid action {action} from player {battle.player_username} "
                 f"in battle {battle.battle_tag} at position {pos} - "
-                f"order {order} not in action space {battle.valid_orders}!"
+                f"order {order} not in action space {battle.valid_orders[pos]}!"
             )
         return order
 
@@ -321,6 +321,6 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             raise ValueError(
                 f"Invalid order from player {battle.player_username} "
                 f"in battle {battle.battle_tag} at position {pos} - order "
-                f"{order} not in action space {battle.valid_orders}!"
+                f"{order} not in action space {battle.valid_orders[pos]}!"
             )
         return np.int64(action)
