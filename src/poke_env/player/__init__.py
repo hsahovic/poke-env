@@ -14,6 +14,7 @@ from poke_env.player.battle_order import (
     DefaultBattleOrder,
     DoubleBattleOrder,
     ForfeitBattleOrder,
+    SingleBattleOrder,
 )
 from poke_env.player.doubles_env import DoublesEnv
 from poke_env.player.env import PokeEnv
@@ -34,7 +35,6 @@ __all__ = [
     "utils",
     "ActionType",
     "ObsType",
-    "ForfeitBattleOrder",
     "POKE_LOOP",
     "PokeEnv",
     "SinglesEnv",
@@ -47,6 +47,8 @@ __all__ = [
     "background_evaluate_player",
     "evaluate_player",
     "BattleOrder",
+    "ForfeitBattleOrder",
+    "SingleBattleOrder",
     "DefaultBattleOrder",
     "DoubleBattleOrder",
     "RandomPlayer",
