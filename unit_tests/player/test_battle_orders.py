@@ -57,7 +57,7 @@ def test_double_orders():
     none = {order.message for order in DoubleBattleOrder.join_orders([], [])}
 
     assert both == {
-        "/choose move selfdestruct 2, /choose move selfdestruct 2",
+        "/choose move selfdestruct 2, move selfdestruct 2",
         "/choose move selfdestruct 2, switch lugia",
         "/choose switch lugia, move selfdestruct 2",
     }
