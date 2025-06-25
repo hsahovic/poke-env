@@ -93,11 +93,15 @@ class DoubleBattleOrder(BattleOrder):
                 DoubleBattleOrder(first_order=first_order, second_order=second_order)
                 for first_order in first_orders
                 for second_order in second_orders
-                if not first_order.mega or not second_order.mega
-                if not first_order.z_move or not second_order.z_move
-                if not first_order.dynamax or not second_order.dynamax
-                if not first_order.terastallize or not second_order.terastallize
-                if first_order.order != second_order.order
+                if not (first_order.mega and second_order.mega)
+                if not (first_order.z_move and second_order.z_move)
+                if not (first_order.dynamax and second_order.dynamax)
+                if not (first_order.terastallize and second_order.terastallize)
+                if not (
+                    isinstance(first_order.order, Pokemon)
+                    and isinstance(second_order.order, Pokemon)
+                    and str(first_order) == str(second_order)
+                )
             ]
         elif first_orders:
             return [DoubleBattleOrder(order, None) for order in first_orders]
