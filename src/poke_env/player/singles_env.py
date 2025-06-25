@@ -4,7 +4,7 @@ import numpy as np
 from gymnasium.spaces import Discrete
 
 from poke_env.environment import Battle, Pokemon
-from poke_env.player.battle_order import (
+from poke_env.environment.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
     ForfeitBattleOrder,

@@ -7,7 +7,7 @@ from poke_env.environment.move_category import MoveCategory
 from poke_env.environment.pokemon import Pokemon
 from poke_env.environment.side_condition import SideCondition
 from poke_env.environment.target import Target
-from poke_env.player.battle_order import (
+from poke_env.environment.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
     DoubleBattleOrder,

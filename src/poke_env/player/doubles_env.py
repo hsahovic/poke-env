@@ -5,7 +5,7 @@ import numpy.typing as npt
 from gymnasium.spaces import MultiDiscrete
 
 from poke_env.environment import DoubleBattle, Pokemon
-from poke_env.player.battle_order import (
+from poke_env.environment.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
     DoubleBattleOrder,

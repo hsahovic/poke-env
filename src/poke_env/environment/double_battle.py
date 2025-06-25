@@ -7,7 +7,7 @@ from poke_env.environment.move_category import MoveCategory
 from poke_env.environment.pokemon import Pokemon
 from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.target import Target
-from poke_env.player.battle_order import SingleBattleOrder
+from poke_env.environment.battle_order import SingleBattleOrder
 
 
 class DoubleBattle(AbstractBattle):
