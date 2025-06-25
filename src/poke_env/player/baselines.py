@@ -9,6 +9,7 @@ from poke_env.environment.side_condition import SideCondition
 from poke_env.environment.target import Target
 from poke_env.player.battle_order import (
     BattleOrder,
+    SingleBattleOrder,
     DefaultBattleOrder,
     DoubleBattleOrder,
 )
@@ -34,7 +35,7 @@ class MaxBasePowerPlayer(Player):
         return self.choose_random_move(battle)
 
     def choose_doubles_move(self, battle: DoubleBattle):
-        orders: List[Optional[BattleOrder]] = []
+        orders: List[Optional[SingleBattleOrder]] = []
         switched_in = None
 
         if any(battle.force_switch):
@@ -60,7 +61,7 @@ class MaxBasePowerPlayer(Player):
                 continue
             elif not moves and switches:
                 mon_to_switch_in = random.choice(switches)
-                orders.append(BattleOrder(mon_to_switch_in))
+                orders.append(SingleBattleOrder(mon_to_switch_in))
                 switched_in = mon_to_switch_in
                 continue
             elif not moves:
@@ -86,7 +87,7 @@ class MaxBasePowerPlayer(Player):
             else:
                 target = random.choice(targets)
 
-            orders.append(BattleOrder(best_move, move_target=target))
+            orders.append(SingleBattleOrder(best_move, move_target=target))
 
         if orders[0] or orders[1]:
             return DoubleBattleOrder(orders[0], orders[1])
