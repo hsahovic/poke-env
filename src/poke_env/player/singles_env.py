@@ -117,7 +117,15 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         elif action < 6:
             order = Player.create_order(list(battle.team.values())[action])
         else:
-            assert battle.active_pokemon is not None
+            if battle.active_pokemon is None:
+                if strict:
+                    raise ValueError(
+                        f"Invalid order from player {battle.player_username} "
+                        f"in battle {battle.battle_tag} - action specifies a "
+                        f"move, but battle.active_pokemon is None!"
+                    )
+                else:
+                    return DefaultBattleOrder()
             mvs = (
                 battle.available_moves
                 if len(battle.available_moves) == 1
@@ -190,7 +198,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
                         raise ValueError(
                             f"Invalid order from player {battle.player_username} "
                             f"in battle {battle.battle_tag} - type of order.order "
-                            f"is Move but battle.active_pokemon is None!"
+                            f"is Move, but battle.active_pokemon is None!"
                         )
                     else:
                         return np.int64(-2)

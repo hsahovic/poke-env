@@ -178,7 +178,12 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             order = Player.create_order(list(battle.team.values())[action - 1])
         else:
             active_mon = battle.active_pokemon[pos]
-            assert active_mon is not None
+            if active_mon is None:
+                raise ValueError(
+                    f"Invalid order from player {battle.player_username} "
+                    f"in battle {battle.battle_tag} at position {pos} - action "
+                    f"specifies a move, but battle.active_pokemon is None!"
+                )
             mvs = (
                 battle.available_moves[pos]
                 if len(battle.available_moves[pos]) == 1
@@ -276,8 +281,8 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 if active_mon is None:
                     raise ValueError(
                         f"Invalid order {order} from player {battle.player_username} "
-                        f"in battle {battle.battle_tag} at position {pos} - "
-                        f"type of order.order is Move but battle.active_pokemon[pos] is None!"
+                        f"in battle {battle.battle_tag} at position {pos} - type of "
+                        f"order.order is Move, but battle.active_pokemon[pos] is None!"
                     )
                 mvs = (
                     battle.available_moves[pos]
