@@ -3,9 +3,15 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from poke_env import AccountConfiguration
-from poke_env.environment import AbstractBattle, Battle, DoubleBattle, Move, PokemonType
-from poke_env.player import (
+from poke_env.environment import (
+    AbstractBattle,
+    Battle,
     BattleOrder,
+    DoubleBattle,
+    Move,
+    PokemonType,
+)
+from poke_env.player import (
     Player,
     RandomPlayer,
     SingleBattleOrder,

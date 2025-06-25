@@ -12,6 +12,7 @@ from poke_env.concurrency import POKE_LOOP
 from poke_env.environment import (
     AbstractBattle,
     Battle,
+    BattleOrder,
     DoubleBattle,
     Move,
     Pokemon,
@@ -19,7 +20,6 @@ from poke_env.environment import (
     Status,
 )
 from poke_env.player import (
-    BattleOrder,
     DoubleBattleOrder,
     DoublesEnv,
     ForfeitBattleOrder,
