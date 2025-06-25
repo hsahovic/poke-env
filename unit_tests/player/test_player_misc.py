@@ -10,11 +10,11 @@ from poke_env.environment import (
     DoubleBattle,
     Move,
     PokemonType,
+    SingleBattleOrder,
 )
 from poke_env.player import (
     Player,
     RandomPlayer,
-    SingleBattleOrder,
     cross_evaluate,
 )
 from poke_env.stats import _raw_hp, _raw_stat
