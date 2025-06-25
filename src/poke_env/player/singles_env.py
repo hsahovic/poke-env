@@ -132,6 +132,16 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
                 and battle.available_moves[0].id in ["struggle", "recharge"]
                 else list(battle.active_pokemon.moves.values())
             )
+            if (action - 6) % 4 not in range(len(mvs)):
+                if strict:
+                    raise ValueError(
+                        f"Invalid action {action} from player {battle.player_username} "
+                        f"in battle {battle.battle_tag} - action specifies a move "
+                        f"but the move index {(action - 6) % 4} is out of bounds "
+                        f"for available moves {mvs}!"
+                    )
+                else:
+                    return DefaultBattleOrder()
             order = Player.create_order(
                 mvs[(action - 6) % 4],
                 mega=10 <= action.item() < 14,
@@ -208,6 +218,15 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
                     and battle.available_moves[0].id in ["struggle", "recharge"]
                     else list(battle.active_pokemon.moves.values())
                 )
+                if order.order.id not in [m.id for m in mvs]:
+                    if strict:
+                        raise ValueError(
+                            f"Invalid order from player {battle.player_username} "
+                            f"in battle {battle.battle_tag} - order {order} "
+                            f"not in available moves {mvs}!"
+                        )
+                    else:
+                        return np.int64(-2)
                 action = [m.id for m in mvs].index(order.order.id)
                 if order.mega:
                     gimmick = 1

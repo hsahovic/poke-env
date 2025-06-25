@@ -190,6 +190,13 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 and battle.available_moves[pos][0].id in ["struggle", "recharge"]
                 else list(active_mon.moves.values())
             )
+            if (action - 7) % 20 // 5 not in range(len(mvs)):
+                raise ValueError(
+                    f"Invalid action {action} from player {battle.player_username} "
+                    f"in battle {battle.battle_tag} at position {pos} - action "
+                    f"specifies a move but the move index {(action - 7) % 20 // 5} "
+                    f"is out of bounds for available moves {mvs}!"
+                )
             order = Player.create_order(
                 mvs[(action - 7) % 20 // 5],
                 move_target=(action.item() - 7) % 5 - 2,
@@ -290,6 +297,13 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                     and battle.available_moves[pos][0].id in ["struggle", "recharge"]
                     else list(active_mon.moves.values())
                 )
+                if order.order.id not in [m.id for m in mvs]:
+                    raise ValueError(
+                        f"Invalid order {order} from player {battle.player_username} "
+                        f"in battle {battle.battle_tag} at position {pos} - order "
+                        f"specifies a move but the move {order.order.id} is not in "
+                        f"available moves {mvs}!"
+                    )
                 action = [m.id for m in mvs].index(order.order.id)
                 target = order.move_target + 2
                 if order.mega:
