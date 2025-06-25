@@ -242,8 +242,10 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 assert not (
                     len(battle.available_switches[0]) == 1
                     and battle.force_switch == [True, True]
-                    and isinstance(order.first_order, Pokemon)
-                    and isinstance(order.second_order, Pokemon)
+                    and order.first_order is not None
+                    and isinstance(order.first_order.order, Pokemon)
+                    and order.second_order is not None
+                    and isinstance(order.second_order.order, Pokemon)
                 ), "invalid order"
             action1 = DoublesEnv._order_to_action_individual(
                 order.first_order, battle, fake, 0
