@@ -518,7 +518,7 @@ class DoubleBattle(AbstractBattle):
                     for move in self.available_moves[i]
                     for target in self.get_possible_showdown_targets(move, active_mon)
                 ]
-                if self.can_mega_evolve:
+                if self.can_mega_evolve[i]:
                     orders[i] += [
                         SingleBattleOrder(move, move_target=target, mega=True)
                         for move in self.available_moves[i]
@@ -526,7 +526,7 @@ class DoubleBattle(AbstractBattle):
                             move, active_mon
                         )
                     ]
-                if self.can_z_move:
+                if self.can_z_move[i]:
                     orders[i] += [
                         SingleBattleOrder(move, move_target=target, z_move=True)
                         for move in self.available_moves[i]
@@ -535,7 +535,7 @@ class DoubleBattle(AbstractBattle):
                         )
                         if move in active_mon.available_z_moves
                     ]
-                if self.can_dynamax:
+                if self.can_dynamax[i]:
                     orders[i] += [
                         SingleBattleOrder(move, move_target=target, dynamax=True)
                         for move in self.available_moves[i]
@@ -543,7 +543,7 @@ class DoubleBattle(AbstractBattle):
                             move, active_mon
                         )
                     ]
-                if self.can_tera:
+                if self.can_tera[i]:
                     orders[i] += [
                         SingleBattleOrder(move, move_target=target, terastallize=True)
                         for move in self.available_moves[i]
