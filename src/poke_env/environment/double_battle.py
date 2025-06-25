@@ -7,6 +7,7 @@ from poke_env.environment.move_category import MoveCategory
 from poke_env.environment.pokemon import Pokemon
 from poke_env.environment.pokemon_type import PokemonType
 from poke_env.environment.target import Target
+from poke_env.player.battle_order import SingleBattleOrder
 
 
 class DoubleBattle(AbstractBattle):
@@ -501,6 +502,54 @@ class DoubleBattle(AbstractBattle):
     @trapped.setter
     def trapped(self, value: List[bool]):
         self._trapped = value
+
+    @property
+    def valid_orders(self) -> List[List[SingleBattleOrder]]:
+        orders = [[], []]
+        for i in range(2):
+            if self.force_switch == [[False, True], [True, False]][i]:
+                continue
+            orders[i] += [SingleBattleOrder(mon) for mon in self.available_switches[i]]
+            active_mon = self.active_pokemon[i]
+            if active_mon is not None:
+                orders[i] += [
+                    SingleBattleOrder(move, move_target=target)
+                    for move in self.available_moves[i]
+                    for target in self.get_possible_showdown_targets(move, active_mon)
+                ]
+                if self.can_mega_evolve:
+                    orders[i] += [
+                        SingleBattleOrder(move, move_target=target, mega=True)
+                        for move in self.available_moves[i]
+                        for target in self.get_possible_showdown_targets(
+                            move, active_mon
+                        )
+                    ]
+                if self.can_z_move:
+                    orders[i] += [
+                        SingleBattleOrder(move, move_target=target, z_move=True)
+                        for move in self.available_moves[i]
+                        for target in self.get_possible_showdown_targets(
+                            move, active_mon
+                        )
+                    ]
+                if self.can_dynamax:
+                    orders[i] += [
+                        SingleBattleOrder(move, move_target=target, dynamax=True)
+                        for move in self.available_moves[i]
+                        for target in self.get_possible_showdown_targets(
+                            move, active_mon
+                        )
+                    ]
+                if self.can_tera:
+                    orders[i] += [
+                        SingleBattleOrder(move, move_target=target, terastallize=True)
+                        for move in self.available_moves[i]
+                        for target in self.get_possible_showdown_targets(
+                            move, active_mon
+                        )
+                    ]
+        return orders
 
     @property
     def reviving(self) -> bool:

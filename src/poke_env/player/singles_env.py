@@ -3,7 +3,7 @@ from typing import Optional, Union
 import numpy as np
 from gymnasium.spaces import Discrete
 
-from poke_env.environment import Battle, Move, Pokemon
+from poke_env.environment import Battle, Pokemon
 from poke_env.player.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
@@ -110,60 +110,37 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         :return: The battle order for the given action in context of the current battle.
         :rtype: BattleOrder
         """
-        try:
-            if action == -2:
-                return DefaultBattleOrder()
-            elif action == -1:
-                return ForfeitBattleOrder()
-            elif action < 6:
-                order = Player.create_order(list(battle.team.values())[action])
-                if not fake:
-                    assert not battle.trapped, "invalid action"
-                    assert isinstance(order.order, Pokemon)
-                    assert order.order.base_species in [
-                        p.base_species for p in battle.available_switches
-                    ], "invalid action"
-            else:
-                if not fake:
-                    assert not battle.force_switch, "invalid action"
-                    assert battle.active_pokemon is not None, "invalid action"
-                elif battle.active_pokemon is None:
-                    return DefaultBattleOrder()
-                mvs = (
-                    battle.available_moves
-                    if len(battle.available_moves) == 1
-                    and battle.available_moves[0].id in ["struggle", "recharge"]
-                    else list(battle.active_pokemon.moves.values())
+        if action == -2:
+            return DefaultBattleOrder()
+        elif action == -1:
+            return ForfeitBattleOrder()
+        elif action < 6:
+            order = Player.create_order(list(battle.team.values())[action])
+        else:
+            assert battle.active_pokemon is not None
+            mvs = (
+                battle.available_moves
+                if len(battle.available_moves) == 1
+                and battle.available_moves[0].id in ["struggle", "recharge"]
+                else list(battle.active_pokemon.moves.values())
+            )
+            order = Player.create_order(
+                mvs[(action - 6) % 4],
+                mega=10 <= action.item() < 14,
+                z_move=14 <= action.item() < 18,
+                dynamax=18 <= action.item() < 22,
+                terastallize=22 <= action.item() < 26,
+            )
+        if not fake and order not in battle.valid_orders:
+            if strict:
+                raise ValueError(
+                    f"Invalid action {action} from player {battle.player_username} "
+                    f"in battle {battle.battle_tag} - converted order {order} "
+                    f"not in valid orders {battle.valid_orders}!"
                 )
-                if not fake:
-                    assert (action - 6) % 4 in range(len(mvs)), "invalid action"
-                elif (action - 6) % 4 not in range(len(mvs)):
-                    return DefaultBattleOrder()
-                order = Player.create_order(
-                    mvs[(action - 6) % 4],
-                    mega=10 <= action.item() < 14,
-                    z_move=14 <= action.item() < 18,
-                    dynamax=18 <= action.item() < 22,
-                    terastallize=22 <= action.item() < 26,
-                )
-                if not fake:
-                    assert isinstance(order.order, Move)
-                    assert order.order.id in [
-                        m.id for m in battle.available_moves
-                    ], "invalid action"
-                    assert not order.mega or battle.can_mega_evolve, "invalid action"
-                    assert not order.z_move or (
-                        battle.can_z_move
-                        and order.order in battle.active_pokemon.available_z_moves
-                    ), "invalid action"
-                    assert not order.dynamax or battle.can_dynamax, "invalid action"
-                    assert not order.terastallize or battle.can_tera, "invalid action"
-            return order
-        except AssertionError as e:
-            if not strict and str(e) == "invalid action":
-                return DefaultBattleOrder()
             else:
-                raise e
+                return DefaultBattleOrder()
+        return order
 
     @staticmethod
     def order_to_action(
@@ -187,65 +164,52 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         :return: The action for the given battle order in context of the current battle.
         :rtype: int64
         """
-        try:
-            if isinstance(order, DefaultBattleOrder):
-                action = -2
-            elif isinstance(order, ForfeitBattleOrder):
-                action = -1
-            else:
-                assert isinstance(order, SingleBattleOrder)
-                assert not isinstance(order.order, str)
-                if isinstance(order.order, Pokemon):
-                    if not fake:
-                        assert not battle.trapped, "invalid order"
-                        assert order.order.base_species in [
-                            p.base_species for p in battle.available_switches
-                        ], "invalid order"
-                    action = [p.base_species for p in battle.team.values()].index(
-                        order.order.base_species
+        if isinstance(order, DefaultBattleOrder):
+            action = -2
+        elif isinstance(order, ForfeitBattleOrder):
+            action = -1
+        else:
+            assert isinstance(order, SingleBattleOrder)
+            assert not isinstance(order.order, str)
+            if not fake and order not in battle.valid_orders:
+                if strict:
+                    raise ValueError(
+                        f"Invalid order from player {battle.player_username} "
+                        f"in battle {battle.battle_tag} - order {order} "
+                        f"not in valid orders {battle.valid_orders}!"
                     )
                 else:
-                    if not fake:
-                        assert not battle.force_switch, "invalid order"
-                        assert battle.active_pokemon is not None, "invalid order"
-                    elif battle.active_pokemon is None:
-                        return np.int64(-2)
-                    mvs = (
-                        battle.available_moves
-                        if len(battle.available_moves) == 1
-                        and battle.available_moves[0].id in ["struggle", "recharge"]
-                        else list(battle.active_pokemon.moves.values())
-                    )
-                    if not fake:
-                        assert order.order.id in [m.id for m in mvs], "invalid order"
-                    action = [m.id for m in mvs].index(order.order.id)
-                    if order.mega:
-                        gimmick = 1
-                    elif order.z_move:
-                        gimmick = 2
-                    elif order.dynamax:
-                        gimmick = 3
-                    elif order.terastallize:
-                        gimmick = 4
-                    else:
-                        gimmick = 0
-                    action = 6 + action + 4 * gimmick
-                    if not fake:
-                        assert order.order.id in [
-                            m.id for m in battle.available_moves
-                        ], "invalid order"
-                        assert not order.mega or battle.can_mega_evolve, "invalid order"
-                        assert not order.z_move or (
-                            battle.can_z_move
-                            and order.order in battle.active_pokemon.available_z_moves
-                        ), "invalid order"
-                        assert not order.dynamax or battle.can_dynamax, "invalid order"
-                        assert (
-                            not order.terastallize or battle.can_tera
-                        ), "invalid order"
-            return np.int64(action)
-        except AssertionError as e:
-            if not strict and str(e) == "invalid order":
-                return np.int64(-2)
+                    action = -2
+            if isinstance(order.order, Pokemon):
+                action = [p.base_species for p in battle.team.values()].index(
+                    order.order.base_species
+                )
             else:
-                raise e
+                if battle.active_pokemon is None:
+                    if strict:
+                        raise ValueError(
+                            f"Invalid order from player {battle.player_username} "
+                            f"in battle {battle.battle_tag} - type of order.order "
+                            f"is Move but battle.active_pokemon is None!"
+                        )
+                    else:
+                        return np.int64(-2)
+                mvs = (
+                    battle.available_moves
+                    if len(battle.available_moves) == 1
+                    and battle.available_moves[0].id in ["struggle", "recharge"]
+                    else list(battle.active_pokemon.moves.values())
+                )
+                action = [m.id for m in mvs].index(order.order.id)
+                if order.mega:
+                    gimmick = 1
+                elif order.z_move:
+                    gimmick = 2
+                elif order.dynamax:
+                    gimmick = 3
+                elif order.terastallize:
+                    gimmick = 4
+                else:
+                    gimmick = 0
+                action = 6 + action + 4 * gimmick
+        return np.int64(action)
