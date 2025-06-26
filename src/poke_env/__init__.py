@@ -2,13 +2,6 @@
 
 import logging
 
-import poke_env.calc as calc
-import poke_env.environment as environment
-import poke_env.exceptions as exceptions
-import poke_env.player as player
-import poke_env.ps_client as ps_client
-import poke_env.stats as stats
-import poke_env.teambuilder as teambuilder
 from poke_env.data import gen_data, to_id_str
 from poke_env.exceptions import ShowdownException
 from poke_env.player import (
@@ -43,15 +36,8 @@ __all__ = [
     "ShowdownException",
     "ShowdownServerConfiguration",
     "SimpleHeuristicsPlayer",
-    "calc",
     "compute_raw_stats",
     "cross_evaluate",
-    "environment",
-    "exceptions",
     "gen_data",
-    "player",
-    "ps_client",
-    "stats",
-    "teambuilder",
     "to_id_str",
 ]

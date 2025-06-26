@@ -1,8 +1,4 @@
-from poke_env.environment import (
-    EmptyMove,
-    Move,
-    Pokemon,
-)
+from poke_env.battle import EmptyMove, Move, Pokemon
 from poke_env.player import (
     BattleOrder,
     DoubleBattleOrder,

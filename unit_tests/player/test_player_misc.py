@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from poke_env import AccountConfiguration
-from poke_env.environment import (
+from poke_env.battle import (
     AbstractBattle,
     Battle,
     DoubleBattle,

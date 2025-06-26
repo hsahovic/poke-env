@@ -1,4 +1,4 @@
-from poke_env.environment import DoubleBattle, Move, Pokemon
+from poke_env.battle import DoubleBattle, Move, Pokemon
 from poke_env.player import MaxBasePowerPlayer
 
 

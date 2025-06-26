@@ -4,8 +4,8 @@ from abc import abstractmethod
 from dataclasses import dataclass
 from typing import List, Optional, Union
 
-from poke_env.environment.move import Move
-from poke_env.environment.pokemon import Pokemon
+from poke_env.battle.move import Move
+from poke_env.battle.pokemon import Pokemon
 
 
 class BattleOrder:
