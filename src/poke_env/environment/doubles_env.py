@@ -206,7 +206,6 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 dynamax=(action - 7) // 20 == 3,
                 terastallize=(action - 7) // 20 == 4,
             )
-        print(battle.player_username, battle.valid_orders[pos])
         if not fake and order not in battle.valid_orders[pos]:
             raise ValueError(
                 f"Invalid action {action} from player {battle.player_username} "
