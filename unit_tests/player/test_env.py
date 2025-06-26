@@ -8,8 +8,7 @@ import numpy.typing as npt
 from gymnasium.spaces import Discrete
 
 from poke_env import AccountConfiguration, ServerConfiguration
-from poke_env.concurrency import POKE_LOOP
-from poke_env.environment import (
+from poke_env.battle import (
     AbstractBattle,
     Battle,
     DoubleBattle,
@@ -18,16 +17,10 @@ from poke_env.environment import (
     PokemonType,
     Status,
 )
-from poke_env.player import (
-    BattleOrder,
-    DoubleBattleOrder,
-    DoublesEnv,
-    ForfeitBattleOrder,
-    Player,
-    PokeEnv,
-    SinglesEnv,
-)
-from poke_env.player.env import _AsyncQueue, _EnvPlayer
+from poke_env.concurrency import POKE_LOOP
+from poke_env.environment import DoublesEnv, PokeEnv, SinglesEnv
+from poke_env.environment.env import _AsyncQueue, _EnvPlayer
+from poke_env.player import BattleOrder, DoubleBattleOrder, ForfeitBattleOrder, Player
 
 account_configuration1 = AccountConfiguration("username1", "password1")
 account_configuration2 = AccountConfiguration("username2", "password2")
@@ -379,10 +372,7 @@ def test_singles_action_order_conversions():
         ],
         start=4,
     ):
-        p = SinglesEnv(
-            battle_format=f"gen{gen}randombattle",
-            start_listening=False,
-        )
+        p = SinglesEnv(battle_format=f"gen{gen}randombattle", start_listening=False)
         battle = Battle("bat1", p.agent1.username, p.agent1.logger, gen=gen)
         active_pokemon = Pokemon(species="charizard", gen=gen)
         move = Move("flamethrower", gen=gen)
@@ -456,8 +446,7 @@ def test_doubles_action_order_conversions():
         start=8,
     ):
         p = DoublesEnv(
-            battle_format=f"gen{gen}randomdoublesbattle",
-            start_listening=False,
+            battle_format=f"gen{gen}randomdoublesbattle", start_listening=False
         )
         battle = DoubleBattle("bat1", p.agent1.username, p.agent1.logger, gen=gen)
         battle._player_role = "p1"

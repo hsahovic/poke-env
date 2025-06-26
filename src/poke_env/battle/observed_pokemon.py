@@ -9,12 +9,12 @@ from copy import copy
 from dataclasses import dataclass, field
 from typing import Dict, List, Mapping, Optional, Union
 
-from poke_env.environment.effect import Effect
-from poke_env.environment.move import Move
-from poke_env.environment.pokemon import Pokemon
-from poke_env.environment.pokemon_gender import PokemonGender
-from poke_env.environment.pokemon_type import PokemonType
-from poke_env.environment.status import Status
+from poke_env.battle.effect import Effect
+from poke_env.battle.move import Move
+from poke_env.battle.pokemon import Pokemon
+from poke_env.battle.pokemon_gender import PokemonGender
+from poke_env.battle.pokemon_type import PokemonType
+from poke_env.battle.status import Status
 
 
 @dataclass

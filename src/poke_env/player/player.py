@@ -12,18 +12,19 @@ from typing import Any, Awaitable, Dict, List, Optional, Union
 
 import orjson
 
+from poke_env.battle.abstract_battle import AbstractBattle
+from poke_env.battle.battle import Battle
+from poke_env.battle.double_battle import DoubleBattle
+from poke_env.battle.move import Move
+from poke_env.battle.pokemon import Pokemon
 from poke_env.concurrency import create_in_poke_loop, handle_threaded_coroutines
 from poke_env.data import GenData, to_id_str
-from poke_env.environment.abstract_battle import AbstractBattle
-from poke_env.environment.battle import Battle
-from poke_env.environment.double_battle import DoubleBattle
-from poke_env.environment.move import Move
-from poke_env.environment.pokemon import Pokemon
 from poke_env.exceptions import ShowdownException
 from poke_env.player.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
     DoubleBattleOrder,
+    SingleBattleOrder,
 )
 from poke_env.ps_client import PSClient
 from poke_env.ps_client.account_configuration import AccountConfiguration
@@ -524,7 +525,7 @@ class Player(ABC):
 
     @staticmethod
     def choose_random_doubles_move(battle: DoubleBattle) -> BattleOrder:
-        active_orders: List[List[BattleOrder]] = [[], []]
+        active_orders: List[List[SingleBattleOrder]] = [[], []]
 
         if any(battle.force_switch):
             first_order = None
@@ -532,7 +533,7 @@ class Player(ABC):
 
             if battle.force_switch[0] and battle.available_switches[0]:
                 first_switch_in = random.choice(battle.available_switches[0])
-                first_order = BattleOrder(first_switch_in)
+                first_order = SingleBattleOrder(first_switch_in)
             else:
                 first_switch_in = None
 
@@ -543,7 +544,7 @@ class Player(ABC):
 
                 if available_switches:
                     second_switch_in = random.choice(available_switches)
-                    second_order = BattleOrder(second_switch_in)
+                    second_order = SingleBattleOrder(second_switch_in)
 
             return DoubleBattleOrder(first_order, second_order)
 
@@ -574,17 +575,17 @@ class Player(ABC):
             }
             orders.extend(
                 [
-                    BattleOrder(move, move_target=target)
+                    SingleBattleOrder(move, move_target=target)
                     for move in moves
                     for target in targets[move]
                 ]
             )
-            orders.extend([BattleOrder(switch) for switch in switches])
+            orders.extend([SingleBattleOrder(switch) for switch in switches])
 
             if can_mega:
                 orders.extend(
                     [
-                        BattleOrder(move, move_target=target, mega=True)
+                        SingleBattleOrder(move, move_target=target, mega=True)
                         for move in moves
                         for target in targets[move]
                     ]
@@ -593,7 +594,7 @@ class Player(ABC):
                 available_z_moves = set(mon.available_z_moves)
                 orders.extend(
                     [
-                        BattleOrder(move, move_target=target, z_move=True)
+                        SingleBattleOrder(move, move_target=target, z_move=True)
                         for move in moves
                         for target in targets[move]
                         if move in available_z_moves
@@ -603,7 +604,7 @@ class Player(ABC):
             if can_dynamax:
                 orders.extend(
                     [
-                        BattleOrder(move, move_target=target, dynamax=True)
+                        SingleBattleOrder(move, move_target=target, dynamax=True)
                         for move in moves
                         for target in targets[move]
                     ]
@@ -612,7 +613,7 @@ class Player(ABC):
             if can_tera:
                 orders.extend(
                     [
-                        BattleOrder(move, move_target=target, terastallize=True)
+                        SingleBattleOrder(move, move_target=target, terastallize=True)
                         for move in moves
                         for target in targets[move]
                     ]
@@ -626,26 +627,29 @@ class Player(ABC):
             return DefaultBattleOrder()
 
     @staticmethod
-    def choose_random_singles_move(battle: Battle) -> BattleOrder:
-        available_orders = [BattleOrder(move) for move in battle.available_moves]
+    def choose_random_singles_move(battle: Battle) -> SingleBattleOrder:
+        available_orders = [SingleBattleOrder(move) for move in battle.available_moves]
         available_orders.extend(
-            [BattleOrder(switch) for switch in battle.available_switches]
+            [SingleBattleOrder(switch) for switch in battle.available_switches]
         )
 
         if battle.can_mega_evolve:
             available_orders.extend(
-                [BattleOrder(move, mega=True) for move in battle.available_moves]
+                [SingleBattleOrder(move, mega=True) for move in battle.available_moves]
             )
 
         if battle.can_dynamax:
             available_orders.extend(
-                [BattleOrder(move, dynamax=True) for move in battle.available_moves]
+                [
+                    SingleBattleOrder(move, dynamax=True)
+                    for move in battle.available_moves
+                ]
             )
 
         if battle.can_tera:
             available_orders.extend(
                 [
-                    BattleOrder(move, terastallize=True)
+                    SingleBattleOrder(move, terastallize=True)
                     for move in battle.available_moves
                 ]
             )
@@ -654,7 +658,7 @@ class Player(ABC):
             available_z_moves = set(battle.active_pokemon.available_z_moves)
             available_orders.extend(
                 [
-                    BattleOrder(move, z_move=True)
+                    SingleBattleOrder(move, z_move=True)
                     for move in battle.available_moves
                     if move in available_z_moves
                 ]
@@ -828,7 +832,7 @@ class Player(ABC):
         dynamax: bool = False,
         terastallize: bool = False,
         move_target: int = DoubleBattle.EMPTY_TARGET_POSITION,
-    ) -> BattleOrder:
+    ) -> SingleBattleOrder:
         """Formats an move order corresponding to the provided pokemon or move.
 
         :param order: Move to make or Pokemon to switch to.
@@ -846,7 +850,7 @@ class Player(ABC):
         :return: Formatted move order
         :rtype: str
         """
-        return BattleOrder(
+        return SingleBattleOrder(
             order,
             mega=mega,
             move_target=move_target,

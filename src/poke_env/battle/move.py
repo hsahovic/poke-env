@@ -2,15 +2,15 @@ import copy
 from functools import lru_cache
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
+from poke_env.battle.effect import Effect
+from poke_env.battle.field import Field
+from poke_env.battle.move_category import MoveCategory
+from poke_env.battle.pokemon_type import PokemonType
+from poke_env.battle.side_condition import SideCondition
+from poke_env.battle.status import Status
+from poke_env.battle.target import Target
+from poke_env.battle.weather import Weather
 from poke_env.data import GenData, to_id_str
-from poke_env.environment.effect import Effect
-from poke_env.environment.field import Field
-from poke_env.environment.move_category import MoveCategory
-from poke_env.environment.pokemon_type import PokemonType
-from poke_env.environment.side_condition import SideCondition
-from poke_env.environment.status import Status
-from poke_env.environment.target import Target
-from poke_env.environment.weather import Weather
 
 SPECIAL_MOVES: Set[str] = {"struggle", "recharge"}
 

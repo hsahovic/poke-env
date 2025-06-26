@@ -2,8 +2,8 @@ from unittest.mock import MagicMock
 
 import pytest
 
+from poke_env.battle import Battle, Move, MoveCategory, Pokemon
 from poke_env.data import GenData
-from poke_env.environment import Battle, Move, MoveCategory, Pokemon
 
 # MOVES TESTS
 

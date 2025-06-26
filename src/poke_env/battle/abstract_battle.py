@@ -4,16 +4,16 @@ from abc import ABC, abstractmethod
 from logging import Logger
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
+from poke_env.battle.effect import Effect
+from poke_env.battle.field import Field
+from poke_env.battle.observation import Observation
+from poke_env.battle.observed_pokemon import ObservedPokemon
+from poke_env.battle.pokemon import Pokemon
+from poke_env.battle.pokemon_type import PokemonType
+from poke_env.battle.side_condition import STACKABLE_CONDITIONS, SideCondition
+from poke_env.battle.weather import Weather
 from poke_env.data import GenData, to_id_str
 from poke_env.data.replay_template import REPLAY_TEMPLATE
-from poke_env.environment.effect import Effect
-from poke_env.environment.field import Field
-from poke_env.environment.observation import Observation
-from poke_env.environment.observed_pokemon import ObservedPokemon
-from poke_env.environment.pokemon import Pokemon
-from poke_env.environment.pokemon_type import PokemonType
-from poke_env.environment.side_condition import STACKABLE_CONDITIONS, SideCondition
-from poke_env.environment.weather import Weather
 
 
 class AbstractBattle(ABC):
@@ -1507,6 +1507,11 @@ class AbstractBattle(ABC):
         :rtype: bool
         """
         return self._used_z_move
+
+    @property
+    @abstractmethod
+    def valid_orders(self) -> Any:
+        pass
 
     @property
     def weather(self) -> Dict[Weather, int]:

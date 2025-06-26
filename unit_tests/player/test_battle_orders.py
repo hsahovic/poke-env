@@ -1,31 +1,41 @@
-from poke_env.environment import EmptyMove, Move, Pokemon
-from poke_env.player import BattleOrder, DoubleBattleOrder, ForfeitBattleOrder
+from poke_env.battle import EmptyMove, Move, Pokemon
+from poke_env.player import (
+    BattleOrder,
+    DoubleBattleOrder,
+    ForfeitBattleOrder,
+    SingleBattleOrder,
+)
 
 
 def test_recharge_order():
     recharge = EmptyMove("recharge")
-    assert BattleOrder(recharge).message == "/choose move 1"
+    assert SingleBattleOrder(recharge).message == "/choose move 1"
 
 
 def test_single_orders():
     move = Move("flamethrower", gen=8)
     assert (
-        BattleOrder(move).message
+        SingleBattleOrder(move).message
         == "/choose move flamethrower"
-        == str(BattleOrder(move))
+        == str(SingleBattleOrder(move))
     )
 
-    assert BattleOrder(move, mega=True).message == "/choose move flamethrower mega"
+    assert (
+        SingleBattleOrder(move, mega=True).message == "/choose move flamethrower mega"
+    )
 
-    assert BattleOrder(move, z_move=True).message == "/choose move flamethrower zmove"
+    assert (
+        SingleBattleOrder(move, z_move=True).message
+        == "/choose move flamethrower zmove"
+    )
 
     mon = Pokemon(species="charizard", gen=8)
-    assert BattleOrder(mon).message == "/choose switch charizard"
+    assert SingleBattleOrder(mon).message == "/choose switch charizard"
 
 
 def test_double_orders():
-    move = BattleOrder(Move("selfdestruct", gen=8), move_target=2)
-    mon = BattleOrder(Pokemon(species="lugia", gen=8))
+    move = SingleBattleOrder(Move("selfdestruct", gen=8), move_target=2)
+    mon = SingleBattleOrder(Pokemon(species="lugia", gen=8))
 
     assert (
         DoubleBattleOrder(move, mon).message
@@ -47,6 +57,7 @@ def test_double_orders():
     none = {order.message for order in DoubleBattleOrder.join_orders([], [])}
 
     assert both == {
+        "/choose move selfdestruct 2, move selfdestruct 2",
         "/choose move selfdestruct 2, switch lugia",
         "/choose switch lugia, move selfdestruct 2",
     }

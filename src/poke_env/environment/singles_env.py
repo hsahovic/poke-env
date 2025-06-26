@@ -3,13 +3,14 @@ from typing import List, Optional, Union
 import numpy as np
 from gymnasium.spaces import Discrete
 
-from poke_env.environment import Battle, Pokemon
+from poke_env.battle import Battle, Pokemon
+from poke_env.environment.env import ObsType, PokeEnv
 from poke_env.player.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
     ForfeitBattleOrder,
+    SingleBattleOrder,
 )
-from poke_env.player.env import ObsType, PokeEnv
 from poke_env.player.player import Player
 from poke_env.ps_client import (
     AccountConfiguration,
@@ -109,30 +110,38 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         :return: The battle order for the given action in context of the current battle.
         :rtype: BattleOrder
         """
-        action_space = SinglesEnv.get_action_space(battle)
         if action == -2:
             return DefaultBattleOrder()
         elif action == -1:
             return ForfeitBattleOrder()
-        elif not fake and action not in action_space:
-            if strict:
-                raise ValueError(
-                    f"Invalid action from player {battle.player_username} "
-                    f"in battle {battle.battle_tag} - "
-                    f"action {action} not in action space {action_space}!"
-                )
-            else:
-                return DefaultBattleOrder()
         elif action < 6:
             order = Player.create_order(list(battle.team.values())[action])
         else:
-            assert battle.active_pokemon is not None
+            if battle.active_pokemon is None:
+                if strict:
+                    raise ValueError(
+                        f"Invalid order from player {battle.player_username} "
+                        f"in battle {battle.battle_tag} - action specifies a "
+                        f"move, but battle.active_pokemon is None!"
+                    )
+                else:
+                    return DefaultBattleOrder()
             mvs = (
                 battle.available_moves
                 if len(battle.available_moves) == 1
                 and battle.available_moves[0].id in ["struggle", "recharge"]
                 else list(battle.active_pokemon.moves.values())
             )
+            if (action - 6) % 4 not in range(len(mvs)):
+                if strict:
+                    raise ValueError(
+                        f"Invalid action {action} from player {battle.player_username} "
+                        f"in battle {battle.battle_tag} - action specifies a move "
+                        f"but the move index {(action - 6) % 4} is out of bounds "
+                        f"for available moves {mvs}!"
+                    )
+                else:
+                    return DefaultBattleOrder()
             order = Player.create_order(
                 mvs[(action - 6) % 4],
                 mega=10 <= action.item() < 14,
@@ -140,6 +149,15 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
                 dynamax=18 <= action.item() < 22,
                 terastallize=22 <= action.item() < 26,
             )
+        if not fake and order not in battle.valid_orders:
+            if strict:
+                raise ValueError(
+                    f"Invalid action {action} from player {battle.player_username} "
+                    f"in battle {battle.battle_tag} - converted order {order} "
+                    f"not in valid orders {battle.valid_orders}!"
+                )
+            else:
+                return DefaultBattleOrder()
         return order
 
     @staticmethod
@@ -165,82 +183,60 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         :rtype: int64
         """
         if isinstance(order, DefaultBattleOrder):
-            return np.int64(-2)
+            action = -2
         elif isinstance(order, ForfeitBattleOrder):
-            return np.int64(-1)
-        elif isinstance(order.order, Pokemon):
-            action = [p.base_species for p in battle.team.values()].index(
-                order.order.base_species
-            )
+            action = -1
         else:
-            if battle.active_pokemon is None:
+            assert isinstance(order, SingleBattleOrder)
+            assert not isinstance(order.order, str)
+            if not fake and order not in battle.valid_orders:
                 if strict:
                     raise ValueError(
                         f"Invalid order from player {battle.player_username} "
-                        f"in battle {battle.battle_tag} - "
-                        f"type of order.order is Move but battle.active_pokemon is None!"
+                        f"in battle {battle.battle_tag} - order {order} "
+                        f"not in valid orders {battle.valid_orders}!"
                     )
                 else:
-                    return np.int64(-2)
-            mvs = (
-                battle.available_moves
-                if len(battle.available_moves) == 1
-                and battle.available_moves[0].id in ["struggle", "recharge"]
-                else list(battle.active_pokemon.moves.values())
-            )
-            action = [m.id for m in mvs].index(order.order.id)
-            if order.mega:
-                gimmick = 1
-            elif order.z_move:
-                gimmick = 2
-            elif order.dynamax:
-                gimmick = 3
-            elif order.terastallize:
-                gimmick = 4
-            else:
-                gimmick = 0
-            action = 6 + action + 4 * gimmick
-        action_space = SinglesEnv.get_action_space(battle)
-        if not fake and action not in action_space:
-            if strict:
-                raise ValueError(
-                    f"Invalid order from player {battle.player_username} "
-                    f"in battle {battle.battle_tag} - converted "
-                    f"action {action} not in action space {action_space}!"
+                    action = -2
+            if isinstance(order.order, Pokemon):
+                action = [p.base_species for p in battle.team.values()].index(
+                    order.order.base_species
                 )
             else:
-                action = -2
+                if battle.active_pokemon is None:
+                    if strict:
+                        raise ValueError(
+                            f"Invalid order from player {battle.player_username} "
+                            f"in battle {battle.battle_tag} - type of order.order "
+                            f"is Move, but battle.active_pokemon is None!"
+                        )
+                    else:
+                        return np.int64(-2)
+                mvs = (
+                    battle.available_moves
+                    if len(battle.available_moves) == 1
+                    and battle.available_moves[0].id in ["struggle", "recharge"]
+                    else list(battle.active_pokemon.moves.values())
+                )
+                if order.order.id not in [m.id for m in mvs]:
+                    if strict:
+                        raise ValueError(
+                            f"Invalid order from player {battle.player_username} "
+                            f"in battle {battle.battle_tag} - order {order} "
+                            f"not in available moves {mvs}!"
+                        )
+                    else:
+                        return np.int64(-2)
+                action = [m.id for m in mvs].index(order.order.id)
+                if order.mega:
+                    gimmick = 1
+                elif order.z_move:
+                    gimmick = 2
+                elif order.dynamax:
+                    gimmick = 3
+                elif order.terastallize:
+                    gimmick = 4
+                else:
+                    gimmick = 0
+                action = 6 + action + 4 * gimmick
         return np.int64(action)
-
-    @staticmethod
-    def get_action_space(battle: Battle) -> List[int]:
-        switch_space = [
-            i
-            for i, pokemon in enumerate(battle.team.values())
-            if not battle.trapped
-            and pokemon.species in [p.species for p in battle.available_switches]
-        ]
-        if battle.active_pokemon is None:
-            return switch_space
-        move_space = [
-            i + 6
-            for i, move in enumerate(battle.active_pokemon.moves.values())
-            if move.id in [m.id for m in battle.available_moves]
-        ]
-        mega_space = [i + 4 for i in move_space if battle.can_mega_evolve]
-        zmove_space = [
-            i + 14
-            for i, move in enumerate(battle.active_pokemon.moves.values())
-            if move.id in [m.id for m in battle.active_pokemon.available_z_moves]
-            and battle.can_z_move
-        ]
-        dynamax_space = [i + 12 for i in move_space if battle.can_dynamax]
-        tera_space = [i + 16 for i in move_space if battle.can_tera]
-        return (
-            switch_space
-            + move_space
-            + mega_space
-            + zmove_space
-            + dynamax_space
-            + tera_space
-        )
