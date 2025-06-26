@@ -58,11 +58,6 @@ class SingleBattleOrder(BattleOrder):
             return self.order
 
 
-class DefaultBattleOrder(SingleBattleOrder):
-    def __init__(self):
-        super().__init__("/choose default")
-
-
 @dataclass
 class DoubleBattleOrder(BattleOrder):
     first_order: Optional[SingleBattleOrder] = None
@@ -108,3 +103,8 @@ class DoubleBattleOrder(BattleOrder):
             return [DoubleBattleOrder(None, order) for order in second_orders]
         else:
             return [DoubleBattleOrder(None, None)]
+
+
+class DefaultBattleOrder(SingleBattleOrder, DoubleBattleOrder):
+    def __init__(self):
+        super().__init__("/choose default")

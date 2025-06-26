@@ -524,7 +524,7 @@ class Player(ABC):
         return DefaultBattleOrder()
 
     @staticmethod
-    def choose_random_doubles_move(battle: DoubleBattle) -> BattleOrder:
+    def choose_random_doubles_move(battle: DoubleBattle) -> DoubleBattleOrder:
         active_orders: List[List[SingleBattleOrder]] = [[], []]
 
         if any(battle.force_switch):
@@ -627,7 +627,7 @@ class Player(ABC):
             return DefaultBattleOrder()
 
     @staticmethod
-    def choose_random_singles_move(battle: Battle) -> BattleOrder:
+    def choose_random_singles_move(battle: Battle) -> SingleBattleOrder:
         available_orders = [SingleBattleOrder(move) for move in battle.available_moves]
         available_orders.extend(
             [SingleBattleOrder(switch) for switch in battle.available_switches]
