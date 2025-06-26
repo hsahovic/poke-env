@@ -117,15 +117,6 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         elif action < 6:
             order = Player.create_order(list(battle.team.values())[action])
         else:
-            if not fake and battle.force_switch:
-                if strict:
-                    raise ValueError(
-                        f"Invalid action {action} from player {battle.player_username} "
-                        f"in battle {battle.battle_tag} - action specifies a move, "
-                        f"but battle.force_switch is True!"
-                    )
-                else:
-                    return DefaultBattleOrder()
             if battle.active_pokemon is None:
                 if strict:
                     raise ValueError(
@@ -212,15 +203,6 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
                     order.order.base_species
                 )
             else:
-                if not fake and battle.force_switch:
-                    if strict:
-                        raise ValueError(
-                            f"Invalid order {order} from player {battle.player_username} "
-                            f"in battle {battle.battle_tag} - order specifies a move, "
-                            f"but battle.force_switch is True!"
-                        )
-                    else:
-                        return np.int64(-2)
                 if battle.active_pokemon is None:
                     if strict:
                         raise ValueError(
