@@ -627,7 +627,7 @@ class Player(ABC):
             return DefaultBattleOrder()
 
     @staticmethod
-    def choose_random_singles_move(battle: Battle) -> BattleOrder:
+    def choose_random_singles_move(battle: Battle) -> SingleBattleOrder:
         available_orders = [SingleBattleOrder(move) for move in battle.available_moves]
         available_orders.extend(
             [SingleBattleOrder(switch) for switch in battle.available_switches]
