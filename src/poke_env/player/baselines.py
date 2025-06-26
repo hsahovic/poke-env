@@ -2,16 +2,16 @@ import random
 from typing import List, Optional
 
 from poke_env.battle.abstract_battle import AbstractBattle
-from poke_env.player.battle_order import (
-    BattleOrder,
-    DefaultBattleOrder,
-    DoubleBattleOrder,
-)
 from poke_env.battle.double_battle import DoubleBattle
 from poke_env.battle.move_category import MoveCategory
 from poke_env.battle.pokemon import Pokemon
 from poke_env.battle.side_condition import SideCondition
 from poke_env.battle.target import Target
+from poke_env.player.battle_order import (
+    BattleOrder,
+    DefaultBattleOrder,
+    DoubleBattleOrder,
+)
 from poke_env.player.player import Player
 
 

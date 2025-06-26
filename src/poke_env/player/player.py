@@ -14,17 +14,17 @@ import orjson
 
 from poke_env.battle.abstract_battle import AbstractBattle
 from poke_env.battle.battle import Battle
-from poke_env.player.battle_order import (
-    BattleOrder,
-    DefaultBattleOrder,
-    DoubleBattleOrder,
-)
 from poke_env.battle.double_battle import DoubleBattle
 from poke_env.battle.move import Move
 from poke_env.battle.pokemon import Pokemon
 from poke_env.concurrency import create_in_poke_loop, handle_threaded_coroutines
 from poke_env.data import GenData, to_id_str
 from poke_env.exceptions import ShowdownException
+from poke_env.player.battle_order import (
+    BattleOrder,
+    DefaultBattleOrder,
+    DoubleBattleOrder,
+)
 from poke_env.ps_client import PSClient
 from poke_env.ps_client.account_configuration import AccountConfiguration
 from poke_env.ps_client.server_configuration import (
