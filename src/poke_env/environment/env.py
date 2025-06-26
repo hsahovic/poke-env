@@ -15,7 +15,7 @@ from numpy.random import Generator
 from pettingzoo.utils.env import ParallelEnv  # type: ignore[import-untyped]
 
 from poke_env.battle.abstract_battle import AbstractBattle
-from poke_env.battle.battle_order import (
+from poke_env.player.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
     ForfeitBattleOrder,

@@ -14,7 +14,7 @@ import orjson
 
 from poke_env.battle.abstract_battle import AbstractBattle
 from poke_env.battle.battle import Battle
-from poke_env.battle.battle_order import (
+from poke_env.player.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
     DoubleBattleOrder,
