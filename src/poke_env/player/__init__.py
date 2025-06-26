@@ -3,7 +3,6 @@
 from pettingzoo.utils.env import ActionType, ObsType  # type: ignore[import-untyped]
 
 from poke_env.concurrency import POKE_LOOP
-from poke_env.player import env, player, utils
 from poke_env.player.baselines import (
     MaxBasePowerPlayer,
     RandomPlayer,
@@ -28,9 +27,6 @@ from poke_env.player.utils import (
 from poke_env.ps_client import PSClient
 
 __all__ = [
-    "env",
-    "player",
-    "utils",
     "ActionType",
     "ObsType",
     "ForfeitBattleOrder",
