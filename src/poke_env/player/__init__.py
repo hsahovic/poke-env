@@ -1,11 +1,5 @@
 """poke_env.player module init."""
 
-from poke_env.battle.battle_order import (
-    BattleOrder,
-    DefaultBattleOrder,
-    DoubleBattleOrder,
-    ForfeitBattleOrder,
-)
 from poke_env.concurrency import POKE_LOOP
 from poke_env.player.baselines import (
     MaxBasePowerPlayer,
