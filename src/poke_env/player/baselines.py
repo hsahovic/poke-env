@@ -3,8 +3,8 @@ from typing import List, Optional, Tuple
 
 from poke_env.battle.abstract_battle import AbstractBattle
 from poke_env.battle.battle import Battle
-from poke_env.battle.move import Move
 from poke_env.battle.double_battle import DoubleBattle
+from poke_env.battle.move import Move
 from poke_env.battle.move_category import MoveCategory
 from poke_env.battle.pokemon import Pokemon
 from poke_env.battle.side_condition import SideCondition
