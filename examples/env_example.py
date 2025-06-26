@@ -3,7 +3,7 @@ import numpy.typing as npt
 from gymnasium.spaces import Box
 from pettingzoo.test.parallel_test import parallel_api_test
 
-from poke_env.environment.abstract_battle import AbstractBattle
+from poke_env.battle.abstract_battle import AbstractBattle
 from poke_env.player import SinglesEnv
 
 

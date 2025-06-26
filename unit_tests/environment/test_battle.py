@@ -2,8 +2,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from poke_env.data import GenData
-from poke_env.environment import (
+from poke_env.battle import (
     Battle,
     Effect,
     Field,
@@ -12,6 +11,7 @@ from poke_env.environment import (
     Status,
     Weather,
 )
+from poke_env.data import GenData
 
 
 def test_battle_get_pokemon():
