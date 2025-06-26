@@ -606,40 +606,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 truncated = True
         return terminated, truncated
 
-    def background_send_challenge(self, username: str):
-        """
-        Sends a single challenge specified player. The function immediately returns
-        to allow use of the Gymnasium API.
-
-        :param username: The username of the player to challenge.
-        :type username: str
-        """
-        if self._challenge_task and not self._challenge_task.done():
-            raise RuntimeError(
-                "Agent is already challenging opponents with the challenging loop. "
-                "Try to call 'await agent.stop_challenge_loop()' to clear the task."
-            )
-        self._challenge_task = asyncio.run_coroutine_threadsafe(
-            self.agent1.send_challenges(username, 1), POKE_LOOP
-        )
-
-    def background_accept_challenge(self, username: str):
-        """
-        Accepts a single challenge specified player. The function immediately returns
-        to allow use of the Gymnasium API.
-
-        :param username: The username of the player to challenge.
-        :type username: str
-        """
-        if self._challenge_task and not self._challenge_task.done():
-            raise RuntimeError(
-                "Agent is already challenging opponents with the challenging loop. "
-                "Try to call 'await agent.stop_challenge_loop()' to clear the task."
-            )
-        self._challenge_task = asyncio.run_coroutine_threadsafe(
-            self.agent1.accept_challenges(username, 1, self.agent1.next_team), POKE_LOOP
-        )
-
     def reset_env(self):
         """
         Resets the environment to an inactive state: it will forfeit all unfinished
