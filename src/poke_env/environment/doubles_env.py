@@ -140,18 +140,12 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 return DefaultBattleOrder()
         try:
             order1 = DoublesEnv._action_to_order_individual(action[0], battle, fake, 0)
-        except ValueError as e:
-            if strict:
-                raise e
-            else:
-                order1 = DefaultBattleOrder()
-        try:
             order2 = DoublesEnv._action_to_order_individual(action[1], battle, fake, 1)
         except ValueError as e:
             if strict:
                 raise e
             else:
-                order2 = DefaultBattleOrder()
+                return DefaultBattleOrder()
         joined_orders = DoubleBattleOrder.join_orders(
             [order1] if order1 is not None else [],
             [order2] if order2 is not None else [],
@@ -260,21 +254,15 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             action1 = DoublesEnv._order_to_action_individual(
                 order.first_order, battle, fake, 0
             )
-        except ValueError as e:
-            if strict:
-                raise e
-            else:
-                action1 = np.int64(-2)
-        try:
             action2 = DoublesEnv._order_to_action_individual(
                 order.second_order, battle, fake, 1
             )
+            return np.array([action1, action2])
         except ValueError as e:
             if strict:
                 raise e
             else:
-                action2 = np.int64(-2)
-        return np.array([action1, action2])
+                return np.array([-2, -2])
 
     @staticmethod
     def _order_to_action_individual(
