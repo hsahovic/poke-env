@@ -6,6 +6,12 @@ from poke_env.player.baselines import (
     RandomPlayer,
     SimpleHeuristicsPlayer,
 )
+from poke_env.player.battle_order import (
+    BattleOrder,
+    DefaultBattleOrder,
+    DoubleBattleOrder,
+    ForfeitBattleOrder,
+)
 from poke_env.player.player import Player
 from poke_env.player.utils import (
     background_cross_evaluate,

@@ -11,8 +11,6 @@ from poke_env import AccountConfiguration, ServerConfiguration
 from poke_env.battle import (
     AbstractBattle,
     Battle,
-    BattleOrder,
-    ForfeitBattleOrder,
     Move,
     Pokemon,
     PokemonType,
@@ -21,7 +19,7 @@ from poke_env.battle import (
 from poke_env.concurrency import POKE_LOOP
 from poke_env.environment import PokeEnv, SinglesEnv
 from poke_env.environment.env import _AsyncQueue, _EnvPlayer
-from poke_env.player import Player
+from poke_env.player import BattleOrder, ForfeitBattleOrder, Player
 
 account_configuration1 = AccountConfiguration("username1", "password1")
 account_configuration2 = AccountConfiguration("username2", "password2")

@@ -2,7 +2,7 @@ import asyncio
 
 import pytest
 
-from poke_env.battle import ForfeitBattleOrder
+from poke_env.player import ForfeitBattleOrder
 from poke_env.player import RandomPlayer, cross_evaluate
 from poke_env.ps_client import LocalhostServerConfiguration
 

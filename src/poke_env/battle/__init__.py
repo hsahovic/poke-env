@@ -1,11 +1,5 @@
 from poke_env.battle.abstract_battle import AbstractBattle
 from poke_env.battle.battle import Battle
-from poke_env.battle.battle_order import (
-    BattleOrder,
-    DefaultBattleOrder,
-    DoubleBattleOrder,
-    ForfeitBattleOrder,
-)
 from poke_env.battle.double_battle import DoubleBattle
 from poke_env.battle.effect import Effect
 from poke_env.battle.field import Field
@@ -26,10 +20,6 @@ __all__ = [
     "AbstractBattle",
     "Battle",
     "DoubleBattle",
-    "BattleOrder",
-    "DefaultBattleOrder",
-    "DoubleBattleOrder",
-    "ForfeitBattleOrder",
     "Effect",
     "EmptyMove",
     "Field",

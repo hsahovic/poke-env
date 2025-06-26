@@ -1,11 +1,5 @@
-from poke_env.battle import (
-    BattleOrder,
-    DoubleBattleOrder,
-    EmptyMove,
-    ForfeitBattleOrder,
-    Move,
-    Pokemon,
-)
+from poke_env.battle import EmptyMove, Move, Pokemon
+from poke_env.player import BattleOrder, DoubleBattleOrder, ForfeitBattleOrder
 
 
 def test_recharge_order():
