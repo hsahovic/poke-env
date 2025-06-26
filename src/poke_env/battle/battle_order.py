@@ -3,9 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, List, Optional, Union
 
-from poke_env.environment.double_battle import DoubleBattle
-from poke_env.environment.move import Move
-from poke_env.environment.pokemon import Pokemon
+from poke_env.battle.move import Move
+from poke_env.battle.pokemon import Pokemon
 
 
 @dataclass
@@ -15,7 +14,7 @@ class BattleOrder:
     z_move: bool = False
     dynamax: bool = False
     terastallize: bool = False
-    move_target: int = DoubleBattle.EMPTY_TARGET_POSITION
+    move_target: int = 0
 
     DEFAULT_ORDER = "/choose default"
 
@@ -38,7 +37,7 @@ class BattleOrder:
             elif self.terastallize:
                 message += " terastallize"
 
-            if self.move_target != DoubleBattle.EMPTY_TARGET_POSITION:
+            if self.move_target != 0:
                 message += f" {self.move_target}"
             return message
         elif isinstance(self.order, Pokemon):
