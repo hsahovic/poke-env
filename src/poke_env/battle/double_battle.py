@@ -508,7 +508,6 @@ class DoubleBattle(AbstractBattle):
         orders: List[List[Optional[SingleBattleOrder]]] = [[], []]
         for i in range(2):
             if self.force_switch == [[False, True], [True, False]][i]:
-                orders[i] += [None]
                 continue
             orders[i] += [SingleBattleOrder(mon) for mon in self.available_switches[i]]
             active_mon = self.active_pokemon[i]
@@ -551,8 +550,10 @@ class DoubleBattle(AbstractBattle):
                             move, active_mon
                         )
                     ]
-            if not orders[i]:
-                orders[i] += [None]
+        if not orders[0]:
+            orders[0] += [None]
+        if not orders[1]:
+            orders[1] += [None]
         return orders
 
     @property
