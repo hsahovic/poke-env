@@ -479,7 +479,7 @@ def test_doubles_action_order_conversions():
         battle._available_switches = [[], []]
         assert (
             p.action_to_order(np.array([25, 0]), battle, strict=False).message
-            == "/choose default, pass"
+            == "/choose default"
         )
         if has_megas:
             battle._can_mega_evolve = [True, True]
