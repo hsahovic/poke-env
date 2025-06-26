@@ -179,6 +179,12 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             order = Player.create_order(list(battle.team.values())[action - 1])
         else:
             active_mon = battle.active_pokemon[pos]
+            if not fake and battle.force_switch[pos]:
+                raise ValueError(
+                    f"Invalid action {action} from player {battle.player_username} "
+                    f"in battle {battle.battle_tag} at position {pos} - action "
+                    f"specifies a move, but battle.force_switch[pos] is True!"
+                )
             if active_mon is None:
                 raise ValueError(
                     f"Invalid order from player {battle.player_username} "
@@ -286,6 +292,12 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 ) + 1
             else:
                 active_mon = battle.active_pokemon[pos]
+                if not fake and battle.force_switch[pos]:
+                    raise ValueError(
+                        f"Invalid order {order} from player {battle.player_username} "
+                        f"in battle {battle.battle_tag} at position {pos} - order "
+                        f"specifies a move, but battle.force_switch[pos] is True!"
+                    )
                 if active_mon is None:
                     raise ValueError(
                         f"Invalid order {order} from player {battle.player_username} "
