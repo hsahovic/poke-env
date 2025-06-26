@@ -6,15 +6,15 @@ from poke_env import AccountConfiguration
 from poke_env.environment import (
     AbstractBattle,
     Battle,
-    BattleOrder,
     DoubleBattle,
     Move,
     PokemonType,
-    SingleBattleOrder,
 )
 from poke_env.player import (
+    BattleOrder,
     Player,
     RandomPlayer,
+    SingleBattleOrder,
     cross_evaluate,
 )
 from poke_env.stats import _raw_hp, _raw_stat

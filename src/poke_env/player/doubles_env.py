@@ -4,16 +4,16 @@ import numpy as np
 import numpy.typing as npt
 from gymnasium.spaces import MultiDiscrete
 
-from poke_env.environment import DoubleBattle, Pokemon
-from poke_env.environment.battle_order import (
+from poke_env.environment import (
     BattleOrder,
     DefaultBattleOrder,
+    DoubleBattle,
     DoubleBattleOrder,
     ForfeitBattleOrder,
+    Pokemon,
     SingleBattleOrder,
 )
-from poke_env.player.env import ObsType, PokeEnv
-from poke_env.player.player import Player
+from poke_env.player.env import ObsType, Player, PokeEnv
 from poke_env.ps_client import (
     AccountConfiguration,
     LocalhostServerConfiguration,

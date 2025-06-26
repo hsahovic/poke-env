@@ -9,6 +9,13 @@ from poke_env.player.baselines import (
     RandomPlayer,
     SimpleHeuristicsPlayer,
 )
+from poke_env.player.battle_order import (
+    BattleOrder,
+    DefaultBattleOrder,
+    DoubleBattleOrder,
+    ForfeitBattleOrder,
+    SingleBattleOrder,
+)
 from poke_env.player.doubles_env import DoublesEnv
 from poke_env.player.env import PokeEnv
 from poke_env.player.player import Player
@@ -35,6 +42,11 @@ __all__ = [
     "SingleAgentWrapper",
     "PSClient",
     "Player",
+    "BattleOrder",
+    "DefaultBattleOrder",
+    "DoubleBattleOrder",
+    "ForfeitBattleOrder",
+    "SingleBattleOrder",
     "cross_evaluate",
     "background_cross_evaluate",
     "background_evaluate_player",

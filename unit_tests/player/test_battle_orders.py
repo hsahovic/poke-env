@@ -1,10 +1,12 @@
 from poke_env.environment import (
-    BattleOrder,
-    DoubleBattleOrder,
     EmptyMove,
-    ForfeitBattleOrder,
     Move,
     Pokemon,
+)
+from poke_env.player import (
+    BattleOrder,
+    DoubleBattleOrder,
+    ForfeitBattleOrder,
     SingleBattleOrder,
 )
 

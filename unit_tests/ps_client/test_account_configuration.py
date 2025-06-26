@@ -1,5 +1,5 @@
-from poke_env.environment import AbstractBattle, BattleOrder
-from poke_env.player import Player
+from poke_env.environment import AbstractBattle
+from poke_env.player import BattleOrder, Player
 
 
 def test_account_configuration_auto_naming():
