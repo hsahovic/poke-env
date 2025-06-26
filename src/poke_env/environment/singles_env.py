@@ -1,4 +1,4 @@
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 import numpy as np
 from gymnasium.spaces import Discrete
