@@ -293,7 +293,7 @@ async def test_parse_showteam(showdown_format_teams):
     )
 
     mon = battle.get_pokemon("p2: donut", details="Iron Hands, L50")
-    assert "p2: Iron Hands" not in battle.team
-    assert "p2: donut" in battle.team
+    assert "p2: Iron Hands" not in battle.opponent_team
+    assert "p2: donut" in battle.opponent_team
     assert mon.name == "donut"
     assert mon.species == "ironhands"
