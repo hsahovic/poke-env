@@ -290,7 +290,6 @@ async def test_parse_showteam(showdown_format_teams):
     await player._handle_battle_message(
         [[f">{battle.battle_tag}"], [f"|showteam|{battle.player_role}|{packed_team}"]]
     )
-    battle.get_pokemon("p1: Iron Hands")
 
     request_example = {
         "ident": "p1: avocado",
