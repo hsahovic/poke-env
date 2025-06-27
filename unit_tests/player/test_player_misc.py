@@ -242,6 +242,40 @@ async def test_awaitable_move(send_message_patch):
 
 @pytest.mark.asyncio
 async def test_create_teampreview_team(showdown_format_teams):
+    player = SimplePlayer(
+        battle_format="gen9vgc2025regi",
+        team=showdown_format_teams["gen9vgc2025regi"][0],
+    )
+
+    battle = await player._create_battle(["", "gen9vgc2025regi", "uuu"])
+
+    assert len(battle.teampreview_team) == 6
+
+    mon = None
+    for teampreview_mon in battle.teampreview_team:
+        if teampreview_mon.species == "ironhands":
+            mon = teampreview_mon
+
+    assert mon
+    assert mon.name == "Iron Hands"
+    assert mon.level == 50
+    assert mon.ability == "quarkdrive"
+    assert mon.item == "assaultvest"
+    assert list(mon.moves.keys()) == [
+        "fakeout",
+        "drainpunch",
+        "wildcharge",
+        "heavyslam",
+    ]
+    assert mon.tera_type == PokemonType.WATER
+    assert mon.stats["hp"] == _raw_hp(mon.base_stats["hp"], 4, 31, 50)
+    assert mon.stats["atk"] == _raw_stat(mon.base_stats["atk"], 156, 31, 50, 1.1)
+
+    assert any(map(lambda x: x.species == "fluttermane", battle.teampreview_team))
+
+
+@pytest.mark.asyncio
+async def test_parse_showteam(showdown_format_teams):
     packed_team = showdown_format_teams["gen9vgc2025regi"][0]
     player = SimplePlayer(
         battle_format="gen9vgc2025regi",
@@ -256,6 +290,7 @@ async def test_create_teampreview_team(showdown_format_teams):
     await player._handle_battle_message(
         [[f">{battle.battle_tag}"], [f"|showteam|{battle.player_role}|{packed_team}"]]
     )
+    assert "p1: Iron Hands" in battle.team
 
     request_example = {
         "ident": "p1: avocado",
@@ -273,19 +308,7 @@ async def test_create_teampreview_team(showdown_format_teams):
         "p1: donut", details="Iron Hands, L50", request=request_example
     )
 
-    assert mon
+    assert "p1: Iron Hands" not in battle.team
+    assert "p1: donut" not in battle.team
     assert mon.name == "donut"
-    assert mon.level == 50
-    assert mon.ability == "quarkdrive"
-    assert mon.item == "assaultvest"
-    assert list(mon.moves.keys()) == [
-        "fakeout",
-        "drainpunch",
-        "wildcharge",
-        "heavyslam",
-    ]
-    assert mon.tera_type == PokemonType.WATER
-    assert mon.stats["hp"] == _raw_hp(mon.base_stats["hp"], 4, 31, 50)
-    assert mon.stats["atk"] == _raw_stat(mon.base_stats["atk"], 156, 31, 50, 1.1)
-
-    assert any(map(lambda x: x.species == "fluttermane", battle.teampreview_team))
+    assert mon.species == "ironhands"
