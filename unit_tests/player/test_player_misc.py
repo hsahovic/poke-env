@@ -242,9 +242,10 @@ async def test_awaitable_move(send_message_patch):
 
 @pytest.mark.asyncio
 async def test_create_teampreview_team(showdown_format_teams):
+    packed_team = showdown_format_teams["gen9vgc2025regi"][0]
     player = SimplePlayer(
         battle_format="gen9vgc2025regi",
-        team=showdown_format_teams["gen9vgc2025regi"][0],
+        team=packed_team,
     )
 
     battle = await player._create_battle(["", "gen9vgc2025regi", "uuu"])
@@ -252,19 +253,14 @@ async def test_create_teampreview_team(showdown_format_teams):
 
     assert len(battle.teampreview_team) == 6
 
-    mon = None
-    for teampreview_mon in battle.teampreview_team:
-        if teampreview_mon.species == "ironhands":
-            mon = teampreview_mon
-    battle.get_pokemon(
-        f"{battle.player_role}: avocado",
-        force_self_team=True,
-        details="Iron Hands, L50",
+    await player._handle_battle_message(
+        [[f">{battle.battle_tag}"], [f"|showteam|{battle.player_role}|{packed_team}"]]
     )
+    
+    mon = battle.get_pokemon("p1: donut", details="Iron Hands, L50")
 
     assert mon
-    assert mon.name == "avocado"
-    assert mon.species == "ironhands"
+    assert mon.name == "donut"
     assert mon.level == 50
     assert mon.ability == "quarkdrive"
     assert mon.item == "assaultvest"
