@@ -248,11 +248,14 @@ async def test_create_teampreview_team(showdown_format_teams):
     )
 
     battle = await player._create_battle(["", "gen9vgc2025regi", "uuu"])
+    battle._player_role = "p1"
 
     assert len(battle.teampreview_team) == 6
 
     mon = battle.get_pokemon(
-        f"{battle.player_role}: avocado", force_self_team=True, details="ironhands, L50, M"
+        f"{battle.player_role}: avocado",
+        force_self_team=True,
+        details="ironhands, L50, M",
     )
 
     assert mon
