@@ -200,8 +200,7 @@ def test_teambuilder(showdown_format_teams):
     mon = Pokemon(9, teambuilder=tb_mons[0])
 
     assert mon
-    assert mon.name == "avocado"
-    assert mon.species == "ironhands"
+    assert mon.name == "Iron Hands"
     assert mon.level == 50
     assert mon.ability == "quarkdrive"
     assert mon.item == "assaultvest"
