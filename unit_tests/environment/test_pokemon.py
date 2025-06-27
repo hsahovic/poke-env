@@ -201,6 +201,7 @@ def test_teambuilder(showdown_format_teams):
 
     assert mon
     assert mon.name == "avocado"
+    assert mon.species == "ironhands"
     assert mon.level == 50
     assert mon.ability == "quarkdrive"
     assert mon.item == "assaultvest"
