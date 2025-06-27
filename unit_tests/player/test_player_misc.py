@@ -254,7 +254,7 @@ async def test_create_teampreview_team(showdown_format_teams):
 
     request_example = {
         "ident": "p1: avocado",
-        "details": "Iron Hands, L50, N",
+        "details": "Iron Hands, L50",
         "condition": "230/230",
         "active": False,
         "stats": {
