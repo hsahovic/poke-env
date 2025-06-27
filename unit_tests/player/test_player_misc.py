@@ -288,6 +288,8 @@ async def test_parse_showteam(showdown_format_teams):
     await player._handle_battle_message(
         [[f">{battle.battle_tag}"], [f"|poke|{battle.opponent_role}|Iron Hands, L50|"]]
     )
+    assert len(battle.teampreview_opponent_team) == 1
+
     await player._handle_battle_message(
         [[f">{battle.battle_tag}"], [f"|showteam|{battle.opponent_role}|{packed_team}"]]
     )
