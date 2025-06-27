@@ -256,8 +256,22 @@ async def test_create_teampreview_team(showdown_format_teams):
     await player._handle_battle_message(
         [[f">{battle.battle_tag}"], [f"|showteam|{battle.player_role}|{packed_team}"]]
     )
-    
-    mon = battle.get_pokemon("p1: donut", details="Iron Hands, L50")
+
+    request_example = {
+        "ident": "p1: avocado",
+        "details": "Iron Hands, L50",
+        "condition": "230/230",
+        "active": False,
+        "stats": {"atk": 198, "def": 129, "spa": 63, "spd": 120, "spe": 82},
+        "moves": ["fakeout", "drainpunch", "wildcharge", "heavyslam"],
+        "baseAbility": "quarkdrive",
+        "item": "assaultvest",
+        "pokeball": "pokeball",
+        "ability": "quarkdrive",
+    }
+    mon = battle.get_pokemon(
+        "p1: donut", details="Iron Hands, L50", request=request_example
+    )
 
     assert mon
     assert mon.name == "donut"
