@@ -257,7 +257,7 @@ async def test_create_teampreview_team(showdown_format_teams):
             mon = teampreview_mon
 
     assert mon
-    assert mon.name == "Iron Hands"
+    assert mon.name == "avocado"
     assert mon.level == 50
     assert mon.ability == "quarkdrive"
     assert mon.item == "assaultvest"
