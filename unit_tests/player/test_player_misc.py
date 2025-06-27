@@ -291,6 +291,7 @@ async def test_parse_showteam(showdown_format_teams):
     await player._handle_battle_message(
         [[f">{battle.battle_tag}"], [f"|showteam|{battle.opponent_role}|{packed_team}"]]
     )
+    assert "p2: Iron Hands" in battle.opponent_team
 
     mon = battle.get_pokemon("p2: donut", details="Iron Hands, L50")
     assert "p2: Iron Hands" not in battle.opponent_team
