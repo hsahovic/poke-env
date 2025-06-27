@@ -275,8 +275,8 @@ async def test_create_teampreview_team(showdown_format_teams):
 
 
 @pytest.mark.asyncio
-async def test_parse_showteam(showdown_format_teams):
-    packed_team = showdown_format_teams["gen9vgc2025regi"][0]["packed-format"]
+async def test_parse_showteam(packed_format_teams):
+    packed_team = packed_format_teams["gen9vgc2025regi"][0]
     player = SimplePlayer(
         battle_format="gen9vgc2025regi",
         team=packed_team,
