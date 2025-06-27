@@ -252,34 +252,14 @@ async def test_create_teampreview_team(showdown_format_teams):
 
     assert len(battle.teampreview_team) == 6
 
-    request_example = {
-        "ident": "p1: avocado",
-        "details": "Iron Hands, L50",
-        "condition": "230/230",
-        "active": False,
-        "stats": {
-            "atk": 198,
-            "def": 129,
-            "spa": 63,
-            "spd": 120,
-            "spe": 82
-        },
-        "moves": [
-            "fakeout",
-            "drainpunch",
-            "wildcharge",
-            "heavyslam"
-        ],
-        "baseAbility": "quarkdrive",
-        "item": "assaultvest",
-        "pokeball": "pokeball",
-        "ability": "quarkdrive"
-    }
-    mon = battle.get_pokemon(
+    mon = None
+    for teampreview_mon in battle.teampreview_team:
+        if teampreview_mon.species == "ironhands":
+            mon = teampreview_mon
+    battle.get_pokemon(
         f"{battle.player_role}: avocado",
         force_self_team=True,
-        details=request_example["details"],
-        request=request_example,
+        details="Iron Hands, L50",
     )
 
     assert mon
