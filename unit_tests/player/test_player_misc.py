@@ -288,25 +288,16 @@ async def test_parse_showteam(showdown_format_teams):
     assert len(battle.teampreview_team) == 6
 
     await player._handle_battle_message(
+        [[f">{battle.battle_tag}"], [f"|poke|{battle.player_role}|Iron Hands, L50|"]]
+    )
+    await player._handle_battle_message(
         [[f">{battle.battle_tag}"], [f"|showteam|{battle.player_role}|{packed_team}"]]
     )
+    assert "p1: Iron Hands" in battle.team
 
-    request_example = {
-        "ident": "p1: avocado",
-        "details": "Iron Hands, L50",
-        "condition": "230/230",
-        "active": False,
-        "stats": {"atk": 198, "def": 129, "spa": 63, "spd": 120, "spe": 82},
-        "moves": ["fakeout", "drainpunch", "wildcharge", "heavyslam"],
-        "baseAbility": "quarkdrive",
-        "item": "assaultvest",
-        "pokeball": "pokeball",
-        "ability": "quarkdrive",
-    }
     mon = battle.get_pokemon(
-        "p1: donut", details="Iron Hands, L50", request=request_example
+        "p1: donut", details="Iron Hands, L50"
     )
-
     assert "p1: Iron Hands" not in battle.team
     assert "p1: donut" in battle.team
     assert mon.name == "donut"
