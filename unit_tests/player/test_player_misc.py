@@ -251,10 +251,9 @@ async def test_create_teampreview_team(showdown_format_teams):
 
     assert len(battle.teampreview_team) == 6
 
-    mon = None
-    for teampreview_mon in battle.teampreview_team:
-        if teampreview_mon.species == "ironhands":
-            mon = teampreview_mon
+    mon = battle.get_pokemon(
+        f"{battle.player_role}: avocado", force_self_team=True, details="ironhands, L50, M"
+    )
 
     assert mon
     assert mon.name == "avocado"
