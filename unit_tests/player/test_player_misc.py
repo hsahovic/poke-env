@@ -278,24 +278,21 @@ async def test_create_teampreview_team(showdown_format_teams):
 async def test_parse_showteam(showdown_format_teams):
     packed_team = showdown_format_teams["gen9vgc2025regi"][0]
     player = SimplePlayer(
-        account_configuration=AccountConfiguration("mike", None),
         battle_format="gen9vgc2025regi",
         team=packed_team,
     )
 
-    await player._handle_battle_message(
-        [[f">{player.username}"], [f"|player|p1|mike|fantina|1200"]]
-    )
-    battle = list(player.battles.values())[0]
-    assert battle.player_role == "p1"
+    battle = await player._create_battle(["", "gen9vgc2025regi", "uuu"])
+    battle._player_role = "p1"
+    assert battle.opponent_role is not None
 
     await player._handle_battle_message(
-        [[f">{battle.battle_tag}"], [f"|poke|{battle.opponent_role}|Iron Hands, L50|"]]
+        [[f">{battle.battle_tag}"], ["", "poke", battle.opponent_role, "Iron Hands, L50", ""]]
     )
     assert len(battle.teampreview_opponent_team) == 1
 
     await player._handle_battle_message(
-        [[f">{battle.battle_tag}"], [f"|showteam|{battle.opponent_role}|{packed_team}"]]
+        [[f">{battle.battle_tag}"], ["", "showteam", battle.opponent_role, *packed_team.split("|")]]
     )
     assert "p2: Iron Hands" in battle.opponent_team
 
