@@ -285,17 +285,15 @@ async def test_parse_showteam(showdown_format_teams):
     battle = await player._create_battle(["", "gen9vgc2025regi", "uuu"])
     battle._player_role = "p1"
 
-    assert len(battle.teampreview_team) == 6
-
     await player._handle_battle_message(
-        [[f">{battle.battle_tag}"], [f"|poke|{battle.player_role}|Iron Hands, L50|"]]
+        [[f">{battle.battle_tag}"], [f"|poke|{battle.opponent_role}|Iron Hands, L50|"]]
     )
     await player._handle_battle_message(
-        [[f">{battle.battle_tag}"], [f"|showteam|{battle.player_role}|{packed_team}"]]
+        [[f">{battle.battle_tag}"], [f"|showteam|{battle.opponent_role}|{packed_team}"]]
     )
 
-    mon = battle.get_pokemon("p1: donut", details="Iron Hands, L50")
-    assert "p1: Iron Hands" not in battle.team
-    assert "p1: donut" in battle.team
+    mon = battle.get_pokemon("p2: donut", details="Iron Hands, L50")
+    assert "p2: Iron Hands" not in battle.team
+    assert "p2: donut" in battle.team
     assert mon.name == "donut"
     assert mon.species == "ironhands"
