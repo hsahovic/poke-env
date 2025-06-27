@@ -281,18 +281,23 @@ async def test_parse_showteam(showdown_format_teams):
         battle_format="gen9vgc2025regi",
         team=packed_team,
     )
-
     battle = await player._create_battle(["", "gen9vgc2025regi", "uuu"])
     battle._player_role = "p1"
     assert battle.opponent_role is not None
 
     await player._handle_battle_message(
-        [[f">{battle.battle_tag}"], ["", "poke", battle.opponent_role, "Iron Hands, L50", ""]]
+        [
+            [f">{battle.battle_tag}"],
+            ["", "poke", battle.opponent_role, "Iron Hands, L50", ""],
+        ]
     )
     assert len(battle.teampreview_opponent_team) == 1
 
     await player._handle_battle_message(
-        [[f">{battle.battle_tag}"], ["", "showteam", battle.opponent_role, *packed_team.split("|")]]
+        [
+            [f">{battle.battle_tag}"],
+            ["", "showteam", battle.opponent_role, *packed_team.split("|")],
+        ]
     )
     assert "p2: Iron Hands" in battle.opponent_team
 
