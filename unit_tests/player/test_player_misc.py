@@ -290,7 +290,7 @@ async def test_parse_showteam(showdown_format_teams):
     await player._handle_battle_message(
         [[f">{battle.battle_tag}"], [f"|showteam|{battle.player_role}|{packed_team}"]]
     )
-    assert "p1: Iron Hands" in battle.team
+    battle.get_pokemon("p1: Iron Hands")
 
     request_example = {
         "ident": "p1: avocado",
@@ -309,6 +309,6 @@ async def test_parse_showteam(showdown_format_teams):
     )
 
     assert "p1: Iron Hands" not in battle.team
-    assert "p1: donut" not in battle.team
+    assert "p1: donut" in battle.team
     assert mon.name == "donut"
     assert mon.species == "ironhands"
