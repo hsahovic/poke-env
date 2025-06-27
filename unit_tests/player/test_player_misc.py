@@ -282,7 +282,7 @@ async def test_parse_showteam(packed_format_teams):
         team=packed_team,
     )
     battle = await player._create_battle(["", "gen9vgc2025regi", "uuu"])
-    battle._player_role = "p1"
+    battle._player_role = "p2"
     assert battle.opponent_role is not None
 
     await player._handle_battle_message(
@@ -299,10 +299,10 @@ async def test_parse_showteam(packed_format_teams):
             ["", "showteam", battle.opponent_role, *packed_team.split("|")],
         ]
     )
-    assert "p2: Iron Hands" in battle.opponent_team
+    assert "p1: Iron Hands" in battle.opponent_team
 
-    mon = battle.get_pokemon("p2: donut", details="Iron Hands, L50")
-    assert "p2: Iron Hands" not in battle.opponent_team
-    assert "p2: donut" in battle.opponent_team
+    mon = battle.get_pokemon("p1: donut", details="Iron Hands, L50")
+    assert "p1: Iron Hands" not in battle.opponent_team
+    assert "p1: donut" in battle.opponent_team
     assert mon.name == "donut"
     assert mon.species == "ironhands"
