@@ -556,7 +556,10 @@ class DoubleBattle(AbstractBattle):
                             move, active_mon
                         )
                     ]
-            if self.force_switch == [True, True] and len(self.available_switches[0]) == 1:
+            if (
+                self.force_switch == [True, True]
+                and len(self.available_switches[0]) == 1
+            ):
                 orders[i] += ["None"]
         if not orders[0]:
             orders[0] += ["None"]
