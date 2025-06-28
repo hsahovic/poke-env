@@ -504,22 +504,24 @@ class DoubleBattle(AbstractBattle):
         self._trapped = value
 
     @property
-    def valid_orders(self) -> List[List[Optional[SingleBattleOrder]]]:
-        orders: List[List[Optional[SingleBattleOrder]]] = [[], []]
+    def valid_orders(self) -> List[List[str]]:
+        orders: List[List[str]] = [[], []]
         for i in range(2):
             if self.force_switch == [[False, True], [True, False]][i]:
                 continue
-            orders[i] += [SingleBattleOrder(mon) for mon in self.available_switches[i]]
+            orders[i] += [
+                str(SingleBattleOrder(mon)) for mon in self.available_switches[i]
+            ]
             active_mon = self.active_pokemon[i]
             if active_mon is not None:
                 orders[i] += [
-                    SingleBattleOrder(move, move_target=target)
+                    str(SingleBattleOrder(move, move_target=target))
                     for move in self.available_moves[i]
                     for target in self.get_possible_showdown_targets(move, active_mon)
                 ]
                 if self.can_mega_evolve[i]:
                     orders[i] += [
-                        SingleBattleOrder(move, move_target=target, mega=True)
+                        str(SingleBattleOrder(move, move_target=target, mega=True))
                         for move in self.available_moves[i]
                         for target in self.get_possible_showdown_targets(
                             move, active_mon
@@ -527,7 +529,7 @@ class DoubleBattle(AbstractBattle):
                     ]
                 if self.can_z_move[i]:
                     orders[i] += [
-                        SingleBattleOrder(move, move_target=target, z_move=True)
+                        str(SingleBattleOrder(move, move_target=target, z_move=True))
                         for move in self.available_moves[i]
                         for target in self.get_possible_showdown_targets(
                             move, active_mon
@@ -536,7 +538,7 @@ class DoubleBattle(AbstractBattle):
                     ]
                 if self.can_dynamax[i]:
                     orders[i] += [
-                        SingleBattleOrder(move, move_target=target, dynamax=True)
+                        str(SingleBattleOrder(move, move_target=target, dynamax=True))
                         for move in self.available_moves[i]
                         for target in self.get_possible_showdown_targets(
                             move, active_mon
@@ -544,16 +546,22 @@ class DoubleBattle(AbstractBattle):
                     ]
                 if self.can_tera[i]:
                     orders[i] += [
-                        SingleBattleOrder(move, move_target=target, terastallize=True)
+                        str(
+                            SingleBattleOrder(
+                                move, move_target=target, terastallize=True
+                            )
+                        )
                         for move in self.available_moves[i]
                         for target in self.get_possible_showdown_targets(
                             move, active_mon
                         )
                     ]
+            if self.force_switch == [True, True] and len(self.available_switches[0]) == 1:
+                orders[i] += ["None"]
         if not orders[0]:
-            orders[0] += [None]
+            orders[0] += ["None"]
         if not orders[1]:
-            orders[1] += [None]
+            orders[1] += ["None"]
         return orders
 
     @property
