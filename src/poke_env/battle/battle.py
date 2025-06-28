@@ -264,29 +264,30 @@ class Battle(AbstractBattle):
         self._trapped = value
 
     @property
-    def valid_orders(self) -> List[SingleBattleOrder]:
-        orders: List[SingleBattleOrder] = []
-        orders += [SingleBattleOrder(mon) for mon in self.available_switches]
+    def valid_orders(self) -> List[str]:
+        orders: List[str] = []
+        orders += [str(SingleBattleOrder(mon)) for mon in self.available_switches]
         if self.active_pokemon is not None:
-            orders += [SingleBattleOrder(move) for move in self.available_moves]
+            orders += [str(SingleBattleOrder(move)) for move in self.available_moves]
             if self.can_mega_evolve:
                 orders += [
-                    SingleBattleOrder(move, mega=True) for move in self.available_moves
+                    str(SingleBattleOrder(move, mega=True))
+                    for move in self.available_moves
                 ]
             if self.can_z_move:
                 orders += [
-                    SingleBattleOrder(move, z_move=True)
+                    str(SingleBattleOrder(move, z_move=True))
                     for move in self.available_moves
                     if move in self.active_pokemon.available_z_moves
                 ]
             if self.can_dynamax:
                 orders += [
-                    SingleBattleOrder(move, dynamax=True)
+                    str(SingleBattleOrder(move, dynamax=True))
                     for move in self.available_moves
                 ]
             if self.can_tera:
                 orders += [
-                    SingleBattleOrder(move, terastallize=True)
+                    str(SingleBattleOrder(move, terastallize=True))
                     for move in self.available_moves
                 ]
         return orders
