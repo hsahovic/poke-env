@@ -75,7 +75,7 @@ pip install .[dev]
 
 ## Acknowledgements
 
-This project is a follow-up of a group project from an artifical intelligence class at [Ecole Polytechnique](https://www.polytechnique.edu/).
+This project is a follow-up of a group project from an artificial intelligence class at [Ecole Polytechnique](https://www.polytechnique.edu/).
 
 You can find the original repository [here](https://github.com/hsahovic/inf581-project). It is partially inspired by the [showdown-battle-bot project](https://github.com/Synedh/showdown-battle-bot). Of course, none of these would have been possible without [Pokemon Showdown](https://github.com/Zarel/Pokemon-Showdown).
 

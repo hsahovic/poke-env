@@ -25,6 +25,7 @@ It boasts a straightforward API for handling Pokémon, Battles, Moves, and other
    modules/player.rst
    modules/pokemon.rst
    modules/move.rst
+   modules/env.rst
    modules/other_environment.rst
 
 On top of the main modules dedicated to building Pokémon Showdown bots, Poke-env encompasses standalone submodules to cater to various facets of Pokémon Showdown interactions:
@@ -36,6 +37,9 @@ On top of the main modules dedicated to building Pokémon Showdown bots, Poke-en
    Data - Access and manipulate pokémon data <modules/data.rst>
    PS Client - Interact with Pokémon Showdown servers <modules/ps_client.rst>
    Teambuilder - Parse and generate showdown teams <modules/teambuilder.rst>
+   Concurrency utilities <modules/concurrency.rst>
+   Damage calculator <modules/calc.rst>
+   Exceptions <modules/exceptions.rst>
 
 Acknowledgements
 ================
