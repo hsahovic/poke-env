@@ -8,7 +8,7 @@ The env object and related subclasses
 PokeEnv
 ******
 
-.. automodule:: poke_env.player.env
+.. automodule:: poke_env.environment.env
    :members:
    :undoc-members:
    :show-inheritance:
@@ -16,7 +16,23 @@ PokeEnv
 SinglesEnv
 *************
 
-.. automodule:: poke_env.player.singles_env
+.. automodule:: poke_env.environment.singles_env
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+DoublesEnv
+***********
+
+.. automodule:: poke_env.environment.doubles_env
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+SingleAgentWrapper
+******************
+
+.. automodule:: poke_env.environment.single_agent_wrapper
    :members:
    :undoc-members:
    :show-inheritance:

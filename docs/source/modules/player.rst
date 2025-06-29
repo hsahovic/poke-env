@@ -13,10 +13,26 @@ Player
    :undoc-members:
    :show-inheritance:
 
-Random Player
+Baselines
+*********
+
+.. automodule:: poke_env.player.baselines
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Battle orders
 *************
 
-.. automodule:: poke_env.player.random_player
+.. automodule:: poke_env.player.battle_order
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Utilities
+*********
+
+.. automodule:: poke_env.player.utils
    :members:
    :undoc-members:
    :show-inheritance:
