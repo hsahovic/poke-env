@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock
 
-from poke_env.environment import (
+from poke_env.battle import (
     Battle,
     Effect,
     Field,

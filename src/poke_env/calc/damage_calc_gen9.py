@@ -3,8 +3,7 @@
 import math
 from typing import Dict, List, Optional, Union
 
-from poke_env.data import GenData
-from poke_env.environment import (
+from poke_env.battle import (
     Battle,
     DoubleBattle,
     Effect,
@@ -19,6 +18,7 @@ from poke_env.environment import (
     Target,
     Weather,
 )
+from poke_env.data import GenData
 
 
 # Source: https://github.com/smogon/damage-calc/blob/master/calc/src/mechanics/gen789.ts#L52
