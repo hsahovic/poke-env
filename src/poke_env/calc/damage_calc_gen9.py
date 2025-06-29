@@ -49,7 +49,7 @@ def calculate_damage(
     :type is_critical: bool
     :return: Tuple of minimum and maximum damage rolls.
     :rtype: Tuple[int, int]
-    
+
     Notes that several edge cases are ignored and behaviour may deviate from
     the official damage calculator.
     """
