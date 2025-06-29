@@ -35,11 +35,23 @@ def calculate_damage(
     battle: Union[Battle, DoubleBattle],
     is_critical: bool = False,
 ):
-    """
-    This function takes in an attacker and defender identifier, the move being used, the battle
-    object that contains the attacker and defender, and whether we should account for a crit. It returns
-    a tuple that contains minimum and maximum damage rolls possible. It doesn't deal with several edge-cases
-    noted in the file, generally noting where it deeviates from the official damage calculator.
+    """Return the possible damage range for a move.
+
+    :param attacker_identifier: Identifier of the attacking Pokémon.
+    :type attacker_identifier: str
+    :param defender_identifier: Identifier of the defending Pokémon.
+    :type defender_identifier: str
+    :param move: Move being used.
+    :type move: Move
+    :param battle: Current battle object containing both Pokémon.
+    :type battle: Battle or DoubleBattle
+    :param is_critical: Whether to compute damage for a critical hit.
+    :type is_critical: bool
+    :return: Tuple of minimum and maximum damage rolls.
+    :rtype: Tuple[int, int]
+
+    Notes that several edge cases are ignored and behaviour may deviate from
+    the official damage calculator.
     """
     attacker = battle.get_pokemon(attacker_identifier)
     defender = battle.get_pokemon(defender_identifier)

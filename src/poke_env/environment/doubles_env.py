@@ -87,8 +87,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         fake: bool = False,
         strict: bool = True,
     ) -> BattleOrder:
-        """
-        Returns the BattleOrder relative to the given action.
+        """Convert an action array into a :class:`BattleOrder`.
 
         The action is a list in doubles, and the individual action mapping is
         as follows, where each 5-long range for a move corresponds to a
@@ -122,6 +121,12 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         :type action: ndarray[int64]
         :param battle: The current battle state
         :type battle: AbstractBattle
+        :param fake: If ``True``, return a best-effort order even if it would be
+            illegal.
+        :type fake: bool
+        :param strict: If ``True``, raise an error when the action is illegal;
+            otherwise return a default order.
+        :type strict: bool
 
         :return: The battle order for the given action in context of the current battle.
         :rtype: BattleOrder
@@ -224,13 +229,18 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         fake: bool = False,
         strict: bool = True,
     ) -> npt.NDArray[np.int64]:
-        """
-        Returns the action relative to the given BattleOrder.
+        """Convert a :class:`BattleOrder` into an action array.
 
         :param order: The order to take.
         :type order: BattleOrder
         :param battle: The current battle state
         :type battle: AbstractBattle
+        :param fake: If ``True``, return a best-effort action even if it would be
+            illegal.
+        :type fake: bool
+        :param strict: If ``True``, raise an error when the order is illegal;
+            otherwise return default.
+        :type strict: bool
 
         :return: The action for the given battle order in context of the current battle.
         :rtype: ndarray[int64]
