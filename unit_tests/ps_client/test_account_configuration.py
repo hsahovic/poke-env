@@ -1,4 +1,4 @@
-from poke_env.environment import AbstractBattle
+from poke_env.battle import AbstractBattle
 from poke_env.player import BattleOrder, Player
 
 

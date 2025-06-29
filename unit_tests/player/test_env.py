@@ -8,8 +8,7 @@ import numpy.typing as npt
 from gymnasium.spaces import Discrete
 
 from poke_env import AccountConfiguration, ServerConfiguration
-from poke_env.concurrency import POKE_LOOP
-from poke_env.environment import (
+from poke_env.battle import (
     AbstractBattle,
     Battle,
     Move,
@@ -17,8 +16,10 @@ from poke_env.environment import (
     PokemonType,
     Status,
 )
-from poke_env.player import BattleOrder, ForfeitBattleOrder, Player, PokeEnv, SinglesEnv
-from poke_env.player.env import _AsyncQueue, _EnvPlayer
+from poke_env.concurrency import POKE_LOOP
+from poke_env.environment import PokeEnv, SinglesEnv
+from poke_env.environment.env import _AsyncQueue, _EnvPlayer
+from poke_env.player import BattleOrder, ForfeitBattleOrder, Player
 
 account_configuration1 = AccountConfiguration("username1", "password1")
 account_configuration2 = AccountConfiguration("username2", "password2")

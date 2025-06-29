@@ -1,8 +1,7 @@
 import copy
 import itertools
 
-from poke_env.data import GenData
-from poke_env.environment import (
+from poke_env.battle import (
     Effect,
     EmptyMove,
     Field,
@@ -14,6 +13,7 @@ from poke_env.environment import (
     Target,
     Weather,
 )
+from poke_env.data import GenData
 
 
 def move_generator(gen=8):

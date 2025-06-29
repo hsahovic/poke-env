@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock
 
-from poke_env.environment import Battle, Pokemon
+from poke_env.battle import Battle, Pokemon
 
 
 def test_dynamax():
