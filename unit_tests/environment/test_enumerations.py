@@ -1,8 +1,7 @@
 import pytest
 
 from poke_env import ShowdownException
-from poke_env.data import GenData
-from poke_env.environment import (
+from poke_env.battle import (
     Effect,
     Field,
     Move,
@@ -14,6 +13,7 @@ from poke_env.environment import (
     Target,
     Weather,
 )
+from poke_env.data import GenData
 
 
 def move_generator():

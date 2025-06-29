@@ -3,14 +3,14 @@ from typing import Optional, Union
 import numpy as np
 from gymnasium.spaces import Discrete
 
-from poke_env.environment import Battle, Move, Pokemon
+from poke_env.battle import Battle, Move, Pokemon
+from poke_env.environment.env import ObsType, PokeEnv
 from poke_env.player.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
     ForfeitBattleOrder,
     SingleBattleOrder,
 )
-from poke_env.player.env import ObsType, PokeEnv
 from poke_env.player.player import Player
 from poke_env.ps_client import (
     AccountConfiguration,

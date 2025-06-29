@@ -4,7 +4,8 @@ import numpy as np
 import numpy.typing as npt
 from gymnasium.spaces import MultiDiscrete
 
-from poke_env.environment import DoubleBattle, Move, Pokemon
+from poke_env.battle import DoubleBattle, Move, Pokemon
+from poke_env.environment.env import ObsType, PokeEnv
 from poke_env.player.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
@@ -12,7 +13,6 @@ from poke_env.player.battle_order import (
     ForfeitBattleOrder,
     SingleBattleOrder,
 )
-from poke_env.player.env import ObsType, PokeEnv
 from poke_env.player.player import Player
 from poke_env.ps_client import (
     AccountConfiguration,
@@ -90,7 +90,9 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         """
         Returns the BattleOrder relative to the given action.
 
-        The action is a list in doubles, and the individual action mapping is as follows:
+        The action is a list in doubles, and the individual action mapping is
+        as follows, where each 5-long range for a move corresponds to a
+        different target (-2, -1, 0, 1, 2):
         element = -2: default
         element = -1: forfeit
         element = 0: pass

@@ -1,7 +1,7 @@
 import pytest
 
-from poke_env import LocalhostServerConfiguration
 from poke_env.player import RandomPlayer, cross_evaluate
+from poke_env.ps_client import LocalhostServerConfiguration
 
 
 @pytest.mark.asyncio
