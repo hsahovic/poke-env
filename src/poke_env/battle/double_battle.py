@@ -261,6 +261,8 @@ class DoubleBattle(AbstractBattle):
 
         :param move: Move instance for which possible targets should be returned
         :type move: Move
+        :param pokemon: The ally using the move.
+        :type pokemon: Pokemon
         :param dynamax: whether given move also STARTS dynamax for its user
         :return: a list of integers indicating Pokemon Showdown targets:
             -1, -2, 1, 2 or self.EMPTY_TARGET_POSITION that indicates "no target"
