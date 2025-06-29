@@ -23,6 +23,7 @@ from poke_env.player.utils import (
 from poke_env.ps_client import PSClient
 
 __all__ = [
+    "ForfeitBattleOrder",
     "POKE_LOOP",
     "PSClient",
     "Player",
@@ -31,10 +32,9 @@ __all__ = [
     "background_evaluate_player",
     "evaluate_player",
     "BattleOrder",
+    "DefaultBattleOrder",
     "SingleBattleOrder",
     "DoubleBattleOrder",
-    "DefaultBattleOrder",
-    "ForfeitBattleOrder",
     "RandomPlayer",
     "MaxBasePowerPlayer",
     "SimpleHeuristicsPlayer",

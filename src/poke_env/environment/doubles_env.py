@@ -7,7 +7,7 @@ from gymnasium.spaces import MultiDiscrete
 from poke_env.battle.double_battle import DoubleBattle
 from poke_env.battle.pokemon import Pokemon
 from poke_env.environment.env import ObsType, PokeEnv
-from poke_env.player import (
+from poke_env.player.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
     DoubleBattleOrder,
