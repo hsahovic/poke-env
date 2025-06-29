@@ -13,8 +13,9 @@ from ray.rllib.core.rl_module.torch import TorchRLModule
 from ray.rllib.env import ParallelPettingZooEnv
 from ray.tune.registry import register_env
 
-from poke_env.environment import AbstractBattle, Battle
-from poke_env.player import RandomPlayer, SingleAgentWrapper, SinglesEnv
+from poke_env.battle import AbstractBattle, Battle
+from poke_env.environment import SingleAgentWrapper, SinglesEnv
+from poke_env.player import RandomPlayer
 
 
 class ExampleEnv(SinglesEnv[npt.NDArray[np.float32]]):
