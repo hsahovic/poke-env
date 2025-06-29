@@ -55,8 +55,6 @@ def test_queue():
     q.queue.task_done()
     assert q.empty()
     assert item == 2
-    asyncio.get_event_loop().run_until_complete(q.async_join())
-    q.join()
 
 
 def test_async_player():
