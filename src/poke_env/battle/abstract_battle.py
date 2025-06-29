@@ -249,6 +249,7 @@ class AbstractBattle(ABC):
             i = matches[0]
             items = list(team.items())
             items[i] = (identifier, items[i][1])
+            items[i][1]._name = identifier[4:]
             if player_role == self.player_role or force_self_team:
                 self._team = dict(items)
             else:
