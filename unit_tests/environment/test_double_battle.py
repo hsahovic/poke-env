@@ -2,7 +2,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from poke_env.environment import DoubleBattle, Effect, Field, Move, Pokemon, PokemonType
+from poke_env.battle import DoubleBattle, Effect, Field, Move, Pokemon, PokemonType
 
 
 def test_battle_request_parsing(example_doubles_request):
