@@ -2,8 +2,8 @@ import asyncio
 
 import pytest
 
-from poke_env import LocalhostServerConfiguration
 from poke_env.player import ForfeitBattleOrder, RandomPlayer, cross_evaluate
+from poke_env.ps_client import LocalhostServerConfiguration
 
 
 class RandomPlayerThatForfeitsAfter100Turns(RandomPlayer):

@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock
 
-from poke_env.environment import DoubleBattle, Move, Pokemon, PokemonGender, PokemonType
+from poke_env.battle import DoubleBattle, Move, Pokemon, PokemonGender, PokemonType
 from poke_env.stats import _raw_hp, _raw_stat
 from poke_env.teambuilder.teambuilder import Teambuilder
 
