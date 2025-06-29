@@ -272,3 +272,37 @@ async def test_create_teampreview_team(showdown_format_teams):
     assert mon.stats["atk"] == _raw_stat(mon.base_stats["atk"], 156, 31, 50, 1.1)
 
     assert any(map(lambda x: x.species == "fluttermane", battle.teampreview_team))
+
+
+@pytest.mark.asyncio
+async def test_parse_showteam(packed_format_teams):
+    packed_team = packed_format_teams["gen9vgc2025regi"][0]
+    player = SimplePlayer(
+        battle_format="gen9vgc2025regi",
+        team=packed_team,
+    )
+    battle = await player._create_battle(["", "gen9vgc2025regi", "uuu"])
+    battle._player_role = "p2"
+    assert battle.opponent_role is not None
+
+    await player._handle_battle_message(
+        [
+            [f">{battle.battle_tag}"],
+            ["", "poke", battle.opponent_role, "Iron Hands, L50", ""],
+        ]
+    )
+    assert len(battle.teampreview_opponent_team) == 1
+
+    await player._handle_battle_message(
+        [
+            [f">{battle.battle_tag}"],
+            ["", "showteam", battle.opponent_role, *packed_team.split("|")],
+        ]
+    )
+    assert "p1: Iron Hands" in battle.opponent_team
+
+    mon = battle.get_pokemon("p1: donut", details="Iron Hands, L50")
+    assert "p1: Iron Hands" not in battle.opponent_team
+    assert "p1: donut" in battle.opponent_team
+    assert mon.name == "donut"
+    assert mon.species == "ironhands"
