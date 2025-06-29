@@ -11,7 +11,6 @@ from poke_env.player.battle_order import (
     DefaultBattleOrder,
     DoubleBattleOrder,
     ForfeitBattleOrder,
-    SingleBattleOrder,
 )
 from poke_env.player.player import Player
 from poke_env.player.utils import (
@@ -33,7 +32,6 @@ __all__ = [
     "evaluate_player",
     "BattleOrder",
     "DefaultBattleOrder",
-    "SingleBattleOrder",
     "DoubleBattleOrder",
     "RandomPlayer",
     "MaxBasePowerPlayer",
