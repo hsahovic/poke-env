@@ -2,8 +2,8 @@ import asyncio
 
 import pytest
 
-from poke_env import AccountConfiguration, LocalhostServerConfiguration
 from poke_env.player import RandomPlayer, cross_evaluate
+from poke_env.ps_client import AccountConfiguration, LocalhostServerConfiguration
 
 
 async def simple_cross_evaluation(n_battles, format_, i=0):

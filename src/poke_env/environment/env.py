@@ -14,8 +14,8 @@ from gymnasium.utils import seeding
 from numpy.random import Generator
 from pettingzoo.utils.env import ParallelEnv  # type: ignore[import-untyped]
 
+from poke_env.battle.abstract_battle import AbstractBattle
 from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
-from poke_env.environment.abstract_battle import AbstractBattle
 from poke_env.player.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
@@ -72,13 +72,6 @@ class _AsyncQueue(Generic[ItemType]):
 
     def empty(self):
         return self.queue.empty()
-
-    def join(self):
-        task = asyncio.run_coroutine_threadsafe(self.queue.join(), POKE_LOOP)
-        task.result()
-
-    async def async_join(self):
-        await self.queue.join()
 
 
 class _EnvPlayer(Player):
@@ -378,19 +371,40 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 end="\n" if self.battle1.finished else "\r",
             )
 
-    def close(self, purge: bool = True):
-        if self.battle1 is None or self.battle1.finished:
-            time.sleep(1)
-            if self.battle1 != self.agent1.battle:
-                self.battle1 = self.agent1.battle
-        if self.battle2 is None or self.battle2.finished:
-            time.sleep(1)
-            if self.battle2 != self.agent2.battle:
-                self.battle2 = self.agent2.battle
-        closing_task = asyncio.run_coroutine_threadsafe(
-            self._stop_challenge_loop(purge=purge), POKE_LOOP
-        )
-        closing_task.result()
+    def close(self, force: bool = True, purge: bool = False):
+        self._keep_challenging = False
+        if force:
+            if self.battle1 and not self.battle1.finished:
+                assert self.battle2 is not None
+                if not self.agent1.battle_queue.empty():
+                    self.agent1.battle_queue.get()
+                if not self.agent2.battle_queue.empty():
+                    self.agent2.battle_queue.get()
+                if self.agent1_to_move:
+                    self.agent1_to_move = False
+                    self.agent1.order_queue.put(ForfeitBattleOrder())
+                    if self.agent2_to_move:
+                        self.agent2_to_move = False
+                        self.agent2.order_queue.put(DefaultBattleOrder())
+                else:
+                    assert self.agent2_to_move
+                    self.agent_to_move = False
+                    self.agent2.order_queue.put(ForfeitBattleOrder())
+        self._challenge_task = None
+        self.battle1 = None
+        self.battle2 = None
+        self.agent1.battle = None
+        self.agent2.battle = None
+        while not self.agent1.order_queue.empty():
+            self.agent1.order_queue.get()
+        while not self.agent2.order_queue.empty():
+            self.agent2.order_queue.get()
+        while not self.agent1.battle_queue.empty():
+            self.agent1.battle_queue.get()
+        while not self.agent2.battle_queue.empty():
+            self.agent2.battle_queue.get()
+        if purge:
+            self.reset_battles()
 
     def observation_space(self, agent: str) -> Space[ObsType]:
         return self.observation_spaces[agent]
@@ -564,23 +578,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
 
         return to_return
 
-    def reset_env(self):
-        """
-        Resets the environment to an inactive state: it will forfeit all unfinished
-        battles, reset the internal battle tracker and optionally change the next
-        opponent and restart the challenge loop.
-
-        :param opponent: The opponent to use for the next battles. If empty it
-            will not change opponent.
-        :type opponent: Player or str, optional
-        :param restart: If True the challenge loop will be restarted before returning,
-            otherwise the challenge loop will be left inactive and can be
-            started manually.
-        :type restart: bool
-        """
-        self.close(purge=False)
-        self.reset_battles()
-
     def get_additional_info(self) -> Dict[str, Dict[str, Any]]:
         """
         Returns additional info for the reset method.
@@ -609,130 +606,14 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 truncated = True
         return terminated, truncated
 
-    def background_send_challenge(self, username: str):
+    def reset_env(self):
         """
-        Sends a single challenge specified player. The function immediately returns
-        to allow use of the Gymnasium API.
-
-        :param username: The username of the player to challenge.
-        :type username: str
+        Resets the environment to an inactive state: it will forfeit all unfinished
+        battles, reset the internal battle tracker and optionally change the next
+        opponent and restart the challenge loop.
         """
-        if self._challenge_task and not self._challenge_task.done():
-            raise RuntimeError(
-                "Agent is already challenging opponents with the challenging loop. "
-                "Try to call 'await agent.stop_challenge_loop()' to clear the task."
-            )
-        self._challenge_task = asyncio.run_coroutine_threadsafe(
-            self.agent1.send_challenges(username, 1), POKE_LOOP
-        )
-
-    def background_accept_challenge(self, username: str):
-        """
-        Accepts a single challenge specified player. The function immediately returns
-        to allow use of the Gymnasium API.
-
-        :param username: The username of the player to challenge.
-        :type username: str
-        """
-        if self._challenge_task and not self._challenge_task.done():
-            raise RuntimeError(
-                "Agent is already challenging opponents with the challenging loop. "
-                "Try to call 'await agent.stop_challenge_loop()' to clear the task."
-            )
-        self._challenge_task = asyncio.run_coroutine_threadsafe(
-            self.agent1.accept_challenges(username, 1, self.agent1.next_team), POKE_LOOP
-        )
-
-    async def _ladder_loop(self, n_challenges: Optional[int] = None):
-        if n_challenges:
-            if n_challenges <= 0:
-                raise ValueError(
-                    f"Number of challenges must be > 0. Got {n_challenges}"
-                )
-            for _ in range(n_challenges):
-                await self.agent1.ladder(1)
-        else:
-            while self._keep_challenging:
-                await self.agent1.ladder(1)
-
-    def start_laddering(self, n_challenges: Optional[int] = None):
-        """
-        Starts the laddering loop.
-
-        :param n_challenges: The number of ladder games to play. If empty it
-            will run until stopped.
-        :type n_challenges: int, optional
-        """
-        if self._challenge_task and not self._challenge_task.done():
-            count = self._SWITCH_CHALLENGE_TASK_RETRIES
-            while not self._challenge_task.done():
-                if count == 0:
-                    raise RuntimeError("Agent is already challenging")
-                count -= 1
-                time.sleep(self._TIME_BETWEEN_SWITCH_RETRIES)
-        if not n_challenges:
-            self._keep_challenging = True
-        self._challenge_task = asyncio.run_coroutine_threadsafe(
-            self._ladder_loop(n_challenges), POKE_LOOP
-        )
-
-    async def _stop_challenge_loop(
-        self, force: bool = True, wait: bool = True, purge: bool = False
-    ):
-        self._keep_challenging = False
-
-        if force:
-            if self.battle1 and not self.battle1.finished:
-                assert self.battle2 is not None
-                if not (
-                    self.agent1.order_queue.empty() and self.agent2.order_queue.empty()
-                ):
-                    await asyncio.sleep(2)
-                    if not (
-                        self.agent1.order_queue.empty()
-                        and self.agent2.order_queue.empty()
-                    ):
-                        raise RuntimeError(
-                            "The agent is still sending actions. "
-                            "Use this method only when training or "
-                            "evaluation are over."
-                        )
-                if not self.agent1.battle_queue.empty():
-                    await self.agent1.battle_queue.async_get()
-                if not self.agent2.battle_queue.empty():
-                    await self.agent2.battle_queue.async_get()
-                if self.agent1_to_move:
-                    self.agent1_to_move = False
-                    await self.agent1.order_queue.async_put(ForfeitBattleOrder())
-                    if self.agent2_to_move:
-                        self.agent2_to_move = False
-                        await self.agent2.order_queue.async_put(DefaultBattleOrder())
-                else:
-                    assert self.agent2_to_move
-                    self.agent_to_move = False
-                    await self.agent2.order_queue.async_put(ForfeitBattleOrder())
-
-        if wait and self._challenge_task:
-            while not self._challenge_task.done():
-                await asyncio.sleep(1)
-            self._challenge_task.result()
-
-        self._challenge_task = None
-        self.battle1 = None
-        self.battle2 = None
-        self.agent1.battle = None
-        self.agent2.battle = None
-        while not self.agent1.order_queue.empty():
-            await self.agent1.order_queue.async_get()
-        while not self.agent2.order_queue.empty():
-            await self.agent2.order_queue.async_get()
-        while not self.agent1.battle_queue.empty():
-            await self.agent1.battle_queue.async_get()
-        while not self.agent2.battle_queue.empty():
-            await self.agent2.battle_queue.async_get()
-
-        if purge:
-            self.reset_battles()
+        self.close(purge=False)
+        self.reset_battles()
 
     def reset_battles(self):
         """Resets the player's inner battle tracker."""

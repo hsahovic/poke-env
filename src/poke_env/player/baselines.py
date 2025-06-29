@@ -1,18 +1,19 @@
 import random
 from typing import List, Optional, Tuple
 
-from poke_env.environment.abstract_battle import AbstractBattle
-from poke_env.environment.battle import Battle
-from poke_env.environment.double_battle import DoubleBattle
-from poke_env.environment.move import Move
-from poke_env.environment.move_category import MoveCategory
-from poke_env.environment.pokemon import Pokemon
-from poke_env.environment.side_condition import SideCondition
-from poke_env.environment.target import Target
+from poke_env.battle.abstract_battle import AbstractBattle
+from poke_env.battle.battle import Battle
+from poke_env.battle.double_battle import DoubleBattle
+from poke_env.battle.move_category import MoveCategory
+from poke_env.battle.move import Move
+from poke_env.battle.pokemon import Pokemon
+from poke_env.battle.side_condition import SideCondition
+from poke_env.battle.target import Target
 from poke_env.player.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
     DoubleBattleOrder,
+    SingleBattleOrder,
 )
 from poke_env.player.player import Player
 
@@ -36,7 +37,7 @@ class MaxBasePowerPlayer(Player):
         return self.choose_random_move(battle)
 
     def choose_doubles_move(self, battle: DoubleBattle):
-        orders: List[Optional[BattleOrder]] = []
+        orders: List[Optional[SingleBattleOrder]] = []
         switched_in = None
 
         if any(battle.force_switch):
@@ -62,7 +63,7 @@ class MaxBasePowerPlayer(Player):
                 continue
             elif not moves and switches:
                 mon_to_switch_in = random.choice(switches)
-                orders.append(BattleOrder(mon_to_switch_in))
+                orders.append(SingleBattleOrder(mon_to_switch_in))
                 switched_in = mon_to_switch_in
                 continue
             elif not moves:
@@ -88,7 +89,7 @@ class MaxBasePowerPlayer(Player):
             else:
                 target = random.choice(targets)
 
-            orders.append(BattleOrder(best_move, move_target=target))
+            orders.append(SingleBattleOrder(best_move, move_target=target))
 
         if orders[0] or orders[1]:
             return DoubleBattleOrder(orders[0], orders[1])
@@ -236,13 +237,13 @@ class SimpleHeuristicsPlayer(Player):
             boost = 2 / (2 - mon.boosts[stat])
         return ((2 * mon.base_stats[stat] + 31) + 5) * boost
 
-    def choose_move_in_1v1(self, battle: Battle) -> Tuple[BattleOrder, float]:
+    def choose_move_in_1v1(self, battle: Battle) -> Tuple[SingleBattleOrder, float]:
         # Main mons shortcuts
         active = battle.active_pokemon
         opponent = battle.opponent_active_pokemon
 
         if active is None or opponent is None:
-            return self.choose_random_move(battle), 0
+            return self.choose_random_singles_move(battle), 0
 
         # Rough estimation of damage ratio
         physical_ratio = self._stat_estimation(active, "atk") / self._stat_estimation(
@@ -336,10 +337,10 @@ class SimpleHeuristicsPlayer(Player):
                 0,
             )
 
-        return self.choose_random_move(battle), 0
+        return self.choose_random_singles_move(battle), 0
 
     @staticmethod
-    def get_double_target_multiplier(battle: DoubleBattle, order: BattleOrder):
+    def get_double_target_multiplier(battle: DoubleBattle, order: SingleBattleOrder):
         can_target_first_opponent = (
             battle.opponent_active_pokemon[0]
             and not battle.opponent_active_pokemon[0].fainted
@@ -361,7 +362,7 @@ class SimpleHeuristicsPlayer(Player):
     def choose_move(self, battle: AbstractBattle):
         if not isinstance(battle, DoubleBattle):
             return self.choose_move_in_1v1(battle)[0]  # type: ignore
-        orders: List[Optional[BattleOrder]] = []
+        orders: List[Optional[SingleBattleOrder]] = []
         for active_id in [0, 1]:
             if (
                 battle.active_pokemon[active_id] is None

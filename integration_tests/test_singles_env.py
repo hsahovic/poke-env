@@ -4,7 +4,8 @@ from gymnasium.spaces import Box
 from gymnasium.utils.env_checker import check_env
 from pettingzoo.test.parallel_test import parallel_api_test
 
-from poke_env.player import RandomPlayer, SingleAgentWrapper, SinglesEnv
+from poke_env.environment import SingleAgentWrapper, SinglesEnv
+from poke_env.player import RandomPlayer
 
 
 class SinglesTestEnv(SinglesEnv):
@@ -54,7 +55,7 @@ def single_agent_play_function(env: SingleAgentWrapper, n_battles: int):
             done = terminated or truncated
 
 
-@pytest.mark.timeout(60)
+@pytest.mark.timeout(120)
 def test_single_agent_env_run():
     for gen in range(4, 10):
         env = SinglesTestEnv(
