@@ -652,9 +652,7 @@ class Pokemon:
                     [v for m, v in self.moves.items() if m.startswith("hiddenpower")][0]
                 )
             else:
-                # TODO: the illusion part of this assertion works around Zoroark's
-                # difficulties. This should be properly handled at some point.
-                assert self.ability == "illusion" or {
+                assert {
                     "copycat",
                     "metronome",
                     "mefirst",
