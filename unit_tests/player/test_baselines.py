@@ -218,7 +218,7 @@ def test_random_player():
     assert player.choose_move(battle).message == "/choose default"
 
     mon = Pokemon(species="charizard", gen=8)
-    mon.active = True
+    mon._active = True
     battle._team = {"charizard": mon}
     battle._available_switches.append(Pokemon(species="ponyta", gen=8))
     assert player.choose_move(battle).message == "/choose switch ponyta"
