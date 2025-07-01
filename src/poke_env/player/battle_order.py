@@ -65,8 +65,8 @@ class PassBattleOrder(SingleBattleOrder):
 
 @dataclass
 class DoubleBattleOrder(BattleOrder):
-    first_order: SingleBattleOrder
-    second_order: SingleBattleOrder
+    first_order: SingleBattleOrder = PassBattleOrder()
+    second_order: SingleBattleOrder = PassBattleOrder()
 
     @property
     def message(self) -> str:
