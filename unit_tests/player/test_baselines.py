@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-from poke_env.battle import Move, Pokemon, Battle
+from poke_env.battle import Battle, Move, Pokemon
 from poke_env.player import MaxBasePowerPlayer, RandomPlayer, SimpleHeuristicsPlayer
 
 
