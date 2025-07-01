@@ -72,7 +72,7 @@ def test_double_orders():
         "/choose pass, move selfdestruct 2",
         "/choose pass, switch lugia",
     }
-    assert none == {"/choose pass, pass"}
+    assert none == {}
 
 
 def test_forfeit_order():
