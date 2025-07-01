@@ -20,10 +20,10 @@ def test_max_base_power_player():
             "can_tera",
             "can_mega_evolve",
             "gen",
+            "valid_orders"
         ),
     )
-    battle = PseudoBattle([], [], False, False, False, False, 8)
-    battle.valid_orders = Battle.valid_orders
+    battle = PseudoBattle([], [], False, False, False, False, 8, Battle.valid_orders)
 
     player_pkg.Battle = PseudoBattle
 
