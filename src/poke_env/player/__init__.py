@@ -10,6 +10,7 @@ from poke_env.player.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
     DoubleBattleOrder,
+    PassBattleOrder,
     ForfeitBattleOrder,
     SingleBattleOrder,
 )
@@ -33,6 +34,7 @@ __all__ = [
     "evaluate_player",
     "BattleOrder",
     "SingleBattleOrder",
+    "PassBattleOrder",
     "DefaultBattleOrder",
     "DoubleBattleOrder",
     "RandomPlayer",
