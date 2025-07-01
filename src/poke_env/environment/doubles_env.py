@@ -168,7 +168,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         if action == -2:
             return DefaultBattleOrder()
         elif action == 0:
-            order = PassBattleOrder()
+            order: SingleBattleOrder = PassBattleOrder()
         elif action < 7:
             order = Player.create_order(list(battle.team.values())[action - 1])
         else:

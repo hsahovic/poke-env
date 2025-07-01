@@ -529,8 +529,8 @@ class Player(ABC):
         active_orders: List[List[SingleBattleOrder]] = [[], []]
 
         if any(battle.force_switch):
-            first_order = PassBattleOrder()
-            second_order = PassBattleOrder()
+            first_order: SingleBattleOrder = PassBattleOrder()
+            second_order: SingleBattleOrder = PassBattleOrder()
 
             if battle.force_switch[0] and battle.available_switches[0]:
                 first_switch_in = random.choice(battle.available_switches[0])
