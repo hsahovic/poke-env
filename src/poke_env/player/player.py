@@ -24,6 +24,7 @@ from poke_env.player.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
     DoubleBattleOrder,
+    PassBattleOrder,
     SingleBattleOrder,
 )
 from poke_env.ps_client import PSClient
@@ -528,8 +529,8 @@ class Player(ABC):
         active_orders: List[List[SingleBattleOrder]] = [[], []]
 
         if any(battle.force_switch):
-            first_order = None
-            second_order = None
+            first_order = PassBattleOrder()
+            second_order = PassBattleOrder()
 
             if battle.force_switch[0] and battle.available_switches[0]:
                 first_switch_in = random.choice(battle.available_switches[0])

@@ -12,6 +12,7 @@ from poke_env.player.battle_order import (
     DefaultBattleOrder,
     DoubleBattleOrder,
     ForfeitBattleOrder,
+    PassBattleOrder,
     SingleBattleOrder,
 )
 from poke_env.player.player import Player
@@ -148,10 +149,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 raise e
             else:
                 return DefaultBattleOrder()
-        joined_orders = DoubleBattleOrder.join_orders(
-            [order1] if order1 is not None else [],
-            [order2] if order2 is not None else [],
-        )
+        joined_orders = DoubleBattleOrder.join_orders([order1], [order2])
         if not fake and not joined_orders:
             if strict:
                 raise ValueError(
@@ -166,11 +164,11 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
     @staticmethod
     def _action_to_order_individual(
         action: np.int64, battle: DoubleBattle, fake: bool, pos: int
-    ) -> Optional[SingleBattleOrder]:
+    ) -> SingleBattleOrder:
         if action == -2:
             return DefaultBattleOrder()
         elif action == 0:
-            order = None
+            order = PassBattleOrder()
         elif action < 7:
             order = Player.create_order(list(battle.team.values())[action - 1])
         else:
@@ -261,14 +259,14 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
 
     @staticmethod
     def _order_to_action_individual(
-        order: Optional[SingleBattleOrder], battle: DoubleBattle, fake: bool, pos: int
+        order: SingleBattleOrder, battle: DoubleBattle, fake: bool, pos: int
     ) -> np.int64:
-        if order is None:
-            action = 0
-        elif isinstance(order, DefaultBattleOrder):
+        if isinstance(order, DefaultBattleOrder):
             return np.int64(-2)
         else:
             assert isinstance(order, SingleBattleOrder)
+            if isinstance(order, PassBattleOrder):
+                return np.int64(0)
             assert not isinstance(order.order, str), "invalid order"
             if isinstance(order.order, Pokemon):
                 action = [p.base_species for p in battle.team.values()].index(

@@ -7,7 +7,7 @@ from poke_env.battle.move_category import MoveCategory
 from poke_env.battle.pokemon import Pokemon
 from poke_env.battle.pokemon_type import PokemonType
 from poke_env.battle.target import Target
-from poke_env.player.battle_order import SingleBattleOrder
+from poke_env.player.battle_order import PassBattleOrder, SingleBattleOrder
 
 
 class DoubleBattle(AbstractBattle):
@@ -560,11 +560,11 @@ class DoubleBattle(AbstractBattle):
                 self.force_switch == [True, True]
                 and len(self.available_switches[0]) == 1
             ):
-                orders[i] += ["None"]
+                orders[i] += [str(PassBattleOrder())]
         if not orders[0]:
-            orders[0] += ["None"]
+            orders[0] += [str(PassBattleOrder())]
         if not orders[1]:
-            orders[1] += ["None"]
+            orders[1] += [str(PassBattleOrder())]
         return orders
 
     @property
