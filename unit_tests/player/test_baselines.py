@@ -205,26 +205,15 @@ def test_simple_heuristics_player():
 
 
 def test_random_player():
-    from poke_env.battle import Battle
-    from poke_env.player import player as player_pkg
-
     player = RandomPlayer(start_listening=False)
 
-    PseudoBattle = namedtuple(
-        "PseudoBattle",
-        (
-            "available_moves",
-            "available_switches",
-            "can_z_move",
-            "can_dynamax",
-            "can_tera",
-            "can_mega_evolve",
-            "gen",
-        ),
-    )
-    battle = PseudoBattle([], [], False, False, False, False, 8)
-
-    player_pkg.Battle = PseudoBattle
+    battle = Battle("test_battle", "test_player", None, 8)
+    battle._available_moves = []
+    battle._available_switches = []
+    battle._can_z_move = False
+    battle._can_dynamax = False
+    battle._can_tera = False
+    battle._can_mega_evolve = False
 
     assert player.choose_move(battle).message == "/choose default"
 
