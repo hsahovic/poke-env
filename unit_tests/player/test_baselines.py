@@ -17,16 +17,16 @@ def test_max_base_power_player():
 
     assert player.choose_move(battle).message == "/choose default"
 
-    battle.available_switches.append(Pokemon(species="ponyta", gen=8))
+    battle._available_switches.append(Pokemon(species="ponyta", gen=8))
     assert player.choose_move(battle).message == "/choose switch ponyta"
 
-    battle.available_moves.append(Move("protect", gen=8))
+    battle._available_moves.append(Move("protect", gen=8))
     assert player.choose_move(battle).message == "/choose move protect"
 
-    battle.available_moves.append(Move("quickattack", gen=8))
+    battle._available_moves.append(Move("quickattack", gen=8))
     assert player.choose_move(battle).message == "/choose move quickattack"
 
-    battle.available_moves.append(Move("flamethrower", gen=8))
+    battle._available_moves.append(Move("flamethrower", gen=8))
     assert player.choose_move(battle).message == "/choose move flamethrower"
 
 
@@ -217,23 +217,23 @@ def test_random_player():
 
     assert player.choose_move(battle).message == "/choose default"
 
-    battle.available_switches.append(Pokemon(species="ponyta", gen=8))
+    battle._available_switches.append(Pokemon(species="ponyta", gen=8))
     assert player.choose_move(battle).message == "/choose switch ponyta"
 
-    battle.available_moves.append(Move("protect", gen=8))
+    battle._available_moves.append(Move("protect", gen=8))
     assert player.choose_move(battle).message in {
         "/choose move protect",
         "/choose switch ponyta",
     }
 
-    battle.available_moves.append(Move("quickattack", gen=8))
+    battle._available_moves.append(Move("quickattack", gen=8))
     assert player.choose_move(battle).message in {
         "/choose move protect",
         "/choose switch ponyta",
         "/choose move quickattack",
     }
 
-    battle.available_moves.append(Move("flamethrower", gen=8))
+    battle._available_moves.append(Move("flamethrower", gen=8))
     assert player.choose_move(battle).message in {
         "/choose move protect",
         "/choose switch ponyta",
@@ -247,7 +247,3 @@ def test_random_player():
         "/choose move quickattack",
         "/choose move flamethrower",
     }
-
-    player_pkg.Battle = (
-        Battle  # this is in case a test runner shares memory between tests
-    )
