@@ -140,7 +140,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             else:
                 return DefaultBattleOrder()
         joined_orders = DoubleBattleOrder.join_orders([order1], [order2])
-        if not fake and not joined_orders:
+        if not joined_orders:
             if strict:
                 raise ValueError(
                     f"Invalid action {action} from player {battle.player_username} "
@@ -149,7 +149,8 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 )
             else:
                 return DefaultBattleOrder()
-        return joined_orders[0]
+        else:
+            return joined_orders[0]
 
     @staticmethod
     def _action_to_order_individual(
@@ -224,7 +225,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         joined_orders = DoubleBattleOrder.join_orders(
             [order.first_order], [order.second_order]
         )
-        if not joined_orders:
+        if not fake and not joined_orders:
             if strict:
                 raise ValueError(
                     f"Invalid order {order} from player {battle.player_username} "
