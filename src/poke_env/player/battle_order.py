@@ -93,7 +93,10 @@ class DoubleBattleOrder(BattleOrder):
                 and isinstance(second_order.order, Pokemon)
                 and str(first_order) == str(second_order)
             )
-            if not (isinstance(first_order, PassBattleOrder) and isinstance(second_order, PassBattleOrder))
+            if not (
+                isinstance(first_order, PassBattleOrder)
+                and isinstance(second_order, PassBattleOrder)
+            )
         ]
 
 
