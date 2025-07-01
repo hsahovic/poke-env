@@ -122,7 +122,7 @@ def test_choose_random_move_doubles(pseudo_random, example_doubles_request):
 
     pseudo_random.side_effect = lambda: 0
     choice = player.choose_random_move(battle)
-    assert choice.message == "/choose move psychic -2, move geargrind -1"
+    assert choice.message == "/choose switch zamazentacrowned, switch raichualola"
 
     pseudo_random.side_effect = lambda: 0.5
     choice = player.choose_random_move(battle)
