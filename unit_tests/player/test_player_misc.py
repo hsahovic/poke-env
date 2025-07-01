@@ -130,7 +130,7 @@ def test_choose_random_move_doubles(pseudo_random, example_doubles_request):
 
     pseudo_random.side_effect = lambda: 0.999
     choice = player.choose_random_move(battle)
-    assert choice.message == "/choose move slackoff dynamax, switch thundurus"
+    assert choice.message == "/choose move slackoff dynamax, move substitute"
 
 
 @patch("poke_env.ps_client.ps_client.PSClient.send_message")
