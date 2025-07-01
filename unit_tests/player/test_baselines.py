@@ -8,8 +8,8 @@ def test_max_base_power_player():
     player = MaxBasePowerPlayer(start_listening=False)
 
     battle = Battle("test_battle", "test_player", None, 8)
-    battle.available_moves = []
-    battle.available_switches = []
+    battle._available_moves = []
+    battle._available_switches = []
     battle._can_z_move = False
     battle._can_dynamax = False
     battle._can_tera = False
