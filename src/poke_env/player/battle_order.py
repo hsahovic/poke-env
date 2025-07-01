@@ -82,8 +82,8 @@ class DoubleBattleOrder(BattleOrder):
     ) -> List[DoubleBattleOrder]:
         return [
             DoubleBattleOrder(first_order=first_order, second_order=second_order)
-            for first_order in first_orders
-            for second_order in second_orders
+            for first_order in first_orders or [PassBattleOrder()]
+            for second_order in second_orders or [PassBattleOrder()]
             if not (first_order.mega and second_order.mega)
             if not (first_order.z_move and second_order.z_move)
             if not (first_order.dynamax and second_order.dynamax)
