@@ -149,12 +149,12 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
                 dynamax=18 <= action.item() < 22,
                 terastallize=22 <= action.item() < 26,
             )
-        if not fake and str(order) not in battle.valid_orders:
+        if not fake and order not in battle.valid_orders:
             if strict:
                 raise ValueError(
                     f"Invalid action {action} from player {battle.player_username} "
                     f"in battle {battle.battle_tag} - converted order {order} "
-                    f"not in valid orders {battle.valid_orders}!"
+                    f"not in valid orders {[str(o) for o in battle.valid_orders]}!"
                 )
             else:
                 return DefaultBattleOrder()
@@ -189,12 +189,12 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         else:
             assert isinstance(order, SingleBattleOrder)
             assert not isinstance(order.order, str)
-            if not fake and str(order) not in battle.valid_orders:
+            if not fake and order not in battle.valid_orders:
                 if strict:
                     raise ValueError(
                         f"Invalid order from player {battle.player_username} "
                         f"in battle {battle.battle_tag} - order {order} "
-                        f"not in valid orders {battle.valid_orders}!"
+                        f"not in valid orders {[str(o) for o in battle.valid_orders]}!"
                     )
                 else:
                     action = -2
