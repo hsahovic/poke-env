@@ -191,11 +191,11 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 dynamax=(action - 7) // 20 == 3,
                 terastallize=(action - 7) // 20 == 4,
             )
-        if not fake and str(order) not in battle.valid_orders[pos]:
+        if not fake and order not in battle.valid_orders[pos]:
             raise ValueError(
                 f"Invalid action {action} from player {battle.player_username} "
-                f"in battle {battle.battle_tag} at position {pos} - "
-                f"order {order} not in action space {battle.valid_orders[pos]}!"
+                f"in battle {battle.battle_tag} at position {pos} - order {order} "
+                f"not in action space {[str(o) for o in battle.valid_orders[pos]]}!"
             )
         return order
 
@@ -296,10 +296,10 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 else:
                     gimmick = 0
                 action = 1 + 6 + 5 * action + target + 20 * gimmick
-        if not fake and str(order) not in battle.valid_orders[pos]:
+        if not fake and order not in battle.valid_orders[pos]:
             raise ValueError(
-                f"Invalid order from player {battle.player_username} "
-                f"in battle {battle.battle_tag} at position {pos} - order "
-                f"{order} not in action space {battle.valid_orders[pos]}!"
+                f"Invalid order from player {battle.player_username} in battle "
+                f"{battle.battle_tag} at position {pos} - order {order} not in "
+                f"action space {[str(o) for o in battle.valid_orders[pos]]}!"
             )
         return np.int64(action)
