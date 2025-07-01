@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import abstractmethod
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List, Union
 
 from poke_env.battle.move import Move
@@ -65,8 +65,8 @@ class PassBattleOrder(SingleBattleOrder):
 
 @dataclass
 class DoubleBattleOrder(BattleOrder):
-    first_order: SingleBattleOrder = PassBattleOrder()
-    second_order: SingleBattleOrder = PassBattleOrder()
+    first_order: SingleBattleOrder = field(default_factory=PassBattleOrder)
+    second_order: SingleBattleOrder = field(default_factory=PassBattleOrder)
 
     @property
     def message(self) -> str:
