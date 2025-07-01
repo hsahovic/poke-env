@@ -10,8 +10,8 @@ from poke_env.player.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
     DoubleBattleOrder,
-    PassBattleOrder,
     ForfeitBattleOrder,
+    PassBattleOrder,
     SingleBattleOrder,
 )
 from poke_env.player.player import Player
