@@ -23,6 +23,7 @@ def test_max_base_power_player():
         ),
     )
     battle = PseudoBattle([], [], False, False, False, False, 8)
+    battle.valid_orders = Battle.valid_orders
 
     player_pkg.Battle = PseudoBattle
 
