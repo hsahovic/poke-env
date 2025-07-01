@@ -1,31 +1,19 @@
 from collections import namedtuple
 
-from poke_env.battle import Move, Pokemon
+from poke_env.battle import Move, Pokemon, Battle
 from poke_env.player import MaxBasePowerPlayer, RandomPlayer, SimpleHeuristicsPlayer
 
 
 def test_max_base_power_player():
-    from poke_env.battle import Battle
-    from poke_env.player import player as player_pkg
-
     player = MaxBasePowerPlayer(start_listening=False)
 
-    PseudoBattle = namedtuple(
-        "PseudoBattle",
-        (
-            "available_moves",
-            "available_switches",
-            "can_z_move",
-            "can_dynamax",
-            "can_tera",
-            "can_mega_evolve",
-            "gen",
-            "valid_orders"
-        ),
-    )
-    battle = PseudoBattle([], [], False, False, False, False, 8, Battle.valid_orders)
-
-    player_pkg.Battle = PseudoBattle
+    battle = Battle("test_battle", "test_player", None, 8)
+    battle.available_moves = []
+    battle.available_switches = []
+    battle._can_z_move = False
+    battle._can_dynamax = False
+    battle._can_tera = False
+    battle._can_mega_evolve = False
 
     assert player.choose_move(battle).message == "/choose default"
 
@@ -40,10 +28,6 @@ def test_max_base_power_player():
 
     battle.available_moves.append(Move("flamethrower", gen=8))
     assert player.choose_move(battle).message == "/choose move flamethrower"
-
-    player_pkg.Battle = (
-        Battle  # this is in case a test runner shares memory between tests
-    )
 
 
 def test_simple_heuristics_player_estimate_matchup():
