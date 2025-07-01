@@ -510,6 +510,10 @@ class DoubleBattle(AbstractBattle):
             if self.force_switch == [[False, True], [True, False]][i]:
                 continue
             orders[i] += [SingleBattleOrder(mon) for mon in self.available_switches[i]]
+            if self.force_switch[i]:
+                if all(self.force_switch) and len(self.available_switches[0]) == 1:
+                    orders[i] += [PassBattleOrder()]
+                continue
             active_mon = self.active_pokemon[i]
             if active_mon is not None:
                 orders[i] += [
@@ -550,11 +554,6 @@ class DoubleBattle(AbstractBattle):
                             move, active_mon
                         )
                     ]
-            if (
-                self.force_switch == [True, True]
-                and len(self.available_switches[0]) == 1
-            ):
-                orders[i] += [PassBattleOrder()]
         if not orders[0]:
             orders[0] += [PassBattleOrder()]
         if not orders[1]:
