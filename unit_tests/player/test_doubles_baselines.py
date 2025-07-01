@@ -28,7 +28,6 @@ def test_doubles_max_damage_player():
     battle._active_pokemon["p1b"] = active_raichu
 
     # calls player.choose_random_doubles_move(battle)
-    battle._available_switches[1].append(battle._available_switches[0][0])
     battle._available_switches[1].append(Pokemon(species="rapidash", gen=8))
     assert (
         player.choose_move(battle).message == "/choose switch ponyta, switch rapidash"
@@ -75,6 +74,7 @@ def test_doubles_max_damage_player():
     ]
 
     battle._force_switch = [True, True]
+    battle._available_switches[0].append(battle._available_switches[1][0])
     assert player.choose_move(battle).message in [
         "/choose switch ponyta, switch rapidash",
     ]
