@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from abc import abstractmethod
-from dataclasses import dataclass
-from typing import List, Optional, Union
+from dataclasses import dataclass, field
+from typing import List, Union
 
 from poke_env.battle.move import Move
 from poke_env.battle.pokemon import Pokemon
@@ -58,51 +58,46 @@ class SingleBattleOrder(BattleOrder):
             return self.order
 
 
+class PassBattleOrder(SingleBattleOrder):
+    def __init__(self):
+        super().__init__("/choose pass")
+
+
 @dataclass
 class DoubleBattleOrder(BattleOrder):
-    first_order: Optional[SingleBattleOrder] = None
-    second_order: Optional[SingleBattleOrder] = None
+    first_order: SingleBattleOrder = field(default_factory=PassBattleOrder)
+    second_order: SingleBattleOrder = field(default_factory=PassBattleOrder)
 
     @property
     def message(self) -> str:
-        if self.first_order and self.second_order:
-            return (
-                self.first_order.message
-                + ", "
-                + self.second_order.message.replace("/choose ", "")
-            )
-        elif self.first_order:
-            return self.first_order.message + ", pass"
-        elif self.second_order:
-            return "/choose pass, " + self.second_order.message.replace("/choose ", "")
-        else:
-            return "/choose pass, pass"
+        return (
+            self.first_order.message
+            + ", "
+            + self.second_order.message.replace("/choose ", "")
+        )
 
     @staticmethod
     def join_orders(
         first_orders: List[SingleBattleOrder], second_orders: List[SingleBattleOrder]
     ) -> List[DoubleBattleOrder]:
-        if first_orders and second_orders:
-            return [
-                DoubleBattleOrder(first_order=first_order, second_order=second_order)
-                for first_order in first_orders
-                for second_order in second_orders
-                if not (first_order.mega and second_order.mega)
-                if not (first_order.z_move and second_order.z_move)
-                if not (first_order.dynamax and second_order.dynamax)
-                if not (first_order.terastallize and second_order.terastallize)
-                if not (
-                    isinstance(first_order.order, Pokemon)
-                    and isinstance(second_order.order, Pokemon)
-                    and str(first_order) == str(second_order)
-                )
-            ]
-        elif first_orders:
-            return [DoubleBattleOrder(order, None) for order in first_orders]
-        elif second_orders:
-            return [DoubleBattleOrder(None, order) for order in second_orders]
-        else:
-            return [DoubleBattleOrder(None, None)]
+        return [
+            DoubleBattleOrder(first_order=first_order, second_order=second_order)
+            for first_order in first_orders or [PassBattleOrder()]
+            for second_order in second_orders or [PassBattleOrder()]
+            if not (first_order.mega and second_order.mega)
+            if not (first_order.z_move and second_order.z_move)
+            if not (first_order.dynamax and second_order.dynamax)
+            if not (first_order.terastallize and second_order.terastallize)
+            if not (
+                isinstance(first_order.order, Pokemon)
+                and isinstance(second_order.order, Pokemon)
+                and str(first_order) == str(second_order)
+            )
+            if not (
+                isinstance(first_order, PassBattleOrder)
+                and isinstance(second_order, PassBattleOrder)
+            )
+        ]
 
 
 class DefaultBattleOrder(SingleBattleOrder, DoubleBattleOrder):
