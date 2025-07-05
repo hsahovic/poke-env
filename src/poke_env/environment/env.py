@@ -372,7 +372,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             )
 
     def close(self, force: bool = True, wait: bool = True, purge: bool = True):
-        async def close_():
+        async def _close():
             if self.battle1 is None or self.battle1.finished:
                 await asyncio.sleep(1)
                 if self.battle1 != self.agent1.battle:
@@ -434,7 +434,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             if purge:
                 self.reset_battles()
 
-        asyncio.run_coroutine_threadsafe(close_(), POKE_LOOP).result()
+        asyncio.run_coroutine_threadsafe(_close(), POKE_LOOP).result()
 
     def observation_space(self, agent: str) -> Space[ObsType]:
         return self.observation_spaces[agent]
