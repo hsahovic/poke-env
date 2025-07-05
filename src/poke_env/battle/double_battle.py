@@ -558,8 +558,6 @@ class DoubleBattle(AbstractBattle):
                     ]
             if not orders[i]:
                 orders[i] += [PassBattleOrder()]
-        print([str(o) for o in orders[0]])
-        print([str(o) for o in orders[1]])
         return orders
 
     @property

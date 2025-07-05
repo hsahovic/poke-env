@@ -284,5 +284,4 @@ class Battle(AbstractBattle):
                 SingleBattleOrder(move, terastallize=True)
                 for move in self.available_moves
             ]
-        print(str(o) for o in orders)
         return orders
