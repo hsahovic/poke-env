@@ -201,12 +201,12 @@ class DoubleBattle(AbstractBattle):
                 if active_request.get("maybeTrapped", False):
                     self._maybe_trapped[active_pokemon_number] = True
 
-        for pokemon_index, trapped in enumerate(self.trapped):
-            if not trapped or self.force_switch[pokemon_index]:
-                for pokemon in side["pokemon"]:
-                    pokemon = self._team[pokemon["ident"]]
+        for i in range(2):
+            if not self.trapped[i]:
+                for pkmn_json in side["pokemon"]:
+                    pokemon = self.team[pkmn_json["ident"]]
                     if not pokemon.active and self.reviving == pokemon.fainted:
-                        self._available_switches[pokemon_index].append(pokemon)
+                        self._available_switches[i].append(pokemon)
 
     def switch(self, pokemon_str: str, details: str, hp_status: str):
         pokemon_identifier = pokemon_str.split(":")[0][:3]
@@ -506,57 +506,47 @@ class DoubleBattle(AbstractBattle):
         if self._wait:
             return [[DefaultBattleOrder()], [DefaultBattleOrder()]]
         for i in range(2):
-            if self.force_switch == [[False, True], [True, False]][i]:
+            if (all(self.force_switch) and len(self.available_switches[0]) == 1) or (
+                any(self.force_switch) and not self.force_switch[i]
+            ):
+                orders[i] += [PassBattleOrder()]
                 continue
             orders[i] += [SingleBattleOrder(mon) for mon in self.available_switches[i]]
-            if self.force_switch[i]:
-                if all(self.force_switch) and len(self.available_switches[0]) == 1:
-                    orders[i] += [PassBattleOrder()]
-                continue
             active_mon = self.active_pokemon[i]
-            if active_mon is not None:
+            if active_mon is None or self.force_switch[i]:
+                continue
+            orders[i] += [
+                SingleBattleOrder(move, move_target=target)
+                for move in self.available_moves[i]
+                for target in self.get_possible_showdown_targets(move, active_mon)
+            ]
+            if self.can_mega_evolve[i]:
                 orders[i] += [
-                    SingleBattleOrder(move, move_target=target)
+                    SingleBattleOrder(move, move_target=target, mega=True)
                     for move in self.available_moves[i]
                     for target in self.get_possible_showdown_targets(move, active_mon)
                 ]
-                if self.can_mega_evolve[i]:
-                    orders[i] += [
-                        SingleBattleOrder(move, move_target=target, mega=True)
-                        for move in self.available_moves[i]
-                        for target in self.get_possible_showdown_targets(
-                            move, active_mon
-                        )
-                    ]
-                if self.can_z_move[i]:
-                    orders[i] += [
-                        SingleBattleOrder(move, move_target=target, z_move=True)
-                        for move in self.available_moves[i]
-                        for target in self.get_possible_showdown_targets(
-                            move, active_mon
-                        )
-                        if move in active_mon.available_z_moves
-                    ]
-                if self.can_dynamax[i]:
-                    orders[i] += [
-                        SingleBattleOrder(move, move_target=target, dynamax=True)
-                        for move in self.available_moves[i]
-                        for target in self.get_possible_showdown_targets(
-                            move, active_mon
-                        )
-                    ]
-                if self.can_tera[i]:
-                    orders[i] += [
-                        SingleBattleOrder(move, move_target=target, terastallize=True)
-                        for move in self.available_moves[i]
-                        for target in self.get_possible_showdown_targets(
-                            move, active_mon
-                        )
-                    ]
-        if not orders[0]:
-            orders[0] += [PassBattleOrder()]
-        if not orders[1]:
-            orders[1] += [PassBattleOrder()]
+            if self.can_z_move[i]:
+                orders[i] += [
+                    SingleBattleOrder(move, move_target=target, z_move=True)
+                    for move in self.available_moves[i]
+                    for target in self.get_possible_showdown_targets(move, active_mon)
+                    if move in active_mon.available_z_moves
+                ]
+            if self.can_dynamax[i]:
+                orders[i] += [
+                    SingleBattleOrder(move, move_target=target, dynamax=True)
+                    for move in self.available_moves[i]
+                    for target in self.get_possible_showdown_targets(move, active_mon)
+                ]
+            if self.can_tera[i]:
+                orders[i] += [
+                    SingleBattleOrder(move, move_target=target, terastallize=True)
+                    for move in self.available_moves[i]
+                    for target in self.get_possible_showdown_targets(move, active_mon)
+                ]
+        print([str(o) for o in orders[0]])
+        print([str(o) for o in orders[1]])
         return orders
 
     @property

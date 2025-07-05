@@ -117,9 +117,9 @@ class Battle(AbstractBattle):
         if side["pokemon"]:
             self._player_role = side["pokemon"][0]["ident"][:2]
 
-        if not self.trapped or self.force_switch:
-            for pokemon in side["pokemon"]:
-                pokemon = self._team[pokemon["ident"]]
+        if not self.trapped:
+            for pkmn_json in side["pokemon"]:
+                pokemon = self.team[pkmn_json["ident"]]
                 if not pokemon.active and self.reviving == pokemon.fainted:
                     self._available_switches.append(pokemon)
 
@@ -261,28 +261,27 @@ class Battle(AbstractBattle):
         if self._wait:
             return [DefaultBattleOrder()]
         orders += [SingleBattleOrder(mon) for mon in self.available_switches]
-        if self.force_switch:
+        if self.active_pokemon is None or self.force_switch:
             return orders
-        elif self.active_pokemon is not None:
-            orders += [SingleBattleOrder(move) for move in self.available_moves]
-            if self.can_mega_evolve:
-                orders += [
-                    SingleBattleOrder(move, mega=True) for move in self.available_moves
-                ]
-            if self.can_z_move:
-                orders += [
-                    SingleBattleOrder(move, z_move=True)
-                    for move in self.available_moves
-                    if move in self.active_pokemon.available_z_moves
-                ]
-            if self.can_dynamax:
-                orders += [
-                    SingleBattleOrder(move, dynamax=True)
-                    for move in self.available_moves
-                ]
-            if self.can_tera:
-                orders += [
-                    SingleBattleOrder(move, terastallize=True)
-                    for move in self.available_moves
-                ]
+        orders += [SingleBattleOrder(move) for move in self.available_moves]
+        if self.can_mega_evolve:
+            orders += [
+                SingleBattleOrder(move, mega=True) for move in self.available_moves
+            ]
+        if self.can_z_move:
+            orders += [
+                SingleBattleOrder(move, z_move=True)
+                for move in self.available_moves
+                if move in self.active_pokemon.available_z_moves
+            ]
+        if self.can_dynamax:
+            orders += [
+                SingleBattleOrder(move, dynamax=True) for move in self.available_moves
+            ]
+        if self.can_tera:
+            orders += [
+                SingleBattleOrder(move, terastallize=True)
+                for move in self.available_moves
+            ]
+        print(str(o) for o in orders)
         return orders
