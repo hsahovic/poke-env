@@ -379,7 +379,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 if self.battle1 and not self.battle1.finished:
                     assert self.battle2 is not None
                     if not (
-                        self.agent1.order_queue.empty() and self.agent2.order_queue.empty()
+                        self.agent1.order_queue.empty()
+                        and self.agent2.order_queue.empty()
                     ):
                         await asyncio.sleep(2)
                         if not (
@@ -400,7 +401,9 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                         await self.agent1.order_queue.async_put(ForfeitBattleOrder())
                         if self.agent2_to_move:
                             self.agent2_to_move = False
-                            await self.agent2.order_queue.async_put(DefaultBattleOrder())
+                            await self.agent2.order_queue.async_put(
+                                DefaultBattleOrder()
+                            )
                     else:
                         assert self.agent2_to_move
                         self.agent2_to_move = False
