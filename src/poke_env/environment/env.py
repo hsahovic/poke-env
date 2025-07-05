@@ -371,7 +371,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 end="\n" if self.battle1.finished else "\r",
             )
 
-    def close(self, force: bool = True, wait: bool = True, purge: bool = False):
+    def close(self, force: bool = True, wait: bool = True, purge: bool = True):
         async def close_():
             if self.battle1 is None or self.battle1.finished:
                 await asyncio.sleep(1)
@@ -384,6 +384,20 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             if force:
                 if self.battle1 and not self.battle1.finished:
                     assert self.battle2 is not None
+                    if not (
+                        self.agent1.order_queue.empty()
+                        and self.agent2.order_queue.empty()
+                    ):
+                        await asyncio.sleep(2)
+                        if not (
+                            self.agent1.order_queue.empty()
+                            and self.agent2.order_queue.empty()
+                        ):
+                            raise RuntimeError(
+                                "The agent is still sending actions. "
+                                "Use this method only when training or "
+                                "evaluation are over."
+                            )
                     if not self.agent1.battle_queue.empty():
                         self.agent1.battle_queue.get()
                     if not self.agent2.battle_queue.empty():
