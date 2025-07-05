@@ -371,47 +371,54 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 end="\n" if self.battle1.finished else "\r",
             )
 
-    def close(self, force: bool = True, purge: bool = False):
-        if self.battle1 is None or self.battle1.finished:
-            time.sleep(1)
-            if self.battle1 != self.agent1.battle:
-                self.battle1 = self.agent1.battle
-        if self.battle2 is None or self.battle2.finished:
-            time.sleep(1)
-            if self.battle2 != self.agent2.battle:
-                self.battle2 = self.agent2.battle
-        if force:
-            if self.battle1 and not self.battle1.finished:
-                assert self.battle2 is not None
-                if not self.agent1.battle_queue.empty():
-                    self.agent1.battle_queue.get()
-                if not self.agent2.battle_queue.empty():
-                    self.agent2.battle_queue.get()
-                if self.agent1_to_move:
-                    self.agent1_to_move = False
-                    self.agent1.order_queue.put(ForfeitBattleOrder())
-                    if self.agent2_to_move:
+    def close(self, force: bool = True, wait: bool = True, purge: bool = False):
+        async def close_():
+            if self.battle1 is None or self.battle1.finished:
+                await asyncio.sleep(1)
+                if self.battle1 != self.agent1.battle:
+                    self.battle1 = self.agent1.battle
+            if self.battle2 is None or self.battle2.finished:
+                await asyncio.sleep(1)
+                if self.battle2 != self.agent2.battle:
+                    self.battle2 = self.agent2.battle
+            if force:
+                if self.battle1 and not self.battle1.finished:
+                    assert self.battle2 is not None
+                    if not self.agent1.battle_queue.empty():
+                        self.agent1.battle_queue.get()
+                    if not self.agent2.battle_queue.empty():
+                        self.agent2.battle_queue.get()
+                    if self.agent1_to_move:
+                        self.agent1_to_move = False
+                        self.agent1.order_queue.put(ForfeitBattleOrder())
+                        if self.agent2_to_move:
+                            self.agent2_to_move = False
+                            self.agent2.order_queue.put(DefaultBattleOrder())
+                    else:
+                        assert self.agent2_to_move
                         self.agent2_to_move = False
-                        self.agent2.order_queue.put(DefaultBattleOrder())
-                else:
-                    assert self.agent2_to_move
-                    self.agent2_to_move = False
-                    self.agent2.order_queue.put(ForfeitBattleOrder())
-        self._challenge_task = None
-        self.battle1 = None
-        self.battle2 = None
-        self.agent1.battle = None
-        self.agent2.battle = None
-        while not self.agent1.order_queue.empty():
-            self.agent1.order_queue.get()
-        while not self.agent2.order_queue.empty():
-            self.agent2.order_queue.get()
-        while not self.agent1.battle_queue.empty():
-            self.agent1.battle_queue.get()
-        while not self.agent2.battle_queue.empty():
-            self.agent2.battle_queue.get()
-        if purge:
-            self.reset_battles()
+                        self.agent2.order_queue.put(ForfeitBattleOrder())
+            if wait and self._challenge_task:
+                while not self._challenge_task.done():
+                    await asyncio.sleep(1)
+                self._challenge_task.result()
+            self._challenge_task = None
+            self.battle1 = None
+            self.battle2 = None
+            self.agent1.battle = None
+            self.agent2.battle = None
+            while not self.agent1.order_queue.empty():
+                self.agent1.order_queue.get()
+            while not self.agent2.order_queue.empty():
+                self.agent2.order_queue.get()
+            while not self.agent1.battle_queue.empty():
+                self.agent1.battle_queue.get()
+            while not self.agent2.battle_queue.empty():
+                self.agent2.battle_queue.get()
+            if purge:
+                self.reset_battles()
+
+        asyncio.run_coroutine_threadsafe(close_(), POKE_LOOP)
 
     def observation_space(self, agent: str) -> Space[ObsType]:
         return self.observation_spaces[agent]
