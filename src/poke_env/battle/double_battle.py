@@ -506,15 +506,16 @@ class DoubleBattle(AbstractBattle):
         if self._wait:
             return [[DefaultBattleOrder()], [DefaultBattleOrder()]]
         for i in range(2):
-            if (all(self.force_switch) and len(self.available_switches[0]) == 1) or (
-                any(self.force_switch) and not self.force_switch[i]
-            ):
+            if any(self.force_switch) and not self.force_switch[i]:
                 orders[i] += [PassBattleOrder()]
                 continue
             if not self.trapped[i]:
                 orders[i] += [
                     SingleBattleOrder(mon) for mon in self.available_switches[i]
                 ]
+            if all(self.force_switch) and len(self.available_switches[0]) == 1:
+                orders[i] += [PassBattleOrder()]
+                continue
             active_mon = self.active_pokemon[i]
             if active_mon is not None and not self.force_switch[i]:
                 orders[i] += [
