@@ -372,7 +372,14 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             )
 
     def close(self, force: bool = True, purge: bool = False):
-
+        if self.battle1 is None or self.battle1.finished:
+            time.sleep(1)
+            if self.battle1 != self.agent1.battle:
+                self.battle1 = self.agent1.battle
+        if self.battle2 is None or self.battle2.finished:
+            time.sleep(1)
+            if self.battle2 != self.agent2.battle:
+                self.battle2 = self.agent2.battle
         if force:
             if self.battle1 and not self.battle1.finished:
                 assert self.battle2 is not None
