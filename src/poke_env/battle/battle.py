@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional, Union
 from poke_env.battle.abstract_battle import AbstractBattle
 from poke_env.battle.move import Move
 from poke_env.battle.pokemon import Pokemon
-from poke_env.player.battle_order import SingleBattleOrder
+from poke_env.player.battle_order import DefaultBattleOrder, SingleBattleOrder
 
 
 class Battle(AbstractBattle):
@@ -117,19 +117,11 @@ class Battle(AbstractBattle):
         if side["pokemon"]:
             self._player_role = side["pokemon"][0]["ident"][:2]
 
-        if not self.trapped and not self.reviving:
+        if not self.trapped or self.force_switch:
             for pokemon in side["pokemon"]:
-                if pokemon:
-                    pokemon = self._team[pokemon["ident"]]
-                    if not pokemon.active and not pokemon.fainted:
-                        self._available_switches.append(pokemon)
-
-        if not self.trapped and self.reviving:
-            for pokemon in side["pokemon"]:
-                if pokemon and pokemon.get("reviving", False):
-                    pokemon = self._team[pokemon["ident"]]
-                    if not pokemon.active:
-                        self._available_switches.append(pokemon)
+                pokemon = self._team[pokemon["ident"]]
+                if not pokemon.active and self.reviving == pokemon.fainted:
+                    self._available_switches.append(pokemon)
 
     def switch(self, pokemon_str: str, details: str, hp_status: str):
         identifier = pokemon_str.split(":")[0][:2]
@@ -266,6 +258,8 @@ class Battle(AbstractBattle):
     @property
     def valid_orders(self) -> List[SingleBattleOrder]:
         orders: List[SingleBattleOrder] = []
+        if self._wait:
+            return [DefaultBattleOrder()]
         orders += [SingleBattleOrder(mon) for mon in self.available_switches]
         if self.force_switch:
             return orders

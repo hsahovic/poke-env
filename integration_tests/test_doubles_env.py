@@ -1,11 +1,14 @@
+import random
+
 import numpy as np
 import pytest
 from gymnasium.spaces import Box
 from gymnasium.utils.env_checker import check_env
 from pettingzoo.test.parallel_test import parallel_api_test
 
+from poke_env.battle import DoubleBattle
 from poke_env.environment import DoublesEnv, SingleAgentWrapper
-from poke_env.player import RandomPlayer
+from poke_env.player import DoubleBattleOrder, RandomPlayer
 
 
 class DoublesTestEnv(DoublesEnv):
@@ -23,12 +26,31 @@ class DoublesTestEnv(DoublesEnv):
         return np.array([0])
 
 
-def play_function(env, n_battles):
+def play_function(env: DoublesEnv, n_battles: int):
     for _ in range(n_battles):
         done = False
         env.reset()
+        if "illusion" in [
+            p.ability
+            for p in list(env.battle1.team.values()) + list(env.battle2.team.values())
+        ]:
+            continue
         while not done:
-            actions = {name: env.action_space(name).sample() for name in env.agents}
+            assert isinstance(env.battle1, DoubleBattle)
+            assert isinstance(env.battle2, DoubleBattle)
+            actions = {
+                name: (
+                    env.order_to_action(
+                        random.choice(
+                            DoubleBattleOrder.join_orders(*battle.valid_orders)
+                        ),
+                        battle,
+                    )
+                    if env.strict
+                    else env.action_space(name).sample()
+                )
+                for name, battle in zip(env.agents, [env.battle1, env.battle2])
+            }
             _, _, terminated, truncated, _ = env.step(actions)
             done = any(terminated.values()) or any(truncated.values())
 
@@ -36,10 +58,11 @@ def play_function(env, n_battles):
 @pytest.mark.timeout(120)
 def test_env_run():
     for gen in range(8, 10):
+        env = DoublesTestEnv(battle_format=f"gen{gen}randomdoublesbattle", log_level=25)
+        play_function(env, 10)
+        env.close()
         env = DoublesTestEnv(
-            battle_format=f"gen{gen}randomdoublesbattle",
-            log_level=25,
-            strict=False,
+            battle_format=f"gen{gen}randomdoublesbattle", log_level=25, strict=False
         )
         play_function(env, 10)
         env.close()
@@ -49,8 +72,20 @@ def single_agent_play_function(env: SingleAgentWrapper, n_battles: int):
     for _ in range(n_battles):
         done = False
         env.reset()
+        if "illusion" in [p.ability for p in env.env.battle1.team.values()]:
+            continue
         while not done:
-            action = env.action_space.sample()
+            assert isinstance(env.env.battle1, DoubleBattle)
+            action = (
+                env.env.order_to_action(
+                    random.choice(
+                        DoubleBattleOrder.join_orders(*env.env.battle1.valid_orders)
+                    ),
+                    env.env.battle1,
+                )
+                if env.env.strict
+                else env.action_space.sample()
+            )
             _, _, terminated, truncated, _ = env.step(action)
             done = terminated or truncated
 
@@ -58,10 +93,12 @@ def single_agent_play_function(env: SingleAgentWrapper, n_battles: int):
 @pytest.mark.timeout(120)
 def test_single_agent_env_run():
     for gen in range(8, 10):
+        env = DoublesTestEnv(battle_format=f"gen{gen}randomdoublesbattle", log_level=25)
+        env = SingleAgentWrapper(env, RandomPlayer())
+        single_agent_play_function(env, 10)
+        env.close()
         env = DoublesTestEnv(
-            battle_format=f"gen{gen}randomdoublesbattle",
-            log_level=25,
-            strict=False,
+            battle_format=f"gen{gen}randomdoublesbattle", log_level=25, strict=False
         )
         env = SingleAgentWrapper(env, RandomPlayer())
         single_agent_play_function(env, 10)

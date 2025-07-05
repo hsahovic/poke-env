@@ -7,7 +7,11 @@ from poke_env.battle.move_category import MoveCategory
 from poke_env.battle.pokemon import Pokemon
 from poke_env.battle.pokemon_type import PokemonType
 from poke_env.battle.target import Target
-from poke_env.player.battle_order import PassBattleOrder, SingleBattleOrder
+from poke_env.player.battle_order import (
+    DefaultBattleOrder,
+    PassBattleOrder,
+    SingleBattleOrder,
+)
 
 
 class DoubleBattle(AbstractBattle):
@@ -198,18 +202,11 @@ class DoubleBattle(AbstractBattle):
                     self._maybe_trapped[active_pokemon_number] = True
 
         for pokemon_index, trapped in enumerate(self.trapped):
-            if (not trapped) or self.force_switch[pokemon_index]:
+            if not trapped or self.force_switch[pokemon_index]:
                 for pokemon in side["pokemon"]:
-                    if pokemon:
-                        pokemon = self._team[pokemon["ident"]]
-                        if (
-                            not self.reviving
-                            and not pokemon.active
-                            and not pokemon.fainted
-                        ):
-                            self._available_switches[pokemon_index].append(pokemon)
-                        if self.reviving and not pokemon.active and pokemon.fainted:
-                            self._available_switches[pokemon_index].append(pokemon)
+                    pokemon = self._team[pokemon["ident"]]
+                    if not pokemon.active and self.reviving == pokemon.fainted:
+                        self._available_switches[pokemon_index].append(pokemon)
 
     def switch(self, pokemon_str: str, details: str, hp_status: str):
         pokemon_identifier = pokemon_str.split(":")[0][:3]
@@ -506,6 +503,8 @@ class DoubleBattle(AbstractBattle):
     @property
     def valid_orders(self) -> List[List[SingleBattleOrder]]:
         orders: List[List[SingleBattleOrder]] = [[], []]
+        if self._wait:
+            return [[DefaultBattleOrder()], [DefaultBattleOrder()]]
         for i in range(2):
             if self.force_switch == [[False, True], [True, False]][i]:
                 continue
