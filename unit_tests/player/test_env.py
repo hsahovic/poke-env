@@ -139,7 +139,7 @@ def test_reset_step_close():
     assert add_info_step == {env.agents[0]: {}, env.agents[1]: {}}
 
     # --- Part 3: Test close() ---
-    env.close()
+    env.close(wait=False)
 
 
 def render(battle):
