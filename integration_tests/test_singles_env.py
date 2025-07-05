@@ -48,7 +48,6 @@ def play_function(env: SinglesEnv, n_battles: int):
             }
             _, _, terminated, truncated, _ = env.step(actions)
             done = any(terminated.values()) or any(truncated.values())
-        env.close()
 
 
 @pytest.mark.timeout(120)
@@ -58,6 +57,7 @@ def test_env_run():
         play_function(env, 10)
         env.strict = False
         play_function(env, 10)
+        env.close()
 
 
 def single_agent_play_function(env: SingleAgentWrapper, n_battles: int):
@@ -77,7 +77,6 @@ def single_agent_play_function(env: SingleAgentWrapper, n_battles: int):
             )
             _, _, terminated, truncated, _ = env.step(action)
             done = terminated or truncated
-        env.close()
 
 
 @pytest.mark.timeout(120)
@@ -88,6 +87,7 @@ def test_single_agent_env_run():
         single_agent_play_function(env, 10)
         env.env.strict = False
         single_agent_play_function(env, 10)
+        env.close()
 
 
 @pytest.mark.timeout(60)
