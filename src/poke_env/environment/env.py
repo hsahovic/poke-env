@@ -96,7 +96,7 @@ class _EnvPlayer(Player):
         return order
 
     def _battle_finished_callback(self, battle: AbstractBattle):
-        asyncio.run_coroutine_threadsafe(self.battle_queue.async_put(battle), POKE_LOOP)
+        self.battle_queue.put(battle)
 
 
 class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
@@ -418,7 +418,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             if purge:
                 self.reset_battles()
 
-        asyncio.run_coroutine_threadsafe(close_(), POKE_LOOP)
+        asyncio.run_coroutine_threadsafe(close_(), POKE_LOOP).result()
 
     def observation_space(self, agent: str) -> Space[ObsType]:
         return self.observation_spaces[agent]
