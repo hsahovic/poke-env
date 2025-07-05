@@ -96,7 +96,7 @@ class _EnvPlayer(Player):
         return order
 
     def _battle_finished_callback(self, battle: AbstractBattle):
-        self.battle_queue.put(battle)
+        asyncio.run_coroutine_threadsafe(self.battle_queue.async_put(battle), POKE_LOOP)
 
 
 class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
