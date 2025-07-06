@@ -69,7 +69,11 @@ def single_agent_play_function(env: SingleAgentWrapper, n_battles: int):
     for _ in range(n_battles):
         done = False
         env.reset()
-        if "illusion" in [p.ability for p in env.env.battle1.team.values()]:
+        if "illusion" in [
+            p.ability
+            for p in list(env.env.battle1.team.values())
+            + list(env.env.battle2.team.values())
+        ]:
             continue
         while not done:
             assert isinstance(env.env.battle1, DoubleBattle)
