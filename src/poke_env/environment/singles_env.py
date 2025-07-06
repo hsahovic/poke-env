@@ -238,8 +238,5 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
                 if battle.logger is not None:
                     battle.logger.warning(e)
                 return SinglesEnv.order_to_action(
-                    Player.choose_random_singles_move(battle),
-                    battle,
-                    fake,
-                    strict,
+                    Player.choose_random_singles_move(battle), battle, fake, strict
                 )
