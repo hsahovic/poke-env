@@ -162,7 +162,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             battle.force_switch != [[False, True], [True, False]][pos] or action == 0
         ), "invalid action"
         if action == 0:
-            order = PassBattleOrder()
+            order: SingleBattleOrder = PassBattleOrder()
         elif action < 7:
             order = Player.create_order(list(battle.team.values())[action - 1])
             if not fake:
