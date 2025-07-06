@@ -371,7 +371,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 end="\n" if self.battle1.finished else "\r",
             )
 
-    def close(self, force: bool = True, purge: bool = True):
+    def close(self, force: bool = True, wait: bool = True):
         if force:
             if self.battle1 and not self.battle1.finished:
                 assert self.battle2 is not None
@@ -389,9 +389,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                     assert self.agent2_to_move
                     self.agent2_to_move = False
                     self.agent2.order_queue.put(ForfeitBattleOrder())
-        if purge:
-            if self._challenge_task is not None:
-                self._challenge_task.result()
+        if wait and self._challenge_task is not None:
+            self._challenge_task.result()
             self.reset_battles()
         self._challenge_task = None
         self.battle1 = None
@@ -606,15 +605,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             else:
                 truncated = True
         return terminated, truncated
-
-    def reset_env(self):
-        """
-        Resets the environment to an inactive state: it will forfeit all unfinished
-        battles, reset the internal battle tracker and optionally change the next
-        opponent and restart the challenge loop.
-        """
-        self.close(purge=False)
-        self.reset_battles()
 
     def reset_battles(self):
         """Resets the player's inner battle tracker."""
