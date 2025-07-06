@@ -11,6 +11,7 @@ from poke_env.player.battle_order import (
     DefaultBattleOrder,
     DoubleBattleOrder,
     ForfeitBattleOrder,
+    PassBattleOrder,
     SingleBattleOrder,
 )
 from poke_env.player.player import Player
@@ -33,6 +34,7 @@ __all__ = [
     "evaluate_player",
     "BattleOrder",
     "SingleBattleOrder",
+    "PassBattleOrder",
     "DefaultBattleOrder",
     "DoubleBattleOrder",
     "RandomPlayer",
