@@ -110,55 +110,54 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         :return: The battle order for the given action in context of the current battle.
         :rtype: BattleOrder
         """
-        if action == -2:
-            return DefaultBattleOrder()
-        elif action == -1:
-            return ForfeitBattleOrder()
-        elif action < 6:
-            order = Player.create_order(list(battle.team.values())[action])
-        else:
-            if battle.active_pokemon is None:
-                if strict:
+        try:
+            if action == -2:
+                return DefaultBattleOrder()
+            elif action == -1:
+                return ForfeitBattleOrder()
+            elif action < 6:
+                order = Player.create_order(list(battle.team.values())[action])
+            else:
+                if battle.active_pokemon is None:
                     raise ValueError(
                         f"Invalid order from player {battle.player_username} "
                         f"in battle {battle.battle_tag} - action specifies a "
                         f"move, but battle.active_pokemon is None!"
                     )
-                else:
-                    return Player.choose_random_singles_move(battle)
-            mvs = (
-                battle.available_moves
-                if len(battle.available_moves) == 1
-                and battle.available_moves[0].id in ["struggle", "recharge"]
-                else list(battle.active_pokemon.moves.values())
-            )
-            if (action - 6) % 4 not in range(len(mvs)):
-                if strict:
+                mvs = (
+                    battle.available_moves
+                    if len(battle.available_moves) == 1
+                    and battle.available_moves[0].id in ["struggle", "recharge"]
+                    else list(battle.active_pokemon.moves.values())
+                )
+                if (action - 6) % 4 not in range(len(mvs)):
                     raise ValueError(
                         f"Invalid action {action} from player {battle.player_username} "
                         f"in battle {battle.battle_tag} - action specifies a move "
                         f"but the move index {(action - 6) % 4} is out of bounds "
                         f"for available moves {mvs}!"
                     )
-                else:
-                    return Player.choose_random_singles_move(battle)
-            order = Player.create_order(
-                mvs[(action - 6) % 4],
-                mega=10 <= action.item() < 14,
-                z_move=14 <= action.item() < 18,
-                dynamax=18 <= action.item() < 22,
-                terastallize=22 <= action.item() < 26,
-            )
-        if not fake and str(order) not in [str(o) for o in battle.valid_orders]:
-            if strict:
+                order = Player.create_order(
+                    mvs[(action - 6) % 4],
+                    mega=10 <= action.item() < 14,
+                    z_move=14 <= action.item() < 18,
+                    dynamax=18 <= action.item() < 22,
+                    terastallize=22 <= action.item() < 26,
+                )
+            if not fake and str(order) not in [str(o) for o in battle.valid_orders]:
                 raise ValueError(
                     f"Invalid action {action} from player {battle.player_username} "
                     f"in battle {battle.battle_tag} - converted order {order} "
                     f"not in valid orders {[str(o) for o in battle.valid_orders]}!"
                 )
+            return order
+        except ValueError as e:
+            if strict:
+                raise e
             else:
+                if battle.logger is not None:
+                    battle.logger.warning(e)
                 return Player.choose_random_singles_move(battle)
-        return order
 
     @staticmethod
     def order_to_action(
@@ -182,73 +181,65 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         :return: The action for the given battle order in context of the current battle.
         :rtype: int64
         """
-        if isinstance(order, DefaultBattleOrder):
-            action = -2
-        elif isinstance(order, ForfeitBattleOrder):
-            action = -1
-        else:
-            assert isinstance(order, SingleBattleOrder)
-            assert not isinstance(order.order, str)
-            if not fake and str(order) not in [str(o) for o in battle.valid_orders]:
-                if strict:
+        try:
+            if isinstance(order, DefaultBattleOrder):
+                action = -2
+            elif isinstance(order, ForfeitBattleOrder):
+                action = -1
+            else:
+                assert isinstance(order, SingleBattleOrder)
+                assert not isinstance(order.order, str)
+                if not fake and str(order) not in [str(o) for o in battle.valid_orders]:
                     raise ValueError(
                         f"Invalid order from player {battle.player_username} "
                         f"in battle {battle.battle_tag} - order {order} "
                         f"not in valid orders {[str(o) for o in battle.valid_orders]}!"
                     )
-                else:
-                    return SinglesEnv.order_to_action(
-                        Player.choose_random_singles_move(battle), battle, fake, strict
+                if isinstance(order.order, Pokemon):
+                    action = [p.base_species for p in battle.team.values()].index(
+                        order.order.base_species
                     )
-            if isinstance(order.order, Pokemon):
-                action = [p.base_species for p in battle.team.values()].index(
-                    order.order.base_species
-                )
-            else:
-                if battle.active_pokemon is None:
-                    if strict:
+                else:
+                    if battle.active_pokemon is None:
                         raise ValueError(
                             f"Invalid order from player {battle.player_username} "
                             f"in battle {battle.battle_tag} - type of order.order "
                             f"is Move, but battle.active_pokemon is None!"
                         )
-                    else:
-                        return SinglesEnv.order_to_action(
-                            Player.choose_random_singles_move(battle),
-                            battle,
-                            fake,
-                            strict,
-                        )
-                mvs = (
-                    battle.available_moves
-                    if len(battle.available_moves) == 1
-                    and battle.available_moves[0].id in ["struggle", "recharge"]
-                    else list(battle.active_pokemon.moves.values())
-                )
-                if order.order.id not in [m.id for m in mvs]:
-                    if strict:
+                    mvs = (
+                        battle.available_moves
+                        if len(battle.available_moves) == 1
+                        and battle.available_moves[0].id in ["struggle", "recharge"]
+                        else list(battle.active_pokemon.moves.values())
+                    )
+                    if order.order.id not in [m.id for m in mvs]:
                         raise ValueError(
                             f"Invalid order from player {battle.player_username} "
                             f"in battle {battle.battle_tag} - order {order} "
                             f"not in available moves {mvs}!"
                         )
+                    action = [m.id for m in mvs].index(order.order.id)
+                    if order.mega:
+                        gimmick = 1
+                    elif order.z_move:
+                        gimmick = 2
+                    elif order.dynamax:
+                        gimmick = 3
+                    elif order.terastallize:
+                        gimmick = 4
                     else:
-                        return SinglesEnv.order_to_action(
-                            Player.choose_random_singles_move(battle),
-                            battle,
-                            fake,
-                            strict,
-                        )
-                action = [m.id for m in mvs].index(order.order.id)
-                if order.mega:
-                    gimmick = 1
-                elif order.z_move:
-                    gimmick = 2
-                elif order.dynamax:
-                    gimmick = 3
-                elif order.terastallize:
-                    gimmick = 4
-                else:
-                    gimmick = 0
-                action = 6 + action + 4 * gimmick
-        return np.int64(action)
+                        gimmick = 0
+                    action = 6 + action + 4 * gimmick
+            return np.int64(action)
+        except ValueError as e:
+            if strict:
+                raise e
+            else:
+                if battle.logger is not None:
+                    battle.logger.warning(e)
+                return SinglesEnv.order_to_action(
+                    Player.choose_random_singles_move(battle),
+                    battle,
+                    fake,
+                    strict,
+                )

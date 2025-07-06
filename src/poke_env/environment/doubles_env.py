@@ -139,6 +139,8 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             if strict:
                 raise e
             else:
+                if battle.logger is not None:
+                    battle.logger.warning(e)
                 order1 = Player.choose_random_doubles_move(battle).first_order
         try:
             order2 = DoublesEnv._action_to_order_individual(action[1], battle, fake, 1)
@@ -146,16 +148,21 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             if strict:
                 raise e
             else:
+                if battle.logger is not None:
+                    battle.logger.warning(e)
                 order2 = Player.choose_random_doubles_move(battle).second_order
         joined_orders = DoubleBattleOrder.join_orders([order1], [order2])
         if not joined_orders:
+            error_msg = (
+                f"Invalid action {action} from player {battle.player_username} "
+                f"in battle {battle.battle_tag} - converted orders {order1} "
+                f"and {order2} are incompatible!"
+            )
             if strict:
-                raise ValueError(
-                    f"Invalid action {action} from player {battle.player_username} "
-                    f"in battle {battle.battle_tag} - converted orders {order1} "
-                    f"and {order2} are incompatible!"
-                )
+                raise ValueError(error_msg)
             else:
+                if battle.logger is not None:
+                    battle.logger.warning(error_msg)
                 return Player.choose_random_doubles_move(battle)
         else:
             return joined_orders[0]
@@ -234,12 +241,15 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             [order.first_order], [order.second_order]
         )
         if not fake and not joined_orders:
+            error_msg = (
+                f"Invalid order {order} from player {battle.player_username} "
+                f"in battle {battle.battle_tag} - orders are incompatible!"
+            )
             if strict:
-                raise ValueError(
-                    f"Invalid order {order} from player {battle.player_username} "
-                    f"in battle {battle.battle_tag} - orders are incompatible!"
-                )
+                raise ValueError(error_msg)
             else:
+                if battle.logger is not None:
+                    battle.logger.warning(error_msg)
                 return DoublesEnv.order_to_action(
                     Player.choose_random_doubles_move(battle), battle, fake, strict
                 )
@@ -251,6 +261,8 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             if strict:
                 raise e
             else:
+                if battle.logger is not None:
+                    battle.logger.warning(e)
                 action1 = DoublesEnv._order_to_action_individual(
                     Player.choose_random_doubles_move(battle).first_order,
                     battle,
@@ -265,6 +277,8 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             if strict:
                 raise e
             else:
+                if battle.logger is not None:
+                    battle.logger.warning(e)
                 action2 = DoublesEnv._order_to_action_individual(
                     Player.choose_random_doubles_move(battle).second_order,
                     battle,
