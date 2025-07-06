@@ -129,7 +129,9 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         :rtype: BattleOrder
 
         """
-        if action[0] == -1 or action[1] == -1:
+        if action[0] == -2 and action[1] == -2:
+            return DefaultBattleOrder()
+        elif action[0] == -1 or action[1] == -1:
             return ForfeitBattleOrder()
         try:
             order1 = DoublesEnv._action_to_order_individual(action[0], battle, fake, 0)

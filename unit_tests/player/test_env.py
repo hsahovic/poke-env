@@ -480,10 +480,6 @@ def test_doubles_action_order_conversions():
             p, DoubleBattleOrder(Player.create_order(active_pokemon)), battle
         )
         battle._available_switches = [[], []]
-        assert (
-            p.action_to_order(np.array([25, 0]), battle, strict=False).message
-            == "/choose default, pass"
-        )
         if has_megas:
             battle._can_mega_evolve = [True, True]
             assert (

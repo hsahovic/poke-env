@@ -125,7 +125,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
                         f"move, but battle.active_pokemon is None!"
                     )
                 else:
-                    return DefaultBattleOrder()
+                    return Player.choose_random_singles_move(battle)
             mvs = (
                 battle.available_moves
                 if len(battle.available_moves) == 1
@@ -141,7 +141,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
                         f"for available moves {mvs}!"
                     )
                 else:
-                    return DefaultBattleOrder()
+                    return Player.choose_random_singles_move(battle)
             order = Player.create_order(
                 mvs[(action - 6) % 4],
                 mega=10 <= action.item() < 14,
@@ -157,7 +157,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
                     f"not in valid orders {[str(o) for o in battle.valid_orders]}!"
                 )
             else:
-                return DefaultBattleOrder()
+                return Player.choose_random_singles_move(battle)
         return order
 
     @staticmethod
@@ -197,7 +197,9 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
                         f"not in valid orders {[str(o) for o in battle.valid_orders]}!"
                     )
                 else:
-                    action = -2
+                    return SinglesEnv.order_to_action(
+                        Player.choose_random_singles_move(battle), battle, fake, strict
+                    )
             if isinstance(order.order, Pokemon):
                 action = [p.base_species for p in battle.team.values()].index(
                     order.order.base_species
@@ -211,7 +213,12 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
                             f"is Move, but battle.active_pokemon is None!"
                         )
                     else:
-                        return np.int64(-2)
+                        return SinglesEnv.order_to_action(
+                            Player.choose_random_singles_move(battle),
+                            battle,
+                            fake,
+                            strict,
+                        )
                 mvs = (
                     battle.available_moves
                     if len(battle.available_moves) == 1
@@ -226,7 +233,12 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
                             f"not in available moves {mvs}!"
                         )
                     else:
-                        return np.int64(-2)
+                        return SinglesEnv.order_to_action(
+                            Player.choose_random_singles_move(battle),
+                            battle,
+                            fake,
+                            strict,
+                        )
                 action = [m.id for m in mvs].index(order.order.id)
                 if order.mega:
                     gimmick = 1
