@@ -371,8 +371,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 end="\n" if self.battle1.finished else "\r",
             )
 
-    def close(self, force: bool = True, purge: bool = False):
-        self._keep_challenging = False
+    def close(self, force: bool = True, wait: bool = True):
         if force:
             if self.battle1 and not self.battle1.finished:
                 assert self.battle2 is not None
@@ -388,8 +387,12 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                         self.agent2.order_queue.put(DefaultBattleOrder())
                 else:
                     assert self.agent2_to_move
-                    self.agent_to_move = False
+                    self.agent2_to_move = False
                     self.agent2.order_queue.put(ForfeitBattleOrder())
+        if wait and self._challenge_task is not None:
+            self._challenge_task.result()
+        if self._challenge_task is None or self._challenge_task.done():
+            self.reset_battles()
         self._challenge_task = None
         self.battle1 = None
         self.battle2 = None
@@ -403,8 +406,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             self.agent1.battle_queue.get()
         while not self.agent2.battle_queue.empty():
             self.agent2.battle_queue.get()
-        if purge:
-            self.reset_battles()
 
     def observation_space(self, agent: str) -> Space[ObsType]:
         return self.observation_spaces[agent]
@@ -605,15 +606,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             else:
                 truncated = True
         return terminated, truncated
-
-    def reset_env(self):
-        """
-        Resets the environment to an inactive state: it will forfeit all unfinished
-        battles, reset the internal battle tracker and optionally change the next
-        opponent and restart the challenge loop.
-        """
-        self.close(purge=False)
-        self.reset_battles()
 
     def reset_battles(self):
         """Resets the player's inner battle tracker."""
