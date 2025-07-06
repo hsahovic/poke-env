@@ -24,6 +24,7 @@ from poke_env.player.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
     DoubleBattleOrder,
+    PassBattleOrder,
     SingleBattleOrder,
 )
 from poke_env.ps_client import PSClient

@@ -70,11 +70,7 @@ class DoubleBattleOrder(BattleOrder):
 
     @property
     def message(self) -> str:
-        return (
-            self.first_order.message
-            + ", "
-            + self.second_order.message.replace("/choose ", "")
-        )
+        return f"{self.first_order.message}, {self.second_order.message[8:]}"
 
     @staticmethod
     def join_orders(

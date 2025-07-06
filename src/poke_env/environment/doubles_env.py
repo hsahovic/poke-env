@@ -251,51 +251,50 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
     def _order_to_action_individual(
         order: SingleBattleOrder, battle: DoubleBattle, fake: bool, pos: int
     ) -> np.int64:
-        if isinstance(order, DefaultBattleOrder):
-            return np.int64(-2)
-        else:
-            assert isinstance(order, SingleBattleOrder)
-            if isinstance(order, PassBattleOrder):
-                return np.int64(0)
-            assert not isinstance(order.order, str), "invalid order"
-            if isinstance(order.order, Pokemon):
-                action = [p.base_species for p in battle.team.values()].index(
-                    order.order.base_species
-                ) + 1
+        if isinstance(order.order, str):
+            if isinstance(order, DefaultBattleOrder):
+                return np.int64(-2)
             else:
-                active_mon = battle.active_pokemon[pos]
-                if active_mon is None:
-                    raise ValueError(
-                        f"Invalid order {order} from player {battle.player_username} "
-                        f"in battle {battle.battle_tag} at position {pos} - type of "
-                        f"order.order is Move, but battle.active_pokemon[pos] is None!"
-                    )
-                mvs = (
-                    battle.available_moves[pos]
-                    if len(battle.available_moves[pos]) == 1
-                    and battle.available_moves[pos][0].id in ["struggle", "recharge"]
-                    else list(active_mon.moves.values())
+                assert isinstance(order, PassBattleOrder)
+                return np.int64(0)
+        elif isinstance(order.order, Pokemon):
+            action = [p.base_species for p in battle.team.values()].index(
+                order.order.base_species
+            ) + 1
+        else:
+            active_mon = battle.active_pokemon[pos]
+            if active_mon is None:
+                raise ValueError(
+                    f"Invalid order {order} from player {battle.player_username} "
+                    f"in battle {battle.battle_tag} at position {pos} - type of "
+                    f"order.order is Move, but battle.active_pokemon[pos] is None!"
                 )
-                if order.order.id not in [m.id for m in mvs]:
-                    raise ValueError(
-                        f"Invalid order {order} from player {battle.player_username} "
-                        f"in battle {battle.battle_tag} at position {pos} - order "
-                        f"specifies a move but the move {order.order.id} is not in "
-                        f"available moves {mvs}!"
-                    )
-                action = [m.id for m in mvs].index(order.order.id)
-                target = order.move_target + 2
-                if order.mega:
-                    gimmick = 1
-                elif order.z_move:
-                    gimmick = 2
-                elif order.dynamax:
-                    gimmick = 3
-                elif order.terastallize:
-                    gimmick = 4
-                else:
-                    gimmick = 0
-                action = 1 + 6 + 5 * action + target + 20 * gimmick
+            mvs = (
+                battle.available_moves[pos]
+                if len(battle.available_moves[pos]) == 1
+                and battle.available_moves[pos][0].id in ["struggle", "recharge"]
+                else list(active_mon.moves.values())
+            )
+            if order.order.id not in [m.id for m in mvs]:
+                raise ValueError(
+                    f"Invalid order {order} from player {battle.player_username} "
+                    f"in battle {battle.battle_tag} at position {pos} - order "
+                    f"specifies a move but the move {order.order.id} is not in "
+                    f"available moves {mvs}!"
+                )
+            action = [m.id for m in mvs].index(order.order.id)
+            target = order.move_target + 2
+            if order.mega:
+                gimmick = 1
+            elif order.z_move:
+                gimmick = 2
+            elif order.dynamax:
+                gimmick = 3
+            elif order.terastallize:
+                gimmick = 4
+            else:
+                gimmick = 0
+            action = 1 + 6 + 5 * action + target + 20 * gimmick
         if not fake and str(order) not in [str(o) for o in battle.valid_orders[pos]]:
             raise ValueError(
                 f"Invalid order from player {battle.player_username} in battle "
