@@ -612,7 +612,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         battles, reset the internal battle tracker and optionally change the next
         opponent and restart the challenge loop.
         """
-        self.close(purge=False)
+        self.close()
         self.reset_battles()
 
     def reset_battles(self):
