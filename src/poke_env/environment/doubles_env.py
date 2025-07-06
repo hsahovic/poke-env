@@ -137,14 +137,14 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             if strict:
                 raise e
             else:
-                order1 = DefaultBattleOrder()
+                order1 = Player.choose_random_doubles_move(battle).first_order
         try:
             order2 = DoublesEnv._action_to_order_individual(action[1], battle, fake, 1)
         except ValueError as e:
             if strict:
                 raise e
             else:
-                order2 = DefaultBattleOrder()
+                order2 = Player.choose_random_doubles_move(battle).second_order
         joined_orders = DoubleBattleOrder.join_orders([order1], [order2])
         if not joined_orders:
             if strict:
@@ -154,7 +154,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                     f"and {order2} are incompatible!"
                 )
             else:
-                return DefaultBattleOrder()
+                return Player.choose_random_doubles_move(battle)
         else:
             return joined_orders[0]
 
@@ -238,7 +238,9 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                     f"in battle {battle.battle_tag} - orders are incompatible!"
                 )
             else:
-                return np.array([-2, -2])
+                return DoublesEnv.order_to_action(
+                    Player.choose_random_doubles_move(battle), battle, fake, strict
+                )
         try:
             action1 = DoublesEnv._order_to_action_individual(
                 order.first_order, battle, fake, 0
@@ -247,7 +249,12 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             if strict:
                 raise e
             else:
-                action1 = np.int64(-2)
+                action1 = DoublesEnv._order_to_action_individual(
+                    Player.choose_random_doubles_move(battle).first_order,
+                    battle,
+                    fake,
+                    0,
+                )
         try:
             action2 = DoublesEnv._order_to_action_individual(
                 order.second_order, battle, fake, 1
@@ -256,7 +263,12 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             if strict:
                 raise e
             else:
-                action2 = np.int64(-2)
+                action2 = DoublesEnv._order_to_action_individual(
+                    Player.choose_random_doubles_move(battle).second_order,
+                    battle,
+                    fake,
+                    1,
+                )
         return np.array([action1, action2])
 
     @staticmethod
