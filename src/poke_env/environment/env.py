@@ -389,11 +389,9 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                     assert self.agent2_to_move
                     self.agent2_to_move = False
                     self.agent2.order_queue.put(ForfeitBattleOrder())
-        if purge:
-            if self._challenge_task is not None:
-                self._challenge_task.result()
-            self.reset_battles()
-        self._challenge_task = None
+        if self._challenge_task is not None:
+            self._challenge_task.result()
+            self._challenge_task = None
         self.battle1 = None
         self.battle2 = None
         self.agent1.battle = None
@@ -406,6 +404,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             self.agent1.battle_queue.get()
         while not self.agent2.battle_queue.empty():
             self.agent2.battle_queue.get()
+        if purge:
+            self.reset_battles()
 
     def observation_space(self, agent: str) -> Space[ObsType]:
         return self.observation_spaces[agent]
