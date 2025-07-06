@@ -46,7 +46,10 @@ def test_double_orders():
         == "/choose switch lugia, move selfdestruct 2"
     )
     assert DoubleBattleOrder(mon).message == "/choose switch lugia, pass"
-    assert DoubleBattleOrder(second_order=move).message == "/choose pass, move selfdestruct 2"
+    assert (
+        DoubleBattleOrder(second_order=move).message
+        == "/choose pass, move selfdestruct 2"
+    )
     assert DoubleBattleOrder().message == "/choose pass, pass"
 
     orders = [move, mon]
