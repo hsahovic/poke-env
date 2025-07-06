@@ -30,6 +30,7 @@ def play_function(env: DoublesEnv, n_battles: int):
     for _ in range(n_battles):
         done = False
         env.reset()
+        # TODO: when Zoroark isn't a problem anymore this can be removed
         if "illusion" in [
             p.ability
             for p in list(env.battle1.team.values()) + list(env.battle2.team.values())
@@ -69,6 +70,7 @@ def single_agent_play_function(env: SingleAgentWrapper, n_battles: int):
     for _ in range(n_battles):
         done = False
         env.reset()
+        # TODO: when Zoroark isn't a problem anymore this can be removed
         if "illusion" in [
             p.ability
             for p in list(env.env.battle1.team.values())
