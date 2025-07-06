@@ -391,6 +391,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                     self.agent2.order_queue.put(ForfeitBattleOrder())
         if wait and self._challenge_task is not None:
             self._challenge_task.result()
+        if self._challenge_task is None or self._challenge_task.done():
             self.reset_battles()
         self._challenge_task = None
         self.battle1 = None
