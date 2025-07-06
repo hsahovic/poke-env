@@ -1,5 +1,5 @@
 import random
-from typing import List, Optional, Tuple
+from typing import List, Tuple
 
 from poke_env.battle.abstract_battle import AbstractBattle
 from poke_env.battle.battle import Battle
@@ -13,6 +13,7 @@ from poke_env.player.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
     DoubleBattleOrder,
+    PassBattleOrder,
     SingleBattleOrder,
 )
 from poke_env.player.player import Player
@@ -37,7 +38,7 @@ class MaxBasePowerPlayer(Player):
         return self.choose_random_move(battle)
 
     def choose_doubles_move(self, battle: DoubleBattle):
-        orders: List[Optional[SingleBattleOrder]] = []
+        orders: List[SingleBattleOrder] = []
         switched_in = None
 
         if any(battle.force_switch):
@@ -59,7 +60,7 @@ class MaxBasePowerPlayer(Player):
             switches = [s for s in switches if s != switched_in]
 
             if not mon or mon.fainted:
-                orders.append(None)
+                orders.append(PassBattleOrder())
                 continue
             elif not moves and switches:
                 mon_to_switch_in = random.choice(switches)
@@ -362,13 +363,13 @@ class SimpleHeuristicsPlayer(Player):
     def choose_move(self, battle: AbstractBattle):
         if not isinstance(battle, DoubleBattle):
             return self.choose_move_in_1v1(battle)[0]  # type: ignore
-        orders: List[Optional[SingleBattleOrder]] = []
+        orders: List[SingleBattleOrder] = []
         for active_id in [0, 1]:
             if (
                 battle.active_pokemon[active_id] is None
                 and not battle.available_switches[active_id]
             ):
-                orders += [None]
+                orders += [PassBattleOrder()]
                 continue
             results = [
                 self.choose_move_in_1v1(PseudoBattle(battle, active_id, opp_id))
@@ -405,13 +406,10 @@ class SimpleHeuristicsPlayer(Player):
                         and battle.force_switch == [True, True]
                         and active_id == 1
                     )
-                    else None
+                    else PassBattleOrder()
                 )
             ]
-        joined_orders = DoubleBattleOrder.join_orders(
-            [orders[0]] if orders[0] is not None else [],
-            [orders[1]] if orders[1] is not None else [],
-        )
+        joined_orders = DoubleBattleOrder.join_orders([orders[0]], [orders[1]])
         if joined_orders:
             return joined_orders[0]
         else:

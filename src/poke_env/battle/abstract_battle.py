@@ -1352,12 +1352,11 @@ class AbstractBattle(ABC):
 
     @players.setter
     def players(self, players: Tuple[str, str]):
-        """Sets the battle player's name:
+        """Set the players' usernames.
 
-        :param player_1: First player's username.
-        :type player_1: str
-        :param player_1: Second player's username.
-        :type player_2: str
+        :param players: Tuple containing the player's username and the
+            opponent's username.
+        :type players: Tuple[str, str]
         """
         player_1, player_2 = players
         if player_1 != self._player_username:
