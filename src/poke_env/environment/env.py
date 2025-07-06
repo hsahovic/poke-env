@@ -606,15 +606,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 truncated = True
         return terminated, truncated
 
-    def reset_env(self):
-        """
-        Resets the environment to an inactive state: it will forfeit all unfinished
-        battles, reset the internal battle tracker and optionally change the next
-        opponent and restart the challenge loop.
-        """
-        self.close()
-        self.reset_battles()
-
     def reset_battles(self):
         """Resets the player's inner battle tracker."""
         self.agent1.reset_battles()
