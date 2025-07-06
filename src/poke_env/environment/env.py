@@ -371,7 +371,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 end="\n" if self.battle1.finished else "\r",
             )
 
-    def close(self, force: bool = True, wait: bool = True, purge: bool = True):
+    def close(self, force: bool = True, wait: bool = True):
         if force:
             if self.battle1 and not self.battle1.finished:
                 assert self.battle2 is not None
@@ -391,8 +391,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                     self.agent2.order_queue.put(ForfeitBattleOrder())
         if wait and self._challenge_task is not None:
             self._challenge_task.result()
-            if purge:
-                self.reset_battles()
+            self.reset_battles()
         self._challenge_task = None
         self.battle1 = None
         self.battle2 = None
