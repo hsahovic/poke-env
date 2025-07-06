@@ -48,13 +48,15 @@ def _raw_hp(base: int, ev: int, iv: int, level: int) -> int:
 def compute_raw_stats(
     species: str, evs: List[int], ivs: List[int], level: int, nature: str, data: GenData
 ) -> List[int]:
-    """Converts to raw stats
-    :param species: pokemon species
-    :param evs: list of pokemon's EVs (size 6)
-    :param ivs: list of pokemon's IVs (size 6)
-    :param level: pokemon level
-    :param nature: pokemon nature
-    :return: the raw stats in order [hp, atk, def, spa, spd, spe]
+    """Compute raw stats for a Pokémon.
+
+    :param species: Pokémon species.
+    :param evs: List of EV values (size 6).
+    :param ivs: List of IV values (size 6).
+    :param level: Pokémon level.
+    :param nature: Pokémon nature.
+    :param data: ``GenData`` instance providing Pokédex information.
+    :return: Raw stats as ``[hp, atk, def, spa, spd, spe]``.
     """
 
     assert len(evs) == 6
