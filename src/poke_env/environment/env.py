@@ -371,7 +371,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 end="\n" if self.battle1.finished else "\r",
             )
 
-    def close(self, force: bool = True, purge: bool = False):
+    def close(self, force: bool = True, purge: bool = True):
         if force:
             if self.battle1 and not self.battle1.finished:
                 assert self.battle2 is not None
