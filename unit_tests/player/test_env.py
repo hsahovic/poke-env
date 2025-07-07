@@ -26,7 +26,6 @@ from poke_env.player import (
     DoubleBattleOrder,
     ForfeitBattleOrder,
     Player,
-    SingleBattleOrder,
 )
 from poke_env.ps_client import AccountConfiguration, ServerConfiguration
 
@@ -463,6 +462,7 @@ def test_doubles_action_order_conversions():
         battle._opponent_active_pokemon = {"p2a": active_pokemon}
         battle._active_pokemon = {"p1a": active_pokemon}
         assert p.action_to_order(np.array([-1, 0]), battle).message == "/forfeit"
+        check_action_order_roundtrip(p, DefaultBattleOrder(), battle)
         check_action_order_roundtrip(p, ForfeitBattleOrder(), battle)
         battle._available_moves = [[move], []]
         assert (
@@ -483,6 +483,9 @@ def test_doubles_action_order_conversions():
         battle._available_switches = [[], []]
         with pytest.raises(ValueError):
             p.action_to_order(np.array([25, 0]), battle)
+        with pytest.raises(ValueError):
+            p.action_to_order(np.array([0, 25]), battle)
+        p.action_to_order(np.array([25, 0]), battle, strict=False)
         if has_megas:
             battle._can_mega_evolve = [True, True]
             assert (
