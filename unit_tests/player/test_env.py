@@ -487,13 +487,14 @@ def test_doubles_action_order_conversions():
         with pytest.raises(ValueError):
             p.action_to_order(np.array([25, 0]), battle)
         p.action_to_order(np.array([25, 25]), battle, strict=False)
-        p.order_to_action(
-            DoubleBattleOrder(
-                SingleBattleOrder(Move("earthquake", gen=gen)),
-                SingleBattleOrder(Move("earthquake", gen=gen)),
-            ),
-            battle,
-        )
+        with pytest.raises(ValueError):
+            p.order_to_action(
+                DoubleBattleOrder(
+                    SingleBattleOrder(Move("earthquake", gen=gen)),
+                    SingleBattleOrder(Move("earthquake", gen=gen)),
+                ),
+                battle,
+            )
         p.order_to_action(
             DoubleBattleOrder(
                 SingleBattleOrder(Move("earthquake", gen=gen)),
