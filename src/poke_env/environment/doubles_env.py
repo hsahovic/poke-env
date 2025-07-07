@@ -145,7 +145,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 raise e
             else:
                 if battle.logger is not None:
-                    battle.logger.warning(e)
+                    battle.logger.warning(str(e) + " Defaulting to random move.")
                 order = Player.choose_random_doubles_move(battle)
                 order1 = (
                     order.first_order
@@ -159,7 +159,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 raise e
             else:
                 if battle.logger is not None:
-                    battle.logger.warning(e)
+                    battle.logger.warning(str(e) + " Defaulting to random move.")
                 order = Player.choose_random_doubles_move(battle)
                 order2 = (
                     order.second_order
@@ -174,7 +174,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 f"and {order2} are incompatible!"
             )
             if strict:
-                raise ValueError(error_msg)
+                raise ValueError(str(error_msg) + " Defaulting to random move.")
             else:
                 if battle.logger is not None:
                     battle.logger.warning(error_msg)
@@ -266,7 +266,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 f"in battle {battle.battle_tag} - orders are incompatible!"
             )
             if strict:
-                raise ValueError(error_msg)
+                raise ValueError(str(error_msg) + " Defaulting to random move.")
             else:
                 if battle.logger is not None:
                     battle.logger.warning(error_msg)
@@ -282,7 +282,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 raise e
             else:
                 if battle.logger is not None:
-                    battle.logger.warning(e)
+                    battle.logger.warning(str(e) + " Defaulting to random move.")
                 order = Player.choose_random_doubles_move(battle)
                 action1 = DoublesEnv._order_to_action_individual(
                     (
@@ -303,7 +303,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 raise e
             else:
                 if battle.logger is not None:
-                    battle.logger.warning(e)
+                    battle.logger.warning(str(e) + " Defaulting to random move.")
                 order = Player.choose_random_doubles_move(battle)
                 action2 = DoublesEnv._order_to_action_individual(
                     (

@@ -156,7 +156,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
                 raise e
             else:
                 if battle.logger is not None:
-                    battle.logger.warning(e)
+                    battle.logger.warning(str(e) + " Defaulting to random move.")
                 return Player.choose_random_singles_move(battle)
 
     @staticmethod
@@ -236,7 +236,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
                 raise e
             else:
                 if battle.logger is not None:
-                    battle.logger.warning(e)
+                    battle.logger.warning(str(e) + " Defaulting to random move.")
                 return SinglesEnv.order_to_action(
                     Player.choose_random_singles_move(battle), battle, fake, strict
                 )
