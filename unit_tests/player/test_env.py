@@ -475,7 +475,7 @@ def test_doubles_action_order_conversions():
         check_action_order_roundtrip(
             p, DoubleBattleOrder(Player.create_order(move, move_target=1)), battle
         )
-        battle._available_switches = [[active_pokemon], []]
+        battle._available_switches = [[active_pokemon], [active_pokemon]]
         assert (
             p.action_to_order(np.array([1, 0]), battle).message
             == "/choose switch charizard, pass"
@@ -483,6 +483,24 @@ def test_doubles_action_order_conversions():
         check_action_order_roundtrip(
             p, DoubleBattleOrder(Player.create_order(active_pokemon)), battle
         )
+        with pytest.raises(ValueError):
+            p.action_to_order(np.array([1, 1]), battle)
+        p.action_to_order(np.array([1, 1]), battle, strict=False)
+        with pytest.raises(ValueError):
+            p.order_to_action(
+                DoubleBattleOrder(
+                    SingleBattleOrder(active_pokemon), SingleBattleOrder(active_pokemon)
+                ),
+                battle,
+            )
+        p.order_to_action(
+            DoubleBattleOrder(
+                SingleBattleOrder(active_pokemon), SingleBattleOrder(active_pokemon)
+            ),
+            battle,
+            strict=False,
+        )
+        p.order_to_action(np.array([1, 1]), battle, strict=False)
         battle._available_switches = [[], []]
         with pytest.raises(ValueError):
             p.action_to_order(np.array([25, 0]), battle)
