@@ -26,6 +26,7 @@ from poke_env.player import (
     DoubleBattleOrder,
     ForfeitBattleOrder,
     Player,
+    SingleBattleOrder,
 )
 from poke_env.ps_client import AccountConfiguration, ServerConfiguration
 
@@ -485,7 +486,22 @@ def test_doubles_action_order_conversions():
         battle._available_switches = [[], []]
         with pytest.raises(ValueError):
             p.action_to_order(np.array([25, 0]), battle)
-        p.action_to_order(np.array([25, 0]), battle, strict=False)
+        p.action_to_order(np.array([25, 25]), battle, strict=False)
+        p.order_to_action(
+            DoubleBattleOrder(
+                SingleBattleOrder(Move("earthquake", gen=gen)),
+                SingleBattleOrder(Move("earthquake", gen=gen)),
+            ),
+            battle,
+        )
+        p.order_to_action(
+            DoubleBattleOrder(
+                SingleBattleOrder(Move("earthquake", gen=gen)),
+                SingleBattleOrder(Move("earthquake", gen=gen)),
+            ),
+            battle,
+            strict=False,
+        )
         if has_megas:
             battle._can_mega_evolve = [True, True]
             assert (
