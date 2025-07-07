@@ -146,7 +146,12 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             else:
                 if battle.logger is not None:
                     battle.logger.warning(e)
-                order1 = Player.choose_random_doubles_move(battle).first_order
+                order = Player.choose_random_doubles_move(battle)
+                order1 = (
+                    order.first_order
+                    if not isinstance(order, DefaultBattleOrder)
+                    else order
+                )
         try:
             order2 = DoublesEnv._action_to_order_individual(action[1], battle, fake, 1)
         except ValueError as e:
@@ -155,7 +160,12 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             else:
                 if battle.logger is not None:
                     battle.logger.warning(e)
-                order2 = Player.choose_random_doubles_move(battle).second_order
+                order = Player.choose_random_doubles_move(battle)
+                order2 = (
+                    order.second_order
+                    if not isinstance(order, DefaultBattleOrder)
+                    else order
+                )
         joined_orders = DoubleBattleOrder.join_orders([order1], [order2])
         if not joined_orders:
             error_msg = (
@@ -273,8 +283,13 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             else:
                 if battle.logger is not None:
                     battle.logger.warning(e)
+                order = Player.choose_random_doubles_move(battle)
                 action1 = DoublesEnv._order_to_action_individual(
-                    Player.choose_random_doubles_move(battle).first_order,
+                    (
+                        order.first_order
+                        if not isinstance(order, DefaultBattleOrder)
+                        else order
+                    ),
                     battle,
                     fake,
                     0,
@@ -289,8 +304,13 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             else:
                 if battle.logger is not None:
                     battle.logger.warning(e)
+                order = Player.choose_random_doubles_move(battle)
                 action2 = DoublesEnv._order_to_action_individual(
-                    Player.choose_random_doubles_move(battle).second_order,
+                    (
+                        order.second_order
+                        if not isinstance(order, DefaultBattleOrder)
+                        else order
+                    ),
                     battle,
                     fake,
                     1,
