@@ -460,7 +460,7 @@ def test_doubles_action_order_conversions():
         active_pokemon._active = True
         active_pokemon._item = "firiumz"
         with pytest.raises(ValueError):
-            p.action_to_order(np.array([-2, 25]), battle)
+            p.action_to_order(np.array([0, 25]), battle)
         battle._team = {"charizard": active_pokemon}
         battle._opponent_active_pokemon = {"p2a": active_pokemon}
         battle._active_pokemon = {"p1a": active_pokemon}
@@ -477,7 +477,7 @@ def test_doubles_action_order_conversions():
         )
         battle._available_switches = [[active_pokemon], [active_pokemon]]
         assert (
-            p.action_to_order(np.array([1, 0]), battle).message
+            p.action_to_order(np.array([1, -2]), battle).message
             == "/choose switch charizard, pass"
         )
         check_action_order_roundtrip(
