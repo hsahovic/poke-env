@@ -1,5 +1,3 @@
-import random
-
 import numpy as np
 import pytest
 from gymnasium.spaces import Box
@@ -8,7 +6,7 @@ from pettingzoo.test.parallel_test import parallel_api_test
 
 from poke_env.battle import DoubleBattle
 from poke_env.environment import DoublesEnv, SingleAgentWrapper
-from poke_env.player import DoubleBattleOrder, RandomPlayer
+from poke_env.player import DoubleBattleOrder, Player, RandomPlayer
 
 
 class DoublesTestEnv(DoublesEnv):
@@ -26,7 +24,7 @@ class DoublesTestEnv(DoublesEnv):
         return np.array([0])
 
 
-def play_function(env: DoublesEnv, n_battles: int):
+def play_function(env, n_battles):
     for _ in range(n_battles):
         done = False
         env.reset()
@@ -37,16 +35,11 @@ def play_function(env: DoublesEnv, n_battles: int):
         ]:
             continue
         while not done:
-            assert isinstance(env.battle1, DoubleBattle)
-            assert isinstance(env.battle2, DoubleBattle)
+            assert env.battle1 is not None
+            assert env.battle2 is not None
             actions = {
                 name: (
-                    env.order_to_action(
-                        random.choice(
-                            DoubleBattleOrder.join_orders(*battle.valid_orders)
-                        ),
-                        battle,
-                    )
+                    env.order_to_action(Player.choose_random_move(battle), battle)
                     if env.strict
                     else env.action_space(name).sample()
                 )
@@ -66,7 +59,7 @@ def test_env_run():
         env.close()
 
 
-def single_agent_play_function(env: SingleAgentWrapper, n_battles: int):
+def single_agent_play_function(env, n_battles):
     for _ in range(n_battles):
         done = False
         env.reset()
@@ -78,13 +71,10 @@ def single_agent_play_function(env: SingleAgentWrapper, n_battles: int):
         ]:
             continue
         while not done:
-            assert isinstance(env.env.battle1, DoubleBattle)
+            assert env.env.battle1 is not None
             action = (
                 env.env.order_to_action(
-                    random.choice(
-                        DoubleBattleOrder.join_orders(*env.env.battle1.valid_orders)
-                    ),
-                    env.env.battle1,
+                    Player.choose_random_move(env.env.battle1), env.env.battle1
                 )
                 if env.env.strict
                 else env.action_space.sample()
