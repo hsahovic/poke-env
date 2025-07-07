@@ -481,7 +481,11 @@ def test_doubles_action_order_conversions():
             == "/choose switch charizard, default"
         )
         check_action_order_roundtrip(
-            p, DoubleBattleOrder(Player.create_order(active_pokemon), DefaultBattleOrder()), battle
+            p,
+            DoubleBattleOrder(
+                Player.create_order(active_pokemon), DefaultBattleOrder()
+            ),
+            battle,
         )
         with pytest.raises(ValueError):
             p.action_to_order(np.array([1, 1]), battle)
@@ -500,7 +504,6 @@ def test_doubles_action_order_conversions():
             battle,
             strict=False,
         )
-        p.order_to_action(np.array([1, 1]), battle, strict=False)
         battle._available_switches = [[], []]
         with pytest.raises(ValueError):
             p.action_to_order(np.array([25, 0]), battle)
