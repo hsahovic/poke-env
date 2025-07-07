@@ -22,9 +22,11 @@ from poke_env.environment import DoublesEnv, PokeEnv, SinglesEnv
 from poke_env.environment.env import _AsyncQueue, _EnvPlayer
 from poke_env.player import (
     BattleOrder,
+    DefaultBattleOrder,
     DoubleBattleOrder,
     ForfeitBattleOrder,
     Player,
+    SingleBattleOrder,
 )
 from poke_env.ps_client import AccountConfiguration, ServerConfiguration
 
@@ -380,6 +382,8 @@ def test_singles_action_order_conversions():
         battle = Battle("bat1", p.agent1.username, p.agent1.logger, gen=gen)
         active_pokemon = Pokemon(species="charizard", gen=gen)
         move = Move("flamethrower", gen=gen)
+        with pytest.raises(ValueError):
+            p.order_to_action(SingleBattleOrder(move), battle)
         active_pokemon._moves = {move.id: move}
         active_pokemon._active = True
         active_pokemon._item = "firiumz"
@@ -454,6 +458,10 @@ def test_doubles_action_order_conversions():
         battle._player_role = "p1"
         active_pokemon = Pokemon(species="charizard", gen=gen)
         move = Move("flamethrower", gen=gen)
+        with pytest.raises(ValueError):
+            p.order_to_action(
+                DoubleBattleOrder(DefaultBattleOrder(), SingleBattleOrder(move)), battle
+            )
         active_pokemon._moves = {move.id: move}
         active_pokemon._active = True
         active_pokemon._item = "firiumz"
