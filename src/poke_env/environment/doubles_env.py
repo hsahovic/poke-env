@@ -327,31 +327,25 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             else:
                 assert isinstance(order, PassBattleOrder)
                 return np.int64(0)
-        elif isinstance(order.order, Pokemon):
+        if not fake and str(order) not in [str(o) for o in battle.valid_orders[pos]]:
+            raise ValueError(
+                f"Invalid order from player {battle.player_username} in battle "
+                f"{battle.battle_tag} at position {pos} - order {order} not in "
+                f"action space {[str(o) for o in battle.valid_orders[pos]]}!"
+            )
+        if isinstance(order.order, Pokemon):
             action = [p.base_species for p in battle.team.values()].index(
                 order.order.base_species
             ) + 1
         else:
             active_mon = battle.active_pokemon[pos]
-            if active_mon is None:
-                raise ValueError(
-                    f"Invalid order {order} from player {battle.player_username} "
-                    f"in battle {battle.battle_tag} at position {pos} - type of "
-                    f"order.order is Move, but battle.active_pokemon[pos] is None!"
-                )
+            assert active_mon is not None
             mvs = (
                 battle.available_moves[pos]
                 if len(battle.available_moves[pos]) == 1
                 and battle.available_moves[pos][0].id in ["struggle", "recharge"]
                 else list(active_mon.moves.values())
             )
-            if order.order.id not in [m.id for m in mvs]:
-                raise ValueError(
-                    f"Invalid order {order} from player {battle.player_username} "
-                    f"in battle {battle.battle_tag} at position {pos} - order "
-                    f"specifies a move but the move {order.order.id} is not in "
-                    f"available moves {mvs}!"
-                )
             action = [m.id for m in mvs].index(order.order.id)
             target = order.move_target + 2
             if order.mega:
@@ -365,10 +359,4 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             else:
                 gimmick = 0
             action = 1 + 6 + 5 * action + target + 20 * gimmick
-        if not fake and str(order) not in [str(o) for o in battle.valid_orders[pos]]:
-            raise ValueError(
-                f"Invalid order from player {battle.player_username} in battle "
-                f"{battle.battle_tag} at position {pos} - order {order} not in "
-                f"action space {[str(o) for o in battle.valid_orders[pos]]}!"
-            )
         return np.int64(action)

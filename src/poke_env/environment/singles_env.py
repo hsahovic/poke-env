@@ -200,24 +200,13 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
                         order.order.base_species
                     )
                 else:
-                    if battle.active_pokemon is None:
-                        raise ValueError(
-                            f"Invalid order from player {battle.player_username} "
-                            f"in battle {battle.battle_tag} - type of order.order "
-                            f"is Move, but battle.active_pokemon is None!"
-                        )
+                    assert battle.active_pokemon is not None
                     mvs = (
                         battle.available_moves
                         if len(battle.available_moves) == 1
                         and battle.available_moves[0].id in ["struggle", "recharge"]
                         else list(battle.active_pokemon.moves.values())
                     )
-                    if order.order.id not in [m.id for m in mvs]:
-                        raise ValueError(
-                            f"Invalid order from player {battle.player_username} "
-                            f"in battle {battle.battle_tag} - order {order} "
-                            f"not in available moves {mvs}!"
-                        )
                     action = [m.id for m in mvs].index(order.order.id)
                     if order.mega:
                         gimmick = 1
