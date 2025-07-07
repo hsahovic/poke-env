@@ -403,6 +403,11 @@ def test_singles_action_order_conversions():
         battle._available_switches = []
         with pytest.raises(ValueError):
             p.action_to_order(np.int64(9), battle)
+        with pytest.raises(ValueError):
+            p.order_to_action(SingleBattleOrder(Move("earthquake", gen=gen)), battle)
+        p.order_to_action(
+            SingleBattleOrder(Move("earthquake", gen=gen)), battle, strict=False
+        )
         if has_megas:
             battle._can_mega_evolve = True
             assert (
@@ -562,7 +567,7 @@ def test_doubles_action_order_conversions():
                 battle,
             )
         if has_tera:
-            battle._can_tera = [PokemonType.FIRE, PokemonType.FIRE]
+            battle._can_tera = [True, True]
             assert (
                 p.action_to_order(np.array([90, 0]), battle).message
                 == "/choose move flamethrower terastallize 1, pass"
