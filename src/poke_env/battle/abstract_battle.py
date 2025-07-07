@@ -1509,6 +1509,11 @@ class AbstractBattle(ABC):
         return self._used_z_move
 
     @property
+    @abstractmethod
+    def valid_orders(self) -> Any:
+        pass
+
+    @property
     def weather(self) -> Dict[Weather, int]:
         """
         :return: A Dict mapping the battle's weather (if any) to its starting turn
