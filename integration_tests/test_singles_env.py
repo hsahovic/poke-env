@@ -35,8 +35,6 @@ def play_function(env, n_battles):
         ]:
             continue
         while not done:
-            assert env.battle1 is not None
-            assert env.battle2 is not None
             actions = {
                 name: (
                     env.order_to_action(Player.choose_random_move(battle), battle)
@@ -59,7 +57,7 @@ def test_env_run():
         env.close()
 
 
-def single_agent_play_function(env, n_battles):
+def single_agent_play_function(env: SingleAgentWrapper, n_battles: int):
     for _ in range(n_battles):
         done = False
         env.reset()
@@ -71,7 +69,6 @@ def single_agent_play_function(env, n_battles):
         ]:
             continue
         while not done:
-            assert env.env.battle1 is not None
             action = (
                 env.env.order_to_action(
                     Player.choose_random_move(env.env.battle1), env.env.battle1
