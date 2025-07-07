@@ -4,9 +4,8 @@ from gymnasium.spaces import Box
 from gymnasium.utils.env_checker import check_env
 from pettingzoo.test.parallel_test import parallel_api_test
 
-from poke_env.battle import DoubleBattle
 from poke_env.environment import DoublesEnv, SingleAgentWrapper
-from poke_env.player import DoubleBattleOrder, Player, RandomPlayer
+from poke_env.player import Player, RandomPlayer
 
 
 class DoublesTestEnv(DoublesEnv):

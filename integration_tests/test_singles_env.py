@@ -4,7 +4,6 @@ from gymnasium.spaces import Box
 from gymnasium.utils.env_checker import check_env
 from pettingzoo.test.parallel_test import parallel_api_test
 
-from poke_env.battle import Battle
 from poke_env.environment import SingleAgentWrapper, SinglesEnv
 from poke_env.player import Player, RandomPlayer
 
