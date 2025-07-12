@@ -76,7 +76,7 @@ class _AsyncQueue(Generic[ItemType]):
 
 class _EnvPlayer(Player):
     battle_queue: _AsyncQueue[AbstractBattle]
-    order_queue: _AsyncQueue[BattleOrder]
+    order_queue: _AsyncQueue[Optional[BattleOrder]]
 
     def __init__(self, *args: Any, **kwargs: Any):
         super().__init__(*args, **kwargs)
@@ -84,10 +84,10 @@ class _EnvPlayer(Player):
         self.order_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
         self.battle: Optional[AbstractBattle] = None
 
-    def choose_move(self, battle: AbstractBattle) -> Awaitable[BattleOrder]:
+    def choose_move(self, battle: AbstractBattle) -> Awaitable[Optional[BattleOrder]]:
         return self._env_move(battle)
 
-    async def _env_move(self, battle: AbstractBattle) -> BattleOrder:
+    async def _env_move(self, battle: AbstractBattle) -> Optional[BattleOrder]:
         if not self.battle or self.battle.finished:
             self.battle = battle
         assert self.battle.battle_tag == battle.battle_tag
@@ -313,7 +313,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                     self.agent1.order_queue.put(ForfeitBattleOrder())
                     if self.agent2_to_move:
                         self.agent2_to_move = False
-                        self.agent2.order_queue.put(DefaultBattleOrder())
+                        self.agent2.order_queue.put(None)
                 else:
                     assert self.agent2_to_move
                     self.agent2_to_move = False
@@ -384,7 +384,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                     self.agent1.order_queue.put(ForfeitBattleOrder())
                     if self.agent2_to_move:
                         self.agent2_to_move = False
-                        self.agent2.order_queue.put(DefaultBattleOrder())
+                        self.agent2.order_queue.put(None)
                 else:
                     assert self.agent2_to_move
                     self.agent2_to_move = False

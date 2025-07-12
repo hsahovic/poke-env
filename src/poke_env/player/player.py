@@ -417,8 +417,9 @@ class Player(ABC):
             choice = self.choose_move(battle)
             if isinstance(choice, Awaitable):
                 choice = await choice
-            message = choice.message
-        await self.ps_client.send_message(message, battle.battle_tag)
+            message = choice.message if choice is not None else None
+        if message is not None:
+            await self.ps_client.send_message(message, battle.battle_tag)
 
     async def _handle_challenge_request(self, split_message: List[str]):
         """Handles an individual challenge."""
@@ -505,7 +506,7 @@ class Player(ABC):
     @abstractmethod
     def choose_move(
         self, battle: AbstractBattle
-    ) -> Union[BattleOrder, Awaitable[BattleOrder]]:
+    ) -> Union[BattleOrder, Awaitable[Optional[BattleOrder]]]:
         """Abstract method to choose a move in a battle.
 
         :param battle: The battle.
