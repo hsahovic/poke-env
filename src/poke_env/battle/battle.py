@@ -260,7 +260,8 @@ class Battle(AbstractBattle):
         orders: List[SingleBattleOrder] = []
         if self._wait:
             return [DefaultBattleOrder()]
-        orders += [SingleBattleOrder(mon) for mon in self.available_switches]
+        if not self.trapped:
+            orders += [SingleBattleOrder(mon) for mon in self.available_switches]
         if self.active_pokemon is None or self.force_switch:
             return orders
         orders += [SingleBattleOrder(move) for move in self.available_moves]

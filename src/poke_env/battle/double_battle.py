@@ -511,7 +511,8 @@ class DoubleBattle(AbstractBattle):
             if any(self.force_switch) and not self.force_switch[i]:
                 orders[i] += [PassBattleOrder()]
                 continue
-            orders[i] += [SingleBattleOrder(mon) for mon in self.available_switches[i]]
+            if not self.trapped[i]:
+                orders[i] += [SingleBattleOrder(mon) for mon in self.available_switches[i]]
             if all(self.force_switch) and len(self.available_switches[0]) == 1:
                 orders[i] += [PassBattleOrder()]
                 continue
