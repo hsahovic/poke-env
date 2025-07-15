@@ -403,6 +403,7 @@ def test_singles_action_order_conversions():
         battle._available_switches = []
         with pytest.raises(ValueError):
             p.action_to_order(np.int64(9), battle)
+        p.action_to_order(np.int64(9), battle, strict=False)
         with pytest.raises(ValueError):
             p.order_to_action(SingleBattleOrder(Move("earthquake", gen=gen)), battle)
         p.order_to_action(
@@ -509,20 +510,18 @@ def test_doubles_action_order_conversions():
         )
         battle._available_switches = [[], []]
         with pytest.raises(ValueError):
-            p.action_to_order(np.array([25, 25]), battle)
-        p.action_to_order(np.array([25, 25]), battle, strict=False)
+            p.action_to_order(np.array([25, -2]), battle)
+        p.action_to_order(np.array([25, -2]), battle, strict=False)
         with pytest.raises(ValueError):
             p.order_to_action(
                 DoubleBattleOrder(
-                    SingleBattleOrder(Move("earthquake", gen=gen)),
-                    SingleBattleOrder(Move("earthquake", gen=gen)),
+                    Player.create_order(Move("earthquake", 9)), DefaultBattleOrder()
                 ),
                 battle,
             )
         p.order_to_action(
             DoubleBattleOrder(
-                SingleBattleOrder(Move("earthquake", gen=gen)),
-                SingleBattleOrder(Move("earthquake", gen=gen)),
+                Player.create_order(Move("earthquake", 9)), DefaultBattleOrder()
             ),
             battle,
             strict=False,
