@@ -106,15 +106,15 @@ class PseudoBattle(Battle):
         self._opponent_team = battle.opponent_team
         self._available_moves = battle.available_moves[active_id]
         self._available_switches = battle.available_switches[active_id]
+        self._force_switch = battle.force_switch[active_id]
+        self._trapped = battle.trapped[active_id]
+        self._wait = battle._wait
         self._side_conditions = battle.side_conditions
         self._opponent_side_conditions = battle.opponent_side_conditions
         self._can_mega_evolve = battle.can_mega_evolve[active_id]
         self._can_z_move = battle.can_z_move[active_id]
         self._can_dynamax = battle.can_dynamax[active_id]
         self._can_tera = battle.can_tera[active_id]
-        self._wait = battle._wait
-        self._trapped = battle._trapped[active_id]
-        self._force_switch = battle._force_switch[active_id]
 
     @property
     def active_pokemon(self):
