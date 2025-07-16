@@ -113,6 +113,8 @@ class PseudoBattle(Battle):
         self._can_dynamax = battle.can_dynamax[active_id]
         self._can_tera = battle.can_tera[active_id]
         self._wait = battle._wait
+        self._trapped = battle._trapped[active_id]
+        self._force_switch = battle._force_switch[active_id]
 
     @property
     def active_pokemon(self):
