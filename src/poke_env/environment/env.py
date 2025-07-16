@@ -16,7 +16,7 @@ from pettingzoo.utils.env import ParallelEnv  # type: ignore[import-untyped]
 
 from poke_env.battle.abstract_battle import AbstractBattle
 from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
-from poke_env.player.battle_order import BattleOrder, ForfeitBattleOrder
+from poke_env.player.battle_order import BattleOrder, ForfeitBattleOrder, _EmptyBattleOrder
 from poke_env.player.player import Player
 from poke_env.ps_client import AccountConfiguration
 from poke_env.ps_client.server_configuration import (
@@ -72,7 +72,7 @@ class _AsyncQueue(Generic[ItemType]):
 
 class _EnvPlayer(Player):
     battle_queue: _AsyncQueue[AbstractBattle]
-    order_queue: _AsyncQueue[Optional[BattleOrder]]
+    order_queue: _AsyncQueue[BattleOrder]
 
     def __init__(self, *args: Any, **kwargs: Any):
         super().__init__(*args, **kwargs)
@@ -80,10 +80,10 @@ class _EnvPlayer(Player):
         self.order_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
         self.battle: Optional[AbstractBattle] = None
 
-    def choose_move(self, battle: AbstractBattle) -> Awaitable[Optional[BattleOrder]]:
+    def choose_move(self, battle: AbstractBattle) -> Awaitable[BattleOrder]:
         return self._env_move(battle)
 
-    async def _env_move(self, battle: AbstractBattle) -> Optional[BattleOrder]:
+    async def _env_move(self, battle: AbstractBattle) -> BattleOrder:
         if not self.battle or self.battle.finished:
             self.battle = battle
         assert self.battle.battle_tag == battle.battle_tag
@@ -309,7 +309,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                     self.agent1.order_queue.put(ForfeitBattleOrder())
                     if self.agent2_to_move:
                         self.agent2_to_move = False
-                        self.agent2.order_queue.put(None)
+                        self.agent2.order_queue.put(_EmptyBattleOrder())
                 else:
                     assert self.agent2_to_move
                     self.agent2_to_move = False
@@ -380,7 +380,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                     self.agent1.order_queue.put(ForfeitBattleOrder())
                     if self.agent2_to_move:
                         self.agent2_to_move = False
-                        self.agent2.order_queue.put(None)
+                        self.agent2.order_queue.put(_EmptyBattleOrder())
                 else:
                     assert self.agent2_to_move
                     self.agent2_to_move = False

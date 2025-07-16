@@ -24,6 +24,7 @@ from poke_env.player.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
     DoubleBattleOrder,
+    _EmptyBattleOrder,
     SingleBattleOrder,
 )
 from poke_env.ps_client import PSClient
@@ -407,7 +408,7 @@ class Player(ABC):
             "illusion" in [p.ability for p in battle.team.values()]
             or random.random() < self.DEFAULT_CHOICE_CHANCE
         ):
-            message: Optional[str] = self.choose_default_move().message
+            message = self.choose_default_move().message
         elif battle.teampreview:
             message = self.teampreview(battle)
         else:
@@ -415,12 +416,11 @@ class Player(ABC):
                 self._trying_again.set()
             choice = self.choose_move(battle)
             if isinstance(choice, Awaitable):
-                _choice = await choice
-            else:
-                _choice = choice
-            message = _choice.message if _choice is not None else None
-        if message is not None:
-            await self.ps_client.send_message(message, battle.battle_tag)
+                choice = await choice
+            if isinstance(choice, _EmptyBattleOrder):
+                return
+            message = choice.message
+        await self.ps_client.send_message(message, battle.battle_tag)
 
     async def _handle_challenge_request(self, split_message: List[str]):
         """Handles an individual challenge."""
@@ -507,7 +507,7 @@ class Player(ABC):
     @abstractmethod
     def choose_move(
         self, battle: AbstractBattle
-    ) -> Union[BattleOrder, Awaitable[Optional[BattleOrder]]]:
+    ) -> Union[BattleOrder, Awaitable[BattleOrder]]:
         """Abstract method to choose a move in a battle.
 
         :param battle: The battle.
