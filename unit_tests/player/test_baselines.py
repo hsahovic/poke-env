@@ -234,7 +234,8 @@ def test_simple_heuristics_player():
 
 def test_simple_heuristics_player_in_doubles():
     player = SimpleHeuristicsPlayer(start_listening=False)
-    battle = DoubleBattle("battletag", "p1", None, gen=9)
+    battle = DoubleBattle("battletag", "username", None, gen=9)
+    battle._player_role = "p1"
 
     # Patch team
     mon1 = Pokemon(9, species="charizard")
