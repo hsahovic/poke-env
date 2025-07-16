@@ -2518,6 +2518,9 @@
         "heightm": 2.5,
         "name": "Chromera",
         "num": -60,
+        "tags": [
+            "Sub-Legendary"
+        ],
         "types": [
             "Dark",
             "Normal"
@@ -13014,6 +13017,75 @@
             "Psychic"
         ],
         "weightkg": 6.6
+    },
+    "ramnarok": {
+        "abilities": {
+            "0": "No Guard"
+        },
+        "baseForme": "Dormant",
+        "baseStats": {
+            "atk": 63,
+            "def": 104,
+            "hp": 110,
+            "spa": 104,
+            "spd": 134,
+            "spe": 85
+        },
+        "color": "Red",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "formeOrder": [
+            "Ramnarok",
+            "Ramnarok-Radiant"
+        ],
+        "gen": 9,
+        "gender": "N",
+        "heightm": 2.2,
+        "name": "Ramnarok",
+        "num": -78,
+        "otherFormes": [
+            "Ramnarok-Radiant"
+        ],
+        "tags": [
+            "Mythical"
+        ],
+        "types": [
+            "Fire",
+            "Steel"
+        ],
+        "weightkg": 250
+    },
+    "ramnarokradiant": {
+        "abilities": {
+            "0": "No Guard"
+        },
+        "baseSpecies": "Ramnarok",
+        "baseStats": {
+            "atk": 63,
+            "def": 85,
+            "hp": 110,
+            "spa": 134,
+            "spd": 54,
+            "spe": 154
+        },
+        "battleOnly": "Ramnarok",
+        "color": "White",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "forme": "Radiant",
+        "gen": 9,
+        "gender": "N",
+        "heightm": 2.2,
+        "name": "Ramnarok-Radiant",
+        "num": -78,
+        "requiredMove": "Polar Flare",
+        "types": [
+            "Fire",
+            "Ice"
+        ],
+        "weightkg": 182
     },
     "rapidash": {
         "abilities": {
