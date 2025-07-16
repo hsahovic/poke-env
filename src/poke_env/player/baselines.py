@@ -112,6 +112,7 @@ class PseudoBattle(Battle):
         self._can_z_move = battle.can_z_move[active_id]
         self._can_dynamax = battle.can_dynamax[active_id]
         self._can_tera = battle.can_tera[active_id]
+        self._wait = battle._wait
 
     @property
     def active_pokemon(self):
