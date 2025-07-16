@@ -16,7 +16,11 @@ from pettingzoo.utils.env import ParallelEnv  # type: ignore[import-untyped]
 
 from poke_env.battle.abstract_battle import AbstractBattle
 from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
-from poke_env.player.battle_order import BattleOrder, ForfeitBattleOrder, _EmptyBattleOrder
+from poke_env.player.battle_order import (
+    BattleOrder,
+    ForfeitBattleOrder,
+    _EmptyBattleOrder,
+)
 from poke_env.player.player import Player
 from poke_env.ps_client import AccountConfiguration
 from poke_env.ps_client.server_configuration import (
