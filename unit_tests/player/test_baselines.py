@@ -256,6 +256,12 @@ def test_simple_heuristics_player_in_doubles():
         == "/choose move flamethrower 1, move thunderbolt 2"
     )
 
+    battle._opponent_active_pokemon = {"p2a": opp2, "p2b": opp1}
+    assert (
+        player.choose_move(battle).message
+        == "/choose move flamethrower 2, move thunderbolt 1"
+    )
+
 
 def test_random_player():
     player = RandomPlayer(start_listening=False)
