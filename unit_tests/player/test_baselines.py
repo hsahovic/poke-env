@@ -1,13 +1,7 @@
 from collections import namedtuple
 
 from poke_env.battle import Battle, DoubleBattle, Move, Pokemon
-from poke_env.player import (
-    DefaultBattleOrder,
-    DoubleBattleOrder,
-    MaxBasePowerPlayer,
-    RandomPlayer,
-    SimpleHeuristicsPlayer,
-)
+from poke_env.player import MaxBasePowerPlayer, RandomPlayer, SimpleHeuristicsPlayer
 
 
 def test_max_base_power_player():
@@ -239,9 +233,13 @@ def test_simple_heuristics_player_in_doubles():
 
     # Patch team
     mon1 = Pokemon(9, species="charizard")
+    mon1._active = True
     mon2 = Pokemon(9, species="pikachu")
+    mon2._active = True
     opp1 = Pokemon(9, species="venusaur")
+    opp1._active = True
     opp2 = Pokemon(9, species="blastoise")
+    opp2._active = True
 
     battle._available_moves = [
         [Move("flamethrower", gen=9)],
