@@ -241,12 +241,14 @@ def test_simple_heuristics_player_in_doubles():
     opp2 = Pokemon(9, species="blastoise")
     opp2._active = True
 
+    battle._team = {mon1.name: mon1, mon2.name: mon2}
+    battle._opponent_team = {opp1.name: opp1, opp2.name: opp2}
+    battle._active_pokemon = {"p1a": mon1, "p1b": mon2}
+    battle._opponent_active_pokemon = {"p2a": opp1, "p2b": opp2}
     battle._available_moves = [
         [Move("flamethrower", gen=9)],
         [Move("thunderbolt", gen=9)],
     ]
-    battle._active_pokemon = {"p1a": mon1, "p1b": mon2}
-    battle._opponent_active_pokemon = {"p2a": opp1, "p2b": opp2}
     battle._available_switches = [[], []]
 
     assert player.choose_move(battle).message == ""
