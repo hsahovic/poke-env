@@ -251,7 +251,10 @@ def test_simple_heuristics_player_in_doubles():
     ]
     battle._available_switches = [[], []]
 
-    assert player.choose_move(battle).message == ""
+    assert (
+        player.choose_move(battle).message
+        == "/choose move flamethrower 1, move thunderbolt 2"
+    )
 
 
 def test_random_player():
