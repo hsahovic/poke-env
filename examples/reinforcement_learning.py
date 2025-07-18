@@ -16,7 +16,6 @@ from ray.tune.registry import register_env
 from poke_env.battle import AbstractBattle, Battle
 from poke_env.environment import SingleAgentWrapper, SinglesEnv
 from poke_env.player import RandomPlayer
-from poke_env.ps_client import AccountConfiguration
 
 
 class ExampleEnv(SinglesEnv[npt.NDArray[np.float32]]):
@@ -52,9 +51,7 @@ class ExampleEnv(SinglesEnv[npt.NDArray[np.float32]]):
             open_timeout=None,
             strict=False,
         )
-        opponent = RandomPlayer(
-            account_configuration=AccountConfiguration.generate("Opponent", rand=True)
-        )
+        opponent = RandomPlayer(start_listening=False)
         return SingleAgentWrapper(env, opponent)
 
     def calc_reward(self, battle) -> float:
