@@ -18,8 +18,8 @@ from poke_env.battle.abstract_battle import AbstractBattle
 from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
 from poke_env.player.battle_order import (
     BattleOrder,
-    DefaultBattleOrder,
     ForfeitBattleOrder,
+    _EmptyBattleOrder,
 )
 from poke_env.player.player import Player
 from poke_env.ps_client import AccountConfiguration
@@ -313,7 +313,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                     self.agent1.order_queue.put(ForfeitBattleOrder())
                     if self.agent2_to_move:
                         self.agent2_to_move = False
-                        self.agent2.order_queue.put(DefaultBattleOrder())
+                        self.agent2.order_queue.put(_EmptyBattleOrder())
                 else:
                     assert self.agent2_to_move
                     self.agent2_to_move = False
@@ -384,7 +384,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                     self.agent1.order_queue.put(ForfeitBattleOrder())
                     if self.agent2_to_move:
                         self.agent2_to_move = False
-                        self.agent2.order_queue.put(DefaultBattleOrder())
+                        self.agent2.order_queue.put(_EmptyBattleOrder())
                 else:
                     assert self.agent2_to_move
                     self.agent2_to_move = False

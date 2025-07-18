@@ -25,6 +25,7 @@ from poke_env.player.battle_order import (
     DefaultBattleOrder,
     DoubleBattleOrder,
     SingleBattleOrder,
+    _EmptyBattleOrder,
 )
 from poke_env.ps_client import PSClient
 from poke_env.ps_client.account_configuration import AccountConfiguration
@@ -416,6 +417,8 @@ class Player(ABC):
             choice = self.choose_move(battle)
             if isinstance(choice, Awaitable):
                 choice = await choice
+            if isinstance(choice, _EmptyBattleOrder):
+                return
             message = choice.message
         await self.ps_client.send_message(message, battle.battle_tag)
 
