@@ -187,16 +187,8 @@ class SimpleHeuristicsPlayer(Player):
             or active.tera_type is None
         ):
             return False
-        stab_score = 1.5 if move.type in active.types else 1
-        offensive_score = opp_active.damage_multiplier(move.type) * stab_score
-        tera_stab_score = (
-            2
-            if move.type in active.types and move.type == active.tera_type
-            else (
-                1.5 if move.type in active.types or move.type == active.tera_type else 1
-            )
-        )
-        offensive_tera_score = opp_active.damage_multiplier(move.type) * tera_stab_score
+        offensive_score = opp_active.damage_multiplier(move.type)
+        offensive_tera_score = opp_active.damage_multiplier(move.type)
         defensive_score = min(
             [1 / active.damage_multiplier(t) for t in opp_active.types]
         )
