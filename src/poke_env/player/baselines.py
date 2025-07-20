@@ -177,32 +177,41 @@ class SimpleHeuristicsPlayer(Player):
                 return True
         return False
 
-    def _should_terastallize(
-        self,
-        battle: Battle,
-        move: Move,
-        n_remaining_mons: int,
-    ):
+    def _should_terastallize(self, battle: Battle, move: Move) -> bool:
+        active = battle.active_pokemon
+        opp_active = battle.opponent_active_pokemon
         if (
             not battle.can_tera
-            or not battle.active_pokemon
-            or not battle.opponent_active_pokemon
+            or not active
+            or not opp_active
+            or active.tera_type is None
         ):
             return False
-
-        if (
-            move.base_power >= 80
-            and battle.active_pokemon.current_hp_fraction == 1
-            and battle.opponent_active_pokemon.current_hp_fraction == 1
-        ):
-            return True
-        if n_remaining_mons == 1:
-            return True
-        # Example: if the Pokémon has a defined Tera type and switching its type grants STAB for this move.
-        if battle.active_pokemon.tera_type == move.type:
-            return True
-
-        return False
+        stab_score = 1.5 if move.type in active.types else 1
+        offensive_score = opp_active.damage_multiplier(move.type) * stab_score
+        tera_stab_score = (
+            2
+            if move.type in active.types and move.type == active.tera_type
+            else (
+                1.5 if move.type in active.types or move.type == active.tera_type else 1
+            )
+        )
+        offensive_tera_score = opp_active.damage_multiplier(move.type) * tera_stab_score
+        defensive_score = min(
+            [1 / active.damage_multiplier(t) for t in opp_active.types]
+        )
+        defensive_tera_score = min(
+            [
+                1
+                / t.damage_multiplier(
+                    active.tera_type, type_chart=active._data.type_chart
+                )
+                for t in opp_active.types
+            ]
+        )
+        return (offensive_tera_score / offensive_score) * (
+            defensive_tera_score / defensive_score
+        ) > 1
 
     def _should_switch_out(self, battle: AbstractBattle):
         active = battle.active_pokemon
@@ -303,30 +312,32 @@ class SimpleHeuristicsPlayer(Player):
                     ):
                         return self.create_order(move), 0
 
-            def get_score(m: Move) -> float:
-                return (
-                    m.base_power
-                    * (1.5 if m.type in active.types else 1)
-                    * (
-                        physical_ratio
-                        if m.category == MoveCategory.PHYSICAL
-                        else special_ratio
+            move, score = max(
+                [
+                    (
+                        m,
+                        m.base_power
+                        * (1.5 if m.type in active.types else 1)
+                        * (
+                            physical_ratio
+                            if m.category == MoveCategory.PHYSICAL
+                            else special_ratio
+                        )
+                        * m.accuracy
+                        * m.expected_hits
+                        * opponent.damage_multiplier(m),
                     )
-                    * m.accuracy
-                    * m.expected_hits
-                    * opponent.damage_multiplier(m)
-                )
-
-            move = max(battle.available_moves, key=lambda m: get_score(m))
+                    for m in battle.available_moves
+                ],
+                key=lambda x: x[1],
+            )
             return (
                 self.create_order(
                     move,
                     dynamax=self._should_dynamax(battle, n_remaining_mons),
-                    terastallize=self._should_terastallize(
-                        battle, move, n_remaining_mons
-                    ),
+                    terastallize=self._should_terastallize(battle, move),
                 ),
-                get_score(move),
+                score,
             )
 
         if battle.available_switches:
@@ -419,17 +430,19 @@ class SimpleHeuristicsPlayer(Player):
             return DoubleBattleOrder(orders[0], DefaultBattleOrder())
 
     def teampreview(self, battle: AbstractBattle) -> str:
-        team = list(battle.team.values())
-        scored_team = []
-        for idx, mon in enumerate(team):
-            # Calculate a simple score based on speed, attack (atk+spa), and defense (def+spd)
-            attack = mon.base_stats.get("atk", 0) + mon.base_stats.get("spa", 0)
-            speed = mon.base_stats.get("spe", 0)
-            defense = (mon.base_stats.get("def", 0) + mon.base_stats.get("spd", 0)) / 2
-            score = speed + (attack / 2) + (defense / 4)
-            scored_team.append((idx + 1, score))
-        sorted_scored = sorted(scored_team, key=lambda x: x[1], reverse=True)
-        chosen = sorted_scored[:4]
-        chosen_sorted = sorted(chosen, key=lambda x: x[1], reverse=True)
-        team_order = "".join(str(index) for index, _ in chosen_sorted)
+        scored_team = [
+            (
+                mon.base_stats.get("atk", 0)
+                + mon.base_stats.get("spa", 0)
+                + mon.base_stats.get("def", 0)
+                + mon.base_stats.get("spd", 0)
+                + mon.base_stats.get("spe", 0)
+            )
+            for mon in battle.team.values()
+        ]
+        chosen = sorted(
+            enumerate(scored_team, start=1), key=lambda x: x[1], reverse=True
+        )[:4]
+        random.shuffle(chosen)
+        team_order = "".join([str(index) for index, _ in chosen])
         return f"/team {team_order}"

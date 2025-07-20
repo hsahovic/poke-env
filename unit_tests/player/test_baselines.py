@@ -115,10 +115,10 @@ def test_simple_heuristics_player_should_terastallize():
         "PseudoBattle", ["active_pokemon", "opponent_active_pokemon", "can_tera"]
     )(active, opponent, True)
 
-    assert player._should_terastallize(battle, move, 2) is True
+    assert player._should_terastallize(battle, move) is True
 
     battle = battle._replace(can_tera=False)
-    assert player._should_terastallize(battle, move, 2) is False
+    assert player._should_terastallize(battle, move) is False
 
 
 def test_simple_heuristics_player_should_switch_out():
