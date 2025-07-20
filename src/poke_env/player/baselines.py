@@ -188,7 +188,6 @@ class SimpleHeuristicsPlayer(Player):
         ):
             return False
         offensive_score = opp_active.damage_multiplier(move.type)
-        offensive_tera_score = opp_active.damage_multiplier(move.type)
         defensive_score = min(
             [1 / active.damage_multiplier(t) for t in opp_active.types]
         )
@@ -201,9 +200,7 @@ class SimpleHeuristicsPlayer(Player):
                 for t in opp_active.types
             ]
         )
-        return (offensive_tera_score / offensive_score) * (
-            defensive_tera_score / defensive_score
-        ) > 1
+        return offensive_score * (defensive_tera_score / defensive_score) > 1
 
     def _should_switch_out(self, battle: AbstractBattle):
         active = battle.active_pokemon
