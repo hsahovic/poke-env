@@ -420,21 +420,3 @@ class SimpleHeuristicsPlayer(Player):
             return joined_orders[0]
         else:
             return DoubleBattleOrder(orders[0], DefaultBattleOrder())
-
-    def teampreview(self, battle: AbstractBattle) -> str:
-        scored_team = [
-            (
-                mon.base_stats.get("atk", 0)
-                + mon.base_stats.get("spa", 0)
-                + mon.base_stats.get("def", 0)
-                + mon.base_stats.get("spd", 0)
-                + mon.base_stats.get("spe", 0)
-            )
-            for mon in battle.team.values()
-        ]
-        chosen = sorted(
-            enumerate(scored_team, start=1), key=lambda x: x[1], reverse=True
-        )[:4]
-        random.shuffle(chosen)
-        team_order = "".join([str(index) for index, _ in chosen])
-        return f"/team {team_order}"
