@@ -189,13 +189,16 @@ class SimpleHeuristicsPlayer(Player):
             return False
         offensive_score = opp_active.damage_multiplier(move.type)
         defensive_score = min(
-            [1 / active.damage_multiplier(t) for t in opp_active.types]
+            [1 / (active.damage_multiplier(t) or 1 / 8) for t in opp_active.types]
         )
         defensive_tera_score = min(
             [
                 1
-                / t.damage_multiplier(
-                    active.tera_type, type_chart=active._data.type_chart
+                / (
+                    t.damage_multiplier(
+                        active.tera_type, type_chart=active._data.type_chart
+                    )
+                    or 1 / 8
                 )
                 for t in opp_active.types
             ]
