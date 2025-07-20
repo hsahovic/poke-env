@@ -360,7 +360,7 @@ class SimpleHeuristicsPlayer(Player):
             or not isinstance(order.order, Move)
             or order.order.target in {Target.NORMAL, Target.ANY}
             or not can_double_target
-            else 2
+            else 1.5
         )
 
     def choose_move(self, battle: AbstractBattle):
