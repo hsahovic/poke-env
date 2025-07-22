@@ -25,7 +25,6 @@ from poke_env.player.battle_order import (
     DefaultBattleOrder,
     DoubleBattleOrder,
     SingleBattleOrder,
-    _EmptyBattleOrder,
 )
 from poke_env.ps_client import PSClient
 from poke_env.ps_client.account_configuration import AccountConfiguration
