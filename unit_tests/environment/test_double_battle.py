@@ -1,3 +1,4 @@
+import pickle
 from unittest.mock import MagicMock
 
 import pytest
@@ -112,6 +113,8 @@ def test_battle_request_parsing_and_interactions(example_doubles_request):
 
     assert battle.current_observation
     assert battle.current_observation.events[0] == ["", "swap", "p1b: Klinklang", ""]
+
+    pickle.loads(pickle.dumps(battle))
 
 
 def test_check_heal_message_for_ability():

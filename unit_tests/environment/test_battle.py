@@ -1,3 +1,4 @@
+import pickle
 from unittest.mock import MagicMock
 
 import pytest
@@ -647,6 +648,8 @@ def test_battle_request_and_interactions(example_request):
     assert hooh.type_1 == PokemonType.FIRE
     assert hooh.type_2 == PokemonType.FLYING
     assert hooh.types == [PokemonType.FIRE, PokemonType.FLYING]
+
+    pickle.loads(pickle.dumps(battle))
 
 
 def test_end_illusion():
