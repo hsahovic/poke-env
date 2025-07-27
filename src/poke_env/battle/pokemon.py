@@ -607,7 +607,12 @@ class Pokemon:
             nature = tb.nature.lower() if tb.nature else "serious"
             self._stats = {}
             stats = compute_raw_stats(
-                self._species, tb.evs, tb.ivs, tb.level, nature, GenData.from_gen(self.gen)
+                self._species,
+                tb.evs,
+                tb.ivs,
+                tb.level,
+                nature,
+                GenData.from_gen(self.gen),
             )
             for stat, val in zip(["hp", "atk", "def", "spa", "spd", "spe"], stats):
                 self._stats[stat] = val

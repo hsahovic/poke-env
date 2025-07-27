@@ -270,9 +270,7 @@ class AbstractBattle(ABC):
             )
 
         if request:
-            team[identifier] = Pokemon(
-                request_pokemon=request, name=name, gen=self.gen
-            )
+            team[identifier] = Pokemon(request_pokemon=request, name=name, gen=self.gen)
         elif details:
             team[identifier] = Pokemon(details=details, name=name, gen=self.gen)
         else:
