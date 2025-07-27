@@ -88,7 +88,6 @@ class Move:
         self._id = move_id
         self._base_power_override = None
         self._gen = gen
-        self._moves_dict = GenData.from_gen(gen).moves
 
         if move_id.startswith("hiddenpower") and raw_id is not None:
             base_power = "".join([c for c in raw_id if c.isdigit()])

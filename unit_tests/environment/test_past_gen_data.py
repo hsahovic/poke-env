@@ -118,4 +118,4 @@ def test_right_gen_mon():
         battle.get_pokemon("p2: azumarill", force_self_team=True)
 
         assert "p2: azumarill" in battle.team
-        assert battle.team["p2: azumarill"]._data.gen == gen
+        assert battle.team["p2: azumarill"].gen == gen
