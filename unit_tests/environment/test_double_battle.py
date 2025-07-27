@@ -114,6 +114,7 @@ def test_battle_request_parsing_and_interactions(example_doubles_request):
     assert battle.current_observation
     assert battle.current_observation.events[0] == ["", "swap", "p1b: Klinklang", ""]
 
+    battle.logger = None
     pickle.loads(pickle.dumps(battle))
 
 
