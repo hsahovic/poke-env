@@ -35,12 +35,9 @@ def test_battle_request_parsing_and_interactions(example_doubles_request):
 
     battle.parse_request(example_doubles_request)
     mr_rime, klinklang = battle.active_pokemon
-    (
-        my_first_active,
-        my_second_active,
-        their_first_active,
-        their_second_active,
-    ) = battle.all_active_pokemons
+    (my_first_active, my_second_active, their_first_active, their_second_active) = (
+        battle.all_active_pokemons
+    )
     assert my_first_active == mr_rime and my_second_active == klinklang
     assert their_first_active is None and their_second_active is None
     assert isinstance(mr_rime, Pokemon)
@@ -394,9 +391,7 @@ def test_is_grounded():
     furret = Pokemon(gen=9, species="furret")
     battle.team = {"p1: Furret": furret}
 
-    battle.parse_message(
-        ["", "switch", "p1a: Furret", "Furret, L50, F", "100/100"],
-    )
+    battle.parse_message(["", "switch", "p1a: Furret", "Furret, L50, F", "100/100"])
     assert battle.grounded == [True, True]
 
     furret._type_2 = PokemonType.FLYING
