@@ -10528,7 +10528,6 @@
   "self": {
    "volatileStatus": "lockedmove"
   },
-  "onAfterMove": "onAfterMove",
   "secondary": null,
   "target": "randomNormal",
   "type": "Dragon",
@@ -10705,7 +10704,6 @@
   "self": {
    "volatileStatus": "lockedmove"
   },
-  "onAfterMove": "onAfterMove",
   "secondary": null,
   "target": "randomNormal",
   "type": "Grass",
@@ -11779,7 +11777,6 @@
   "self": {
    "volatileStatus": "lockedmove"
   },
-  "onAfterMove": "onAfterMove",
   "secondary": null,
   "target": "randomNormal",
   "type": "Fire"
@@ -15459,7 +15456,6 @@
   "self": {
    "volatileStatus": "lockedmove"
   },
-  "onAfterMove": "onAfterMove",
   "secondary": null,
   "target": "randomNormal",
   "type": "Normal",
