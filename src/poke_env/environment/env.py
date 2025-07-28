@@ -50,8 +50,7 @@ class _AsyncQueue(Generic[ItemType]):
             get_task = asyncio.create_task(self.async_get())
             wait_tasks = [asyncio.create_task(e.wait()) for e in events]
             done, pending = await asyncio.wait(
-                {get_task, *wait_tasks},
-                return_when=asyncio.FIRST_COMPLETED,
+                {get_task, *wait_tasks}, return_when=asyncio.FIRST_COMPLETED
             )
             for p in pending:
                 p.cancel()
@@ -236,7 +235,9 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
     # PettingZoo API
     # https://pettingzoo.farama.org/api/parallel/#parallelenv
 
-    def step(self, actions: Dict[str, ActionType]) -> Tuple[
+    def step(
+        self, actions: Dict[str, ActionType]
+    ) -> Tuple[
         Dict[str, ObsType],
         Dict[str, float],
         Dict[str, bool],
@@ -298,9 +299,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         return observations, reward, terminated, truncated, self.get_additional_info()
 
     def reset(
-        self,
-        seed: Optional[int] = None,
-        options: Optional[Dict[str, Any]] = None,
+        self, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None
     ) -> Tuple[Dict[str, ObsType], Dict[str, Dict[str, Any]]]:
         self.agents = [self.agent1.username, self.agent2.username]
         if seed is not None:

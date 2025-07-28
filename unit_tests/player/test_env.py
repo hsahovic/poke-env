@@ -325,10 +325,7 @@ def test_reward_computing_helper():
         == 100
     )
 
-    battle_4._team, battle_4._opponent_team = (
-        battle_3._opponent_team,
-        battle_3._team,
-    )
+    battle_4._team, battle_4._opponent_team = (battle_3._opponent_team, battle_3._team)
     assert (
         player.reward_computing_helper(
             battle_4,
@@ -357,10 +354,7 @@ def test_action_space():
         ],
         start=4,
     ):
-        p = SinglesEnv(
-            battle_format=f"gen{gen}randombattle",
-            start_listening=False,
-        )
+        p = SinglesEnv(battle_format=f"gen{gen}randombattle", start_listening=False)
         assert p.action_space(p.possible_agents[0]) == Discrete(
             4 * sum([1, has_megas, has_z_moves, has_dynamax]) + 6
         )
@@ -449,11 +443,7 @@ def test_singles_action_order_conversions():
 
 def test_doubles_action_order_conversions():
     for gen, (has_megas, has_z_moves, has_dynamax, has_tera) in enumerate(
-        [
-            (True, True, True, False),
-            (True, True, True, True),
-        ],
-        start=8,
+        [(True, True, True, False), (True, True, True, True)], start=8
     ):
         p = DoublesEnv(
             battle_format=f"gen{gen}randomdoublesbattle", start_listening=False
