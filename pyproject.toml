@@ -64,10 +64,12 @@ Documentation = "https://poke-env.readthedocs.io/en/stable/"
 Repository = "https://github.com/hsahovic/poke-env"
 
 [tool.black]
-line-length = 88
+line-length = 100
+skip-magic-trailing-comma = true
 
 [tool.isort]
 profile = "black"
+line_length = 100
 multi_line_output = 3
 
 [tool.pyright]
