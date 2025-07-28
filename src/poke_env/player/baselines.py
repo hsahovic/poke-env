@@ -1,8 +1,10 @@
 import random
-from typing import List
+from typing import List, Tuple
 
 from poke_env.battle.abstract_battle import AbstractBattle
+from poke_env.battle.battle import Battle
 from poke_env.battle.double_battle import DoubleBattle
+from poke_env.battle.move import Move
 from poke_env.battle.move_category import MoveCategory
 from poke_env.battle.pokemon import Pokemon
 from poke_env.battle.side_condition import SideCondition
@@ -96,6 +98,33 @@ class MaxBasePowerPlayer(Player):
         return self.choose_random_move(battle)
 
 
+class PseudoBattle(Battle):
+    def __init__(self, battle: DoubleBattle, active_id: int, opp_id: int):
+        self._active_pokemon = battle.active_pokemon[active_id]
+        self._opponent_active_pokemon = battle.opponent_active_pokemon[opp_id]
+        self._team = battle.team
+        self._opponent_team = battle.opponent_team
+        self._available_moves = battle.available_moves[active_id]
+        self._available_switches = battle.available_switches[active_id]
+        self._force_switch = battle.force_switch[active_id]
+        self._trapped = battle.trapped[active_id]
+        self._wait = battle._wait
+        self._side_conditions = battle.side_conditions
+        self._opponent_side_conditions = battle.opponent_side_conditions
+        self._can_mega_evolve = battle.can_mega_evolve[active_id]
+        self._can_z_move = battle.can_z_move[active_id]
+        self._can_dynamax = battle.can_dynamax[active_id]
+        self._can_tera = battle.can_tera[active_id]
+
+    @property
+    def active_pokemon(self):
+        return self._active_pokemon
+
+    @property
+    def opponent_active_pokemon(self):
+        return self._opponent_active_pokemon
+
+
 class SimpleHeuristicsPlayer(Player):
     ENTRY_HAZARDS = {
         "spikes": SideCondition.SPIKES,
@@ -148,6 +177,34 @@ class SimpleHeuristicsPlayer(Player):
                 return True
         return False
 
+    def _should_terastallize(self, battle: Battle, move: Move) -> bool:
+        active = battle.active_pokemon
+        opp_active = battle.opponent_active_pokemon
+        if (
+            not battle.can_tera
+            or not active
+            or not opp_active
+            or active.tera_type is None
+        ):
+            return False
+        offensive_tera_score = opp_active.damage_multiplier(move.type)
+        defensive_score = min(
+            [1 / (active.damage_multiplier(t) or 1 / 8) for t in opp_active.types]
+        )
+        defensive_tera_score = min(
+            [
+                1
+                / (
+                    t.damage_multiplier(
+                        active.tera_type, type_chart=active._data.type_chart
+                    )
+                    or 1 / 8
+                )
+                for t in opp_active.types
+            ]
+        )
+        return offensive_tera_score * (defensive_tera_score / defensive_score) > 1
+
     def _should_switch_out(self, battle: AbstractBattle):
         active = battle.active_pokemon
         opponent = battle.opponent_active_pokemon
@@ -185,16 +242,13 @@ class SimpleHeuristicsPlayer(Player):
             boost = 2 / (2 - mon.boosts[stat])
         return ((2 * mon.base_stats[stat] + 31) + 5) * boost
 
-    def choose_move(self, battle: AbstractBattle):
-        if isinstance(battle, DoubleBattle):
-            return self.choose_random_doubles_move(battle)
-
+    def choose_singles_move(self, battle: Battle) -> Tuple[SingleBattleOrder, float]:
         # Main mons shortcuts
         active = battle.active_pokemon
         opponent = battle.opponent_active_pokemon
 
         if active is None or opponent is None:
-            return self.choose_random_move(battle)
+            return self.choose_random_singles_move(battle), 0
 
         # Rough estimation of damage ratio
         physical_ratio = self._stat_estimation(active, "atk") / self._stat_estimation(
@@ -223,7 +277,7 @@ class SimpleHeuristicsPlayer(Player):
                     and self.ENTRY_HAZARDS[move.id]
                     not in battle.opponent_side_conditions
                 ):
-                    return self.create_order(move)
+                    return self.create_order(move), 0
 
                 # ...removal
                 elif (
@@ -231,7 +285,7 @@ class SimpleHeuristicsPlayer(Player):
                     and move.id in self.ANTI_HAZARDS_MOVES
                     and n_remaining_mons >= 2
                 ):
-                    return self.create_order(move)
+                    return self.create_order(move), 0
 
             # Setup moves
             if (
@@ -248,32 +302,121 @@ class SimpleHeuristicsPlayer(Player):
                         )
                         < 6
                     ):
-                        return self.create_order(move)
+                        return self.create_order(move), 0
 
-            move = max(
-                battle.available_moves,
-                key=lambda m: m.base_power
-                * (1.5 if m.type in active.types else 1)
-                * (
-                    physical_ratio
-                    if m.category == MoveCategory.PHYSICAL
-                    else special_ratio
-                )
-                * m.accuracy
-                * m.expected_hits
-                * opponent.damage_multiplier(m),
+            move, score = max(
+                [
+                    (
+                        m,
+                        m.base_power
+                        * (1.5 if m.type in active.types else 1)
+                        * (
+                            physical_ratio
+                            if m.category == MoveCategory.PHYSICAL
+                            else special_ratio
+                        )
+                        * m.accuracy
+                        * m.expected_hits
+                        * opponent.damage_multiplier(m),
+                    )
+                    for m in battle.available_moves
+                ],
+                key=lambda x: x[1],
             )
-            return self.create_order(
-                move, dynamax=self._should_dynamax(battle, n_remaining_mons)
+            return (
+                self.create_order(
+                    move,
+                    dynamax=self._should_dynamax(battle, n_remaining_mons),
+                    terastallize=self._should_terastallize(battle, move),
+                ),
+                score,
             )
 
         if battle.available_switches:
             switches: List[Pokemon] = battle.available_switches
-            return self.create_order(
-                max(
-                    switches,
-                    key=lambda s: self._estimate_matchup(s, opponent),
-                )
+            return (
+                self.create_order(
+                    max(
+                        switches,
+                        key=lambda s: self._estimate_matchup(s, opponent),
+                    )
+                ),
+                0,
             )
 
-        return self.choose_random_move(battle)
+        return self.choose_random_singles_move(battle), 0
+
+    @staticmethod
+    def get_double_target_multiplier(battle: DoubleBattle, order: SingleBattleOrder):
+        can_target_first_opponent = (
+            battle.opponent_active_pokemon[0]
+            and not battle.opponent_active_pokemon[0].fainted
+        )
+        can_target_second_opponent = (
+            battle.opponent_active_pokemon[1]
+            and not battle.opponent_active_pokemon[1].fainted
+        )
+        can_double_target = can_target_first_opponent and can_target_second_opponent
+        return (
+            1
+            if not hasattr(order, "order")
+            or not isinstance(order.order, Move)
+            or order.order.target in {Target.NORMAL, Target.ANY}
+            or not can_double_target
+            else 1.5
+        )
+
+    def choose_move(self, battle: AbstractBattle):
+        if not isinstance(battle, DoubleBattle):
+            return self.choose_singles_move(battle)[0]  # type: ignore
+        orders: List[SingleBattleOrder] = []
+        for active_id in [0, 1]:
+            if (
+                battle.active_pokemon[active_id] is None
+                and not battle.available_switches[active_id]
+            ):
+                orders += [PassBattleOrder()]
+                continue
+            results = [
+                self.choose_singles_move(PseudoBattle(battle, active_id, opp_id))
+                for opp_id in [0, 1]
+            ]
+            possible_orders = [r[0] for r in results]
+            scores = [r[1] for r in results]
+            for order in possible_orders:
+                mon = battle.active_pokemon[active_id]
+                if (
+                    order is not None
+                    and hasattr(order, "order")
+                    and isinstance(order.order, Move)
+                    and mon is not None
+                ):
+                    target = [o for o in possible_orders].index(order) + 1
+                    possible_targets = battle.get_possible_showdown_targets(
+                        order.order, mon
+                    )
+                    if target not in possible_targets:
+                        target = possible_targets[0]
+                    order.move_target = target
+            scores = [
+                scores[i]
+                * self.get_double_target_multiplier(battle, possible_orders[i])
+                for i in [0, 1]
+            ]
+            orders += [
+                (
+                    max(results, key=lambda a: a[1])[0]
+                    if battle.force_switch != [[False, True], [True, False]][active_id]
+                    and not (
+                        len(battle.available_switches[active_id]) == 1
+                        and battle.force_switch == [True, True]
+                        and active_id == 1
+                    )
+                    else PassBattleOrder()
+                )
+            ]
+        joined_orders = DoubleBattleOrder.join_orders([orders[0]], [orders[1]])
+        if joined_orders:
+            return joined_orders[0]
+        else:
+            return DoubleBattleOrder(orders[0], DefaultBattleOrder())
