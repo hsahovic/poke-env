@@ -273,12 +273,12 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         )
         self.agent1_to_move = battle1 is not None
         self.agent2_to_move = battle2 is not None
-        self.agent1._waiting.clear()
-        self.agent2._waiting.clear()
         if battle1 is None:
+            self.agent1._waiting.clear()
             self.agent2._trying_again.clear()
             battle1 = self.battle1
         if battle2 is None:
+            self.agent2._waiting.clear()
             self.agent1._trying_again.clear()
             battle2 = self.battle2
         observations = {
