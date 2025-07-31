@@ -24,6 +24,12 @@ class ForfeitBattleOrder(BattleOrder):
         return "/forfeit"
 
 
+class _EmptyBattleOrder(BattleOrder):
+    @property
+    def message(self) -> str:
+        return ""
+
+
 @dataclass
 class SingleBattleOrder(BattleOrder):
     order: Union[Move, Pokemon, str]
