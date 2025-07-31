@@ -1393,7 +1393,10 @@ def calculate_def_mods(
         defender.item == "eviolite"
         and (
             defender.species == "dipplin"
-            or len(defender._data.pokedex[defender.species].get("evos", [])) > 0
+            or len(
+                GenData.from_gen(battle.gen).pokedex[defender.species].get("evos", [])
+            )
+            > 0
         )
     ) or (defender.item == "assaultvest" and not hits_physical):
         def_mods.append(6144)

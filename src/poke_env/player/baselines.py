@@ -9,6 +9,7 @@ from poke_env.battle.move_category import MoveCategory
 from poke_env.battle.pokemon import Pokemon
 from poke_env.battle.side_condition import SideCondition
 from poke_env.battle.target import Target
+from poke_env.data import GenData
 from poke_env.player.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
@@ -196,7 +197,8 @@ class SimpleHeuristicsPlayer(Player):
                 1
                 / (
                     t.damage_multiplier(
-                        active.tera_type, type_chart=active._data.type_chart
+                        active.tera_type,
+                        type_chart=GenData.from_gen(battle.gen).type_chart,
                     )
                     or 1 / 8
                 )
