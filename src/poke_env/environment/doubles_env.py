@@ -91,18 +91,18 @@ class DoublesEnv(PokeEnv[Dict[str, ObsType], npt.NDArray[np.int64]]):
         return action_mask1 + action_mask2
 
     def get_action_mask_individual(self, battle: DoubleBattle, pos: int) -> List[int]:
-        if any(battle.force_switch) and not battle.force_switch[pos]:
-            return [0]
         switch_space = [
             i + 1
             for i, pokemon in enumerate(battle.team.values())
             if not battle.trapped[pos] and pokemon in battle.available_switches[pos]
         ]
-        if all(battle.force_switch) and len(battle.available_switches[0]) == 1:
-            return switch_space + [0]
         active_mon = battle.active_pokemon[pos]
         if battle._wait:
-            actions = []
+            actions = range(self.action_space_size)
+        elif any(battle.force_switch) and not battle.force_switch[pos]:
+            return [0]
+        elif all(battle.force_switch) and len(battle.available_switches[0]) == 1:
+            return switch_space + [0]
         elif battle.teampreview or active_mon is None:
             actions = switch_space
         else:
@@ -153,7 +153,6 @@ class DoublesEnv(PokeEnv[Dict[str, ObsType], npt.NDArray[np.int64]]):
             )
         actions = actions or [0]
         action_mask = [int(i in actions) for i in range(self.action_space_size)]
-        print(action_mask)
         return action_mask
 
     @staticmethod
