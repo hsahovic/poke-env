@@ -107,7 +107,9 @@ class DoublesEnv(PokeEnv[Dict[str, ObsType], npt.NDArray[np.int64]]):
             move_spaces = [
                 [
                     7 + 5 * i + j + 2
-                    for j in battle.get_possible_showdown_targets(move, active_mon)
+                    for j in battle.get_possible_showdown_targets(
+                        move.dynamaxed if active_mon.is_dynamaxed else move, active_mon
+                    )
                 ]
                 for i, move in enumerate(active_mon.moves.values())
                 if move.id in [m.id for m in battle.available_moves[pos]]
