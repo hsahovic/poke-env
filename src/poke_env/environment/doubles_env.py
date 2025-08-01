@@ -97,7 +97,7 @@ class DoublesEnv(PokeEnv[Dict[str, ObsType], npt.NDArray[np.int64]]):
             if not battle.trapped[pos] and pokemon in battle.available_switches[pos]
         ]
         active_mon = battle.active_pokemon[pos]
-        if battle._wait or any(battle.force_switch) and not battle.force_switch[pos]:
+        if battle._wait or (any(battle.force_switch) and not battle.force_switch[pos]):
             actions = [0]
         elif all(battle.force_switch) and len(battle.available_switches[0]) == 1:
             actions = switch_space + [0]
@@ -110,7 +110,7 @@ class DoublesEnv(PokeEnv[Dict[str, ObsType], npt.NDArray[np.int64]]):
                     for j in battle.get_possible_showdown_targets(move, active_mon)
                 ]
                 for i, move in enumerate(active_mon.moves.values())
-                if move in battle.available_moves[pos]
+                if move.id in [m.id for m in battle.available_moves[pos]]
             ]
             move_space = [i for s in move_spaces for i in s]
             mega_space = [i + 20 for i in move_space if battle.can_mega_evolve[pos]]
