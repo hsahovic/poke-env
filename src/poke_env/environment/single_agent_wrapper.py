@@ -10,8 +10,8 @@ class SingleAgentWrapper(Env[Dict[str, ObsType], ActionType]):
     def __init__(self, env: PokeEnv[ObsType, ActionType], opponent: Player):
         self.env = env
         self.opponent = opponent
-        self.observation_space = env.observation_spaces[env.possible_agents[0]]
-        self.action_space = env.action_spaces[env.possible_agents[0]]
+        self.observation_space = env.observation_spaces[env.agent1.username]
+        self.action_space = env.action_spaces[env.agent1.username]
 
     def step(
         self, action: ActionType
@@ -43,10 +43,7 @@ class SingleAgentWrapper(Env[Dict[str, ObsType], ActionType]):
     ) -> Tuple[Dict[str, ObsType], Dict[str, Any]]:
         obs, infos = self.env.reset(seed, options)
         self._np_random = self.env._np_random
-        return (
-            obs[self.env.agent1.username],
-            infos[self.env.agent1.username],
-        )
+        return obs[self.env.agent1.username], infos[self.env.agent1.username]
 
     def render(self, mode="human"):
         return self.env.render(mode)

@@ -113,7 +113,11 @@ def test_repeated_runs():
 @pytest.mark.timeout(60)
 def test_env_api():
     for gen in range(4, 10):
-        env = SinglesTestEnv(battle_format=f"gen{gen}randombattle", log_level=25)
+        env = SinglesTestEnv(
+            battle_format=f"gen{gen}randombattle",
+            log_level=25,
+            strict=False,
+        )
         parallel_api_test(env)
         env.close()
 
@@ -121,7 +125,11 @@ def test_env_api():
 @pytest.mark.timeout(60)
 def test_single_agent_env_api():
     for gen in range(4, 10):
-        env = SinglesTestEnv(battle_format=f"gen{gen}randombattle", log_level=25)
+        env = SinglesTestEnv(
+            battle_format=f"gen{gen}randombattle",
+            log_level=25,
+            strict=False,
+        )
         env = SingleAgentWrapper(env, RandomPlayer())
         check_env(env)
         env.close()

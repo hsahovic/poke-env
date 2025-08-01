@@ -418,7 +418,7 @@ class PokeEnv(ParallelEnv[str, Dict[str, ObsType], ActionType]):
         while not self.agent2.battle_queue.empty():
             self.agent2.battle_queue.get()
 
-    def observation_space(self, agent: str) -> Space[Dict[str, np.ndarray]]:
+    def observation_space(self, agent: str) -> Space[Dict[str, ObsType]]:
         return self.observation_spaces[agent]
 
     def action_space(self, agent: str) -> Space[ActionType]:
@@ -441,7 +441,7 @@ class PokeEnv(ParallelEnv[str, Dict[str, ObsType], ActionType]):
         pass
 
     @abstractmethod
-    def embed_battle(self, battle: AbstractBattle) -> np.ndarray:
+    def embed_battle(self, battle: AbstractBattle) -> ObsType:
         """
         Returns the embedding of the current battle state in a format compatible with
         the Gymnasium API.
