@@ -108,7 +108,7 @@ def sample_action(action_mask):
     available_actions2 = [
         i
         for i in available_actions2
-        if not (1 <= action1 <= 6 and action1 == i)
+        if not (0 <= action1 <= 6 and action1 == i)
         and not (26 < action1 <= 46 and 26 < i <= 46)
         and not (46 < action1 <= 66 and 46 < i <= 66)
         and not (66 < action1 <= 86 and 66 < i <= 86)
