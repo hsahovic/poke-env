@@ -104,6 +104,8 @@ def sample_action(action_mask):
     action_mask2 = action_mask[n // 2 :]
     available_actions1 = [i for i, m in enumerate(action_mask1) if m == 1]
     available_actions2 = [i for i, m in enumerate(action_mask2) if m == 1]
+    if available_actions1 == available_actions2 == [0]:
+        return np.array([0, 0])
     action1 = random.choice(available_actions1)
     available_actions2 = [
         i
