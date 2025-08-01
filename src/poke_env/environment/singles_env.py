@@ -82,8 +82,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         switch_space = [
             i
             for i, pokemon in enumerate(battle.team.values())
-            if not battle.trapped
-            and pokemon in battle.available_switches
+            if not battle.trapped and pokemon in battle.available_switches
         ]
         if battle.active_pokemon is None:
             actions = switch_space
@@ -97,8 +96,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
             zmove_space = [
                 i + 8
                 for i, move in enumerate(battle.active_pokemon.moves.values())
-                if move in battle.active_pokemon.available_z_moves
-                and battle.can_z_move
+                if move in battle.active_pokemon.available_z_moves and battle.can_z_move
             ]
             dynamax_space = [i + 12 for i in move_space if battle.can_dynamax]
             tera_space = [i + 16 for i in move_space if battle.can_tera]
@@ -111,7 +109,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
                 + tera_space
             )
         act_len = list(self.action_spaces.values())[0].n  # type: ignore
-        return [int(i not in actions) for i in range(act_len)]
+        return [int(i in actions) for i in range(act_len)]
 
     @staticmethod
     def action_to_order(

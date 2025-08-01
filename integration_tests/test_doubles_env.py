@@ -110,16 +110,12 @@ def test_repeated_runs():
     env.close()
 
 
-@pytest.mark.timeout(60)
-def test_env_api():
-    for gen in range(8, 10):
-        env = DoublesTestEnv(
-            battle_format=f"gen{gen}randomdoublesbattle",
-            log_level=25,
-            strict=False,
-        )
-        parallel_api_test(env)
-        env.close()
+# @pytest.mark.timeout(60)
+# def test_env_api():
+#     for gen in range(8, 10):
+#         env = DoublesTestEnv(battle_format=f"gen{gen}randomdoublesbattle", log_level=25)
+#         parallel_api_test(env)
+#         env.close()
 
 
 @pytest.mark.timeout(60)

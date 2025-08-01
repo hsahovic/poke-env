@@ -150,7 +150,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 + tera_space
             ) or [0]
         act_len = list(self.action_spaces.values())[0].nvec[pos]  # type: ignore
-        return [int(i not in actions) for i in range(act_len)]
+        return [int(i in actions) for i in range(act_len)]
 
     @staticmethod
     def action_to_order(
