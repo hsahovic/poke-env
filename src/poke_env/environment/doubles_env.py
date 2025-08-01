@@ -100,9 +100,9 @@ class DoublesEnv(PokeEnv[Dict[str, ObsType], npt.NDArray[np.int64]]):
         if battle._wait:
             actions = range(self.action_space_size)
         elif any(battle.force_switch) and not battle.force_switch[pos]:
-            return [0]
+            actions = [0]
         elif all(battle.force_switch) and len(battle.available_switches[0]) == 1:
-            return switch_space + [0]
+            actions = switch_space + [0]
         elif battle.teampreview or active_mon is None:
             actions = switch_space
         else:
