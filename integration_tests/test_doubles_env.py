@@ -117,6 +117,7 @@ def sample_action(action_mask):
         and not (86 < action1 <= 106 and 86 < i <= 106)
     ]
     action2 = random.choice(available_actions2)
+    print(action_mask1, action_mask2, available_actions1, action1, available_actions2, action2)
     return np.array([action1, action2])
 
 
