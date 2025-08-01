@@ -115,9 +115,27 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                     for j in battle.get_possible_showdown_targets(move, active_mon)
                 ]
                 for i, move in enumerate(active_mon.moves.values())
-                if move.id in [m.id for m in battle.available_moves[pos]]
+                if move in battle.available_moves[pos]
             ]
             move_space = [i for s in move_spaces for i in s]
+            mega_space = [i + 20 for i in move_space if battle.can_mega_evolve[pos]]
+            zmove_space = [
+                [
+                    47 + 5 * i + j + 2
+                    for j in battle.get_possible_showdown_targets(move, active_mon)
+                ]
+                for i, move in enumerate(active_mon.available_z_moves)
+            ]
+            dynamax_space = [
+                [
+                    67 + 5 * i + j + 2
+                    for j in battle.get_possible_showdown_targets(
+                        move, active_mon, dynamax=True
+                    )
+                ]
+                for i, move in enumerate(active_mon.moves.values())
+                if move in battle.available_moves[pos]
+            ]
             tera_space = [i + 80 for i in move_space if battle.can_tera[pos]]
             if (
                 not move_space
@@ -125,7 +143,17 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 and battle.available_moves[pos][0].id in ["struggle", "recharge"]
             ):
                 move_space = [9]
-            actions = np.array((switch_space + move_space + tera_space) or [0])
+            actions = np.array(
+                (
+                    switch_space
+                    + move_space
+                    + mega_space
+                    + zmove_space
+                    + dynamax_space
+                    + tera_space
+                )
+                or [0]
+            )
         act_len = list(self.action_spaces.values())[0].nvec[pos]  # type: ignore
         return [int(i not in actions) for i in range(act_len)]
 
