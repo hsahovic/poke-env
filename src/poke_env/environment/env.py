@@ -9,6 +9,8 @@ from concurrent.futures import Future
 from typing import Any, Awaitable, Dict, Generic, List, Optional, Tuple, TypeVar, Union
 from weakref import WeakKeyDictionary
 
+import numpy as np
+import numpy.typing as npt
 from gymnasium.spaces import Space
 from gymnasium.utils import seeding
 from numpy.random import Generator
@@ -282,8 +284,14 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             self.agent1._trying_again.clear()
             battle2 = self.battle2
         observations = {
-            self.agents[0]: self.embed_battle(battle1),
-            self.agents[1]: self.embed_battle(battle2),
+            self.agents[0]: {
+                "observation": self.embed_battle(battle1),
+                "action_mask": self.get_action_mask(battle1),
+            },
+            self.agents[1]: {
+                "observation": self.embed_battle(battle2),
+                "action_mask": self.get_action_mask(battle2),
+            },
         }
         reward = {
             self.agents[0]: self.calc_reward(battle1),
@@ -490,6 +498,10 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         :return: The action for the given battle order in context of the current battle.
         :rtype: ActionType
         """
+        pass
+
+    @abstractmethod
+    def get_action_mask(self, battle: Any) -> npt.NDArray[np.int64]:
         pass
 
     ###################################################################################

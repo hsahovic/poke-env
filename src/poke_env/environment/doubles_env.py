@@ -82,6 +82,55 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             agent: MultiDiscrete([act_size, act_size]) for agent in self.possible_agents
         }
 
+    def get_action_mask(self, battle: DoubleBattle) -> npt.NDArray[np.int64]:
+        action_mask1 = self.get_action_mask_individual(battle, 0)
+        action_mask2 = self.get_action_mask_individual(battle, 1)
+        return np.concatenate([action_mask1, action_mask2])
+
+    def get_action_mask_individual(
+        self, battle: DoubleBattle, pos: int
+    ) -> npt.NDArray[np.int64]:
+        switch_space = [
+            i + 1
+            for i, pokemon in enumerate(battle.team.values())
+            if battle.force_switch != [[False, True], [True, False]][pos]
+            and not battle.trapped[pos]
+            and not (
+                len(battle.available_switches[0]) == 1
+                and battle.force_switch == [True, True]
+                and pos == 1
+            )
+            and not pokemon.active
+            and pokemon.species in [p.species for p in battle.available_switches[pos]]
+        ]
+        active_mon = battle.active_pokemon[pos]
+        if battle.teampreview:
+            actions = np.array(switch_space)
+        elif battle.finished or battle._wait:
+            actions = np.array([0])
+        elif active_mon is None:
+            actions = np.array(switch_space or [0])
+        else:
+            move_spaces = [
+                [
+                    7 + 5 * i + j + 2
+                    for j in battle.get_possible_showdown_targets(move, active_mon)
+                ]
+                for i, move in enumerate(active_mon.moves.values())
+                if move.id in [m.id for m in battle.available_moves[pos]]
+            ]
+            move_space = [i for s in move_spaces for i in s]
+            tera_space = [i + 80 for i in move_space if battle.can_tera[pos]]
+            if (
+                not move_space
+                and len(battle.available_moves[pos]) == 1
+                and battle.available_moves[pos][0].id in ["struggle", "recharge"]
+            ):
+                move_space = [9]
+            actions = np.array((switch_space + move_space + tera_space) or [0])
+        act_len = list(self.action_spaces.values())[0].nvec[pos]  # type: ignore
+        return [int(i not in actions) for i in range(act_len)]
+
     @staticmethod
     def action_to_order(
         action: npt.NDArray[np.int64],

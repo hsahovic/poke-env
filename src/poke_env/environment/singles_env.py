@@ -1,6 +1,7 @@
 from typing import Optional, Union
 
 import numpy as np
+import numpy.typing as npt
 from gymnasium.spaces import Discrete
 
 from poke_env.battle import Battle, Pokemon
@@ -77,6 +78,41 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         self.action_spaces = {
             agent: Discrete(act_size) for agent in self.possible_agents
         }
+
+    def get_action_mask(self, battle: Battle) -> npt.NDArray[np.int64]:
+        switch_space = [
+            i
+            for i, pokemon in enumerate(battle.team.values())
+            if not battle.trapped
+            and pokemon.species in [p.species for p in battle.available_switches]
+        ]
+        if battle.active_pokemon is None:
+            actions = np.array(switch_space)
+        else:
+            move_space = [
+                i + 6
+                for i, move in enumerate(battle.active_pokemon.moves.values())
+                if move.id in [m.id for m in battle.available_moves]
+            ]
+            mega_space = [i + 4 for i in move_space if battle.can_mega_evolve]
+            zmove_space = [
+                i + 8
+                for i, move in enumerate(battle.active_pokemon.moves.values())
+                if move.id in [m.id for m in battle.active_pokemon.available_z_moves]
+                and battle.can_z_move
+            ]
+            dynamax_space = [i + 12 for i in move_space if battle.can_dynamax]
+            tera_space = [i + 16 for i in move_space if battle.can_tera]
+            actions = np.array(
+                switch_space
+                + move_space
+                + mega_space
+                + zmove_space
+                + dynamax_space
+                + tera_space
+            )
+        act_len = list(self.action_spaces.values())[0].n  # type: ignore
+        return [int(i not in actions) for i in range(act_len)]
 
     @staticmethod
     def action_to_order(
