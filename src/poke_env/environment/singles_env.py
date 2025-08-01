@@ -155,15 +155,26 @@ class SinglesEnv(PokeEnv[Dict[str, ObsType], np.int64]):
             elif action < 6:
                 order = Player.create_order(list(battle.team.values())[action])
             else:
-                if (action - 6) % 4 not in range(len(battle.available_moves)):
+                if battle.active_pokemon is None:
+                    raise ValueError(
+                        f"Invalid order from player {battle.player_username} "
+                        f"in battle {battle.battle_tag} - action specifies a "
+                        f"move, but battle.active_pokemon is None!"
+                    )
+                mvs = (
+                    battle.active_pokemon.available_z_moves
+                    if 14 <= action.item() < 18
+                    else battle.available_moves
+                )
+                if (action - 6) % 4 not in range(len(mvs)):
                     raise ValueError(
                         f"Invalid action {action} from player {battle.player_username} "
                         f"in battle {battle.battle_tag} - action specifies a move "
                         f"but the move index {(action - 6) % 4} is out of bounds "
-                        f"for available moves {battle.available_moves}!"
+                        f"for available moves {mvs}!"
                     )
                 order = Player.create_order(
-                    battle.available_moves[(action - 6) % 4],
+                    mvs[(action - 6) % 4],
                     mega=10 <= action.item() < 14,
                     z_move=14 <= action.item() < 18,
                     dynamax=18 <= action.item() < 22,
@@ -225,9 +236,13 @@ class SinglesEnv(PokeEnv[Dict[str, ObsType], np.int64]):
                         order.order.base_species
                     )
                 else:
-                    action = [m.id for m in battle.available_moves].index(
-                        order.order.id
+                    assert battle.active_pokemon is not None
+                    mvs = (
+                        battle.active_pokemon.available_z_moves
+                        if order.z_move
+                        else battle.available_moves
                     )
+                    action = [m.id for m in mvs].index(order.order.id)
                     if order.mega:
                         gimmick = 1
                     elif order.z_move:
