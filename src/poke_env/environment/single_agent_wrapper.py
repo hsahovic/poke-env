@@ -28,7 +28,7 @@ class SingleAgentWrapper(Env[ObsType, ActionType]):
         }
         obs, rewards, terms, truncs, infos = self.env.step(actions)
         return (
-            obs[self.env.agent1.username],
+            obs[self.env.agent1.username]["observation"],
             rewards[self.env.agent1.username],
             terms[self.env.agent1.username],
             truncs[self.env.agent1.username],
@@ -43,7 +43,10 @@ class SingleAgentWrapper(Env[ObsType, ActionType]):
     ) -> Tuple[ObsType, Dict[str, Any]]:
         obs, infos = self.env.reset(seed, options)
         self._np_random = self.env._np_random
-        return obs[self.env.agent1.username], infos[self.env.agent1.username]
+        return (
+            obs[self.env.agent1.username]["observation"],
+            infos[self.env.agent1.username],
+        )
 
     def render(self, mode="human"):
         return self.env.render(mode)
