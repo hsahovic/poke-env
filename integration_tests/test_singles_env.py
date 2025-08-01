@@ -47,7 +47,7 @@ def play_function(env, n_battles):
         while not done:
             actions = {
                 name: (
-                    random.choice(obs[name]["action_mask"])
+                    sample_action(obs[name]["action_mask"])
                     if env.strict
                     else env.action_space(name).sample()
                 )
@@ -80,7 +80,7 @@ def single_agent_play_function(env: SingleAgentWrapper, n_battles: int):
             continue
         while not done:
             action = (
-                random.choice(obs["action_mask"])
+                sample_action(obs["action_mask"])
                 if env.env.strict
                 else env.action_space.sample()
             )
@@ -97,6 +97,12 @@ def test_single_agent_env_run():
         env.env.strict = False
         single_agent_play_function(env, 10)
         env.close()
+
+
+def sample_action(action_mask):
+    available_actions = [i for i, m in enumerate(action_mask) if m == 1]
+    action = random.choice(available_actions)
+    return np.int64(action)
 
 
 @pytest.mark.timeout(60)
