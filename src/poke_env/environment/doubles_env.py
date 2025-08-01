@@ -96,8 +96,7 @@ class DoublesEnv(PokeEnv[Dict[str, ObsType], npt.NDArray[np.int64]]):
         switch_space = [
             i + 1
             for i, pokemon in enumerate(battle.team.values())
-            if not battle.trapped[pos]
-            and pokemon in battle.available_switches[pos]
+            if not battle.trapped[pos] and pokemon in battle.available_switches[pos]
         ]
         if all(battle.force_switch) and len(battle.available_switches[0]) == 1:
             return switch_space + [0]
