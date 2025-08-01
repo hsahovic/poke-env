@@ -84,7 +84,9 @@ class SinglesEnv(PokeEnv[Dict[str, ObsType], np.int64]):
             for i, pokemon in enumerate(battle.team.values())
             if not battle.trapped and pokemon in battle.available_switches
         ]
-        if battle.active_pokemon is None:
+        if battle._wait:
+            actions = [0]
+        elif battle.active_pokemon is None:
             actions = switch_space
         else:
             move_space = [
