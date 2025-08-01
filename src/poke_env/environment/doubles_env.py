@@ -107,12 +107,9 @@ class DoublesEnv(PokeEnv[Dict[str, ObsType], npt.NDArray[np.int64]]):
             move_spaces = [
                 [
                     7 + 5 * i + j + 2
-                    for j in battle.get_possible_showdown_targets(
-                        move.dynamaxed if active_mon.is_dynamaxed else move, active_mon
-                    )
+                    for j in battle.get_possible_showdown_targets(move, active_mon)
                 ]
-                for i, move in enumerate(active_mon.moves.values())
-                if move.id in [m.id for m in battle.available_moves[pos]]
+                for i, move in enumerate(battle.available_moves[pos])
             ]
             move_space = [i for s in move_spaces for i in s]
             mega_space = [i + 20 for i in move_space if battle.can_mega_evolve[pos]]
@@ -132,8 +129,8 @@ class DoublesEnv(PokeEnv[Dict[str, ObsType], npt.NDArray[np.int64]]):
                         move, active_mon, dynamax=True
                     )
                 ]
-                for i, move in enumerate(active_mon.moves.values())
-                if move in battle.available_moves[pos] and battle.can_dynamax[pos]
+                for i, move in enumerate(battle.available_moves[pos])
+                if battle.can_dynamax[pos]
             ]
             dynamax_space = [i for s in dynamax_spaces for i in s]
             tera_space = [i + 80 for i in move_space if battle.can_tera[pos]]
@@ -274,21 +271,15 @@ class DoublesEnv(PokeEnv[Dict[str, ObsType], npt.NDArray[np.int64]]):
                     f"in battle {battle.battle_tag} at position {pos} - action "
                     f"specifies a move, but battle.active_pokemon is None!"
                 )
-            mvs = (
-                battle.available_moves[pos]
-                if len(battle.available_moves[pos]) == 1
-                and battle.available_moves[pos][0].id in ["struggle", "recharge"]
-                else list(active_mon.moves.values())
-            )
-            if (action - 7) % 20 // 5 not in range(len(mvs)):
+            if (action - 7) % 20 // 5 not in range(len(battle.available_moves[pos])):
                 raise ValueError(
                     f"Invalid action {action} from player {battle.player_username} "
                     f"in battle {battle.battle_tag} at position {pos} - action "
-                    f"specifies a move but the move index {(action - 7) % 20 // 5} "
-                    f"is out of bounds for available moves {mvs}!"
+                    f"specifies a move but the move index {(action - 7) % 20 // 5} is "
+                    f"out of bounds for available moves {battle.available_moves[pos]}!"
                 )
             order = Player.create_order(
-                mvs[(action - 7) % 20 // 5],
+                battle.available_moves[pos][(action - 7) % 20 // 5],
                 move_target=(action.item() - 7) % 5 - 2,
                 mega=(action - 7) // 20 == 1,
                 z_move=(action - 7) // 20 == 2,
@@ -414,13 +405,7 @@ class DoublesEnv(PokeEnv[Dict[str, ObsType], npt.NDArray[np.int64]]):
         else:
             active_mon = battle.active_pokemon[pos]
             assert active_mon is not None
-            mvs = (
-                battle.available_moves[pos]
-                if len(battle.available_moves[pos]) == 1
-                and battle.available_moves[pos][0].id in ["struggle", "recharge"]
-                else list(active_mon.moves.values())
-            )
-            action = [m.id for m in mvs].index(order.order.id)
+            action = [m.id for m in battle.available_moves[pos]].index(order.order.id)
             target = order.move_target + 2
             if order.mega:
                 gimmick = 1

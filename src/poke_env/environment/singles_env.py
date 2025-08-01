@@ -89,16 +89,12 @@ class SinglesEnv(PokeEnv[Dict[str, ObsType], np.int64]):
         elif battle.active_pokemon is None:
             actions = switch_space
         else:
-            move_space = [
-                i + 6
-                for i, move in enumerate(battle.active_pokemon.moves.values())
-                if move in battle.available_moves
-            ]
+            move_space = [i + 6 for i, _ in enumerate(battle.available_moves)]
             mega_space = [i + 4 for i in move_space if battle.can_mega_evolve]
             zmove_space = [
                 i + 6 + 8
-                for i, move in enumerate(battle.active_pokemon.moves.values())
-                if move in battle.active_pokemon.available_z_moves and battle.can_z_move
+                for i, _ in enumerate(battle.active_pokemon.available_z_moves)
+                if battle.can_z_move
             ]
             dynamax_space = [i + 12 for i in move_space if battle.can_dynamax]
             tera_space = [i + 16 for i in move_space if battle.can_tera]
@@ -159,27 +155,15 @@ class SinglesEnv(PokeEnv[Dict[str, ObsType], np.int64]):
             elif action < 6:
                 order = Player.create_order(list(battle.team.values())[action])
             else:
-                if battle.active_pokemon is None:
-                    raise ValueError(
-                        f"Invalid order from player {battle.player_username} "
-                        f"in battle {battle.battle_tag} - action specifies a "
-                        f"move, but battle.active_pokemon is None!"
-                    )
-                mvs = (
-                    battle.available_moves
-                    if len(battle.available_moves) == 1
-                    and battle.available_moves[0].id in ["struggle", "recharge"]
-                    else list(battle.active_pokemon.moves.values())
-                )
-                if (action - 6) % 4 not in range(len(mvs)):
+                if (action - 6) % 4 not in range(len(battle.available_moves)):
                     raise ValueError(
                         f"Invalid action {action} from player {battle.player_username} "
                         f"in battle {battle.battle_tag} - action specifies a move "
                         f"but the move index {(action - 6) % 4} is out of bounds "
-                        f"for available moves {mvs}!"
+                        f"for available moves {battle.available_moves}!"
                     )
                 order = Player.create_order(
-                    mvs[(action - 6) % 4],
+                    battle.available_moves[(action - 6) % 4],
                     mega=10 <= action.item() < 14,
                     z_move=14 <= action.item() < 18,
                     dynamax=18 <= action.item() < 22,
@@ -241,14 +225,9 @@ class SinglesEnv(PokeEnv[Dict[str, ObsType], np.int64]):
                         order.order.base_species
                     )
                 else:
-                    assert battle.active_pokemon is not None
-                    mvs = (
-                        battle.available_moves
-                        if len(battle.available_moves) == 1
-                        and battle.available_moves[0].id in ["struggle", "recharge"]
-                        else list(battle.active_pokemon.moves.values())
+                    action = [m.id for m in battle.available_moves].index(
+                        order.order.id
                     )
-                    action = [m.id for m in mvs].index(order.order.id)
                     if order.mega:
                         gimmick = 1
                     elif order.z_move:
