@@ -456,6 +456,10 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         """
         pass
 
+    @abstractmethod
+    def get_action_mask(self, battle: Any) -> List[int]:
+        pass
+
     @staticmethod
     @abstractmethod
     def action_to_order(
@@ -504,10 +508,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         :return: The action for the given battle order in context of the current battle.
         :rtype: ActionType
         """
-        pass
-
-    @abstractmethod
-    def get_action_mask(self, battle: Any) -> npt.NDArray[np.int64]:
         pass
 
     ###################################################################################

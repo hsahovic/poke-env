@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import List, Optional, Union
 
 import numpy as np
 import numpy.typing as npt
@@ -82,14 +82,14 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             agent: MultiDiscrete([act_size, act_size]) for agent in self.possible_agents
         }
 
-    def get_action_mask(self, battle: DoubleBattle) -> npt.NDArray[np.int64]:
+    def get_action_mask(self, battle: DoubleBattle) -> List[int]:
         action_mask1 = self.get_action_mask_individual(battle, 0)
         action_mask2 = self.get_action_mask_individual(battle, 1)
         return np.concatenate([action_mask1, action_mask2])
 
     def get_action_mask_individual(
         self, battle: DoubleBattle, pos: int
-    ) -> npt.NDArray[np.int64]:
+    ) -> List[int]:
         switch_space = [
             i + 1
             for i, pokemon in enumerate(battle.team.values())

@@ -1,7 +1,6 @@
-from typing import Optional, Union
+from typing import List, Optional, Union
 
 import numpy as np
-import numpy.typing as npt
 from gymnasium.spaces import Discrete
 
 from poke_env.battle import Battle, Pokemon
@@ -79,7 +78,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
             agent: Discrete(act_size) for agent in self.possible_agents
         }
 
-    def get_action_mask(self, battle: Battle) -> npt.NDArray[np.int64]:
+    def get_action_mask(self, battle: Battle) -> List[int]:
         switch_space = [
             i
             for i, pokemon in enumerate(battle.team.values())
