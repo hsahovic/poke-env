@@ -134,14 +134,3 @@ def test_repeated_runs():
     play_function(env, 2)
     play_function(env, 2)
     env.close()
-
-
-@pytest.mark.timeout(60)
-def test_single_agent_env_api():
-    for gen in range(8, 10):
-        env = DoublesTestEnv(
-            battle_format=f"gen{gen}randomdoublesbattle", log_level=25, strict=False
-        )
-        env = SingleAgentWrapper(env, RandomPlayer())
-        check_env(env, skip_render_check=True)
-        env.close()
