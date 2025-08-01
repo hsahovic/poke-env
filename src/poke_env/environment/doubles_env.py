@@ -271,15 +271,20 @@ class DoublesEnv(PokeEnv[Dict[str, ObsType], npt.NDArray[np.int64]]):
                     f"in battle {battle.battle_tag} at position {pos} - action "
                     f"specifies a move, but battle.active_pokemon is None!"
                 )
-            if (action - 7) % 20 // 5 not in range(len(battle.available_moves[pos])):
+            mvs = (
+                active_mon.available_z_moves
+                if (action - 7) // 20 == 2
+                else battle.available_moves[pos]
+            )
+            if (action - 7) % 20 // 5 not in range(len(mvs)):
                 raise ValueError(
                     f"Invalid action {action} from player {battle.player_username} "
                     f"in battle {battle.battle_tag} at position {pos} - action "
-                    f"specifies a move but the move index {(action - 7) % 20 // 5} is "
-                    f"out of bounds for available moves {battle.available_moves[pos]}!"
+                    f"specifies a move but the move index {(action - 7) % 20 // 5} "
+                    f"is out of bounds for available moves {mvs}!"
                 )
             order = Player.create_order(
-                battle.available_moves[pos][(action - 7) % 20 // 5],
+                mvs[(action - 7) % 20 // 5],
                 move_target=(action.item() - 7) % 5 - 2,
                 mega=(action - 7) // 20 == 1,
                 z_move=(action - 7) // 20 == 2,
@@ -405,7 +410,12 @@ class DoublesEnv(PokeEnv[Dict[str, ObsType], npt.NDArray[np.int64]]):
         else:
             active_mon = battle.active_pokemon[pos]
             assert active_mon is not None
-            action = [m.id for m in battle.available_moves[pos]].index(order.order.id)
+            mvs = (
+                active_mon.available_z_moves
+                if order.z_move
+                else battle.available_moves[pos]
+            )
+            action = [m.id for m in mvs].index(order.order.id)
             target = order.move_target + 2
             if order.mega:
                 gimmick = 1
