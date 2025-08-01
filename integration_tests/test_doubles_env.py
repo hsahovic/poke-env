@@ -15,7 +15,9 @@ class DoublesTestEnv(DoublesEnv):
         self.observation_spaces = {
             agent: spaces.Dict(
                 {
-                    "observation": spaces.Box(np.array([0]), np.array([1]), dtype=np.int64),
+                    "observation": spaces.Box(
+                        np.array([0]), np.array([1]), dtype=np.int64
+                    ),
                     "action_mask": spaces.Box(
                         0, 1, shape=(2 * self.action_space_size,), dtype=np.int64
                     ),
