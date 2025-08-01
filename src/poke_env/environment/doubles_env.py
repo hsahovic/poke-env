@@ -107,9 +107,12 @@ class DoublesEnv(PokeEnv[Dict[str, ObsType], npt.NDArray[np.int64]]):
             move_spaces = [
                 [
                     7 + 5 * i + j + 2
-                    for j in battle.get_possible_showdown_targets(move, active_mon)
+                    for j in battle.get_possible_showdown_targets(
+                        move.dynamaxed if active_mon.is_dynamaxed else move, active_mon
+                    )
                 ]
-                for i, move in enumerate(battle.available_moves[pos])
+                for i, move in enumerate(active_mon.moves.values())
+                if move.id in [m.id for m in battle.available_moves[pos]]
             ]
             move_space = [i for s in move_spaces for i in s]
             mega_space = [i + 20 for i in move_space if battle.can_mega_evolve[pos]]
@@ -118,8 +121,9 @@ class DoublesEnv(PokeEnv[Dict[str, ObsType], npt.NDArray[np.int64]]):
                     47 + 5 * i + j + 2
                     for j in battle.get_possible_showdown_targets(move, active_mon)
                 ]
-                for i, move in enumerate(active_mon.available_z_moves)
-                if battle.can_z_move[pos]
+                for i, move in enumerate(active_mon.moves.values())
+                if move.id in [m.id for m in active_mon.available_z_moves]
+                and battle.can_z_move[pos]
             ]
             zmove_space = [i for s in zmove_spaces for i in s]
             dynamax_spaces = [
@@ -129,7 +133,7 @@ class DoublesEnv(PokeEnv[Dict[str, ObsType], npt.NDArray[np.int64]]):
                         move, active_mon, dynamax=True
                     )
                 ]
-                for i, move in enumerate(battle.available_moves[pos])
+                for i, move in enumerate(active_mon.moves.values())
                 if battle.can_dynamax[pos]
             ]
             dynamax_space = [i for s in dynamax_spaces for i in s]
@@ -272,9 +276,13 @@ class DoublesEnv(PokeEnv[Dict[str, ObsType], npt.NDArray[np.int64]]):
                     f"specifies a move, but battle.active_pokemon is None!"
                 )
             mvs = (
-                active_mon.available_z_moves
-                if (action - 7) // 20 == 2
-                else battle.available_moves[pos]
+                battle.available_moves[pos]
+                if len(battle.available_moves[pos]) == 1
+                and battle.available_moves[pos][0].id in ["struggle", "recharge"]
+                else [
+                    m.dynamaxed if active_mon.is_dynamaxed else m
+                    for m in active_mon.moves.values()
+                ]
             )
             if (action - 7) % 20 // 5 not in range(len(mvs)):
                 raise ValueError(
@@ -411,9 +419,13 @@ class DoublesEnv(PokeEnv[Dict[str, ObsType], npt.NDArray[np.int64]]):
             active_mon = battle.active_pokemon[pos]
             assert active_mon is not None
             mvs = (
-                active_mon.available_z_moves
-                if order.z_move
-                else battle.available_moves[pos]
+                battle.available_moves[pos]
+                if len(battle.available_moves[pos]) == 1
+                and battle.available_moves[pos][0].id in ["struggle", "recharge"]
+                else [
+                    m.dynamaxed if active_mon.is_dynamaxed else m
+                    for m in active_mon.moves.values()
+                ]
             )
             action = [m.id for m in mvs].index(order.order.id)
             target = order.move_target + 2

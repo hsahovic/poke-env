@@ -89,12 +89,17 @@ class SinglesEnv(PokeEnv[Dict[str, ObsType], np.int64]):
         elif battle.active_pokemon is None:
             actions = switch_space
         else:
-            move_space = [i + 6 for i, _ in enumerate(battle.available_moves)]
+            move_space = [
+                i + 6
+                for i, move in enumerate(battle.active_pokemon.moves.values())
+                if move.id in [m.id for m in battle.available_moves]
+            ]
             mega_space = [i + 4 for i in move_space if battle.can_mega_evolve]
             zmove_space = [
                 i + 6 + 8
-                for i, _ in enumerate(battle.active_pokemon.available_z_moves)
-                if battle.can_z_move
+                for i, move in enumerate(battle.active_pokemon.moves.values())
+                if move.id in [m.id for m in battle.active_pokemon.available_z_moves]
+                and battle.can_z_move
             ]
             dynamax_space = [i + 12 for i in move_space if battle.can_dynamax]
             tera_space = [i + 16 for i in move_space if battle.can_tera]
@@ -162,9 +167,13 @@ class SinglesEnv(PokeEnv[Dict[str, ObsType], np.int64]):
                         f"move, but battle.active_pokemon is None!"
                     )
                 mvs = (
-                    battle.active_pokemon.available_z_moves
-                    if 14 <= action.item() < 18
-                    else battle.available_moves
+                    battle.available_moves
+                    if len(battle.available_moves) == 1
+                    and battle.available_moves[0].id in ["struggle", "recharge"]
+                    else [
+                        m.dynamaxed if battle.active_pokemon.is_dynamaxed else m
+                        for m in battle.active_pokemon.moves.values()
+                    ]
                 )
                 if (action - 6) % 4 not in range(len(mvs)):
                     raise ValueError(
@@ -238,9 +247,13 @@ class SinglesEnv(PokeEnv[Dict[str, ObsType], np.int64]):
                 else:
                     assert battle.active_pokemon is not None
                     mvs = (
-                        battle.active_pokemon.available_z_moves
-                        if order.z_move
-                        else battle.available_moves
+                        battle.available_moves
+                        if len(battle.available_moves) == 1
+                        and battle.available_moves[0].id in ["struggle", "recharge"]
+                        else [
+                            m.dynamaxed if battle.active_pokemon.is_dynamaxed else m
+                            for m in battle.active_pokemon.moves.values()
+                        ]
                     )
                     action = [m.id for m in mvs].index(order.order.id)
                     if order.mega:

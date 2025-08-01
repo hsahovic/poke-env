@@ -3,7 +3,6 @@ import random
 import gymnasium.spaces as spaces
 import numpy as np
 import pytest
-from gymnasium.utils.env_checker import check_env
 
 from poke_env.environment import DoublesEnv, SingleAgentWrapper
 from poke_env.player import RandomPlayer
