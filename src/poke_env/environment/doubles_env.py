@@ -99,15 +99,13 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 and pos == 1
             )
             and not pokemon.active
-            and pokemon.species in [p.species for p in battle.available_switches[pos]]
+            and pokemon in battle.available_switches[pos]
         ]
         active_mon = battle.active_pokemon[pos]
-        if battle.teampreview:
-            actions = np.array(switch_space)
-        elif battle.finished or battle._wait:
-            actions = np.array([0])
-        elif active_mon is None:
-            actions = np.array(switch_space or [0])
+        if battle._wait:
+            actions = [0]
+        elif battle.teampreview or active_mon is None:
+            actions = switch_space
         else:
             move_spaces = [
                 [
@@ -143,17 +141,14 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 and battle.available_moves[pos][0].id in ["struggle", "recharge"]
             ):
                 move_space = [9]
-            actions = np.array(
-                (
-                    switch_space
-                    + move_space
-                    + mega_space
-                    + zmove_space
-                    + dynamax_space
-                    + tera_space
-                )
-                or [0]
-            )
+            actions = (
+                switch_space
+                + move_space
+                + mega_space
+                + zmove_space
+                + dynamax_space
+                + tera_space
+            ) or [0]
         act_len = list(self.action_spaces.values())[0].nvec[pos]  # type: ignore
         return [int(i not in actions) for i in range(act_len)]
 
