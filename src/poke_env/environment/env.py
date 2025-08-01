@@ -99,7 +99,7 @@ class _EnvPlayer(Player):
         asyncio.run_coroutine_threadsafe(self.battle_queue.async_put(battle), POKE_LOOP)
 
 
-class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
+class PokeEnv(ParallelEnv[str, Dict[str, Union[ObsType, List[int]]], ActionType]):
     """
     Base class implementing the Gymnasium API on the main thread.
     """
@@ -237,7 +237,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
     # https://pettingzoo.farama.org/api/parallel/#parallelenv
 
     def step(self, actions: Dict[str, ActionType]) -> Tuple[
-        Dict[str, ObsType],
+        Dict[str, Dict[str, Union[ObsType, List[int]]]],
         Dict[str, float],
         Dict[str, bool],
         Dict[str, bool],
@@ -307,7 +307,9 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         self,
         seed: Optional[int] = None,
         options: Optional[Dict[str, Any]] = None,
-    ) -> Tuple[Dict[str, ObsType], Dict[str, Dict[str, Any]]]:
+    ) -> Tuple[
+        Dict[str, Dict[str, Union[ObsType, List[int]]]], Dict[str, Dict[str, Any]]
+    ]:
         self.agents = [self.agent1.username, self.agent2.username]
         if seed is not None:
             self._np_random, seed = seeding.np_random(seed)

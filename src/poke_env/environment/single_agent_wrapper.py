@@ -1,4 +1,4 @@
-from typing import Any, Awaitable, Dict, Optional, Tuple
+from typing import Any, Awaitable, Dict, List, Optional, Tuple, Union
 
 from gymnasium import Env
 
@@ -6,7 +6,7 @@ from poke_env.environment.env import ActionType, ObsType, PokeEnv
 from poke_env.player.player import Player
 
 
-class SingleAgentWrapper(Env[ObsType, ActionType]):
+class SingleAgentWrapper(Env[Dict[str, Union[ObsType, List[int]]], ActionType]):
     def __init__(self, env: PokeEnv[ObsType, ActionType], opponent: Player):
         self.env = env
         self.opponent = opponent
@@ -15,7 +15,7 @@ class SingleAgentWrapper(Env[ObsType, ActionType]):
 
     def step(
         self, action: ActionType
-    ) -> Tuple[ObsType, float, bool, bool, Dict[str, Any]]:
+    ) -> Tuple[Dict[str, Union[ObsType, List[int]]], float, bool, bool, Dict[str, Any]]:
         assert self.env.battle2 is not None
         opp_order = self.opponent.choose_move(self.env.battle2)
         assert not isinstance(opp_order, Awaitable)
@@ -28,7 +28,7 @@ class SingleAgentWrapper(Env[ObsType, ActionType]):
         }
         obs, rewards, terms, truncs, infos = self.env.step(actions)
         return (
-            obs[self.env.agent1.username]["observation"],
+            obs[self.env.agent1.username],
             rewards[self.env.agent1.username],
             terms[self.env.agent1.username],
             truncs[self.env.agent1.username],
@@ -40,11 +40,11 @@ class SingleAgentWrapper(Env[ObsType, ActionType]):
         *,
         seed: Optional[int] = None,
         options: Optional[Dict[str, Any]] = None,
-    ) -> Tuple[ObsType, Dict[str, Any]]:
+    ) -> Tuple[Dict[str, Union[ObsType, List[int]]], Dict[str, Any]]:
         obs, infos = self.env.reset(seed, options)
         self._np_random = self.env._np_random
         return (
-            obs[self.env.agent1.username]["observation"],
+            obs[self.env.agent1.username],
             infos[self.env.agent1.username],
         )
 

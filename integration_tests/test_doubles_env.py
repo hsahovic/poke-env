@@ -1,3 +1,5 @@
+import random
+
 import numpy as np
 import pytest
 from gymnasium.spaces import Box
@@ -5,7 +7,7 @@ from gymnasium.utils.env_checker import check_env
 from pettingzoo.test.parallel_test import parallel_api_test
 
 from poke_env.environment import DoublesEnv, SingleAgentWrapper
-from poke_env.player import Player, RandomPlayer
+from poke_env.player import RandomPlayer
 
 
 class DoublesTestEnv(DoublesEnv):
@@ -26,7 +28,7 @@ class DoublesTestEnv(DoublesEnv):
 def play_function(env, n_battles):
     for _ in range(n_battles):
         done = False
-        env.reset()
+        obs_dict, _ = env.reset()
         # TODO: when Zoroark isn't a problem anymore this can be removed
         if "illusion" in [
             p.ability
@@ -36,13 +38,13 @@ def play_function(env, n_battles):
         while not done:
             actions = {
                 name: (
-                    env.order_to_action(Player.choose_random_move(battle), battle)
+                    sample_action(obs_dict[name]["action_mask"])
                     if env.strict
                     else env.action_space(name).sample()
                 )
-                for name, battle in zip(env.agents, [env.battle1, env.battle2])
+                for name in env.agents
             }
-            _, _, terminated, truncated, _ = env.step(actions)
+            obs_dict, _, terminated, truncated, _ = env.step(actions)
             done = any(terminated.values()) or any(truncated.values())
 
 
@@ -59,7 +61,7 @@ def test_env_run():
 def single_agent_play_function(env: SingleAgentWrapper, n_battles: int):
     for _ in range(n_battles):
         done = False
-        env.reset()
+        obs, _ = env.reset()
         # TODO: when Zoroark isn't a problem anymore this can be removed
         if "illusion" in [
             p.ability
@@ -69,13 +71,11 @@ def single_agent_play_function(env: SingleAgentWrapper, n_battles: int):
             continue
         while not done:
             action = (
-                env.env.order_to_action(
-                    Player.choose_random_move(env.env.battle1), env.env.battle1
-                )
+                sample_action(obs["action_space"])
                 if env.env.strict
                 else env.action_space.sample()
             )
-            _, _, terminated, truncated, _ = env.step(action)
+            obs, _, terminated, truncated, _ = env.step(action)
             done = terminated or truncated
 
 
@@ -88,6 +88,17 @@ def test_single_agent_env_run():
         env.env.strict = False
         single_agent_play_function(env, 10)
         env.close()
+
+
+def sample_action(action_mask):
+    n = len(action_mask)
+    action_mask1 = action_mask[: n // 2]
+    action_mask2 = action_mask[n // 2 :]
+    available_actions1 = [i for i, m in action_mask1 if m == 1]
+    available_actions2 = [i for i, m in action_mask2 if m == 1]
+    return np.array(
+        [random.choice(available_actions1), random.choice(available_actions2)]
+    )
 
 
 @pytest.mark.timeout(60)
@@ -113,7 +124,9 @@ def test_repeated_runs():
 # @pytest.mark.timeout(60)
 # def test_env_api():
 #     for gen in range(8, 10):
-#         env = DoublesTestEnv(battle_format=f"gen{gen}randomdoublesbattle", log_level=25)
+#         env = DoublesTestEnv(
+#             battle_format=f"gen{gen}randomdoublesbattle", log_level=25, strict=False
+#         )
 #         parallel_api_test(env)
 #         env.close()
 
@@ -121,7 +134,9 @@ def test_repeated_runs():
 @pytest.mark.timeout(60)
 def test_single_agent_env_api():
     for gen in range(8, 10):
-        env = DoublesTestEnv(battle_format=f"gen{gen}randomdoublesbattle", log_level=25)
+        env = DoublesTestEnv(
+            battle_format=f"gen{gen}randomdoublesbattle", log_level=25, strict=False
+        )
         env = SingleAgentWrapper(env, RandomPlayer())
         check_env(env)
         env.close()
