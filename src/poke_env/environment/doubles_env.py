@@ -85,7 +85,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
     def get_action_mask(self, battle: DoubleBattle) -> List[int]:
         action_mask1 = self.get_action_mask_individual(battle, 0)
         action_mask2 = self.get_action_mask_individual(battle, 1)
-        return np.concatenate([action_mask1, action_mask2])
+        return action_mask1 + action_mask2
 
     def get_action_mask_individual(self, battle: DoubleBattle, pos: int) -> List[int]:
         switch_space = [
