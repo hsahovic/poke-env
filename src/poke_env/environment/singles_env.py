@@ -114,7 +114,9 @@ class SinglesEnv(PokeEnv[Dict[str, ObsType], np.int64]):
                 + dynamax_space
                 + tera_space
             )
-        return [int(i in actions) for i in range(self.action_space_size)]
+        action_mask = [int(i in actions) for i in range(self.action_space_size)]
+        print(action_mask)
+        return action_mask
 
     @staticmethod
     def action_to_order(
