@@ -117,7 +117,6 @@ class SinglesEnv(PokeEnv[Dict[str, ObsType], np.int64]):
                 + tera_space
             )
         action_mask = [int(i in actions) for i in range(self.action_space_size)]
-        print(action_mask)
         return action_mask
 
     @staticmethod
