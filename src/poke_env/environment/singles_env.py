@@ -1,4 +1,4 @@
-from typing import List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 import numpy as np
 from gymnasium.spaces import Discrete
@@ -20,7 +20,7 @@ from poke_env.ps_client import (
 from poke_env.teambuilder import Teambuilder
 
 
-class SinglesEnv(PokeEnv[ObsType, np.int64]):
+class SinglesEnv(PokeEnv[Dict[str, ObsType], np.int64]):
     def __init__(
         self,
         *,
@@ -73,9 +73,9 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
             num_gimmicks = 4
         else:
             num_gimmicks = 0
-        act_size = num_switches + num_moves * (num_gimmicks + 1)
+        self._action_space_size = num_switches + num_moves * (num_gimmicks + 1)
         self.action_spaces = {
-            agent: Discrete(act_size) for agent in self.possible_agents
+            agent: Discrete(self._action_space_size) for agent in self.possible_agents
         }
 
     def get_action_mask(self, battle: Battle) -> List[int]:
@@ -108,8 +108,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
                 + dynamax_space
                 + tera_space
             )
-        act_len = list(self.action_spaces.values())[0].n  # type: ignore
-        return [int(i in actions) for i in range(act_len)]
+        return [int(i in actions) for i in range(self.action_space_size)]
 
     @staticmethod
     def action_to_order(
@@ -262,3 +261,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
                 return SinglesEnv.order_to_action(
                     Player.choose_random_singles_move(battle), battle, fake, strict
                 )
+
+    @property
+    def action_space_size(self) -> int:
+        return self._action_space_size

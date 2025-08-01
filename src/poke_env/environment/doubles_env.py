@@ -1,4 +1,4 @@
-from typing import List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 import numpy as np
 import numpy.typing as npt
@@ -24,7 +24,7 @@ from poke_env.ps_client import (
 from poke_env.teambuilder import Teambuilder
 
 
-class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
+class DoublesEnv(PokeEnv[Dict[str, ObsType], npt.NDArray[np.int64]]):
     def __init__(
         self,
         account_configuration1: Optional[AccountConfiguration] = None,
@@ -77,9 +77,12 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             num_gimmicks = 4
         else:
             num_gimmicks = 0
-        act_size = 1 + num_switches + num_moves * num_targets * (num_gimmicks + 1)
+        self._action_space_size = (
+            1 + num_switches + num_moves * num_targets * (num_gimmicks + 1)
+        )
         self.action_spaces = {
-            agent: MultiDiscrete([act_size, act_size]) for agent in self.possible_agents
+            agent: MultiDiscrete([self._action_space_size, self._action_space_size])
+            for agent in self.possible_agents
         }
 
     def get_action_mask(self, battle: DoubleBattle) -> List[int]:
@@ -103,7 +106,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
         ]
         active_mon = battle.active_pokemon[pos]
         if battle._wait:
-            actions = [0]
+            actions = []
         elif battle.teampreview or active_mon is None:
             actions = switch_space
         else:
@@ -117,14 +120,16 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             ]
             move_space = [i for s in move_spaces for i in s]
             mega_space = [i + 20 for i in move_space if battle.can_mega_evolve[pos]]
-            zmove_space = [
+            zmove_spaces = [
                 [
                     47 + 5 * i + j + 2
                     for j in battle.get_possible_showdown_targets(move, active_mon)
                 ]
                 for i, move in enumerate(active_mon.available_z_moves)
+                if battle.can_z_move[pos]
             ]
-            dynamax_space = [
+            zmove_space = [i for s in zmove_spaces for i in s]
+            dynamax_spaces = [
                 [
                     67 + 5 * i + j + 2
                     for j in battle.get_possible_showdown_targets(
@@ -132,8 +137,9 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                     )
                 ]
                 for i, move in enumerate(active_mon.moves.values())
-                if move in battle.available_moves[pos]
+                if move in battle.available_moves[pos] and battle.can_dynamax[pos]
             ]
+            dynamax_space = [i for s in dynamax_spaces for i in s]
             tera_space = [i + 80 for i in move_space if battle.can_tera[pos]]
             if (
                 not move_space
@@ -148,9 +154,9 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 + zmove_space
                 + dynamax_space
                 + tera_space
-            ) or [0]
-        act_len = list(self.action_spaces.values())[0].nvec[pos]  # type: ignore
-        return [int(i in actions) for i in range(act_len)]
+            )
+        actions = actions or [0]
+        return [int(i in actions) for i in range(self.action_space_size)]
 
     @staticmethod
     def action_to_order(
@@ -431,3 +437,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 gimmick = 0
             action = 1 + 6 + 5 * action + target + 20 * gimmick
         return np.int64(action)
+
+    @property
+    def action_space_size(self) -> int:
+        return self._action_space_size

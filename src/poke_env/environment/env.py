@@ -9,6 +9,7 @@ from concurrent.futures import Future
 from typing import Any, Awaitable, Dict, Generic, List, Optional, Tuple, TypeVar, Union
 from weakref import WeakKeyDictionary
 
+import numpy as np
 from gymnasium.spaces import Space
 from gymnasium.utils import seeding
 from numpy.random import Generator
@@ -99,15 +100,13 @@ class _EnvPlayer(Player):
         asyncio.run_coroutine_threadsafe(self.battle_queue.async_put(battle), POKE_LOOP)
 
 
-class PokeEnv(ParallelEnv[str, Dict[str, Union[ObsType, List[int]]], ActionType]):
+class PokeEnv(ParallelEnv[str, Dict[str, ObsType], ActionType]):
     """
     Base class implementing the Gymnasium API on the main thread.
     """
 
     _INIT_RETRIES = 100
     _TIME_BETWEEN_RETRIES = 0.5
-    _SWITCH_CHALLENGE_TASK_RETRIES = 30
-    _TIME_BETWEEN_SWITCH_RETRIES = 1
 
     def __init__(
         self,
@@ -237,7 +236,7 @@ class PokeEnv(ParallelEnv[str, Dict[str, Union[ObsType, List[int]]], ActionType]
     # https://pettingzoo.farama.org/api/parallel/#parallelenv
 
     def step(self, actions: Dict[str, ActionType]) -> Tuple[
-        Dict[str, Dict[str, Union[ObsType, List[int]]]],
+        Dict[str, Dict[str, ObsType]],
         Dict[str, float],
         Dict[str, bool],
         Dict[str, bool],
@@ -284,11 +283,11 @@ class PokeEnv(ParallelEnv[str, Dict[str, Union[ObsType, List[int]]], ActionType]
         observations = {
             self.agents[0]: {
                 "observation": self.embed_battle(battle1),
-                "action_mask": self.get_action_mask(battle1),
+                "action_mask": np.array(self.get_action_mask(battle1)),
             },
             self.agents[1]: {
                 "observation": self.embed_battle(battle2),
-                "action_mask": self.get_action_mask(battle2),
+                "action_mask": np.array(self.get_action_mask(battle2)),
             },
         }
         reward = {
@@ -307,9 +306,7 @@ class PokeEnv(ParallelEnv[str, Dict[str, Union[ObsType, List[int]]], ActionType]
         self,
         seed: Optional[int] = None,
         options: Optional[Dict[str, Any]] = None,
-    ) -> Tuple[
-        Dict[str, Dict[str, Union[ObsType, List[int]]]], Dict[str, Dict[str, Any]]
-    ]:
+    ) -> Tuple[Dict[str, Dict[str, ObsType]], Dict[str, Dict[str, Any]]]:
         self.agents = [self.agent1.username, self.agent2.username]
         if seed is not None:
             self._np_random, seed = seeding.np_random(seed)
@@ -349,11 +346,11 @@ class PokeEnv(ParallelEnv[str, Dict[str, Union[ObsType, List[int]]], ActionType]
         observations = {
             self.agents[0]: {
                 "observation": self.embed_battle(self.battle1),
-                "action_mask": self.get_action_mask(self.battle1),
+                "action_mask": np.array(self.get_action_mask(self.battle1)),
             },
             self.agents[1]: {
                 "observation": self.embed_battle(self.battle2),
-                "action_mask": self.get_action_mask(self.battle2),
+                "action_mask": np.array(self.get_action_mask(self.battle2)),
             },
         }
         return observations, self.get_additional_info()
@@ -421,7 +418,7 @@ class PokeEnv(ParallelEnv[str, Dict[str, Union[ObsType, List[int]]], ActionType]
         while not self.agent2.battle_queue.empty():
             self.agent2.battle_queue.get()
 
-    def observation_space(self, agent: str) -> Space[ObsType]:
+    def observation_space(self, agent: str) -> Space[Dict[str, np.ndarray]]:
         return self.observation_spaces[agent]
 
     def action_space(self, agent: str) -> Space[ActionType]:
@@ -444,7 +441,7 @@ class PokeEnv(ParallelEnv[str, Dict[str, Union[ObsType, List[int]]], ActionType]
         pass
 
     @abstractmethod
-    def embed_battle(self, battle: AbstractBattle) -> ObsType:
+    def embed_battle(self, battle: AbstractBattle) -> np.ndarray:
         """
         Returns the embedding of the current battle state in a format compatible with
         the Gymnasium API.
@@ -651,3 +648,11 @@ class PokeEnv(ParallelEnv[str, Dict[str, Union[ObsType, List[int]]], ActionType]
             return True
         time.sleep(timeout)
         return self._challenge_task.done()
+
+    ###################################################################################
+    # Properties
+
+    @property
+    @abstractmethod
+    def action_space_size(self) -> int:
+        pass
