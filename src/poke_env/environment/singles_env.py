@@ -94,7 +94,7 @@ class SinglesEnv(PokeEnv[Dict[str, ObsType], np.int64]):
             ]
             mega_space = [i + 4 for i in move_space if battle.can_mega_evolve]
             zmove_space = [
-                i + 8
+                i + 6 + 8
                 for i, move in enumerate(battle.active_pokemon.moves.values())
                 if move in battle.active_pokemon.available_z_moves and battle.can_z_move
             ]
