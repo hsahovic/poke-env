@@ -130,7 +130,9 @@ class DoublesEnv(PokeEnv[Dict[str, ObsType], npt.NDArray[np.int64]]):
                 [
                     67 + 5 * i + j + 2
                     for j in battle.get_possible_showdown_targets(
-                        move, active_mon, dynamax=True
+                        [m for m in battle.available_moves[pos] if move.id == m.id][0],
+                        active_mon,
+                        dynamax=True,
                     )
                 ]
                 for i, move in enumerate(active_mon.moves.values())
