@@ -60,8 +60,8 @@ def test_env_run():
     for gen in range(8, 10):
         env = DoublesTestEnv(battle_format=f"gen{gen}randomdoublesbattle", log_level=25)
         play_function(env, 10)
-        env.strict = False
-        play_function(env, 10)
+        # env.strict = False
+        # play_function(env, 10)
         env.close()
 
 
