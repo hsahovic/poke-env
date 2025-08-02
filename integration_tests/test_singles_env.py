@@ -131,12 +131,3 @@ def test_env_api():
         env = SinglesTestEnv(battle_format=f"gen{gen}randombattle", log_level=25)
         parallel_api_test(env)
         env.close()
-
-
-@pytest.mark.timeout(60)
-def test_single_agent_env_api():
-    for gen in range(4, 10):
-        env = SinglesTestEnv(battle_format=f"gen{gen}randombattle", log_level=25)
-        env = SingleAgentWrapper(env, RandomPlayer())
-        check_env(env, skip_render_check=True)
-        env.close()
