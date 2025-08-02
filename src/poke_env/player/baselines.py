@@ -101,6 +101,7 @@ class MaxBasePowerPlayer(Player):
 
 class PseudoBattle(Battle):
     def __init__(self, battle: DoubleBattle, active_id: int, opp_id: int):
+        self._gen = battle.gen
         self._active_pokemon = battle.active_pokemon[active_id]
         self._opponent_active_pokemon = battle.opponent_active_pokemon[opp_id]
         self._team = battle.team
