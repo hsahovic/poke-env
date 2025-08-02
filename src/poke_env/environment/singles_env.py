@@ -82,7 +82,9 @@ class SinglesEnv(PokeEnv[Dict[str, ObsType], np.int64]):
         switch_space = [
             i
             for i, pokemon in enumerate(battle.team.values())
-            if not battle.trapped and pokemon in battle.available_switches
+            if not battle.trapped
+            and pokemon.base_species
+            in [p.base_species for p in battle.available_switches]
         ]
         if battle._wait:
             actions = [0]
@@ -98,7 +100,8 @@ class SinglesEnv(PokeEnv[Dict[str, ObsType], np.int64]):
             zmove_space = [
                 i + 6 + 8
                 for i, move in enumerate(battle.active_pokemon.moves.values())
-                if move in battle.active_pokemon.available_z_moves and battle.can_z_move
+                if move.id in [m.id for m in battle.active_pokemon.available_z_moves]
+                and battle.can_z_move
             ]
             dynamax_space = [i + 12 for i in move_space if battle.can_dynamax]
             tera_space = [i + 16 for i in move_space if battle.can_tera]
