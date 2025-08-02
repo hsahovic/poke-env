@@ -104,22 +104,28 @@ class DoublesEnv(PokeEnv[Dict[str, ObsType], npt.NDArray[np.int64]]):
         elif battle.teampreview or active_mon is None:
             actions = switch_space
         else:
+            moves_dict = {
+                m.id: m.dynamaxed if active_mon.is_dynamaxed else m
+                for m in battle.available_moves[pos]
+            }
             move_spaces = [
                 [
                     7 + 5 * i + j + 2
                     for j in battle.get_possible_showdown_targets(
-                        move.dynamaxed if active_mon.is_dynamaxed else move, active_mon
+                        moves_dict[move.id], active_mon
                     )
                 ]
                 for i, move in enumerate(active_mon.moves.values())
-                if move.id in [m.id for m in battle.available_moves[pos]]
+                if move.id in moves_dict
             ]
             move_space = [i for s in move_spaces for i in s]
             mega_space = [i + 20 for i in move_space if battle.can_mega_evolve[pos]]
             zmove_spaces = [
                 [
                     47 + 5 * i + j + 2
-                    for j in battle.get_possible_showdown_targets(move, active_mon)
+                    for j in battle.get_possible_showdown_targets(
+                        moves_dict[move.id], active_mon
+                    )
                 ]
                 for i, move in enumerate(active_mon.moves.values())
                 if move.id in [m.id for m in active_mon.available_z_moves]
@@ -130,14 +136,11 @@ class DoublesEnv(PokeEnv[Dict[str, ObsType], npt.NDArray[np.int64]]):
                 [
                     67 + 5 * i + j + 2
                     for j in battle.get_possible_showdown_targets(
-                        [m for m in battle.available_moves[pos] if move.id == m.id][0],
-                        active_mon,
-                        dynamax=True,
+                        moves_dict[move.id], active_mon, dynamax=True
                     )
                 ]
                 for i, move in enumerate(active_mon.moves.values())
-                if move.id in [m.id for m in battle.available_moves[pos]]
-                and battle.can_dynamax[pos]
+                if move.id in moves_dict and battle.can_dynamax[pos]
             ]
             dynamax_space = [i for s in dynamax_spaces for i in s]
             tera_space = [i + 80 for i in move_space if battle.can_tera[pos]]
