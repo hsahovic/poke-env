@@ -3,7 +3,6 @@ import random
 import gymnasium.spaces as spaces
 import numpy as np
 import pytest
-from gymnasium.utils.env_checker import check_env
 from pettingzoo.test.parallel_test import parallel_api_test
 
 from poke_env.environment import SingleAgentWrapper, SinglesEnv
