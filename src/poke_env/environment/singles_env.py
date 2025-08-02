@@ -172,10 +172,7 @@ class SinglesEnv(PokeEnv[Dict[str, ObsType], np.int64]):
                     battle.available_moves
                     if len(battle.available_moves) == 1
                     and battle.available_moves[0].id in ["struggle", "recharge"]
-                    else [
-                        m.dynamaxed if battle.active_pokemon.is_dynamaxed else m
-                        for m in battle.active_pokemon.moves.values()
-                    ]
+                    else list(battle.active_pokemon.moves.values())
                 )
                 if (action - 6) % 4 not in range(len(mvs)):
                     raise ValueError(
@@ -252,10 +249,7 @@ class SinglesEnv(PokeEnv[Dict[str, ObsType], np.int64]):
                         battle.available_moves
                         if len(battle.available_moves) == 1
                         and battle.available_moves[0].id in ["struggle", "recharge"]
-                        else [
-                            m.dynamaxed if battle.active_pokemon.is_dynamaxed else m
-                            for m in battle.active_pokemon.moves.values()
-                        ]
+                        else list(battle.active_pokemon.moves.values())
                     )
                     action = [m.id for m in mvs].index(order.order.id)
                     if order.mega:

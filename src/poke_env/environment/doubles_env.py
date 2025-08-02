@@ -280,10 +280,7 @@ class DoublesEnv(PokeEnv[Dict[str, ObsType], npt.NDArray[np.int64]]):
                 battle.available_moves[pos]
                 if len(battle.available_moves[pos]) == 1
                 and battle.available_moves[pos][0].id in ["struggle", "recharge"]
-                else [
-                    m.dynamaxed if active_mon.is_dynamaxed else m
-                    for m in active_mon.moves.values()
-                ]
+                else list(active_mon.moves.values())
             )
             if (action - 7) % 20 // 5 not in range(len(mvs)):
                 raise ValueError(
@@ -423,10 +420,7 @@ class DoublesEnv(PokeEnv[Dict[str, ObsType], npt.NDArray[np.int64]]):
                 battle.available_moves[pos]
                 if len(battle.available_moves[pos]) == 1
                 and battle.available_moves[pos][0].id in ["struggle", "recharge"]
-                else [
-                    m.dynamaxed if active_mon.is_dynamaxed else m
-                    for m in active_mon.moves.values()
-                ]
+                else list(active_mon.moves.values())
             )
             action = [m.id for m in mvs].index(order.order.id)
             target = order.move_target + 2
