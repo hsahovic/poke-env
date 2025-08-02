@@ -270,10 +270,12 @@ class DoubleBattle(AbstractBattle):
             return [self.EMPTY_TARGET_POSITION]
 
         pokemon_1, pokemon_2 = self.active_pokemon
-        if pokemon == pokemon_1 and move in self.available_moves[0]:
+        if pokemon == pokemon_1 and move.id in [m.id for m in self.available_moves[0]]:
             self_position = self.POKEMON_1_POSITION
             ally_position = self.POKEMON_2_POSITION
-        elif pokemon == pokemon_2 and move in self.available_moves[1]:
+        elif pokemon == pokemon_2 and move.id in [
+            m.id for m in self.available_moves[1]
+        ]:
             self_position = self.POKEMON_2_POSITION
             ally_position = self.POKEMON_1_POSITION
         else:

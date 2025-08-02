@@ -106,8 +106,12 @@ def test_reset_step_close():
     assert env.battle1.battle_tag == "new_battle1"
     assert env.battle2.battle_tag == "new_battle2"
     # Verify that embed_battle returns the expected observations.
-    np.testing.assert_array_equal(obs[env.agents[0]], np.array([0, 1, 2]))
-    np.testing.assert_array_equal(obs[env.agents[1]], np.array([0, 1, 2]))
+    np.testing.assert_array_equal(
+        obs[env.agents[0]]["observation"], np.array([0, 1, 2])
+    )
+    np.testing.assert_array_equal(
+        obs[env.agents[1]]["observation"], np.array([0, 1, 2])
+    )
     assert add_info == {env.agents[0]: {}, env.agents[1]: {}}
 
     # --- Part 2: Test step() ---
@@ -128,8 +132,12 @@ def test_reset_step_close():
     env.agent2.order_queue.get()
 
     # Check that observations are as expected.
-    np.testing.assert_array_equal(obs_step[env.agents[0]], np.array([0, 1, 2]))
-    np.testing.assert_array_equal(obs_step[env.agents[1]], np.array([0, 1, 2]))
+    np.testing.assert_array_equal(
+        obs_step[env.agents[0]]["observation"], np.array([0, 1, 2])
+    )
+    np.testing.assert_array_equal(
+        obs_step[env.agents[1]]["observation"], np.array([0, 1, 2])
+    )
     # Check that rewards match CustomEnv.calc_reward.
     assert rew[env.agents[0]] == 69.42
     assert rew[env.agents[1]] == 69.42
