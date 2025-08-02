@@ -122,7 +122,8 @@ class DoublesEnv(PokeEnv[Dict[str, ObsType], npt.NDArray[np.int64]]):
                     for j in battle.get_possible_showdown_targets(move, active_mon)
                 ]
                 for i, move in enumerate(active_mon.moves.values())
-                if move in active_mon.available_z_moves and battle.can_z_move[pos]
+                if move.id in [m.id for m in active_mon.available_z_moves]
+                and battle.can_z_move[pos]
             ]
             zmove_space = [i for s in zmove_spaces for i in s]
             dynamax_spaces = [
@@ -133,7 +134,8 @@ class DoublesEnv(PokeEnv[Dict[str, ObsType], npt.NDArray[np.int64]]):
                     )
                 ]
                 for i, move in enumerate(active_mon.moves.values())
-                if move in battle.available_moves[pos] and battle.can_dynamax[pos]
+                if move.id in [m.id for m in battle.available_moves[pos]]
+                and battle.can_dynamax[pos]
             ]
             dynamax_space = [i for s in dynamax_spaces for i in s]
             tera_space = [i + 80 for i in move_space if battle.can_tera[pos]]
