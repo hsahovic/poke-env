@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-from poke_env.battle import Battle, Move, Pokemon
+from poke_env.battle import Battle, DoubleBattle, Move, Pokemon
 from poke_env.player import MaxBasePowerPlayer, RandomPlayer, SimpleHeuristicsPlayer
 
 
@@ -101,6 +101,26 @@ def test_simple_heuristics_player_should_dynamax():
     assert player._should_dynamax(battle, 4) is True
 
 
+def test_simple_heuristics_player_should_terastallize():
+    player = SimpleHeuristicsPlayer(start_listening=False)
+
+    active = Pokemon(species="charizard", gen=9)
+    opponent = Pokemon(species="venusaur", gen=9)
+    move = Move("flamethrower", gen=9)
+    active._terastallized_type = move.type
+    active.set_hp("100/100")
+    opponent.set_hp("100/100")
+
+    battle = namedtuple(
+        "PseudoBattle", ["active_pokemon", "opponent_active_pokemon", "can_tera"]
+    )(active, opponent, True)
+
+    assert player._should_terastallize(battle, move) is True
+
+    battle = battle._replace(can_tera=False)
+    assert player._should_terastallize(battle, move) is False
+
+
 def test_simple_heuristics_player_should_switch_out():
     PseudoBattle = namedtuple(
         "PseudoBattle",
@@ -166,6 +186,7 @@ def test_simple_heuristics_player():
             "team",
             "opponent_team",
             "can_dynamax",
+            "can_tera",
             "side_conditions",
             "opponent_side_conditions",
         ),
@@ -177,6 +198,7 @@ def test_simple_heuristics_player():
         [Pokemon(species="togekiss", gen=8)],
         {},
         {},
+        True,
         True,
         set(),
         set(),
@@ -202,6 +224,43 @@ def test_simple_heuristics_player():
     battle.available_switches.append(Pokemon(species="sneasel", gen=8))
     battle.available_switches[1].set_hp("100/100")
     assert player.choose_move(battle).message == "/choose switch sneasel"
+
+
+def test_simple_heuristics_player_in_doubles():
+    player = SimpleHeuristicsPlayer(start_listening=False)
+    battle = DoubleBattle("battletag", "username", None, gen=9)
+    battle._player_role = "p1"
+
+    # Patch team
+    mon1 = Pokemon(9, species="charizard")
+    mon1._active = True
+    mon2 = Pokemon(9, species="pikachu")
+    mon2._active = True
+    opp1 = Pokemon(9, species="venusaur")
+    opp1._active = True
+    opp2 = Pokemon(9, species="blastoise")
+    opp2._active = True
+
+    battle._team = {mon1.name: mon1, mon2.name: mon2}
+    battle._opponent_team = {opp1.name: opp1, opp2.name: opp2}
+    battle._active_pokemon = {"p1a": mon1, "p1b": mon2}
+    battle._opponent_active_pokemon = {"p2a": opp1, "p2b": opp2}
+    battle._available_moves = [
+        [Move("flamethrower", gen=9)],
+        [Move("thunderbolt", gen=9)],
+    ]
+    battle._available_switches = [[], []]
+
+    assert (
+        player.choose_move(battle).message
+        == "/choose move flamethrower 1, move thunderbolt 2"
+    )
+
+    battle._opponent_active_pokemon = {"p2a": opp2, "p2b": opp1}
+    assert (
+        player.choose_move(battle).message
+        == "/choose move flamethrower 2, move thunderbolt 1"
+    )
 
 
 def test_random_player():
