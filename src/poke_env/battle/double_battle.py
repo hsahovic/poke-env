@@ -224,6 +224,15 @@ class DoubleBattle(AbstractBattle):
         pokemon_in.set_hp_status(hp_status)
         team[pokemon_identifier] = pokemon_in
 
+        # Keeps battle.team in sync with Showdown order
+        if player_identifier == self.player_role and pokemon_out is not None:
+            keys = list(self.team.keys())
+            index1 = 0 if pokemon_identifier[2] == "a" else 1
+            assert self._player_role is not None
+            index2 = keys.index(pokemon_in.identifier(self._player_role))
+            keys[index1], keys[index2] = keys[index2], keys[index1]
+            self.team = {k: self.team[k] for k in keys}
+
     def _swap(self, pokemon_str: str, slot: str):
         player_identifier = pokemon_str.split(":")[0][:2]
         active = (
@@ -248,6 +257,12 @@ class DoubleBattle(AbstractBattle):
             pass
         else:
             active[slot_a], active[slot_b] = active[slot_b], active[slot_a]
+
+        # Need to keep battle.team in sync with Showdown order
+        if player_identifier == self.player_role:
+            keys = list(self.team.keys())
+            keys[0], keys[1] = keys[1], keys[0]
+            self.team = {k: self.team[k] for k in keys}
 
     def get_possible_showdown_targets(
         self, move: Move, pokemon: Pokemon, dynamax: bool = False

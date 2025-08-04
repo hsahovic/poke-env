@@ -388,8 +388,7 @@ def test_pledge_moves():
 
 
 def test_is_grounded():
-    gen = 9
-    battle = DoubleBattle("tag", "username", MagicMock(), gen=gen)
+    battle = DoubleBattle("tag", "username", MagicMock(), gen=9)
     battle.player_role = "p1"
     furret = Pokemon(gen=9, species="furret")
     battle.team = {"p1: Furret": furret}
@@ -428,3 +427,42 @@ def test_is_grounded():
     furret.item = "ironball"
     assert battle.grounded == [True, True]
     assert battle.is_grounded(furret)
+
+
+def test_dondozo_tatsugiri():
+    battle = DoubleBattle("tag", "username", MagicMock(), gen=9)
+    battle.player_role = "p1"
+    dozo = Pokemon(gen=9, species="dondozo")
+    battle.team = {"p1: Dondozo": dozo}
+    tatsu = Pokemon(gen=9, species="tatsugiri")
+    tatsu._ability = "commander"
+    battle.team["p1: Tatsugiri"] = tatsu
+
+    battle.parse_message(
+        ["", "switch", "p1a: Dondozo", "Dondozo, L50, F", "100/100"],
+    )
+    battle.parse_message(
+        ["", "switch", "p1b: Tatsugiri", "Tatsugiri, L50, F", "100/100"],
+    )
+    battle.parse_message(['', '-activate', 'p1b: Tatsugiri', 'ability: Commander', '[of] p1a: Dondozo'])
+    assert Effect.COMMANDER in tatsu.effects
+
+    battle.parse_message(['', 'faint', 'p1a: Dondozo'])
+    assert Effect.COMMANDER not in tatsu.effects
+
+
+def test_symbiosis():
+    battle = DoubleBattle("tag", "username", MagicMock(), gen=9)
+    battle.player_role = "p1"
+    furret = Pokemon(gen=9, species="furret")
+    oranguru = Pokemon(gen=9, species="oranguru")
+    oranguru._ability = "symbiosis"
+    oranguru._item = "choiceband"
+    battle.team = {"p1: Furret": furret, "p1: Oranguru": oranguru}
+
+    # https://github.com/smogon/pokemon-showdown/blob/5eee23883897264657c5911d8b37f77472d5eecf/data/mods/gen6/abilities.ts#L99
+    battle.parse_message(["", "switch", "p1a: Furret", "Furret, L50, F", "100/100"])
+    battle.parse_message(["", "switch", "p1b: Oranguru", "Oranguru, L50, F", "100/100"])
+    battle.parse_message(["", "-activate", "p1b: Oranguru", "ability: Symbiosis", "Choice Band", "[of] p1a: Furret"])
+    assert furret.item == "choiceband"
+    assert oranguru.item is None

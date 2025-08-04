@@ -206,12 +206,10 @@ class Player(ABC):
 
                 # Add our team as teampreview_team, as part of battle initialisation
                 if isinstance(self._team, ConstantTeambuilder):
-                    battle.teampreview_team = set(
-                        [
-                            Pokemon(gen=gen, teambuilder=tb_mon)
-                            for tb_mon in self._team.team
-                        ]
-                    )
+                    battle.teampreview_team = [
+                        Pokemon(gen=gen, teambuilder=tb_mon)
+                        for tb_mon in self._team.team
+                    ]
 
                 await self._battle_count_queue.put(None)
                 if battle_tag in self._battles:
@@ -389,6 +387,10 @@ class Player(ABC):
                     await self._handle_battle_request(battle, maybe_default_order=True)
                 elif split_message[2].startswith(
                     "[Invalid choice] Can't move: You can only Terastallize once per battle."
+                ):
+                    await self._handle_battle_request(battle, maybe_default_order=True)
+                elif split_message[2].startswith(
+                    "[Invalid choice] Unknown error for choice:"
                 ):
                     await self._handle_battle_request(battle, maybe_default_order=True)
                 else:

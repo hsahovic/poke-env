@@ -321,21 +321,6 @@ def calculate_damage(
     if defender_ability == "terashell" and defender.current_hp_fraction == 100:
         type_effectiveness = 0.5
 
-    if isinstance(battle, DoubleBattle):
-        defender_identifier = defender.identifier(
-            (
-                battle.player_role
-                if defender in battle.active_pokemon
-                else battle.opponent_role
-            ),
-        )
-    else:
-        defender_identifier = defender.identifier(
-            battle.player_role
-            if defender == battle.active_pokemon
-            else battle.opponent_role
-        )
-
     if defender_ability == "wonderguard" and type_effectiveness <= 1:
         return 0, 0
     elif move_type == PokemonType.GRASS and defender_ability == "sapsipper":
@@ -499,33 +484,6 @@ def calculate_base_power(
         1.5 if defender.item == "choicescarf" else 1
     )
     attacker_first = attacker_spe > defender_spe
-
-    if isinstance(battle, DoubleBattle):
-        attacker_identifier = attacker.identifier(
-            (
-                battle.player_role
-                if attacker in battle.active_pokemon
-                else battle.opponent_role
-            ),
-        )
-        defender_identifier = defender.identifier(
-            (
-                battle.player_role
-                if defender in battle.active_pokemon
-                else battle.opponent_role
-            ),
-        )
-    else:
-        attacker_identifier = attacker.identifier(
-            battle.player_role
-            if attacker == battle.active_pokemon
-            else battle.opponent_role
-        )
-        defender_identifier = defender.identifier(
-            battle.player_role
-            if defender == battle.active_pokemon
-            else battle.opponent_role
-        )
 
     abilities_suppressed = any(
         map(lambda x: x and x.ability == "neutralizinggas", battle.all_active_pokemons)
