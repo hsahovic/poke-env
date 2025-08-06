@@ -444,10 +444,12 @@ def test_dondozo_tatsugiri():
     battle.parse_message(
         ["", "switch", "p1b: Tatsugiri", "Tatsugiri, L50, F", "100/100"],
     )
-    battle.parse_message(['', '-activate', 'p1b: Tatsugiri', 'ability: Commander', '[of] p1a: Dondozo'])
+    battle.parse_message(
+        ["", "-activate", "p1b: Tatsugiri", "ability: Commander", "[of] p1a: Dondozo"]
+    )
     assert Effect.COMMANDER in tatsu.effects
 
-    battle.parse_message(['', 'faint', 'p1a: Dondozo'])
+    battle.parse_message(["", "faint", "p1a: Dondozo"])
     assert Effect.COMMANDER not in tatsu.effects
 
 
@@ -463,6 +465,15 @@ def test_symbiosis():
     # https://github.com/smogon/pokemon-showdown/blob/5eee23883897264657c5911d8b37f77472d5eecf/data/mods/gen6/abilities.ts#L99
     battle.parse_message(["", "switch", "p1a: Furret", "Furret, L50, F", "100/100"])
     battle.parse_message(["", "switch", "p1b: Oranguru", "Oranguru, L50, F", "100/100"])
-    battle.parse_message(["", "-activate", "p1b: Oranguru", "ability: Symbiosis", "Choice Band", "[of] p1a: Furret"])
+    battle.parse_message(
+        [
+            "",
+            "-activate",
+            "p1b: Oranguru",
+            "ability: Symbiosis",
+            "Choice Band",
+            "[of] p1a: Furret",
+        ]
+    )
     assert furret.item == "choiceband"
     assert oranguru.item is None

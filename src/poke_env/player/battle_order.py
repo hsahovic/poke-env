@@ -17,6 +17,12 @@ class BattleOrder:
     def message(self) -> str:
         pass
 
+    def __eq__(self, other) -> bool:
+        return (
+            type(self) is type(other)
+            and self.message == other.message
+        )
+
 
 class ForfeitBattleOrder(BattleOrder):
     @property
@@ -57,29 +63,10 @@ class SingleBattleOrder(BattleOrder):
         else:
             return self.order
 
-    def __eq__(self, other) -> bool:
-        if (
-            self.mega != other.mega
-            or self.dynamax != other.dynamax
-            or self.terastallize != other.terastallize
-            or self.move_target != other.move_target
-            or type(self.order) is not type(other.order)
-        ):
-            return False
-        if isinstance(self.order, str):
-            return self.order == other.order
-        elif isinstance(self.order, Pokemon):
-            return self.order.species == other.order.species
-        else:
-            return self.order.id == other.order.id
-
 
 class PassBattleOrder(SingleBattleOrder):
     def __init__(self):
         super().__init__("/choose pass")
-
-    def __eq__(self, other) -> bool:
-        return type(self) is type(other)
 
 
 @dataclass
@@ -90,12 +77,6 @@ class DoubleBattleOrder(BattleOrder):
     @property
     def message(self) -> str:
         return f"{self.first_order.message}, {self.second_order.message[8:]}"
-
-    def __eq__(self, other) -> bool:
-        return (
-            self.first_order == other.first_order
-            and self.second_order == other.second_order
-        )
 
     @staticmethod
     def join_orders(
@@ -124,6 +105,3 @@ class DoubleBattleOrder(BattleOrder):
 class DefaultBattleOrder(SingleBattleOrder, DoubleBattleOrder):
     def __init__(self):
         super().__init__("/choose default")
-
-    def __eq__(self, other) -> bool:
-        return type(self) is type(other)
