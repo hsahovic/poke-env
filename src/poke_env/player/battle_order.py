@@ -18,10 +18,7 @@ class BattleOrder:
         pass
 
     def __eq__(self, other) -> bool:
-        return (
-            type(self) is type(other)
-            and self.message == other.message
-        )
+        return type(self) is type(other) and self.message == other.message
 
 
 class ForfeitBattleOrder(BattleOrder):
