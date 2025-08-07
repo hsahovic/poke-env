@@ -664,9 +664,9 @@ class AbstractBattle(ABC):
             else:
                 self._weather = {Weather.from_showdown_message(weather): self.turn}
         elif event[1] == "faint":
-            pokemon = self.get_pokemon(event[2])
-            pokemon.faint()
-            if pokemon.species == "dondozo" and isinstance(self.active_pokemon, list):
+            mon = self.get_pokemon(event[2])
+            mon.faint()
+            if mon.species == "dondozo" and isinstance(self.active_pokemon, list):
                 other = self.active_pokemon[1 if event[2][:3].endswith("a") else 0]
                 if Effect.COMMANDER in other.effects:
                     other.end_effect("Commander")

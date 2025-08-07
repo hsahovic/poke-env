@@ -531,7 +531,7 @@ class Player(ABC):
         if orders:
             return orders[int(random.random() * len(orders))]
         else:
-            return DefaultBattleOrder()
+            return DoubleBattleOrder(DefaultBattleOrder(), DefaultBattleOrder())
 
     @staticmethod
     def choose_random_singles_move(battle: Battle) -> SingleBattleOrder:
