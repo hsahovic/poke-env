@@ -668,7 +668,7 @@ class AbstractBattle(ABC):
             mon.faint()
             if mon.species == "dondozo" and isinstance(self.active_pokemon, list):
                 other = self.active_pokemon[1 if event[2][:3].endswith("a") else 0]
-                if Effect.COMMANDER in other.effects:
+                if other is not None and Effect.COMMANDER in other.effects:
                     other.end_effect("Commander")
         elif event[1] == "-unboost":
             pokemon, stat, amount = event[2:5]
