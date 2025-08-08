@@ -39,7 +39,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         open_timeout: Optional[float] = 10.0,
         ping_interval: Optional[float] = 20.0,
         ping_timeout: Optional[float] = 20.0,
-        challenge_timeout: Optional[int] = 60,
+        challenge_timeout: Optional[float] = 60.0,
         team: Optional[Union[str, Teambuilder]] = None,
         fake: bool = False,
         strict: bool = True,
