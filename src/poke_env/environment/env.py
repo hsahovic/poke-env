@@ -122,6 +122,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         open_timeout: Optional[float] = 10.0,
         ping_interval: Optional[float] = 20.0,
         ping_timeout: Optional[float] = 20.0,
+        challenge_timeout: Optional[int] = 60,
         team: Optional[Union[str, Teambuilder]] = None,
         fake: bool = False,
         strict: bool = True,
@@ -179,6 +180,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             illegal. Otherwise, it will return default. Defaults to True.
         :type: strict: bool
         """
+        self._challenge_timeout = challenge_timeout
         self.agent1 = _EnvPlayer(
             account_configuration=account_configuration1
             or AccountConfiguration.generate(self.__class__.__name__, rand=True),
@@ -322,6 +324,15 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         self._challenge_task = asyncio.run_coroutine_threadsafe(
             self.agent1.battle_against(self.agent2, n_battles=1), POKE_LOOP
         )
+        if self._challenge_timeout and (
+            not self.agent1.battle or not self.agent2.battle
+        ):
+            count = self._challenge_timeout
+            while not self.agent1.battle or not self.agent2.battle:
+                if count <= 0:
+                    raise RuntimeError("Agent is not challenging")
+                count -= 1
+                time.sleep(1)
         self.battle1 = self.agent1.battle_queue.get()
         self.battle2 = self.agent2.battle_queue.get()
         self.agent1_to_move = True
