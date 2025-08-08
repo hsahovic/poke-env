@@ -101,13 +101,8 @@ class _EnvPlayer(Player):
 
 class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
     """
-    Base class implementing the Gymnasium API on the main thread.
+    Base class implementing the PettingZoo API on the main thread.
     """
-
-    _INIT_RETRIES = 100
-    _TIME_BETWEEN_RETRIES = 0.5
-    _SWITCH_CHALLENGE_TASK_RETRIES = 30
-    _TIME_BETWEEN_SWITCH_RETRIES = 1
 
     def __init__(
         self,
@@ -327,13 +322,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         self._challenge_task = asyncio.run_coroutine_threadsafe(
             self.agent1.battle_against(self.agent2, n_battles=1), POKE_LOOP
         )
-        if not self.agent1.battle or not self.agent2.battle:
-            count = self._INIT_RETRIES
-            while not self.agent1.battle or not self.agent2.battle:
-                if count == 0:
-                    raise RuntimeError("Agent is not challenging")
-                count -= 1
-                time.sleep(self._TIME_BETWEEN_RETRIES)
         self.battle1 = self.agent1.battle_queue.get()
         self.battle2 = self.agent2.battle_queue.get()
         self.agent1_to_move = True
