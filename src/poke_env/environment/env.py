@@ -41,8 +41,10 @@ class _AsyncQueue(Generic[ItemType]):
     async def async_get(self) -> ItemType:
         return await self.queue.get()
 
-    def get(self) -> ItemType:
-        res = asyncio.run_coroutine_threadsafe(self.async_get(), POKE_LOOP)
+    def get(self, timeout: Optional[float] = None) -> ItemType:
+        res = asyncio.run_coroutine_threadsafe(
+            asyncio.wait_for(self.async_get(), timeout), POKE_LOOP
+        )
         return res.result()
 
     def race_get(self, *events: asyncio.Event) -> Optional[ItemType]:
@@ -324,16 +326,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         self._challenge_task = asyncio.run_coroutine_threadsafe(
             self.agent1.battle_against(self.agent2, n_battles=1), POKE_LOOP
         )
-        try:
-            asyncio.run_coroutine_threadsafe(
-                asyncio.wait_for(
-                    self.agent1._battle_start_condition.wait(), self._challenge_timeout
-                ),
-                POKE_LOOP,
-            ).result()
-        except asyncio.TimeoutError:
-            raise asyncio.TimeoutError("Agent is not challenging")
-        self.battle1 = self.agent1.battle_queue.get()
+        self.battle1 = self.agent1.battle_queue.get(timeout=self._challenge_timeout)
         self.battle2 = self.agent2.battle_queue.get()
         self.agent1_to_move = True
         self.agent2_to_move = True
