@@ -324,15 +324,15 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         self._challenge_task = asyncio.run_coroutine_threadsafe(
             self.agent1.battle_against(self.agent2, n_battles=1), POKE_LOOP
         )
-        if self._challenge_timeout is not None and (
-            not self.agent1.battle or not self.agent2.battle
-        ):
-            count = self._challenge_timeout
-            while not self.agent1.battle or not self.agent2.battle:
-                if count <= 0:
-                    raise RuntimeError("Agent is not challenging")
-                count -= 1
-                time.sleep(1)
+        try:
+            asyncio.run_coroutine_threadsafe(
+                asyncio.wait_for(
+                    self.agent1._battle_start_condition.wait(), self._challenge_timeout
+                ),
+                POKE_LOOP,
+            )
+        except TimeoutError:
+            raise TimeoutError("Agent is not challenging")
         self.battle1 = self.agent1.battle_queue.get()
         self.battle2 = self.agent2.battle_queue.get()
         self.agent1_to_move = True
