@@ -324,7 +324,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         self._challenge_task = asyncio.run_coroutine_threadsafe(
             self.agent1.battle_against(self.agent2, n_battles=1), POKE_LOOP
         )
-        if self._challenge_timeout and (
+        if self._challenge_timeout is not None and (
             not self.agent1.battle or not self.agent2.battle
         ):
             count = self._challenge_timeout
