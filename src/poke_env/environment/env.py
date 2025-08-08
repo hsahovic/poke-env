@@ -169,6 +169,9 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             (important for backend websockets.
             Increase only if timeouts occur during runtime).
             If None pings will never time out.
+        :type challenge_timeout: float, optional
+        :param challenge_timeout: How long to wait for agents to challenge.
+            If None agent challenging will never time out.
         :type ping_timeout: float, optional
         :param team: The team to use for formats requiring a team. Can be a showdown
             team string, a showdown packed team string, of a ShowdownTeam object.
