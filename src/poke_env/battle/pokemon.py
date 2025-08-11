@@ -326,6 +326,10 @@ class Pokemon:
 
             self._moves = new_moves
 
+        # track last used move
+        for m in self._moves.values():
+            m._is_last_used = m is move
+
         # Handle silent effect ending
         if Effect.GLAIVE_RUSH in self.effects:
             self.end_effect("Glaive Rush")
@@ -450,6 +454,9 @@ class Pokemon:
 
         if self._status == Status.TOX:
             self._status_counter = 0
+
+        for move in self._moves.values():
+            move._is_last_used = False
 
         for effect in self.effects:
             if effect.ends_on_switch or effect.is_volatile_status:
