@@ -80,7 +80,7 @@ class Move:
         "_dynamaxed_move",
         "_gen",
         "_is_empty",
-        "_is_last_used"
+        "_is_last_used",
         "_moves_dict",
         "_request_target",
     )
