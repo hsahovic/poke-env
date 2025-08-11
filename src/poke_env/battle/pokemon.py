@@ -327,8 +327,9 @@ class Pokemon:
             self._moves = new_moves
 
         # track last used move
-        for m in self._moves.values():
-            m._is_last_used = m is move
+        if use:
+            for m in self._moves.values():
+                m._is_last_used = m is move
 
         # Handle silent effect ending
         if Effect.GLAIVE_RUSH in self.effects:
