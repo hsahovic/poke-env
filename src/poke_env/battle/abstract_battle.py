@@ -604,7 +604,7 @@ class AbstractBattle(ABC):
                 # incorrectly.
                 self.get_pokemon(pokemon).moved(override_move, failed=failed, use=False)
             if override_move is None or reveal_other_move:
-                self.get_pokemon(pokemon).moved(move, failed=failed, use=False)
+                self.get_pokemon(pokemon).moved(move, failed=failed)
         elif event[1] == "cant":
             pokemon, _ = event[2:4]
             self.get_pokemon(pokemon).cant_move()
