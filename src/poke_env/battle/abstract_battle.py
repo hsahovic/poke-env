@@ -507,11 +507,13 @@ class AbstractBattle(ABC):
 
             if event[-1].startswith(("[from] move: ", "[from]move: ")):
                 override_move = event.pop().split(": ")[-1]
-
-                if override_move == "Sleep Talk":
-                    # Sleep talk was used, but also reveals another move
-                    reveal_other_move = True
-                elif override_move in {"Copycat", "Metronome", "Nature Power", "Round"}:
+                if override_move in {
+                    "Sleep Talk",
+                    "Copycat",
+                    "Metronome",
+                    "Nature Power",
+                    "Round",
+                }:
                     pass
                 elif override_move in {"Grass Pledge", "Water Pledge", "Fire Pledge"}:
                     override_move = None
