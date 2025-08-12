@@ -551,7 +551,7 @@ class Pokemon:
         self._update_from_details(details)
 
         for move in request_pokemon["moves"]:
-            self._add_move(move)
+            self._moves[move] = Move(move_id=move, gen=self._data.gen)
 
         if len(self._moves) > 4:
             moves_to_keep = {
