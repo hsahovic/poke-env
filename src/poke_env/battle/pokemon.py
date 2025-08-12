@@ -157,10 +157,9 @@ class Pokemon:
         if not Move.should_be_stored(id_, self._data.gen):
             return None
 
-        if id_ not in self._moves:
+        if id_ not in self._moves and use:
             move = Move(move_id=id_, raw_id=move_id, gen=self._data.gen)
             self._moves[id_] = move
-        if use:
             self._moves[id_].use()
 
         return self._moves[id_]
