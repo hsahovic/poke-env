@@ -309,23 +309,6 @@ class Pokemon:
         if self._status == Status.SLP:
             self._status_counter += 1
 
-        if len(self._moves) > 4:
-            new_moves = {}
-
-            # Keep the current move
-            if move and move in self._moves.values():
-                new_moves = {
-                    move_id: m for move_id, m in self._moves.items() if m is move
-                }
-
-            for move_name in self._moves:
-                if len(new_moves) == 4:
-                    break
-                elif move_name not in new_moves:
-                    new_moves[move_name] = self._moves[move_name]
-
-            self._moves = new_moves
-
         # track last used move
         if use:
             for m in self._moves.values():
