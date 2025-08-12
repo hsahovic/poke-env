@@ -603,7 +603,9 @@ class AbstractBattle(ABC):
                 # We're adding back to the pp (with the override) in order to prevent two pps from being used
                 # incorrectly.
                 self.get_pokemon(pokemon).moved(move, failed=failed)
-                self.get_pokemon(pokemon)._moves[to_id_str(override_move)]._current_pp += 1
+                self.get_pokemon(pokemon)._moves[
+                    to_id_str(override_move)
+                ]._current_pp += 1
             else:
                 self.get_pokemon(pokemon).moved(move, failed=failed)
         elif event[1] == "cant":
