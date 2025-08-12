@@ -601,7 +601,7 @@ class AbstractBattle(ABC):
 
             if override_move:
                 # Moves that can trigger this branch results in two `move` messages being sent.
-                # We're adding back to the pp (with the override) in order to prevent two pps from being used
+                # We're setting use=False in the one (with the override) in order to prevent two pps from being used
                 # incorrectly.
                 self.get_pokemon(pokemon).moved(move, failed=failed, use=False)
             else:
