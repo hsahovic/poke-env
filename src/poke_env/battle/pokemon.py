@@ -19,13 +19,13 @@ class Pokemon:
     __slots__ = (
         "_ability",
         "_active",
+        "_active_turns",
         "_active",
         "_base_stats",
         "_boosts",
         "_current_hp",
         "_data",
         "_effects",
-        "_first_turn",
         "_gender",
         "_heightm",
         "_item",
@@ -100,7 +100,7 @@ class Pokemon:
         }
         self._current_hp: Optional[int] = 0
         self._effects: Dict[Effect, int] = {}
-        self._first_turn: bool = False
+        self._active_turns: int = 0
         self._terastallized: bool = False
         self._terastallized_type: Optional[PokemonType] = None
         self._item: Optional[str] = self._data.UNKNOWN_ITEM
@@ -173,7 +173,6 @@ class Pokemon:
             self._boosts[stat] = -6
 
     def cant_move(self):
-        self._first_turn = False
         self._protect_counter = 0
 
         if self._status == Status.SLP:
@@ -257,6 +256,7 @@ class Pokemon:
             self._preparing_target = False
 
     def end_turn(self):
+        self._active_turns += 1
         if self._status == Status.TOX:
             self._status_counter += 1
         for effect in list(self.effects.keys()):
@@ -423,14 +423,13 @@ class Pokemon:
         if details:
             self._update_from_details(details)
 
-        self._first_turn = True
         self._revealed = True
 
     def switch_out(self):
         self._active = False
         self.clear_boosts()
         self._clear_effects()
-        self._first_turn = False
+        self._active_turns = 0
         self._must_recharge = False
         self._preparing_move = None
         self._preparing_target = None
@@ -801,7 +800,7 @@ class Pokemon:
         :return: Whether this is this pokemon's first action since its last switch in.
         :rtype: bool
         """
-        return self._first_turn
+        return self._active_turns == 1
 
     @property
     def gender(self) -> Optional[PokemonGender]:
