@@ -1039,7 +1039,10 @@ class AbstractBattle(ABC):
     def _update_team_from_request(self, side: Dict[str, Any]):
         for pokemon in side["pokemon"]:
             if pokemon["ident"] in self._team:
-                self._team[pokemon["ident"]].update_from_request(pokemon)
+                assert self.player_role is not None
+                assert (
+                    self._team[pokemon["ident"]].to_request(self.player_role) == pokemon
+                )
             else:
                 self.get_pokemon(
                     pokemon["ident"],

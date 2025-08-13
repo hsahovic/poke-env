@@ -570,6 +570,26 @@ class Pokemon:
             for stat in request_pokemon["stats"]:
                 self._stats[stat] = request_pokemon["stats"][stat]
 
+    def to_request(self, player_role: str):
+        return {
+            "ability": self.ability or "",
+            "active": self.active,
+            "baseAbility": self.ability or "",
+            "condition": f"{self.current_hp}/{self.max_hp}",
+            "details": f"Mr. Rime, L{self.level}, {self.gender}",
+            "ident": f"{player_role}: {self.name}",
+            "item": self.item or "",
+            "moves": [m.id for m in self.moves.values()],
+            "pokeball": "pokeball",
+            "stats": {
+                "atk": self.stats["atk"],
+                "def": self.stats["def"],
+                "spa": self.stats["spa"],
+                "spd": self.stats["spd"],
+                "spe": self.stats["spe"],
+            },
+        }
+
     def _update_from_teambuilder(self, tb: TeambuilderPokemon):
         if tb.nickname is not None and tb.species is None:
             self._update_from_pokedex(tb.nickname)
