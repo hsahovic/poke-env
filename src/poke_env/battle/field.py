@@ -19,6 +19,7 @@ class Field(Enum):
     MISTY_TERRAIN = auto()
     MUD_SPORT = auto()
     MUD_SPOT = auto()
+    NEUTRALIZING_GAS = auto()
     PSYCHIC_TERRAIN = auto()
     TRICK_ROOM = auto()
     WATER_SPORT = auto()
@@ -36,6 +37,7 @@ class Field(Enum):
         :return: The corresponding Field object.
         :rtype: Field
         """
+        message = message.replace("ability: ", "")
         message = message.replace("move: ", "")
         message = message.replace(" ", "_")
 

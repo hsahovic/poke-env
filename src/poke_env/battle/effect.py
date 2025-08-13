@@ -127,7 +127,6 @@ class Effect(Enum):
     MISTY_TERRAIN = auto()
     MUMMY = auto()
     MUST_RECHARGE = auto()
-    NEUTRALIZING_GAS = auto()
     NIGHTMARE = auto()
     NO_RETREAT = auto()
     OBLIVIOUS = auto()
@@ -408,7 +407,6 @@ _FROM_ABILITY_EFFECTS: Set[Effect] = {
     Effect.LIQUID_OOZE,
     Effect.MIMICRY,
     Effect.MUMMY,
-    Effect.NEUTRALIZING_GAS,
     Effect.OBLIVIOUS,
     Effect.ORICHALCUM_PULSE,
     Effect.OWN_TEMPO,
@@ -894,7 +892,6 @@ _FROM_DATA: Dict[str, Effect] = {
     "MISTYTERRAIN": Effect.MISTY_TERRAIN,
     "MUMMY": Effect.MUMMY,
     "MUSTRECHARGE": Effect.MUST_RECHARGE,
-    "NEUTRALIZINGGAS": Effect.NEUTRALIZING_GAS,
     "NIGHTMARE": Effect.NIGHTMARE,
     "NORETREAT": Effect.NO_RETREAT,
     "OBLIVIOUS": Effect.OBLIVIOUS,

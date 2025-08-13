@@ -130,10 +130,10 @@ class Battle(AbstractBattle):
 
         if identifier == self._player_role:
             if self.active_pokemon:
-                self.active_pokemon.switch_out()
+                self.active_pokemon.switch_out(self.fields)
         else:
             if self.opponent_active_pokemon:
-                self.opponent_active_pokemon.switch_out()
+                self.opponent_active_pokemon.switch_out(self.fields)
 
         pokemon = self.get_pokemon(pokemon_str, details=details)
 

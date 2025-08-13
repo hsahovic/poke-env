@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any, Dict, List, Optional, Union
 
 from poke_env.battle.effect import Effect
+from poke_env.battle.field import Field
 from poke_env.battle.move import SPECIAL_MOVES, Move
 from poke_env.battle.pokemon_gender import PokemonGender
 from poke_env.battle.pokemon_type import PokemonType
@@ -426,7 +427,7 @@ class Pokemon:
 
         self._revealed = True
 
-    def switch_out(self):
+    def switch_out(self, fields: Dict[Field, int]):
         self._active = False
         self.clear_boosts()
         self._clear_effects()
@@ -454,8 +455,9 @@ class Pokemon:
             and self.ability == "regenerator"
             and (
                 self.item == "abilityshield"
-                or set(self.effects.keys()).isdisjoint(
-                    {Effect.GASTRO_ACID, Effect.NEUTRALIZING_GAS}
+                or (
+                    Effect.GASTRO_ACID not in self.effects.keys()
+                    and Field.NEUTRALIZING_GAS not in fields.keys()
                 )
             )
             and self.status != Status.FNT
@@ -673,7 +675,7 @@ class Pokemon:
     def used_z_move(self):
         self._item = None
 
-    def was_illusioned(self):
+    def was_illusioned(self, fields: Dict[Field, int]):
         self._current_hp = None
         self._max_hp = None
         self._status = None
@@ -684,7 +686,7 @@ class Pokemon:
         if last_request:
             self.update_from_request(last_request)
 
-        self.switch_out()
+        self.switch_out(fields)
 
     def available_moves_from_request(self, request: Dict[str, Any]) -> List[Move]:
         moves: List[Move] = []
