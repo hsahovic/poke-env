@@ -616,6 +616,9 @@ class Pokemon:
         assert (
             pkmn_request["active"] == self.active
         ), f"{pkmn_request['active']} != {self.active}\nrequest: {pkmn_request}"
+        # assert pkmn_request["item"] == (
+        #     self.item or ""
+        # ), f"{pkmn_request['item']} != {self.item or ''}"
         if self.base_species == "ditto":
             return
         assert (
@@ -627,15 +630,13 @@ class Pokemon:
             assert Move.retrieve_id(move_request) == Move.retrieve_id(
                 move.id
             ), f"{Move.retrieve_id(move_request)} != {Move.retrieve_id(move.id)}\nrequest: {pkmn_request}"
-        # assert pkmn_request["baseAbility"] == (
-        #     self.ability or ""
-        # ), f"{pkmn_request['baseAbility']} != {self._ability or ''}"
-        # assert pkmn_request["ability"] == (
-        #     self.ability or ""
-        # ), f"{pkmn_request['ability']} != {self.ability or ''}"
-        # assert pkmn_request["item"] == (
-        #     self.item or ""
-        # ), f"{pkmn_request['item']} != {self.item or ''}"
+        assert pkmn_request["baseAbility"] == (
+            self.ability or ""
+        ), f"{pkmn_request['baseAbility']} != {self._ability or ''}"
+        if "ability" in pkmn_request:
+            assert pkmn_request["ability"] == (
+                self.ability or ""
+            ), f"{pkmn_request['ability']} != {self.ability or ''}"
 
     def _update_from_teambuilder(self, tb: TeambuilderPokemon):
         if tb.nickname is not None and tb.species is None:
