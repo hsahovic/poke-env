@@ -581,8 +581,8 @@ class Pokemon:
             self.ability or ""
         ), f"{pkmn_request['baseAbility']} != {self.ability or ''}"
         assert (
-            pkmn_request["condition"] == f"{self.current_hp}/{self.max_hp}"
-        ), f"{pkmn_request['condition']} != {self.current_hp}/{self.max_hp}"
+            pkmn_request["condition"] == self.hp_status
+        ), f"{pkmn_request['condition']} != {self.hp_status}"
         assert (
             pkmn_request["details"] == f"{self.species}, L{self.level}, {self.gender}"
         ), f"{pkmn_request['details']} != {self.species}, L{self.level}, {self.gender}"
@@ -881,6 +881,16 @@ class Pokemon:
     @item.setter
     def item(self, item: Optional[str]):
         self._item = to_id_str(item) if item is not None else None
+
+    @property
+    def hp_status(self) -> str:
+        if self.status == Status.FNT:
+            s = "0 fnt"
+        else:
+            s = f"{self.current_hp}/{self.max_hp}"
+            if self.status is not None:
+                s += f" {self.status.name.lower()}"
+        return s
 
     @property
     def level(self) -> int:
