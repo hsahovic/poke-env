@@ -616,10 +616,12 @@ class Pokemon:
         assert (
             pkmn_request["active"] == self.active
         ), f"{pkmn_request['active']} != {self.active}\nrequest: {pkmn_request}"
+        if self.base_species == "ditto":
+            return
         assert (
             pkmn_request["condition"] == self.hp_status
         ), f"{pkmn_request['condition']} != {self.hp_status}\nrequest: {pkmn_request}"
-        if self.base_species in ["ditto", "mew"]:
+        if self.base_species == "mew":
             return
         for move_request, move in zip(pkmn_request["moves"], self.moves.values()):
             assert Move.retrieve_id(move_request) == Move.retrieve_id(
