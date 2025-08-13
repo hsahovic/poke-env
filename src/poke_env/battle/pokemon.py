@@ -449,6 +449,13 @@ class Pokemon:
         self._temporary_ability = None
         self._temporary_types = []
 
+        if (
+            self.ability is not None
+            and self.ability == "regenerator"
+            and self.status != Status.FNT
+        ):
+            self._current_hp = min(int(self.current_hp + self.max_hp / 3), self.max_hp)
+
     def terastallize(self, type_: str):
         self._terastallized_type = PokemonType.from_name(type_)
         self._terastallized = True
