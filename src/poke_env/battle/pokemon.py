@@ -492,7 +492,7 @@ class Pokemon:
         ]
 
         if len(self._possible_abilities) == 1:
-            self.ability = self._possible_abilities[0]
+            self._ability = self._possible_abilities[0]
 
         self._heightm = dex_entry["heightm"]
         self._weightkg = dex_entry["weightkg"]
@@ -551,9 +551,9 @@ class Pokemon:
             return
 
         if "ability" in request_pokemon:
-            self.ability = request_pokemon["ability"]
+            self._ability = request_pokemon["ability"]
         elif "baseAbility" in request_pokemon:
-            self.ability = request_pokemon["baseAbility"]
+            self._ability = request_pokemon["baseAbility"]
 
         self._last_request = request_pokemon
 
@@ -758,13 +758,6 @@ class Pokemon:
             return self._temporary_ability
         else:
             return self._ability
-
-    @ability.setter
-    def ability(self, ability: Optional[str]):
-        if ability is None:
-            self._ability = None
-        else:
-            self._ability = to_id_str(ability)
 
     @property
     def active(self) -> Optional[bool]:

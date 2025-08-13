@@ -324,7 +324,7 @@ class AbstractBattle(ABC):
         ):
             ability = split_message[4].split("ability:")[-1]
             pkmn = split_message[5].split("[of]")[-1].strip()
-            self.get_pokemon(pkmn).ability = to_id_str(ability)
+            self.get_pokemon(pkmn)._ability = to_id_str(ability)
 
     def _check_heal_message_for_item(self, split_message: List[str]):
         # Catches when a side heals from it's own item
@@ -351,10 +351,10 @@ class AbstractBattle(ABC):
             ability = to_id_str(split_message[4].split("ability:")[-1])
             if ability == "hospitality":
                 pkmn = split_message[5].replace("[of] ", "").strip()
-                self.get_pokemon(pkmn).ability = ability
+                self.get_pokemon(pkmn)._ability = to_id_str(ability)
             else:
                 pkmn = split_message[2]
-                self.get_pokemon(pkmn).ability = ability
+                self.get_pokemon(pkmn)._ability = to_id_str(ability)
 
     @abstractmethod
     def end_illusion(self, pokemon_name: str, details: str):
@@ -533,7 +533,7 @@ class AbstractBattle(ABC):
                 revealed_ability = event.pop().split(": ")[-1]
 
                 pokemon = event[2]
-                self.get_pokemon(pokemon).ability = revealed_ability
+                self.get_pokemon(pokemon)._ability = to_id_str(revealed_ability)
 
                 if revealed_ability == "Magic Bounce":
                     return
@@ -677,7 +677,7 @@ class AbstractBattle(ABC):
             elif cause == "Neutralizing Gas":
                 self.field_start(cause)
             else:
-                self.get_pokemon(pokemon).ability = cause
+                self.get_pokemon(pokemon)._ability = to_id_str(cause)
         elif split_message[1] == "-start":
             pokemon, effect = event[2:4]
             pokemon = self.get_pokemon(pokemon)  # type: ignore
@@ -784,14 +784,14 @@ class AbstractBattle(ABC):
                         elif mon == self.opponent_active_pokemon:
                             self.active_pokemon.item = to_id_str(item)
 
-                    mon.ability = to_id_str("frisk")
+                    mon._ability = "frisk"
                 elif cause == "[from] ability: Pickpocket":
                     pickpocket = event[2]
                     pickpocketed = event[5].replace("[of] ", "")
                     item = event[3]
 
                     self.get_pokemon(pickpocket).item = to_id_str(item)
-                    self.get_pokemon(pickpocket).ability = to_id_str("pickpocket")
+                    self.get_pokemon(pickpocket)._ability = "pickpocket"
                     self.get_pokemon(pickpocketed).item = None
                 elif cause == "[from] ability: Magician":
                     magician = event[2]
@@ -799,7 +799,7 @@ class AbstractBattle(ABC):
                     item = event[3]
 
                     self.get_pokemon(magician).item = to_id_str(item)
-                    self.get_pokemon(magician).ability = to_id_str("magician")
+                    self.get_pokemon(magician)._ability = "magician"
                     self.get_pokemon(victim).item = None
                 elif cause in {"[from] move: Thief", "[from] move: Covet"}:
                     thief = event[2]
