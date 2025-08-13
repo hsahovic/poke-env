@@ -64,7 +64,7 @@ class Player(ABC):
         ping_interval: Optional[float] = 20.0,
         ping_timeout: Optional[float] = 20.0,
         team: Optional[Union[str, Teambuilder]] = None,
-        strict: bool = False,
+        strict_battle_tracking: bool = False,
     ):
         """
         :param account_configuration: Player configuration. If empty, defaults to an
@@ -149,7 +149,7 @@ class Player(ABC):
         self._waiting: Event = create_in_poke_loop(Event)
         self._trying_again: Event = create_in_poke_loop(Event)
         self._team: Optional[Teambuilder] = None
-        self._strict = strict
+        self._strict_battle_tracking = strict_battle_tracking
 
         if isinstance(team, Teambuilder):
             self._team = team
@@ -286,7 +286,7 @@ class Player(ABC):
             elif split_message[1] == "request":
                 if split_message[2]:
                     request = orjson.loads(split_message[2])
-                    battle.parse_request(request, self._strict)
+                    battle.parse_request(request, self._strict_battle_tracking)
                     if battle._wait:
                         self._waiting.set()
                     elif not (battle.teampreview and self.accept_open_team_sheet):
