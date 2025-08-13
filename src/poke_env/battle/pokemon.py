@@ -616,8 +616,8 @@ class Pokemon:
             return
         for move_request, move in zip(pkmn_request["moves"], self.moves.values()):
             assert (
-                move_request == move.id
-            ), f"{move_request} != {move.id}\nrequest: {pkmn_request}"
+                Move.retrieve_id(move_request) == move.id
+            ), f"{Move.retrieve_id(move_request)} != {move.id}\nrequest: {pkmn_request}"
         # assert pkmn_request["baseAbility"] == (
         #     self.ability or ""
         # ), f"{pkmn_request['baseAbility']} != {self._ability or ''}"
