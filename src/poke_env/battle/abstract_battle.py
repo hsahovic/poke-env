@@ -748,7 +748,7 @@ class AbstractBattle(ABC):
                 pokemon.cure_status()
         elif event[1] == "-end":
             mon, effect = event[2:4]
-            if "ability: " in effect:
+            if effect == "ability: Neutralizing Gas":
                 self._field_end(effect)
             else:
                 self.get_pokemon(mon).end_effect(effect)
