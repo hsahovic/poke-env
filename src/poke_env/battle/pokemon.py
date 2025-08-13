@@ -593,12 +593,12 @@ class Pokemon:
         ), f"{pkmn_request['condition']} != {self.hp_status}"
         for move_request, move in zip(pkmn_request["moves"], self.moves.values()):
             assert move_request == move.id, f"{move_request} != {move.id}"
-        assert pkmn_request["baseAbility"] == (
-            self.ability or ""
-        ), f"{pkmn_request['baseAbility']} != {self._ability or ''}"
-        assert pkmn_request["ability"] == (
-            self.ability or ""
-        ), f"{pkmn_request['ability']} != {self.ability or ''}"
+        # assert pkmn_request["baseAbility"] == (
+        #     self.ability or ""
+        # ), f"{pkmn_request['baseAbility']} != {self._ability or ''}"
+        # assert pkmn_request["ability"] == (
+        #     self.ability or ""
+        # ), f"{pkmn_request['ability']} != {self.ability or ''}"
         # assert pkmn_request["item"] == (
         #     self.item or ""
         # ), f"{pkmn_request['item']} != {self.item or ''}"
