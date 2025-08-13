@@ -572,8 +572,8 @@ class Pokemon:
 
     def check_consistency(self, pkmn_request: Dict[str, Any], player_role: str):
         assert (
-            pkmn_request["ident"] == f"{player_role} {self.name}"
-        ), f"{pkmn_request['ident']} != {player_role} {self.name}"
+            pkmn_request["ident"] == f"{player_role}: {self.name}"
+        ), f"{pkmn_request['ident']} != {player_role}: {self.name}"
         details = self.species
         if self.level != 100:
             details += f", L{self.level}"
