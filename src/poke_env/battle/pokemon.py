@@ -427,29 +427,6 @@ class Pokemon:
         self._revealed = True
 
     def switch_out(self, fields: Dict[Field, int]):
-        self._active = False
-        self.clear_boosts()
-        self._clear_effects()
-        self._active_turns = 0
-        self._must_recharge = False
-        self._preparing_move = None
-        self._preparing_target = None
-        self._protect_counter = 0
-
-        if self._status == Status.TOX:
-            self._status_counter = 0
-
-        for move in self._moves.values():
-            move._is_last_used = False
-
-        for effect in self.effects:
-            if effect.ends_on_switch or effect.is_volatile_status:
-                self.end_effect(effect.name)
-
-        self._temporary_ability = None
-        self._temporary_types = []
-
-        print("$$$$$$$$$$$$$$$$$$$$$$", self.ability)
         if (
             self.ability == "regenerator"
             and (
@@ -462,6 +439,23 @@ class Pokemon:
             and self.status != Status.FNT
         ):
             self._current_hp = min(int(self.current_hp + self.max_hp / 3), self.max_hp)
+
+        self._active = False
+        self.clear_boosts()
+        self._clear_effects()
+        self._active_turns = 0
+        self._must_recharge = False
+        self._preparing_move = None
+        self._preparing_target = None
+        self._protect_counter = 0
+        self._temporary_ability = None
+        self._temporary_types = []
+
+        if self._status == Status.TOX:
+            self._status_counter = 0
+
+        for move in self._moves.values():
+            move._is_last_used = False
 
     def terastallize(self, type_: str):
         self._terastallized_type = PokemonType.from_name(type_)
