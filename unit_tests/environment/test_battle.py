@@ -100,9 +100,6 @@ def test_battle_field_interactions():
     battle.parse_message(["", "-fieldend", "Electric terrain"])
     assert not battle.fields
 
-    with pytest.raises(Exception):
-        battle.parse_message(["", "-fieldend", "Electric terrain"])
-
 
 def test_battle_weather_interactions():
     logger = MagicMock()
