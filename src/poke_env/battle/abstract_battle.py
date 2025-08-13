@@ -1044,8 +1044,7 @@ class AbstractBattle(ABC):
                     self._team[pokemon["ident"]].check_consistency(
                         pokemon, self.player_role
                     )
-                else:
-                    self._team[pokemon["ident"]].update_from_request(pokemon)
+                self._team[pokemon["ident"]].update_from_request(pokemon)
             else:
                 self.get_pokemon(
                     pokemon["ident"],
