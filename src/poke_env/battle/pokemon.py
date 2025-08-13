@@ -571,18 +571,9 @@ class Pokemon:
                 self._stats[stat] = request_pokemon["stats"][stat]
 
     def check_consistency(self, pkmn_request: Dict[str, Any], player_role: str):
-        assert pkmn_request["ability"] == (
-            self.ability or ""
-        ), f"{pkmn_request['ability']} != {self.ability or ''}"
         assert (
-            pkmn_request["active"] == self.active
-        ), f"{pkmn_request['active']} != {self.active}"
-        assert pkmn_request["baseAbility"] == (
-            self.ability or ""
-        ), f"{pkmn_request['baseAbility']} != {self.ability or ''}"
-        assert (
-            pkmn_request["condition"] == self.hp_status
-        ), f"{pkmn_request['condition']} != {self.hp_status}"
+            pkmn_request["ident"] == f"{player_role} {self.name}"
+        ), f"{pkmn_request['ident']} != {player_role} {self.name}"
         details = self.species
         if self.level != 100:
             details += f", L{self.level}"
@@ -592,13 +583,22 @@ class Pokemon:
             pkmn_request["details"] == details
         ), f"{pkmn_request['details']} != {details}"
         assert (
-            pkmn_request["ident"] == f"{player_role} {self.name}"
-        ), f"{pkmn_request['ident']} != {player_role} {self.name}"
+            pkmn_request["active"] == self.active
+        ), f"{pkmn_request['active']} != {self.active}"
+        assert (
+            pkmn_request["condition"] == self.hp_status
+        ), f"{pkmn_request['condition']} != {self.hp_status}"
+        for move_request, move in zip(pkmn_request["moves"], self.moves.values()):
+            assert move_request == move.id, f"{move_request} != {move.id}"
+        assert pkmn_request["baseAbility"] == (
+            self.ability or ""
+        ), f"{pkmn_request['baseAbility']} != {self._ability or ''}"
+        assert pkmn_request["ability"] == (
+            self.ability or ""
+        ), f"{pkmn_request['ability']} != {self.ability or ''}"
         assert pkmn_request["item"] == (
             self.item or ""
         ), f"{pkmn_request['item']} != {self.item or ''}"
-        for move_request, move in zip(pkmn_request["moves"], self.moves.values()):
-            assert move_request == move.id, f"{move_request} != {move.id}"
 
     def _update_from_teambuilder(self, tb: TeambuilderPokemon):
         if tb.nickname is not None and tb.species is None:
