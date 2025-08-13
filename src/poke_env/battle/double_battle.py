@@ -82,7 +82,7 @@ class DoubleBattle(AbstractBattle):
             pokemon_2 = None
         return [pokemon_1, pokemon_2]
 
-    def parse_request(self, request: Dict[str, Any]) -> None:
+    def parse_request(self, request: Dict[str, Any], strict: bool = False) -> None:
         """
         Update the object from a request.
         The player's pokemon are all updated, as well as available moves, switches and
@@ -126,7 +126,7 @@ class DoubleBattle(AbstractBattle):
             self._teampreview = False
 
         side = request["side"]
-        self._update_team_from_request(side)
+        self._update_team_from_request(side, strict)
 
         if "active" in request:
             for active_pokemon_number, active_request in enumerate(request["active"]):
