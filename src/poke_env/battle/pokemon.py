@@ -570,25 +570,26 @@ class Pokemon:
             for stat in request_pokemon["stats"]:
                 self._stats[stat] = request_pokemon["stats"][stat]
 
-    def to_request(self, player_role: str):
-        return {
-            "ability": self.ability or "",
-            "active": self.active,
-            "baseAbility": self.ability or "",
-            "condition": f"{self.current_hp}/{self.max_hp}",
-            "details": f"Mr. Rime, L{self.level}, {self.gender}",
-            "ident": f"{player_role}: {self.name}",
-            "item": self.item or "",
-            "moves": [m.id for m in self.moves.values()],
-            "pokeball": "pokeball",
-            "stats": {
+    def check_consistency(self, pkmn_request: Dict[str, Any], player_role: str) -> bool:
+        return (
+            pkmn_request["ability"] == (self.ability or "")
+            and pkmn_request["active"] == self.active
+            and pkmn_request["baseAbility"] == (self.ability or "")
+            and pkmn_request["condition"] == f"{self.current_hp}/{self.max_hp}"
+            and pkmn_request["details"] == f"Mr. Rime L{self.level} {self.gender}"
+            and pkmn_request["ident"] == f"{player_role} {self.name}"
+            and pkmn_request["item"] == (self.item or "")
+            and pkmn_request["moves"] == [m.id for m in self.moves.values()]
+            and pkmn_request["pokeball"] == "pokeball"
+            and pkmn_request["stats"]
+            == {
                 "atk": self.stats["atk"],
                 "def": self.stats["def"],
                 "spa": self.stats["spa"],
                 "spd": self.stats["spd"],
                 "spe": self.stats["spe"],
-            },
-        }
+            }
+        )
 
     def _update_from_teambuilder(self, tb: TeambuilderPokemon):
         if tb.nickname is not None and tb.species is None:

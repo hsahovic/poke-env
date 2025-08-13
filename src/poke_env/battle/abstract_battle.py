@@ -1040,8 +1040,8 @@ class AbstractBattle(ABC):
         for pokemon in side["pokemon"]:
             if pokemon["ident"] in self._team:
                 assert self.player_role is not None
-                assert (
-                    self._team[pokemon["ident"]].to_request(self.player_role) == pokemon
+                assert self._team[pokemon["ident"]].check_consistency(
+                    pokemon, self.player_role
                 )
             else:
                 self.get_pokemon(
