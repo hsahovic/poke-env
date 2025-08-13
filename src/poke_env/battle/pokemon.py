@@ -584,6 +584,9 @@ class Pokemon:
         split_details = pkmn_request["details"].split(", ")
         level = None
         gender = None
+        shiny = split_details[-1] == "shiny"
+        if shiny:
+            split_details.pop()
         if len(split_details) == 3:
             _, level, gender = split_details
         elif len(split_details) == 2:
@@ -602,6 +605,7 @@ class Pokemon:
         assert (
             gender == self.gender
         ), f"{gender.name.lower()} != {self.gender.name.lower()}\nrequest: {pkmn_request}"
+        assert shiny == self.shiny, f"{shiny} != {self.shiny}\nrequest: {pkmn_request}"
         if self.ability == "illusion":
             return
         assert (
