@@ -373,7 +373,7 @@ class AbstractBattle(ABC):
             return illusionist_mon
 
         illusionist_mon.switch_in(details=details)
-        illusionist_mon.status = (  # type: ignore
+        illusionist_mon.status = (
             illusioned.status if illusioned.status is not None else None
         )
         illusionist_mon.set_hp(f"{illusioned.current_hp}/{illusioned.max_hp}")
@@ -680,7 +680,7 @@ class AbstractBattle(ABC):
                 self.get_pokemon(pokemon)._ability = to_id_str(cause)
         elif split_message[1] == "-start":
             pokemon, effect = event[2:4]
-            pokemon = self.get_pokemon(pokemon)  # type: ignore
+            pokemon = self.get_pokemon(pokemon)
 
             if effect == "typechange":
                 if len(event) > 5 and event[5].startswith("[of] "):
@@ -689,11 +689,11 @@ class AbstractBattle(ABC):
                     )
                 else:
                     types = event[4]
-                pokemon.start_effect(effect, details=types)  # type: ignore
+                pokemon.start_effect(effect, details=types)
             else:
-                pokemon.start_effect(effect)  # type: ignore
+                pokemon.start_effect(effect)
 
-            if pokemon.is_dynamaxed:  # type: ignore
+            if pokemon.is_dynamaxed:
                 if pokemon in self.team.values() and self._dynamax_turn is None:
                     self._dynamax_turn = self.turn
                     self._used_dynamax = True
@@ -716,7 +716,7 @@ class AbstractBattle(ABC):
                 self.get_pokemon(target).start_effect(effect)
         elif event[1] == "-status":
             pokemon, status = event[2:4]
-            self.get_pokemon(pokemon).status = status  # type: ignore
+            self.get_pokemon(pokemon).status = status
         elif event[1] == "rule":
             self.rules.append(event[2])
 
@@ -969,7 +969,7 @@ class AbstractBattle(ABC):
             self.in_team_preview = False
         elif event[1] == "swap":
             pokemon, position = event[2:4]
-            self._swap(pokemon, position)  # type: ignore
+            self._swap(pokemon, position)
         elif event[1] == "teamsize":
             player, number = event[2:4]
             self._team_size[player] = int(number)
@@ -978,11 +978,11 @@ class AbstractBattle(ABC):
                 self.logger.info("Received message: %s", event[2])
         elif event[1] == "-immune":
             if len(event) == 4:
-                mon, cause = event[2:]  # type: ignore
+                mon, cause = event[2:]
 
                 if cause.startswith("[from] ability:"):
                     cause = cause.replace("[from] ability:", "")
-                    self.get_pokemon(mon).ability = to_id_str(cause)  # type: ignore
+                    self.get_pokemon(mon)._ability = to_id_str(cause)
         elif event[1] == "-swapsideconditions":
             self._side_conditions, self._opponent_side_conditions = (
                 self._opponent_side_conditions,
@@ -993,10 +993,10 @@ class AbstractBattle(ABC):
             self.players = player_1, player_2
         elif event[1] == "-terastallize":
             pokemon, type_ = event[2:]
-            pokemon = self.get_pokemon(pokemon)  # type: ignore
-            pokemon.terastallize(type_)  # type: ignore
+            pokemon = self.get_pokemon(pokemon)
+            pokemon.terastallize(type_)
 
-            if pokemon.is_terastallized:  # type: ignore
+            if pokemon.is_terastallized:
                 if pokemon in self.team.values():
                     self._used_tera = True
                 elif pokemon in self.opponent_team.values():

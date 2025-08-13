@@ -393,7 +393,7 @@ def test_iron_ball():
 def test_multiscsale_and_shadow_shield():
     defender = Pokemon(9, species="dragonite")
     defender.set_hp_status("100/100")
-    defender.ability = "shadowshield"
+    defender._ability = "shadowshield"
     attacker = Pokemon(9, species="abomasnow")
     battle = create_battle(p1a=attacker, p2a=defender)
     attacker_ident = attacker.identifier("p1")
@@ -403,7 +403,7 @@ def test_multiscsale_and_shadow_shield():
         attacker_ident, defender_ident, Move("blizzard", gen=9), battle
     ) == (168, 198)
 
-    defender.ability = "multiscale"
+    defender._ability = "multiscale"
     defender.set_hp_status("60/100")
     assert calculate_damage(
         attacker_ident, defender_ident, Move("iceshard", gen=9), battle
@@ -417,9 +417,9 @@ def test_multiscsale_and_shadow_shield():
 
 def test_weight():
     attacker = Pokemon(9, species="simisage")
-    attacker.ability = "gluttony"
+    attacker._ability = "gluttony"
     defender = Pokemon(9, species="simisear")
-    defender.ability = "heavymetal"
+    defender._ability = "heavymetal"
     battle = create_battle(p1a=attacker, p2a=defender)
     attacker_ident = attacker.identifier("p1")
     defender_ident = defender.identifier("p2")
@@ -431,7 +431,7 @@ def test_weight():
         == 80
     )
 
-    attacker.ability = "moldbreaker"
+    attacker._ability = "moldbreaker"
     assert (
         calculate_base_power(
             attacker_ident, defender_ident, Move("grassknot", gen=9), battle, False
@@ -439,9 +439,9 @@ def test_weight():
         == 60
     )
 
-    attacker.ability = "gluttony"
+    attacker._ability = "gluttony"
     defender = Pokemon(9, species="registeel")
-    defender.ability = "lightmetal"
+    defender._ability = "lightmetal"
     battle = create_battle(p1a=attacker, p2a=defender)
     defender_ident = defender.identifier("p2")
     assert (
@@ -451,7 +451,7 @@ def test_weight():
         == 100
     )
 
-    attacker.ability = "moldbreaker"
+    attacker._ability = "moldbreaker"
     assert (
         calculate_base_power(
             attacker_ident, defender_ident, Move("grassknot", gen=9), battle, False
@@ -459,8 +459,8 @@ def test_weight():
         == 120
     )
 
-    attacker.ability = "gluttony"
-    defender.ability = "frisk"
+    attacker._ability = "gluttony"
+    defender._ability = "frisk"
     defender.item = "floatstone"
     assert (
         calculate_base_power(
@@ -469,7 +469,7 @@ def test_weight():
         == 100
     )
 
-    defender.ability = "lightmetal"
+    defender._ability = "lightmetal"
     assert (
         calculate_base_power(
             attacker_ident, defender_ident, Move("grassknot", gen=9), battle, False
