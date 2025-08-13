@@ -454,8 +454,8 @@ class Pokemon:
             and self.ability == "regenerator"
             and (
                 self.item == "abilityshield"
-                or set(self.effects.values()).isdisjoint(
-                    {Effect.HEAL_BLOCK, Effect.GASTRO_ACID, Effect.NEUTRALIZING_GAS}
+                or set(self.effects.keys()).isdisjoint(
+                    {Effect.GASTRO_ACID, Effect.NEUTRALIZING_GAS}
                 )
             )
             and self.status != Status.FNT
