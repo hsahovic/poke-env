@@ -673,7 +673,10 @@ class AbstractBattle(ABC):
             self.get_pokemon(mon).boost(stat, -int(amount))
         elif event[1] == "-ability":
             mon, cause = event[2:4]
-            if len(event) > 4 and event[4].startswith("[from] move:"):
+            if len(event) > 4 and (
+                event[4].startswith("[from] move:")
+                or event[4].startswith("[from] ability: Trace")
+            ):
                 self.get_pokemon(mon).set_temporary_ability(cause)
             elif cause == "Neutralizing Gas":
                 self.field_start(cause)
