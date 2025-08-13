@@ -612,7 +612,7 @@ class Pokemon:
         assert (
             pkmn_request["condition"] == self.hp_status
         ), f"{pkmn_request['condition']} != {self.hp_status}\nrequest: {pkmn_request}"
-        if self.base_species == "ditto":
+        if self.base_species in ["ditto", "mew"]:
             return
         for move_request, move in zip(pkmn_request["moves"], self.moves.values()):
             assert (
