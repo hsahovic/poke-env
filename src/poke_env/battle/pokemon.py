@@ -595,12 +595,16 @@ class Pokemon:
         assert (
             gender == self.gender
         ), f"{gender.name.lower()} != {self.gender.name.lower()}"
+        if self.ability == "illusion":
+            return
         assert (
             pkmn_request["active"] == self.active
         ), f"{pkmn_request['active']} != {self.active}"
         assert (
             pkmn_request["condition"] == self.hp_status
         ), f"{pkmn_request['condition']} != {self.hp_status}"
+        if self.base_species == "ditto":
+            return
         for move_request, move in zip(pkmn_request["moves"], self.moves.values()):
             assert move_request == move.id, f"{move_request} != {move.id}"
         # assert pkmn_request["baseAbility"] == (
