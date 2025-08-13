@@ -585,14 +585,16 @@ class Pokemon:
             else:
                 _, gender = split_details
         level = int(level[1:]) if level is not None else 100
-        gender = gender if gender is not None else "N"
-        assert (
-            level == self.level
-        ), f"{level} != {self.level}"
+        gender = (
+            PokemonGender.from_request_details(gender)
+            if gender is not None
+            else PokemonGender.NEUTRAL
+        )
+        assert level == self.level, f"{level} != {self.level}"
         assert self.gender is not None
         assert (
-            gender == self.gender.name.lower()
-        ), f"{gender} != {self.gender.name.lower()}"
+            gender == self.gender
+        ), f"{gender.name.lower()} != {self.gender.name.lower()}"
         assert (
             pkmn_request["active"] == self.active
         ), f"{pkmn_request['active']} != {self.active}"
