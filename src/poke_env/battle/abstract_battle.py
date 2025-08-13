@@ -997,7 +997,7 @@ class AbstractBattle(ABC):
             raise NotImplementedError(event)
 
     @abstractmethod
-    def parse_request(self, request: Dict[str, Any]):
+    def parse_request(self, request: Dict[str, Any], strict: bool = False):
         pass
 
     def _register_teampreview_pokemon(self, player: str, details: str):

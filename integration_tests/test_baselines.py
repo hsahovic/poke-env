@@ -20,7 +20,7 @@ async def simple_cross_evaluation(n_battles, players):
 
 @pytest.mark.asyncio
 async def test_random_players():
-    players = [RandomPlayer(), RandomPlayer()]
+    players = [RandomPlayer(strict=True), RandomPlayer(strict=True)]
     await asyncio.wait_for(
         simple_cross_evaluation(5, players=players),
         timeout=5,
@@ -30,37 +30,37 @@ async def test_random_players():
 @pytest.mark.asyncio
 async def test_random_players_in_doubles():
     players = [
-        RandomPlayer(battle_format="gen9randomdoublesbattle"),
-        RandomPlayer(battle_format="gen9randomdoublesbattle"),
+        RandomPlayer(battle_format="gen9randomdoublesbattle", strict=True),
+        RandomPlayer(battle_format="gen9randomdoublesbattle", strict=True),
     ]
     await asyncio.wait_for(simple_cross_evaluation(5, players=players), timeout=5)
 
 
 @pytest.mark.asyncio
 async def test_shp():
-    players = [RandomPlayer(), SimpleHeuristicsPlayer()]
+    players = [RandomPlayer(strict=True), SimpleHeuristicsPlayer(strict=True)]
     await asyncio.wait_for(simple_cross_evaluation(5, players=players), timeout=5)
 
 
 @pytest.mark.asyncio
 async def test_shp_in_doubles():
     players = [
-        RandomPlayer(battle_format="gen9randomdoublesbattle"),
-        SimpleHeuristicsPlayer(battle_format="gen9randomdoublesbattle"),
+        RandomPlayer(battle_format="gen9randomdoublesbattle", strict=True),
+        SimpleHeuristicsPlayer(battle_format="gen9randomdoublesbattle", strict=True),
     ]
     await asyncio.wait_for(simple_cross_evaluation(5, players=players), timeout=5)
 
 
 @pytest.mark.asyncio
 async def test_max_base_power():
-    players = [RandomPlayer(), MaxBasePowerPlayer()]
+    players = [RandomPlayer(strict=True), MaxBasePowerPlayer(strict=True)]
     await asyncio.wait_for(simple_cross_evaluation(5, players=players), timeout=5)
 
 
 @pytest.mark.asyncio
 async def test_max_base_power_in_doubles():
     players = [
-        RandomPlayer(battle_format="gen9randomdoublesbattle"),
-        MaxBasePowerPlayer(battle_format="gen9randomdoublesbattle"),
+        RandomPlayer(battle_format="gen9randomdoublesbattle", strict=True),
+        MaxBasePowerPlayer(battle_format="gen9randomdoublesbattle", strict=True),
     ]
     await asyncio.wait_for(simple_cross_evaluation(5, players=players), timeout=5)
