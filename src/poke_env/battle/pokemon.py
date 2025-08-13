@@ -431,10 +431,7 @@ class Pokemon:
             self.ability == "regenerator"
             and (
                 self.item == "abilityshield"
-                or (
-                    Effect.GASTRO_ACID not in self.effects.keys()
-                    and Field.NEUTRALIZING_GAS not in fields.keys()
-                )
+                or Field.NEUTRALIZING_GAS not in fields.keys()
             )
             and self.status != Status.FNT
         ):
