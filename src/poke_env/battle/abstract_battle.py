@@ -1039,7 +1039,7 @@ class AbstractBattle(ABC):
     def _update_team_from_request(self, side: Dict[str, Any], strict: bool = False):
         for pokemon in side["pokemon"]:
             if pokemon["ident"] in self._team:
-                if strict:
+                if strict and "illusion" not in [p.ability for p in self.team.values()]:
                     assert self.player_role is not None
                     self._team[pokemon["ident"]].check_consistency(
                         pokemon, self.player_role

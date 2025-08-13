@@ -606,8 +606,6 @@ class Pokemon:
             gender == self.gender
         ), f"{gender.name.lower()} != {self.gender.name.lower()}\nrequest: {pkmn_request}"
         assert shiny == self.shiny, f"{shiny} != {self.shiny}\nrequest: {pkmn_request}"
-        if self.ability == "illusion":
-            return
         assert (
             pkmn_request["active"] == self.active
         ), f"{pkmn_request['active']} != {self.active}\nrequest: {pkmn_request}"
