@@ -584,7 +584,7 @@ class Pokemon:
                 _, level = split_details
             else:
                 _, gender = split_details
-        level = int(level) if level is not None else 100
+        level = int(level[1:]) if level is not None else 100
         gender = gender if gender is not None else "N"
         assert (
             level == self.level
