@@ -573,7 +573,7 @@ class Pokemon:
     def check_consistency(self, pkmn_request: Dict[str, Any], player_role: str):
         assert (
             pkmn_request["ident"] == f"{player_role}: {self.name}"
-        ), f"{pkmn_request['ident']} != {player_role}: {self.name}"
+        ), f"{pkmn_request['ident']} != {player_role}: {self.name}\nrequest: {pkmn_request}"
         split_details = pkmn_request["details"].split(", ")
         level = None
         gender = None
@@ -590,23 +590,25 @@ class Pokemon:
             if gender is not None
             else PokemonGender.NEUTRAL
         )
-        assert level == self.level, f"{level} != {self.level}"
+        assert level == self.level, f"{level} != {self.level}\nrequest: {pkmn_request}"
         assert self.gender is not None
         assert (
             gender == self.gender
-        ), f"{gender.name.lower()} != {self.gender.name.lower()}"
+        ), f"{gender.name.lower()} != {self.gender.name.lower()}\nrequest: {pkmn_request}"
         if self.ability == "illusion":
             return
         assert (
             pkmn_request["active"] == self.active
-        ), f"{pkmn_request['active']} != {self.active}"
+        ), f"{pkmn_request['active']} != {self.active}\nrequest: {pkmn_request}"
         assert (
             pkmn_request["condition"] == self.hp_status
-        ), f"{pkmn_request['condition']} != {self.hp_status}"
+        ), f"{pkmn_request['condition']} != {self.hp_status}\nrequest: {pkmn_request}"
         if self.base_species == "ditto":
             return
         for move_request, move in zip(pkmn_request["moves"], self.moves.values()):
-            assert move_request == move.id, f"{move_request} != {move.id}"
+            assert (
+                move_request == move.id
+            ), f"{move_request} != {move.id}\nrequest: {pkmn_request}"
         # assert pkmn_request["baseAbility"] == (
         #     self.ability or ""
         # ), f"{pkmn_request['baseAbility']} != {self._ability or ''}"
