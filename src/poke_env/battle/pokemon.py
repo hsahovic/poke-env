@@ -583,9 +583,14 @@ class Pokemon:
         assert (
             pkmn_request["condition"] == self.hp_status
         ), f"{pkmn_request['condition']} != {self.hp_status}"
+        details = self.species
+        if self.level != 100:
+            details += f", L{self.level}"
+        if self.gender != PokemonGender.NEUTRAL:
+            details += f", {'M' if self.gender == PokemonGender.MALE else 'F'}"
         assert (
-            pkmn_request["details"] == f"{self.species}, L{self.level}, {self.gender}"
-        ), f"{pkmn_request['details']} != {self.species}, L{self.level}, {self.gender}"
+            pkmn_request["details"] == details
+        ), f"{pkmn_request['details']} != {details}"
         assert (
             pkmn_request["ident"] == f"{player_role} {self.name}"
         ), f"{pkmn_request['ident']} != {player_role} {self.name}"
