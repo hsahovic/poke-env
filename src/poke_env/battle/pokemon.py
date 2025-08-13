@@ -452,6 +452,12 @@ class Pokemon:
         if (
             self.ability is not None
             and self.ability == "regenerator"
+            and (
+                self.item == "abilityshield"
+                or set(self.effects.values()).isdisjoint(
+                    {Effect.HEAL_BLOCK, Effect.GASTRO_ACID, Effect.NEUTRALIZING_GAS}
+                )
+            )
             and self.status != Status.FNT
         ):
             self._current_hp = min(int(self.current_hp + self.max_hp / 3), self.max_hp)
