@@ -449,9 +449,9 @@ class Pokemon:
         self._temporary_ability = None
         self._temporary_types = []
 
+        print("$$$$$$$$$$$$$$$$$$$$$$", self.ability)
         if (
-            self.ability is not None
-            and self.ability == "regenerator"
+            self.ability == "regenerator"
             and (
                 self.item == "abilityshield"
                 or (
