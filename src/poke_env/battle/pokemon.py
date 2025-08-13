@@ -574,14 +574,11 @@ class Pokemon:
         assert (
             pkmn_request["ident"] == f"{player_role}: {self.name}"
         ), f"{pkmn_request['ident']} != {player_role}: {self.name}"
-        if not self._name:
-            details = self._last_details
-        else:
-            details = self.name
-            if self.level != 100:
-                details += f", L{self.level}"
-            if self.gender != PokemonGender.NEUTRAL:
-                details += f", {'M' if self.gender == PokemonGender.MALE else 'F'}"
+        details = self._last_details.split(", ")[0]
+        if self.level != 100:
+            details += f", L{self.level}"
+        if self.gender != PokemonGender.NEUTRAL:
+            details += f", {'M' if self.gender == PokemonGender.MALE else 'F'}"
         assert (
             pkmn_request["details"] == details
         ), f"{pkmn_request['details']} != {details}"
