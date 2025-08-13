@@ -200,6 +200,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             ping_interval=ping_interval,
             ping_timeout=ping_timeout,
             team=team,
+            strict=strict,
         )
         self.agent2 = _EnvPlayer(
             account_configuration=account_configuration2
@@ -217,6 +218,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             ping_interval=ping_interval,
             ping_timeout=ping_timeout,
             team=team,
+            strict=strict,
         )
         self.agents: List[str] = []
         self.possible_agents = [self.agent1.username, self.agent2.username]
