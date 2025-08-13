@@ -1036,13 +1036,16 @@ class AbstractBattle(ABC):
     def tied(self):
         self._finish_battle()
 
-    def _update_team_from_request(self, side: Dict[str, Any]):
+    def _update_team_from_request(self, side: Dict[str, Any], strict: bool = False):
         for pokemon in side["pokemon"]:
             if pokemon["ident"] in self._team:
-                assert self.player_role is not None
-                self._team[pokemon["ident"]].check_consistency(
-                    pokemon, self.player_role
-                )
+                if strict:
+                    assert self.player_role is not None
+                    self._team[pokemon["ident"]].check_consistency(
+                        pokemon, self.player_role
+                    )
+                else:
+                    self._team[pokemon["ident"]].update_from_request(pokemon)
             else:
                 self.get_pokemon(
                     pokemon["ident"],
