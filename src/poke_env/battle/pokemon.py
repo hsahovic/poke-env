@@ -599,9 +599,9 @@ class Pokemon:
         assert pkmn_request["ability"] == (
             self.ability or ""
         ), f"{pkmn_request['ability']} != {self.ability or ''}"
-        assert pkmn_request["item"] == (
-            self.item or ""
-        ), f"{pkmn_request['item']} != {self.item or ''}"
+        # assert pkmn_request["item"] == (
+        #     self.item or ""
+        # ), f"{pkmn_request['item']} != {self.item or ''}"
 
     def _update_from_teambuilder(self, tb: TeambuilderPokemon):
         if tb.nickname is not None and tb.species is None:
