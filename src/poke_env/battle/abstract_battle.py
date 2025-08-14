@@ -481,6 +481,7 @@ class AbstractBattle(ABC):
         elif event[1] == "move":
             failed = False
             override_move = None
+            use = True
 
             for move_failed_suffix in ["[miss]", "[still]", "[notarget]"]:
                 if event[-1] == move_failed_suffix:
@@ -493,13 +494,11 @@ class AbstractBattle(ABC):
             if event[-1].startswith("[spread]"):
                 event = event[:-1]
 
-            if event[-1] in {
-                "[from] lockedmove",
-                "[from] Pursuit",
-                "[from]lockedmove",
-                "[from]Pursuit",
-                "[zeffect]",
-            }:
+            if event[-1] in {"[from] lockedmove", "[from]lockedmove"}:
+                use = False
+                event = event[:-1]
+
+            if event[-1] in {"[from] Pursuit", "[from]Pursuit", "[zeffect]"}:
                 event = event[:-1]
 
             if event[-1].startswith("[anim]"):
@@ -606,7 +605,7 @@ class AbstractBattle(ABC):
                 # incorrectly.
                 self.get_pokemon(mon).moved(move, failed=failed, use=False)
             else:
-                self.get_pokemon(mon).moved(move, failed=failed)
+                self.get_pokemon(mon).moved(move, failed=failed, use=use)
         elif event[1] == "cant":
             mon, _ = event[2:4]
             self.get_pokemon(mon).cant_move()
