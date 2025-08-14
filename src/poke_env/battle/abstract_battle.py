@@ -491,7 +491,7 @@ class AbstractBattle(ABC):
             if event[-1] == "[notarget]":
                 event = event[:-1]
 
-            if event[-1].startswith("[spread]"):
+            while event[-1].startswith("[spread]"):
                 event = event[:-1]
 
             if event[-1] in {"[from] lockedmove", "[from]lockedmove"}:
