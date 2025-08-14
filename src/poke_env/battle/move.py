@@ -113,6 +113,7 @@ class Move:
 
     def use(self):
         self._current_pp -= 1
+        assert self.current_pp >= 0
 
     @staticmethod
     def is_id_z(id_: str, gen: int) -> bool:
