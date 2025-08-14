@@ -335,13 +335,11 @@ class Pokemon:
     def prepare(self, move_id: str, target: Optional[Pokemon]):
         self.moved(move_id, use=False)
 
-        id_ = Move.retrieve_id(move_id)
-        if id_ not in self.moves:
-            self._moves[id_] = Move(id_, gen=self._data.gen, raw_id=move_id)
-        move = self.moves[id_]
-
-        self._preparing_move = move
-        self._preparing_target = target
+        move_id = Move.retrieve_id(move_id)
+        if move_id in self.moves:
+            move = self.moves[move_id]
+            self._preparing_move = move
+            self._preparing_target = target
 
     def primal(self):
         species_id_str = to_id_str(self._species)

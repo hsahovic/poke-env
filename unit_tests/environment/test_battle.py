@@ -353,6 +353,9 @@ def test_battle_request_and_interactions(example_request):
     battle.parse_message(["", "-mustrecharge", "p1: Latias"])
     assert battle.opponent_active_pokemon.must_recharge is True
 
+    battle.parse_message(
+        ["", "move", "p1: Latias", "Solar Beam", "p2: Necrozma", "[still]"]
+    )
     battle.parse_message(["", "-prepare", "p1: Latias", "Solar Beam", "p2: Necrozma"])
     assert (
         battle.opponent_active_pokemon.preparing_move

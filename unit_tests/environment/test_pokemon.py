@@ -79,6 +79,7 @@ def test_powerherb_ends_move_preparation():
     mon = Pokemon(species="roserade", gen=8)
     mon.item = "powerherb"
 
+    mon.moved("solarbeam", failed=True)
     mon.prepare("solarbeam", None)
     assert mon.preparing
 
