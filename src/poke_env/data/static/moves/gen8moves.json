@@ -396,7 +396,7 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
+        "isNonstandard": "Past",
         "name": "Anchor Shot",
         "num": 677,
         "pp": 20,
@@ -557,7 +557,7 @@
             "metronome": 1,
             "snatch": 1
         },
-        "isNonstandard": null,
+        "isNonstandard": "Past",
         "name": "Aromatherapy",
         "num": 312,
         "onHit": "onHit",
@@ -604,6 +604,7 @@
             "failcopycat": 1,
             "failencore": 1,
             "failinstruct": 1,
+            "failmimic": 1,
             "noassist": 1,
             "nosleeptalk": 1
         },
@@ -3406,7 +3407,7 @@
         "category": "Status",
         "condition": {
             "noCopy": true,
-            "onRestart": null
+            "onRestart": "onRestart"
         },
         "contestType": "Cute",
         "flags": {
@@ -3458,6 +3459,7 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
+            "noCopy": true,
             "onBeforeMove": "onBeforeMove",
             "onBeforeMovePriority": -1,
             "onFaint": "onFaint",
@@ -4439,7 +4441,7 @@
         },
         "name": "Echoed Voice",
         "num": 497,
-        "onTry": "onTry",
+        "onTryMove": "onTryMove",
         "pp": 15,
         "priority": 0,
         "secondary": null,
@@ -4522,6 +4524,7 @@
         "condition": {
             "duration": 5,
             "durationCallback": "durationCallback",
+            "effectType": "Terrain",
             "onBasePower": "onBasePower",
             "onBasePowerPriority": 6,
             "onFieldEnd": "onFieldEnd",
@@ -7155,8 +7158,8 @@
         "basePower": 10,
         "category": "Physical",
         "condition": {
-            "onEntryHazard": "onEntryHazard",
-            "onSideStart": "onSideStart"
+            "onSideStart": "onSideStart",
+            "onSwitchIn": "onSwitchIn"
         },
         "contestType": "Cool",
         "flags": {},
@@ -7507,6 +7510,7 @@
         "condition": {
             "duration": 5,
             "durationCallback": "durationCallback",
+            "effectType": "Terrain",
             "onBasePower": "onBasePower",
             "onBasePowerPriority": 6,
             "onFieldEnd": "onFieldEnd",
@@ -8120,7 +8124,8 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "onSwap": "onSwap"
+            "onSwap": "onSwap",
+            "onSwitchIn": "onSwitchIn"
         },
         "contestType": "Beautiful",
         "flags": {
@@ -10433,7 +10438,8 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "onSwap": "onSwap"
+            "onSwap": "onSwap",
+            "onSwitchIn": "onSwitchIn"
         },
         "contestType": "Beautiful",
         "flags": {
@@ -11639,7 +11645,7 @@
         "condition": {
             "noCopy": true,
             "onAccuracy": "onAccuracy",
-            "onRestart": null,
+            "onRestart": "onRestart",
             "onSourceModifyDamage": "onSourceModifyDamage"
         },
         "contestType": "Cute",
@@ -11854,6 +11860,7 @@
         "condition": {
             "duration": 5,
             "durationCallback": "durationCallback",
+            "effectType": "Terrain",
             "onBasePower": "onBasePower",
             "onBasePowerPriority": 6,
             "onFieldEnd": "onFieldEnd",
@@ -12704,7 +12711,6 @@
         },
         "name": "Outrage",
         "num": 200,
-        "onAfterMove": "onAfterMove",
         "pp": 10,
         "priority": 0,
         "secondary": null,
@@ -12791,7 +12797,7 @@
         },
         "isNonstandard": "CAP",
         "name": "Paleo Wave",
-        "num": 0,
+        "num": -1,
         "pp": 15,
         "priority": 0,
         "secondary": {
@@ -12973,7 +12979,6 @@
         },
         "name": "Petal Dance",
         "num": 80,
-        "onAfterMove": "onAfterMove",
         "pp": 10,
         "priority": 0,
         "secondary": null,
@@ -13309,6 +13314,31 @@
         },
         "target": "normal",
         "type": "Poison"
+    },
+    "polarflare": {
+        "accuracy": 100,
+        "basePower": 75,
+        "category": "Special",
+        "contestType": "Beautiful",
+        "flags": {
+            "defrost": 1,
+            "mirror": 1,
+            "nosketch": 1,
+            "protect": 1
+        },
+        "isNonstandard": "CAP",
+        "name": "Polar Flare",
+        "num": -3,
+        "onAfterMoveSecondarySelf": "onAfterMoveSecondarySelf",
+        "onHit": "onHit",
+        "pp": 10,
+        "priority": 0,
+        "secondary": {
+            "chance": 10,
+            "status": "frz"
+        },
+        "target": "allAdjacentFoes",
+        "type": "Fire"
     },
     "pollenpuff": {
         "accuracy": 100,
@@ -13779,6 +13809,7 @@
         "condition": {
             "duration": 5,
             "durationCallback": "durationCallback",
+            "effectType": "Terrain",
             "onBasePower": "onBasePower",
             "onBasePowerPriority": 6,
             "onFieldEnd": "onFieldEnd",
@@ -14274,7 +14305,6 @@
         },
         "name": "Raging Fury",
         "num": 833,
-        "onAfterMove": "onAfterMove",
         "pp": 10,
         "priority": 0,
         "secondary": null,
@@ -15784,7 +15814,7 @@
         },
         "isNonstandard": "CAP",
         "name": "Shadow Strike",
-        "num": 0,
+        "num": -2,
         "pp": 10,
         "priority": 0,
         "secondary": {
@@ -16985,7 +17015,6 @@
         "priority": 0,
         "secondary": {
             "chance": 100,
-            "dustproof": true,
             "volatileStatus": "sparklingaria"
         },
         "target": "allAdjacent",
@@ -17116,9 +17145,9 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "onEntryHazard": "onEntryHazard",
             "onSideRestart": "onSideRestart",
-            "onSideStart": "onSideStart"
+            "onSideStart": "onSideStart",
+            "onSwitchIn": "onSwitchIn"
         },
         "contestType": "Clever",
         "flags": {
@@ -17410,8 +17439,8 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "onEntryHazard": "onEntryHazard",
-            "onSideStart": "onSideStart"
+            "onSideStart": "onSideStart",
+            "onSwitchIn": "onSwitchIn"
         },
         "contestType": "Cool",
         "flags": {
@@ -17548,8 +17577,8 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "onEntryHazard": "onEntryHazard",
-            "onSideStart": "onSideStart"
+            "onSideStart": "onSideStart",
+            "onSwitchIn": "onSwitchIn"
         },
         "contestType": "Tough",
         "flags": {
@@ -18915,7 +18944,6 @@
         },
         "name": "Thrash",
         "num": 37,
-        "onAfterMove": "onAfterMove",
         "pp": 10,
         "priority": 0,
         "secondary": null,
@@ -19255,9 +19283,9 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "onEntryHazard": "onEntryHazard",
             "onSideRestart": "onSideRestart",
-            "onSideStart": "onSideStart"
+            "onSideStart": "onSideStart",
+            "onSwitchIn": "onSwitchIn"
         },
         "contestType": "Clever",
         "flags": {
@@ -20370,8 +20398,8 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "duration": 2,
             "onEnd": "onEnd",
+            "onResidual": "onResidual",
             "onResidualOrder": 4,
             "onStart": "onStart"
         },

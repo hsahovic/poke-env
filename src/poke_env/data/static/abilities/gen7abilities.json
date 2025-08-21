@@ -21,42 +21,16 @@
         "onTryBoost": "onTryBoost",
         "rating": 1
     },
-    "moody": {
-        "inherit": true,
-        "onResidual": "onResidual"
-    },
     "oblivious": {
         "inherit": true,
-        "onTryBoost": "onTryBoost"
-    },
-    "owntempo": {
-        "inherit": true,
-        "onTryBoost": "onTryBoost"
-    },
-    "rattled": {
         "name": "Rattled",
         "num": 155,
-        "onDamagingHit": "onDamagingHit",
+        "onTryBoost": "onTryBoost",
         "rating": 1.5
     },
     "scrappy": {
         "inherit": true,
         "onTryBoost": "onTryBoost"
-    },
-    "slowstart": {
-        "condition": {
-            "duration": 5,
-            "onEnd": "onEnd",
-            "onModifyAtk": "onModifyAtk",
-            "onModifyAtkPriority": 5,
-            "onModifySpA": "onModifySpA",
-            "onModifySpAPriority": 5,
-            "onModifySpe": "onModifySpe",
-            "onResidualOrder": 28,
-            "onResidualSubOrder": 2,
-            "onStart": "onStart"
-        },
-        "inherit": true
     },
     "soundproof": {
         "inherit": true,

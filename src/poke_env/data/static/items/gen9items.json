@@ -264,30 +264,18 @@
         "spritenum": 753
     },
     "babiriberry": {
-        "gen": 4,
+        "gen": 6,
         "isBerry": true,
+        "isNonstandard": "Past",
         "name": "Babiri Berry",
         "naturalGift": {
             "basePower": 80,
             "type": "Steel"
         },
-        "num": 199,
+        "num": 668,
         "onEat": "onEat",
         "onSourceModifyDamage": "onSourceModifyDamage",
         "spritenum": 17
-    },
-    "banettite": {
-        "gen": 6,
-        "isNonstandard": "Past",
-        "itemUser": [
-            "Banette"
-        ],
-        "megaEvolves": "Banette",
-        "megaStone": "Banette-Mega",
-        "name": "Banettite",
-        "num": 668,
-        "onTakeItem": "onTakeItem",
-        "spritenum": 582
     },
     "beastball": {
         "gen": 7,
@@ -666,30 +654,17 @@
         "spritenum": 586
     },
     "chartiberry": {
-        "gen": 4,
+        "gen": 3,
         "isBerry": true,
         "name": "Charti Berry",
         "naturalGift": {
             "basePower": 80,
             "type": "Rock"
         },
-        "num": 195,
+        "num": 149,
         "onEat": "onEat",
         "onSourceModifyDamage": "onSourceModifyDamage",
         "spritenum": 62
-    },
-    "cheriberry": {
-        "gen": 3,
-        "isBerry": true,
-        "name": "Cheri Berry",
-        "naturalGift": {
-            "basePower": 80,
-            "type": "Fire"
-        },
-        "num": 149,
-        "onEat": "onEat",
-        "onUpdate": "onUpdate",
-        "spritenum": 63
     },
     "cherishball": {
         "gen": 4,
@@ -713,30 +688,23 @@
         "spritenum": 65
     },
     "chilanberry": {
-        "gen": 4,
+        "forcedForme": "Genesect-Chill",
+        "gen": 5,
         "isBerry": true,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Genesect-Chill"
+        ],
         "name": "Chilan Berry",
         "naturalGift": {
             "basePower": 80,
             "type": "Normal"
         },
-        "num": 200,
+        "num": 119,
+        "onDrive": "Ice",
         "onEat": "onEat",
         "onSourceModifyDamage": "onSourceModifyDamage",
         "spritenum": 66
-    },
-    "chilldrive": {
-        "forcedForme": "Genesect-Chill",
-        "gen": 5,
-        "isNonstandard": "Past",
-        "itemUser": [
-            "Genesect-Chill"
-        ],
-        "name": "Chill Drive",
-        "num": 119,
-        "onDrive": "Ice",
-        "onTakeItem": "onTakeItem",
-        "spritenum": 67
     },
     "chippedpot": {
         "fling": {
@@ -789,38 +757,17 @@
         "spritenum": 70
     },
     "chopleberry": {
-        "gen": 4,
+        "gen": 9,
         "isBerry": true,
         "name": "Chople Berry",
         "naturalGift": {
             "basePower": 80,
             "type": "Fighting"
         },
-        "num": 189,
+        "num": 1882,
         "onEat": "onEat",
         "onSourceModifyDamage": "onSourceModifyDamage",
         "spritenum": 71
-    },
-    "clawfossil": {
-        "fling": {
-            "basePower": 100
-        },
-        "gen": 3,
-        "isNonstandard": "Past",
-        "name": "Claw Fossil",
-        "num": 100,
-        "spritenum": 72
-    },
-    "clearamulet": {
-        "fling": {
-            "basePower": 30
-        },
-        "gen": 9,
-        "name": "Clear Amulet",
-        "num": 1882,
-        "onTryBoost": "onTryBoost",
-        "onTryBoostPriority": 1,
-        "spritenum": 747
     },
     "cloversweet": {
         "fling": {
@@ -832,46 +779,22 @@
         "spritenum": 707
     },
     "cobaberry": {
-        "gen": 4,
+        "forcedForme": "Ogerpon-Cornerstone",
+        "gen": 9,
         "isBerry": true,
+        "itemUser": [
+            "Ogerpon-Cornerstone"
+        ],
         "name": "Coba Berry",
         "naturalGift": {
             "basePower": 80,
             "type": "Flying"
         },
-        "num": 192,
-        "onEat": "onEat",
-        "onSourceModifyDamage": "onSourceModifyDamage",
-        "spritenum": 76
-    },
-    "colburberry": {
-        "gen": 4,
-        "isBerry": true,
-        "name": "Colbur Berry",
-        "naturalGift": {
-            "basePower": 80,
-            "type": "Dark"
-        },
-        "num": 198,
-        "onEat": "onEat",
-        "onSourceModifyDamage": "onSourceModifyDamage",
-        "spritenum": 78
-    },
-    "cornerstonemask": {
-        "fling": {
-            "basePower": 60
-        },
-        "forcedForme": "Ogerpon-Cornerstone",
-        "gen": 9,
-        "itemUser": [
-            "Ogerpon-Cornerstone"
-        ],
-        "name": "Cornerstone Mask",
         "num": 2406,
-        "onBasePower": "onBasePower",
-        "onBasePowerPriority": 15,
+        "onEat": "onEat",
+        "onSourceModifyDamage": "onSourceModifyDamage",
         "onTakeItem": "onTakeItem",
-        "spritenum": 758
+        "spritenum": 76
     },
     "cornnberry": {
         "gen": 3,
@@ -929,36 +852,19 @@
         "spritenum": 577
     },
     "custapberry": {
-        "gen": 4,
+        "gen": 5,
         "isBerry": true,
+        "isNonstandard": "Past",
         "name": "Custap Berry",
         "naturalGift": {
             "basePower": 100,
             "type": "Ghost"
         },
-        "num": 210,
+        "num": 562,
         "onEat": "onEat",
         "onFractionalPriority": "onFractionalPriority",
         "onFractionalPriorityPriority": -2,
         "spritenum": 86
-    },
-    "damprock": {
-        "fling": {
-            "basePower": 60
-        },
-        "gen": 4,
-        "name": "Damp Rock",
-        "num": 285,
-        "spritenum": 88
-    },
-    "darkgem": {
-        "gen": 5,
-        "isGem": true,
-        "isNonstandard": "Past",
-        "name": "Dark Gem",
-        "num": 562,
-        "onSourceTryPrimaryHit": "onSourceTryPrimaryHit",
-        "spritenum": 89
     },
     "darkiniumz": {
         "forcedForme": "Arceus-Dark",
@@ -1325,31 +1231,20 @@
         "zMoveType": "Electric"
     },
     "enigmaberry": {
-        "gen": 3,
+        "gen": 5,
         "isBerry": true,
         "name": "Enigma Berry",
         "naturalGift": {
             "basePower": 100,
             "type": "Bug"
         },
-        "num": 208,
+        "num": 538,
         "onEat": "onEat",
         "onHit": "onHit",
-        "onTryEatItem": "onTryEatItem",
-        "spritenum": 124
-    },
-    "eviolite": {
-        "fling": {
-            "basePower": 40
-        },
-        "gen": 5,
-        "name": "Eviolite",
-        "num": 538,
-        "onModifyDef": "onModifyDef",
-        "onModifyDefPriority": 2,
         "onModifySpD": "onModifySpD",
         "onModifySpDPriority": 2,
-        "spritenum": 130
+        "onTryEatItem": "onTryEatItem",
+        "spritenum": 124
     },
     "expertbelt": {
         "fling": {
@@ -1979,28 +1874,17 @@
         "spritenum": 589
     },
     "habanberry": {
-        "gen": 4,
+        "gen": 2,
         "isBerry": true,
         "name": "Haban Berry",
         "naturalGift": {
             "basePower": 80,
             "type": "Dragon"
         },
-        "num": 197,
+        "num": 238,
         "onEat": "onEat",
         "onSourceModifyDamage": "onSourceModifyDamage",
         "spritenum": 185
-    },
-    "hardstone": {
-        "fling": {
-            "basePower": 100
-        },
-        "gen": 2,
-        "name": "Hard Stone",
-        "num": 238,
-        "onBasePower": "onBasePower",
-        "onBasePowerPriority": 15,
-        "spritenum": 187
     },
     "healball": {
         "gen": 4,
@@ -2236,27 +2120,17 @@
         "spritenum": 225
     },
     "jabocaberry": {
-        "gen": 4,
+        "gen": 6,
         "isBerry": true,
         "name": "Jaboca Berry",
         "naturalGift": {
             "basePower": 100,
             "type": "Dragon"
         },
-        "num": 211,
+        "num": 687,
         "onDamagingHit": "onDamagingHit",
         "onEat": "onEat",
         "spritenum": 230
-    },
-    "jawfossil": {
-        "fling": {
-            "basePower": 100
-        },
-        "gen": 6,
-        "isNonstandard": "Past",
-        "name": "Jaw Fossil",
-        "num": 710,
-        "spritenum": 694
     },
     "kangaskhanite": {
         "gen": 6,
@@ -2270,45 +2144,6 @@
         "num": 675,
         "onTakeItem": "onTakeItem",
         "spritenum": 592
-    },
-    "kasibberry": {
-        "gen": 4,
-        "isBerry": true,
-        "name": "Kasib Berry",
-        "naturalGift": {
-            "basePower": 80,
-            "type": "Ghost"
-        },
-        "num": 196,
-        "onEat": "onEat",
-        "onSourceModifyDamage": "onSourceModifyDamage",
-        "spritenum": 233
-    },
-    "kebiaberry": {
-        "gen": 4,
-        "isBerry": true,
-        "name": "Kebia Berry",
-        "naturalGift": {
-            "basePower": 80,
-            "type": "Poison"
-        },
-        "num": 190,
-        "onEat": "onEat",
-        "onSourceModifyDamage": "onSourceModifyDamage",
-        "spritenum": 234
-    },
-    "keeberry": {
-        "gen": 6,
-        "isBerry": true,
-        "name": "Kee Berry",
-        "naturalGift": {
-            "basePower": 100,
-            "type": "Fairy"
-        },
-        "num": 687,
-        "onAfterMoveSecondary": "onAfterMoveSecondary",
-        "onEat": "onEat",
-        "spritenum": 593
     },
     "kelpsyberry": {
         "gen": 3,
@@ -3215,27 +3050,16 @@
     "occaberry": {
         "gen": 4,
         "isBerry": true,
+        "isNonstandard": "Past",
         "name": "Occa Berry",
         "naturalGift": {
             "basePower": 80,
             "type": "Fire"
         },
-        "num": 184,
+        "num": 314,
         "onEat": "onEat",
         "onSourceModifyDamage": "onSourceModifyDamage",
         "spritenum": 311
-    },
-    "oddincense": {
-        "fling": {
-            "basePower": 10
-        },
-        "gen": 4,
-        "isNonstandard": "Past",
-        "name": "Odd Incense",
-        "num": 314,
-        "onBasePower": "onBasePower",
-        "onBasePowerPriority": 15,
-        "spritenum": 312
     },
     "oldamber": {
         "fling": {
@@ -3292,43 +3116,17 @@
         "spritenum": 325
     },
     "passhoberry": {
-        "gen": 4,
+        "gen": 3,
         "isBerry": true,
         "name": "Passho Berry",
         "naturalGift": {
             "basePower": 80,
             "type": "Water"
         },
-        "num": 185,
+        "num": 151,
         "onEat": "onEat",
         "onSourceModifyDamage": "onSourceModifyDamage",
         "spritenum": 329
-    },
-    "payapaberry": {
-        "gen": 4,
-        "isBerry": true,
-        "name": "Payapa Berry",
-        "naturalGift": {
-            "basePower": 80,
-            "type": "Psychic"
-        },
-        "num": 193,
-        "onEat": "onEat",
-        "onSourceModifyDamage": "onSourceModifyDamage",
-        "spritenum": 330
-    },
-    "pechaberry": {
-        "gen": 3,
-        "isBerry": true,
-        "name": "Pecha Berry",
-        "naturalGift": {
-            "basePower": 80,
-            "type": "Electric"
-        },
-        "num": 151,
-        "onEat": "onEat",
-        "onUpdate": "onUpdate",
-        "spritenum": 333
     },
     "persimberry": {
         "gen": 3,
@@ -3906,36 +3704,18 @@
         "spritenum": 710
     },
     "rindoberry": {
-        "gen": 4,
+        "gen": 5,
         "isBerry": true,
+        "isNonstandard": "Past",
         "name": "Rindo Berry",
         "naturalGift": {
             "basePower": 80,
             "type": "Grass"
         },
-        "num": 187,
+        "num": 559,
         "onEat": "onEat",
         "onSourceModifyDamage": "onSourceModifyDamage",
         "spritenum": 409
-    },
-    "ringtarget": {
-        "fling": {
-            "basePower": 10
-        },
-        "gen": 5,
-        "name": "Ring Target",
-        "num": 543,
-        "onNegateImmunity": false,
-        "spritenum": 410
-    },
-    "rockgem": {
-        "gen": 5,
-        "isGem": true,
-        "isNonstandard": "Past",
-        "name": "Rock Gem",
-        "num": 559,
-        "onSourceTryPrimaryHit": "onSourceTryPrimaryHit",
-        "spritenum": 415
     },
     "rockincense": {
         "fling": {
@@ -4023,40 +3803,20 @@
         "spritenum": 419
     },
     "roseliberry": {
-        "gen": 6,
+        "gen": 8,
         "isBerry": true,
+        "itemUser": [
+            "Zamazenta-Crowned"
+        ],
         "name": "Roseli Berry",
         "naturalGift": {
             "basePower": 80,
             "type": "Fairy"
         },
-        "num": 686,
+        "num": 1104,
         "onEat": "onEat",
         "onSourceModifyDamage": "onSourceModifyDamage",
         "spritenum": 603
-    },
-    "rowapberry": {
-        "gen": 4,
-        "isBerry": true,
-        "name": "Rowap Berry",
-        "naturalGift": {
-            "basePower": 100,
-            "type": "Dark"
-        },
-        "num": 212,
-        "onDamagingHit": "onDamagingHit",
-        "onEat": "onEat",
-        "spritenum": 420
-    },
-    "rustedshield": {
-        "gen": 8,
-        "itemUser": [
-            "Zamazenta-Crowned"
-        ],
-        "name": "Rusted Shield",
-        "num": 1104,
-        "onTakeItem": "onTakeItem",
-        "spritenum": 699
     },
     "rustedsword": {
         "gen": 8,
@@ -4264,28 +4024,17 @@
         "spritenum": 442
     },
     "shucaberry": {
-        "gen": 4,
+        "gen": 3,
         "isBerry": true,
         "name": "Shuca Berry",
         "naturalGift": {
             "basePower": 80,
             "type": "Ground"
         },
-        "num": 191,
+        "num": 251,
         "onEat": "onEat",
         "onSourceModifyDamage": "onSourceModifyDamage",
         "spritenum": 443
-    },
-    "silkscarf": {
-        "fling": {
-            "basePower": 10
-        },
-        "gen": 3,
-        "name": "Silk Scarf",
-        "num": 251,
-        "onBasePower": "onBasePower",
-        "onBasePowerPriority": 15,
-        "spritenum": 444
     },
     "silverpowder": {
         "fling": {
@@ -4651,57 +4400,8 @@
         "spritenum": 486
     },
     "tangaberry": {
-        "gen": 4,
-        "isBerry": true,
-        "name": "Tanga Berry",
-        "naturalGift": {
-            "basePower": 80,
-            "type": "Bug"
-        },
-        "num": 194,
-        "onEat": "onEat",
-        "onSourceModifyDamage": "onSourceModifyDamage",
-        "spritenum": 487
-    },
-    "tapuniumz": {
-        "gen": 7,
-        "isNonstandard": "Past",
-        "itemUser": [
-            "Tapu Koko",
-            "Tapu Lele",
-            "Tapu Bulu",
-            "Tapu Fini"
-        ],
-        "name": "Tapunium Z",
-        "num": 801,
-        "onTakeItem": false,
-        "spritenum": 653,
-        "zMove": "Guardian of Alola",
-        "zMoveFrom": "Nature's Madness"
-    },
-    "tartapple": {
-        "fling": {
-            "basePower": 30
-        },
-        "gen": 8,
-        "name": "Tart Apple",
-        "num": 1117,
-        "spritenum": 712
-    },
-    "terrainextender": {
-        "fling": {
-            "basePower": 60
-        },
-        "gen": 7,
-        "name": "Terrain Extender",
-        "num": 879,
-        "spritenum": 662
-    },
-    "thickclub": {
-        "fling": {
-            "basePower": 90
-        },
         "gen": 2,
+        "isBerry": true,
         "isNonstandard": "Past",
         "itemUser": [
             "Marowak",
@@ -4709,11 +4409,15 @@
             "Marowak-Alola-Totem",
             "Cubone"
         ],
-        "name": "Thick Club",
+        "name": "Tanga Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Bug"
+        },
         "num": 258,
-        "onModifyAtk": "onModifyAtk",
-        "onModifyAtkPriority": 1,
-        "spritenum": 491
+        "onEat": "onEat",
+        "onSourceModifyDamage": "onSourceModifyDamage",
+        "spritenum": 487
     },
     "throatspray": {
         "boosts": {
@@ -5873,26 +5577,18 @@
         "spritenum": 752
     },
     "wacanberry": {
-        "gen": 4,
+        "gen": 5,
         "isBerry": true,
+        "isNonstandard": "Past",
         "name": "Wacan Berry",
         "naturalGift": {
             "basePower": 80,
             "type": "Electric"
         },
-        "num": 186,
+        "num": 549,
         "onEat": "onEat",
         "onSourceModifyDamage": "onSourceModifyDamage",
         "spritenum": 526
-    },
-    "watergem": {
-        "gen": 5,
-        "isGem": true,
-        "isNonstandard": "Past",
-        "name": "Water Gem",
-        "num": 549,
-        "onSourceTryPrimaryHit": "onSourceTryPrimaryHit",
-        "spritenum": 528
     },
     "wateriumz": {
         "forcedForme": "Arceus-Water",
@@ -6061,6 +5757,7 @@
         "spritenum": 539
     },
     "yacheberry": {
+        "forcedForme": "Arceus-Electric",
         "gen": 4,
         "isBerry": true,
         "name": "Yache Berry",
@@ -6068,21 +5765,11 @@
             "basePower": 80,
             "type": "Ice"
         },
-        "num": 188,
+        "num": 300,
         "onEat": "onEat",
         "onSourceModifyDamage": "onSourceModifyDamage",
-        "spritenum": 567
-    },
-    "zapplate": {
-        "forcedForme": "Arceus-Electric",
-        "gen": 4,
-        "name": "Zap Plate",
-        "num": 300,
-        "onBasePower": "onBasePower",
-        "onBasePowerPriority": 15,
-        "onPlate": "Electric",
         "onTakeItem": "onTakeItem",
-        "spritenum": 572
+        "spritenum": 567
     },
     "zoomlens": {
         "fling": {

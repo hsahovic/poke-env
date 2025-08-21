@@ -1,7 +1,6 @@
 {
     "airlock": {
         "inherit": true,
-        "onStart": "onStart",
         "onSwitchIn": "onSwitchIn"
     },
     "angerpoint": {
@@ -23,18 +22,12 @@
     },
     "cloudnine": {
         "inherit": true,
-        "onStart": "onStart",
         "onSwitchIn": "onSwitchIn"
     },
     "colorchange": {
         "inherit": true,
         "onAfterMoveSecondary": "onAfterMoveSecondary",
         "onDamagingHit": "onDamagingHit"
-    },
-    "compoundeyes": {
-        "inherit": true,
-        "onSourceModifyAccuracy": "onSourceModifyAccuracy",
-        "onSourceModifyAccuracyPriority": 9
     },
     "cutecharm": {
         "inherit": true,
@@ -109,12 +102,7 @@
     },
     "lightningrod": {
         "inherit": true,
-        "onTryHit": "onTryHit",
-        "rating": 0
-    },
-    "liquidooze": {
-        "inherit": true,
-        "onSourceTryHeal": "onSourceTryHeal"
+        "onTryHit": "onTryHit"
     },
     "magicguard": {
         "name": "Magic Guard",
@@ -131,8 +119,7 @@
     },
     "naturalcure": {
         "inherit": true,
-        "onCheckShow": "onCheckShow",
-        "onSwitchOut": "onSwitchOut"
+        "onCheckShow": "onCheckShow"
     },
     "normalize": {
         "inherit": true,
@@ -223,19 +210,9 @@
     },
     "stormdrain": {
         "inherit": true,
-        "onTryHit": "onTryHit",
-        "rating": 0
-    },
-    "sturdy": {
-        "inherit": true,
-        "onDamage": "onDamage",
-        "rating": 0
-    },
-    "swarm": {
         "name": "Swarm",
         "num": 68,
-        "onBasePower": "onBasePower",
-        "onBasePowerPriority": 2,
+        "onTryHit": "onTryHit",
         "rating": 2
     },
     "synchronize": {

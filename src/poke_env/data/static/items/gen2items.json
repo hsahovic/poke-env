@@ -17,12 +17,10 @@
     },
     "blackbelt": {
         "inherit": true,
-        "onModifyAtk": "onModifyAtk",
-        "onModifyDamage": "onModifyDamage"
+        "onModifyAtk": "onModifyAtk"
     },
     "blackglasses": {
         "inherit": true,
-        "onModifyDamage": "onModifyDamage",
         "onModifySpA": "onModifySpA"
     },
     "brightpowder": {
@@ -35,16 +33,11 @@
     },
     "charcoal": {
         "inherit": true,
-        "onModifyDamage": "onModifyDamage",
         "onModifySpA": "onModifySpA"
     },
     "dragonfang": {
         "inherit": true,
         "onModifySpA": "onModifySpA"
-    },
-    "dragonscale": {
-        "inherit": true,
-        "onModifyDamage": "onModifyDamage"
     },
     "fastball": {
         "inherit": true,
@@ -60,8 +53,7 @@
     },
     "hardstone": {
         "inherit": true,
-        "onModifyAtk": "onModifyAtk",
-        "onModifyDamage": "onModifyDamage"
+        "onModifyAtk": "onModifyAtk"
     },
     "heavyball": {
         "inherit": true,
@@ -88,33 +80,21 @@
         "inherit": true,
         "onModifySpA": "onModifySpA"
     },
-    "loveball": {
-        "inherit": true,
-        "isNonstandard": null
-    },
-    "luckypunch": {
-        "inherit": true,
-        "onModifyCritRatio": "onModifyCritRatio",
-        "onModifyCritRatioPriority": -1
-    },
     "lureball": {
         "inherit": true,
         "isNonstandard": null
     },
     "magnet": {
         "inherit": true,
-        "onModifyDamage": "onModifyDamage",
         "onModifySpA": "onModifySpA"
     },
     "metalcoat": {
         "inherit": true,
-        "onModifyAtk": "onModifyAtk",
-        "onModifyDamage": "onModifyDamage"
+        "onModifyAtk": "onModifyAtk"
     },
     "metalpowder": {
         "inherit": true,
-        "onModifyDef": "onModifyDef",
-        "onModifySpD": "onModifySpD"
+        "onModifyDef": "onModifyDef"
     },
     "mintberry": {
         "inherit": true,
@@ -123,11 +103,6 @@
     "miracleberry": {
         "inherit": true,
         "isNonstandard": null
-    },
-    "miracleseed": {
-        "inherit": true,
-        "onModifyDamage": "onModifyDamage",
-        "onModifySpA": "onModifySpA"
     },
     "moonball": {
         "inherit": true,
@@ -139,30 +114,25 @@
     },
     "mysticwater": {
         "inherit": true,
-        "onModifyDamage": "onModifyDamage",
         "onModifySpA": "onModifySpA"
     },
     "nevermeltice": {
         "inherit": true,
-        "onModifyDamage": "onModifyDamage",
         "onModifySpA": "onModifySpA"
     },
     "pinkbow": {
         "inherit": true,
         "isNonstandard": null,
-        "onBasePower": "onBasePower",
-        "onModifyDamage": "onModifyDamage"
+        "onBasePower": "onBasePower"
     },
     "poisonbarb": {
         "inherit": true,
-        "onModifyAtk": "onModifyAtk",
-        "onModifyDamage": "onModifyDamage"
+        "onModifyAtk": "onModifyAtk"
     },
     "polkadotbow": {
         "inherit": true,
         "isNonstandard": null,
-        "onBasePower": "onBasePower",
-        "onModifyDamage": "onModifyDamage"
+        "onBasePower": "onBasePower"
     },
     "przcureberry": {
         "inherit": true,
@@ -174,23 +144,19 @@
     },
     "sharpbeak": {
         "inherit": true,
-        "onModifyAtk": "onModifyAtk",
-        "onModifyDamage": "onModifyDamage"
+        "onModifyAtk": "onModifyAtk"
     },
     "silverpowder": {
         "inherit": true,
-        "onModifyAtk": "onModifyAtk",
-        "onModifyDamage": "onModifyDamage"
+        "onModifyAtk": "onModifyAtk"
     },
     "softsand": {
         "inherit": true,
-        "onModifyAtk": "onModifyAtk",
-        "onModifyDamage": "onModifyDamage"
+        "onModifyAtk": "onModifyAtk"
     },
     "spelltag": {
         "inherit": true,
-        "onModifyAtk": "onModifyAtk",
-        "onModifyDamage": "onModifyDamage"
+        "onModifyAtk": "onModifyAtk"
     },
     "sportball": {
         "inherit": true,
@@ -204,10 +170,5 @@
     "thickclub": {
         "inherit": true,
         "onModifyAtk": "onModifyAtk"
-    },
-    "twistedspoon": {
-        "inherit": true,
-        "onModifyDamage": "onModifyDamage",
-        "onModifySpA": "onModifySpA"
     }
 }

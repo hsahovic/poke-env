@@ -1,49 +1,32 @@
 {
     "aguavberry": {
         "inherit": true,
-        "onResidual": "onResidual",
-        "onResidualOrder": 10,
-        "onResidualSubOrder": 4,
         "onUpdate": "onUpdate"
     },
     "apicotberry": {
         "inherit": true,
-        "onResidual": "onResidual",
-        "onResidualOrder": 10,
-        "onResidualSubOrder": 4,
         "onUpdate": "onUpdate"
     },
     "berryjuice": {
         "inherit": true,
         "isNonstandard": "Unobtainable",
-        "onResidual": "onResidual",
-        "onResidualOrder": 10,
-        "onResidualSubOrder": 4,
         "onUpdate": "onUpdate"
     },
     "blackbelt": {
         "inherit": true,
-        "onBasePower": "onBasePower",
-        "onModifyAtk": "onModifyAtk",
-        "onModifyAtkPriority": 1
+        "onBasePower": "onBasePower"
     },
     "blackglasses": {
         "inherit": true,
-        "onBasePower": "onBasePower",
-        "onModifySpA": "onModifySpA",
-        "onModifySpAPriority": 1
+        "onBasePower": "onBasePower"
     },
     "charcoal": {
         "inherit": true,
-        "onBasePower": "onBasePower",
-        "onModifySpA": "onModifySpA",
-        "onModifySpAPriority": 1
+        "onBasePower": "onBasePower"
     },
     "dragonfang": {
         "inherit": true,
-        "onBasePower": "onBasePower",
-        "onModifySpA": "onModifySpA",
-        "onModifySpAPriority": 1
+        "onBasePower": "onBasePower"
     },
     "enigmaberry": {
         "gen": 3,
@@ -59,23 +42,15 @@
     },
     "figyberry": {
         "inherit": true,
-        "onResidual": "onResidual",
-        "onResidualOrder": 10,
-        "onResidualSubOrder": 4,
         "onUpdate": "onUpdate"
     },
     "ganlonberry": {
         "inherit": true,
-        "onResidual": "onResidual",
-        "onResidualOrder": 10,
-        "onResidualSubOrder": 4,
         "onUpdate": "onUpdate"
     },
     "hardstone": {
         "inherit": true,
-        "onBasePower": "onBasePower",
-        "onModifyAtk": "onModifyAtk",
-        "onModifyAtkPriority": 1
+        "onBasePower": "onBasePower"
     },
     "heavyball": {
         "inherit": true,
@@ -83,9 +58,6 @@
     },
     "iapapaberry": {
         "inherit": true,
-        "onResidual": "onResidual",
-        "onResidualOrder": 10,
-        "onResidualSubOrder": 4,
         "onUpdate": "onUpdate"
     },
     "kingsrock": {
@@ -94,9 +66,6 @@
     },
     "lansatberry": {
         "inherit": true,
-        "onResidual": "onResidual",
-        "onResidualOrder": 10,
-        "onResidualSubOrder": 4,
         "onUpdate": "onUpdate"
     },
     "laxincense": {
@@ -109,9 +78,6 @@
     },
     "liechiberry": {
         "inherit": true,
-        "onResidual": "onResidual",
-        "onResidualOrder": 10,
-        "onResidualSubOrder": 4,
         "onUpdate": "onUpdate"
     },
     "lightball": {
@@ -119,38 +85,17 @@
         "onBasePower": "onBasePower",
         "onModifySpA": "onModifySpA"
     },
-    "loveball": {
-        "inherit": true,
-        "isNonstandard": "Unobtainable"
-    },
-    "lureball": {
-        "inherit": true,
-        "isNonstandard": "Unobtainable"
-    },
-    "magnet": {
-        "inherit": true,
-        "onBasePower": "onBasePower",
-        "onModifySpA": "onModifySpA",
-        "onModifySpAPriority": 1
-    },
     "magoberry": {
         "inherit": true,
-        "onResidual": "onResidual",
-        "onResidualOrder": 10,
-        "onResidualSubOrder": 4,
         "onUpdate": "onUpdate"
     },
     "metalcoat": {
         "inherit": true,
-        "onBasePower": "onBasePower",
-        "onModifyAtk": "onModifyAtk",
-        "onModifyAtkPriority": 1
+        "onBasePower": "onBasePower"
     },
     "miracleseed": {
         "inherit": true,
-        "onBasePower": "onBasePower",
-        "onModifySpA": "onModifySpA",
-        "onModifySpAPriority": 1
+        "onBasePower": "onBasePower"
     },
     "moonball": {
         "inherit": true,
@@ -158,90 +103,56 @@
     },
     "mysticwater": {
         "inherit": true,
-        "onBasePower": "onBasePower",
-        "onModifySpA": "onModifySpA",
-        "onModifySpAPriority": 1
+        "onBasePower": "onBasePower"
     },
     "nevermeltice": {
         "inherit": true,
-        "onBasePower": "onBasePower",
-        "onModifySpA": "onModifySpA",
-        "onModifySpAPriority": 1
+        "onBasePower": "onBasePower"
     },
     "oranberry": {
         "inherit": true,
-        "onResidual": "onResidual",
-        "onResidualOrder": 10,
-        "onResidualSubOrder": 4,
         "onUpdate": "onUpdate"
     },
     "petayaberry": {
         "inherit": true,
-        "onResidual": "onResidual",
-        "onResidualOrder": 10,
-        "onResidualSubOrder": 4,
         "onUpdate": "onUpdate"
     },
     "poisonbarb": {
         "inherit": true,
-        "onBasePower": "onBasePower",
-        "onModifyAtk": "onModifyAtk",
-        "onModifyAtkPriority": 1
+        "onBasePower": "onBasePower"
     },
     "quickclaw": {
         "inherit": true,
         "onFractionalPriority": "onFractionalPriority"
     },
-    "salacberry": {
-        "inherit": true,
-        "onResidual": "onResidual",
-        "onResidualOrder": 10,
-        "onResidualSubOrder": 4,
-        "onUpdate": "onUpdate"
-    },
     "seaincense": {
         "inherit": true,
-        "onBasePower": "onBasePower",
-        "onModifySpA": "onModifySpA",
-        "onModifySpAPriority": 1
+        "onBasePower": "onBasePower"
     },
     "sharpbeak": {
         "inherit": true,
-        "onBasePower": "onBasePower",
-        "onModifyAtk": "onModifyAtk",
-        "onModifyAtkPriority": 1
+        "onBasePower": "onBasePower"
     },
     "silkscarf": {
         "inherit": true,
-        "onBasePower": "onBasePower",
-        "onModifyAtk": "onModifyAtk",
-        "onModifyAtkPriority": 1
+        "onBasePower": "onBasePower"
     },
     "silverpowder": {
         "inherit": true,
-        "onBasePower": "onBasePower",
-        "onModifyAtk": "onModifyAtk",
-        "onModifyAtkPriority": 1
+        "onBasePower": "onBasePower"
     },
     "sitrusberry": {
         "inherit": true,
         "onEat": "onEat",
-        "onResidual": "onResidual",
-        "onResidualOrder": 10,
-        "onResidualSubOrder": 4,
         "onUpdate": "onUpdate"
     },
     "softsand": {
         "inherit": true,
-        "onBasePower": "onBasePower",
-        "onModifyAtk": "onModifyAtk",
-        "onModifyAtkPriority": 1
+        "onBasePower": "onBasePower"
     },
     "spelltag": {
         "inherit": true,
-        "onBasePower": "onBasePower",
-        "onModifyAtk": "onModifyAtk",
-        "onModifyAtkPriority": 1
+        "onBasePower": "onBasePower"
     },
     "sportball": {
         "inherit": true,
@@ -249,22 +160,14 @@
     },
     "starfberry": {
         "inherit": true,
-        "onResidual": "onResidual",
-        "onResidualOrder": 10,
-        "onResidualSubOrder": 4,
         "onUpdate": "onUpdate"
     },
     "twistedspoon": {
         "inherit": true,
-        "onBasePower": "onBasePower",
-        "onModifySpA": "onModifySpA",
-        "onModifySpAPriority": 1
+        "onBasePower": "onBasePower"
     },
     "wikiberry": {
         "inherit": true,
-        "onResidual": "onResidual",
-        "onResidualOrder": 10,
-        "onResidualSubOrder": 4,
         "onUpdate": "onUpdate"
     }
 }

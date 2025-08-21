@@ -19,20 +19,14 @@
     },
     "choiceband": {
         "inherit": true,
-        "onAfterMove": "onAfterMove",
-        "onModifyMove": "onModifyMove",
         "onStart": "onStart"
     },
     "choicescarf": {
         "inherit": true,
-        "onAfterMove": "onAfterMove",
-        "onModifyMove": "onModifyMove",
         "onStart": "onStart"
     },
     "choicespecs": {
         "inherit": true,
-        "onAfterMove": "onAfterMove",
-        "onModifyMove": "onModifyMove",
         "onStart": "onStart"
     },
     "chopleberry": {
@@ -41,7 +35,6 @@
     },
     "custapberry": {
         "inherit": true,
-        "onBeforeTurn": "onBeforeTurn",
         "onCustap": "onCustap",
         "onFractionalPriority": "onFractionalPriority"
     },
@@ -89,8 +82,7 @@
             "onDamage": "onDamage"
         },
         "inherit": true,
-        "onDamage": "onDamage",
-        "onTryHit": "onTryHit"
+        "onDamage": "onDamage"
     },
     "griseousorb": {
         "inherit": true,
@@ -112,14 +104,6 @@
         "inherit": true,
         "onEffectiveness": "onEffectiveness"
     },
-    "ironplate": {
-        "inherit": true,
-        "onTakeItem": true
-    },
-    "kingsrock": {
-        "inherit": true,
-        "onModifyMove": "onModifyMove"
-    },
     "laxincense": {
         "inherit": true,
         "onModifyAccuracy": "onModifyAccuracy",
@@ -140,16 +124,12 @@
             "onAfterMoveSecondarySelf": "onAfterMoveSecondarySelf"
         },
         "inherit": true,
-        "onAfterMoveSecondarySelf": "onAfterMoveSecondarySelf",
-        "onBasePower": "onBasePower",
         "onModifyDamage": "onModifyDamage",
         "onModifyDamagePhase2": "onModifyDamagePhase2"
     },
     "lightball": {
         "inherit": true,
-        "onBasePower": "onBasePower",
-        "onModifyAtk": "onModifyAtk",
-        "onModifySpA": "onModifySpA"
+        "onModifyAtk": "onModifyAtk"
     },
     "loveball": {
         "inherit": true,

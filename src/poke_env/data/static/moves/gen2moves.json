@@ -801,7 +801,7 @@
         "pp": 40,
         "priority": 0,
         "secondary": null,
-        "target": "normal",
+        "target": "allAdjacentFoes",
         "type": "Grass",
         "zMove": {
             "effect": "clearnegativeboost"
@@ -812,7 +812,15 @@
         "basePower": 0,
         "beforeTurnCallback": "beforeTurnCallback",
         "category": "Physical",
-        "condition": {},
+        "condition": {
+            "duration": 1,
+            "noCopy": true,
+            "onDamage": "onDamage",
+            "onDamagePriority": -101,
+            "onRedirectTarget": "onRedirectTarget",
+            "onRedirectTargetPriority": -1,
+            "onStart": "onStart"
+        },
         "contestType": "Tough",
         "damageCallback": "damageCallback",
         "flags": {
@@ -829,17 +837,17 @@
         "num": 68,
         "onTry": "onTry",
         "pp": 20,
-        "priority": -1,
+        "priority": -5,
         "secondary": null,
         "target": "scripted",
         "type": "Fighting"
     },
     "crabhammer": {
         "accuracy": 85,
-        "basePower": 90,
+        "basePower": 100,
         "category": "Physical",
         "contestType": "Tough",
-        "critRatio": 3,
+        "critRatio": 2,
         "flags": {
             "contact": 1,
             "metronome": 1,
@@ -859,7 +867,7 @@
         "basePower": 100,
         "category": "Physical",
         "contestType": "Cool",
-        "critRatio": 3,
+        "critRatio": 2,
         "flags": {
             "contact": 1,
             "metronome": 1,
@@ -904,7 +912,9 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "onAfterMoveSelf": "onAfterMoveSelf",
+            "onResidual": "onResidual",
+            "onResidualOrder": 10,
+            "onResidualSubOrder": 8,
             "onStart": "onStart"
         },
         "contestType": "Tough",
@@ -957,7 +967,7 @@
         "category": "Status",
         "condition": {
             "noCopy": true,
-            "onRestart": null
+            "onRestart": "onRestart"
         },
         "contestType": "Cute",
         "flags": {
@@ -983,6 +993,7 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
+            "noCopy": true,
             "onBeforeMove": "onBeforeMove",
             "onBeforeMovePriority": -1,
             "onFaint": "onFaint",
@@ -2008,6 +2019,7 @@
         "accuracy": true,
         "basePower": 0,
         "boosts": {
+            "atk": 1,
             "spa": 1
         },
         "category": "Status",
@@ -2176,7 +2188,7 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
+        "isNonstandard": "Past",
         "name": "Hidden Power",
         "num": 237,
         "onModifyMove": "onModifyMove",
@@ -2196,7 +2208,7 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
+        "isNonstandard": "Past",
         "name": "Hidden Power Bug",
         "num": 237,
         "pp": 15,
@@ -2215,7 +2227,7 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
+        "isNonstandard": "Past",
         "name": "Hidden Power Dark",
         "num": 237,
         "pp": 15,
@@ -2234,7 +2246,7 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
+        "isNonstandard": "Past",
         "name": "Hidden Power Dragon",
         "num": 237,
         "pp": 15,
@@ -2253,7 +2265,7 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
+        "isNonstandard": "Past",
         "name": "Hidden Power Electric",
         "num": 237,
         "pp": 15,
@@ -2272,7 +2284,7 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
+        "isNonstandard": "Past",
         "name": "Hidden Power Fighting",
         "num": 237,
         "pp": 15,
@@ -2291,7 +2303,7 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
+        "isNonstandard": "Past",
         "name": "Hidden Power Fire",
         "num": 237,
         "pp": 15,
@@ -2310,7 +2322,7 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
+        "isNonstandard": "Past",
         "name": "Hidden Power Flying",
         "num": 237,
         "pp": 15,
@@ -2329,7 +2341,7 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
+        "isNonstandard": "Past",
         "name": "Hidden Power Ghost",
         "num": 237,
         "pp": 15,
@@ -2348,7 +2360,7 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
+        "isNonstandard": "Past",
         "name": "Hidden Power Grass",
         "num": 237,
         "pp": 15,
@@ -2367,7 +2379,7 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
+        "isNonstandard": "Past",
         "name": "Hidden Power Ground",
         "num": 237,
         "pp": 15,
@@ -2386,7 +2398,7 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
+        "isNonstandard": "Past",
         "name": "Hidden Power Ice",
         "num": 237,
         "pp": 15,
@@ -2405,7 +2417,7 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
+        "isNonstandard": "Past",
         "name": "Hidden Power Poison",
         "num": 237,
         "pp": 15,
@@ -2424,7 +2436,7 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
+        "isNonstandard": "Past",
         "name": "Hidden Power Psychic",
         "num": 237,
         "pp": 15,
@@ -2443,7 +2455,7 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
+        "isNonstandard": "Past",
         "name": "Hidden Power Rock",
         "num": 237,
         "pp": 15,
@@ -2462,7 +2474,7 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
+        "isNonstandard": "Past",
         "name": "Hidden Power Steel",
         "num": 237,
         "pp": 15,
@@ -2481,7 +2493,7 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
+        "isNonstandard": "Past",
         "name": "Hidden Power Water",
         "num": 237,
         "pp": 15,
@@ -2610,7 +2622,7 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
+        "isNonstandard": "Past",
         "name": "Hyper Fang",
         "num": 158,
         "pp": 15,
@@ -2752,7 +2764,7 @@
             "protect": 1
         },
         "hasCrashDamage": true,
-        "isNonstandard": null,
+        "isNonstandard": "Past",
         "name": "Jump Kick",
         "num": 26,
         "onMoveFail": "onMoveFail",
@@ -2774,7 +2786,7 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
+        "isNonstandard": "Past",
         "name": "Karate Chop",
         "num": 2,
         "pp": 25,
@@ -2822,6 +2834,7 @@
         ],
         "flags": {
             "contact": 1,
+            "heal": 1,
             "metronome": 1,
             "mirror": 1,
             "protect": 1
@@ -2839,8 +2852,9 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "onAfterMoveSelf": "onAfterMoveSelf",
-            "onAfterMoveSelfPriority": 2,
+            "onResidual": "onResidual",
+            "onResidualOrder": 10,
+            "onResidualSubOrder": 5,
             "onStart": "onStart"
         },
         "contestType": "Clever",
@@ -2893,7 +2907,7 @@
     },
     "lick": {
         "accuracy": 100,
-        "basePower": 20,
+        "basePower": 30,
         "category": "Physical",
         "contestType": "Cute",
         "flags": {
@@ -3361,7 +3375,15 @@
         "basePower": 0,
         "beforeTurnCallback": "beforeTurnCallback",
         "category": "Special",
-        "condition": {},
+        "condition": {
+            "duration": 1,
+            "noCopy": true,
+            "onDamage": "onDamage",
+            "onDamagePriority": -101,
+            "onRedirectTarget": "onRedirectTarget",
+            "onRedirectTargetPriority": -1,
+            "onStart": "onStart"
+        },
         "contestType": "Beautiful",
         "damageCallback": "damageCallback",
         "flags": {
@@ -3374,7 +3396,7 @@
         "num": 243,
         "onTry": "onTry",
         "pp": 20,
-        "priority": -1,
+        "priority": -5,
         "secondary": null,
         "target": "scripted",
         "type": "Psychic"
@@ -3388,12 +3410,12 @@
         "flags": {
             "failencore": 1,
             "metronome": 1,
-            "nosketch": 1
+            "noassist": 1,
+            "nosleeptalk": 1
         },
         "isNonstandard": null,
         "name": "Mirror Move",
         "num": 119,
-        "onHit": "onHit",
         "onTryHit": "onTryHit",
         "pp": 20,
         "priority": 0,
@@ -3582,7 +3604,6 @@
         },
         "name": "Outrage",
         "num": 200,
-        "onAfterMove": "onAfterMove",
         "onMoveFail": "onMoveFail",
         "pp": 15,
         "priority": 0,
@@ -3629,7 +3650,7 @@
         },
         "isNonstandard": "CAP",
         "name": "Paleo Wave",
-        "num": 0,
+        "num": -1,
         "pp": 15,
         "priority": 0,
         "secondary": {
@@ -3723,7 +3744,6 @@
         },
         "name": "Petal Dance",
         "num": 80,
-        "onAfterMove": "onAfterMove",
         "onMoveFail": "onMoveFail",
         "pp": 20,
         "priority": 0,
@@ -3836,6 +3856,31 @@
         },
         "target": "normal",
         "type": "Poison"
+    },
+    "polarflare": {
+        "accuracy": 100,
+        "basePower": 75,
+        "category": "Special",
+        "contestType": "Beautiful",
+        "flags": {
+            "defrost": 1,
+            "mirror": 1,
+            "nosketch": 1,
+            "protect": 1
+        },
+        "isNonstandard": "CAP",
+        "name": "Polar Flare",
+        "num": -3,
+        "onAfterMoveSecondarySelf": "onAfterMoveSecondarySelf",
+        "onHit": "onHit",
+        "pp": 10,
+        "priority": 0,
+        "secondary": {
+            "chance": 10,
+            "status": "frz"
+        },
+        "target": "allAdjacentFoes",
+        "type": "Fire"
     },
     "pound": {
         "accuracy": 100,
@@ -4711,7 +4756,7 @@
         },
         "isNonstandard": "CAP",
         "name": "Shadow Strike",
-        "num": 0,
+        "num": -2,
         "pp": 10,
         "priority": 0,
         "secondary": {
@@ -4995,7 +5040,7 @@
     },
     "smog": {
         "accuracy": 70,
-        "basePower": 20,
+        "basePower": 30,
         "category": "Special",
         "contestType": "Tough",
         "flags": {
@@ -5043,7 +5088,7 @@
     },
     "snore": {
         "accuracy": 100,
-        "basePower": 40,
+        "basePower": 50,
         "category": "Special",
         "contestType": "Cute",
         "flags": {
@@ -5164,6 +5209,7 @@
         "flags": {
             "metronome": 1,
             "mirror": 1,
+            "protect": 1,
             "reflectable": 1
         },
         "isNonstandard": null,
@@ -5212,8 +5258,9 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "onSideStart": "onSideStart",
-            "onSwitchIn": "onSwitchIn"
+            "onEntryHazard": "onEntryHazard",
+            "onSideRestart": "onSideRestart",
+            "onSideStart": "onSideStart"
         },
         "contestType": "Clever",
         "flags": {
@@ -5378,7 +5425,7 @@
         "accuracy": 95,
         "basePower": 0,
         "boosts": {
-            "spe": -1
+            "spe": -2
         },
         "category": "Status",
         "contestType": "Clever",
@@ -5443,7 +5490,6 @@
         },
         "name": "Stun Spore",
         "num": 78,
-        "onTryHit": "onTryHit",
         "pp": 30,
         "priority": 0,
         "secondary": null,
@@ -5849,10 +5895,7 @@
         "onAfterHit": "onAfterHit",
         "pp": 10,
         "priority": 0,
-        "secondary": {
-            "chance": 100,
-            "onHit": "onHit"
-        },
+        "secondary": null,
         "target": "normal",
         "type": "Dark"
     },
@@ -5870,7 +5913,6 @@
         },
         "name": "Thrash",
         "num": 37,
-        "onAfterMove": "onAfterMove",
         "onMoveFail": "onMoveFail",
         "pp": 20,
         "priority": 0,
@@ -6154,7 +6196,7 @@
     },
     "vinewhip": {
         "accuracy": 100,
-        "basePower": 35,
+        "basePower": 45,
         "category": "Physical",
         "contestType": "Cool",
         "flags": {

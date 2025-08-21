@@ -39,8 +39,6 @@
     "magnetpull": {
         "inherit": true,
         "onAnyMaybeTrapPokemon": "onAnyMaybeTrapPokemon",
-        "onAnyTrapPokemon": "onAnyTrapPokemon",
-        "onFoeMaybeTrapPokemon": "onFoeMaybeTrapPokemon",
         "onFoeTrapPokemon": "onFoeTrapPokemon"
     },
     "minus": {
@@ -61,9 +59,6 @@
     },
     "raindish": {
         "inherit": true,
-        "onResidual": "onResidual",
-        "onResidualOrder": 10,
-        "onResidualSubOrder": 3,
         "onWeather": "onWeather"
     },
     "roughskin": {
@@ -81,7 +76,6 @@
     "trace": {
         "flags": {},
         "inherit": true,
-        "onStart": "onStart",
         "onUpdate": "onUpdate"
     },
     "truant": {
@@ -89,8 +83,7 @@
         "onBeforeMove": "onBeforeMove",
         "onResidual": "onResidual",
         "onResidualOrder": 27,
-        "onStart": "onStart",
-        "onSwitchIn": "onSwitchIn"
+        "onStart": "onStart"
     },
     "voltabsorb": {
         "inherit": true,

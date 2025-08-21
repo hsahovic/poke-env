@@ -30,15 +30,6 @@
         "onBasePower": "onBasePower",
         "onModifyMove": "onModifyMove",
         "onModifyMovePriority": 1,
-        "rating": -1
-    },
-    "parentalbond": {
-        "inherit": true,
-        "rating": 5
-    },
-    "pixilate": {
-        "inherit": true,
-        "onBasePower": "onBasePower",
         "rating": 4.5
     },
     "refrigerate": {
@@ -55,10 +46,6 @@
         "onBeforeMove": "onBeforeMove",
         "onBeforeMovePriority": 11,
         "onModifyMove": "onModifyMove"
-    },
-    "symbiosis": {
-        "inherit": true,
-        "onAllyAfterUseItem": "onAllyAfterUseItem"
     },
     "weakarmor": {
         "inherit": true,

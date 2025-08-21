@@ -15,10 +15,6 @@
         "inherit": true,
         "onModifyMove": "onModifyMove"
     },
-    "magicbounce": {
-        "inherit": true,
-        "onAllyTryHitSide": "onAllyTryHitSide"
-    },
     "oblivious": {
         "inherit": true,
         "onTryHit": "onTryHit",
@@ -26,22 +22,8 @@
         "rating": 0.5
     },
     "overcoat": {
-        "flags": {},
         "inherit": true,
-        "onTryHit": "onTryHit",
-        "rating": 0.5
-    },
-    "rebound": {
-        "inherit": true,
-        "onAllyTryHitSide": "onAllyTryHitSide"
-    },
-    "sapsipper": {
-        "inherit": true,
-        "onAllyTryHitSide": "onAllyTryHitSide"
-    },
-    "serenegrace": {
-        "inherit": true,
-        "onModifyMove": "onModifyMove"
+        "onTryHit": "onTryHit"
     },
     "soundproof": {
         "inherit": true,

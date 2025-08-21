@@ -345,10 +345,7 @@
     },
     "heatproof": {
         "inherit": true,
-        "onSourceBasePower": "onSourceBasePower",
-        "onSourceBasePowerPriority": 18,
         "onSourceModifyAtk": "onSourceModifyAtk",
-        "onSourceModifySpA": "onSourceModifySpA",
         "rating": 2
     },
     "heavymetal": {
@@ -392,47 +389,8 @@
         "rating": 4
     },
     "illuminate": {
-        "flags": {},
         "inherit": true,
-        "onModifyMove": "onModifyMove",
         "onTryBoost": "onTryBoost",
-        "rating": 0
-    },
-    "illusion": {
-        "inherit": true,
-        "rating": 4.5
-    },
-    "immunity": {
-        "inherit": true,
-        "rating": 2
-    },
-    "imposter": {
-        "inherit": true,
-        "rating": 5
-    },
-    "infiltrator": {
-        "inherit": true,
-        "rating": 2.5
-    },
-    "innardsout": {
-        "inherit": true,
-        "rating": 4
-    },
-    "innerfocus": {
-        "inherit": true,
-        "rating": 1.5
-    },
-    "insomnia": {
-        "inherit": true,
-        "rating": 2
-    },
-    "intimidate": {
-        "inherit": true,
-        "rating": 3.5
-    },
-    "intrepidsword": {
-        "inherit": true,
-        "onStart": "onStart",
         "rating": 4
     },
     "ironbarbs": {

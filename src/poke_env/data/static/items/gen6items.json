@@ -106,8 +106,6 @@
     "souldew": {
         "inherit": true,
         "onBasePower": "onBasePower",
-        "onModifySpA": "onModifySpA",
-        "onModifySpAPriority": 1,
         "onModifySpD": "onModifySpD",
         "onModifySpDPriority": 2
     },
