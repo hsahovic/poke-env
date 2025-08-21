@@ -1,0 +1,267 @@
+{
+    "adamantorb": {
+        "inherit": true,
+        "onBasePower": "onBasePower"
+    },
+    "bigroot": {
+        "inherit": true,
+        "onTryHeal": "onTryHeal"
+    },
+    "blacksludge": {
+        "inherit": true,
+        "onResidualOrder": 10,
+        "onResidualSubOrder": 4
+    },
+    "brightpowder": {
+        "inherit": true,
+        "onModifyAccuracy": "onModifyAccuracy",
+        "onModifyAccuracyPriority": 5
+    },
+    "choiceband": {
+        "inherit": true,
+        "onAfterMove": "onAfterMove",
+        "onModifyMove": "onModifyMove",
+        "onStart": "onStart"
+    },
+    "choicescarf": {
+        "inherit": true,
+        "onAfterMove": "onAfterMove",
+        "onModifyMove": "onModifyMove",
+        "onStart": "onStart"
+    },
+    "choicespecs": {
+        "inherit": true,
+        "onAfterMove": "onAfterMove",
+        "onModifyMove": "onModifyMove",
+        "onStart": "onStart"
+    },
+    "chopleberry": {
+        "inherit": true,
+        "onSourceModifyDamage": "onSourceModifyDamage"
+    },
+    "custapberry": {
+        "inherit": true,
+        "onBeforeTurn": "onBeforeTurn",
+        "onCustap": "onCustap",
+        "onFractionalPriority": "onFractionalPriority"
+    },
+    "deepseascale": {
+        "inherit": true,
+        "onModifySpD": "onModifySpD"
+    },
+    "deepseatooth": {
+        "inherit": true,
+        "onModifySpA": "onModifySpA"
+    },
+    "dracoplate": {
+        "inherit": true,
+        "onTakeItem": true
+    },
+    "dreadplate": {
+        "inherit": true,
+        "onTakeItem": true
+    },
+    "earthplate": {
+        "inherit": true,
+        "onTakeItem": true
+    },
+    "fastball": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "fistplate": {
+        "inherit": true,
+        "onTakeItem": true
+    },
+    "flameorb": {
+        "inherit": true,
+        "onResidualOrder": 10,
+        "onResidualSubOrder": 20
+    },
+    "flameplate": {
+        "inherit": true,
+        "onTakeItem": true
+    },
+    "focussash": {
+        "condition": {
+            "duration": 1,
+            "onAfterMoveSecondary": "onAfterMoveSecondary",
+            "onDamage": "onDamage"
+        },
+        "inherit": true,
+        "onDamage": "onDamage",
+        "onTryHit": "onTryHit"
+    },
+    "griseousorb": {
+        "inherit": true,
+        "onBasePower": "onBasePower"
+    },
+    "heavyball": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "icicleplate": {
+        "inherit": true,
+        "onTakeItem": true
+    },
+    "insectplate": {
+        "inherit": true,
+        "onTakeItem": true
+    },
+    "ironball": {
+        "inherit": true,
+        "onEffectiveness": "onEffectiveness"
+    },
+    "ironplate": {
+        "inherit": true,
+        "onTakeItem": true
+    },
+    "kingsrock": {
+        "inherit": true,
+        "onModifyMove": "onModifyMove"
+    },
+    "laxincense": {
+        "inherit": true,
+        "onModifyAccuracy": "onModifyAccuracy",
+        "onModifyAccuracyPriority": 5
+    },
+    "leftovers": {
+        "inherit": true,
+        "onResidualOrder": 10,
+        "onResidualSubOrder": 4
+    },
+    "levelball": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "lifeorb": {
+        "condition": {
+            "duration": 1,
+            "onAfterMoveSecondarySelf": "onAfterMoveSecondarySelf"
+        },
+        "inherit": true,
+        "onAfterMoveSecondarySelf": "onAfterMoveSecondarySelf",
+        "onBasePower": "onBasePower",
+        "onModifyDamage": "onModifyDamage",
+        "onModifyDamagePhase2": "onModifyDamagePhase2"
+    },
+    "lightball": {
+        "inherit": true,
+        "onBasePower": "onBasePower",
+        "onModifyAtk": "onModifyAtk",
+        "onModifySpA": "onModifySpA"
+    },
+    "loveball": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "luckypunch": {
+        "inherit": true,
+        "onModifyCritRatio": "onModifyCritRatio"
+    },
+    "lureball": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "lustrousorb": {
+        "inherit": true,
+        "onBasePower": "onBasePower"
+    },
+    "meadowplate": {
+        "inherit": true,
+        "onTakeItem": true
+    },
+    "mentalherb": {
+        "fling": {
+            "basePower": 10,
+            "effect": "effect"
+        },
+        "inherit": true,
+        "onUpdate": "onUpdate"
+    },
+    "metronome": {
+        "condition": {
+            "onModifyDamagePhase2": "onModifyDamagePhase2",
+            "onStart": "onStart",
+            "onTryMove": "onTryMove",
+            "onTryMovePriority": -2
+        },
+        "inherit": true
+    },
+    "micleberry": {
+        "condition": {
+            "duration": 2,
+            "onSourceModifyAccuracy": "onSourceModifyAccuracy",
+            "onSourceModifyAccuracyPriority": 3
+        },
+        "inherit": true
+    },
+    "mindplate": {
+        "inherit": true,
+        "onTakeItem": true
+    },
+    "moonball": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "razorfang": {
+        "inherit": true,
+        "onModifyMove": "onModifyMove"
+    },
+    "skyplate": {
+        "inherit": true,
+        "onTakeItem": true
+    },
+    "splashplate": {
+        "inherit": true,
+        "onTakeItem": true
+    },
+    "spookyplate": {
+        "inherit": true,
+        "onTakeItem": true
+    },
+    "sportball": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "stick": {
+        "inherit": true,
+        "onModifyCritRatio": "onModifyCritRatio"
+    },
+    "stickybarb": {
+        "inherit": true,
+        "onResidualOrder": 10,
+        "onResidualSubOrder": 20
+    },
+    "stoneplate": {
+        "inherit": true,
+        "onTakeItem": true
+    },
+    "thickclub": {
+        "inherit": true,
+        "onModifyAtk": "onModifyAtk"
+    },
+    "toxicorb": {
+        "inherit": true,
+        "onResidualOrder": 10,
+        "onResidualSubOrder": 20
+    },
+    "toxicplate": {
+        "inherit": true,
+        "onTakeItem": true
+    },
+    "widelens": {
+        "inherit": true,
+        "onSourceModifyAccuracy": "onSourceModifyAccuracy",
+        "onSourceModifyAccuracyPriority": 4
+    },
+    "zapplate": {
+        "inherit": true,
+        "onTakeItem": true
+    },
+    "zoomlens": {
+        "inherit": true,
+        "onSourceModifyAccuracy": "onSourceModifyAccuracy",
+        "onSourceModifyAccuracyPriority": 4
+    }
+}

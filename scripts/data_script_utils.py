@@ -45,17 +45,19 @@ def fetch_and_clean_ps_data(url: str, deserialize: bool = True):
     # Callback and handlers
     for function_title_match in (r"(on\w+)", r"(\w+Callback)"):
         for n_space in range(10):
-            spaces = " " * (n_space)
+            spaces = " " * n_space
+            # Multi-line bodies
             pattern = (
-                r"^"
-                + spaces
-                + function_title_match
-                + r"\((\w+, )*(\w+)?\) \{\n(.+\n)+?"
-                + spaces
-                + r"\},"
+                    r"^" + spaces + r"(\w+)\((?:[\w\s,]*)\) \{\n"  # method header
+                                    r"(?:.+\n)+?"  # non-greedy body
+                    + spaces + r"\},"
             )
             sub = spaces + r'"\1": "\1",'
             data = re.sub(pattern, sub, data, flags=re.MULTILINE)
+
+            # Empty / one-line bodies like: name() {}
+            pattern_empty = r"^" + spaces + r"(\w+)\((?:[\w\s,]*)\) \{\s*\},"
+            data = re.sub(pattern_empty, sub, data, flags=re.MULTILINE)
         pattern = function_title_match + r"\(\) \{\s*\}"
         sub = r'"\1": "\1"'
         data = re.sub(pattern, sub, data, flags=re.MULTILINE)
@@ -87,7 +89,7 @@ def fetch_and_clean_ps_data(url: str, deserialize: bool = True):
             return json.loads(data)
         else:
             return data
-    except Exception:
+    except Exception as e:
         with open("out.json", "w+") as f:
             f.write(data)
-        raise Exception
+        raise e

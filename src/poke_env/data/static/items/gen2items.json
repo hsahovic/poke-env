@@ -1,0 +1,213 @@
+{
+    "berry": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "berryjuice": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "berserkgene": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "bitterberry": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "blackbelt": {
+        "inherit": true,
+        "onModifyAtk": "onModifyAtk",
+        "onModifyDamage": "onModifyDamage"
+    },
+    "blackglasses": {
+        "inherit": true,
+        "onModifyDamage": "onModifyDamage",
+        "onModifySpA": "onModifySpA"
+    },
+    "brightpowder": {
+        "inherit": true,
+        "onModifyAccuracy": "onModifyAccuracy"
+    },
+    "burntberry": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "charcoal": {
+        "inherit": true,
+        "onModifyDamage": "onModifyDamage",
+        "onModifySpA": "onModifySpA"
+    },
+    "dragonfang": {
+        "inherit": true,
+        "onModifySpA": "onModifySpA"
+    },
+    "dragonscale": {
+        "inherit": true,
+        "onModifyDamage": "onModifyDamage"
+    },
+    "fastball": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "focusband": {
+        "inherit": true,
+        "onDamage": "onDamage"
+    },
+    "goldberry": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "hardstone": {
+        "inherit": true,
+        "onModifyAtk": "onModifyAtk",
+        "onModifyDamage": "onModifyDamage"
+    },
+    "heavyball": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "iceberry": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "kingsrock": {
+        "inherit": true,
+        "onModifyMove": "onModifyMove"
+    },
+    "leftovers": {
+        "inherit": true,
+        "onResidualOrder": 5,
+        "onResidualSubOrder": 1
+    },
+    "levelball": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "lightball": {
+        "inherit": true,
+        "onModifySpA": "onModifySpA"
+    },
+    "loveball": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "luckypunch": {
+        "inherit": true,
+        "onModifyCritRatio": "onModifyCritRatio",
+        "onModifyCritRatioPriority": -1
+    },
+    "lureball": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "magnet": {
+        "inherit": true,
+        "onModifyDamage": "onModifyDamage",
+        "onModifySpA": "onModifySpA"
+    },
+    "metalcoat": {
+        "inherit": true,
+        "onModifyAtk": "onModifyAtk",
+        "onModifyDamage": "onModifyDamage"
+    },
+    "metalpowder": {
+        "inherit": true,
+        "onModifyDef": "onModifyDef",
+        "onModifySpD": "onModifySpD"
+    },
+    "mintberry": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "miracleberry": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "miracleseed": {
+        "inherit": true,
+        "onModifyDamage": "onModifyDamage",
+        "onModifySpA": "onModifySpA"
+    },
+    "moonball": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "mysteryberry": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "mysticwater": {
+        "inherit": true,
+        "onModifyDamage": "onModifyDamage",
+        "onModifySpA": "onModifySpA"
+    },
+    "nevermeltice": {
+        "inherit": true,
+        "onModifyDamage": "onModifyDamage",
+        "onModifySpA": "onModifySpA"
+    },
+    "pinkbow": {
+        "inherit": true,
+        "isNonstandard": null,
+        "onBasePower": "onBasePower",
+        "onModifyDamage": "onModifyDamage"
+    },
+    "poisonbarb": {
+        "inherit": true,
+        "onModifyAtk": "onModifyAtk",
+        "onModifyDamage": "onModifyDamage"
+    },
+    "polkadotbow": {
+        "inherit": true,
+        "isNonstandard": null,
+        "onBasePower": "onBasePower",
+        "onModifyDamage": "onModifyDamage"
+    },
+    "przcureberry": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "psncureberry": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "sharpbeak": {
+        "inherit": true,
+        "onModifyAtk": "onModifyAtk",
+        "onModifyDamage": "onModifyDamage"
+    },
+    "silverpowder": {
+        "inherit": true,
+        "onModifyAtk": "onModifyAtk",
+        "onModifyDamage": "onModifyDamage"
+    },
+    "softsand": {
+        "inherit": true,
+        "onModifyAtk": "onModifyAtk",
+        "onModifyDamage": "onModifyDamage"
+    },
+    "spelltag": {
+        "inherit": true,
+        "onModifyAtk": "onModifyAtk",
+        "onModifyDamage": "onModifyDamage"
+    },
+    "sportball": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "stick": {
+        "inherit": true,
+        "onModifyCritRatio": "onModifyCritRatio",
+        "onModifyCritRatioPriority": -1
+    },
+    "thickclub": {
+        "inherit": true,
+        "onModifyAtk": "onModifyAtk"
+    },
+    "twistedspoon": {
+        "inherit": true,
+        "onModifyDamage": "onModifyDamage",
+        "onModifySpA": "onModifySpA"
+    }
+}

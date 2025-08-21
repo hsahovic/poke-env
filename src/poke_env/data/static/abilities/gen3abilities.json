@@ -1,0 +1,99 @@
+{
+    "cutecharm": {
+        "inherit": true,
+        "onDamagingHit": "onDamagingHit"
+    },
+    "effectspore": {
+        "inherit": true,
+        "onDamagingHit": "onDamagingHit"
+    },
+    "flamebody": {
+        "inherit": true,
+        "onDamagingHit": "onDamagingHit"
+    },
+    "flashfire": {
+        "inherit": true,
+        "onTryHit": "onTryHit"
+    },
+    "forecast": {
+        "flags": {},
+        "inherit": true
+    },
+    "hustle": {
+        "inherit": true,
+        "onSourceModifyAccuracy": "onSourceModifyAccuracy"
+    },
+    "intimidate": {
+        "inherit": true,
+        "onStart": "onStart"
+    },
+    "lightningrod": {
+        "flags": {
+            "breakable": 1
+        },
+        "name": "Lightning Rod",
+        "num": 32,
+        "onFoeRedirectTarget": "onFoeRedirectTarget",
+        "rating": 0
+    },
+    "magnetpull": {
+        "inherit": true,
+        "onAnyMaybeTrapPokemon": "onAnyMaybeTrapPokemon",
+        "onAnyTrapPokemon": "onAnyTrapPokemon",
+        "onFoeMaybeTrapPokemon": "onFoeMaybeTrapPokemon",
+        "onFoeTrapPokemon": "onFoeTrapPokemon"
+    },
+    "minus": {
+        "inherit": true,
+        "onModifySpA": "onModifySpA"
+    },
+    "plus": {
+        "inherit": true,
+        "onModifySpA": "onModifySpA"
+    },
+    "poisonpoint": {
+        "inherit": true,
+        "onDamagingHit": "onDamagingHit"
+    },
+    "pressure": {
+        "inherit": true,
+        "onStart": "onStart"
+    },
+    "raindish": {
+        "inherit": true,
+        "onResidual": "onResidual",
+        "onResidualOrder": 10,
+        "onResidualSubOrder": 3,
+        "onWeather": "onWeather"
+    },
+    "roughskin": {
+        "inherit": true,
+        "onDamagingHit": "onDamagingHit"
+    },
+    "shadowtag": {
+        "inherit": true,
+        "onFoeTrapPokemon": "onFoeTrapPokemon"
+    },
+    "static": {
+        "inherit": true,
+        "onDamagingHit": "onDamagingHit"
+    },
+    "trace": {
+        "flags": {},
+        "inherit": true,
+        "onStart": "onStart",
+        "onUpdate": "onUpdate"
+    },
+    "truant": {
+        "inherit": true,
+        "onBeforeMove": "onBeforeMove",
+        "onResidual": "onResidual",
+        "onResidualOrder": 27,
+        "onStart": "onStart",
+        "onSwitchIn": "onSwitchIn"
+    },
+    "voltabsorb": {
+        "inherit": true,
+        "onTryHit": "onTryHit"
+    }
+}
