@@ -1,2 +1,2 @@
-ray[rllib]==2.48.0
+ray[rllib]==2.49.0
 torch==2.7.1
