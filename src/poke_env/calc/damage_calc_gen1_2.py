@@ -45,7 +45,6 @@ def calculate_damage_gen12(
     """
     attacker = battle.get_pokemon(attacker_identifier)
     defender = battle.get_pokemon(defender_identifier)
-
     assert battle.player_role is not None and battle.opponent_role is not None
     assert all(
         map(
@@ -126,7 +125,6 @@ def calculate_damage_gen12(
     )
 
     type_effectiveness = first_type_effectiveness * second_type_effectiveness
-
     if type_effectiveness == 0:
         return (0, 0,[0])
     
@@ -157,9 +155,8 @@ def calculate_damage_gen12(
     is_physical = move.category == MoveCategory.PHYSICAL
     attack_stat = 'atk' if is_physical else 'spa'
     defense_stat = 'def' if is_physical else 'spd'
-
-    at = attacker.stats[attack_stat]
-    df = defender.stats[defense_stat]
+    at = int(attacker.stats[attack_stat] * BOOST_MULTIPLIERS[attacker.boosts[attack_stat]])
+    df = int(defender.stats[defense_stat] * BOOST_MULTIPLIERS[defender.boosts[defense_stat]])
 
     # Determine if modifiers should be ignored due to a critical hit
     ignore_mods = (
@@ -210,7 +207,6 @@ def calculate_damage_gen12(
         at = (at // 4) % 256
         df = (df // 4) % 256
 
-
     # Gen 2 Present has a glitched damage calculation using the secondary types of the Pokemon
     # for the Attacker's Level and Defender's Defense.
     if move.id == 'present':
@@ -230,15 +226,12 @@ def calculate_damage_gen12(
 
     if defender.name == 'ditto' and defender.item == 'metalpowder':
         df = math.floor(df * 1.5)
-    # print(f'ATTACK:{at}')
-    # print(f'DEFENSE:{df}')
-    # print(f'LEVEL:{lv}')
+
     base_damage = math.floor(
         math.floor(
             math.floor((2 * lv) / 5 + 2) * max(1, at) * move.base_power / max(1, df)
         ) / 50
     )
-    # print(f'Base Damage:{base_damage}')
     # Gen 1 handles move.isCrit above by doubling level
     if battle.gen == 2 and is_critical:
         base_damage *= 2
@@ -311,6 +304,22 @@ def calculate_damage_gen12(
         return (min(damage),max(damage),damage)
     
 
+BOOST_MULTIPLIERS = {
+    -6: 2.0 / 8,
+    -5: 2.0 / 7,
+    -4: 2.0 / 6,
+    -3: 2.0 / 5,
+    -2: 2.0 / 4,
+    -1: 2.0 / 3,
+    0: 1,
+    1: 1.5,
+    2: 2,
+    3: 2.5,
+    4: 3,
+    5: 3.5,
+    6: 4,
+}
+
 TYPE_EFFECTIVENESS_PRECEDENCE_RULES = [
     'NORMAL', 'FIRE', 'WATER', 'ELECTRIC', 'GRASS', 'ICE', 'FIGHTING',
     'POISON', 'GROUND', 'FLYING', 'PSYCHIC', 'BUG', 'ROCK', 'GHOST',
@@ -348,7 +357,7 @@ is_ring_target: Optional[bool] = False,
         and move_type in (PokemonType.NORMAL, PokemonType.FIGHTING)
     ):
         return 1
-    elif move.id == "struggle":
+    elif move.id == "struggle" and gen>1:
         return 1
     elif is_gravity and type == PokemonType.FLYING and move_type == PokemonType.GROUND:
         return 1
