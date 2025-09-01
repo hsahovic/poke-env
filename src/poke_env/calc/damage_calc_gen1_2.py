@@ -19,7 +19,9 @@ from poke_env.battle import (
     Weather,
 )
 from poke_env.data import GenData
+
 # Source: https://github.com/smogon/damage-calc/blob/master/calc/src/mechanics/gen12.ts
+
 
 def calculate_damage_gen12(
     attacker_identifier: str,
@@ -60,11 +62,11 @@ def calculate_damage_gen12(
     ), "defender stats not defined"
     move_category = move.category
     if move_category == MoveCategory.STATUS:
-        return (0,0,[0])
-    
+        return (0, 0, [0])
+
     if any(map(lambda x: x in PROTECT_EFFECTS, defender.effects)):
-        return (0,0,[0])
-    
+        return (0, 0, [0])
+
     if move.id == "painsplit":
         attacker_hp_stat = attacker.stats.get("hp", None)
         defender_hp_stat = defender.stats.get("hp", None)
@@ -80,25 +82,32 @@ def calculate_damage_gen12(
                 else 0
             )
             damage = max(0, defender_hp - math.floor((attacker_hp + defender_hp) / 2))
-            return (damage,damage,[damage])
+            return (damage, damage, [damage])
         else:
-            return (0, 0,[0])
-    if battle.gen == 1 and 'damage' in move.entry:
-       damage = handleFixedDamageMoves(attacker,move)
-       return (damage,damage,[damage])
-    
+            return (0, 0, [0])
+    if battle.gen == 1 and "damage" in move.entry:
+        damage = handleFixedDamageMoves(attacker, move)
+        return (damage, damage, [damage])
+
     first_defender_type = defender.type_1
     second_defender_type = defender.type_2 if len(defender.types) > 1 else None
     if (
-        second_defender_type and
-        first_defender_type != second_defender_type and
-        battle.gen == 2
+        second_defender_type
+        and first_defender_type != second_defender_type
+        and battle.gen == 2
     ):
-        first_type_precedence = TYPE_EFFECTIVENESS_PRECEDENCE_RULES.index(first_defender_type.name)
-        second_type_precedence = TYPE_EFFECTIVENESS_PRECEDENCE_RULES.index(second_defender_type.name)
+        first_type_precedence = TYPE_EFFECTIVENESS_PRECEDENCE_RULES.index(
+            first_defender_type.name
+        )
+        second_type_precedence = TYPE_EFFECTIVENESS_PRECEDENCE_RULES.index(
+            second_defender_type.name
+        )
 
         if first_type_precedence > second_type_precedence:
-            first_defender_type, second_defender_type = second_defender_type, first_defender_type
+            first_defender_type, second_defender_type = (
+                second_defender_type,
+                first_defender_type,
+            )
 
     move_type = move.type
     first_type_effectiveness = get_move_effectiveness(
@@ -126,43 +135,48 @@ def calculate_damage_gen12(
 
     type_effectiveness = first_type_effectiveness * second_type_effectiveness
     if type_effectiveness == 0:
-        return (0, 0,[0])
-    
-    if battle.gen == 2 and 'damage' in move.entry:
-        damage = handleFixedDamageMoves(attacker,move)
-        return (damage,damage,[damage])
-    
-    if move.id in ('flail','reversal'):
+        return (0, 0, [0])
+
+    if battle.gen == 2 and "damage" in move.entry:
+        damage = handleFixedDamageMoves(attacker, move)
+        return (damage, damage, [damage])
+
+    if move.id in ("flail", "reversal"):
         is_critical = False
         p = (48 * attacker.current_hp) // attacker.max_hp
         if p <= 1:
-            move._base_power_override  = 200
+            move._base_power_override = 200
         elif p <= 4:
-            move._base_power_override  = 150
+            move._base_power_override = 150
         elif p <= 9:
-            move._base_power_override  = 100
+            move._base_power_override = 100
         elif p <= 16:
             move._base_power_override = 80
         elif p <= 32:
-            move._base_power_override  = 40
+            move._base_power_override = 40
         else:
             move._base_power_override = 20
-    elif move.id == 'present': # doesn't calculate for other base power options
+    elif move.id == "present":  # doesn't calculate for other base power options
         move._base_power_override = 40
     if move.base_power == 0:
-        return (0,0,[0])
-    
+        return (0, 0, [0])
+
     is_physical = move.category == MoveCategory.PHYSICAL
-    attack_stat = 'atk' if is_physical else 'spa'
-    defense_stat = 'def' if is_physical else 'spd'
-    at = int(attacker.stats[attack_stat] * BOOST_MULTIPLIERS[attacker.boosts[attack_stat]])
-    df = int(defender.stats[defense_stat] * BOOST_MULTIPLIERS[defender.boosts[defense_stat]])
+    attack_stat = "atk" if is_physical else "spa"
+    defense_stat = "def" if is_physical else "spd"
+    at = int(
+        attacker.stats[attack_stat] * BOOST_MULTIPLIERS[attacker.boosts[attack_stat]]
+    )
+    df = int(
+        defender.stats[defense_stat] * BOOST_MULTIPLIERS[defender.boosts[defense_stat]]
+    )
 
     # Determine if modifiers should be ignored due to a critical hit
-    ignore_mods = (
-        is_critical and (
-            battle.gen == 1 or
-            (battle.gen == 2 and attacker.boosts[attack_stat] <= defender.boosts[defense_stat])
+    ignore_mods = is_critical and (
+        battle.gen == 1
+        or (
+            battle.gen == 2
+            and attacker.boosts[attack_stat] <= defender.boosts[defense_stat]
         )
     )
 
@@ -181,7 +195,7 @@ def calculate_damage_gen12(
     assert at is not None, f"{attack_stat} is None in attacker.stats"
     assert df is not None, f"{defense_stat} is None in defender.stats"
     # Explosion and Self-Destruct halve the defender's defense
-    if move.id in ['explosion', 'selfdestruct']:
+    if move.id in ["explosion", "selfdestruct"]:
         df = df // 2
     defender_side_conditions = (
         battle.side_conditions
@@ -197,8 +211,13 @@ def calculate_damage_gen12(
 
     # Item-based attack boosts
     if (
-        (attacker.species == 'pikachu' and attacker.item == 'lightball' and not is_physical) or
-        (attacker.species in ['cubone', 'marowak'] and attacker.item == 'thickclub' and is_physical)
+        attacker.species == "pikachu"
+        and attacker.item == "lightball"
+        and not is_physical
+    ) or (
+        attacker.species in ["cubone", "marowak"]
+        and attacker.item == "thickclub"
+        and is_physical
     ):
         at *= 2
 
@@ -209,33 +228,52 @@ def calculate_damage_gen12(
 
     # Gen 2 Present has a glitched damage calculation using the secondary types of the Pokemon
     # for the Attacker's Level and Defender's Defense.
-    if move.id == 'present':
+    if move.id == "present":
         lookup = {
-            'NORMAL': 0, 'FIGHTING': 1, 'FLYING': 2, 'POISON': 3, 'GROUND': 4, 'ROCK': 5, 'BUG': 7,
-            'GHOST': 8, 'STEEL': 9, '???': 19, 'FIRE': 20, 'WATER': 21, 'GRASS': 22, 'ELECTRIC': 23,
-            'PSYCHIC': 24, 'ICE': 25, 'DRAGON': 26, 'DARK': 27,
+            "NORMAL": 0,
+            "FIGHTING": 1,
+            "FLYING": 2,
+            "POISON": 3,
+            "GROUND": 4,
+            "ROCK": 5,
+            "BUG": 7,
+            "GHOST": 8,
+            "STEEL": 9,
+            "???": 19,
+            "FIRE": 20,
+            "WATER": 21,
+            "GRASS": 22,
+            "ELECTRIC": 23,
+            "PSYCHIC": 24,
+            "ICE": 25,
+            "DRAGON": 26,
+            "DARK": 27,
         }
 
         at = 10
 
-        attacker_type = attacker.type_2 if attacker.type_2 is not None else attacker.type_1
-        defender_type = defender.type_2 if defender.type_2 is not None else defender.type_1
+        attacker_type = (
+            attacker.type_2 if attacker.type_2 is not None else attacker.type_1
+        )
+        defender_type = (
+            defender.type_2 if defender.type_2 is not None else defender.type_1
+        )
 
         df = max(lookup.get(attacker_type.name, 1), 1)
         lv = max(lookup.get(defender_type.name, 1), 1)
 
-    if defender.name == 'ditto' and defender.item == 'metalpowder':
+    if defender.name == "ditto" and defender.item == "metalpowder":
         df = math.floor(df * 1.5)
 
     base_damage = math.floor(
         math.floor(
             math.floor((2 * lv) / 5 + 2) * max(1, at) * move.base_power / max(1, df)
-        ) / 50
+        )
+        / 50
     )
     # Gen 1 handles move.isCrit above by doubling level
     if battle.gen == 2 and is_critical:
         base_damage *= 2
-
 
     # Gen 2 item handling
     if attacker.item:
@@ -247,10 +285,16 @@ def calculate_damage_gen12(
         base_damage = math.floor(base_damage * 1.1)
 
     base_damage = min(997, base_damage) + 2
-    if (Weather.SUNNYDAY in battle.weather and move.type ==PokemonType.FIRE) or (Weather.RAINDANCE in battle.weather and move.type == PokemonType.WATER):
+    if (Weather.SUNNYDAY in battle.weather and move.type == PokemonType.FIRE) or (
+        Weather.RAINDANCE in battle.weather and move.type == PokemonType.WATER
+    ):
 
         base_damage = math.floor(base_damage * 1.5)
-    elif (Weather.SUNNYDAY in battle.weather and move.type ==PokemonType.WATER) or (Weather.RAINDANCE in battle.weather and move.type == PokemonType.FIRE) or move.id == 'solarbeam':
+    elif (
+        (Weather.SUNNYDAY in battle.weather and move.type == PokemonType.WATER)
+        or (Weather.RAINDANCE in battle.weather and move.type == PokemonType.FIRE)
+        or move.id == "solarbeam"
+    ):
         base_damage = math.floor(base_damage / 2)
 
     if any(move.type == t for t in attacker.types):
@@ -262,9 +306,9 @@ def calculate_damage_gen12(
     else:
         base_damage = math.floor(base_damage * type_effectiveness)
     # Flail and Reversal don't use random factor
-    if move.id in ('flail', 'reversal'):
+    if move.id in ("flail", "reversal"):
         damage = base_damage
-        return (damage,damage,[damage])
+        return (damage, damage, [damage])
     damage = []
 
     for i in range(217, 256):
@@ -278,7 +322,7 @@ def calculate_damage_gen12(
             else:
                 dmg = math.floor((base_damage * i) / 255)
         damage.append(dmg)
-    if 'multihit' in move.entry:
+    if "multihit" in move.entry:
         damage_matrix = [[damage]]
         min_vector = []
         max_vector = []
@@ -287,22 +331,28 @@ def calculate_damage_gen12(
             hit_damage = []
             for damage_multiplier in range(217, 256):
                 if battle.gen == 2:
-                    new_final_damage = max(1, math.floor((base_damage * damage_multiplier) / 255))
+                    new_final_damage = max(
+                        1, math.floor((base_damage * damage_multiplier) / 255)
+                    )
                 else:
-                    new_final_damage = 1 if base_damage == 1 else math.floor((base_damage * damage_multiplier) / 255)
+                    new_final_damage = (
+                        1
+                        if base_damage == 1
+                        else math.floor((base_damage * damage_multiplier) / 255)
+                    )
 
                 hit_damage.append(new_final_damage)
             min_vector.append(min(hit_damage))
             max_vector.append(max(hit_damage))
 
             damage_matrix.append(hit_damage)
-        return(min_vector,max_vector,damage_matrix)
-    
+        return (min_vector, max_vector, damage_matrix)
+
     elif type(damage) == int:
-        return (damage,damage,[damage])
+        return (damage, damage, [damage])
     else:
-        return (min(damage),max(damage),damage)
-    
+        return (min(damage), max(damage), damage)
+
 
 BOOST_MULTIPLIERS = {
     -6: 2.0 / 8,
@@ -321,9 +371,23 @@ BOOST_MULTIPLIERS = {
 }
 
 TYPE_EFFECTIVENESS_PRECEDENCE_RULES = [
-    'NORMAL', 'FIRE', 'WATER', 'ELECTRIC', 'GRASS', 'ICE', 'FIGHTING',
-    'POISON', 'GROUND', 'FLYING', 'PSYCHIC', 'BUG', 'ROCK', 'GHOST',
-    'DRAGON', 'DARK', 'STEEL'
+    "NORMAL",
+    "FIRE",
+    "WATER",
+    "ELECTRIC",
+    "GRASS",
+    "ICE",
+    "FIGHTING",
+    "POISON",
+    "GROUND",
+    "FLYING",
+    "PSYCHIC",
+    "BUG",
+    "ROCK",
+    "GHOST",
+    "DRAGON",
+    "DARK",
+    "STEEL",
 ]
 PROTECT_EFFECTS = {
     Effect.PROTECT,
@@ -336,20 +400,22 @@ PROTECT_EFFECTS = {
     Effect.SILK_TRAP,
 }
 
+
 def handleFixedDamageMoves(attacker: Pokemon, move: Move):
-  if move.entry['damage'] == 'level':
-    return attacker.level
-  else:
-    return move.entry['damage']
-  
+    if move.entry["damage"] == "level":
+        return attacker.level
+    else:
+        return move.entry["damage"]
+
+
 def get_move_effectiveness(
-gen: int,
-move: Move,
-move_type: PokemonType,
-type: PokemonType,
-is_ghost_revealed: Optional[bool] = False,
-is_gravity: Optional[bool] = False,
-is_ring_target: Optional[bool] = False,
+    gen: int,
+    move: Move,
+    move_type: PokemonType,
+    type: PokemonType,
+    is_ghost_revealed: Optional[bool] = False,
+    is_gravity: Optional[bool] = False,
+    is_ring_target: Optional[bool] = False,
 ) -> float:
     if (
         is_ghost_revealed
@@ -357,7 +423,7 @@ is_ring_target: Optional[bool] = False,
         and move_type in (PokemonType.NORMAL, PokemonType.FIGHTING)
     ):
         return 1
-    elif move.id == "struggle" and gen>1:
+    elif move.id == "struggle" and gen > 1:
         return 1
     elif is_gravity and type == PokemonType.FLYING and move_type == PokemonType.GROUND:
         return 1
@@ -374,53 +440,53 @@ is_ring_target: Optional[bool] = False,
                 PokemonType.FLYING, type, type_chart=GenData.from_gen(gen).type_chart
             )
         return effectiveness
-    
 
-def get_item_boost_type(item: str) -> Optional[str]:    
+
+def get_item_boost_type(item: str) -> Optional[str]:
     item_type_map = {
-        'dracoplate': 'DRAGON',
-        'dragonfang': 'undefined',
-        'dragonscale': 'DRAGON',
-        'dreadplate': 'DARK',
-        'blackglasses': 'DARK',
-        'earthplate': 'GROUND',
-        'softsand': 'GROUND',
-        'fistplate': 'FIGHTING',
-        'blackbelt': 'FIGHTING',
-        'flameplate': 'FIRE',
-        'charcoal': 'FIRE',
-        'icicleplate': 'ICE',
-        'nevermeltice': 'ICE',
-        'insectplate': 'BUG',
-        'silverpowder': 'BUG',
-        'ironplate': 'STEEL',
-        'metalcoat': 'STEEL',
-        'meadowplate': 'GRASS',
-        'roseincense': 'GRASS',
-        'miracleseed': 'GRASS',
-        'mindplate': 'PSYCHIC',
-        'oddincense': 'PSYCHIC',
-        'twistedspoon': 'PSYCHIC',
-        'fairyfeather': 'FAIRY',
-        'pixieplate': 'FAIRY',
-        'skyplate': 'FLYING',
-        'sharpbeak': 'FLYING',
-        'splashplate': 'WATER',
-        'seaincense': 'WATER',
-        'waveincense': 'WATER',
-        'mysticwater': 'WATER',
-        'spookyplate': 'GHOST',
-        'spelltag': 'GHOST',
-        'stoneplate': 'ROCK',
-        'rockincense': 'ROCK',
-        'hardstone': 'ROCK',
-        'toxicplate': 'POISON',
-        'poisonbarb': 'POISON',
-        'zapplate': 'ELECTRIC',
-        'magnet': 'ELECTRIC',
-        'silkscarf': 'NORMAL',
-        'pinkbow': 'NORMAL',
-        'polkadotbow': 'NORMAL'
+        "dracoplate": "DRAGON",
+        "dragonfang": "undefined",
+        "dragonscale": "DRAGON",
+        "dreadplate": "DARK",
+        "blackglasses": "DARK",
+        "earthplate": "GROUND",
+        "softsand": "GROUND",
+        "fistplate": "FIGHTING",
+        "blackbelt": "FIGHTING",
+        "flameplate": "FIRE",
+        "charcoal": "FIRE",
+        "icicleplate": "ICE",
+        "nevermeltice": "ICE",
+        "insectplate": "BUG",
+        "silverpowder": "BUG",
+        "ironplate": "STEEL",
+        "metalcoat": "STEEL",
+        "meadowplate": "GRASS",
+        "roseincense": "GRASS",
+        "miracleseed": "GRASS",
+        "mindplate": "PSYCHIC",
+        "oddincense": "PSYCHIC",
+        "twistedspoon": "PSYCHIC",
+        "fairyfeather": "FAIRY",
+        "pixieplate": "FAIRY",
+        "skyplate": "FLYING",
+        "sharpbeak": "FLYING",
+        "splashplate": "WATER",
+        "seaincense": "WATER",
+        "waveincense": "WATER",
+        "mysticwater": "WATER",
+        "spookyplate": "GHOST",
+        "spelltag": "GHOST",
+        "stoneplate": "ROCK",
+        "rockincense": "ROCK",
+        "hardstone": "ROCK",
+        "toxicplate": "POISON",
+        "poisonbarb": "POISON",
+        "zapplate": "ELECTRIC",
+        "magnet": "ELECTRIC",
+        "silkscarf": "NORMAL",
+        "pinkbow": "NORMAL",
+        "polkadotbow": "NORMAL",
     }
 
     return item_type_map.get(item)
