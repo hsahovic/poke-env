@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - name: Checkout repository code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       # Setup Python with caching
       - name: Setup Python
@@ -64,7 +64,7 @@ jobs:
           node-version: 18
 
       - name: Checkout PS
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: smogon/pokemon-showdown
           path: pokemon-showdown
