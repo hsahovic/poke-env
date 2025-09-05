@@ -6,16 +6,16 @@ from poke_env.environment.env import ActionType, ObsType, PokeEnv
 from poke_env.player.player import Player
 
 
-class SingleAgentWrapper(Env[ObsType, ActionType]):
+class SingleAgentWrapper(Env[Dict[str, ObsType], ActionType]):
     def __init__(self, env: PokeEnv[ObsType, ActionType], opponent: Player):
         self.env = env
         self.opponent = opponent
-        self.observation_space = list(env.observation_spaces.values())[0]
-        self.action_space = list(env.action_spaces.values())[0]
+        self.observation_space = env.observation_spaces[env.agent1.username]
+        self.action_space = env.action_spaces[env.agent1.username]
 
     def step(
         self, action: ActionType
-    ) -> Tuple[ObsType, float, bool, bool, Dict[str, Any]]:
+    ) -> Tuple[Dict[str, ObsType], float, bool, bool, Dict[str, Any]]:
         assert self.env.battle2 is not None
         opp_order = self.opponent.choose_move(self.env.battle2)
         assert not isinstance(opp_order, Awaitable)
@@ -37,7 +37,7 @@ class SingleAgentWrapper(Env[ObsType, ActionType]):
 
     def reset(
         self, *, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None
-    ) -> Tuple[ObsType, Dict[str, Any]]:
+    ) -> Tuple[Dict[str, ObsType], Dict[str, Any]]:
         obs, infos = self.env.reset(seed, options)
         self._np_random = self.env._np_random
         return obs[self.env.agent1.username], infos[self.env.agent1.username]
