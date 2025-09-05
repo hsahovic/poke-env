@@ -339,10 +339,7 @@ class SimpleHeuristicsPlayer(Player):
             switches: List[Pokemon] = battle.available_switches
             return (
                 self.create_order(
-                    max(
-                        switches,
-                        key=lambda s: self._estimate_matchup(s, opponent),
-                    )
+                    max(switches, key=lambda s: self._estimate_matchup(s, opponent))
                 ),
                 0,
             )
