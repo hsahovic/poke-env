@@ -325,6 +325,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
                 raise RuntimeError(
                     "Environment and agent aren't synchronized. Try to restart"
                 )
+        self.reset_battles()
         self._challenge_task = asyncio.run_coroutine_threadsafe(
             self.agent1.battle_against(self.agent2, n_battles=1), POKE_LOOP
         )
