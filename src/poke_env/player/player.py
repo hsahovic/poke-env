@@ -401,9 +401,7 @@ class Player(ABC):
                 battle.parse_message(split_message)
 
     async def _handle_battle_request(
-        self,
-        battle: AbstractBattle,
-        maybe_default_order: bool = False,
+        self, battle: AbstractBattle, maybe_default_order: bool = False
     ):
         if maybe_default_order and (
             "illusion" in [p.ability for p in battle.team.values()]
@@ -419,7 +417,8 @@ class Player(ABC):
             if isinstance(choice, Awaitable):
                 choice = await choice
             message = choice.message
-        await self.ps_client.send_message(message, battle.battle_tag)
+        if message:
+            await self.ps_client.send_message(message, battle.battle_tag)
 
     async def _handle_challenge_request(self, split_message: List[str]):
         """Handles an individual challenge."""

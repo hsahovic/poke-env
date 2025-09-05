@@ -931,11 +931,7 @@ class AbstractBattle(ABC):
                 )
             else:
                 return self._players.append(
-                    {
-                        "username": username,
-                        "player": player,
-                        "avatar": avatar,
-                    }
+                    {"username": username, "player": player, "avatar": avatar}
                 )
 
         elif event[1] == "poke":
