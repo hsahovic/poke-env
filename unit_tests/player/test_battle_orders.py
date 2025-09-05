@@ -3,6 +3,7 @@ from poke_env.player import (
     BattleOrder,
     DoubleBattleOrder,
     ForfeitBattleOrder,
+    PassBattleOrder,
     SingleBattleOrder,
 )
 
@@ -31,6 +32,19 @@ def test_single_orders():
 
     mon = Pokemon(species="charizard", gen=8)
     assert SingleBattleOrder(mon).message == "/choose switch charizard"
+
+    assert SingleBattleOrder(move, mega=True, move_target=2) == SingleBattleOrder(
+        move, mega=True, move_target=2
+    )
+
+
+def test_pass_order():
+    po = PassBattleOrder()
+    assert isinstance(po, BattleOrder)
+    assert po.message == "/choose pass"
+
+    so = PassBattleOrder()
+    assert so == po
 
 
 def test_double_orders():

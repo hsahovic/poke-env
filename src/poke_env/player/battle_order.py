@@ -17,6 +17,9 @@ class BattleOrder:
     def message(self) -> str:
         pass
 
+    def __eq__(self, other) -> bool:
+        return isinstance(other, BattleOrder) and self.message == other.message
+
 
 class ForfeitBattleOrder(BattleOrder):
     @property
@@ -102,6 +105,6 @@ class DoubleBattleOrder(BattleOrder):
         ]
 
 
-class DefaultBattleOrder(SingleBattleOrder, DoubleBattleOrder):
+class DefaultBattleOrder(SingleBattleOrder):
     def __init__(self):
         super().__init__("/choose default")
