@@ -41,8 +41,10 @@ class _AsyncQueue(Generic[ItemType]):
     async def async_get(self) -> ItemType:
         return await self.queue.get()
 
-    def get(self) -> ItemType:
-        res = asyncio.run_coroutine_threadsafe(self.async_get(), POKE_LOOP)
+    def get(self, timeout: Optional[float] = None) -> ItemType:
+        res = asyncio.run_coroutine_threadsafe(
+            asyncio.wait_for(self.async_get(), timeout), POKE_LOOP
+        )
         return res.result()
 
     def race_get(self, *events: asyncio.Event) -> Optional[ItemType]:
@@ -100,13 +102,8 @@ class _EnvPlayer(Player):
 
 class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
     """
-    Base class implementing the Gymnasium API on the main thread.
+    Base class implementing the PettingZoo API on the main thread.
     """
-
-    _INIT_RETRIES = 100
-    _TIME_BETWEEN_RETRIES = 0.5
-    _SWITCH_CHALLENGE_TASK_RETRIES = 30
-    _TIME_BETWEEN_SWITCH_RETRIES = 1
 
     def __init__(
         self,
@@ -126,6 +123,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         open_timeout: Optional[float] = 10.0,
         ping_interval: Optional[float] = 20.0,
         ping_timeout: Optional[float] = 20.0,
+        challenge_timeout: Optional[float] = 60.0,
         team: Optional[Union[str, Teambuilder]] = None,
         fake: bool = False,
         strict: bool = True,
@@ -170,6 +168,9 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             (important for backend websockets.
             Increase only if timeouts occur during runtime).
             If None pings will never time out.
+        :type challenge_timeout: float, optional
+        :param challenge_timeout: How long to wait for agents to challenge.
+            If None agent challenging will never time out.
         :type ping_timeout: float, optional
         :param team: The team to use for formats requiring a team. Can be a showdown
             team string, a showdown packed team string, of a ShowdownTeam object.
@@ -183,6 +184,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             illegal. Otherwise, it will return default. Defaults to True.
         :type: strict: bool
         """
+        self._challenge_timeout = challenge_timeout
         self.agent1 = _EnvPlayer(
             account_configuration=account_configuration1
             or AccountConfiguration.generate(self.__class__.__name__, rand=True),
@@ -326,14 +328,10 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         self._challenge_task = asyncio.run_coroutine_threadsafe(
             self.agent1.battle_against(self.agent2, n_battles=1), POKE_LOOP
         )
-        if not self.agent1.battle or not self.agent2.battle:
-            count = self._INIT_RETRIES
-            while not self.agent1.battle or not self.agent2.battle:
-                if count == 0:
-                    raise RuntimeError("Agent is not challenging")
-                count -= 1
-                time.sleep(self._TIME_BETWEEN_RETRIES)
-        self.battle1 = self.agent1.battle_queue.get()
+        try:
+            self.battle1 = self.agent1.battle_queue.get(timeout=self._challenge_timeout)
+        except asyncio.TimeoutError:
+            raise asyncio.TimeoutError("Agent is not challenging")
         self.battle2 = self.agent2.battle_queue.get()
         self.agent1_to_move = True
         self.agent2_to_move = True
