@@ -433,11 +433,9 @@ def test_dondozo_tatsugiri():
     tatsu._ability = "commander"
     battle.team["p1: Tatsugiri"] = tatsu
 
+    battle.parse_message(["", "switch", "p1a: Dondozo", "Dondozo, L50, F", "100/100"])
     battle.parse_message(
-        ["", "switch", "p1a: Dondozo", "Dondozo, L50, F", "100/100"],
-    )
-    battle.parse_message(
-        ["", "switch", "p1b: Tatsugiri", "Tatsugiri, L50, F", "100/100"],
+        ["", "switch", "p1b: Tatsugiri", "Tatsugiri, L50, F", "100/100"]
     )
     battle.parse_message(
         ["", "-activate", "p1b: Tatsugiri", "ability: Commander", "[of] p1a: Dondozo"]
