@@ -79,6 +79,7 @@ def test_powerherb_ends_move_preparation():
     mon = Pokemon(species="roserade", gen=8)
     mon.item = "powerherb"
 
+    mon.moved("solarbeam", failed=True)
     mon.prepare("solarbeam", None)
     assert mon.preparing
 
@@ -332,7 +333,7 @@ def test_temporary():
     furret.start_effect("typechange", "Fighting")
     assert furret.damage_multiplier(PokemonType.PSYCHIC) == 2
 
-    furret.switch_out()
+    furret.switch_out({})
     furret.switch_in()
 
     assert furret.ability == "adaptability"
@@ -348,6 +349,6 @@ def test_temporary():
     furret.set_temporary_ability(None)
     assert furret.ability is None
 
-    furret.switch_out()
+    furret.switch_out({})
     assert furret.ability == "adaptability"
     assert furret.types == [PokemonType.DRAGON]

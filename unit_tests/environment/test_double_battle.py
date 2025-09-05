@@ -32,6 +32,7 @@ def test_battle_request_parsing(example_doubles_request):
 def test_battle_request_parsing_and_interactions(example_doubles_request):
     logger = MagicMock()
     battle = DoubleBattle("tag", "username", logger, gen=8)
+    battle._player_role = "p1"
 
     battle.parse_request(example_doubles_request)
     mr_rime, klinklang = battle.active_pokemon
@@ -148,6 +149,7 @@ def test_check_heal_message_for_ability():
 def test_get_possible_showdown_targets(example_doubles_request):
     logger = MagicMock()
     battle = DoubleBattle("tag", "username", logger, gen=8)
+    battle._player_role = "p1"
 
     battle.parse_request(example_doubles_request)
     mr_rime, klinklang = battle.active_pokemon
@@ -177,6 +179,7 @@ def test_get_possible_showdown_targets(example_doubles_request):
 def test_to_showdown_target(example_doubles_request):
     logger = MagicMock()
     battle = DoubleBattle("tag", "username", logger, gen=8)
+    battle._player_role = "p1"
 
     battle.parse_request(example_doubles_request)
     mr_rime, klinklang = battle.active_pokemon
