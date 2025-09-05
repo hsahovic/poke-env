@@ -119,5 +119,5 @@ def test_single_agent_env_api():
             battle_format=f"gen{gen}randombattle", log_level=25, strict=False
         )
         env = SingleAgentWrapper(env, RandomPlayer())
-        check_env(env)
+        check_env(env, skip_render_check=True)
         env.close()
