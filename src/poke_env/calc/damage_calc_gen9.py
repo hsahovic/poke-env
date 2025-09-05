@@ -327,7 +327,7 @@ def calculate_damage(
                 battle.player_role
                 if defender in battle.active_pokemon
                 else battle.opponent_role
-            ),
+            )
         )
     else:
         defender_identifier = defender.identifier(
@@ -506,14 +506,14 @@ def calculate_base_power(
                 battle.player_role
                 if attacker in battle.active_pokemon
                 else battle.opponent_role
-            ),
+            )
         )
         defender_identifier = defender.identifier(
             (
                 battle.player_role
                 if defender in battle.active_pokemon
                 else battle.opponent_role
-            ),
+            )
         )
     else:
         attacker_identifier = attacker.identifier(
