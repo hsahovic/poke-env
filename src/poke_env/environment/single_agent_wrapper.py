@@ -36,10 +36,7 @@ class SingleAgentWrapper(Env[Dict[str, ObsType], ActionType]):
         )
 
     def reset(
-        self,
-        *,
-        seed: Optional[int] = None,
-        options: Optional[Dict[str, Any]] = None,
+        self, *, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None
     ) -> Tuple[Dict[str, ObsType], Dict[str, Any]]:
         obs, infos = self.env.reset(seed, options)
         self._np_random = self.env._np_random

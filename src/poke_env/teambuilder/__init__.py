@@ -4,8 +4,4 @@ from poke_env.teambuilder.constant_teambuilder import ConstantTeambuilder
 from poke_env.teambuilder.teambuilder import Teambuilder
 from poke_env.teambuilder.teambuilder_pokemon import TeambuilderPokemon
 
-__all__ = [
-    "ConstantTeambuilder",
-    "Teambuilder",
-    "TeambuilderPokemon",
-]
+__all__ = ["ConstantTeambuilder", "Teambuilder", "TeambuilderPokemon"]

@@ -129,9 +129,7 @@ def test_simple_heuristics_player_should_switch_out():
     player = SimpleHeuristicsPlayer(start_listening=False)
 
     battle = PseudoBattle(
-        Pokemon(species="charmander", gen=8),
-        Pokemon(species="charmander", gen=8),
-        [],
+        Pokemon(species="charmander", gen=8), Pokemon(species="charmander", gen=8), []
     )
     battle.active_pokemon.stats = {stat: 0 for stat in battle.active_pokemon.base_stats}
     assert player._should_switch_out(battle) is False
