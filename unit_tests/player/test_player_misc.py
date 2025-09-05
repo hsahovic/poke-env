@@ -282,10 +282,7 @@ async def test_create_teampreview_team(showdown_format_teams):
 @pytest.mark.asyncio
 async def test_parse_showteam(packed_format_teams):
     packed_team = packed_format_teams["gen9vgc2025regi"][0]
-    player = SimplePlayer(
-        battle_format="gen9vgc2025regi",
-        team=packed_team,
-    )
+    player = SimplePlayer(battle_format="gen9vgc2025regi", team=packed_team)
     battle = await player._create_battle(["", "gen9vgc2025regi", "uuu"])
     battle._player_role = "p2"
     assert battle.opponent_role is not None

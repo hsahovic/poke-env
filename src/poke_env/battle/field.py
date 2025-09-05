@@ -12,6 +12,7 @@ class Field(Enum):
 
     UNKNOWN = auto()
     ELECTRIC_TERRAIN = auto()
+    FAIRY_LOCK = auto()
     GRASSY_TERRAIN = auto()
     GRAVITY = auto()
     HEAL_BLOCK = auto()

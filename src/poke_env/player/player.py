@@ -208,12 +208,10 @@ class Player(ABC):
 
                 # Add our team as teampreview_team, as part of battle initialisation
                 if isinstance(self._team, ConstantTeambuilder):
-                    battle.teampreview_team = set(
-                        [
-                            Pokemon(gen=gen, teambuilder=tb_mon)
-                            for tb_mon in self._team.team
-                        ]
-                    )
+                    battle.teampreview_team = [
+                        Pokemon(gen=gen, teambuilder=tb_mon)
+                        for tb_mon in self._team.team
+                    ]
 
                 await self._battle_count_queue.put(None)
                 if battle_tag in self._battles:
@@ -396,6 +394,10 @@ class Player(ABC):
                     "[Invalid choice] Can't move: You can only Terastallize once per battle."
                 ):
                     await self._handle_battle_request(battle, maybe_default_order=True)
+                elif split_message[2].startswith(
+                    "[Invalid choice] Unknown error for choice:"
+                ):
+                    await self._handle_battle_request(battle, maybe_default_order=True)
                 else:
                     self.logger.critical("Unexpected error message: %s", split_message)
             elif split_message[1] == "bigerror":
@@ -404,9 +406,7 @@ class Player(ABC):
                 battle.parse_message(split_message)
 
     async def _handle_battle_request(
-        self,
-        battle: AbstractBattle,
-        maybe_default_order: bool = False,
+        self, battle: AbstractBattle, maybe_default_order: bool = False
     ):
         if maybe_default_order and (
             "illusion" in [p.ability for p in battle.team.values()]
@@ -422,7 +422,8 @@ class Player(ABC):
             if isinstance(choice, Awaitable):
                 choice = await choice
             message = choice.message
-        await self.ps_client.send_message(message, battle.battle_tag)
+        if message:
+            await self.ps_client.send_message(message, battle.battle_tag)
 
     async def _handle_challenge_request(self, split_message: List[str]):
         """Handles an individual challenge."""
@@ -534,7 +535,7 @@ class Player(ABC):
         if orders:
             return orders[int(random.random() * len(orders))]
         else:
-            return DefaultBattleOrder()
+            return DoubleBattleOrder(DefaultBattleOrder(), DefaultBattleOrder())
 
     @staticmethod
     def choose_random_singles_move(battle: Battle) -> SingleBattleOrder:

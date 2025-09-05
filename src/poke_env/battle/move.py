@@ -197,10 +197,7 @@ class Move:
         :return: The move category.
         :rtype: MoveCategory
         """
-        if self._gen <= 3 and self.entry["category"].upper() in {
-            "PHYSICAL",
-            "SPECIAL",
-        }:
+        if self._gen <= 3 and self.entry["category"].upper() in {"PHYSICAL", "SPECIAL"}:
             return self._MOVE_CATEGORY_PER_TYPE_PRE_SPLIT[self.type]
         return MoveCategory[self.entry["category"].upper()]
 
