@@ -51,7 +51,7 @@ class ExampleEnv(SinglesEnv[npt.NDArray[np.float32]]):
             open_timeout=None,
             strict=False,
         )
-        opponent = RandomPlayer()
+        opponent = RandomPlayer(start_listening=False)
         return SingleAgentWrapper(env, opponent)
 
     def calc_reward(self, battle) -> float:
