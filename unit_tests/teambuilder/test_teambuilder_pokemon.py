@@ -43,10 +43,7 @@ def test_teambuilder_pokemon_from_packed(packed_format_teams):
                 assert TeambuilderPokemon.from_packed(packed_mon).packed == packed_mon
 
 
-def test_teambuilder_pokemon_from_showdown(
-    showdown_format_teams,
-    packed_format_teams,
-):
+def test_teambuilder_pokemon_from_showdown(showdown_format_teams, packed_format_teams):
     for format_, teams in showdown_format_teams.items():
         for showdown_team, packed_team in zip(
             showdown_format_teams[format_], packed_format_teams[format_]
