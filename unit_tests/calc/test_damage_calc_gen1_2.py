@@ -1,11 +1,9 @@
 import logging
-from typing import Union
 
-from poke_env.battle import Battle, DoubleBattle, Move, Pokemon
+from poke_env.battle import Battle, Move, Pokemon
 from poke_env.battle.side_condition import SideCondition
 from poke_env.calc.damage_calc_gen1_2 import calculate_damage_gen12
 from poke_env.stats import compute_raw_stats_dvs
-from poke_env.teambuilder import Teambuilder
 
 
 def create_battle(
@@ -48,7 +46,7 @@ def create_battle(
 
 def test_base_cases_singles():
 
-    ### gen 1
+    # gen 1
     attacker = Pokemon(1, species="kangaskhan", name="mon1")
     attacker._level = 50
     defender = Pokemon(1, species="kangaskhan", name="mon2")
@@ -253,7 +251,7 @@ def test_base_cases_singles():
         ],
     )
 
-    ### gen 2
+    # gen 2
 
     attacker = Pokemon(2, species="furret", name="mon1")
     attacker._level = 50
@@ -462,7 +460,7 @@ def test_base_cases_singles():
 
 def test_fixed_damage():
 
-    ### Gen 1 (seismic toss/night shade should not be affected by types and should ignore immunities)
+    # Gen 1 (seismic toss/night shade should not be affected by types and should ignore immunities)
     attacker = Pokemon(1, species="alakazam")
     attacker._level = 50
     defender = Pokemon(1, species="gengar")
@@ -478,7 +476,7 @@ def test_fixed_damage():
         attacker_ident, defender_ident, Move("nightshade", gen=1), battle
     ) == (50, 50, [50])
 
-    ### Gen 1/2 Constant Damage moves: verify that moves that are fixed and not level dependent work properly.
+    # Gen 1/2 Constant Damage moves: verify that moves that are fixed and not level dependent work properly.
     attacker = Pokemon(1, species="dragonite")
     attacker._level = 50
     defender = Pokemon(1, species="dragonite")
@@ -491,7 +489,7 @@ def test_fixed_damage():
         attacker_ident, defender_ident, Move("dragonrage", gen=1), battle
     ) == (40, 40, [40])
 
-    ### Gen 2 Seismic Toss/Night Shade, weaknesses and resistances are still ignored, but immunities are no longer ignored
+    # Gen 2 Seismic Toss/Night Shade, weaknesses and resistances are still ignored, but immunities are no longer ignored
 
     attacker = Pokemon(2, species="alakazam")
     attacker._level = 50
@@ -635,7 +633,7 @@ def test_explosion():
 
 def test_ignore_mods():
 
-    ### gen 1
+    # gen 1
     attacker = Pokemon(1, species="mew")
     defender = Pokemon(1, species="vulpix")
     battle = create_battle(1, p1a=attacker, p2a=defender)
@@ -960,7 +958,7 @@ def test_ignore_mods():
         ],
     )
 
-    ### gen 2
+    # gen 2
     attacker = Pokemon(2, species="mew")
     defender = Pokemon(2, species="vulpix")
     battle = create_battle(2, p1a=attacker, p2a=defender)

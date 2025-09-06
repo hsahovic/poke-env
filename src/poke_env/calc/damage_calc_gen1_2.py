@@ -1,7 +1,7 @@
 """This module defines a gen1-2 damage calculator"""
 
 import math
-from typing import Dict, List, Optional, Union
+from typing import Optional, Union
 
 from poke_env.battle import (
     Battle,
@@ -11,11 +11,9 @@ from poke_env.battle import (
     Move,
     MoveCategory,
     Pokemon,
-    PokemonGender,
     PokemonType,
     SideCondition,
     Status,
-    Target,
     Weather,
 )
 from poke_env.data import GenData
@@ -348,7 +346,7 @@ def calculate_damage_gen12(
             damage_matrix.append(hit_damage)
         return (min_vector, max_vector, damage_matrix)
 
-    elif type(damage) == int:
+    elif isinstance(damage, int):
         return (damage, damage, [damage])
     else:
         return (min(damage), max(damage), damage)

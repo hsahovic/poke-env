@@ -1,7 +1,7 @@
 """This module contains utility functions and objects related to stats."""
 
 import math
-from typing import List, Optional
+from typing import List
 
 from poke_env.data import GenData
 
