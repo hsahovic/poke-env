@@ -661,7 +661,7 @@ class Pokemon:
                     "transform",
                     "mimic",
                 }.intersection(self.moves)
-                
+
                 """
                 Check if the pokemon has abilities that can grant moves
 
@@ -671,7 +671,7 @@ class Pokemon:
                 has_move_granting_ability = (
                     self.ability in ("dancer", "trace") if self.ability else False
                 )
-                
+
                 if not has_copy_move and not has_move_granting_ability:
                     assert False, (
                         f"Error with move {move}. Expected self.moves to contain copycat, "
