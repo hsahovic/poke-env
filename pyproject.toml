@@ -44,7 +44,7 @@ dependencies = [
 dev = [
     "black==25.9.0",
     "flake8>=7.1.1",
-    "isort==6.0.1",
+    "isort==6.1.0",
     "mypy>=1.15.0",
     "nbsphinx>=0.9.6",
     "pre-commit>=4.1.0",
