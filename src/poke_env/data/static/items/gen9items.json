@@ -1,0 +1,5785 @@
+{
+    "abilityshield": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 9,
+        "ignoreKlutz": true,
+        "name": "Ability Shield",
+        "num": 1881,
+        "onSetAbility": "onSetAbility",
+        "spritenum": 746
+    },
+    "abomasite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Abomasnow"
+        ],
+        "megaEvolves": "Abomasnow",
+        "megaStone": "Abomasnow-Mega",
+        "name": "Abomasite",
+        "num": 674,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 575
+    },
+    "absolite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Absol"
+        ],
+        "megaEvolves": "Absol",
+        "megaStone": "Absol-Mega",
+        "name": "Absolite",
+        "num": 677,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 576
+    },
+    "absorbbulb": {
+        "boosts": {
+            "spa": 1
+        },
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 5,
+        "name": "Absorb Bulb",
+        "num": 545,
+        "onDamagingHit": "onDamagingHit",
+        "spritenum": 2
+    },
+    "adamantcrystal": {
+        "forcedForme": "Dialga-Origin",
+        "gen": 8,
+        "itemUser": [
+            "Dialga-Origin"
+        ],
+        "name": "Adamant Crystal",
+        "num": 1777,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 741
+    },
+    "adamantorb": {
+        "fling": {
+            "basePower": 60
+        },
+        "gen": 4,
+        "itemUser": [
+            "Dialga"
+        ],
+        "name": "Adamant Orb",
+        "num": 135,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "spritenum": 4
+    },
+    "adrenalineorb": {
+        "boosts": {
+            "spe": 1
+        },
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 7,
+        "name": "Adrenaline Orb",
+        "num": 846,
+        "onAfterBoost": "onAfterBoost",
+        "spritenum": 660
+    },
+    "aerodactylite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Aerodactyl"
+        ],
+        "megaEvolves": "Aerodactyl",
+        "megaStone": "Aerodactyl-Mega",
+        "name": "Aerodactylite",
+        "num": 672,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 577
+    },
+    "aggronite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Aggron"
+        ],
+        "megaEvolves": "Aggron",
+        "megaStone": "Aggron-Mega",
+        "name": "Aggronite",
+        "num": 667,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 578
+    },
+    "aguavberry": {
+        "gen": 3,
+        "isBerry": true,
+        "name": "Aguav Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Dragon"
+        },
+        "num": 162,
+        "onEat": "onEat",
+        "onTryEatItem": "onTryEatItem",
+        "onUpdate": "onUpdate",
+        "spritenum": 5
+    },
+    "airballoon": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 5,
+        "name": "Air Balloon",
+        "num": 541,
+        "onAfterSubDamage": "onAfterSubDamage",
+        "onDamagingHit": "onDamagingHit",
+        "onStart": "onStart",
+        "spritenum": 6
+    },
+    "alakazite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Alakazam"
+        ],
+        "megaEvolves": "Alakazam",
+        "megaStone": "Alakazam-Mega",
+        "name": "Alakazite",
+        "num": 679,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 579
+    },
+    "aloraichiumz": {
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Raichu-Alola"
+        ],
+        "name": "Aloraichium Z",
+        "num": 803,
+        "onTakeItem": false,
+        "spritenum": 655,
+        "zMove": "Stoked Sparksurfer",
+        "zMoveFrom": "Thunderbolt"
+    },
+    "altarianite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Altaria"
+        ],
+        "megaEvolves": "Altaria",
+        "megaStone": "Altaria-Mega",
+        "name": "Altarianite",
+        "num": 755,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 615
+    },
+    "ampharosite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Ampharos"
+        ],
+        "megaEvolves": "Ampharos",
+        "megaStone": "Ampharos-Mega",
+        "name": "Ampharosite",
+        "num": 658,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 580
+    },
+    "apicotberry": {
+        "gen": 3,
+        "isBerry": true,
+        "name": "Apicot Berry",
+        "naturalGift": {
+            "basePower": 100,
+            "type": "Ground"
+        },
+        "num": 205,
+        "onEat": "onEat",
+        "onUpdate": "onUpdate",
+        "spritenum": 10
+    },
+    "armorfossil": {
+        "fling": {
+            "basePower": 100
+        },
+        "gen": 4,
+        "isNonstandard": "Past",
+        "name": "Armor Fossil",
+        "num": 104,
+        "spritenum": 12
+    },
+    "aspearberry": {
+        "gen": 3,
+        "isBerry": true,
+        "name": "Aspear Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Ice"
+        },
+        "num": 153,
+        "onEat": "onEat",
+        "onUpdate": "onUpdate",
+        "spritenum": 13
+    },
+    "assaultvest": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 6,
+        "name": "Assault Vest",
+        "num": 640,
+        "onDisableMove": "onDisableMove",
+        "onModifySpD": "onModifySpD",
+        "onModifySpDPriority": 1,
+        "spritenum": 581
+    },
+    "audinite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Audino"
+        ],
+        "megaEvolves": "Audino",
+        "megaStone": "Audino-Mega",
+        "name": "Audinite",
+        "num": 757,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 617
+    },
+    "auspiciousarmor": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 9,
+        "name": "Auspicious Armor",
+        "num": 2344,
+        "spritenum": 753
+    },
+    "babiriberry": {
+        "gen": 6,
+        "isBerry": true,
+        "isNonstandard": "Past",
+        "name": "Babiri Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Steel"
+        },
+        "num": 668,
+        "onEat": "onEat",
+        "onSourceModifyDamage": "onSourceModifyDamage",
+        "spritenum": 17
+    },
+    "beastball": {
+        "gen": 7,
+        "isPokeball": true,
+        "name": "Beast Ball",
+        "num": 851,
+        "spritenum": 661
+    },
+    "beedrillite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Beedrill"
+        ],
+        "megaEvolves": "Beedrill",
+        "megaStone": "Beedrill-Mega",
+        "name": "Beedrillite",
+        "num": 770,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 628
+    },
+    "belueberry": {
+        "gen": 3,
+        "isBerry": true,
+        "isNonstandard": "Past",
+        "name": "Belue Berry",
+        "naturalGift": {
+            "basePower": 100,
+            "type": "Electric"
+        },
+        "num": 183,
+        "onEat": false,
+        "spritenum": 21
+    },
+    "berry": {
+        "gen": 2,
+        "isBerry": true,
+        "isNonstandard": "Past",
+        "name": "Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Poison"
+        },
+        "num": 155,
+        "onEat": "onEat",
+        "onResidual": "onResidual",
+        "onResidualOrder": 10,
+        "onTryEatItem": "onTryEatItem",
+        "spritenum": 319
+    },
+    "berryjuice": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 2,
+        "isNonstandard": "Past",
+        "name": "Berry Juice",
+        "num": 43,
+        "onUpdate": "onUpdate",
+        "spritenum": 22
+    },
+    "berrysweet": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "name": "Berry Sweet",
+        "num": 1111,
+        "spritenum": 706
+    },
+    "berserkgene": {
+        "boosts": {
+            "atk": 2
+        },
+        "gen": 2,
+        "isNonstandard": "Past",
+        "name": "Berserk Gene",
+        "num": 0,
+        "onUpdate": "onUpdate",
+        "spritenum": 388
+    },
+    "bignugget": {
+        "fling": {
+            "basePower": 130
+        },
+        "gen": 5,
+        "name": "Big Nugget",
+        "num": 581,
+        "spritenum": 27
+    },
+    "bigroot": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 4,
+        "name": "Big Root",
+        "num": 296,
+        "onTryHeal": "onTryHeal",
+        "onTryHealPriority": 1,
+        "spritenum": 29
+    },
+    "bindingband": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 5,
+        "name": "Binding Band",
+        "num": 544,
+        "spritenum": 31
+    },
+    "bitterberry": {
+        "gen": 2,
+        "isBerry": true,
+        "isNonstandard": "Past",
+        "name": "Bitter Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Ground"
+        },
+        "num": 156,
+        "onEat": "onEat",
+        "onUpdate": "onUpdate",
+        "spritenum": 334
+    },
+    "blackbelt": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 2,
+        "name": "Black Belt",
+        "num": 241,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "spritenum": 32
+    },
+    "blackglasses": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 2,
+        "name": "Black Glasses",
+        "num": 240,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "spritenum": 35
+    },
+    "blacksludge": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 4,
+        "name": "Black Sludge",
+        "num": 281,
+        "onResidual": "onResidual",
+        "onResidualOrder": 5,
+        "onResidualSubOrder": 4,
+        "spritenum": 34
+    },
+    "blastoisinite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Blastoise"
+        ],
+        "megaEvolves": "Blastoise",
+        "megaStone": "Blastoise-Mega",
+        "name": "Blastoisinite",
+        "num": 661,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 583
+    },
+    "blazikenite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Blaziken"
+        ],
+        "megaEvolves": "Blaziken",
+        "megaStone": "Blaziken-Mega",
+        "name": "Blazikenite",
+        "num": 664,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 584
+    },
+    "blueorb": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "isPrimalOrb": true,
+        "itemUser": [
+            "Kyogre"
+        ],
+        "name": "Blue Orb",
+        "num": 535,
+        "onSwitchIn": "onSwitchIn",
+        "onSwitchInPriority": -1,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 41
+    },
+    "blukberry": {
+        "gen": 3,
+        "isBerry": true,
+        "isNonstandard": "Past",
+        "name": "Bluk Berry",
+        "naturalGift": {
+            "basePower": 90,
+            "type": "Fire"
+        },
+        "num": 165,
+        "onEat": false,
+        "spritenum": 44
+    },
+    "blunderpolicy": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 8,
+        "name": "Blunder Policy",
+        "num": 1121,
+        "spritenum": 716
+    },
+    "boosterenergy": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 9,
+        "name": "Booster Energy",
+        "num": 1880,
+        "onStart": "onStart",
+        "onSwitchInPriority": -2,
+        "onTakeItem": "onTakeItem",
+        "onUpdate": "onUpdate",
+        "spritenum": 745
+    },
+    "bottlecap": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 7,
+        "name": "Bottle Cap",
+        "num": 795,
+        "spritenum": 696
+    },
+    "brightpowder": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 2,
+        "name": "Bright Powder",
+        "num": 213,
+        "onModifyAccuracy": "onModifyAccuracy",
+        "onModifyAccuracyPriority": -2,
+        "spritenum": 51
+    },
+    "buggem": {
+        "gen": 5,
+        "isGem": true,
+        "isNonstandard": "Past",
+        "name": "Bug Gem",
+        "num": 558,
+        "onSourceTryPrimaryHit": "onSourceTryPrimaryHit",
+        "spritenum": 53
+    },
+    "buginiumz": {
+        "forcedForme": "Arceus-Bug",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "name": "Buginium Z",
+        "num": 787,
+        "onPlate": "Bug",
+        "onTakeItem": false,
+        "spritenum": 642,
+        "zMove": true,
+        "zMoveType": "Bug"
+    },
+    "bugmemory": {
+        "forcedForme": "Silvally-Bug",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Silvally-Bug"
+        ],
+        "name": "Bug Memory",
+        "num": 909,
+        "onMemory": "Bug",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 673
+    },
+    "burndrive": {
+        "forcedForme": "Genesect-Burn",
+        "gen": 5,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Genesect-Burn"
+        ],
+        "name": "Burn Drive",
+        "num": 118,
+        "onDrive": "Fire",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 54
+    },
+    "burntberry": {
+        "gen": 2,
+        "isBerry": true,
+        "isNonstandard": "Past",
+        "name": "Burnt Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Ice"
+        },
+        "num": 153,
+        "onEat": "onEat",
+        "onUpdate": "onUpdate",
+        "spritenum": 13
+    },
+    "cameruptite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Camerupt"
+        ],
+        "megaEvolves": "Camerupt",
+        "megaStone": "Camerupt-Mega",
+        "name": "Cameruptite",
+        "num": 767,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 625
+    },
+    "cellbattery": {
+        "boosts": {
+            "atk": 1
+        },
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 5,
+        "name": "Cell Battery",
+        "num": 546,
+        "onDamagingHit": "onDamagingHit",
+        "spritenum": 60
+    },
+    "charcoal": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 2,
+        "name": "Charcoal",
+        "num": 249,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "spritenum": 61
+    },
+    "charizarditex": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Charizard"
+        ],
+        "megaEvolves": "Charizard",
+        "megaStone": "Charizard-Mega-X",
+        "name": "Charizardite X",
+        "num": 660,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 585
+    },
+    "charizarditey": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Charizard"
+        ],
+        "megaEvolves": "Charizard",
+        "megaStone": "Charizard-Mega-Y",
+        "name": "Charizardite Y",
+        "num": 678,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 586
+    },
+    "chartiberry": {
+        "gen": 3,
+        "isBerry": true,
+        "name": "Charti Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Rock"
+        },
+        "num": 149,
+        "onEat": "onEat",
+        "onSourceModifyDamage": "onSourceModifyDamage",
+        "spritenum": 62
+    },
+    "cherishball": {
+        "gen": 4,
+        "isNonstandard": "Unobtainable",
+        "isPokeball": true,
+        "name": "Cherish Ball",
+        "num": 16,
+        "spritenum": 64
+    },
+    "chestoberry": {
+        "gen": 3,
+        "isBerry": true,
+        "name": "Chesto Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Water"
+        },
+        "num": 150,
+        "onEat": "onEat",
+        "onUpdate": "onUpdate",
+        "spritenum": 65
+    },
+    "chilanberry": {
+        "forcedForme": "Genesect-Chill",
+        "gen": 5,
+        "isBerry": true,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Genesect-Chill"
+        ],
+        "name": "Chilan Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Normal"
+        },
+        "num": 119,
+        "onDrive": "Ice",
+        "onEat": "onEat",
+        "onSourceModifyDamage": "onSourceModifyDamage",
+        "spritenum": 66
+    },
+    "chippedpot": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 8,
+        "name": "Chipped Pot",
+        "num": 1254,
+        "spritenum": 720
+    },
+    "choiceband": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 3,
+        "isChoice": true,
+        "name": "Choice Band",
+        "num": 220,
+        "onModifyAtk": "onModifyAtk",
+        "onModifyAtkPriority": 1,
+        "onModifyMove": "onModifyMove",
+        "onStart": "onStart",
+        "spritenum": 68
+    },
+    "choicescarf": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 4,
+        "isChoice": true,
+        "name": "Choice Scarf",
+        "num": 287,
+        "onModifyMove": "onModifyMove",
+        "onModifySpe": "onModifySpe",
+        "onStart": "onStart",
+        "spritenum": 69
+    },
+    "choicespecs": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 4,
+        "isChoice": true,
+        "name": "Choice Specs",
+        "num": 297,
+        "onModifyMove": "onModifyMove",
+        "onModifySpA": "onModifySpA",
+        "onModifySpAPriority": 1,
+        "onStart": "onStart",
+        "spritenum": 70
+    },
+    "chopleberry": {
+        "gen": 9,
+        "isBerry": true,
+        "name": "Chople Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Fighting"
+        },
+        "num": 1882,
+        "onEat": "onEat",
+        "onSourceModifyDamage": "onSourceModifyDamage",
+        "spritenum": 71
+    },
+    "cloversweet": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "name": "Clover Sweet",
+        "num": 1112,
+        "spritenum": 707
+    },
+    "cobaberry": {
+        "forcedForme": "Ogerpon-Cornerstone",
+        "gen": 9,
+        "isBerry": true,
+        "itemUser": [
+            "Ogerpon-Cornerstone"
+        ],
+        "name": "Coba Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Flying"
+        },
+        "num": 2406,
+        "onEat": "onEat",
+        "onSourceModifyDamage": "onSourceModifyDamage",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 76
+    },
+    "cornnberry": {
+        "gen": 3,
+        "isBerry": true,
+        "isNonstandard": "Past",
+        "name": "Cornn Berry",
+        "naturalGift": {
+            "basePower": 90,
+            "type": "Bug"
+        },
+        "num": 175,
+        "onEat": false,
+        "spritenum": 81
+    },
+    "coverfossil": {
+        "fling": {
+            "basePower": 100
+        },
+        "gen": 5,
+        "isNonstandard": "Past",
+        "name": "Cover Fossil",
+        "num": 572,
+        "spritenum": 85
+    },
+    "covertcloak": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 9,
+        "name": "Covert Cloak",
+        "num": 1885,
+        "onModifySecondaries": "onModifySecondaries",
+        "spritenum": 750
+    },
+    "crackedpot": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 8,
+        "name": "Cracked Pot",
+        "num": 1253,
+        "spritenum": 719
+    },
+    "crucibellite": {
+        "gen": 6,
+        "isNonstandard": "CAP",
+        "itemUser": [
+            "Crucibelle"
+        ],
+        "megaEvolves": "Crucibelle",
+        "megaStone": "Crucibelle-Mega",
+        "name": "Crucibellite",
+        "num": -1,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 577
+    },
+    "custapberry": {
+        "gen": 5,
+        "isBerry": true,
+        "isNonstandard": "Past",
+        "name": "Custap Berry",
+        "naturalGift": {
+            "basePower": 100,
+            "type": "Ghost"
+        },
+        "num": 562,
+        "onEat": "onEat",
+        "onFractionalPriority": "onFractionalPriority",
+        "onFractionalPriorityPriority": -2,
+        "spritenum": 86
+    },
+    "darkiniumz": {
+        "forcedForme": "Arceus-Dark",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "name": "Darkinium Z",
+        "num": 791,
+        "onPlate": "Dark",
+        "onTakeItem": false,
+        "spritenum": 646,
+        "zMove": true,
+        "zMoveType": "Dark"
+    },
+    "darkmemory": {
+        "forcedForme": "Silvally-Dark",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Silvally-Dark"
+        ],
+        "name": "Dark Memory",
+        "num": 919,
+        "onMemory": "Dark",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 683
+    },
+    "dawnstone": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 4,
+        "name": "Dawn Stone",
+        "num": 109,
+        "spritenum": 92
+    },
+    "decidiumz": {
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Decidueye"
+        ],
+        "name": "Decidium Z",
+        "num": 798,
+        "onTakeItem": false,
+        "spritenum": 650,
+        "zMove": "Sinister Arrow Raid",
+        "zMoveFrom": "Spirit Shackle"
+    },
+    "deepseascale": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 3,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Clamperl"
+        ],
+        "name": "Deep Sea Scale",
+        "num": 227,
+        "onModifySpD": "onModifySpD",
+        "onModifySpDPriority": 2,
+        "spritenum": 93
+    },
+    "deepseatooth": {
+        "fling": {
+            "basePower": 90
+        },
+        "gen": 3,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Clamperl"
+        ],
+        "name": "Deep Sea Tooth",
+        "num": 226,
+        "onModifySpA": "onModifySpA",
+        "onModifySpAPriority": 1,
+        "spritenum": 94
+    },
+    "destinyknot": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 4,
+        "name": "Destiny Knot",
+        "num": 280,
+        "onAttract": "onAttract",
+        "onAttractPriority": -100,
+        "spritenum": 95
+    },
+    "diancite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Diancie"
+        ],
+        "megaEvolves": "Diancie",
+        "megaStone": "Diancie-Mega",
+        "name": "Diancite",
+        "num": 764,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 624
+    },
+    "diveball": {
+        "gen": 3,
+        "isPokeball": true,
+        "name": "Dive Ball",
+        "num": 7,
+        "spritenum": 101
+    },
+    "domefossil": {
+        "fling": {
+            "basePower": 100
+        },
+        "gen": 3,
+        "isNonstandard": "Past",
+        "name": "Dome Fossil",
+        "num": 102,
+        "spritenum": 102
+    },
+    "dousedrive": {
+        "forcedForme": "Genesect-Douse",
+        "gen": 5,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Genesect-Douse"
+        ],
+        "name": "Douse Drive",
+        "num": 116,
+        "onDrive": "Water",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 103
+    },
+    "dracoplate": {
+        "forcedForme": "Arceus-Dragon",
+        "gen": 4,
+        "name": "Draco Plate",
+        "num": 311,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "onPlate": "Dragon",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 105
+    },
+    "dragonfang": {
+        "fling": {
+            "basePower": 70
+        },
+        "gen": 2,
+        "name": "Dragon Fang",
+        "num": 250,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "spritenum": 106
+    },
+    "dragongem": {
+        "gen": 5,
+        "isGem": true,
+        "isNonstandard": "Past",
+        "name": "Dragon Gem",
+        "num": 561,
+        "onSourceTryPrimaryHit": "onSourceTryPrimaryHit",
+        "spritenum": 107
+    },
+    "dragoniumz": {
+        "forcedForme": "Arceus-Dragon",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "name": "Dragonium Z",
+        "num": 790,
+        "onPlate": "Dragon",
+        "onTakeItem": false,
+        "spritenum": 645,
+        "zMove": true,
+        "zMoveType": "Dragon"
+    },
+    "dragonmemory": {
+        "forcedForme": "Silvally-Dragon",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Silvally-Dragon"
+        ],
+        "name": "Dragon Memory",
+        "num": 918,
+        "onMemory": "Dragon",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 682
+    },
+    "dragonscale": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 2,
+        "name": "Dragon Scale",
+        "num": 235,
+        "spritenum": 108
+    },
+    "dreadplate": {
+        "forcedForme": "Arceus-Dark",
+        "gen": 4,
+        "name": "Dread Plate",
+        "num": 312,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "onPlate": "Dark",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 110
+    },
+    "dreamball": {
+        "gen": 5,
+        "isPokeball": true,
+        "name": "Dream Ball",
+        "num": 576,
+        "spritenum": 111
+    },
+    "dubiousdisc": {
+        "fling": {
+            "basePower": 50
+        },
+        "gen": 4,
+        "name": "Dubious Disc",
+        "num": 324,
+        "spritenum": 113
+    },
+    "durinberry": {
+        "gen": 3,
+        "isBerry": true,
+        "isNonstandard": "Past",
+        "name": "Durin Berry",
+        "naturalGift": {
+            "basePower": 100,
+            "type": "Water"
+        },
+        "num": 182,
+        "onEat": false,
+        "spritenum": 114
+    },
+    "duskball": {
+        "gen": 4,
+        "isPokeball": true,
+        "name": "Dusk Ball",
+        "num": 13,
+        "spritenum": 115
+    },
+    "duskstone": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 4,
+        "name": "Dusk Stone",
+        "num": 108,
+        "spritenum": 116
+    },
+    "earthplate": {
+        "forcedForme": "Arceus-Ground",
+        "gen": 4,
+        "name": "Earth Plate",
+        "num": 305,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "onPlate": "Ground",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 117
+    },
+    "eeviumz": {
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Eevee"
+        ],
+        "name": "Eevium Z",
+        "num": 805,
+        "onTakeItem": false,
+        "spritenum": 657,
+        "zMove": "Extreme Evoboost",
+        "zMoveFrom": "Last Resort"
+    },
+    "ejectbutton": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 5,
+        "name": "Eject Button",
+        "num": 547,
+        "onAfterMoveSecondary": "onAfterMoveSecondary",
+        "onAfterMoveSecondaryPriority": 2,
+        "spritenum": 118
+    },
+    "ejectpack": {
+        "fling": {
+            "basePower": 50
+        },
+        "gen": 8,
+        "name": "Eject Pack",
+        "num": 1119,
+        "onAfterBoost": "onAfterBoost",
+        "onAnyAfterMega": "onAnyAfterMega",
+        "onAnyAfterMove": "onAnyAfterMove",
+        "onAnySwitchIn": "onAnySwitchIn",
+        "onAnySwitchInPriority": -4,
+        "onEnd": "onEnd",
+        "onResidual": "onResidual",
+        "onResidualOrder": 29,
+        "onUse": "onUse",
+        "onUseItem": "onUseItem",
+        "spritenum": 714
+    },
+    "electirizer": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 4,
+        "name": "Electirizer",
+        "num": 322,
+        "spritenum": 119
+    },
+    "electricgem": {
+        "gen": 5,
+        "isGem": true,
+        "isNonstandard": "Past",
+        "name": "Electric Gem",
+        "num": 550,
+        "onSourceTryPrimaryHit": "onSourceTryPrimaryHit",
+        "spritenum": 120
+    },
+    "electricmemory": {
+        "forcedForme": "Silvally-Electric",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Silvally-Electric"
+        ],
+        "name": "Electric Memory",
+        "num": 915,
+        "onMemory": "Electric",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 679
+    },
+    "electricseed": {
+        "boosts": {
+            "def": 1
+        },
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 7,
+        "name": "Electric Seed",
+        "num": 881,
+        "onStart": "onStart",
+        "onSwitchInPriority": -1,
+        "onTerrainChange": "onTerrainChange",
+        "spritenum": 664
+    },
+    "electriumz": {
+        "forcedForme": "Arceus-Electric",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "name": "Electrium Z",
+        "num": 779,
+        "onPlate": "Electric",
+        "onTakeItem": false,
+        "spritenum": 634,
+        "zMove": true,
+        "zMoveType": "Electric"
+    },
+    "enigmaberry": {
+        "gen": 5,
+        "isBerry": true,
+        "name": "Enigma Berry",
+        "naturalGift": {
+            "basePower": 100,
+            "type": "Bug"
+        },
+        "num": 538,
+        "onEat": "onEat",
+        "onHit": "onHit",
+        "onModifySpD": "onModifySpD",
+        "onModifySpDPriority": 2,
+        "onTryEatItem": "onTryEatItem",
+        "spritenum": 124
+    },
+    "expertbelt": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 4,
+        "name": "Expert Belt",
+        "num": 268,
+        "onModifyDamage": "onModifyDamage",
+        "spritenum": 132
+    },
+    "fairiumz": {
+        "forcedForme": "Arceus-Fairy",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "name": "Fairium Z",
+        "num": 793,
+        "onPlate": "Fairy",
+        "onTakeItem": false,
+        "spritenum": 648,
+        "zMove": true,
+        "zMoveType": "Fairy"
+    },
+    "fairyfeather": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 9,
+        "name": "Fairy Feather",
+        "num": 2401,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "spritenum": 754
+    },
+    "fairygem": {
+        "gen": 6,
+        "isGem": true,
+        "isNonstandard": "Past",
+        "name": "Fairy Gem",
+        "num": 715,
+        "onSourceTryPrimaryHit": "onSourceTryPrimaryHit",
+        "spritenum": 611
+    },
+    "fairymemory": {
+        "forcedForme": "Silvally-Fairy",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Silvally-Fairy"
+        ],
+        "name": "Fairy Memory",
+        "num": 920,
+        "onMemory": "Fairy",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 684
+    },
+    "fastball": {
+        "gen": 2,
+        "isPokeball": true,
+        "name": "Fast Ball",
+        "num": 492,
+        "spritenum": 137
+    },
+    "fightinggem": {
+        "gen": 5,
+        "isGem": true,
+        "isNonstandard": "Past",
+        "name": "Fighting Gem",
+        "num": 553,
+        "onSourceTryPrimaryHit": "onSourceTryPrimaryHit",
+        "spritenum": 139
+    },
+    "fightingmemory": {
+        "forcedForme": "Silvally-Fighting",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Silvally-Fighting"
+        ],
+        "name": "Fighting Memory",
+        "num": 904,
+        "onMemory": "Fighting",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 668
+    },
+    "fightiniumz": {
+        "forcedForme": "Arceus-Fighting",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "name": "Fightinium Z",
+        "num": 782,
+        "onPlate": "Fighting",
+        "onTakeItem": false,
+        "spritenum": 637,
+        "zMove": true,
+        "zMoveType": "Fighting"
+    },
+    "figyberry": {
+        "gen": 3,
+        "isBerry": true,
+        "name": "Figy Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Bug"
+        },
+        "num": 159,
+        "onEat": "onEat",
+        "onTryEatItem": "onTryEatItem",
+        "onUpdate": "onUpdate",
+        "spritenum": 140
+    },
+    "firegem": {
+        "gen": 5,
+        "isGem": true,
+        "isNonstandard": "Past",
+        "name": "Fire Gem",
+        "num": 548,
+        "onSourceTryPrimaryHit": "onSourceTryPrimaryHit",
+        "spritenum": 141
+    },
+    "firememory": {
+        "forcedForme": "Silvally-Fire",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Silvally-Fire"
+        ],
+        "name": "Fire Memory",
+        "num": 912,
+        "onMemory": "Fire",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 676
+    },
+    "firestone": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 1,
+        "name": "Fire Stone",
+        "num": 82,
+        "spritenum": 142
+    },
+    "firiumz": {
+        "forcedForme": "Arceus-Fire",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "name": "Firium Z",
+        "num": 777,
+        "onPlate": "Fire",
+        "onTakeItem": false,
+        "spritenum": 632,
+        "zMove": true,
+        "zMoveType": "Fire"
+    },
+    "fistplate": {
+        "forcedForme": "Arceus-Fighting",
+        "gen": 4,
+        "name": "Fist Plate",
+        "num": 303,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "onPlate": "Fighting",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 143
+    },
+    "flameorb": {
+        "fling": {
+            "basePower": 30,
+            "status": "brn"
+        },
+        "gen": 4,
+        "name": "Flame Orb",
+        "num": 273,
+        "onResidual": "onResidual",
+        "onResidualOrder": 28,
+        "onResidualSubOrder": 3,
+        "spritenum": 145
+    },
+    "flameplate": {
+        "forcedForme": "Arceus-Fire",
+        "gen": 4,
+        "name": "Flame Plate",
+        "num": 298,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "onPlate": "Fire",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 146
+    },
+    "floatstone": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 5,
+        "name": "Float Stone",
+        "num": 539,
+        "onModifyWeight": "onModifyWeight",
+        "spritenum": 147
+    },
+    "flowersweet": {
+        "fling": {
+            "basePower": 0
+        },
+        "gen": 8,
+        "name": "Flower Sweet",
+        "num": 1113,
+        "spritenum": 708
+    },
+    "flyinggem": {
+        "gen": 5,
+        "isGem": true,
+        "isNonstandard": "Past",
+        "name": "Flying Gem",
+        "num": 556,
+        "onSourceTryPrimaryHit": "onSourceTryPrimaryHit",
+        "spritenum": 149
+    },
+    "flyingmemory": {
+        "forcedForme": "Silvally-Flying",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Silvally-Flying"
+        ],
+        "name": "Flying Memory",
+        "num": 905,
+        "onMemory": "Flying",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 669
+    },
+    "flyiniumz": {
+        "forcedForme": "Arceus-Flying",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "name": "Flyinium Z",
+        "num": 785,
+        "onPlate": "Flying",
+        "onTakeItem": false,
+        "spritenum": 640,
+        "zMove": true,
+        "zMoveType": "Flying"
+    },
+    "focusband": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 2,
+        "name": "Focus Band",
+        "num": 230,
+        "onDamage": "onDamage",
+        "onDamagePriority": -40,
+        "spritenum": 150
+    },
+    "focussash": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 4,
+        "name": "Focus Sash",
+        "num": 275,
+        "onDamage": "onDamage",
+        "onDamagePriority": -40,
+        "spritenum": 151
+    },
+    "fossilizedbird": {
+        "fling": {
+            "basePower": 100
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "Fossilized Bird",
+        "num": 1105,
+        "spritenum": 700
+    },
+    "fossilizeddino": {
+        "fling": {
+            "basePower": 100
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "Fossilized Dino",
+        "num": 1108,
+        "spritenum": 703
+    },
+    "fossilizeddrake": {
+        "fling": {
+            "basePower": 100
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "Fossilized Drake",
+        "num": 1107,
+        "spritenum": 702
+    },
+    "fossilizedfish": {
+        "fling": {
+            "basePower": 100
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "Fossilized Fish",
+        "num": 1106,
+        "spritenum": 701
+    },
+    "friendball": {
+        "gen": 2,
+        "isPokeball": true,
+        "name": "Friend Ball",
+        "num": 497,
+        "spritenum": 153
+    },
+    "fullincense": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 4,
+        "isNonstandard": "Past",
+        "name": "Full Incense",
+        "num": 316,
+        "onFractionalPriority": -0.1,
+        "spritenum": 155
+    },
+    "galaricacuff": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 8,
+        "name": "Galarica Cuff",
+        "num": 1582,
+        "spritenum": 739
+    },
+    "galaricawreath": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 8,
+        "name": "Galarica Wreath",
+        "num": 1592,
+        "spritenum": 740
+    },
+    "galladite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Gallade"
+        ],
+        "megaEvolves": "Gallade",
+        "megaStone": "Gallade-Mega",
+        "name": "Galladite",
+        "num": 756,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 616
+    },
+    "ganlonberry": {
+        "gen": 3,
+        "isBerry": true,
+        "name": "Ganlon Berry",
+        "naturalGift": {
+            "basePower": 100,
+            "type": "Ice"
+        },
+        "num": 202,
+        "onEat": "onEat",
+        "onUpdate": "onUpdate",
+        "spritenum": 158
+    },
+    "garchompite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Garchomp"
+        ],
+        "megaEvolves": "Garchomp",
+        "megaStone": "Garchomp-Mega",
+        "name": "Garchompite",
+        "num": 683,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 589
+    },
+    "gardevoirite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Gardevoir"
+        ],
+        "megaEvolves": "Gardevoir",
+        "megaStone": "Gardevoir-Mega",
+        "name": "Gardevoirite",
+        "num": 657,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 587
+    },
+    "gengarite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Gengar"
+        ],
+        "megaEvolves": "Gengar",
+        "megaStone": "Gengar-Mega",
+        "name": "Gengarite",
+        "num": 656,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 588
+    },
+    "ghostgem": {
+        "gen": 5,
+        "isGem": true,
+        "isNonstandard": "Past",
+        "name": "Ghost Gem",
+        "num": 560,
+        "onSourceTryPrimaryHit": "onSourceTryPrimaryHit",
+        "spritenum": 161
+    },
+    "ghostiumz": {
+        "forcedForme": "Arceus-Ghost",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "name": "Ghostium Z",
+        "num": 789,
+        "onPlate": "Ghost",
+        "onTakeItem": false,
+        "spritenum": 644,
+        "zMove": true,
+        "zMoveType": "Ghost"
+    },
+    "ghostmemory": {
+        "forcedForme": "Silvally-Ghost",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Silvally-Ghost"
+        ],
+        "name": "Ghost Memory",
+        "num": 910,
+        "onMemory": "Ghost",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 674
+    },
+    "glalitite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Glalie"
+        ],
+        "megaEvolves": "Glalie",
+        "megaStone": "Glalie-Mega",
+        "name": "Glalitite",
+        "num": 763,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 623
+    },
+    "goldberry": {
+        "gen": 2,
+        "isBerry": true,
+        "isNonstandard": "Past",
+        "name": "Gold Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Psychic"
+        },
+        "num": 158,
+        "onEat": "onEat",
+        "onResidual": "onResidual",
+        "onResidualOrder": 10,
+        "onTryEatItem": "onTryEatItem",
+        "spritenum": 448
+    },
+    "goldbottlecap": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 7,
+        "name": "Gold Bottle Cap",
+        "num": 796,
+        "spritenum": 697
+    },
+    "grassgem": {
+        "gen": 5,
+        "isGem": true,
+        "isNonstandard": "Past",
+        "name": "Grass Gem",
+        "num": 551,
+        "onSourceTryPrimaryHit": "onSourceTryPrimaryHit",
+        "spritenum": 172
+    },
+    "grassiumz": {
+        "forcedForme": "Arceus-Grass",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "name": "Grassium Z",
+        "num": 780,
+        "onPlate": "Grass",
+        "onTakeItem": false,
+        "spritenum": 635,
+        "zMove": true,
+        "zMoveType": "Grass"
+    },
+    "grassmemory": {
+        "forcedForme": "Silvally-Grass",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Silvally-Grass"
+        ],
+        "name": "Grass Memory",
+        "num": 914,
+        "onMemory": "Grass",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 678
+    },
+    "grassyseed": {
+        "boosts": {
+            "def": 1
+        },
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 7,
+        "name": "Grassy Seed",
+        "num": 884,
+        "onStart": "onStart",
+        "onSwitchInPriority": -1,
+        "onTerrainChange": "onTerrainChange",
+        "spritenum": 667
+    },
+    "greatball": {
+        "gen": 1,
+        "isPokeball": true,
+        "name": "Great Ball",
+        "num": 3,
+        "spritenum": 174
+    },
+    "grepaberry": {
+        "gen": 3,
+        "isBerry": true,
+        "name": "Grepa Berry",
+        "naturalGift": {
+            "basePower": 90,
+            "type": "Flying"
+        },
+        "num": 173,
+        "onEat": false,
+        "spritenum": 178
+    },
+    "gripclaw": {
+        "fling": {
+            "basePower": 90
+        },
+        "gen": 4,
+        "name": "Grip Claw",
+        "num": 286,
+        "spritenum": 179
+    },
+    "griseouscore": {
+        "forcedForme": "Giratina-Origin",
+        "gen": 8,
+        "itemUser": [
+            "Giratina-Origin"
+        ],
+        "name": "Griseous Core",
+        "num": 1779,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 743
+    },
+    "griseousorb": {
+        "fling": {
+            "basePower": 60
+        },
+        "gen": 4,
+        "itemUser": [
+            "Giratina"
+        ],
+        "name": "Griseous Orb",
+        "num": 112,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "spritenum": 180
+    },
+    "groundgem": {
+        "gen": 5,
+        "isGem": true,
+        "isNonstandard": "Past",
+        "name": "Ground Gem",
+        "num": 555,
+        "onSourceTryPrimaryHit": "onSourceTryPrimaryHit",
+        "spritenum": 182
+    },
+    "groundiumz": {
+        "forcedForme": "Arceus-Ground",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "name": "Groundium Z",
+        "num": 784,
+        "onPlate": "Ground",
+        "onTakeItem": false,
+        "spritenum": 639,
+        "zMove": true,
+        "zMoveType": "Ground"
+    },
+    "groundmemory": {
+        "forcedForme": "Silvally-Ground",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Silvally-Ground"
+        ],
+        "name": "Ground Memory",
+        "num": 907,
+        "onMemory": "Ground",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 671
+    },
+    "gyaradosite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Gyarados"
+        ],
+        "megaEvolves": "Gyarados",
+        "megaStone": "Gyarados-Mega",
+        "name": "Gyaradosite",
+        "num": 676,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 589
+    },
+    "habanberry": {
+        "gen": 2,
+        "isBerry": true,
+        "name": "Haban Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Dragon"
+        },
+        "num": 238,
+        "onEat": "onEat",
+        "onSourceModifyDamage": "onSourceModifyDamage",
+        "spritenum": 185
+    },
+    "healball": {
+        "gen": 4,
+        "isPokeball": true,
+        "name": "Heal Ball",
+        "num": 14,
+        "spritenum": 188
+    },
+    "hearthflamemask": {
+        "fling": {
+            "basePower": 60
+        },
+        "forcedForme": "Ogerpon-Hearthflame",
+        "gen": 9,
+        "itemUser": [
+            "Ogerpon-Hearthflame"
+        ],
+        "name": "Hearthflame Mask",
+        "num": 2408,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 760
+    },
+    "heatrock": {
+        "fling": {
+            "basePower": 60
+        },
+        "gen": 4,
+        "name": "Heat Rock",
+        "num": 284,
+        "spritenum": 193
+    },
+    "heavyball": {
+        "gen": 2,
+        "isPokeball": true,
+        "name": "Heavy Ball",
+        "num": 495,
+        "spritenum": 194
+    },
+    "heavydutyboots": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 8,
+        "name": "Heavy-Duty Boots",
+        "num": 1120,
+        "spritenum": 715
+    },
+    "helixfossil": {
+        "fling": {
+            "basePower": 100
+        },
+        "gen": 3,
+        "isNonstandard": "Past",
+        "name": "Helix Fossil",
+        "num": 101,
+        "spritenum": 195
+    },
+    "heracronite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Heracross"
+        ],
+        "megaEvolves": "Heracross",
+        "megaStone": "Heracross-Mega",
+        "name": "Heracronite",
+        "num": 680,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 590
+    },
+    "hondewberry": {
+        "gen": 3,
+        "isBerry": true,
+        "name": "Hondew Berry",
+        "naturalGift": {
+            "basePower": 90,
+            "type": "Ground"
+        },
+        "num": 172,
+        "onEat": false,
+        "spritenum": 213
+    },
+    "houndoominite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Houndoom"
+        ],
+        "megaEvolves": "Houndoom",
+        "megaStone": "Houndoom-Mega",
+        "name": "Houndoominite",
+        "num": 666,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 591
+    },
+    "iapapaberry": {
+        "gen": 3,
+        "isBerry": true,
+        "name": "Iapapa Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Dark"
+        },
+        "num": 163,
+        "onEat": "onEat",
+        "onTryEatItem": "onTryEatItem",
+        "onUpdate": "onUpdate",
+        "spritenum": 217
+    },
+    "iceberry": {
+        "gen": 2,
+        "isBerry": true,
+        "isNonstandard": "Past",
+        "name": "Ice Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Grass"
+        },
+        "num": 152,
+        "onEat": "onEat",
+        "onUpdate": "onUpdate",
+        "spritenum": 381
+    },
+    "icegem": {
+        "gen": 5,
+        "isGem": true,
+        "isNonstandard": "Past",
+        "name": "Ice Gem",
+        "num": 552,
+        "onSourceTryPrimaryHit": "onSourceTryPrimaryHit",
+        "spritenum": 218
+    },
+    "icememory": {
+        "forcedForme": "Silvally-Ice",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Silvally-Ice"
+        ],
+        "name": "Ice Memory",
+        "num": 917,
+        "onMemory": "Ice",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 681
+    },
+    "icestone": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 7,
+        "name": "Ice Stone",
+        "num": 849,
+        "spritenum": 693
+    },
+    "icicleplate": {
+        "forcedForme": "Arceus-Ice",
+        "gen": 4,
+        "name": "Icicle Plate",
+        "num": 302,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "onPlate": "Ice",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 220
+    },
+    "iciumz": {
+        "forcedForme": "Arceus-Ice",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "name": "Icium Z",
+        "num": 781,
+        "onPlate": "Ice",
+        "onTakeItem": false,
+        "spritenum": 636,
+        "zMove": true,
+        "zMoveType": "Ice"
+    },
+    "icyrock": {
+        "fling": {
+            "basePower": 40
+        },
+        "gen": 4,
+        "name": "Icy Rock",
+        "num": 282,
+        "spritenum": 221
+    },
+    "inciniumz": {
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Incineroar"
+        ],
+        "name": "Incinium Z",
+        "num": 799,
+        "onTakeItem": false,
+        "spritenum": 651,
+        "zMove": "Malicious Moonsault",
+        "zMoveFrom": "Darkest Lariat"
+    },
+    "insectplate": {
+        "forcedForme": "Arceus-Bug",
+        "gen": 4,
+        "name": "Insect Plate",
+        "num": 308,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "onPlate": "Bug",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 223
+    },
+    "ironball": {
+        "fling": {
+            "basePower": 130
+        },
+        "gen": 4,
+        "name": "Iron Ball",
+        "num": 278,
+        "onEffectiveness": "onEffectiveness",
+        "onModifySpe": "onModifySpe",
+        "spritenum": 224
+    },
+    "ironplate": {
+        "forcedForme": "Arceus-Steel",
+        "gen": 4,
+        "name": "Iron Plate",
+        "num": 313,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "onPlate": "Steel",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 225
+    },
+    "jabocaberry": {
+        "gen": 6,
+        "isBerry": true,
+        "name": "Jaboca Berry",
+        "naturalGift": {
+            "basePower": 100,
+            "type": "Dragon"
+        },
+        "num": 687,
+        "onDamagingHit": "onDamagingHit",
+        "onEat": "onEat",
+        "spritenum": 230
+    },
+    "kangaskhanite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Kangaskhan"
+        ],
+        "megaEvolves": "Kangaskhan",
+        "megaStone": "Kangaskhan-Mega",
+        "name": "Kangaskhanite",
+        "num": 675,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 592
+    },
+    "kelpsyberry": {
+        "gen": 3,
+        "isBerry": true,
+        "name": "Kelpsy Berry",
+        "naturalGift": {
+            "basePower": 90,
+            "type": "Fighting"
+        },
+        "num": 170,
+        "onEat": false,
+        "spritenum": 235
+    },
+    "kingsrock": {
+        "fling": {
+            "basePower": 30,
+            "volatileStatus": "flinch"
+        },
+        "gen": 2,
+        "name": "King's Rock",
+        "num": 221,
+        "onModifyMove": "onModifyMove",
+        "onModifyMovePriority": -1,
+        "spritenum": 236
+    },
+    "kommoniumz": {
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Kommo-o",
+            "Kommo-o-Totem"
+        ],
+        "name": "Kommonium Z",
+        "num": 926,
+        "onTakeItem": false,
+        "spritenum": 690,
+        "zMove": "Clangorous Soulblaze",
+        "zMoveFrom": "Clanging Scales"
+    },
+    "laggingtail": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 4,
+        "name": "Lagging Tail",
+        "num": 279,
+        "onFractionalPriority": -0.1,
+        "spritenum": 237
+    },
+    "lansatberry": {
+        "gen": 3,
+        "isBerry": true,
+        "name": "Lansat Berry",
+        "naturalGift": {
+            "basePower": 100,
+            "type": "Flying"
+        },
+        "num": 206,
+        "onEat": "onEat",
+        "onUpdate": "onUpdate",
+        "spritenum": 238
+    },
+    "latiasite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Latias"
+        ],
+        "megaEvolves": "Latias",
+        "megaStone": "Latias-Mega",
+        "name": "Latiasite",
+        "num": 684,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 629
+    },
+    "latiosite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Latios"
+        ],
+        "megaEvolves": "Latios",
+        "megaStone": "Latios-Mega",
+        "name": "Latiosite",
+        "num": 685,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 630
+    },
+    "laxincense": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 3,
+        "isNonstandard": "Past",
+        "name": "Lax Incense",
+        "num": 255,
+        "onModifyAccuracy": "onModifyAccuracy",
+        "onModifyAccuracyPriority": -2,
+        "spritenum": 240
+    },
+    "leafstone": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 1,
+        "name": "Leaf Stone",
+        "num": 85,
+        "spritenum": 241
+    },
+    "leek": {
+        "fling": {
+            "basePower": 60
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Farfetch\u2019d",
+            "Farfetch\u2019d-Galar",
+            "Sirfetch\u2019d"
+        ],
+        "name": "Leek",
+        "num": 259,
+        "onModifyCritRatio": "onModifyCritRatio",
+        "spritenum": 475
+    },
+    "leftovers": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 2,
+        "name": "Leftovers",
+        "num": 234,
+        "onResidual": "onResidual",
+        "onResidualOrder": 5,
+        "onResidualSubOrder": 4,
+        "spritenum": 242
+    },
+    "leppaberry": {
+        "gen": 3,
+        "isBerry": true,
+        "name": "Leppa Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Fighting"
+        },
+        "num": 154,
+        "onEat": "onEat",
+        "onUpdate": "onUpdate",
+        "spritenum": 244
+    },
+    "levelball": {
+        "gen": 2,
+        "isPokeball": true,
+        "name": "Level Ball",
+        "num": 493,
+        "spritenum": 246
+    },
+    "liechiberry": {
+        "gen": 3,
+        "isBerry": true,
+        "name": "Liechi Berry",
+        "naturalGift": {
+            "basePower": 100,
+            "type": "Grass"
+        },
+        "num": 201,
+        "onEat": "onEat",
+        "onUpdate": "onUpdate",
+        "spritenum": 248
+    },
+    "lifeorb": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 4,
+        "name": "Life Orb",
+        "num": 270,
+        "onAfterMoveSecondarySelf": "onAfterMoveSecondarySelf",
+        "onModifyDamage": "onModifyDamage",
+        "spritenum": 249
+    },
+    "lightball": {
+        "fling": {
+            "basePower": 30,
+            "status": "par"
+        },
+        "gen": 2,
+        "itemUser": [
+            "Pikachu",
+            "Pikachu-Cosplay",
+            "Pikachu-Rock-Star",
+            "Pikachu-Belle",
+            "Pikachu-Pop-Star",
+            "Pikachu-PhD",
+            "Pikachu-Libre",
+            "Pikachu-Original",
+            "Pikachu-Hoenn",
+            "Pikachu-Sinnoh",
+            "Pikachu-Unova",
+            "Pikachu-Kalos",
+            "Pikachu-Alola",
+            "Pikachu-Partner",
+            "Pikachu-Starter",
+            "Pikachu-World"
+        ],
+        "name": "Light Ball",
+        "num": 236,
+        "onModifyAtk": "onModifyAtk",
+        "onModifyAtkPriority": 1,
+        "onModifySpA": "onModifySpA",
+        "onModifySpAPriority": 1,
+        "spritenum": 251
+    },
+    "lightclay": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 4,
+        "name": "Light Clay",
+        "num": 269,
+        "spritenum": 252
+    },
+    "loadeddice": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 9,
+        "name": "Loaded Dice",
+        "num": 1886,
+        "onModifyMove": "onModifyMove",
+        "spritenum": 751
+    },
+    "lopunnite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Lopunny"
+        ],
+        "megaEvolves": "Lopunny",
+        "megaStone": "Lopunny-Mega",
+        "name": "Lopunnite",
+        "num": 768,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 626
+    },
+    "loveball": {
+        "gen": 2,
+        "isPokeball": true,
+        "name": "Love Ball",
+        "num": 496,
+        "spritenum": 258
+    },
+    "lovesweet": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "name": "Love Sweet",
+        "num": 1110,
+        "spritenum": 705
+    },
+    "lucarionite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Lucario"
+        ],
+        "megaEvolves": "Lucario",
+        "megaStone": "Lucario-Mega",
+        "name": "Lucarionite",
+        "num": 673,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 594
+    },
+    "luckypunch": {
+        "fling": {
+            "basePower": 40
+        },
+        "gen": 2,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Chansey"
+        ],
+        "name": "Lucky Punch",
+        "num": 256,
+        "onModifyCritRatio": "onModifyCritRatio",
+        "spritenum": 261
+    },
+    "lumberry": {
+        "gen": 3,
+        "isBerry": true,
+        "name": "Lum Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Flying"
+        },
+        "num": 157,
+        "onAfterSetStatus": "onAfterSetStatus",
+        "onAfterSetStatusPriority": -1,
+        "onEat": "onEat",
+        "onUpdate": "onUpdate",
+        "spritenum": 262
+    },
+    "luminousmoss": {
+        "boosts": {
+            "spd": 1
+        },
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 6,
+        "name": "Luminous Moss",
+        "num": 648,
+        "onDamagingHit": "onDamagingHit",
+        "spritenum": 595
+    },
+    "lunaliumz": {
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Lunala",
+            "Necrozma-Dawn-Wings"
+        ],
+        "name": "Lunalium Z",
+        "num": 922,
+        "onTakeItem": false,
+        "spritenum": 686,
+        "zMove": "Menacing Moonraze Maelstrom",
+        "zMoveFrom": "Moongeist Beam"
+    },
+    "lureball": {
+        "gen": 2,
+        "isPokeball": true,
+        "name": "Lure Ball",
+        "num": 494,
+        "spritenum": 264
+    },
+    "lustrousglobe": {
+        "forcedForme": "Palkia-Origin",
+        "gen": 8,
+        "itemUser": [
+            "Palkia-Origin"
+        ],
+        "name": "Lustrous Globe",
+        "num": 1778,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 742
+    },
+    "lustrousorb": {
+        "fling": {
+            "basePower": 60
+        },
+        "gen": 4,
+        "itemUser": [
+            "Palkia"
+        ],
+        "name": "Lustrous Orb",
+        "num": 136,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "spritenum": 265
+    },
+    "luxuryball": {
+        "gen": 3,
+        "isPokeball": true,
+        "name": "Luxury Ball",
+        "num": 11,
+        "spritenum": 266
+    },
+    "lycaniumz": {
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Lycanroc",
+            "Lycanroc-Midnight",
+            "Lycanroc-Dusk"
+        ],
+        "name": "Lycanium Z",
+        "num": 925,
+        "onTakeItem": false,
+        "spritenum": 689,
+        "zMove": "Splintered Stormshards",
+        "zMoveFrom": "Stone Edge"
+    },
+    "machobrace": {
+        "fling": {
+            "basePower": 60
+        },
+        "gen": 3,
+        "ignoreKlutz": true,
+        "isNonstandard": "Past",
+        "name": "Macho Brace",
+        "num": 215,
+        "onModifySpe": "onModifySpe",
+        "spritenum": 269
+    },
+    "magmarizer": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 4,
+        "name": "Magmarizer",
+        "num": 323,
+        "spritenum": 272
+    },
+    "magnet": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 2,
+        "name": "Magnet",
+        "num": 242,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "spritenum": 273
+    },
+    "magoberry": {
+        "gen": 3,
+        "isBerry": true,
+        "name": "Mago Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Ghost"
+        },
+        "num": 161,
+        "onEat": "onEat",
+        "onTryEatItem": "onTryEatItem",
+        "onUpdate": "onUpdate",
+        "spritenum": 274
+    },
+    "magostberry": {
+        "gen": 3,
+        "isBerry": true,
+        "isNonstandard": "Past",
+        "name": "Magost Berry",
+        "naturalGift": {
+            "basePower": 90,
+            "type": "Rock"
+        },
+        "num": 176,
+        "onEat": false,
+        "spritenum": 275
+    },
+    "mail": {
+        "gen": 2,
+        "isNonstandard": "Past",
+        "name": "Mail",
+        "num": 137,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 403
+    },
+    "maliciousarmor": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 9,
+        "name": "Malicious Armor",
+        "num": 1861,
+        "spritenum": 744
+    },
+    "manectite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Manectric"
+        ],
+        "megaEvolves": "Manectric",
+        "megaStone": "Manectric-Mega",
+        "name": "Manectite",
+        "num": 682,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 596
+    },
+    "marangaberry": {
+        "gen": 6,
+        "isBerry": true,
+        "name": "Maranga Berry",
+        "naturalGift": {
+            "basePower": 100,
+            "type": "Dark"
+        },
+        "num": 688,
+        "onAfterMoveSecondary": "onAfterMoveSecondary",
+        "onEat": "onEat",
+        "spritenum": 597
+    },
+    "marshadiumz": {
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Marshadow"
+        ],
+        "name": "Marshadium Z",
+        "num": 802,
+        "onTakeItem": false,
+        "spritenum": 654,
+        "zMove": "Soul-Stealing 7-Star Strike",
+        "zMoveFrom": "Spectral Thief"
+    },
+    "masterball": {
+        "gen": 1,
+        "isPokeball": true,
+        "name": "Master Ball",
+        "num": 1,
+        "spritenum": 276
+    },
+    "masterpieceteacup": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 9,
+        "name": "Masterpiece Teacup",
+        "num": 2404,
+        "spritenum": 757
+    },
+    "mawilite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Mawile"
+        ],
+        "megaEvolves": "Mawile",
+        "megaStone": "Mawile-Mega",
+        "name": "Mawilite",
+        "num": 681,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 598
+    },
+    "meadowplate": {
+        "forcedForme": "Arceus-Grass",
+        "gen": 4,
+        "name": "Meadow Plate",
+        "num": 301,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "onPlate": "Grass",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 282
+    },
+    "medichamite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Medicham"
+        ],
+        "megaEvolves": "Medicham",
+        "megaStone": "Medicham-Mega",
+        "name": "Medichamite",
+        "num": 665,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 599
+    },
+    "mentalherb": {
+        "fling": {
+            "basePower": 10,
+            "effect": "effect"
+        },
+        "gen": 3,
+        "name": "Mental Herb",
+        "num": 219,
+        "onUpdate": "onUpdate",
+        "spritenum": 285
+    },
+    "metagrossite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Metagross"
+        ],
+        "megaEvolves": "Metagross",
+        "megaStone": "Metagross-Mega",
+        "name": "Metagrossite",
+        "num": 758,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 618
+    },
+    "metalalloy": {
+        "gen": 9,
+        "name": "Metal Alloy",
+        "num": 2482,
+        "spritenum": 761
+    },
+    "metalcoat": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 2,
+        "name": "Metal Coat",
+        "num": 233,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "spritenum": 286
+    },
+    "metalpowder": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 2,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Ditto"
+        ],
+        "name": "Metal Powder",
+        "num": 257,
+        "onModifyDef": "onModifyDef",
+        "onModifyDefPriority": 2,
+        "spritenum": 287
+    },
+    "metronome": {
+        "condition": {
+            "onModifyDamage": "onModifyDamage",
+            "onStart": "onStart",
+            "onTryMove": "onTryMove",
+            "onTryMovePriority": -2
+        },
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 4,
+        "name": "Metronome",
+        "num": 277,
+        "onStart": "onStart",
+        "spritenum": 289
+    },
+    "mewniumz": {
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Mew"
+        ],
+        "name": "Mewnium Z",
+        "num": 806,
+        "onTakeItem": false,
+        "spritenum": 658,
+        "zMove": "Genesis Supernova",
+        "zMoveFrom": "Psychic"
+    },
+    "mewtwonitex": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Mewtwo"
+        ],
+        "megaEvolves": "Mewtwo",
+        "megaStone": "Mewtwo-Mega-X",
+        "name": "Mewtwonite X",
+        "num": 662,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 600
+    },
+    "mewtwonitey": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Mewtwo"
+        ],
+        "megaEvolves": "Mewtwo",
+        "megaStone": "Mewtwo-Mega-Y",
+        "name": "Mewtwonite Y",
+        "num": 663,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 601
+    },
+    "micleberry": {
+        "condition": {
+            "duration": 2,
+            "onSourceAccuracy": "onSourceAccuracy"
+        },
+        "gen": 4,
+        "isBerry": true,
+        "name": "Micle Berry",
+        "naturalGift": {
+            "basePower": 100,
+            "type": "Rock"
+        },
+        "num": 209,
+        "onEat": "onEat",
+        "onResidual": "onResidual",
+        "spritenum": 290
+    },
+    "mimikiumz": {
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Mimikyu",
+            "Mimikyu-Busted",
+            "Mimikyu-Totem",
+            "Mimikyu-Busted-Totem"
+        ],
+        "name": "Mimikium Z",
+        "num": 924,
+        "onTakeItem": false,
+        "spritenum": 688,
+        "zMove": "Let's Snuggle Forever",
+        "zMoveFrom": "Play Rough"
+    },
+    "mindplate": {
+        "forcedForme": "Arceus-Psychic",
+        "gen": 4,
+        "name": "Mind Plate",
+        "num": 307,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "onPlate": "Psychic",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 291
+    },
+    "mintberry": {
+        "gen": 2,
+        "isBerry": true,
+        "isNonstandard": "Past",
+        "name": "Mint Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Water"
+        },
+        "num": 150,
+        "onEat": "onEat",
+        "onUpdate": "onUpdate",
+        "spritenum": 65
+    },
+    "miracleberry": {
+        "gen": 2,
+        "isBerry": true,
+        "isNonstandard": "Past",
+        "name": "Miracle Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Flying"
+        },
+        "num": 157,
+        "onEat": "onEat",
+        "onUpdate": "onUpdate",
+        "spritenum": 262
+    },
+    "miracleseed": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 2,
+        "name": "Miracle Seed",
+        "num": 239,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "spritenum": 292
+    },
+    "mirrorherb": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 9,
+        "name": "Mirror Herb",
+        "num": 1883,
+        "onAnyAfterMega": "onAnyAfterMega",
+        "onAnyAfterMove": "onAnyAfterMove",
+        "onAnyAfterTerastallization": "onAnyAfterTerastallization",
+        "onAnySwitchIn": "onAnySwitchIn",
+        "onAnySwitchInPriority": -3,
+        "onEnd": "onEnd",
+        "onFoeAfterBoost": "onFoeAfterBoost",
+        "onResidual": "onResidual",
+        "onResidualOrder": 29,
+        "onUse": "onUse",
+        "spritenum": 748
+    },
+    "mistyseed": {
+        "boosts": {
+            "spd": 1
+        },
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 7,
+        "name": "Misty Seed",
+        "num": 883,
+        "onStart": "onStart",
+        "onSwitchInPriority": -1,
+        "onTerrainChange": "onTerrainChange",
+        "spritenum": 666
+    },
+    "moonball": {
+        "gen": 2,
+        "isPokeball": true,
+        "name": "Moon Ball",
+        "num": 498,
+        "spritenum": 294
+    },
+    "moonstone": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 1,
+        "name": "Moon Stone",
+        "num": 81,
+        "spritenum": 295
+    },
+    "muscleband": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 4,
+        "name": "Muscle Band",
+        "num": 266,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 16,
+        "spritenum": 297
+    },
+    "mysteryberry": {
+        "gen": 2,
+        "isBerry": true,
+        "isNonstandard": "Past",
+        "name": "Mystery Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Fighting"
+        },
+        "num": 154,
+        "onEat": "onEat",
+        "onUpdate": "onUpdate",
+        "spritenum": 244
+    },
+    "mysticwater": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 2,
+        "name": "Mystic Water",
+        "num": 243,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "spritenum": 300
+    },
+    "nanabberry": {
+        "gen": 3,
+        "isBerry": true,
+        "isNonstandard": "Past",
+        "name": "Nanab Berry",
+        "naturalGift": {
+            "basePower": 90,
+            "type": "Water"
+        },
+        "num": 166,
+        "onEat": false,
+        "spritenum": 302
+    },
+    "nestball": {
+        "gen": 3,
+        "isPokeball": true,
+        "name": "Nest Ball",
+        "num": 8,
+        "spritenum": 303
+    },
+    "netball": {
+        "gen": 3,
+        "isPokeball": true,
+        "name": "Net Ball",
+        "num": 6,
+        "spritenum": 304
+    },
+    "nevermeltice": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 2,
+        "name": "Never-Melt Ice",
+        "num": 246,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "spritenum": 305
+    },
+    "nomelberry": {
+        "gen": 3,
+        "isBerry": true,
+        "isNonstandard": "Past",
+        "name": "Nomel Berry",
+        "naturalGift": {
+            "basePower": 90,
+            "type": "Dragon"
+        },
+        "num": 178,
+        "onEat": false,
+        "spritenum": 306
+    },
+    "normalgem": {
+        "gen": 5,
+        "isGem": true,
+        "name": "Normal Gem",
+        "num": 564,
+        "onSourceTryPrimaryHit": "onSourceTryPrimaryHit",
+        "spritenum": 307
+    },
+    "normaliumz": {
+        "gen": 7,
+        "isNonstandard": "Past",
+        "name": "Normalium Z",
+        "num": 776,
+        "onTakeItem": false,
+        "spritenum": 631,
+        "zMove": true,
+        "zMoveType": "Normal"
+    },
+    "occaberry": {
+        "gen": 4,
+        "isBerry": true,
+        "isNonstandard": "Past",
+        "name": "Occa Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Fire"
+        },
+        "num": 314,
+        "onEat": "onEat",
+        "onSourceModifyDamage": "onSourceModifyDamage",
+        "spritenum": 311
+    },
+    "oldamber": {
+        "fling": {
+            "basePower": 100
+        },
+        "gen": 3,
+        "isNonstandard": "Past",
+        "name": "Old Amber",
+        "num": 103,
+        "spritenum": 314
+    },
+    "oranberry": {
+        "gen": 3,
+        "isBerry": true,
+        "name": "Oran Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Poison"
+        },
+        "num": 155,
+        "onEat": "onEat",
+        "onTryEatItem": "onTryEatItem",
+        "onUpdate": "onUpdate",
+        "spritenum": 319
+    },
+    "ovalstone": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 4,
+        "name": "Oval Stone",
+        "num": 110,
+        "spritenum": 321
+    },
+    "pamtreberry": {
+        "gen": 3,
+        "isBerry": true,
+        "isNonstandard": "Past",
+        "name": "Pamtre Berry",
+        "naturalGift": {
+            "basePower": 90,
+            "type": "Steel"
+        },
+        "num": 180,
+        "onEat": false,
+        "spritenum": 323
+    },
+    "parkball": {
+        "gen": 4,
+        "isNonstandard": "Unobtainable",
+        "isPokeball": true,
+        "name": "Park Ball",
+        "num": 500,
+        "spritenum": 325
+    },
+    "passhoberry": {
+        "gen": 3,
+        "isBerry": true,
+        "name": "Passho Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Water"
+        },
+        "num": 151,
+        "onEat": "onEat",
+        "onSourceModifyDamage": "onSourceModifyDamage",
+        "spritenum": 329
+    },
+    "persimberry": {
+        "gen": 3,
+        "isBerry": true,
+        "name": "Persim Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Ground"
+        },
+        "num": 156,
+        "onEat": "onEat",
+        "onUpdate": "onUpdate",
+        "spritenum": 334
+    },
+    "petayaberry": {
+        "gen": 3,
+        "isBerry": true,
+        "name": "Petaya Berry",
+        "naturalGift": {
+            "basePower": 100,
+            "type": "Poison"
+        },
+        "num": 204,
+        "onEat": "onEat",
+        "onUpdate": "onUpdate",
+        "spritenum": 335
+    },
+    "pidgeotite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Pidgeot"
+        ],
+        "megaEvolves": "Pidgeot",
+        "megaStone": "Pidgeot-Mega",
+        "name": "Pidgeotite",
+        "num": 762,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 622
+    },
+    "pikaniumz": {
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Pikachu"
+        ],
+        "name": "Pikanium Z",
+        "num": 794,
+        "onTakeItem": false,
+        "spritenum": 649,
+        "zMove": "Catastropika",
+        "zMoveFrom": "Volt Tackle"
+    },
+    "pikashuniumz": {
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Pikachu-Original",
+            "Pikachu-Hoenn",
+            "Pikachu-Sinnoh",
+            "Pikachu-Unova",
+            "Pikachu-Kalos",
+            "Pikachu-Alola",
+            "Pikachu-Partner"
+        ],
+        "name": "Pikashunium Z",
+        "num": 836,
+        "onTakeItem": false,
+        "spritenum": 659,
+        "zMove": "10,000,000 Volt Thunderbolt",
+        "zMoveFrom": "Thunderbolt"
+    },
+    "pinapberry": {
+        "gen": 3,
+        "isBerry": true,
+        "isNonstandard": "Past",
+        "name": "Pinap Berry",
+        "naturalGift": {
+            "basePower": 90,
+            "type": "Grass"
+        },
+        "num": 168,
+        "onEat": false,
+        "spritenum": 337
+    },
+    "pinkbow": {
+        "gen": 2,
+        "isNonstandard": "Past",
+        "name": "Pink Bow",
+        "num": 251,
+        "onBasePower": "onBasePower",
+        "spritenum": 444
+    },
+    "pinsirite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Pinsir"
+        ],
+        "megaEvolves": "Pinsir",
+        "megaStone": "Pinsir-Mega",
+        "name": "Pinsirite",
+        "num": 671,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 602
+    },
+    "pixieplate": {
+        "forcedForme": "Arceus-Fairy",
+        "gen": 6,
+        "name": "Pixie Plate",
+        "num": 644,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "onPlate": "Fairy",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 610
+    },
+    "plumefossil": {
+        "fling": {
+            "basePower": 100
+        },
+        "gen": 5,
+        "isNonstandard": "Past",
+        "name": "Plume Fossil",
+        "num": 573,
+        "spritenum": 339
+    },
+    "poisonbarb": {
+        "fling": {
+            "basePower": 70,
+            "status": "psn"
+        },
+        "gen": 2,
+        "name": "Poison Barb",
+        "num": 245,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "spritenum": 343
+    },
+    "poisongem": {
+        "gen": 5,
+        "isGem": true,
+        "isNonstandard": "Past",
+        "name": "Poison Gem",
+        "num": 554,
+        "onSourceTryPrimaryHit": "onSourceTryPrimaryHit",
+        "spritenum": 344
+    },
+    "poisoniumz": {
+        "forcedForme": "Arceus-Poison",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "name": "Poisonium Z",
+        "num": 783,
+        "onPlate": "Poison",
+        "onTakeItem": false,
+        "spritenum": 638,
+        "zMove": true,
+        "zMoveType": "Poison"
+    },
+    "poisonmemory": {
+        "forcedForme": "Silvally-Poison",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Silvally-Poison"
+        ],
+        "name": "Poison Memory",
+        "num": 906,
+        "onMemory": "Poison",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 670
+    },
+    "pokeball": {
+        "gen": 1,
+        "isPokeball": true,
+        "name": "Poke Ball",
+        "num": 4,
+        "spritenum": 345
+    },
+    "polkadotbow": {
+        "gen": 2,
+        "isNonstandard": "Past",
+        "name": "Polkadot Bow",
+        "num": 251,
+        "onBasePower": "onBasePower",
+        "spritenum": 444
+    },
+    "pomegberry": {
+        "gen": 3,
+        "isBerry": true,
+        "name": "Pomeg Berry",
+        "naturalGift": {
+            "basePower": 90,
+            "type": "Ice"
+        },
+        "num": 169,
+        "onEat": false,
+        "spritenum": 351
+    },
+    "poweranklet": {
+        "fling": {
+            "basePower": 70
+        },
+        "gen": 4,
+        "ignoreKlutz": true,
+        "name": "Power Anklet",
+        "num": 293,
+        "onModifySpe": "onModifySpe",
+        "spritenum": 354
+    },
+    "powerband": {
+        "fling": {
+            "basePower": 70
+        },
+        "gen": 4,
+        "ignoreKlutz": true,
+        "name": "Power Band",
+        "num": 292,
+        "onModifySpe": "onModifySpe",
+        "spritenum": 355
+    },
+    "powerbelt": {
+        "fling": {
+            "basePower": 70
+        },
+        "gen": 4,
+        "ignoreKlutz": true,
+        "name": "Power Belt",
+        "num": 290,
+        "onModifySpe": "onModifySpe",
+        "spritenum": 356
+    },
+    "powerbracer": {
+        "fling": {
+            "basePower": 70
+        },
+        "gen": 4,
+        "ignoreKlutz": true,
+        "name": "Power Bracer",
+        "num": 289,
+        "onModifySpe": "onModifySpe",
+        "spritenum": 357
+    },
+    "powerherb": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 4,
+        "name": "Power Herb",
+        "num": 271,
+        "onChargeMove": "onChargeMove",
+        "spritenum": 358
+    },
+    "powerlens": {
+        "fling": {
+            "basePower": 70
+        },
+        "gen": 4,
+        "ignoreKlutz": true,
+        "name": "Power Lens",
+        "num": 291,
+        "onModifySpe": "onModifySpe",
+        "spritenum": 359
+    },
+    "powerweight": {
+        "fling": {
+            "basePower": 70
+        },
+        "gen": 4,
+        "ignoreKlutz": true,
+        "name": "Power Weight",
+        "num": 294,
+        "onModifySpe": "onModifySpe",
+        "spritenum": 360
+    },
+    "premierball": {
+        "gen": 3,
+        "isPokeball": true,
+        "name": "Premier Ball",
+        "num": 12,
+        "spritenum": 363
+    },
+    "primariumz": {
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Primarina"
+        ],
+        "name": "Primarium Z",
+        "num": 800,
+        "onTakeItem": false,
+        "spritenum": 652,
+        "zMove": "Oceanic Operetta",
+        "zMoveFrom": "Sparkling Aria"
+    },
+    "prismscale": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 5,
+        "name": "Prism Scale",
+        "num": 537,
+        "spritenum": 365
+    },
+    "protectivepads": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 7,
+        "name": "Protective Pads",
+        "num": 880,
+        "spritenum": 663
+    },
+    "protector": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 4,
+        "name": "Protector",
+        "num": 321,
+        "spritenum": 367
+    },
+    "przcureberry": {
+        "gen": 2,
+        "isBerry": true,
+        "isNonstandard": "Past",
+        "name": "PRZ Cure Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Fire"
+        },
+        "num": 149,
+        "onEat": "onEat",
+        "onUpdate": "onUpdate",
+        "spritenum": 63
+    },
+    "psncureberry": {
+        "gen": 2,
+        "isBerry": true,
+        "isNonstandard": "Past",
+        "name": "PSN Cure Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Electric"
+        },
+        "num": 151,
+        "onEat": "onEat",
+        "onUpdate": "onUpdate",
+        "spritenum": 333
+    },
+    "psychicgem": {
+        "gen": 5,
+        "isGem": true,
+        "isNonstandard": "Past",
+        "name": "Psychic Gem",
+        "num": 557,
+        "onSourceTryPrimaryHit": "onSourceTryPrimaryHit",
+        "spritenum": 369
+    },
+    "psychicmemory": {
+        "forcedForme": "Silvally-Psychic",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Silvally-Psychic"
+        ],
+        "name": "Psychic Memory",
+        "num": 916,
+        "onMemory": "Psychic",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 680
+    },
+    "psychicseed": {
+        "boosts": {
+            "spd": 1
+        },
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 7,
+        "name": "Psychic Seed",
+        "num": 882,
+        "onStart": "onStart",
+        "onSwitchInPriority": -1,
+        "onTerrainChange": "onTerrainChange",
+        "spritenum": 665
+    },
+    "psychiumz": {
+        "forcedForme": "Arceus-Psychic",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "name": "Psychium Z",
+        "num": 786,
+        "onPlate": "Psychic",
+        "onTakeItem": false,
+        "spritenum": 641,
+        "zMove": true,
+        "zMoveType": "Psychic"
+    },
+    "punchingglove": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 9,
+        "name": "Punching Glove",
+        "num": 1884,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 23,
+        "onModifyMove": "onModifyMove",
+        "onModifyMovePriority": 1,
+        "spritenum": 749
+    },
+    "qualotberry": {
+        "gen": 3,
+        "isBerry": true,
+        "name": "Qualot Berry",
+        "naturalGift": {
+            "basePower": 90,
+            "type": "Poison"
+        },
+        "num": 171,
+        "onEat": false,
+        "spritenum": 371
+    },
+    "quickball": {
+        "gen": 4,
+        "isPokeball": true,
+        "name": "Quick Ball",
+        "num": 15,
+        "spritenum": 372
+    },
+    "quickclaw": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 2,
+        "name": "Quick Claw",
+        "num": 217,
+        "onFractionalPriority": "onFractionalPriority",
+        "onFractionalPriorityPriority": -2,
+        "spritenum": 373
+    },
+    "quickpowder": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 4,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Ditto"
+        ],
+        "name": "Quick Powder",
+        "num": 274,
+        "onModifySpe": "onModifySpe",
+        "spritenum": 374
+    },
+    "rabutaberry": {
+        "gen": 3,
+        "isBerry": true,
+        "isNonstandard": "Past",
+        "name": "Rabuta Berry",
+        "naturalGift": {
+            "basePower": 90,
+            "type": "Ghost"
+        },
+        "num": 177,
+        "onEat": false,
+        "spritenum": 375
+    },
+    "rarebone": {
+        "fling": {
+            "basePower": 100
+        },
+        "gen": 4,
+        "name": "Rare Bone",
+        "num": 106,
+        "spritenum": 379
+    },
+    "rawstberry": {
+        "gen": 3,
+        "isBerry": true,
+        "name": "Rawst Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Grass"
+        },
+        "num": 152,
+        "onEat": "onEat",
+        "onUpdate": "onUpdate",
+        "spritenum": 381
+    },
+    "razorclaw": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 4,
+        "name": "Razor Claw",
+        "num": 326,
+        "onModifyCritRatio": "onModifyCritRatio",
+        "spritenum": 382
+    },
+    "razorfang": {
+        "fling": {
+            "basePower": 30,
+            "volatileStatus": "flinch"
+        },
+        "gen": 4,
+        "name": "Razor Fang",
+        "num": 327,
+        "onModifyMove": "onModifyMove",
+        "onModifyMovePriority": -1,
+        "spritenum": 383
+    },
+    "razzberry": {
+        "gen": 3,
+        "isBerry": true,
+        "isNonstandard": "Past",
+        "name": "Razz Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Steel"
+        },
+        "num": 164,
+        "onEat": false,
+        "spritenum": 384
+    },
+    "reapercloth": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 4,
+        "name": "Reaper Cloth",
+        "num": 325,
+        "spritenum": 385
+    },
+    "redcard": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 5,
+        "name": "Red Card",
+        "num": 542,
+        "onAfterMoveSecondary": "onAfterMoveSecondary",
+        "spritenum": 387
+    },
+    "redorb": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "isPrimalOrb": true,
+        "itemUser": [
+            "Groudon"
+        ],
+        "name": "Red Orb",
+        "num": 534,
+        "onSwitchIn": "onSwitchIn",
+        "onSwitchInPriority": -1,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 390
+    },
+    "repeatball": {
+        "gen": 3,
+        "isPokeball": true,
+        "name": "Repeat Ball",
+        "num": 9,
+        "spritenum": 401
+    },
+    "ribbonsweet": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "name": "Ribbon Sweet",
+        "num": 1115,
+        "spritenum": 710
+    },
+    "rindoberry": {
+        "gen": 5,
+        "isBerry": true,
+        "isNonstandard": "Past",
+        "name": "Rindo Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Grass"
+        },
+        "num": 559,
+        "onEat": "onEat",
+        "onSourceModifyDamage": "onSourceModifyDamage",
+        "spritenum": 409
+    },
+    "rockincense": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 4,
+        "isNonstandard": "Past",
+        "name": "Rock Incense",
+        "num": 315,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "spritenum": 416
+    },
+    "rockiumz": {
+        "forcedForme": "Arceus-Rock",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "name": "Rockium Z",
+        "num": 788,
+        "onPlate": "Rock",
+        "onTakeItem": false,
+        "spritenum": 643,
+        "zMove": true,
+        "zMoveType": "Rock"
+    },
+    "rockmemory": {
+        "forcedForme": "Silvally-Rock",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Silvally-Rock"
+        ],
+        "name": "Rock Memory",
+        "num": 908,
+        "onMemory": "Rock",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 672
+    },
+    "rockyhelmet": {
+        "fling": {
+            "basePower": 60
+        },
+        "gen": 5,
+        "name": "Rocky Helmet",
+        "num": 540,
+        "onDamagingHit": "onDamagingHit",
+        "onDamagingHitOrder": 2,
+        "spritenum": 417
+    },
+    "roomservice": {
+        "boosts": {
+            "spe": -1
+        },
+        "fling": {
+            "basePower": 100
+        },
+        "gen": 8,
+        "name": "Room Service",
+        "num": 1122,
+        "onAnyPseudoWeatherChange": "onAnyPseudoWeatherChange",
+        "onStart": "onStart",
+        "onSwitchInPriority": -1,
+        "spritenum": 717
+    },
+    "rootfossil": {
+        "fling": {
+            "basePower": 100
+        },
+        "gen": 3,
+        "isNonstandard": "Past",
+        "name": "Root Fossil",
+        "num": 99,
+        "spritenum": 418
+    },
+    "roseincense": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 4,
+        "isNonstandard": "Past",
+        "name": "Rose Incense",
+        "num": 318,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "spritenum": 419
+    },
+    "roseliberry": {
+        "gen": 8,
+        "isBerry": true,
+        "itemUser": [
+            "Zamazenta-Crowned"
+        ],
+        "name": "Roseli Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Fairy"
+        },
+        "num": 1104,
+        "onEat": "onEat",
+        "onSourceModifyDamage": "onSourceModifyDamage",
+        "spritenum": 603
+    },
+    "rustedsword": {
+        "gen": 8,
+        "itemUser": [
+            "Zacian-Crowned"
+        ],
+        "name": "Rusted Sword",
+        "num": 1103,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 698
+    },
+    "sablenite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Sableye"
+        ],
+        "megaEvolves": "Sableye",
+        "megaStone": "Sableye-Mega",
+        "name": "Sablenite",
+        "num": 754,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 614
+    },
+    "sachet": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 6,
+        "isNonstandard": "Past",
+        "name": "Sachet",
+        "num": 647,
+        "spritenum": 691
+    },
+    "safariball": {
+        "gen": 1,
+        "isPokeball": true,
+        "name": "Safari Ball",
+        "num": 5,
+        "spritenum": 425
+    },
+    "safetygoggles": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 6,
+        "name": "Safety Goggles",
+        "num": 650,
+        "onImmunity": "onImmunity",
+        "onTryHit": "onTryHit",
+        "spritenum": 604
+    },
+    "sailfossil": {
+        "fling": {
+            "basePower": 100
+        },
+        "gen": 6,
+        "isNonstandard": "Past",
+        "name": "Sail Fossil",
+        "num": 711,
+        "spritenum": 695
+    },
+    "salacberry": {
+        "gen": 3,
+        "isBerry": true,
+        "name": "Salac Berry",
+        "naturalGift": {
+            "basePower": 100,
+            "type": "Fighting"
+        },
+        "num": 203,
+        "onEat": "onEat",
+        "onUpdate": "onUpdate",
+        "spritenum": 426
+    },
+    "salamencite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Salamence"
+        ],
+        "megaEvolves": "Salamence",
+        "megaStone": "Salamence-Mega",
+        "name": "Salamencite",
+        "num": 769,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 627
+    },
+    "sceptilite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Sceptile"
+        ],
+        "megaEvolves": "Sceptile",
+        "megaStone": "Sceptile-Mega",
+        "name": "Sceptilite",
+        "num": 753,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 613
+    },
+    "scizorite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Scizor"
+        ],
+        "megaEvolves": "Scizor",
+        "megaStone": "Scizor-Mega",
+        "name": "Scizorite",
+        "num": 670,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 605
+    },
+    "scopelens": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 2,
+        "name": "Scope Lens",
+        "num": 232,
+        "onModifyCritRatio": "onModifyCritRatio",
+        "spritenum": 429
+    },
+    "seaincense": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 3,
+        "isNonstandard": "Past",
+        "name": "Sea Incense",
+        "num": 254,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "spritenum": 430
+    },
+    "sharpbeak": {
+        "fling": {
+            "basePower": 50
+        },
+        "gen": 2,
+        "name": "Sharp Beak",
+        "num": 244,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "spritenum": 436
+    },
+    "sharpedonite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Sharpedo"
+        ],
+        "megaEvolves": "Sharpedo",
+        "megaStone": "Sharpedo-Mega",
+        "name": "Sharpedonite",
+        "num": 759,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 619
+    },
+    "shedshell": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 4,
+        "name": "Shed Shell",
+        "num": 295,
+        "onMaybeTrapPokemon": "onMaybeTrapPokemon",
+        "onMaybeTrapPokemonPriority": -10,
+        "onTrapPokemon": "onTrapPokemon",
+        "onTrapPokemonPriority": -10,
+        "spritenum": 437
+    },
+    "shellbell": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 3,
+        "name": "Shell Bell",
+        "num": 253,
+        "onAfterMoveSecondarySelf": "onAfterMoveSecondarySelf",
+        "onAfterMoveSecondarySelfPriority": -1,
+        "spritenum": 438
+    },
+    "shinystone": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 4,
+        "name": "Shiny Stone",
+        "num": 107,
+        "spritenum": 439
+    },
+    "shockdrive": {
+        "forcedForme": "Genesect-Shock",
+        "gen": 5,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Genesect-Shock"
+        ],
+        "name": "Shock Drive",
+        "num": 117,
+        "onDrive": "Electric",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 442
+    },
+    "shucaberry": {
+        "gen": 3,
+        "isBerry": true,
+        "name": "Shuca Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Ground"
+        },
+        "num": 251,
+        "onEat": "onEat",
+        "onSourceModifyDamage": "onSourceModifyDamage",
+        "spritenum": 443
+    },
+    "silverpowder": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 2,
+        "name": "Silver Powder",
+        "num": 222,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "spritenum": 447
+    },
+    "sitrusberry": {
+        "gen": 3,
+        "isBerry": true,
+        "name": "Sitrus Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Psychic"
+        },
+        "num": 158,
+        "onEat": "onEat",
+        "onTryEatItem": "onTryEatItem",
+        "onUpdate": "onUpdate",
+        "spritenum": 448
+    },
+    "skullfossil": {
+        "fling": {
+            "basePower": 100
+        },
+        "gen": 4,
+        "isNonstandard": "Past",
+        "name": "Skull Fossil",
+        "num": 105,
+        "spritenum": 449
+    },
+    "skyplate": {
+        "forcedForme": "Arceus-Flying",
+        "gen": 4,
+        "name": "Sky Plate",
+        "num": 306,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "onPlate": "Flying",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 450
+    },
+    "slowbronite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Slowbro"
+        ],
+        "megaEvolves": "Slowbro",
+        "megaStone": "Slowbro-Mega",
+        "name": "Slowbronite",
+        "num": 760,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 620
+    },
+    "smoothrock": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 4,
+        "name": "Smooth Rock",
+        "num": 283,
+        "spritenum": 453
+    },
+    "snorliumz": {
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Snorlax"
+        ],
+        "name": "Snorlium Z",
+        "num": 804,
+        "onTakeItem": false,
+        "spritenum": 656,
+        "zMove": "Pulverizing Pancake",
+        "zMoveFrom": "Giga Impact"
+    },
+    "snowball": {
+        "boosts": {
+            "atk": 1
+        },
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 6,
+        "name": "Snowball",
+        "num": 649,
+        "onDamagingHit": "onDamagingHit",
+        "spritenum": 606
+    },
+    "softsand": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 2,
+        "name": "Soft Sand",
+        "num": 237,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "spritenum": 456
+    },
+    "solganiumz": {
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Solgaleo",
+            "Necrozma-Dusk-Mane"
+        ],
+        "name": "Solganium Z",
+        "num": 921,
+        "onTakeItem": false,
+        "spritenum": 685,
+        "zMove": "Searing Sunraze Smash",
+        "zMoveFrom": "Sunsteel Strike"
+    },
+    "souldew": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 3,
+        "itemUser": [
+            "Latios",
+            "Latias"
+        ],
+        "name": "Soul Dew",
+        "num": 225,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "spritenum": 459
+    },
+    "spelltag": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 2,
+        "name": "Spell Tag",
+        "num": 247,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "spritenum": 461
+    },
+    "spelonberry": {
+        "gen": 3,
+        "isBerry": true,
+        "isNonstandard": "Past",
+        "name": "Spelon Berry",
+        "naturalGift": {
+            "basePower": 90,
+            "type": "Dark"
+        },
+        "num": 179,
+        "onEat": false,
+        "spritenum": 462
+    },
+    "splashplate": {
+        "forcedForme": "Arceus-Water",
+        "gen": 4,
+        "name": "Splash Plate",
+        "num": 299,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "onPlate": "Water",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 463
+    },
+    "spookyplate": {
+        "forcedForme": "Arceus-Ghost",
+        "gen": 4,
+        "name": "Spooky Plate",
+        "num": 310,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "onPlate": "Ghost",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 464
+    },
+    "sportball": {
+        "gen": 2,
+        "isPokeball": true,
+        "name": "Sport Ball",
+        "num": 499,
+        "spritenum": 465
+    },
+    "starfberry": {
+        "gen": 3,
+        "isBerry": true,
+        "name": "Starf Berry",
+        "naturalGift": {
+            "basePower": 100,
+            "type": "Psychic"
+        },
+        "num": 207,
+        "onEat": "onEat",
+        "onUpdate": "onUpdate",
+        "spritenum": 472
+    },
+    "starsweet": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "name": "Star Sweet",
+        "num": 1114,
+        "spritenum": 709
+    },
+    "steelgem": {
+        "gen": 5,
+        "isGem": true,
+        "isNonstandard": "Past",
+        "name": "Steel Gem",
+        "num": 563,
+        "onSourceTryPrimaryHit": "onSourceTryPrimaryHit",
+        "spritenum": 473
+    },
+    "steeliumz": {
+        "forcedForme": "Arceus-Steel",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "name": "Steelium Z",
+        "num": 792,
+        "onPlate": "Steel",
+        "onTakeItem": false,
+        "spritenum": 647,
+        "zMove": true,
+        "zMoveType": "Steel"
+    },
+    "steelixite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Steelix"
+        ],
+        "megaEvolves": "Steelix",
+        "megaStone": "Steelix-Mega",
+        "name": "Steelixite",
+        "num": 761,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 621
+    },
+    "steelmemory": {
+        "forcedForme": "Silvally-Steel",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Silvally-Steel"
+        ],
+        "name": "Steel Memory",
+        "num": 911,
+        "onMemory": "Steel",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 675
+    },
+    "stick": {
+        "fling": {
+            "basePower": 60
+        },
+        "gen": 2,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Farfetch\u2019d"
+        ],
+        "name": "Stick",
+        "num": 259,
+        "onModifyCritRatio": "onModifyCritRatio",
+        "spritenum": 475
+    },
+    "stickybarb": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 4,
+        "name": "Sticky Barb",
+        "num": 288,
+        "onHit": "onHit",
+        "onResidual": "onResidual",
+        "onResidualOrder": 28,
+        "onResidualSubOrder": 3,
+        "spritenum": 476
+    },
+    "stoneplate": {
+        "forcedForme": "Arceus-Rock",
+        "gen": 4,
+        "name": "Stone Plate",
+        "num": 309,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "onPlate": "Rock",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 477
+    },
+    "strangeball": {
+        "gen": 8,
+        "isNonstandard": "Unobtainable",
+        "isPokeball": true,
+        "name": "Strange Ball",
+        "num": 1785,
+        "spritenum": 308
+    },
+    "strawberrysweet": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "name": "Strawberry Sweet",
+        "num": 1109,
+        "spritenum": 704
+    },
+    "sunstone": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 2,
+        "name": "Sun Stone",
+        "num": 80,
+        "spritenum": 480
+    },
+    "swampertite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Swampert"
+        ],
+        "megaEvolves": "Swampert",
+        "megaStone": "Swampert-Mega",
+        "name": "Swampertite",
+        "num": 752,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 612
+    },
+    "sweetapple": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 8,
+        "name": "Sweet Apple",
+        "num": 1116,
+        "spritenum": 711
+    },
+    "syrupyapple": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 9,
+        "name": "Syrupy Apple",
+        "num": 2402,
+        "spritenum": 755
+    },
+    "tamatoberry": {
+        "gen": 3,
+        "isBerry": true,
+        "name": "Tamato Berry",
+        "naturalGift": {
+            "basePower": 90,
+            "type": "Psychic"
+        },
+        "num": 174,
+        "onEat": false,
+        "spritenum": 486
+    },
+    "tangaberry": {
+        "gen": 2,
+        "isBerry": true,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Marowak",
+            "Marowak-Alola",
+            "Marowak-Alola-Totem",
+            "Cubone"
+        ],
+        "name": "Tanga Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Bug"
+        },
+        "num": 258,
+        "onEat": "onEat",
+        "onSourceModifyDamage": "onSourceModifyDamage",
+        "spritenum": 487
+    },
+    "throatspray": {
+        "boosts": {
+            "spa": 1
+        },
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 8,
+        "name": "Throat Spray",
+        "num": 1118,
+        "onAfterMoveSecondarySelf": "onAfterMoveSecondarySelf",
+        "spritenum": 713
+    },
+    "thunderstone": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 1,
+        "name": "Thunder Stone",
+        "num": 83,
+        "spritenum": 492
+    },
+    "timerball": {
+        "gen": 3,
+        "isPokeball": true,
+        "name": "Timer Ball",
+        "num": 10,
+        "spritenum": 494
+    },
+    "toxicorb": {
+        "fling": {
+            "basePower": 30,
+            "status": "tox"
+        },
+        "gen": 4,
+        "name": "Toxic Orb",
+        "num": 272,
+        "onResidual": "onResidual",
+        "onResidualOrder": 28,
+        "onResidualSubOrder": 3,
+        "spritenum": 515
+    },
+    "toxicplate": {
+        "forcedForme": "Arceus-Poison",
+        "gen": 4,
+        "name": "Toxic Plate",
+        "num": 304,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "onPlate": "Poison",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 516
+    },
+    "tr00": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR00",
+        "num": 1130,
+        "spritenum": 721
+    },
+    "tr01": {
+        "fling": {
+            "basePower": 85
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR01",
+        "num": 1131,
+        "spritenum": 721
+    },
+    "tr02": {
+        "fling": {
+            "basePower": 90
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR02",
+        "num": 1132,
+        "spritenum": 730
+    },
+    "tr03": {
+        "fling": {
+            "basePower": 110
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR03",
+        "num": 1133,
+        "spritenum": 731
+    },
+    "tr04": {
+        "fling": {
+            "basePower": 90
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR04",
+        "num": 1134,
+        "spritenum": 731
+    },
+    "tr05": {
+        "fling": {
+            "basePower": 90
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR05",
+        "num": 1135,
+        "spritenum": 735
+    },
+    "tr06": {
+        "fling": {
+            "basePower": 110
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR06",
+        "num": 1136,
+        "spritenum": 735
+    },
+    "tr07": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR07",
+        "num": 1137,
+        "spritenum": 722
+    },
+    "tr08": {
+        "fling": {
+            "basePower": 90
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR08",
+        "num": 1138,
+        "spritenum": 733
+    },
+    "tr09": {
+        "fling": {
+            "basePower": 110
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR09",
+        "num": 1139,
+        "spritenum": 733
+    },
+    "tr10": {
+        "fling": {
+            "basePower": 100
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR10",
+        "num": 1140,
+        "spritenum": 725
+    },
+    "tr11": {
+        "fling": {
+            "basePower": 90
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR11",
+        "num": 1141,
+        "spritenum": 734
+    },
+    "tr12": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR12",
+        "num": 1142,
+        "spritenum": 734
+    },
+    "tr13": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR13",
+        "num": 1143,
+        "spritenum": 721
+    },
+    "tr14": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR14",
+        "num": 1144,
+        "spritenum": 721
+    },
+    "tr15": {
+        "fling": {
+            "basePower": 110
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR15",
+        "num": 1145,
+        "spritenum": 730
+    },
+    "tr16": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR16",
+        "num": 1146,
+        "spritenum": 731
+    },
+    "tr17": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR17",
+        "num": 1147,
+        "spritenum": 734
+    },
+    "tr18": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR18",
+        "num": 1148,
+        "spritenum": 727
+    },
+    "tr19": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR19",
+        "num": 1149,
+        "spritenum": 721
+    },
+    "tr20": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR20",
+        "num": 1150,
+        "spritenum": 721
+    },
+    "tr21": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR21",
+        "num": 1151,
+        "spritenum": 722
+    },
+    "tr22": {
+        "fling": {
+            "basePower": 90
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR22",
+        "num": 1152,
+        "spritenum": 724
+    },
+    "tr23": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR23",
+        "num": 1153,
+        "spritenum": 725
+    },
+    "tr24": {
+        "fling": {
+            "basePower": 120
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR24",
+        "num": 1154,
+        "spritenum": 736
+    },
+    "tr25": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR25",
+        "num": 1155,
+        "spritenum": 734
+    },
+    "tr26": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR26",
+        "num": 1156,
+        "spritenum": 721
+    },
+    "tr27": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR27",
+        "num": 1157,
+        "spritenum": 721
+    },
+    "tr28": {
+        "fling": {
+            "basePower": 120
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR28",
+        "num": 1158,
+        "spritenum": 727
+    },
+    "tr29": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR29",
+        "num": 1159,
+        "spritenum": 721
+    },
+    "tr30": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR30",
+        "num": 1160,
+        "spritenum": 721
+    },
+    "tr31": {
+        "fling": {
+            "basePower": 100
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR31",
+        "num": 1161,
+        "spritenum": 729
+    },
+    "tr32": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR32",
+        "num": 1162,
+        "spritenum": 737
+    },
+    "tr33": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR33",
+        "num": 1163,
+        "spritenum": 728
+    },
+    "tr34": {
+        "fling": {
+            "basePower": 120
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR34",
+        "num": 1164,
+        "spritenum": 734
+    },
+    "tr35": {
+        "fling": {
+            "basePower": 90
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR35",
+        "num": 1165,
+        "spritenum": 721
+    },
+    "tr36": {
+        "fling": {
+            "basePower": 95
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR36",
+        "num": 1166,
+        "spritenum": 730
+    },
+    "tr37": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR37",
+        "num": 1167,
+        "spritenum": 737
+    },
+    "tr38": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR38",
+        "num": 1168,
+        "spritenum": 734
+    },
+    "tr39": {
+        "fling": {
+            "basePower": 120
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR39",
+        "num": 1169,
+        "spritenum": 722
+    },
+    "tr40": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR40",
+        "num": 1170,
+        "spritenum": 734
+    },
+    "tr41": {
+        "fling": {
+            "basePower": 85
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR41",
+        "num": 1171,
+        "spritenum": 730
+    },
+    "tr42": {
+        "fling": {
+            "basePower": 90
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR42",
+        "num": 1172,
+        "spritenum": 721
+    },
+    "tr43": {
+        "fling": {
+            "basePower": 130
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR43",
+        "num": 1173,
+        "spritenum": 730
+    },
+    "tr44": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR44",
+        "num": 1174,
+        "spritenum": 734
+    },
+    "tr45": {
+        "fling": {
+            "basePower": 90
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR45",
+        "num": 1175,
+        "spritenum": 731
+    },
+    "tr46": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR46",
+        "num": 1176,
+        "spritenum": 729
+    },
+    "tr47": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR47",
+        "num": 1177,
+        "spritenum": 736
+    },
+    "tr48": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR48",
+        "num": 1178,
+        "spritenum": 722
+    },
+    "tr49": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR49",
+        "num": 1179,
+        "spritenum": 734
+    },
+    "tr50": {
+        "fling": {
+            "basePower": 90
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR50",
+        "num": 1180,
+        "spritenum": 732
+    },
+    "tr51": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR51",
+        "num": 1181,
+        "spritenum": 736
+    },
+    "tr52": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR52",
+        "num": 1182,
+        "spritenum": 729
+    },
+    "tr53": {
+        "fling": {
+            "basePower": 120
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR53",
+        "num": 1183,
+        "spritenum": 722
+    },
+    "tr54": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR54",
+        "num": 1184,
+        "spritenum": 724
+    },
+    "tr55": {
+        "fling": {
+            "basePower": 120
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR55",
+        "num": 1185,
+        "spritenum": 730
+    },
+    "tr56": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR56",
+        "num": 1186,
+        "spritenum": 722
+    },
+    "tr57": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR57",
+        "num": 1187,
+        "spritenum": 724
+    },
+    "tr58": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR58",
+        "num": 1188,
+        "spritenum": 737
+    },
+    "tr59": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR59",
+        "num": 1189,
+        "spritenum": 732
+    },
+    "tr60": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR60",
+        "num": 1190,
+        "spritenum": 727
+    },
+    "tr61": {
+        "fling": {
+            "basePower": 90
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR61",
+        "num": 1191,
+        "spritenum": 727
+    },
+    "tr62": {
+        "fling": {
+            "basePower": 85
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR62",
+        "num": 1192,
+        "spritenum": 736
+    },
+    "tr63": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR63",
+        "num": 1193,
+        "spritenum": 726
+    },
+    "tr64": {
+        "fling": {
+            "basePower": 120
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR64",
+        "num": 1194,
+        "spritenum": 722
+    },
+    "tr65": {
+        "fling": {
+            "basePower": 90
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR65",
+        "num": 1195,
+        "spritenum": 732
+    },
+    "tr66": {
+        "fling": {
+            "basePower": 120
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR66",
+        "num": 1196,
+        "spritenum": 723
+    },
+    "tr67": {
+        "fling": {
+            "basePower": 90
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR67",
+        "num": 1197,
+        "spritenum": 725
+    },
+    "tr68": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR68",
+        "num": 1198,
+        "spritenum": 737
+    },
+    "tr69": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR69",
+        "num": 1199,
+        "spritenum": 734
+    },
+    "tr70": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR70",
+        "num": 1200,
+        "spritenum": 729
+    },
+    "tr71": {
+        "fling": {
+            "basePower": 130
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR71",
+        "num": 1201,
+        "spritenum": 732
+    },
+    "tr72": {
+        "fling": {
+            "basePower": 120
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR72",
+        "num": 1202,
+        "spritenum": 732
+    },
+    "tr73": {
+        "fling": {
+            "basePower": 120
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR73",
+        "num": 1203,
+        "spritenum": 724
+    },
+    "tr74": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR74",
+        "num": 1204,
+        "spritenum": 729
+    },
+    "tr75": {
+        "fling": {
+            "basePower": 100
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR75",
+        "num": 1205,
+        "spritenum": 726
+    },
+    "tr76": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR76",
+        "num": 1206,
+        "spritenum": 726
+    },
+    "tr77": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR77",
+        "num": 1207,
+        "spritenum": 732
+    },
+    "tr78": {
+        "fling": {
+            "basePower": 95
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR78",
+        "num": 1208,
+        "spritenum": 724
+    },
+    "tr79": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR79",
+        "num": 1209,
+        "spritenum": 729
+    },
+    "tr80": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR80",
+        "num": 1210,
+        "spritenum": 733
+    },
+    "tr81": {
+        "fling": {
+            "basePower": 95
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR81",
+        "num": 1211,
+        "spritenum": 737
+    },
+    "tr82": {
+        "fling": {
+            "basePower": 20
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR82",
+        "num": 1212,
+        "spritenum": 734
+    },
+    "tr83": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR83",
+        "num": 1213,
+        "spritenum": 734
+    },
+    "tr84": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR84",
+        "num": 1214,
+        "spritenum": 731
+    },
+    "tr85": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR85",
+        "num": 1215,
+        "spritenum": 721
+    },
+    "tr86": {
+        "fling": {
+            "basePower": 90
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR86",
+        "num": 1216,
+        "spritenum": 733
+    },
+    "tr87": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR87",
+        "num": 1217,
+        "spritenum": 725
+    },
+    "tr88": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR88",
+        "num": 1218,
+        "spritenum": 730
+    },
+    "tr89": {
+        "fling": {
+            "basePower": 110
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR89",
+        "num": 1219,
+        "spritenum": 723
+    },
+    "tr90": {
+        "fling": {
+            "basePower": 90
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR90",
+        "num": 1220,
+        "spritenum": 738
+    },
+    "tr91": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR91",
+        "num": 1221,
+        "spritenum": 724
+    },
+    "tr92": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR92",
+        "num": 1222,
+        "spritenum": 738
+    },
+    "tr93": {
+        "fling": {
+            "basePower": 85
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR93",
+        "num": 1223,
+        "spritenum": 737
+    },
+    "tr94": {
+        "fling": {
+            "basePower": 95
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR94",
+        "num": 1224,
+        "spritenum": 725
+    },
+    "tr95": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR95",
+        "num": 1225,
+        "spritenum": 737
+    },
+    "tr96": {
+        "fling": {
+            "basePower": 90
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR96",
+        "num": 1226,
+        "spritenum": 727
+    },
+    "tr97": {
+        "fling": {
+            "basePower": 85
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR97",
+        "num": 1227,
+        "spritenum": 734
+    },
+    "tr98": {
+        "fling": {
+            "basePower": 85
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR98",
+        "num": 1228,
+        "spritenum": 731
+    },
+    "tr99": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 8,
+        "isNonstandard": "Past",
+        "name": "TR99",
+        "num": 1229,
+        "spritenum": 722
+    },
+    "twistedspoon": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 2,
+        "name": "Twisted Spoon",
+        "num": 248,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "spritenum": 520
+    },
+    "tyranitarite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Tyranitar"
+        ],
+        "megaEvolves": "Tyranitar",
+        "megaStone": "Tyranitar-Mega",
+        "name": "Tyranitarite",
+        "num": 669,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 607
+    },
+    "ultraball": {
+        "gen": 1,
+        "isPokeball": true,
+        "name": "Ultra Ball",
+        "num": 2,
+        "spritenum": 521
+    },
+    "ultranecroziumz": {
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Necrozma-Ultra"
+        ],
+        "name": "Ultranecrozium Z",
+        "num": 923,
+        "onTakeItem": false,
+        "spritenum": 687,
+        "zMove": "Light That Burns the Sky",
+        "zMoveFrom": "Photon Geyser"
+    },
+    "unremarkableteacup": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 9,
+        "name": "Unremarkable Teacup",
+        "num": 2403,
+        "spritenum": 756
+    },
+    "upgrade": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 2,
+        "name": "Up-Grade",
+        "num": 252,
+        "spritenum": 523
+    },
+    "utilityumbrella": {
+        "fling": {
+            "basePower": 60
+        },
+        "gen": 8,
+        "name": "Utility Umbrella",
+        "num": 1123,
+        "onEnd": "onEnd",
+        "onStart": "onStart",
+        "onUpdate": "onUpdate",
+        "spritenum": 718
+    },
+    "venusaurite": {
+        "gen": 6,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Venusaur"
+        ],
+        "megaEvolves": "Venusaur",
+        "megaStone": "Venusaur-Mega",
+        "name": "Venusaurite",
+        "num": 659,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 608
+    },
+    "vilevial": {
+        "fling": {
+            "basePower": 60
+        },
+        "forcedForme": "Venomicon-Epilogue",
+        "gen": 8,
+        "isNonstandard": "CAP",
+        "itemUser": [
+            "Venomicon-Epilogue"
+        ],
+        "name": "Vile Vial",
+        "num": -2,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 752
+    },
+    "wacanberry": {
+        "gen": 5,
+        "isBerry": true,
+        "isNonstandard": "Past",
+        "name": "Wacan Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Electric"
+        },
+        "num": 549,
+        "onEat": "onEat",
+        "onSourceModifyDamage": "onSourceModifyDamage",
+        "spritenum": 526
+    },
+    "wateriumz": {
+        "forcedForme": "Arceus-Water",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "name": "Waterium Z",
+        "num": 778,
+        "onPlate": "Water",
+        "onTakeItem": false,
+        "spritenum": 633,
+        "zMove": true,
+        "zMoveType": "Water"
+    },
+    "watermemory": {
+        "forcedForme": "Silvally-Water",
+        "gen": 7,
+        "isNonstandard": "Past",
+        "itemUser": [
+            "Silvally-Water"
+        ],
+        "name": "Water Memory",
+        "num": 913,
+        "onMemory": "Water",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 677
+    },
+    "waterstone": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 1,
+        "name": "Water Stone",
+        "num": 84,
+        "spritenum": 529
+    },
+    "watmelberry": {
+        "gen": 3,
+        "isBerry": true,
+        "isNonstandard": "Past",
+        "name": "Watmel Berry",
+        "naturalGift": {
+            "basePower": 100,
+            "type": "Fire"
+        },
+        "num": 181,
+        "onEat": false,
+        "spritenum": 530
+    },
+    "waveincense": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 4,
+        "isNonstandard": "Past",
+        "name": "Wave Incense",
+        "num": 317,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "spritenum": 531
+    },
+    "weaknesspolicy": {
+        "boosts": {
+            "atk": 2,
+            "spa": 2
+        },
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 6,
+        "name": "Weakness Policy",
+        "num": 639,
+        "onDamagingHit": "onDamagingHit",
+        "spritenum": 609
+    },
+    "wellspringmask": {
+        "fling": {
+            "basePower": 60
+        },
+        "forcedForme": "Ogerpon-Wellspring",
+        "gen": 9,
+        "itemUser": [
+            "Ogerpon-Wellspring"
+        ],
+        "name": "Wellspring Mask",
+        "num": 2407,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 15,
+        "onTakeItem": "onTakeItem",
+        "spritenum": 759
+    },
+    "wepearberry": {
+        "gen": 3,
+        "isBerry": true,
+        "isNonstandard": "Past",
+        "name": "Wepear Berry",
+        "naturalGift": {
+            "basePower": 90,
+            "type": "Electric"
+        },
+        "num": 167,
+        "onEat": false,
+        "spritenum": 533
+    },
+    "whippeddream": {
+        "fling": {
+            "basePower": 80
+        },
+        "gen": 6,
+        "isNonstandard": "Past",
+        "name": "Whipped Dream",
+        "num": 646,
+        "spritenum": 692
+    },
+    "whiteherb": {
+        "fling": {
+            "basePower": 10,
+            "effect": "effect"
+        },
+        "gen": 3,
+        "name": "White Herb",
+        "num": 214,
+        "onAnyAfterMega": "onAnyAfterMega",
+        "onAnyAfterMove": "onAnyAfterMove",
+        "onAnySwitchIn": "onAnySwitchIn",
+        "onAnySwitchInPriority": -2,
+        "onResidual": "onResidual",
+        "onResidualOrder": 29,
+        "onStart": "onStart",
+        "onUse": "onUse",
+        "spritenum": 535
+    },
+    "widelens": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 4,
+        "name": "Wide Lens",
+        "num": 265,
+        "onSourceModifyAccuracy": "onSourceModifyAccuracy",
+        "onSourceModifyAccuracyPriority": -2,
+        "spritenum": 537
+    },
+    "wikiberry": {
+        "gen": 3,
+        "isBerry": true,
+        "name": "Wiki Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Rock"
+        },
+        "num": 160,
+        "onEat": "onEat",
+        "onTryEatItem": "onTryEatItem",
+        "onUpdate": "onUpdate",
+        "spritenum": 538
+    },
+    "wiseglasses": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 4,
+        "name": "Wise Glasses",
+        "num": 267,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 16,
+        "spritenum": 539
+    },
+    "yacheberry": {
+        "forcedForme": "Arceus-Electric",
+        "gen": 4,
+        "isBerry": true,
+        "name": "Yache Berry",
+        "naturalGift": {
+            "basePower": 80,
+            "type": "Ice"
+        },
+        "num": 300,
+        "onEat": "onEat",
+        "onSourceModifyDamage": "onSourceModifyDamage",
+        "onTakeItem": "onTakeItem",
+        "spritenum": 567
+    },
+    "zoomlens": {
+        "fling": {
+            "basePower": 10
+        },
+        "gen": 4,
+        "name": "Zoom Lens",
+        "num": 276,
+        "onSourceModifyAccuracy": "onSourceModifyAccuracy",
+        "onSourceModifyAccuracyPriority": -2,
+        "spritenum": 574
+    }
+}
