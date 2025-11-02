@@ -652,7 +652,7 @@ class Pokemon:
                     [v for m, v in self.moves.items() if m.startswith("hiddenpower")][0]
                 )
             else:
-                assert {
+                has_copy_move = {
                     "copycat",
                     "metronome",
                     "mefirst",
@@ -660,11 +660,25 @@ class Pokemon:
                     "assist",
                     "transform",
                     "mimic",
-                }.intersection(self.moves), (
-                    f"Error with move {move}. Expected self.moves to contain copycat, "
-                    "metronome, mefirst, mirrormove, assist, transform or mimic. Got"
-                    f" {self.moves}"
+                }.intersection(self.moves)
+
+                """
+                Check if the pokemon has abilities that can grant moves
+
+                Some abilities (like Dancer, which can be copied via Trace) allow using
+                moves that aren't in the pokemon's moveset
+                """
+                has_move_granting_ability = (
+                    self.ability in ("dancer", "trace") if self.ability else False
                 )
+
+                if not has_copy_move and not has_move_granting_ability:
+                    assert False, (
+                        f"Error with move {move}. Expected self.moves to contain copycat, "
+                        "metronome, mefirst, mirrormove, assist, transform, mimic, "
+                        f"or the pokemon to have a move-granting ability. Got moves: {self.moves}, "
+                        f"ability: {self.ability}"
+                    )
                 moves.append(Move(move, gen=self._data.gen))
         return moves
 
