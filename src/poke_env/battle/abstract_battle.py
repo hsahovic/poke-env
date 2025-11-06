@@ -471,11 +471,11 @@ class AbstractBattle(ABC):
         if event[1] in self.MESSAGES_TO_IGNORE:
             return
         elif event[1] in ["drag", "switch"]:
-            mon, details, hp_status = event[2:5]
-            self.switch(mon, details, hp_status)
+            pokemon, details, hp_status = event[2:5]
+            self.switch(pokemon, details, hp_status)
         elif event[1] == "-damage":
-            mon, hp_status = event[2:4]
-            self.get_pokemon(mon).damage(hp_status)
+            pokemon, hp_status = event[2:4]
+            self.get_pokemon(pokemon).damage(hp_status)
             self._check_damage_message_for_item(event)
             self._check_damage_message_for_ability(event)
         elif event[1] == "move":
@@ -532,8 +532,8 @@ class AbstractBattle(ABC):
             if event[-1].startswith(("[from] ability: ", "[from]ability: ")):
                 revealed_ability = event.pop().split(": ")[-1]
 
-                mon = event[2]
-                self.get_pokemon(mon)._ability = to_id_str(revealed_ability)
+                pokemon = event[2]
+                self.get_pokemon(pokemon)._ability = to_id_str(revealed_ability)
 
                 if revealed_ability == "Magic Bounce":
                     return
@@ -558,9 +558,9 @@ class AbstractBattle(ABC):
                 event = event[:-1]
 
             if len(event) == 4:
-                mon, move = event[2:4]
+                pokemon, move = event[2:4]
             elif len(event) == 5:
-                mon, move, presumed_target = event[2:5]
+                pokemon, move, presumed_target = event[2:5]
 
                 if len(presumed_target) > 4 and presumed_target[:4] in {
                     "p1: ",
@@ -580,7 +580,7 @@ class AbstractBattle(ABC):
                         self.turn,
                     )
             else:
-                mon, move, presumed_target = event[2:5]
+                pokemon, move, presumed_target = event[2:5]
                 if (
                     presumed_target == ""
                 ):  # ['', 'move', 'p2a: 07ffb4c367', 'Teeter Dance', '', '[from] ability: Dancer']
@@ -596,19 +596,19 @@ class AbstractBattle(ABC):
 
             # Check if a silent-effect move has occurred (Minimize) and add the effect
             if move.upper().strip() == "MINIMIZE":
-                temp_pokemon = self.get_pokemon(mon)
+                temp_pokemon = self.get_pokemon(pokemon)
                 temp_pokemon.start_effect("MINIMIZE")
 
             if override_move:
                 # Moves that can trigger this branch results in two `move` messages being sent.
                 # We're setting use=False in the one (with the override) in order to prevent two pps from being used
                 # incorrectly.
-                self.get_pokemon(mon).moved(move, failed=failed, use=False)
+                self.get_pokemon(pokemon).moved(move, failed=failed, use=False)
             else:
-                self.get_pokemon(mon).moved(move, failed=failed, use=use)
+                self.get_pokemon(pokemon).moved(move, failed=failed, use=use)
         elif event[1] == "cant":
-            mon, _ = event[2:4]
-            self.get_pokemon(mon).cant_move()
+            pokemon, _ = event[2:4]
+            self.get_pokemon(pokemon).cant_move()
         elif event[1] == "turn":
             # Saving the beginning-of-turn battle state and events as we go into the turn
             self.observations[self.turn] = self._current_observation
@@ -623,11 +623,11 @@ class AbstractBattle(ABC):
                 active_mon = ObservedPokemon.from_pokemon(self.active_pokemon)
             else:
                 opp_active_mon = [
-                    ObservedPokemon.from_pokemon(mon)
-                    for mon in self.opponent_active_pokemon
+                    ObservedPokemon.from_pokemon(pokemon)
+                    for pokemon in self.opponent_active_pokemon
                 ]
                 active_mon = [
-                    ObservedPokemon.from_pokemon(mon) for mon in self.active_pokemon
+                    ObservedPokemon.from_pokemon(pokemon) for pokemon in self.active_pokemon
                 ]
 
             # Create new Observation and record battle state going into the next turn
@@ -640,23 +640,23 @@ class AbstractBattle(ABC):
                 fields={k: v for (k, v) in self.fields.items()},
                 active_pokemon=active_mon,
                 team={
-                    ident: ObservedPokemon.from_pokemon(mon)
-                    for (ident, mon) in self.team.items()
+                    ident: ObservedPokemon.from_pokemon(pokemon)
+                    for (ident, pokemon) in self.team.items()
                 },
                 opponent_active_pokemon=opp_active_mon,
                 opponent_team={
-                    ident: ObservedPokemon.from_pokemon(mon)
-                    for (ident, mon) in self.opponent_team.items()
+                    ident: ObservedPokemon.from_pokemon(pokemon)
+                    for (ident, pokemon) in self.opponent_team.items()
                 },
             )
         elif event[1] == "-heal":
-            mon, hp_status = event[2:4]
-            self.get_pokemon(mon).heal(hp_status)
+            pokemon, hp_status = event[2:4]
+            self.get_pokemon(pokemon).heal(hp_status)
             self._check_heal_message_for_ability(event)
             self._check_heal_message_for_item(event)
         elif event[1] == "-boost":
-            mon, stat, amount = event[2:5]
-            self.get_pokemon(mon).boost(stat, int(amount))
+            pokemon, stat, amount = event[2:5]
+            self.get_pokemon(pokemon).boost(stat, int(amount))
         elif event[1] == "-weather":
             weather = event[2]
             if weather == "none":
@@ -665,30 +665,30 @@ class AbstractBattle(ABC):
             else:
                 self._weather = {Weather.from_showdown_message(weather): self.turn}
         elif event[1] == "faint":
-            mon = event[2]
-            pokemon = self.get_pokemon(mon)
-            pokemon.faint()
-            if pokemon.species == "dondozo" and isinstance(self.active_pokemon, list):
+            pokemon = event[2]
+            mon = self.get_pokemon(pokemon)
+            mon.faint()
+            if mon.species == "dondozo" and isinstance(self.active_pokemon, list):
                 other = self.active_pokemon[1 if event[2][:3].endswith("a") else 0]
                 if other is not None and Effect.COMMANDER in other.effects:
                     other.end_effect("Commander")
         elif event[1] == "-unboost":
-            mon, stat, amount = event[2:5]
-            self.get_pokemon(mon).boost(stat, -int(amount))
+            pokemon, stat, amount = event[2:5]
+            self.get_pokemon(pokemon).boost(stat, -int(amount))
         elif event[1] == "-ability":
-            mon, cause = event[2:4]
+            pokemon, cause = event[2:4]
             if len(event) > 4 and (
                 event[4].startswith("[from] move:")
                 or event[4].startswith("[from] ability: Trace")
             ):
-                self.get_pokemon(mon).set_temporary_ability(cause)
+                self.get_pokemon(pokemon).set_temporary_ability(cause)
             elif cause == "Neutralizing Gas":
                 self.field_start(cause)
             else:
-                self.get_pokemon(mon)._ability = to_id_str(cause)
+                self.get_pokemon(pokemon)._ability = to_id_str(cause)
         elif split_message[1] == "-start":
-            mon, effect = event[2:4]
-            pokemon = self.get_pokemon(mon)
+            pokemon, effect = event[2:4]
+            mon = self.get_pokemon(pokemon)
 
             if effect == "typechange":
                 if len(event) > 5 and event[5].startswith("[of] "):
@@ -697,16 +697,16 @@ class AbstractBattle(ABC):
                     )
                 else:
                     types = event[4]
-                pokemon.start_effect(effect, details=types)
+                mon.start_effect(effect, details=types)
             else:
-                pokemon.start_effect(effect)
+                mon.start_effect(effect)
 
-            if pokemon.is_dynamaxed:
-                if pokemon in self.team.values() and self._dynamax_turn is None:
+            if mon.is_dynamaxed:
+                if mon in self.team.values() and self._dynamax_turn is None:
                     self._dynamax_turn = self.turn
                     self._used_dynamax = True
                 elif (
-                    pokemon in self.opponent_team.values()
+                    mon in self.opponent_team.values()
                     and self._opponent_dynamax_turn is None
                 ):
                     self._opponent_dynamax_turn = self.turn
@@ -728,45 +728,45 @@ class AbstractBattle(ABC):
             elif target != "":  # ['', '-activate', '', 'move: Splash']
                 self.get_pokemon(target).start_effect(effect)
         elif event[1] == "-status":
-            mon, status = event[2:4]
-            self.get_pokemon(mon)._status = Status[status.upper()]
+            pokemon, status = event[2:4]
+            self.get_pokemon(pokemon)._status = Status[status.upper()]
         elif event[1] == "rule":
             self.rules.append(event[2])
 
         elif event[1] == "-clearallboost":
             self.clear_all_boosts()
         elif event[1] == "-clearboost":
-            mon = event[2]
-            self.get_pokemon(mon).clear_boosts()
+            pokemon = event[2]
+            self.get_pokemon(pokemon).clear_boosts()
         elif event[1] == "-clearnegativeboost":
-            mon = event[2]
-            self.get_pokemon(mon).clear_negative_boosts()
+            pokemon = event[2]
+            self.get_pokemon(pokemon).clear_negative_boosts()
         elif event[1] == "-clearpositiveboost":
-            mon = event[2]
-            self.get_pokemon(mon).clear_positive_boosts()
+            pokemon = event[2]
+            self.get_pokemon(pokemon).clear_positive_boosts()
         elif event[1] == "-copyboost":
             source, target = event[2:4]
             self.get_pokemon(target).copy_boosts(self.get_pokemon(source))
         elif event[1] == "-curestatus":
-            mon, status = event[2:4]
-            self.get_pokemon(mon).cure_status(status)
+            pokemon, status = event[2:4]
+            self.get_pokemon(pokemon).cure_status(status)
         elif event[1] == "-cureteam":
-            mon = event[2]
-            team = self.team if mon[:2] == self._player_role else self._opponent_team
-            for pokemon in team.values():
-                pokemon.cure_status()
+            pokemon = event[2]
+            team = self.team if pokemon[:2] == self._player_role else self._opponent_team
+            for mon in team.values():
+                mon.cure_status()
         elif event[1] == "-end":
-            mon, effect = event[2:4]
+            pokemon, effect = event[2:4]
             if effect == "ability: Neutralizing Gas":
                 self._field_end(effect)
             else:
-                self.get_pokemon(mon).end_effect(effect)
+                self.get_pokemon(pokemon).end_effect(effect)
         elif event[1] == "-endability":
-            mon = event[2]
-            self.get_pokemon(mon).set_temporary_ability(None)
+            pokemon = event[2]
+            self.get_pokemon(pokemon).set_temporary_ability(None)
         elif event[1] == "-enditem":
-            mon, item = event[2:4]
-            self.get_pokemon(mon).end_item(item)
+            pokemon, item = event[2:4]
+            self.get_pokemon(pokemon).end_item(item)
         elif event[1] == "-fieldend":
             condition = event[2]
             self._field_end(condition)
@@ -774,28 +774,28 @@ class AbstractBattle(ABC):
             condition = event[2]
             self.field_start(condition)
         elif event[1] in ["-formechange", "detailschange"]:
-            mon, species = event[2:4]
-            self.get_pokemon(mon).forme_change(species)
+            pokemon, species = event[2:4]
+            self.get_pokemon(pokemon).forme_change(species)
         elif event[1] == "-invertboost":
-            mon = event[2]
-            self.get_pokemon(mon).invert_boosts()
+            pokemon = event[2]
+            self.get_pokemon(pokemon).invert_boosts()
         elif event[1] == "-item":
             if len(event) == 6:
-                item, cause, mon = event[3:6]
+                item, cause, pokemon = event[3:6]
 
                 if cause == "[from] ability: Frisk":
-                    mon = mon.split("[of] ")[-1]
-                    pokemon = self.get_pokemon(mon)
+                    pokemon = pokemon.split("[of] ")[-1]
+                    mon = self.get_pokemon(pokemon)
 
                     if isinstance(self.active_pokemon, list):
                         self.get_pokemon(event[2]).item = to_id_str(item)
                     else:
-                        if pokemon == self.active_pokemon:
+                        if mon == self.active_pokemon:
                             self.opponent_active_pokemon.item = to_id_str(item)
-                        elif pokemon == self.opponent_active_pokemon:
+                        elif mon == self.opponent_active_pokemon:
                             self.active_pokemon.item = to_id_str(item)
 
-                    pokemon._ability = "frisk"
+                    mon._ability = "frisk"
                 elif cause == "[from] ability: Pickpocket":
                     pickpocket = event[2]
                     pickpocketed = event[5].replace("[of] ", "")
@@ -823,19 +823,19 @@ class AbstractBattle(ABC):
                     raise ValueError(f"Unhandled item message: {event}")
 
             else:
-                mon, item = event[2:4]
-                self.get_pokemon(mon).item = to_id_str(item)
+                pokemon, item = event[2:4]
+                self.get_pokemon(pokemon).item = to_id_str(item)
         elif event[1] == "-mega":
             assert self.player_role is not None
             if event[2].startswith(self.player_role):
                 self._used_mega_evolve = True
             else:
                 self._opponent_used_mega_evolve = True
-            mon, megastone = event[2:4]
-            self.get_pokemon(mon).mega_evolve(megastone)
+            pokemon, megastone = event[2:4]
+            self.get_pokemon(pokemon).mega_evolve(megastone)
         elif event[1] == "-mustrecharge":
-            mon = event[2]
-            self.get_pokemon(mon).must_recharge = True
+            pokemon = event[2]
+            self.get_pokemon(pokemon).must_recharge = True
         elif event[1] == "-prepare":
             try:
                 attacker, move, defender = event[2:5]
@@ -849,14 +849,14 @@ class AbstractBattle(ABC):
                 defender_mon = None
             self.get_pokemon(attacker).prepare(move, defender_mon)
         elif event[1] == "-primal":
-            mon = event[2]
-            self.get_pokemon(mon).primal()
+            pokemon = event[2]
+            self.get_pokemon(pokemon).primal()
         elif event[1] == "-setboost":
-            mon, stat, amount = event[2:5]
-            self.get_pokemon(mon).set_boost(stat, int(amount))
+            pokemon, stat, amount = event[2:5]
+            self.get_pokemon(pokemon).set_boost(stat, int(amount))
         elif event[1] == "-sethp":
-            mon, hp_status = event[2:4]
-            self.get_pokemon(mon).set_hp(hp_status)
+            pokemon, hp_status = event[2:4]
+            self.get_pokemon(pokemon).set_hp(hp_status)
         elif event[1] == "-sideend":
             side, condition = event[2:4]
             self.side_end(side, condition)
@@ -864,8 +864,8 @@ class AbstractBattle(ABC):
             side, condition = event[2:4]
             self._side_start(side, condition)
         elif event[1] in ["-singleturn", "-singlemove"]:
-            mon, effect = event[2:4]
-            self.get_pokemon(mon).start_effect(effect.replace("move: ", ""))
+            pokemon, effect = event[2:4]
+            self.get_pokemon(pokemon).start_effect(effect.replace("move: ", ""))
         elif event[1] == "-swapboost":
             source, target, stats = event[2:5]
             source_mon = self.get_pokemon(source)
@@ -884,20 +884,20 @@ class AbstractBattle(ABC):
                         source_mon.boosts[stat],
                     )
         elif event[1] == "-transform":
-            mon, into = event[2:4]
-            self.get_pokemon(mon).transform(self.get_pokemon(into))
+            pokemon, into = event[2:4]
+            self.get_pokemon(pokemon).transform(self.get_pokemon(into))
         elif event[1] == "-zpower":
             assert self.player_role is not None
             if event[2].startswith(self.player_role):
                 self._used_z_move = True
             else:
                 self._opponent_used_z_move = True
-            mon = event[2]
-            self.get_pokemon(mon).used_z_move()
+            pokemon = event[2]
+            self.get_pokemon(pokemon).used_z_move()
         elif event[1] == "clearpoke":
             self.in_team_preview = True
-            for pokemon in self.team.values():
-                pokemon.clear_active()
+            for mon in self.team.values():
+                mon.clear_active()
         elif event[1] == "gen":
             if self._gen != int(event[2]):
                 err = f"Battle Initiated with gen {self._gen} but got: {event}"
@@ -970,14 +970,14 @@ class AbstractBattle(ABC):
                     self.opponent_username,
                 )
         elif event[1] == "replace":
-            mon = event[2]
+            pokemon = event[2]
             details = event[3]
-            self.end_illusion(mon, details)
+            self.end_illusion(pokemon, details)
         elif event[1] == "start":
             self.in_team_preview = False
         elif event[1] == "swap":
-            mon, position = event[2:4]
-            self._swap(mon, position)
+            pokemon, position = event[2:4]
+            self._swap(pokemon, position)
         elif event[1] == "teamsize":
             player, number = event[2:4]
             self._team_size[player] = int(number)
@@ -986,11 +986,11 @@ class AbstractBattle(ABC):
                 self.logger.info("Received message: %s", event[2])
         elif event[1] == "-immune":
             if len(event) == 4:
-                mon, cause = event[2:]
+                pokemon, cause = event[2:]
 
                 if cause.startswith("[from] ability:"):
                     cause = cause.replace("[from] ability:", "")
-                    self.get_pokemon(mon)._ability = to_id_str(cause)
+                    self.get_pokemon(pokemon)._ability = to_id_str(cause)
         elif event[1] == "-swapsideconditions":
             self._side_conditions, self._opponent_side_conditions = (
                 self._opponent_side_conditions,
@@ -1000,14 +1000,14 @@ class AbstractBattle(ABC):
             player_1, player_2 = event[2].split(" vs. ")
             self.players = player_1, player_2
         elif event[1] == "-terastallize":
-            mon, type_ = event[2:]
-            pokemon = self.get_pokemon(mon)
-            pokemon.terastallize(type_)
+            pokemon, type_ = event[2:]
+            mon = self.get_pokemon(pokemon)
+            mon.terastallize(type_)
 
-            if pokemon.is_terastallized:
-                if pokemon in self.team.values():
+            if mon.is_terastallized:
+                if mon in self.team.values():
                     self._used_tera = True
-                elif pokemon in self.opponent_team.values():
+                elif mon in self.opponent_team.values():
                     self._opponent_used_tera = True
         else:
             raise NotImplementedError(event)
