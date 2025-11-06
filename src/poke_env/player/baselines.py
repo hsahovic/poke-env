@@ -9,6 +9,7 @@ from poke_env.battle.move_category import MoveCategory
 from poke_env.battle.pokemon import Pokemon
 from poke_env.battle.side_condition import SideCondition
 from poke_env.battle.target import Target
+from poke_env.data import GenData
 from poke_env.player.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
@@ -100,6 +101,7 @@ class MaxBasePowerPlayer(Player):
 
 class PseudoBattle(Battle):
     def __init__(self, battle: DoubleBattle, active_id: int, opp_id: int):
+        self._gen = battle.gen
         self._active_pokemon = battle.active_pokemon[active_id]
         self._opponent_active_pokemon = battle.opponent_active_pokemon[opp_id]
         self._team = battle.team
@@ -196,7 +198,8 @@ class SimpleHeuristicsPlayer(Player):
                 1
                 / (
                     t.damage_multiplier(
-                        active.tera_type, type_chart=active._data.type_chart
+                        active.tera_type,
+                        type_chart=GenData.from_gen(battle.gen).type_chart,
                     )
                     or 1 / 8
                 )
