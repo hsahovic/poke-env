@@ -627,7 +627,8 @@ class AbstractBattle(ABC):
                     for pokemon in self.opponent_active_pokemon
                 ]
                 active_mon = [
-                    ObservedPokemon.from_pokemon(pokemon) for pokemon in self.active_pokemon
+                    ObservedPokemon.from_pokemon(pokemon)
+                    for pokemon in self.active_pokemon
                 ]
 
             # Create new Observation and record battle state going into the next turn
@@ -752,7 +753,9 @@ class AbstractBattle(ABC):
             self.get_pokemon(pokemon).cure_status(status)
         elif event[1] == "-cureteam":
             pokemon = event[2]
-            team = self.team if pokemon[:2] == self._player_role else self._opponent_team
+            team = (
+                self.team if pokemon[:2] == self._player_role else self._opponent_team
+            )
             for mon in team.values():
                 mon.cure_status()
         elif event[1] == "-end":
