@@ -623,12 +623,11 @@ class AbstractBattle(ABC):
                 active_mon = ObservedPokemon.from_pokemon(self.active_pokemon)
             else:
                 opp_active_mon = [
-                    ObservedPokemon.from_pokemon(pokemon)
-                    for pokemon in self.opponent_active_pokemon
+                    ObservedPokemon.from_pokemon(mon)
+                    for mon in self.opponent_active_pokemon
                 ]
                 active_mon = [
-                    ObservedPokemon.from_pokemon(pokemon)
-                    for pokemon in self.active_pokemon
+                    ObservedPokemon.from_pokemon(mon) for mon in self.active_pokemon
                 ]
 
             # Create new Observation and record battle state going into the next turn
@@ -641,13 +640,13 @@ class AbstractBattle(ABC):
                 fields={k: v for (k, v) in self.fields.items()},
                 active_pokemon=active_mon,
                 team={
-                    ident: ObservedPokemon.from_pokemon(pokemon)
-                    for (ident, pokemon) in self.team.items()
+                    ident: ObservedPokemon.from_pokemon(mon)
+                    for (ident, mon) in self.team.items()
                 },
                 opponent_active_pokemon=opp_active_mon,
                 opponent_team={
-                    ident: ObservedPokemon.from_pokemon(pokemon)
-                    for (ident, pokemon) in self.opponent_team.items()
+                    ident: ObservedPokemon.from_pokemon(mon)
+                    for (ident, mon) in self.opponent_team.items()
                 },
             )
         elif event[1] == "-heal":
@@ -666,8 +665,7 @@ class AbstractBattle(ABC):
             else:
                 self._weather = {Weather.from_showdown_message(weather): self.turn}
         elif event[1] == "faint":
-            pokemon = event[2]
-            mon = self.get_pokemon(pokemon)
+            mon = self.get_pokemon(event[2])
             mon.faint()
             if mon.species == "dondozo" and isinstance(self.active_pokemon, list):
                 other = self.active_pokemon[1 if event[2][:3].endswith("a") else 0]
