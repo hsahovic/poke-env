@@ -605,9 +605,11 @@ class Pokemon:
         assert (
             pkmn_request["active"] == self.active
         ), f"{pkmn_request['active']} != {self.active}\nrequest: {pkmn_request}"
-        # assert pkmn_request["item"] == (
-        #     self.item or ""
-        # ), f"{pkmn_request['item']} != {self.item or ''}"
+        if self.item == "unknown_item":
+            self._item = pkmn_request["item"]
+        assert pkmn_request["item"] == (
+            self.item or ""
+        ), f"{pkmn_request['item']} != {self.item or ''}"
         if self.base_species == "ditto":
             return
         assert (
