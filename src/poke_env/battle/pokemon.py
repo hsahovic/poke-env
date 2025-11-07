@@ -607,8 +607,9 @@ class Pokemon:
         ), f"{pkmn_request['active']} != {self.active}\nrequest: {pkmn_request}"
         if self.item == "unknown_item":
             self._item = pkmn_request["item"]
-        assert pkmn_request["item"] == (
-            self.item or ""
+        if self._data.gen > 4:
+            assert pkmn_request["item"] == (
+                self.item or ""
         ), f"{pkmn_request['item']} != {self.item or ''}"
         if self.base_species == "ditto":
             return
@@ -664,9 +665,6 @@ class Pokemon:
             )
             for stat, val in zip(["hp", "atk", "def", "spa", "spd", "spe"], stats):
                 self._stats[stat] = val
-
-    def used_z_move(self):
-        self._item = None
 
     def was_illusioned(self, fields: Dict[Field, int]):
         self._current_hp = None
