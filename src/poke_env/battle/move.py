@@ -80,6 +80,7 @@ class Move:
         "_dynamaxed_move",
         "_gen",
         "_is_empty",
+        "_is_last_used",
         "_moves_dict",
         "_request_target",
     )
@@ -102,6 +103,7 @@ class Move:
 
         self._current_pp = self.max_pp
         self._is_empty: bool = False
+        self._is_last_used: bool = False
 
         self._dynamaxed_move = None
         self._request_target = None
@@ -111,6 +113,7 @@ class Move:
 
     def use(self):
         self._current_pp -= 1
+        assert self.current_pp >= 0
 
     @staticmethod
     def is_id_z(id_: str, gen: int) -> bool:
@@ -408,6 +411,10 @@ class Move:
         :rtype: bool
         """
         return self._is_empty
+
+    @property
+    def is_last_used(self) -> bool:
+        return self._is_last_used
 
     @property
     def is_protect_counter(self) -> bool:
