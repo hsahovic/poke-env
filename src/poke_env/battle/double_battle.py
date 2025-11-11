@@ -84,7 +84,7 @@ class DoubleBattle(AbstractBattle):
 
     def parse_request(
         self, request: Dict[str, Any], strict_battle_tracking: bool = False
-    ) -> None:
+    ):
         """
         Update the object from a request.
         The player's pokemon are all updated, as well as available moves, switches and
