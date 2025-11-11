@@ -9,8 +9,8 @@ jobs:
   nightly:
     uses: ./.github/workflows/tests.yml
     secrets: inherit
-  # nightly-extra:
-  #   steps:
-  #     - uses: actions/checkout@v5
-  #     - name: Run nightly-only checks
-  #       run: pytest -x strict_integration_tests/
+  nightly-extra:
+    steps:
+      - uses: actions/checkout@v5
+      - name: Run nightly-only checks
+        run: pytest -x strict_integration_tests/
