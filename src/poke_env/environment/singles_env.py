@@ -1,7 +1,7 @@
-from typing import Optional, Union
+from typing import Any, Dict, Optional, Union
 
 import numpy as np
-from gymnasium.spaces import Discrete
+from gymnasium.spaces import Discrete, Space
 
 from poke_env.battle import Battle, Pokemon
 from poke_env.environment.env import ObsType, PokeEnv
@@ -76,7 +76,7 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         else:
             num_gimmicks = 0
         act_size = num_switches + num_moves * (num_gimmicks + 1)
-        self.action_spaces = {
+        self.action_spaces: Dict[str, Space[Any]] = {
             agent: Discrete(act_size) for agent in self.possible_agents
         }
 

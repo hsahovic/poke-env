@@ -48,7 +48,9 @@ class Battle(AbstractBattle):
             illusioned=active, illusionist=pokemon_name, details=details
         )
 
-    def parse_request(self, request: Dict[str, Any]) -> None:
+    def parse_request(
+        self, request: Dict[str, Any], strict_battle_tracking: bool = False
+    ):
         """
         Update the object from a request.
         The player's pokemon are all updated, as well as available moves, switches and
@@ -85,7 +87,7 @@ class Battle(AbstractBattle):
             self._max_team_size = request.get("maxTeamSize", number_of_mons)
         else:
             self._teampreview = False
-        self._update_team_from_request(request["side"])
+        self._update_team_from_request(request["side"], strict_battle_tracking)
 
         if "active" in request:
             active_request = request["active"][0]
