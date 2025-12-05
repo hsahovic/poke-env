@@ -27,12 +27,7 @@ def create_battle(
                 k: v
                 for k, v in zip(
                     ["hp", "atk", "def", "spa", "spd", "spe"],
-                    compute_raw_stats_dvs(
-                        mon.species,
-                        [15] * 6,
-                        mon.level,
-                        mon._data,
-                    ),
+                    compute_raw_stats_dvs(mon.species, [15] * 6, mon.level, mon._data),
                 )
             }
     for position, mon in zip(["p1", "p2"], [p1a, p2a]):
