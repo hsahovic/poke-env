@@ -11,6 +11,6 @@ jobs:
     secrets: inherit
   nightly-extra:
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Run nightly-only checks
         run: pytest -x strict_integration_tests/
