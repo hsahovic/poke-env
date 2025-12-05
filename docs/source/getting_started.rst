@@ -8,7 +8,7 @@ This section guides you through installing ``poke-env`` and setting up a Pokémo
 Installing ``poke-env``
 =======================
 
-Ensure Python 3.9 or later is installed. Dependencies listed `here <https://github.com/hsahovic/poke-env/blob/master/requirements.txt>`__ will be installed automatically.
+Ensure Python 3.10 or later is installed. Dependencies listed `here <https://github.com/hsahovic/poke-env/blob/master/requirements.txt>`__ will be installed automatically.
 
 .. code-block:: bash
 
@@ -39,11 +39,9 @@ Creating Agents
 
 Agents in ``poke-env`` are instances of the ``Player`` class. Explore the following examples to get started:
 
-- Basic agent: :ref:`/examples/cross_evaluate_random_players.ipynb`
-- Advanced agent: :ref:`max_damage_player`
+- Quickstart: :doc:`examples/quickstart`
+- Custom team builder: :doc:`examples/using_a_custom_teambuilder`
 - RL agent: :ref:`rl_with_gymnasium_wrapper`
-- Using teams: :ref:`ou_max_player`
-- Custom team builder: :ref:`using_a_custom_teambuilder`
 
 Configuring Showdown Players
 ============================
