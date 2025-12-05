@@ -578,6 +578,63 @@ class Pokemon:
             for stat in request_pokemon["stats"]:
                 self._stats[stat] = request_pokemon["stats"][stat]
 
+    def check_consistency(self, pkmn_request: Dict[str, Any], player_role: str):
+        assert (
+            pkmn_request["ident"] == f"{player_role}: {self.name}"
+        ), f"{pkmn_request['ident']} != {player_role}: {self.name}\nrequest: {pkmn_request}"
+        split_details = pkmn_request["details"].split(", ")
+        level = None
+        gender = None
+        shiny = split_details[-1] == "shiny"
+        if shiny:
+            split_details.pop()
+        if len(split_details) == 3:
+            _, level, gender = split_details
+        elif len(split_details) == 2:
+            if split_details[1].startswith("L"):
+                _, level = split_details
+            else:
+                _, gender = split_details
+        level = int(level[1:]) if level is not None else 100
+        gender = (
+            PokemonGender.from_request_details(gender)
+            if gender is not None
+            else PokemonGender.NEUTRAL
+        )
+        assert level == self.level, f"{level} != {self.level}\nrequest: {pkmn_request}"
+        assert self.gender is not None
+        assert (
+            gender == self.gender
+        ), f"{gender.name.lower()} != {self.gender.name.lower()}\nrequest: {pkmn_request}"
+        assert shiny == self.shiny, f"{shiny} != {self.shiny}\nrequest: {pkmn_request}"
+        assert (
+            pkmn_request["active"] == self.active
+        ), f"{pkmn_request['active']} != {self.active}\nrequest: {pkmn_request}"
+        if self.item == "unknown_item":
+            self._item = pkmn_request["item"]
+        if self._data.gen > 4:
+            assert pkmn_request["item"] == (
+                self.item or ""
+            ), f"{pkmn_request['item']} != {self.item or ''}"
+        if self.base_species == "ditto":
+            return
+        assert (
+            pkmn_request["condition"] == self.hp_status
+        ), f"{pkmn_request['condition']} != {self.hp_status}\nrequest: {pkmn_request}"
+        if self.base_species == "mew":
+            return
+        for move_request, move in zip(pkmn_request["moves"], self.moves.values()):
+            assert Move.retrieve_id(move_request) == Move.retrieve_id(
+                move.id
+            ), f"{Move.retrieve_id(move_request)} != {Move.retrieve_id(move.id)}\nrequest: {pkmn_request}"
+        # assert pkmn_request["baseAbility"] == (
+        #     self.ability or ""
+        # ), f"{pkmn_request['baseAbility']} != {self._ability or ''}"
+        # if "ability" in pkmn_request:
+        #     assert pkmn_request["ability"] == (
+        #         self.ability or ""
+        #     ), f"{pkmn_request['ability']} != {self.ability or ''}"
+
     def _update_from_teambuilder(self, tb: TeambuilderPokemon):
         if tb.nickname is not None and tb.species is None:
             self._update_from_pokedex(tb.nickname)
@@ -841,6 +898,16 @@ class Pokemon:
         :rtype: float
         """
         return self._heightm
+
+    @property
+    def hp_status(self) -> str:
+        if self.status == Status.FNT:
+            s = "0 fnt"
+        else:
+            s = f"{self.current_hp}/{self.max_hp}"
+            if self.status is not None:
+                s += f" {self.status.name.lower()}"
+        return s
 
     def identifier(self, player_role: str) -> str:
         """ "
