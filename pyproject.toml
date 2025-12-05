@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "poke_env"
-version = "0.10.0"
+version = "0.11.0"
 description = "A python interface for training Reinforcement Learning bots to battle on pokemon showdown."
 readme = "README.md"
 requires-python = ">=3.10.0"
@@ -44,7 +44,7 @@ dev = [
     "black==25.11.0",
     "flake8>=7.1.1",
     "isort==6.1.0",
-    "mypy>=1.15.0",
+    "mypy==1.19.0",
     "nbsphinx>=0.9.6",
     "pre-commit>=4.1.0",
     "pytest>=8.3.4",
