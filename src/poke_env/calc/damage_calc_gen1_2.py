@@ -1,7 +1,7 @@
 """This module defines a gen1-2 damage calculator"""
 
 import math
-from typing import Optional, Union
+from typing import List, Optional, Union
 
 from poke_env.battle import (
     Battle,
@@ -162,12 +162,15 @@ def calculate_damage_gen12(
     is_physical = move.category == MoveCategory.PHYSICAL
     attack_stat = "atk" if is_physical else "spa"
     defense_stat = "def" if is_physical else "spd"
-    at = int(
-        attacker.stats[attack_stat] * BOOST_MULTIPLIERS[attacker.boosts[attack_stat]]
-    )
-    df = int(
-        defender.stats[defense_stat] * BOOST_MULTIPLIERS[defender.boosts[defense_stat]]
-    )
+
+    # Stats are guaranteed to be int/float by assertions above
+    attacker_attack = attacker.stats[attack_stat]
+    defender_defense = defender.stats[defense_stat]
+    assert attacker_attack is not None
+    assert defender_defense is not None
+
+    at = int(attacker_attack * BOOST_MULTIPLIERS[attacker.boosts[attack_stat]])
+    df = int(defender_defense * BOOST_MULTIPLIERS[defender.boosts[defense_stat]])
 
     # Determine if modifiers should be ignored due to a critical hit
     ignore_mods = is_critical and (
@@ -182,8 +185,10 @@ def calculate_damage_gen12(
     assert at is not None, f"{attack_stat} is None in attacker.stats"
 
     if ignore_mods:
-        at = attacker.stats[attack_stat]
-        df = defender.stats[defense_stat]
+        assert attacker_attack is not None
+        assert defender_defense is not None
+        at = int(attacker_attack)
+        df = int(defender_defense)
 
         if battle.gen == 1:
             lv *= 2
@@ -305,9 +310,9 @@ def calculate_damage_gen12(
         base_damage = math.floor(base_damage * type_effectiveness)
     # Flail and Reversal don't use random factor
     if move.id in ("flail", "reversal"):
-        damage = base_damage
-        return (damage, damage, [damage])
-    damage = []
+        return (base_damage, base_damage, [base_damage])
+
+    damage_rolls: List[int] = []
 
     for i in range(217, 256):
         if battle.gen == 2:
@@ -319,14 +324,14 @@ def calculate_damage_gen12(
                 dmg = 1
             else:
                 dmg = math.floor((base_damage * i) / 255)
-        damage.append(dmg)
+        damage_rolls.append(dmg)
     if "multihit" in move.entry:
-        damage_matrix = [[damage]]
+        damage_matrix = [damage_rolls]
         min_vector = []
         max_vector = []
 
         for times in range(1, move.n_hit[-1]):
-            hit_damage = []
+            hit_damage: List[int] = []
             for damage_multiplier in range(217, 256):
                 if battle.gen == 2:
                     new_final_damage = max(
@@ -346,10 +351,7 @@ def calculate_damage_gen12(
             damage_matrix.append(hit_damage)
         return (min_vector, max_vector, damage_matrix)
 
-    elif isinstance(damage, int):
-        return (damage, damage, [damage])
-    else:
-        return (min(damage), max(damage), damage)
+    return (min(damage_rolls), max(damage_rolls), damage_rolls)
 
 
 BOOST_MULTIPLIERS = {
