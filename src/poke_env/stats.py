@@ -33,6 +33,17 @@ def _raw_stat(base: int, ev: int, iv: int, level: int, nature_multiplier: float)
     return int(s)
 
 
+def _raw_stat_dv(base: int, dv: int, level: int) -> int:
+    """Converts to raw stat using dvs instead of ivs. EVs are not included as they are assumed to be maxed out.
+    :param base: the base stat
+    :param dv: Stat Determinant Values (DV)
+    :param level: pokemon level
+    :return: the raw stat
+    """
+    s = math.floor((((base + dv) * 2 + 63) * level) / 100) + 5
+    return int(s)
+
+
 def _raw_hp(base: int, ev: int, iv: int, level: int) -> int:
     """Converts to raw hp
     :param base: the base stat
@@ -42,6 +53,17 @@ def _raw_hp(base: int, ev: int, iv: int, level: int) -> int:
     :return: the raw hp
     """
     s = math.floor((math.floor(ev / 4) + iv + 2 * base) * level / 100) + level + 10
+    return int(s)
+
+
+def _raw_hp_dv(base: int, dv: int, level: int) -> int:
+    """Converts to raw hp using DV's instead of IV's. This is for generation 1 and 2. (Note that max evs are used)
+    :param base: the base stat
+    :param iv: HP Determinant Value (DV)
+    :param level: pokemon level
+    :return: the raw hp
+    """
+    s = math.floor((((base + dv) * 2 + 63) * level) / 100) + level + 10
     return int(s)
 
 
@@ -82,5 +104,34 @@ def compute_raw_stats(
         raw_stats[i] = _raw_stat(
             base_stats[i], evs[i], ivs[i], level, nature_multiplier[i]
         )
+
+    return raw_stats
+
+
+def compute_raw_stats_dvs(
+    species: str, dvs: List[int], level: int, data: GenData
+) -> List[int]:
+    """Compute raw stats for a Pokémon in gen 1 or 2 as calculation for those generations is different. EV's are not included as they are assumed to be maxed out.
+
+    :param species: Pokémon species.
+    :param evs: List of EV values (size 6).
+    :param dvs: List of DV values (size 6).
+    :param level: Pokémon level.
+    :param data: ``GenData`` instance providing Pokédex information.
+    :return: Raw stats as ``[hp, atk, def, spa, spd, spe]``.
+    """
+
+    assert len(dvs) == 6
+
+    base_stats = [0] * 6
+    for stat, value in data.pokedex[species]["baseStats"].items():
+        base_stats[STATS_TO_IDX[stat]] = value
+
+    raw_stats = [0] * 6
+
+    raw_stats[0] = _raw_hp_dv(base_stats[0], dvs[0], level)
+
+    for i in range(1, 6):
+        raw_stats[i] = _raw_stat_dv(base_stats[i], dvs[i], level)
 
     return raw_stats

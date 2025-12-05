@@ -497,6 +497,7 @@ class AbstractBattle(ABC):
                 "[from] lockedmove",
                 "[from] Pursuit",
                 "[from]lockedmove",
+                "[from] Sky Attack",
                 "[from]Pursuit",
                 "[zeffect]",
             }:
@@ -1001,7 +1002,9 @@ class AbstractBattle(ABC):
             raise NotImplementedError(event)
 
     @abstractmethod
-    def parse_request(self, request: Dict[str, Any]):
+    def parse_request(
+        self, request: Dict[str, Any], strict_battle_tracking: bool = False
+    ):
         pass
 
     def _register_teampreview_pokemon(self, player: str, details: str):
@@ -1040,9 +1043,18 @@ class AbstractBattle(ABC):
     def tied(self):
         self._finish_battle()
 
-    def _update_team_from_request(self, side: Dict[str, Any]):
+    def _update_team_from_request(
+        self, side: Dict[str, Any], strict_battle_tracking: bool = False
+    ):
         for pokemon in side["pokemon"]:
             if pokemon["ident"] in self._team:
+                if strict_battle_tracking and "illusion" not in [
+                    p.ability for p in self.team.values()
+                ]:
+                    assert self.player_role is not None
+                    self._team[pokemon["ident"]].check_consistency(
+                        pokemon, self.player_role
+                    )
                 self._team[pokemon["ident"]].update_from_request(pokemon)
             else:
                 self.get_pokemon(

@@ -6,7 +6,7 @@ The env object and related subclasses
 .. contents:: :local:
 
 PokeEnv
-******
+*******
 
 .. automodule:: poke_env.environment.env
    :members:
