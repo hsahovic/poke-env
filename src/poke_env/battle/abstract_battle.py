@@ -497,6 +497,7 @@ class AbstractBattle(ABC):
                 "[from] lockedmove",
                 "[from] Pursuit",
                 "[from]lockedmove",
+                "[from] Sky Attack",
                 "[from]Pursuit",
                 "[zeffect]",
             }:
