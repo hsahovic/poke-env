@@ -373,7 +373,7 @@ class AbstractBattle(ABC):
             return illusionist_mon
 
         illusionist_mon.switch_in(details=details)
-        illusionist_mon._status = illusioned.status
+        illusionist_mon.status = illusioned.status
         illusionist_mon.set_hp(f"{illusioned.current_hp}/{illusioned.max_hp}")
 
         illusioned.was_illusioned()
