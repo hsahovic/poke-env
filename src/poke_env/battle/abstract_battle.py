@@ -725,6 +725,9 @@ class AbstractBattle(ABC):
                 self.get_pokemon(target).start_effect(effect, event[4:6])
                 actor = event[6].replace("[of] ", "")
                 self.get_pokemon(actor).set_temporary_ability(event[5])
+            elif effect == "ability: Mummy":
+                target = event[5].replace("[of] ", "")
+                self.get_pokemon(target).set_temporary_ability("mummy")
             elif effect == "ability: Symbiosis":
                 self.get_pokemon(event[5].replace("[of] ", "")).item = event[4].replace(
                     "[item] ", ""
