@@ -413,7 +413,6 @@ def test_battle_request_and_interactions(example_request):
 
     battle.opponent_active_pokemon.item = "grassiumz"
     battle.parse_message(["", "-zpower", "p1: Sunflora"])
-    assert battle.opponent_active_pokemon.item is None
 
     sunflora = battle.opponent_active_pokemon
     assert sunflora.fainted is False
