@@ -385,7 +385,7 @@ class AbstractBattle(ABC):
     def _field_end(self, field_str: str):
         field = Field.from_showdown_message(field_str)
         if field is not Field.UNKNOWN:
-            self._fields.pop(field)
+            self._fields.pop(field, 0)
 
     def field_start(self, field_str: str):
         field = Field.from_showdown_message(field_str)
