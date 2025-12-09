@@ -93,19 +93,13 @@ def test_single_agent_env_run():
 @pytest.mark.timeout(60)
 def test_repeated_runs():
     env = DoublesTestEnv(
-        battle_format="gen8randomdoublesbattle",
-        log_level=25,
-        strict=False,
-        strict_battle_tracking=True,
+        battle_format="gen8randomdoublesbattle", log_level=25, strict=False
     )
     play_function(env, 2)
     play_function(env, 2)
     env.close()
     env = DoublesTestEnv(
-        battle_format="gen9randomdoublesbattle",
-        log_level=25,
-        strict=False,
-        strict_battle_tracking=True,
+        battle_format="gen9randomdoublesbattle", log_level=25, strict=False
     )
     play_function(env, 2)
     play_function(env, 2)

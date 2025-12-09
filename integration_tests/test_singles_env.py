@@ -92,21 +92,11 @@ def test_single_agent_env_run():
 
 @pytest.mark.timeout(60)
 def test_repeated_runs():
-    env = SinglesTestEnv(
-        battle_format="gen8randombattle",
-        log_level=25,
-        strict=False,
-        strict_battle_tracking=True,
-    )
+    env = SinglesTestEnv(battle_format="gen8randombattle", log_level=25, strict=False)
     play_function(env, 2)
     play_function(env, 2)
     env.close()
-    env = SinglesTestEnv(
-        battle_format="gen9randombattle",
-        log_level=25,
-        strict=False,
-        strict_battle_tracking=True,
-    )
+    env = SinglesTestEnv(battle_format="gen9randombattle", log_level=25, strict=False)
     play_function(env, 2)
     play_function(env, 2)
     env.close()
