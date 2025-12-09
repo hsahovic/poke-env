@@ -721,7 +721,7 @@ class AbstractBattle(ABC):
                 self.get_pokemon(target).start_effect(effect)
         elif event[1] == "-status":
             pokemon, status = event[2:4]
-            self.get_pokemon(pokemon)._status = Status(status.upper())
+            self.get_pokemon(pokemon)._status = Status[status.upper()]
         elif event[1] == "rule":
             self.rules.append(event[2])
 
