@@ -4,10 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "poke_env"
-version = "0.10.0"
+version = "0.11.0"
 description = "A python interface for training Reinforcement Learning bots to battle on pokemon showdown."
 readme = "README.md"
-requires-python = ">=3.9.0"
+requires-python = ">=3.10.0"
 license = { file = "LICENSE" }
 authors = [{ name = "Haris Sahovic", email = "contact@sahovic.fr" }]
 classifiers = [
@@ -17,7 +17,6 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -42,10 +41,10 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "black==25.9.0",
+    "black==25.12.0",
     "flake8>=7.1.1",
-    "isort==6.1.0",
-    "mypy>=1.15.0",
+    "isort==7.0.0",
+    "mypy==1.19.0",
     "nbsphinx>=0.9.6",
     "pre-commit>=4.1.0",
     "pytest>=8.3.4",

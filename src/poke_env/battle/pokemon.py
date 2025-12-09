@@ -610,7 +610,7 @@ class Pokemon:
         if self._data.gen > 4:
             assert pkmn_request["item"] == (
                 self.item or ""
-        ), f"{pkmn_request['item']} != {self.item or ''}"
+            ), f"{pkmn_request['item']} != {self.item or ''}"
         if self.base_species == "ditto":
             return
         assert (
@@ -701,7 +701,7 @@ class Pokemon:
                     [v for m, v in self.moves.items() if m.startswith("hiddenpower")][0]
                 )
             else:
-                assert {
+                has_copy_move = {
                     "copycat",
                     "metronome",
                     "mefirst",
@@ -709,11 +709,25 @@ class Pokemon:
                     "assist",
                     "transform",
                     "mimic",
-                }.intersection(self.moves), (
-                    f"Error with move {move}. Expected self.moves to contain copycat, "
-                    "metronome, mefirst, mirrormove, assist, transform or mimic. Got"
-                    f" {self.moves}"
+                }.intersection(self.moves)
+
+                """
+                Check if the pokemon has abilities that can grant moves
+
+                Some abilities (like Dancer, which can be copied via Trace) allow using
+                moves that aren't in the pokemon's moveset
+                """
+                has_move_granting_ability = (
+                    self.ability in ("dancer", "trace") if self.ability else False
                 )
+
+                if not has_copy_move and not has_move_granting_ability:
+                    assert False, (
+                        f"Error with move {move}. Expected self.moves to contain copycat, "
+                        "metronome, mefirst, mirrormove, assist, transform, mimic, "
+                        f"or the pokemon to have a move-granting ability. Got moves: {self.moves}, "
+                        f"ability: {self.ability}"
+                    )
                 moves.append(Move(move, gen=self._data.gen))
         return moves
 
@@ -870,6 +884,16 @@ class Pokemon:
         """
         return self._heightm
 
+    @property
+    def hp_status(self) -> str:
+        if self.status == Status.FNT:
+            s = "0 fnt"
+        else:
+            s = f"{self.current_hp}/{self.max_hp}"
+            if self.status is not None:
+                s += f" {self.status.name.lower()}"
+        return s
+
     def identifier(self, player_role: str) -> str:
         """ "
         :param player_role: The player's role in the battle (p1 or p2)
@@ -906,16 +930,6 @@ class Pokemon:
     @item.setter
     def item(self, item: Optional[str]):
         self._item = to_id_str(item) if item is not None else None
-
-    @property
-    def hp_status(self) -> str:
-        if self.status == Status.FNT:
-            s = "0 fnt"
-        else:
-            s = f"{self.current_hp}/{self.max_hp}"
-            if self.status is not None:
-                s += f" {self.status.name.lower()}"
-        return s
 
     @property
     def level(self) -> int:

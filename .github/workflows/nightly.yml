@@ -1,25 +1,16 @@
-name: Run tests
-on:
-  workflow_call:
-  push:
-    branches:
-      - "master"
-  pull_request:
-    branches:
-      - "master"
+name: Nightly tests
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
 
 jobs:
-  tests:
+  nightly:
+    uses: ./.github/workflows/tests.yml
+    secrets: inherit
+  nightly-extra:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-
-    strategy:
-      matrix:
-        version: ['3.10', '3.11', '3.12', '3.13']
-
     steps:
       - name: Checkout repository code
         uses: actions/checkout@v6
@@ -28,36 +19,11 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
-          python-version: ${{ matrix.version }}
+          python-version: "3.13"
           cache: 'pip'
 
       - name: Install dependencies
         run: pip install .[dev]
-
-      - name: Run tests
-        run: PYTHONPATH=src pytest -x --cov=src/poke_env unit_tests/
-
-      - name: Convert coverage to XML
-        run: coverage xml
-
-      - name: Upload coverage report to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          file: coverage.xml
-
-      - name: Build package
-        run: |
-          pip install build
-          python -m build
-
-      - name: Install built package
-        run: pip install --force-reinstall dist/*.whl
-
-      - name: Remove source
-        run: rm -rf ./src
-
-      - name: Run package-based tests
-        run: pytest -x unit_tests/
 
       - name: Setup node
         uses: actions/setup-node@v6
@@ -104,5 +70,5 @@ jobs:
             done
             sleep 1
 
-      - name: Run integration tests
-        run: pytest -x integration_tests/
+      - name: Run nightly-only checks
+        run: pytest -x strict_integration_tests/

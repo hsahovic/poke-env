@@ -6,7 +6,7 @@ Other objects
 Effect
 ******
 
-.. automodule:: poke_env.environment.effect
+.. automodule:: poke_env.battle.effect
    :members:
    :undoc-members:
    :show-inheritance:
@@ -14,7 +14,7 @@ Effect
 Field
 *****
 
-.. automodule:: poke_env.environment.field
+.. automodule:: poke_env.battle.field
    :members:
    :undoc-members:
    :show-inheritance:
@@ -22,7 +22,7 @@ Field
 Move category
 *************
 
-.. automodule:: poke_env.environment.move_category
+.. automodule:: poke_env.battle.move_category
    :members:
    :undoc-members:
    :show-inheritance:
@@ -30,7 +30,7 @@ Move category
 Pokemon gender
 **************
 
-.. automodule:: poke_env.environment.pokemon_gender
+.. automodule:: poke_env.battle.pokemon_gender
    :members:
    :undoc-members:
    :show-inheritance:
@@ -38,7 +38,7 @@ Pokemon gender
 Pokemon Type
 ************
 
-.. automodule:: poke_env.environment.pokemon_type
+.. automodule:: poke_env.battle.pokemon_type
    :members:
    :undoc-members:
    :show-inheritance:
@@ -46,7 +46,7 @@ Pokemon Type
 Side condition
 **************
 
-.. automodule:: poke_env.environment.side_condition
+.. automodule:: poke_env.battle.side_condition
    :members:
    :undoc-members:
    :show-inheritance:
@@ -54,7 +54,7 @@ Side condition
 Status
 ******
 
-.. automodule:: poke_env.environment.status
+.. automodule:: poke_env.battle.status
    :members:
    :undoc-members:
    :show-inheritance:
@@ -62,7 +62,7 @@ Status
 Weather
 *******
 
-.. automodule:: poke_env.environment.weather
+.. automodule:: poke_env.battle.weather
    :members:
    :undoc-members:
    :show-inheritance:
@@ -70,12 +70,7 @@ Weather
 Z Crystal
 *********
 
-.. automodule:: poke_env.environment.z_crystal
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-.. automodule:: poke_env.stats
+.. automodule:: poke_env.battle.z_crystal
    :members:
    :undoc-members:
    :show-inheritance:
