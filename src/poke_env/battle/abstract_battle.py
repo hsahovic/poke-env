@@ -697,11 +697,11 @@ class AbstractBattle(ABC):
                 mon.start_effect(effect)
 
             if mon.is_dynamaxed:
-                if pokemon in self.team.values() and self._dynamax_turn is None:
+                if mon in self.team.values() and self._dynamax_turn is None:
                     self._dynamax_turn = self.turn
                     self._used_dynamax = True
                 elif (
-                    pokemon in self.opponent_team.values()
+                    mon in self.opponent_team.values()
                     and self._opponent_dynamax_turn is None
                 ):
                     self._opponent_dynamax_turn = self.turn
