@@ -374,9 +374,7 @@ class AbstractBattle(ABC):
             return illusionist_mon
 
         illusionist_mon.switch_in(details=details)
-        illusionist_mon._status = (
-            illusioned.status if illusioned.status is not None else None
-        )
+        illusionist_mon._status = illusioned.status
         illusionist_mon.set_hp(f"{illusioned.current_hp}/{illusioned.max_hp}")
 
         illusioned.was_illusioned()
@@ -721,7 +719,7 @@ class AbstractBattle(ABC):
                 self.get_pokemon(target).start_effect(effect)
         elif event[1] == "-status":
             pokemon, status = event[2:4]
-            self.get_pokemon(pokemon)._status = Status[status.upper()]
+            self.get_pokemon(pokemon).status = status
         elif event[1] == "rule":
             self.rules.append(event[2])
 
