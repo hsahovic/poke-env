@@ -228,7 +228,6 @@
         "ignoreImmunity": true,
         "name": "Bind",
         "num": 20,
-        "onHit": "onHit",
         "onTryMove": "onTryMove",
         "pp": 20,
         "priority": 0,
@@ -415,7 +414,6 @@
         "isNonstandard": null,
         "name": "Clamp",
         "num": 128,
-        "onHit": "onHit",
         "onTryMove": "onTryMove",
         "pp": 10,
         "priority": 0,
@@ -557,7 +555,15 @@
         "basePower": 1,
         "beforeTurnCallback": "beforeTurnCallback",
         "category": "Physical",
-        "condition": {},
+        "condition": {
+            "duration": 1,
+            "noCopy": true,
+            "onDamage": "onDamage",
+            "onDamagePriority": -101,
+            "onRedirectTarget": "onRedirectTarget",
+            "onRedirectTargetPriority": -1,
+            "onStart": "onStart"
+        },
         "contestType": "Tough",
         "damageCallback": "damageCallback",
         "flags": {
@@ -573,7 +579,7 @@
         "num": 68,
         "onTry": "onTry",
         "pp": 20,
-        "priority": -1,
+        "priority": -5,
         "secondary": null,
         "target": "scripted",
         "type": "Fighting",
@@ -581,7 +587,7 @@
     },
     "crabhammer": {
         "accuracy": 85,
-        "basePower": 90,
+        "basePower": 100,
         "category": "Physical",
         "contestType": "Tough",
         "critRatio": 2,
@@ -629,7 +635,7 @@
         "category": "Status",
         "condition": {
             "noCopy": true,
-            "onRestart": null
+            "onRestart": "onRestart"
         },
         "contestType": "Cute",
         "flags": {
@@ -1016,7 +1022,6 @@
         },
         "name": "Fire Spin",
         "num": 83,
-        "onHit": "onHit",
         "onTryMove": "onTryMove",
         "pp": 15,
         "priority": 0,
@@ -1147,7 +1152,7 @@
         "priority": 0,
         "secondary": null,
         "target": "self",
-        "type": "Normal",
+        "type": "Psychic",
         "volatileStatus": "focusenergy",
         "zMove": {
             "boost": {
@@ -1215,7 +1220,7 @@
             "protect": 1,
             "reflectable": 1
         },
-        "ignoreImmunity": true,
+        "ignoreImmunity": false,
         "name": "Glare",
         "num": 137,
         "pp": 30,
@@ -1262,8 +1267,8 @@
         "accuracy": true,
         "basePower": 0,
         "boosts": {
-            "spa": 1,
-            "spd": 1
+            "atk": 1,
+            "spa": 1
         },
         "category": "Status",
         "contestType": "Beautiful",
@@ -1329,7 +1334,7 @@
         "priority": 0,
         "secondary": null,
         "target": "any",
-        "type": "Normal"
+        "type": "Flying"
     },
     "harden": {
         "accuracy": true,
@@ -1367,12 +1372,11 @@
         },
         "name": "Haze",
         "num": 114,
-        "onHit": "onHit",
         "onHitField": "onHitField",
         "pp": 30,
         "priority": 0,
         "secondary": null,
-        "target": "self",
+        "target": "all",
         "type": "Ice",
         "zMove": {
             "effect": "heal"
@@ -1519,7 +1523,7 @@
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
+        "isNonstandard": "Past",
         "name": "Hyper Fang",
         "num": 158,
         "pp": 15,
@@ -1613,7 +1617,7 @@
             "protect": 1
         },
         "hasCrashDamage": true,
-        "isNonstandard": null,
+        "isNonstandard": "Past",
         "name": "Jump Kick",
         "num": 26,
         "onMoveFail": "onMoveFail",
@@ -1628,21 +1632,21 @@
         "basePower": 50,
         "category": "Physical",
         "contestType": "Tough",
-        "critRatio": 2,
+        "critRatio": 3,
         "flags": {
             "contact": 1,
             "metronome": 1,
             "mirror": 1,
             "protect": 1
         },
-        "isNonstandard": null,
+        "isNonstandard": "Past",
         "name": "Karate Chop",
         "num": 2,
         "pp": 25,
         "priority": 0,
         "secondary": null,
         "target": "normal",
-        "type": "Normal"
+        "type": "Fighting"
     },
     "kinesis": {
         "accuracy": 80,
@@ -1683,6 +1687,7 @@
         ],
         "flags": {
             "contact": 1,
+            "heal": 1,
             "metronome": 1,
             "mirror": 1,
             "protect": 1
@@ -1700,8 +1705,9 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "onAfterMoveSelf": "onAfterMoveSelf",
-            "onAfterMoveSelfPriority": 1,
+            "onResidual": "onResidual",
+            "onResidualOrder": 10,
+            "onResidualSubOrder": 5,
             "onStart": "onStart"
         },
         "contestType": "Clever",
@@ -1754,7 +1760,7 @@
     },
     "lick": {
         "accuracy": 100,
-        "basePower": 20,
+        "basePower": 30,
         "category": "Physical",
         "contestType": "Cute",
         "flags": {
@@ -1779,19 +1785,29 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "onStart": "onStart"
+            "duration": 5,
+            "onSideEnd": "onSideEnd",
+            "onSideResidualOrder": 9,
+            "onSideStart": "onSideStart"
         },
+        "contestType": "Beautiful",
         "flags": {
-            "metronome": 1
+            "metronome": 1,
+            "snatch": 1
         },
         "name": "Light Screen",
         "num": 113,
-        "onTryHit": "onTryHit",
         "pp": 30,
         "priority": 0,
-        "target": "self",
+        "secondary": null,
+        "sideCondition": "lightscreen",
+        "target": "allySide",
         "type": "Psychic",
-        "volatileStatus": "lightscreen"
+        "zMove": {
+            "boost": {
+                "spd": 1
+            }
+        }
     },
     "lovelykiss": {
         "accuracy": 75,
@@ -2016,7 +2032,8 @@
         "flags": {
             "failencore": 1,
             "metronome": 1,
-            "nosketch": 1
+            "noassist": 1,
+            "nosleeptalk": 1
         },
         "isNonstandard": null,
         "name": "Mirror Move",
@@ -2085,7 +2102,7 @@
         },
         "isNonstandard": "CAP",
         "name": "Paleo Wave",
-        "num": 0,
+        "num": -1,
         "pp": 15,
         "priority": 0,
         "secondary": {
@@ -2151,7 +2168,6 @@
         },
         "name": "Petal Dance",
         "num": 80,
-        "onAfterMove": "onAfterMove",
         "onMoveFail": "onMoveFail",
         "pp": 20,
         "priority": 0,
@@ -2259,11 +2275,36 @@
         "pp": 35,
         "priority": 0,
         "secondary": {
-            "chance": 20,
+            "chance": 30,
             "status": "psn"
         },
         "target": "normal",
         "type": "Poison"
+    },
+    "polarflare": {
+        "accuracy": 100,
+        "basePower": 75,
+        "category": "Special",
+        "contestType": "Beautiful",
+        "flags": {
+            "defrost": 1,
+            "mirror": 1,
+            "nosketch": 1,
+            "protect": 1
+        },
+        "isNonstandard": "CAP",
+        "name": "Polar Flare",
+        "num": -3,
+        "onAfterMoveSecondarySelf": "onAfterMoveSecondarySelf",
+        "onHit": "onHit",
+        "pp": 10,
+        "priority": 0,
+        "secondary": {
+            "chance": 10,
+            "status": "frz"
+        },
+        "target": "allAdjacentFoes",
+        "type": "Fire"
     },
     "pound": {
         "accuracy": 100,
@@ -2321,17 +2362,16 @@
         "priority": 0,
         "secondary": {
             "boosts": {
-                "spa": -1,
                 "spd": -1
             },
-            "chance": 33
+            "chance": 10
         },
         "target": "normal",
         "type": "Psychic"
     },
     "psywave": {
         "accuracy": 80,
-        "basePower": 1,
+        "basePower": 0,
         "category": "Special",
         "contestType": "Clever",
         "damageCallback": "damageCallback",
@@ -2524,7 +2564,7 @@
         "num": 46,
         "onTryHit": "onTryHit",
         "pp": 20,
-        "priority": 0,
+        "priority": -1,
         "secondary": null,
         "target": "normal",
         "type": "Normal",
@@ -2548,12 +2588,15 @@
         "num": 157,
         "pp": 10,
         "priority": 0,
-        "secondary": null,
-        "target": "normal",
+        "secondary": {
+            "chance": 30,
+            "volatileStatus": "flinch"
+        },
+        "target": "allAdjacentFoes",
         "type": "Rock"
     },
     "rockthrow": {
-        "accuracy": 65,
+        "accuracy": 90,
         "basePower": 50,
         "category": "Physical",
         "contestType": "Tough",
@@ -2607,14 +2650,13 @@
             "protect": 1,
             "reflectable": 1
         },
-        "ignoreImmunity": true,
         "name": "Sand Attack",
         "num": 28,
         "pp": 15,
         "priority": 0,
         "secondary": null,
         "target": "normal",
-        "type": "Normal",
+        "type": "Ground",
         "zMove": {
             "boost": {
                 "evasion": 1
@@ -2670,7 +2712,7 @@
     },
     "seismictoss": {
         "accuracy": 100,
-        "basePower": 1,
+        "basePower": 0,
         "category": "Physical",
         "contestType": "Tough",
         "damage": "level",
@@ -2681,7 +2723,6 @@
             "nonsky": 1,
             "protect": 1
         },
-        "ignoreImmunity": true,
         "maxMove": {
             "basePower": 75
         },
@@ -2695,7 +2736,7 @@
     },
     "selfdestruct": {
         "accuracy": 100,
-        "basePower": 130,
+        "basePower": 200,
         "category": "Physical",
         "contestType": "Beautiful",
         "flags": {
@@ -2711,7 +2752,7 @@
         "priority": 0,
         "secondary": null,
         "selfdestruct": "always",
-        "target": "normal",
+        "target": "allAdjacent",
         "type": "Normal"
     },
     "shadowstrike": {
@@ -2726,7 +2767,7 @@
         },
         "isNonstandard": "CAP",
         "name": "Shadow Strike",
-        "num": 0,
+        "num": -2,
         "pp": 10,
         "priority": 0,
         "secondary": {
@@ -2931,7 +2972,7 @@
     },
     "smog": {
         "accuracy": 70,
-        "basePower": 20,
+        "basePower": 30,
         "category": "Special",
         "contestType": "Tough",
         "flags": {
@@ -3166,7 +3207,7 @@
         "accuracy": 95,
         "basePower": 0,
         "boosts": {
-            "spe": -1
+            "spe": -2
         },
         "category": "Status",
         "contestType": "Clever",
@@ -3193,6 +3234,12 @@
         "accuracy": 100,
         "basePower": 50,
         "category": "Physical",
+        "condition": {
+            "onEnd": "onEnd",
+            "onStart": "onStart",
+            "onTryHit": "onTryHit",
+            "onTryHitPriority": -1
+        },
         "contestType": "Tough",
         "flags": {
             "contact": 1,
@@ -3205,6 +3252,7 @@
         "name": "Struggle",
         "noPPBoosts": true,
         "num": 165,
+        "onHit": "onHit",
         "onModifyMove": "onModifyMove",
         "pp": 10,
         "priority": 0,
@@ -3214,7 +3262,7 @@
         ],
         "secondary": null,
         "struggleRecoil": false,
-        "target": "randomNormal",
+        "target": "self",
         "type": "Normal"
     },
     "stunspore": {
@@ -3231,7 +3279,6 @@
         },
         "name": "Stun Spore",
         "num": 78,
-        "onTryHit": "onTryHit",
         "pp": 30,
         "priority": 0,
         "secondary": null,
@@ -3275,11 +3322,14 @@
         "condition": {
             "onEnd": "onEnd",
             "onStart": "onStart",
-            "onTryHit": "onTryHit",
-            "onTryHitPriority": -1
+            "onTryPrimaryHit": "onTryPrimaryHit",
+            "onTryPrimaryHitPriority": -1
         },
+        "contestType": "Cute",
         "flags": {
-            "metronome": 1
+            "metronome": 1,
+            "nonsky": 1,
+            "snatch": 1
         },
         "name": "Substitute",
         "num": 164,
@@ -3290,7 +3340,10 @@
         "secondary": null,
         "target": "self",
         "type": "Normal",
-        "volatileStatus": "substitute"
+        "volatileStatus": "substitute",
+        "zMove": {
+            "effect": "clearnegativeboost"
+        }
     },
     "superfang": {
         "accuracy": 90,
@@ -3504,7 +3557,6 @@
         },
         "name": "Thrash",
         "num": 37,
-        "onAfterMove": "onAfterMove",
         "onMoveFail": "onMoveFail",
         "pp": 20,
         "priority": 0,
@@ -3531,7 +3583,7 @@
         "pp": 10,
         "priority": 0,
         "secondary": {
-            "chance": 10,
+            "chance": 30,
             "status": "par"
         },
         "target": "normal",
@@ -3700,7 +3752,10 @@
         "onHit": "onHit",
         "pp": 10,
         "priority": 0,
-        "secondary": null,
+        "secondary": {
+            "chance": 20,
+            "onHit": "onHit"
+        },
         "target": "normal",
         "type": "Normal"
     },
@@ -3732,7 +3787,7 @@
     },
     "vinewhip": {
         "accuracy": 100,
-        "basePower": 35,
+        "basePower": 45,
         "category": "Physical",
         "contestType": "Cool",
         "flags": {
@@ -3806,7 +3861,7 @@
         "type": "Water"
     },
     "whirlwind": {
-        "accuracy": 85,
+        "accuracy": 100,
         "basePower": 0,
         "category": "Status",
         "contestType": "Clever",
@@ -3816,12 +3871,12 @@
             "mirror": 1,
             "protect": 1
         },
-        "forceSwitch": false,
+        "forceSwitch": true,
         "name": "Whirlwind",
         "num": 18,
         "onTryHit": "onTryHit",
         "pp": 20,
-        "priority": 0,
+        "priority": -1,
         "secondary": null,
         "target": "normal",
         "type": "Normal",
@@ -3833,7 +3888,7 @@
     },
     "wingattack": {
         "accuracy": 100,
-        "basePower": 35,
+        "basePower": 60,
         "category": "Physical",
         "contestType": "Cool",
         "flags": {
@@ -3887,17 +3942,11 @@
             "mirror": 1,
             "protect": 1
         },
-        "ignoreImmunity": true,
         "name": "Wrap",
         "num": 35,
-        "onHit": "onHit",
-        "onTryMove": "onTryMove",
         "pp": 20,
         "priority": 0,
         "secondary": null,
-        "self": {
-            "volatileStatus": "partialtrappinglock"
-        },
         "target": "normal",
         "type": "Normal",
         "volatileStatus": "partiallytrapped"
