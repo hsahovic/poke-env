@@ -43,7 +43,6 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
         team: Optional[Union[str, Teambuilder]] = None,
         fake: bool = False,
         strict: bool = True,
-        strict_battle_tracking: bool = False,
     ):
         super().__init__(
             account_configuration1=account_configuration1,
@@ -63,7 +62,6 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
             team=team,
             fake=fake,
             strict=strict,
-            strict_battle_tracking=strict_battle_tracking,
         )
         num_switches = 6
         num_moves = 4
