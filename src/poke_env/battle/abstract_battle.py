@@ -385,7 +385,10 @@ class AbstractBattle(ABC):
     def _field_end(self, field_str: str):
         field = Field.from_showdown_message(field_str)
         if field is not Field.UNKNOWN:
-            self._fields.pop(field, 0)
+            if field is Field.NEUTRALIZING_GAS:
+                self._fields.pop(field, 0)
+            else:
+                self._fields.pop(field)
 
     def field_start(self, field_str: str):
         field = Field.from_showdown_message(field_str)
