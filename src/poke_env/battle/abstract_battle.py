@@ -378,7 +378,7 @@ class AbstractBattle(ABC):
         )
         illusionist_mon.set_hp(f"{illusioned.current_hp}/{illusioned.max_hp}")
 
-        illusioned.was_illusioned()
+        illusioned.was_illusioned(self.fields)
 
         return illusionist_mon
 
@@ -676,8 +676,22 @@ class AbstractBattle(ABC):
             self.get_pokemon(pokemon).boost(stat, -int(amount))
         elif event[1] == "-ability":
             pokemon, cause = event[2:4]
-            if len(event) > 4 and event[4].startswith("[from] move:"):
+            if (
+                len(event) > 4
+                and (
+                    event[4].startswith("[from] move:")
+                    or event[4].startswith("[from] ability: Trace")
+                )
+            ) or (
+                len(event) > 5
+                and (
+                    event[5].startswith("[from] move:")
+                    or event[5].startswith("[from] ability: Trace")
+                )
+            ):
                 self.get_pokemon(pokemon).set_temporary_ability(cause)
+            elif cause == "Neutralizing Gas":
+                self.field_start(cause)
             else:
                 self.get_pokemon(pokemon).ability = cause
         elif split_message[1] == "-start":
