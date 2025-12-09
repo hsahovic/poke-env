@@ -3,10 +3,10 @@ from __future__ import annotations
 from typing import Any, Dict, List, Optional, Union
 
 from poke_env.battle.effect import Effect
+from poke_env.battle.field import Field
 from poke_env.battle.move import SPECIAL_MOVES, Move
 from poke_env.battle.pokemon_gender import PokemonGender
 from poke_env.battle.pokemon_type import PokemonType
-from poke_env.battle.field import Field
 from poke_env.battle.status import Status
 from poke_env.battle.z_crystal import Z_CRYSTAL
 from poke_env.data import GenData, to_id_str
