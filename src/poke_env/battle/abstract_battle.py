@@ -883,7 +883,6 @@ class AbstractBattle(ABC):
             else:
                 self._opponent_used_z_move = True
             pokemon = event[2]
-            self.get_pokemon(pokemon).used_z_move()
         elif event[1] == "clearpoke":
             self.in_team_preview = True
             for mon in self.team.values():
