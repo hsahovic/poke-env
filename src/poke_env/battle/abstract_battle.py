@@ -11,7 +11,6 @@ from poke_env.battle.observed_pokemon import ObservedPokemon
 from poke_env.battle.pokemon import Pokemon
 from poke_env.battle.pokemon_type import PokemonType
 from poke_env.battle.side_condition import STACKABLE_CONDITIONS, SideCondition
-from poke_env.battle.status import Status
 from poke_env.battle.weather import Weather
 from poke_env.data import GenData, to_id_str
 from poke_env.data.replay_template import REPLAY_TEMPLATE
