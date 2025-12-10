@@ -220,7 +220,7 @@ class DoubleBattle(AbstractBattle):
         )
         pokemon_out = team.pop(pokemon_identifier, None)
         if pokemon_out is not None:
-            pokemon_out.switch_out()
+            pokemon_out.switch_out(self.fields)
         pokemon_in = self.get_pokemon(pokemon_str, details=details)
         pokemon_in.switch_in()
         pokemon_in.set_hp_status(hp_status)
