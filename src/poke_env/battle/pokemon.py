@@ -280,6 +280,11 @@ class Pokemon:
         if self.fainted:
             self._status = None
 
+    def identifies_as(self, ident: str) -> bool:
+        return self.base_species in to_id_str(ident) or self.base_species in [
+            to_id_str(substr) for substr in ident.split("-")
+        ]
+
     def invert_boosts(self):
         self._boosts = {k: -v for k, v in self._boosts.items()}
 
