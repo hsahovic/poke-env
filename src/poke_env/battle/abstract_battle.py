@@ -654,7 +654,7 @@ class AbstractBattle(ABC):
             )
         elif event[1] == "-heal":
             pokemon, hp_status = event[2:4]
-            self.get_pokemon(pokemon).heal(hp_status)
+            self.get_pokemon(pokemon).set_hp_status(hp_status)
             self._check_heal_message_for_ability(event)
             self._check_heal_message_for_item(event)
         elif event[1] == "-boost":

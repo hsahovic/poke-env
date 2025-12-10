@@ -275,9 +275,6 @@ class Pokemon:
         species = species.split(",")[0]
         self._update_from_pokedex(species, store_species=False)
 
-    def heal(self, hp_status: str):
-        self.set_hp_status(hp_status)
-
     def invert_boosts(self):
         self._boosts = {k: -v for k, v in self._boosts.items()}
 
