@@ -317,7 +317,7 @@ def test_stats(example_request, showdown_format_teams):
 
 def test_temporary():
     furret = Pokemon(species="furret", gen=8)
-    furret._ability = "adaptability"
+    furret.ability = "adaptability"
 
     assert furret.types == [PokemonType.NORMAL]
     assert furret.stab_multiplier == 2

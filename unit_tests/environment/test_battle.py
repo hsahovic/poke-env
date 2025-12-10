@@ -515,7 +515,7 @@ def test_battle_request_and_interactions(example_request):
         ]
     )
     assert battle.opponent_active_pokemon.ability == "ironbarbs"
-    battle.opponent_active_pokemon._ability = None
+    battle.opponent_active_pokemon.ability = None
 
     battle.parse_message(
         [
@@ -528,7 +528,7 @@ def test_battle_request_and_interactions(example_request):
         ]
     )
     assert battle.opponent_active_pokemon.ability == "ironbarbs"
-    battle.opponent_active_pokemon._ability = None
+    battle.opponent_active_pokemon.ability = None
 
     battle.parse_message(
         [
@@ -546,7 +546,7 @@ def test_battle_request_and_interactions(example_request):
 
     necrozma.switch_out(battle.fields)
     groudon.switch_in()
-    groudon._ability = None
+    groudon.ability = None
 
     battle.parse_message(
         [
@@ -582,8 +582,8 @@ def test_battle_request_and_interactions(example_request):
 
     # Test temporary types and abilities
 
-    necrozma._ability = "prismarmor"
-    groudon._ability = "desolateland"
+    necrozma.ability = "prismarmor"
+    groudon.ability = "desolateland"
     battle.parse_message(["", "move", "p2a: Necrozma", "Worry Seed", "p1a: Groudon"])
     assert groudon.ability == "desolateland"
     battle.parse_message(

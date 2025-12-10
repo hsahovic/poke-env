@@ -393,7 +393,7 @@ def test_iron_ball():
 def test_multiscsale_and_shadow_shield():
     defender = Pokemon(9, species="dragonite")
     defender.set_hp_status("100/100")
-    defender._ability = "shadowshield"
+    defenderd.ability = "shadowshield"
     attacker = Pokemon(9, species="abomasnow")
     battle = create_battle(p1a=attacker, p2a=defender)
     attacker_ident = attacker.identifier("p1")
@@ -403,7 +403,7 @@ def test_multiscsale_and_shadow_shield():
         attacker_ident, defender_ident, Move("blizzard", gen=9), battle
     ) == (168, 198)
 
-    defender._ability = "multiscale"
+    defenderd.ability = "multiscale"
     defender.set_hp_status("60/100")
     assert calculate_damage(
         attacker_ident, defender_ident, Move("iceshard", gen=9), battle
@@ -417,9 +417,9 @@ def test_multiscsale_and_shadow_shield():
 
 def test_weight():
     attacker = Pokemon(9, species="simisage")
-    attacker._ability = "gluttony"
+    attackerd.ability = "gluttony"
     defender = Pokemon(9, species="simisear")
-    defender._ability = "heavymetal"
+    defenderd.ability = "heavymetal"
     battle = create_battle(p1a=attacker, p2a=defender)
     attacker_ident = attacker.identifier("p1")
     defender_ident = defender.identifier("p2")
@@ -431,7 +431,7 @@ def test_weight():
         == 80
     )
 
-    attacker._ability = "moldbreaker"
+    attackerd.ability = "moldbreaker"
     assert (
         calculate_base_power(
             attacker_ident, defender_ident, Move("grassknot", gen=9), battle, False
@@ -439,9 +439,9 @@ def test_weight():
         == 60
     )
 
-    attacker._ability = "gluttony"
+    attackerd.ability = "gluttony"
     defender = Pokemon(9, species="registeel")
-    defender._ability = "lightmetal"
+    defenderd.ability = "lightmetal"
     battle = create_battle(p1a=attacker, p2a=defender)
     defender_ident = defender.identifier("p2")
     assert (
@@ -451,7 +451,7 @@ def test_weight():
         == 100
     )
 
-    attacker._ability = "moldbreaker"
+    attackerd.ability = "moldbreaker"
     assert (
         calculate_base_power(
             attacker_ident, defender_ident, Move("grassknot", gen=9), battle, False
@@ -459,8 +459,8 @@ def test_weight():
         == 120
     )
 
-    attacker._ability = "gluttony"
-    defender._ability = "frisk"
+    attackerd.ability = "gluttony"
+    defenderd.ability = "frisk"
     defender.item = "floatstone"
     assert (
         calculate_base_power(
@@ -469,7 +469,7 @@ def test_weight():
         == 100
     )
 
-    defender._ability = "lightmetal"
+    defenderd.ability = "lightmetal"
     assert (
         calculate_base_power(
             attacker_ident, defender_ident, Move("grassknot", gen=9), battle, False
@@ -522,7 +522,7 @@ def test_psychicterrain_psystrike_and_marvelscale():
 def test_knockoff_vs_klutz():
     attacker = Pokemon(9, species="Weavile")
     defender = Pokemon(9, species="Audino")
-    defender._ability = "klutz"
+    defenderd.ability = "klutz"
     defender.item = "leftovers"
     battle = create_battle(p1a=attacker, p2a=defender)
     attacker_ident = attacker.identifier("p1")
@@ -536,7 +536,7 @@ def test_knockoff_vs_klutz():
 def test_knockoff_vs_zacian_crowned():
     attacker = Pokemon(9, species="Weavile")
     defender = Pokemon(9, species="Zacian-Crowned")
-    defender._ability = "intrepidsword"
+    defenderd.ability = "intrepidsword"
     defender.item = "rustedsword"
     battle = create_battle(p1a=attacker, p2a=defender)
     attacker_ident = attacker.identifier("p1")
@@ -549,9 +549,9 @@ def test_knockoff_vs_zacian_crowned():
 
 def test_moldbreaker():
     attacker = Pokemon(9, species="rampardos")
-    attacker._ability = "moldbreaker"
+    attackerd.ability = "moldbreaker"
     defender = Pokemon(9, species="blastoise")
-    defender._ability = "raindish"
+    defenderd.ability = "raindish"
     battle = create_battle(p1a=attacker, p2a=defender)
     attacker_ident = attacker.identifier("p1")
     defender_ident = defender.identifier("p2")
@@ -564,9 +564,9 @@ def test_moldbreaker():
 
 def test_steely_spirit():
     attacker = Pokemon(9, species="perrserker", name="perserrker1")
-    attacker._ability = "battlearmor"
+    attackerd.ability = "battlearmor"
     defender = Pokemon(9, species="perrserker", name="perserrker2")
-    defender._ability = "battlearmor"
+    defenderd.ability = "battlearmor"
     battle = create_battle(p1a=attacker, p2a=defender)
     attacker_ident = attacker.identifier("p1")
     defender_ident = defender.identifier("p2")
@@ -574,14 +574,14 @@ def test_steely_spirit():
     # assert calculate_damage(attacker_ident, defender_ident, Move('ironhead', gen=9), battle) == (46, 55)
 
     attacker2 = Pokemon(9, species="perrserker", name="perserrker3")
-    attacker2._ability = "steelyspirit"
+    attacker2d.ability = "steelyspirit"
     battle = create_battle(p1a=attacker, p2a=defender, p1b=attacker2)
 
     assert calculate_damage(
         attacker_ident, defender_ident, Move("ironhead", gen=9), battle
     ) == (70, 83)
 
-    attacker._ability = "steelyspirit"
+    attackerd.ability = "steelyspirit"
     assert calculate_damage(
         attacker_ident, defender_ident, Move("ironhead", gen=9), battle
     ) == (105, 124)
@@ -589,7 +589,7 @@ def test_steely_spirit():
 
 def test_supreme_overlord():
     attacker = Pokemon(9, species="kingambit")
-    attacker._ability = "supremeoverlord"
+    attackerd.ability = "supremeoverlord"
     defender = Pokemon(9, species="aggron")
     battle = create_battle(p1a=attacker, p2a=defender)
     attacker_ident = attacker.identifier("p1")
@@ -667,7 +667,7 @@ def test_electro_drift_collision_course():
 def test_poltergeist_knockoff():
     attacker = Pokemon(9, species="smeargle")
     defender = Pokemon(9, species="gougingfire")
-    defender._ability = "protosynthesis"
+    defenderd.ability = "protosynthesis"
     defender._item = "blunderpolicy"
     battle = create_battle(p1a=attacker, p2a=defender)
     attacker_ident = attacker.identifier("p1")
@@ -688,7 +688,7 @@ def test_poltergeist_knockoff():
     )
 
     defender = Pokemon(9, species="ironvaliant")
-    defender._ability = "quarkdrive"
+    defenderd.ability = "quarkdrive"
     defender._item = "blunderpolicy"
     battle = create_battle(p1a=attacker, p2a=defender)
     defender_ident = defender.identifier("p2")

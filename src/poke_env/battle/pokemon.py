@@ -408,7 +408,7 @@ class Pokemon:
 
             # Skill Swap reveals a mon's ability
             if self.ability is None:
-                self._ability = to_id_str(details[1])
+                self.ability = details[1]
 
     def _swap_boosts(self):
         self._boosts["atk"], self._boosts["spa"] = (
@@ -481,7 +481,7 @@ class Pokemon:
         ]
 
         if len(self._possible_abilities) == 1:
-            self._ability = self._possible_abilities[0]
+            self.ability = self._possible_abilities[0]
 
         self._heightm = dex_entry["heightm"]
         self._weightkg = dex_entry["weightkg"]
@@ -540,9 +540,9 @@ class Pokemon:
             return
 
         if "ability" in request_pokemon:
-            self._ability = request_pokemon["ability"]
+            self.ability = request_pokemon["ability"]
         elif "baseAbility" in request_pokemon:
-            self._ability = request_pokemon["baseAbility"]
+            self.ability = request_pokemon["baseAbility"]
 
         self._last_request = request_pokemon
 
@@ -645,7 +645,7 @@ class Pokemon:
 
         if tb.level:
             self._level = tb.level
-        self._ability = to_id_str(tb.ability)
+        self.ability = to_id_str(tb.ability)
         self._item = to_id_str(tb.item) if tb.item else None
         if tb.gender:
             self._gender = PokemonGender.from_request_details(tb.gender)
@@ -761,6 +761,13 @@ class Pokemon:
             return self._temporary_ability
         else:
             return self._ability
+        
+    @ability.setter
+    def ability(self, ability: Optional[str]):
+        if ability is None:
+            self.ability = None
+        else:
+            self.ability = to_id_str(ability)
 
     @property
     def active(self) -> Optional[bool]:

@@ -400,10 +400,10 @@ def test_is_grounded():
     assert battle.grounded == [False, True]
 
     furret._type_2 = None
-    furret._ability = "levitate"
+    furret.ability = "levitate"
     assert battle.grounded == [False, True]
 
-    furret._ability = "frisk"
+    furret.ability = "frisk"
     assert battle.grounded == [True, True]
 
     furret._effects = {Effect.MAGNET_RISE: 1}
@@ -416,7 +416,7 @@ def test_is_grounded():
     battle._fields = {Field.GRAVITY: 1}
     assert battle.grounded == [True, True]
 
-    furret._ability = "levitate"
+    furret.ability = "levitate"
     assert battle.grounded == [True, True]
 
     battle._fields = {}
@@ -433,7 +433,7 @@ def test_dondozo_tatsugiri():
     dozo = Pokemon(gen=9, species="dondozo")
     battle.team = {"p1: Dondozo": dozo}
     tatsu = Pokemon(gen=9, species="tatsugiri")
-    tatsu._ability = "commander"
+    tatsu.ability = "commander"
     battle.team["p1: Tatsugiri"] = tatsu
 
     battle.parse_message(["", "switch", "p1a: Dondozo", "Dondozo, L50, F", "100/100"])
@@ -454,7 +454,7 @@ def test_symbiosis():
     battle.player_role = "p1"
     furret = Pokemon(gen=9, species="furret")
     oranguru = Pokemon(gen=9, species="oranguru")
-    oranguru._ability = "symbiosis"
+    oranguru.ability = "symbiosis"
     oranguru._item = "choiceband"
     battle.team = {"p1: Furret": furret, "p1: Oranguru": oranguru}
 
