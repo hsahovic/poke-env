@@ -761,7 +761,7 @@ class Pokemon:
             return self._temporary_ability
         else:
             return self._ability
-        
+
     @ability.setter
     def ability(self, ability: Optional[str]):
         if ability is None:
