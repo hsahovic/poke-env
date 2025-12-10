@@ -408,7 +408,7 @@ class Pokemon:
 
             # Skill Swap reveals a mon's ability
             if self.ability is None:
-                self.ability = details[1]
+                self._ability = to_id_str(details[1])
 
     def _swap_boosts(self):
         self._boosts["atk"], self._boosts["spa"] = (
@@ -645,7 +645,7 @@ class Pokemon:
 
         if tb.level:
             self._level = tb.level
-        self.ability = to_id_str(tb.ability)
+        self._ability = to_id_str(tb.ability)
         self._item = to_id_str(tb.item) if tb.item else None
         if tb.gender:
             self._gender = PokemonGender.from_request_details(tb.gender)
@@ -765,9 +765,9 @@ class Pokemon:
     @ability.setter
     def ability(self, ability: Optional[str]):
         if ability is None:
-            self.ability = None
+            self._ability = None
         else:
-            self.ability = to_id_str(ability)
+            self._ability = to_id_str(ability)
 
     @property
     def active(self) -> Optional[bool]:
