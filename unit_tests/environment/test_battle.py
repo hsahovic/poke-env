@@ -100,6 +100,9 @@ def test_battle_field_interactions():
     battle.parse_message(["", "-fieldend", "Electric terrain"])
     assert not battle.fields
 
+    with pytest.raises(Exception):
+        battle.parse_message(["", "-fieldend", "Electric terrain"])
+
 
 def test_battle_weather_interactions():
     logger = MagicMock()
@@ -515,7 +518,7 @@ def test_battle_request_and_interactions(example_request):
         ]
     )
     assert battle.opponent_active_pokemon.ability == "ironbarbs"
-    battle.opponent_active_pokemon.ability = None
+    battle.opponent_active_pokemon._ability = None
 
     battle.parse_message(
         [
@@ -528,7 +531,7 @@ def test_battle_request_and_interactions(example_request):
         ]
     )
     assert battle.opponent_active_pokemon.ability == "ironbarbs"
-    battle.opponent_active_pokemon.ability = None
+    battle.opponent_active_pokemon._ability = None
 
     battle.parse_message(
         [
@@ -546,7 +549,7 @@ def test_battle_request_and_interactions(example_request):
 
     necrozma.switch_out(battle.fields)
     groudon.switch_in()
-    groudon.ability = None
+    groudon._ability = None
 
     battle.parse_message(
         [
@@ -582,8 +585,8 @@ def test_battle_request_and_interactions(example_request):
 
     # Test temporary types and abilities
 
-    necrozma.ability = "prismarmor"
-    groudon.ability = "desolateland"
+    necrozma._ability = "prismarmor"
+    groudon._ability = "desolateland"
     battle.parse_message(["", "move", "p2a: Necrozma", "Worry Seed", "p1a: Groudon"])
     assert groudon.ability == "desolateland"
     battle.parse_message(
