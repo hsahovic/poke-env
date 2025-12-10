@@ -545,7 +545,7 @@ def test_battle_request_and_interactions(example_request):
     necrozma = battle.active_pokemon
     groudon = battle.opponent_active_pokemon
 
-    necrozma.switch_out()
+    necrozma.switch_out(battle.fields)
     groudon.switch_in()
     groudon._ability = None
 
@@ -595,7 +595,7 @@ def test_battle_request_and_interactions(example_request):
         ["", "-ability", "p1a: Groudon", "Insomnia", "[from] move: Worry Seed"]
     )
     assert groudon.ability == "insomnia"
-    groudon.switch_out()
+    groudon.switch_out(battle.fields)
     groudon.switch_in()
     assert groudon.ability == "desolateland"
 
@@ -614,7 +614,7 @@ def test_battle_request_and_interactions(example_request):
     assert groudon.ability == "prismarmor"
     assert necrozma.ability == "desolateland"
     groudon.switch_in()
-    groudon.switch_out()
+    groudon.switch_out(battle.fields)
     assert groudon.ability == "desolateland"
 
     battle.parse_message(["", "switch", "p1a: Ho-oh", "Ho-oh, L82", "100/100"])
@@ -631,7 +631,7 @@ def test_battle_request_and_interactions(example_request):
     assert hooh.type_1 == PokemonType.THREE_QUESTION_MARKS
     assert hooh.type_2 == PokemonType.FLYING
     assert hooh.types == [PokemonType.THREE_QUESTION_MARKS, PokemonType.FLYING]
-    hooh.switch_out()
+    hooh.switch_out(battle.fields)
     hooh.switch_in()
     assert hooh.type_1 == PokemonType.FIRE
     assert hooh.type_2 == PokemonType.FLYING
@@ -642,7 +642,7 @@ def test_battle_request_and_interactions(example_request):
     assert hooh.type_1 == PokemonType.WATER
     assert hooh.type_2 is None
     assert hooh.types == [PokemonType.WATER]
-    hooh.switch_out()
+    hooh.switch_out(battle.fields)
     hooh.switch_in()
     assert hooh.type_1 == PokemonType.FIRE
     assert hooh.type_2 == PokemonType.FLYING
