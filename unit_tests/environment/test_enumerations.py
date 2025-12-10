@@ -115,7 +115,7 @@ def test_effect_end():
     assert Effect.QUASH not in furret.effects
 
     # Test end on switch
-    furret.switch_out()
+    furret.switch_out({})
     assert Effect.MUMMY not in furret.effects
 
     # Test the definition of Volatile Status
