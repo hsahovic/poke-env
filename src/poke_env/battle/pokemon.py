@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any, Dict, List, Optional, Union
 
 from poke_env.battle.effect import Effect
+from poke_env.battle.field import Field
 from poke_env.battle.move import SPECIAL_MOVES, Move
 from poke_env.battle.pokemon_gender import PokemonGender
 from poke_env.battle.pokemon_type import PokemonType
@@ -274,10 +275,10 @@ class Pokemon:
         species = species.split(",")[0]
         self._update_from_pokedex(species, store_species=False)
 
-    def heal(self, hp_status: str):
-        self.set_hp_status(hp_status)
-        if self.fainted:
-            self._status = None
+    def identifies_as(self, ident: str) -> bool:
+        return self.base_species == to_id_str(ident) or self.base_species in [
+            to_id_str(substr) for substr in ident.split("-")
+        ]
 
     def invert_boosts(self):
         self._boosts = {k: -v for k, v in self._boosts.items()}
@@ -388,6 +389,7 @@ class Pokemon:
                 self.end_effect("yawn")
         else:
             hp = hp_status
+            self._status = None
 
         current_hp, max_hp = "".join([c for c in hp if c in "0123456789/"]).split("/")
         self._current_hp = int(current_hp)
@@ -438,7 +440,17 @@ class Pokemon:
         self._first_turn = True
         self._revealed = True
 
-    def switch_out(self):
+    def switch_out(self, fields: Dict[Field, int]):
+        if (
+            self.ability == "regenerator"
+            and (
+                self.item == "abilityshield"
+                or Field.NEUTRALIZING_GAS not in fields.keys()
+            )
+            and self.status != Status.FNT
+        ):
+            self._current_hp = min(int(self.current_hp + self.max_hp / 3), self.max_hp)
+
         self._active = False
         self.clear_boosts()
         self._clear_effects()
@@ -447,16 +459,11 @@ class Pokemon:
         self._preparing_move = None
         self._preparing_target = None
         self._protect_counter = 0
+        self._temporary_ability = None
+        self._temporary_types = []
 
         if self._status == Status.TOX:
             self._status_counter = 0
-
-        for effect in self.effects:
-            if effect.ends_on_switch or effect.is_volatile_status:
-                self.end_effect(effect.name)
-
-        self._temporary_ability = None
-        self._temporary_types = []
 
     def terastallize(self, type_: str):
         self._terastallized_type = PokemonType.from_name(type_)
@@ -664,10 +671,7 @@ class Pokemon:
             for stat, val in zip(["hp", "atk", "def", "spa", "spd", "spe"], stats):
                 self._stats[stat] = val
 
-    def used_z_move(self):
-        self._item = None
-
-    def was_illusioned(self):
+    def was_illusioned(self, fields: Dict[Field, int]):
         self._current_hp = None
         self._max_hp = None
         self._status = None
@@ -678,7 +682,7 @@ class Pokemon:
         if last_request:
             self.update_from_request(last_request)
 
-        self.switch_out()
+        self.switch_out(fields)
 
     def available_moves_from_request(self, request: Dict[str, Any]) -> List[Move]:
         moves: List[Move] = []
@@ -1094,6 +1098,10 @@ class Pokemon:
         """
         return self._status
 
+    @status.setter
+    def status(self, status: Optional[Union[Status, str]]):
+        self._status = Status[status.upper()] if isinstance(status, str) else status
+
     @property
     def status_counter(self) -> int:
         """
@@ -1101,10 +1109,6 @@ class Pokemon:
         :rtype: int
         """
         return self._status_counter
-
-    @status.setter  # type: ignore
-    def status(self, status: Optional[Union[Status, str]]):
-        self._status = Status[status.upper()] if isinstance(status, str) else status
 
     @property
     def stab_multiplier(self) -> float:
