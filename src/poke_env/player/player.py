@@ -303,7 +303,8 @@ class Player(ABC):
                     teambuilder_mon = [
                         m
                         for m in teambuilder_team
-                        if preview_mon.base_species in to_id_str(m.nickname)
+                        if m.nickname is not None
+                        and preview_mon.identifies_as(m.nickname)
                     ][0]
                     mon = battle.get_pokemon(
                         f"{role}: {teambuilder_mon.nickname}",
