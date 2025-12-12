@@ -275,10 +275,10 @@ class Pokemon:
         species = species.split(",")[0]
         self._update_from_pokedex(species, store_species=False)
 
-    def heal(self, hp_status: str):
-        self.set_hp_status(hp_status)
-        if self.fainted:
-            self._status = None
+    def identifies_as(self, ident: str) -> bool:
+        return self.base_species == to_id_str(ident) or self.base_species in [
+            to_id_str(substr) for substr in ident.split("-")
+        ]
 
     def invert_boosts(self):
         self._boosts = {k: -v for k, v in self._boosts.items()}
@@ -389,6 +389,7 @@ class Pokemon:
                 self.end_effect("yawn")
         else:
             hp = hp_status
+            self._status = None
 
         current_hp, max_hp = "".join([c for c in hp if c in "0123456789/"]).split("/")
         self._current_hp = int(current_hp)
@@ -669,9 +670,6 @@ class Pokemon:
             )
             for stat, val in zip(["hp", "atk", "def", "spa", "spd", "spe"], stats):
                 self._stats[stat] = val
-
-    def used_z_move(self):
-        self._item = None
 
     def was_illusioned(self, fields: Dict[Field, int]):
         self._current_hp = None
@@ -1100,6 +1098,10 @@ class Pokemon:
         """
         return self._status
 
+    @status.setter
+    def status(self, status: Optional[Union[Status, str]]):
+        self._status = Status[status.upper()] if isinstance(status, str) else status
+
     @property
     def status_counter(self) -> int:
         """
@@ -1107,10 +1109,6 @@ class Pokemon:
         :rtype: int
         """
         return self._status_counter
-
-    @status.setter  # type: ignore
-    def status(self, status: Optional[Union[Status, str]]):
-        self._status = Status[status.upper()] if isinstance(status, str) else status
 
     @property
     def stab_multiplier(self) -> float:

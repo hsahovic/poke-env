@@ -108,6 +108,7 @@ class Effect(Enum):
     LEPPA_BERRY = auto()
     LIGHTNING_ROD = auto()
     LIMBER = auto()
+    LINGERING_AROMA = auto()
     LIQUID_OOZE = auto()
     LOCKED_MOVE = auto()
     LOCK_ON = auto()
@@ -402,6 +403,7 @@ _FROM_ABILITY_EFFECTS: Set[Effect] = {
     Effect.IRON_BARBS,
     Effect.LIGHTNING_ROD,
     Effect.LIMBER,
+    Effect.LINGERING_AROMA,
     Effect.LIQUID_OOZE,
     Effect.MIMICRY,
     Effect.MUMMY,
@@ -871,6 +873,7 @@ _FROM_DATA: Dict[str, Effect] = {
     "LEPPABERRY": Effect.LEPPA_BERRY,
     "LIGHTNINGROD": Effect.LIGHTNING_ROD,
     "LIMBER": Effect.LIMBER,
+    "LINGERINGAROMA": Effect.LINGERING_AROMA,
     "LIQUIDOOZE": Effect.LIQUID_OOZE,
     "LOCKEDMOVE": Effect.LOCKED_MOVE,
     "LOCKON": Effect.LOCK_ON,
