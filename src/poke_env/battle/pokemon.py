@@ -1105,6 +1105,10 @@ class Pokemon:
         """
         return self._status
 
+    @status.setter
+    def status(self, status: Optional[Union[Status, str]]):
+        self._status = Status[status.upper()] if isinstance(status, str) else status
+
     @property
     def status_counter(self) -> int:
         """
@@ -1112,10 +1116,6 @@ class Pokemon:
         :rtype: int
         """
         return self._status_counter
-
-    @status.setter  # type: ignore
-    def status(self, status: Optional[Union[Status, str]]):
-        self._status = Status[status.upper()] if isinstance(status, str) else status
 
     @property
     def stab_multiplier(self) -> float:
