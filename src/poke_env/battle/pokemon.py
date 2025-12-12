@@ -675,9 +675,6 @@ class Pokemon:
             for stat, val in zip(["hp", "atk", "def", "spa", "spd", "spe"], stats):
                 self._stats[stat] = val
 
-    def used_z_move(self):
-        self._item = None
-
     def was_illusioned(self, fields: Dict[Field, int]):
         self._current_hp = None
         self._max_hp = None
