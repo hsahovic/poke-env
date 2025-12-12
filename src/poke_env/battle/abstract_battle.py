@@ -647,7 +647,7 @@ class AbstractBattle(ABC):
             )
         elif event[1] == "-heal":
             pokemon, hp_status = event[2:4]
-            self.get_pokemon(pokemon).heal(hp_status)
+            self.get_pokemon(pokemon).set_hp_status(hp_status)
             self._check_heal_message_for_ability(event)
             self._check_heal_message_for_item(event)
         elif event[1] == "-boost":
@@ -1009,9 +1009,9 @@ class AbstractBattle(ABC):
             mon.terastallize(type_)
 
             if mon.is_terastallized:
-                if pokemon in self.team.values():
+                if mon in self.team.values():
                     self._used_tera = True
-                elif pokemon in self.opponent_team.values():
+                elif mon in self.opponent_team.values():
                     self._opponent_used_tera = True
         else:
             raise NotImplementedError(event)

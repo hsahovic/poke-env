@@ -275,13 +275,8 @@ class Pokemon:
         species = species.split(",")[0]
         self._update_from_pokedex(species, store_species=False)
 
-    def heal(self, hp_status: str):
-        self.set_hp_status(hp_status)
-        if self.fainted:
-            self._status = None
-
     def identifies_as(self, ident: str) -> bool:
-        return self.base_species in to_id_str(ident) or self.base_species in [
+        return self.base_species == to_id_str(ident) or self.base_species in [
             to_id_str(substr) for substr in ident.split("-")
         ]
 
@@ -394,6 +389,7 @@ class Pokemon:
                 self.end_effect("yawn")
         else:
             hp = hp_status
+            self._status = None
 
         current_hp, max_hp = "".join([c for c in hp if c in "0123456789/"]).split("/")
         self._current_hp = int(current_hp)
