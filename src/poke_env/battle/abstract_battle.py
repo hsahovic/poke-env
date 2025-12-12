@@ -239,12 +239,7 @@ class AbstractBattle(ABC):
 
         # if the pokemon has a nickname, this ensures we recognize it
         name_det = details.split(", ")[0]
-        matches = [
-            i
-            for i, p in enumerate(team.values())
-            if p.base_species == to_id_str(name_det)
-            or p.base_species in [to_id_str(det) for det in name_det.split("-")]
-        ]
+        matches = [i for i, p in enumerate(team.values()) if p.identifies_as(name_det)]
         assert len(matches) < 2
         if identifier not in team and matches:
             i = matches[0]
@@ -374,9 +369,7 @@ class AbstractBattle(ABC):
             return illusionist_mon
 
         illusionist_mon.switch_in(details=details)
-        illusionist_mon._status = (
-            illusioned.status if illusioned.status is not None else None
-        )
+        illusionist_mon.status = illusioned.status
         illusionist_mon.set_hp(f"{illusioned.current_hp}/{illusioned.max_hp}")
 
         illusioned.was_illusioned(self.fields)
@@ -740,7 +733,7 @@ class AbstractBattle(ABC):
                 self.get_pokemon(target).start_effect(effect)
         elif event[1] == "-status":
             pokemon, status = event[2:4]
-            self.get_pokemon(pokemon)._status = Status[status.upper()]
+            self.get_pokemon(pokemon).status = status
         elif event[1] == "rule":
             self.rules.append(event[2])
 
@@ -1002,7 +995,7 @@ class AbstractBattle(ABC):
 
                 if cause.startswith("[from] ability:"):
                     cause = cause.replace("[from] ability:", "")
-                    self.get_pokemon(pokemon).ability = cause
+                    self.get_pokemon(pokemon).ability = to_id_str(cause)
         elif event[1] == "-swapsideconditions":
             self._side_conditions, self._opponent_side_conditions = (
                 self._opponent_side_conditions,
