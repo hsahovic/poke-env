@@ -276,7 +276,7 @@ class Pokemon:
         self._update_from_pokedex(species, store_species=False)
 
     def identifies_as(self, ident: str) -> bool:
-        return self.base_species in to_id_str(ident) or self.base_species in [
+        return self.base_species == to_id_str(ident) or self.base_species in [
             to_id_str(substr) for substr in ident.split("-")
         ]
 
