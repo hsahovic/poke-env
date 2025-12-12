@@ -1009,9 +1009,9 @@ class AbstractBattle(ABC):
             mon.terastallize(type_)
 
             if mon.is_terastallized:
-                if pokemon in self.team.values():
+                if mon in self.team.values():
                     self._used_tera = True
-                elif pokemon in self.opponent_team.values():
+                elif mon in self.opponent_team.values():
                     self._opponent_used_tera = True
         else:
             raise NotImplementedError(event)
