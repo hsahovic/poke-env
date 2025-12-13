@@ -304,9 +304,10 @@ def test_battle_request_and_interactions(example_request):
     battle.parse_message(["", "-damage", "p2: Necrozma", "10/293g"])
     assert battle.active_pokemon.current_hp == 10
 
-    assert battle.active_pokemon.ability is not None
+    battle.active_pokemon.temporary_ability = "temporaryability"
+    assert battle.active_pokemon.ability == "temporaryability"
     battle.parse_message(["", "-endability", "p2: Necrozma"])
-    assert battle.active_pokemon.ability is None
+    assert battle.active_pokemon.ability == "prismarmor"
 
     battle.active_pokemon.item = "focussash"
     battle.parse_message(["", "-enditem", "p2: Necrozma", "focussash"])
