@@ -830,20 +830,20 @@ class AbstractBattle(ABC):
                     pickpocketed = event[5].replace("[of] ", "")
                     item = event[3]
 
-                    pickpocket = self.get_pokemon(pickpocket)
-                    pickpocket.item = to_id_str(item)
-                    if pickpocket.ability is None:
-                        pickpocket.ability = "pickpocket"
+                    pickpocketer = self.get_pokemon(pickpocket)
+                    pickpocketer.item = to_id_str(item)
+                    if pickpocketer.ability is None:
+                        pickpocketer.ability = "pickpocket"
                     self.get_pokemon(pickpocketed).item = None
                 elif cause == "[from] ability: Magician":
                     magician = event[2]
                     victim = event[5].replace("[of] ", "")
                     item = event[3]
 
-                    magician = self.get_pokemon(magician)
-                    magician.item = to_id_str(item)
-                    if magician.ability is None:
-                        magician.ability = "magician"
+                    magicianer = self.get_pokemon(magician)
+                    magicianer.item = to_id_str(item)
+                    if magicianer.ability is None:
+                        magicianer.ability = "magician"
                     self.get_pokemon(victim).item = None
                 elif cause in {"[from] move: Thief", "[from] move: Covet"}:
                     thief = event[2]
