@@ -32,7 +32,7 @@ class Pokemon:
         "_last_request",
         "_level",
         "_max_hp",
-        "_mega_ability",
+        "_forme_change_ability",
         "_moves",
         "_must_recharge",
         "_name",
@@ -122,7 +122,7 @@ class Pokemon:
         self._status: Optional[Status] = None
         self._status_counter: int = 0
         self._temporary_ability: Optional[str] = None
-        self._mega_ability: Optional[str] = None
+        self._forme_change_ability: Optional[str] = None
         self._temporary_types: List[PokemonType] = []
 
         if request_pokemon:
@@ -489,15 +489,15 @@ class Pokemon:
             or dex_entry["forme"] in ["Primal", "Stellar", "Terastal"]
             or dex_entry["forme"].endswith("-Tera")
         ):
-            self.mega_ability = dex_entry["abilities"]["0"]
-        elif self.mega_ability is None:
+            self.forme_change_ability = dex_entry["abilities"]["0"]
+        elif self.forme_change_ability is None:
             self._possible_abilities = [
                 to_id_str(ability) for ability in dex_entry["abilities"].values()
             ]
             if len(self._possible_abilities) == 1:
                 self.ability = self._possible_abilities[0]
         else:
-            self.mega_ability = None
+            self.forme_change_ability = None
 
         self._heightm = dex_entry["heightm"]
         self._weightkg = dex_entry["weightkg"]
@@ -777,8 +777,8 @@ class Pokemon:
         """
         if self.temporary_ability is not None:
             return self.temporary_ability
-        elif self.mega_ability is not None:
-            return self.mega_ability
+        elif self.forme_change_ability is not None:
+            return self.forme_change_ability
         else:
             return self._ability
 
@@ -829,7 +829,7 @@ class Pokemon:
         :return: The pokemon's base ability. None if unknown.
         :rtype: str, optional
         """
-        return self._mega_ability or self._ability
+        return self._forme_change_ability or self._ability
 
     @property
     def base_species(self) -> str:
@@ -987,16 +987,16 @@ class Pokemon:
         return self._max_hp or 0
 
     @property
-    def mega_ability(self) -> Optional[str]:
+    def forme_change_ability(self) -> Optional[str]:
         """
         :return: The pokemon's mega ability. None if the pokemon is not mega evolved.
         :rtype: str, optional
         """
-        return self._mega_ability
+        return self._forme_change_ability
 
-    @mega_ability.setter
-    def mega_ability(self, ability: Optional[str]):
-        self._mega_ability = to_id_str(ability) if ability is not None else None
+    @forme_change_ability.setter
+    def forme_change_ability(self, ability: Optional[str]):
+        self._forme_change_ability = to_id_str(ability) if ability is not None else None
 
     @property
     def moves(self) -> Dict[str, Move]:
