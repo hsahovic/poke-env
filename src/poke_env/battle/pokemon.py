@@ -989,7 +989,7 @@ class Pokemon:
     @property
     def forme_change_ability(self) -> Optional[str]:
         """
-        :return: The pokemon's mega ability. None if the pokemon is not mega evolved.
+        :return: The pokemon's ability after changing forme. None if the pokemon hasn't changed forme.
         :rtype: str, optional
         """
         return self._forme_change_ability
