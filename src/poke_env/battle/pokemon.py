@@ -484,7 +484,11 @@ class Pokemon:
         else:
             self._type_2 = PokemonType.from_name(dex_entry["types"][1])
 
-        if "forme" in dex_entry and dex_entry["forme"].startswith("Mega"):
+        if "forme" in dex_entry and (
+            dex_entry["forme"].startswith("Mega")
+            or dex_entry["forme"] in ["Primal", "Stellar", "Terastal"]
+            or dex_entry["forme"].endswith("-Tera")
+        ):
             self.mega_ability = dex_entry["abilities"]["0"]
         elif self.mega_ability is None:
             self._possible_abilities = [
@@ -780,7 +784,12 @@ class Pokemon:
 
     @ability.setter
     def ability(self, ability: str):
-        self._ability = to_id_str(ability)
+        if self.ability == to_id_str(ability):
+            return
+        elif self._ability is None:
+            self._ability = to_id_str(ability)
+        else:
+            self._temporary_ability = to_id_str(ability)
 
     @property
     def active(self) -> Optional[bool]:
