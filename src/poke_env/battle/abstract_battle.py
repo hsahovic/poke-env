@@ -529,8 +529,7 @@ class AbstractBattle(ABC):
                 revealed_ability = event.pop().split(": ")[-1]
 
                 pokemon = event[2]
-                mon = self.get_pokemon(pokemon)
-                mon.ability = revealed_ability
+                self.get_pokemon(pokemon).ability = revealed_ability
 
                 if revealed_ability == "Magic Bounce":
                     return
