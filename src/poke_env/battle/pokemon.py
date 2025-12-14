@@ -775,8 +775,8 @@ class Pokemon:
         :return: The pokemon's ability. None if unknown or removed.
         :rtype: str, optional
         """
-        if self._temporary_ability is not None:
-            return self._temporary_ability
+        if self.temporary_ability is not None:
+            return self.temporary_ability
         elif self.mega_ability is not None:
             return self.mega_ability
         else:

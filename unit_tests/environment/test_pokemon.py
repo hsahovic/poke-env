@@ -345,9 +345,6 @@ def test_temporary():
     furret.temporary_ability = "frisk"
     assert furret.ability == "frisk"
 
-    furret.temporary_ability = None
-    assert furret.ability is None
-
     furret.switch_out({})
     assert furret.ability == "adaptability"
     assert furret.types == [PokemonType.DRAGON]

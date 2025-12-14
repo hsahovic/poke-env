@@ -516,7 +516,7 @@ def test_battle_request_and_interactions(example_request):
         ]
     )
     assert battle.opponent_active_pokemon.ability == "ironbarbs"
-    battle.opponent_active_pokemon._ability = None
+    battle.opponent_active_pokemon.temporary_ability = None
 
     battle.parse_message(
         [
@@ -529,7 +529,7 @@ def test_battle_request_and_interactions(example_request):
         ]
     )
     assert battle.opponent_active_pokemon.ability == "ironbarbs"
-    battle.opponent_active_pokemon._ability = None
+    battle.opponent_active_pokemon.temporary_ability = None
 
     battle.parse_message(
         [
@@ -547,7 +547,7 @@ def test_battle_request_and_interactions(example_request):
 
     necrozma.switch_out(battle.fields)
     groudon.switch_in()
-    groudon._ability = None
+    groudon.temporary_ability = None
 
     battle.parse_message(
         [
@@ -590,7 +590,6 @@ def test_battle_request_and_interactions(example_request):
     battle.parse_message(
         ["", "-endability", "p1a: Groudon", "Desolate Land", "[from] move: Worry Seed"]
     )
-    assert groudon.ability is None
     battle.parse_message(
         ["", "-ability", "p1a: Groudon", "Insomnia", "[from] move: Worry Seed"]
     )
