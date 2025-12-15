@@ -206,7 +206,7 @@ def test_simple_heuristics_player():
     }
 
     battle.available_switches[0].set_hp("100/100")
-    assert player.choose_move(battle).message == "/choose switch togekiss"
+    assert player.choose_move(battle).message == "/choose switch Togekiss"
 
     battle.available_moves.append(Move("quickattack", gen=8))
     assert player.choose_move(battle).message == "/choose move quickattack"
@@ -221,7 +221,7 @@ def test_simple_heuristics_player():
     battle.active_pokemon.boost("spa", -3)
     battle.available_switches.append(Pokemon(species="sneasel", gen=8))
     battle.available_switches[1].set_hp("100/100")
-    assert player.choose_move(battle).message == "/choose switch sneasel"
+    assert player.choose_move(battle).message == "/choose switch Sneasel"
 
 
 def test_simple_heuristics_player_in_doubles():
