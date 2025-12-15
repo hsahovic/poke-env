@@ -65,7 +65,7 @@ jobs:
           echo "hash=$hash" >> $GITHUB_OUTPUT
 
       - name: Restore server cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: pokemon-showdown/node_modules
           key: showdown-python${{ matrix.version }}-${{ steps.showdown-hash.outputs.hash }}
