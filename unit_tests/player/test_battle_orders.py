@@ -75,7 +75,7 @@ def test_double_orders():
 
     assert both == {
         "/choose move selfdestruct 2, move selfdestruct 2",
-        "/choose move selfdestruct 2, switch lugia",
+        "/choose move selfdestruct 2, switch Lugia",
         "/choose switch Lugia, move selfdestruct 2",
     }
     assert first == {"/choose move selfdestruct 2, pass", "/choose switch Lugia, pass"}
