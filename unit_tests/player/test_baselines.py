@@ -18,7 +18,7 @@ def test_max_base_power_player():
     assert player.choose_move(battle).message == "/choose default"
 
     battle._available_switches.append(Pokemon(species="ponyta", gen=8))
-    assert player.choose_move(battle).message == "/choose switch ponyta"
+    assert player.choose_move(battle).message == "/choose switch Ponyta"
 
     battle._available_moves.append(Move("protect", gen=8))
     assert player.choose_move(battle).message == "/choose move protect"
@@ -278,32 +278,32 @@ def test_random_player():
     mon._active = True
     battle._team = {"charizard": mon}
     battle._available_switches.append(Pokemon(species="ponyta", gen=8))
-    assert player.choose_move(battle).message == "/choose switch ponyta"
+    assert player.choose_move(battle).message == "/choose switch Ponyta"
 
     battle._available_moves.append(Move("protect", gen=8))
     assert player.choose_move(battle).message in {
         "/choose move protect",
-        "/choose switch ponyta",
+        "/choose switch Ponyta",
     }
 
     battle._available_moves.append(Move("quickattack", gen=8))
     assert player.choose_move(battle).message in {
         "/choose move protect",
-        "/choose switch ponyta",
+        "/choose switch Ponyta",
         "/choose move quickattack",
     }
 
     battle._available_moves.append(Move("flamethrower", gen=8))
     assert player.choose_move(battle).message in {
         "/choose move protect",
-        "/choose switch ponyta",
+        "/choose switch Ponyta",
         "/choose move quickattack",
         "/choose move flamethrower",
     }
 
     assert {player.choose_move(battle).message for _ in range(500)} == {
         "/choose move protect",
-        "/choose switch ponyta",
+        "/choose switch Ponyta",
         "/choose move quickattack",
         "/choose move flamethrower",
     }
