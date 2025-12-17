@@ -213,7 +213,7 @@ async def run_test_choose_move():
     message = await player.agent1.choose_move(battle)
     order = player.action_to_order(np.int64(0), battle)
     player.agent1.order_queue.put(order)
-    assert message.message == "/choose switch charizard"
+    assert message.message == "/choose switch Charizard"
 
 
 def test_choose_move():
@@ -391,7 +391,7 @@ def test_singles_action_order_conversions():
         check_action_order_roundtrip(p, Player.create_order(move), battle)
         battle._available_switches = [active_pokemon]
         assert (
-            p.action_to_order(np.int64(0), battle).message == "/choose switch charizard"
+            p.action_to_order(np.int64(0), battle).message == "/choose switch Charizard"
         )
         check_action_order_roundtrip(p, Player.create_order(active_pokemon), battle)
         battle._available_switches = []
@@ -472,7 +472,7 @@ def test_doubles_action_order_conversions():
         battle._available_switches = [[active_pokemon], []]
         assert (
             p.action_to_order(np.array([1, -2]), battle).message
-            == "/choose switch charizard, default"
+            == "/choose switch Charizard, default"
         )
         check_action_order_roundtrip(
             p,

@@ -62,7 +62,7 @@ class SingleBattleOrder(BattleOrder):
                 message += f" {self.move_target}"
             return message
         elif isinstance(self.order, Pokemon):
-            return f"/choose switch {self.order.species}"
+            return f"/choose switch {self.order.name}"
         else:
             return self.order
 
