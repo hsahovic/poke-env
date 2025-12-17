@@ -690,7 +690,7 @@ class AbstractBattle(ABC):
                     # |-ability|p1a: Gardevoir|Intimidate|[from] ability: Trace|[of] p2a: Luxray
                     if mon.temporary_ability is not None:
                         mon.temporary_ability = None
-                    elif mon._ability is not None:
+                    elif mon.ability is not None:
                         mon._ability = None
                     mon.ability = "trace"
                 mon.ability = cause
