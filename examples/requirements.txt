@@ -1,2 +1,2 @@
-ray[rllib]==2.52.1
+ray[rllib]==2.53.0
 torch==2.9.1
