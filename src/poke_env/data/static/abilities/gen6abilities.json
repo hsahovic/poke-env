@@ -1,0 +1,63 @@
+{
+    "aerilate": {
+        "inherit": true,
+        "onBasePower": "onBasePower",
+        "rating": 4.5
+    },
+    "aftermath": {
+        "inherit": true,
+        "onDamagingHit": "onDamagingHit"
+    },
+    "galewings": {
+        "inherit": true,
+        "onModifyPriority": "onModifyPriority",
+        "rating": 4
+    },
+    "ironbarbs": {
+        "inherit": true,
+        "onDamagingHit": "onDamagingHit"
+    },
+    "liquidooze": {
+        "inherit": true,
+        "onSourceTryHeal": "onSourceTryHeal"
+    },
+    "magicguard": {
+        "inherit": true,
+        "onDamage": "onDamage"
+    },
+    "normalize": {
+        "inherit": true,
+        "onBasePower": "onBasePower",
+        "onModifyMove": "onModifyMove",
+        "onModifyMovePriority": 1,
+        "rating": 4.5
+    },
+    "refrigerate": {
+        "inherit": true,
+        "onBasePower": "onBasePower",
+        "rating": 4.5
+    },
+    "roughskin": {
+        "inherit": true,
+        "onDamagingHit": "onDamagingHit"
+    },
+    "stancechange": {
+        "inherit": true,
+        "onBeforeMove": "onBeforeMove",
+        "onBeforeMovePriority": 11,
+        "onModifyMove": "onModifyMove"
+    },
+    "weakarmor": {
+        "inherit": true,
+        "onDamagingHit": "onDamagingHit",
+        "rating": 0.5
+    },
+    "zenmode": {
+        "flags": {
+            "failroleplay": 1,
+            "noentrain": 1,
+            "notrace": 1
+        },
+        "inherit": true
+    }
+}
