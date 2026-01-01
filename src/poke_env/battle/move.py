@@ -110,8 +110,11 @@ class Move:
     def __repr__(self) -> str:
         return f"{self._id} (Move object)"
 
-    def use(self):
-        self._current_pp -= 1
+    def use(self, pressure: bool):
+        if pressure:
+            self.current_pp -= 2
+        else:
+            self.current_pp -= 1
 
     @staticmethod
     def is_id_z(id_: str, gen: int) -> bool:
@@ -218,6 +221,14 @@ class Move:
         :rtype: int
         """
         return self._current_pp
+
+    @current_pp.setter
+    def current_pp(self, pp: int):
+        """
+        :param pp: New PP value.
+        :type pp: int
+        """
+        self._current_pp = max(0, pp)
 
     @property
     def damage(self) -> Union[int, str]:

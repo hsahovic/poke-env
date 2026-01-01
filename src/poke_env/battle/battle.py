@@ -96,6 +96,13 @@ class Battle(AbstractBattle):
                 self._trapped = True
 
             if self.active_pokemon is not None:
+                if (
+                    strict_battle_tracking
+                    and "illusion" not in [p.ability for p in self.team.values()]
+                    and "illusion"
+                    not in [p.ability for p in self.opponent_team.values()]
+                ):
+                    self.active_pokemon.check_move_consistency(active_request)
                 # TODO: the illusion handling here works around Zoroark's
                 # difficulties. This should be properly handled at some point.
                 try:

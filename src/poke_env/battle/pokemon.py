@@ -8,6 +8,7 @@ from poke_env.battle.move import SPECIAL_MOVES, Move
 from poke_env.battle.pokemon_gender import PokemonGender
 from poke_env.battle.pokemon_type import PokemonType
 from poke_env.battle.status import Status
+from poke_env.battle.target import Target
 from poke_env.battle.z_crystal import Z_CRYSTAL
 from poke_env.data import GenData, to_id_str
 from poke_env.stats import compute_raw_stats
@@ -151,19 +152,14 @@ class Pokemon:
             f"[Active: {self._active}, Status: {status_repr}]"
         )
 
-    def _add_move(self, move_id: str, use: bool = False) -> Optional[Move]:
+    def _add_move(self, move_id: str) -> Optional[Move]:
         """Store the move if applicable."""
         id_ = Move.retrieve_id(move_id)
-
         if not Move.should_be_stored(id_, self._data.gen):
             return None
-
         if id_ not in self._moves:
             move = Move(move_id=id_, raw_id=move_id, gen=self._data.gen)
             self._moves[id_] = move
-        if use:
-            self._moves[id_].use()
-
         return self._moves[id_]
 
     def boost(self, stat: str, amount: int):
@@ -298,13 +294,24 @@ class Pokemon:
             mega_species = mega_species + stone[-1].lower()
             self._update_from_pokedex(mega_species, store_species=False)
 
-    def moved(self, move_id: str, failed: bool = False, use: bool = True):
+    def moved(
+        self,
+        move_id: str,
+        failed: bool = False,
+        use: bool = True,
+        override: bool = False,
+        pressure: bool = False,
+    ):
         self._must_recharge = False
         self._preparing_move = None
         self._preparing_target = None
-        move = self._add_move(move_id, use=use)
+        move = None
+        if not override:
+            move = self._add_move(move_id)
+        if move is not None and use:
+            move.use(pressure)
 
-        if move and move.is_protect_counter and not failed:
+        if move is not None and move.is_protect_counter and not failed:
             self._protect_counter += 1
         else:
             self._protect_counter = 0
@@ -316,7 +323,7 @@ class Pokemon:
             new_moves = {}
 
             # Keep the current move
-            if move and move in self._moves.values():
+            if move is not None and move in self._moves.values():
                 new_moves = {
                     move_id: m for move_id, m in self._moves.items() if m is move
                 }
@@ -350,11 +357,8 @@ class Pokemon:
             self.end_effect("Flash Fire")
 
     def prepare(self, move_id: str, target: Optional[Pokemon]):
-        self.moved(move_id, use=False)
-
         move_id = Move.retrieve_id(move_id)
         move = self.moves[move_id]
-
         self._preparing_move = move
         self._preparing_target = target
 
@@ -469,6 +473,8 @@ class Pokemon:
         current_hp = self.current_hp
         self._update_from_pokedex(into.species, store_species=False)
         self._current_hp = int(current_hp)
+        if into.ability is not None:
+            self.ability = into.ability
         self._boosts = into.boosts.copy()
 
     def _update_from_pokedex(self, species: str, store_species: bool = True):
@@ -649,6 +655,34 @@ class Pokemon:
             assert pkmn_request["ability"] == (
                 self.ability or ""
             ), f"{pkmn_request['ability']} != {self.ability or ''}"
+
+    def check_move_consistency(self, active_request: Dict[str, Any]):
+        if self.base_species in ["ditto", "mew"]:
+            return
+        for move_request in active_request["moves"]:
+            matches = [
+                m
+                for m in self.moves.values()
+                if Move.retrieve_id(m.id) == move_request["id"]
+            ]
+            if not matches:
+                continue
+            move = matches[0]
+            if "pp" in move_request:
+                assert (
+                    move_request["pp"] == move.current_pp
+                ), f"{move_request['pp']} != {move.current_pp}\n{move_request}"
+            if "maxpp" in move_request:
+                assert (
+                    move_request["maxpp"] == move.max_pp
+                ), f"{move_request['maxpp']} != {move.max_pp}"
+            assert move.target is not None
+            if "target" in move_request:
+                assert Target.from_showdown_message(move_request["target"]).name == (
+                    Target.SELF.name
+                    if move.non_ghost_target and PokemonType.GHOST not in self.types
+                    else move.target.name
+                ), f"{Target.from_showdown_message(move_request['target']).name} != {move.target.name}\n{move_request}"
 
     def _update_from_teambuilder(self, tb: TeambuilderPokemon):
         if tb.nickname is not None and tb.species is None:
