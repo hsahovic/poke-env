@@ -598,8 +598,8 @@ class AbstractBattle(ABC):
                 temp_pokemon.start_effect("MINIMIZE")
 
             if isinstance(self.active_pokemon, Pokemon):
-                target_type = self._data.moves[Move.retrieve_id(move)]["target"]
-                if target_type == "all" or presumed_target is None:
+                move_data = self._data.moves[Move.retrieve_id(move)]
+                if move_data["target"] == "all" or presumed_target is None:
                     target = (
                         self.opponent_active_pokemon
                         if self.player_role == pokemon[:2]
@@ -610,17 +610,16 @@ class AbstractBattle(ABC):
                 pressure = (
                     target.ability == "pressure"
                     and not target.fainted
-                    and target_type
+                    and (move_data["target"]
                     in [
                         "all",
                         "allAdjacent",
                         "allAdjacentFoes",
                         "any",
-                        "foeSide",
                         "normal",
                         "randomNormal",
                         "scripted",
-                    ]
+                    ] or "mustpressure" in move_data["flags"])
                 )
             elif isinstance(self.active_pokemon, list):
                 pressure = self._data.moves[Move.retrieve_id(move)]["target"] in [
