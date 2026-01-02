@@ -487,7 +487,6 @@ class AbstractBattle(ABC):
 
             if event[-1] == "[notarget]":
                 event = event[:-1]
-                failed = True
 
             if event[-1].startswith("[spread]"):
                 event = event[:-1]
@@ -504,9 +503,11 @@ class AbstractBattle(ABC):
 
             if event[-1].startswith(("[from] move: ", "[from]move: ")):
                 override_move = event.pop().split(": ")[-1]
+
                 if override_move == "Sleep Talk":
+                    # Sleep talk was used, but also reveals another move
                     reveal_other_move = True
-                elif override_move in {"Copycat", "Metronome", "Nature Power"}:
+                elif override_move in {"Copycat", "Metronome", "Nature Power", "Round"}:
                     pass
                 elif override_move in {"Grass Pledge", "Water Pledge", "Fire Pledge"}:
                     override_move = None
@@ -648,7 +649,8 @@ class AbstractBattle(ABC):
                     "Metronome",
                     "Nature Power",
                 }:
-                    # wait until override move to decide how much pp to deduct since override determines pressure interaction
+                    # wait until override move to decide how much pp to deduct
+                    # since override determines pressure interaction
                     mon.moves[Move.retrieve_id(move)].current_pp += 1
         elif event[1] == "cant":
             pokemon, _ = event[2:4]
