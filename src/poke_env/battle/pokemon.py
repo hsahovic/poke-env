@@ -299,14 +299,14 @@ class Pokemon:
         move_id: str,
         failed: bool = False,
         use: bool = True,
-        override: bool = False,
+        reveal: bool = True,
         pressure: bool = False,
     ):
         self._must_recharge = False
         self._preparing_move = None
         self._preparing_target = None
         move = None
-        if not override:
+        if reveal:
             move = self._add_move(move_id)
         if move is not None and use:
             move.use(pressure)

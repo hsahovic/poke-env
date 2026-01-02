@@ -475,11 +475,12 @@ class AbstractBattle(ABC):
             self._check_damage_message_for_item(event)
             self._check_damage_message_for_ability(event)
         elif event[1] == "move":
+            use = True
             failed = False
             override_move = None
-            use = True
+            reveal_other_move = False
 
-            for move_failed_suffix in ["[miss]", "[still]"]:
+            for move_failed_suffix in ["[miss]", "[still]", "[notarget]"]:
                 if event[-1] == move_failed_suffix:
                     event = event[:-1]
                     failed = True
@@ -503,13 +504,9 @@ class AbstractBattle(ABC):
 
             if event[-1].startswith(("[from] move: ", "[from]move: ")):
                 override_move = event.pop().split(": ")[-1]
-                if override_move in {
-                    "Sleep Talk",
-                    "Copycat",
-                    "Metronome",
-                    "Nature Power",
-                    "Round",
-                }:
+                if override_move == "Sleep Talk":
+                    reveal_other_move = True
+                elif override_move in {"Copycat", "Metronome", "Nature Power"}:
                     pass
                 elif override_move in {"Grass Pledge", "Water Pledge", "Fire Pledge"}:
                     override_move = None
@@ -639,7 +636,7 @@ class AbstractBattle(ABC):
                 # Moves that can trigger this branch results in two `move` messages being sent.
                 # We're setting use=False in the one (with the override) in order to prevent two pps from being used
                 # incorrectly.
-                mon.moved(move, failed=failed, use=False, override=True)
+                mon.moved(move, failed=failed, use=False, reveal=reveal_other_move)
                 mon.moves[Move.retrieve_id(override_move)].current_pp -= (
                     2 if pressure else 1
                 )
@@ -650,11 +647,8 @@ class AbstractBattle(ABC):
                     "Copycat",
                     "Metronome",
                     "Nature Power",
-                    "Round",
-                    "Grass Pledge",
-                    "Water Pledge",
-                    "Fire Pledge",
                 }:
+                    # wait until override move to decide how much pp to deduct since override determines pressure interaction
                     mon.moves[Move.retrieve_id(move)].current_pp += 1
         elif event[1] == "cant":
             pokemon, _ = event[2:4]
