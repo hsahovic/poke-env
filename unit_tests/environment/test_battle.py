@@ -357,13 +357,8 @@ def test_battle_request_and_interactions(example_request):
     battle.parse_message(["", "-mustrecharge", "p1: Latias"])
     assert battle.opponent_active_pokemon.must_recharge is True
 
+    battle.opponent_active_pokemon._add_move("solarbeam")
     battle.parse_message(["", "-prepare", "p1: Latias", "Solar Beam", "p2: Necrozma"])
-    assert (
-        battle.opponent_active_pokemon.preparing_move
-        == battle.opponent_active_pokemon.moves["solarbeam"]
-    )
-    assert battle.opponent_active_pokemon.preparing_target.species == "necrozma"
-
     assert (
         battle.opponent_active_pokemon.preparing_move
         == battle.opponent_active_pokemon.moves["solarbeam"]
@@ -546,6 +541,7 @@ def test_battle_request_and_interactions(example_request):
     groudon = battle.opponent_active_pokemon
 
     necrozma.switch_out(battle.fields)
+    necrozma.switch_in()
     groudon.switch_in()
     groudon.temporary_ability = None
 

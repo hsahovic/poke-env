@@ -108,7 +108,7 @@ class Move:
     def __repr__(self) -> str:
         return f"{self._id} (Move object)"
 
-    def use(self, pressure: bool):
+    def use(self, pressure: bool = False):
         if pressure:
             self.current_pp -= 2
         else:
