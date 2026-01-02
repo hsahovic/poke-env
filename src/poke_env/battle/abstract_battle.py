@@ -12,7 +12,6 @@ from poke_env.battle.observed_pokemon import ObservedPokemon
 from poke_env.battle.pokemon import Pokemon
 from poke_env.battle.pokemon_type import PokemonType
 from poke_env.battle.side_condition import STACKABLE_CONDITIONS, SideCondition
-from poke_env.battle.target import Target
 from poke_env.battle.weather import Weather
 from poke_env.data import GenData, to_id_str
 from poke_env.data.replay_template import REPLAY_TEMPLATE
@@ -477,7 +476,6 @@ class AbstractBattle(ABC):
             self._check_damage_message_for_ability(event)
         elif event[1] == "move":
             failed = False
-            no_target = False
             override_move = None
             use = True
 
@@ -505,11 +503,7 @@ class AbstractBattle(ABC):
 
             if event[-1].startswith(("[from] move: ", "[from]move: ")):
                 override_move = event.pop().split(": ")[-1]
-
-                if override_move == "Sleep Talk":
-                    # Sleep talk was used, but also reveals another move
-                    reveal_other_move = True
-                elif override_move in {"Copycat", "Metronome", "Nature Power", "Round"}:
+                if override_move in {"Sleep Talk", "Copycat", "Metronome", "Nature Power", "Round"}:
                     pass
                 elif override_move in {"Grass Pledge", "Water Pledge", "Fire Pledge"}:
                     override_move = None
