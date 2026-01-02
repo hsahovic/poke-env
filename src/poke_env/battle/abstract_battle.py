@@ -610,16 +610,19 @@ class AbstractBattle(ABC):
                 pressure = (
                     target.ability == "pressure"
                     and not target.fainted
-                    and (move_data["target"]
-                    in [
-                        "all",
-                        "allAdjacent",
-                        "allAdjacentFoes",
-                        "any",
-                        "normal",
-                        "randomNormal",
-                        "scripted",
-                    ] or "mustpressure" in move_data["flags"])
+                    and (
+                        move_data["target"]
+                        in [
+                            "all",
+                            "allAdjacent",
+                            "allAdjacentFoes",
+                            "any",
+                            "normal",
+                            "randomNormal",
+                            "scripted",
+                        ]
+                        or "mustpressure" in move_data["flags"]
+                    )
                 )
             elif isinstance(self.active_pokemon, list):
                 pressure = self._data.moves[Move.retrieve_id(move)]["target"] in [
