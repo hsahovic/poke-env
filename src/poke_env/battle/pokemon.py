@@ -47,6 +47,7 @@ class Pokemon:
         "_status",
         "_status_counter",
         "_temporary_ability",
+        "_temporary_base_stats",
         "_temporary_types",
         "_terastallized",
         "_terastallized_type",
@@ -123,6 +124,7 @@ class Pokemon:
         self._status_counter: int = 0
         self._temporary_ability: Optional[str] = None
         self._forme_change_ability: Optional[str] = None
+        self._temporary_base_stats: Optional[Dict[str, int]] = None
         self._temporary_types: List[PokemonType] = []
 
         if request_pokemon:
@@ -455,6 +457,7 @@ class Pokemon:
         self._preparing_target = None
         self._protect_counter = 0
         self.temporary_ability = None
+        self._temporary_base_stats = None
         self._temporary_types = []
 
         if self._status == Status.TOX:
@@ -466,9 +469,13 @@ class Pokemon:
         self._temporary_types = []
 
     def transform(self, into: Pokemon):
-        current_hp = self.current_hp
-        self._update_from_pokedex(into.species, store_species=False)
-        self._current_hp = int(current_hp)
+        dex_entry = self._data.pokedex[into.species]
+        self._heightm = dex_entry["heightm"]
+        self._weightkg = dex_entry["weightkg"]
+        self._temporary_base_stats = dex_entry["baseStats"]
+        if into.ability is not None:
+            self.ability = into.ability
+        self._temporary_types = [PokemonType.from_name(t) for t in dex_entry["types"]]
         self._boosts = into.boosts.copy()
 
     def _update_from_pokedex(self, species: str, store_species: bool = True):
@@ -846,7 +853,11 @@ class Pokemon:
         :return: The pokemon's base stats.
         :rtype: Dict[str, int]
         """
-        return self._base_stats
+        return (
+            self._temporary_base_stats
+            if self._temporary_base_stats is not None
+            else self._base_stats
+        )
 
     @property
     def boosts(self) -> Dict[str, int]:
