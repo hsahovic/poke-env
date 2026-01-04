@@ -276,6 +276,7 @@ class Pokemon:
         self._current_hp = 0
         self._status = Status.FNT
         self.temporary_ability = None
+        self._temporary_moves = None
         self._clear_effects()
 
     def forme_change(self, species: str):
