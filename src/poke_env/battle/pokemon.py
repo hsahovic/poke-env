@@ -48,6 +48,7 @@ class Pokemon:
         "_status_counter",
         "_temporary_ability",
         "_temporary_base_stats",
+        "_temporary_moves",
         "_temporary_types",
         "_terastallized",
         "_terastallized_type",
@@ -125,6 +126,7 @@ class Pokemon:
         self._temporary_ability: Optional[str] = None
         self._forme_change_ability: Optional[str] = None
         self._temporary_base_stats: Optional[Dict[str, int]] = None
+        self._temporary_moves: Optional[Dict[str, Move]] = None
         self._temporary_types: List[PokemonType] = []
 
         if request_pokemon:
@@ -160,13 +162,15 @@ class Pokemon:
         if not Move.should_be_stored(id_, self._data.gen):
             return None
 
-        if id_ not in self._moves:
+        if id_ not in self.moves:
             move = Move(move_id=id_, raw_id=move_id, gen=self._data.gen)
-            self._moves[id_] = move
+            if len(self.moves) == 4:
+                self.moves = dict(list(self.moves.items())[1:])
+            self.moves[id_] = move
         if use:
-            self._moves[id_].use()
+            self.moves[id_].use()
 
-        return self._moves[id_]
+        return self.moves[id_]
 
     def boost(self, stat: str, amount: int):
         self._boosts[stat] += amount
@@ -314,23 +318,6 @@ class Pokemon:
         if self._status == Status.SLP:
             self._status_counter += 1
 
-        if len(self._moves) > 4:
-            new_moves = {}
-
-            # Keep the current move
-            if move and move in self._moves.values():
-                new_moves = {
-                    move_id: m for move_id, m in self._moves.items() if m is move
-                }
-
-            for move_name in self._moves:
-                if len(new_moves) == 4:
-                    break
-                elif move_name not in new_moves:
-                    new_moves[move_name] = self._moves[move_name]
-
-            self._moves = new_moves
-
         # Handle silent effect ending
         if Effect.GLAIVE_RUSH in self.effects:
             self.end_effect("Glaive Rush")
@@ -458,6 +445,7 @@ class Pokemon:
         self._protect_counter = 0
         self.temporary_ability = None
         self._temporary_base_stats = None
+        self._temporary_moves = None
         self._temporary_types = []
 
         if self._status == Status.TOX:
@@ -476,6 +464,9 @@ class Pokemon:
         if into.ability is not None:
             self.ability = into.ability
         self._temporary_types = [PokemonType.from_name(t) for t in dex_entry["types"]]
+        self._temporary_moves = {m.id: Move(m.id, m._gen) for m in into.moves.values()}
+        for m in self._temporary_moves.values():
+            m._current_pp = 5
         self._boosts = into.boosts.copy()
 
     def _update_from_pokedex(self, species: str, store_species: bool = True):
@@ -583,16 +574,6 @@ class Pokemon:
 
         for move in request_pokemon["moves"]:
             self._add_move(move)
-
-        if len(self._moves) > 4:
-            moves_to_keep = {
-                Move.retrieve_id(move_id) for move_id in request_pokemon["moves"]
-            }
-            self._moves = {
-                move_id: move
-                for move_id, move in self._moves.items()
-                if move_id in moves_to_keep
-            }
 
         if "stats" in request_pokemon:
             for stat in request_pokemon["stats"]:
@@ -823,11 +804,11 @@ class Pokemon:
             if type_:
                 return [
                     move
-                    for move in self._moves.values()
+                    for move in self.moves.values()
                     if move.type == type_ and move.can_z_move
                 ]
-            elif move in self._moves:
-                return [self._moves[move]]
+            elif move in self.moves:
+                return [self.moves[move]]
         return []
 
     @property
@@ -1015,7 +996,16 @@ class Pokemon:
         :return: A dictionary of the pokemon's known moves.
         :rtype: Dict[str, Move]
         """
-        return self._moves
+        return (
+            self._temporary_moves if self._temporary_moves is not None else self._moves
+        )
+
+    @moves.setter
+    def moves(self, move_dict: Dict[str, Move]):
+        if self._temporary_moves is not None:
+            self._temporary_moves = move_dict
+        else:
+            self._moves = move_dict
 
     @property
     def must_recharge(self) -> bool:
