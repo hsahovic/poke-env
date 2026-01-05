@@ -332,7 +332,12 @@ class AbstractBattle(ABC):
             pkmn = split_message[2]
             item = to_id_str(split_message[4].split("item:")[-1])
             pkmn_object = self.get_pokemon(pkmn)
-            if pkmn_object.item is not None and "berry" not in item:
+            if (
+                pkmn_object.item is not None
+                and "berry" not in item
+                and "herb" not in item
+            ):
+                # don't assign an item that was just consumed
                 pkmn_object.item = item
 
     def _check_heal_message_for_ability(self, split_message: List[str]):
