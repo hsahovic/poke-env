@@ -330,10 +330,15 @@ class AbstractBattle(ABC):
         #  |-heal|p2a: Quagsire|100/100|[from] item: Sitrus Berry
         if len(split_message) == 5 and split_message[4].startswith("[from] item:"):
             pkmn = split_message[2]
-            item = split_message[4].split("item:")[-1]
+            item = to_id_str(split_message[4].split("item:")[-1])
             pkmn_object = self.get_pokemon(pkmn)
-            if pkmn_object.item is not None:
-                pkmn_object.item = to_id_str(item)
+            if (
+                pkmn_object.item is not None
+                # don't assign an item that was just consumed
+                and "berry" not in item
+                and "herb" not in item
+            ):
+                pkmn_object.item = item
 
     def _check_heal_message_for_ability(self, split_message: List[str]):
         # Catches when a side heals from it's own ability
