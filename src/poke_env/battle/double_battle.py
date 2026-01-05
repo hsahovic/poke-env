@@ -226,9 +226,9 @@ class DoubleBattle(AbstractBattle):
                 if self.player_role == pokemon[:2]
                 else self.active_pokemon
             )
-            targets = [t for t in targets if t is not None]
-            target = targets[0]
-            for t in targets:
+            cleaned_targets = [t for t in targets if t is not None]
+            target = cleaned_targets[0]
+            for t in cleaned_targets:
                 if target.ability != "pressure":
                     target = t
             assert target is not None
