@@ -541,7 +541,6 @@ def test_battle_request_and_interactions(example_request):
     groudon = battle.opponent_active_pokemon
 
     necrozma.switch_out(battle.fields)
-    necrozma.switch_in()
     groudon.switch_in()
     groudon.temporary_ability = None
 

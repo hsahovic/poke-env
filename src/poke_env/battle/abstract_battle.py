@@ -550,7 +550,6 @@ class AbstractBattle(ABC):
                         self.battle_tag,
                         self.turn,
                     )
-            presumed_target = None
             if event[-1] == "[from] Magic Coat":
                 return
 
@@ -560,6 +559,7 @@ class AbstractBattle(ABC):
             if event[-1] == "":
                 event = event[:-1]
 
+            presumed_target = None
             if len(event) == 4:
                 pokemon, move = event[2:4]
             elif len(event) == 5:
