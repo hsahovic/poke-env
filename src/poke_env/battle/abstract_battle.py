@@ -499,6 +499,7 @@ class AbstractBattle(ABC):
 
             if event[-1] in {"[from] lockedmove", "[from]lockedmove"}:
                 use = False
+                reveal = False
                 event = event[:-1]
 
             if event[-1] in {"[from] Pursuit", "[from]Pursuit", "[zeffect]"}:
