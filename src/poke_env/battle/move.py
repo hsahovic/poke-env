@@ -226,7 +226,7 @@ class Move:
         :param pp: New PP value.
         :type pp: int
         """
-        self._current_pp = max(0, pp)
+        self._current_pp = min(max(0, pp), self.max_pp)
 
     @property
     def damage(self) -> Union[int, str]:
