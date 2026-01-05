@@ -142,6 +142,7 @@ class DoubleBattle(AbstractBattle):
                 )
                 if (
                     strict_battle_tracking
+                    and self.gen not in [7, 8]
                     and "illusion" not in [p.ability for p in self.team.values()]
                     and "illusion"
                     not in [p.ability for p in self.opponent_team.values()]
@@ -216,6 +217,38 @@ class DoubleBattle(AbstractBattle):
                     pokemon = self.team[pkmn_json["ident"]]
                     if not pokemon.active and self.reviving == pokemon.fainted:
                         self._available_switches[i].append(pokemon)
+
+    def _pressure_on(self, pokemon: str, move: str, target_str: Optional[str]) -> bool:
+        move_data = self._data.moves[Move.retrieve_id(move)]
+        if move_data["target"] == "all" or target_str is None:
+            targets = (
+                self.opponent_active_pokemon
+                if self.player_role == pokemon[:2]
+                else self.active_pokemon
+            )
+            targets = [t for t in targets if t is not None]
+            target = targets[0]
+            for t in targets:
+                if target.ability != "pressure":
+                    target = t
+            assert target is not None
+        else:
+            target = self.get_pokemon(target_str)
+        return (
+            target.ability == "pressure"
+            and not target.fainted
+            and self._data.moves[Move.retrieve_id(move)]["target"]
+            in [
+                "all",
+                "allAdjacent",
+                "allAdjacentFoes",
+                "any",
+                "normal",
+                "randomNormal",
+                "scripted",
+            ]
+            or "mustpressure" in move_data["flags"]
+        )
 
     def switch(self, pokemon_str: str, details: str, hp_status: str):
         pokemon_identifier = pokemon_str.split(":")[0][:3]

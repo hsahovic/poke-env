@@ -331,10 +331,15 @@ class AbstractBattle(ABC):
         #  |-heal|p2a: Quagsire|100/100|[from] item: Sitrus Berry
         if len(split_message) == 5 and split_message[4].startswith("[from] item:"):
             pkmn = split_message[2]
-            item = split_message[4].split("item:")[-1]
+            item = to_id_str(split_message[4].split("item:")[-1])
             pkmn_object = self.get_pokemon(pkmn)
-            if pkmn_object.item is not None:
-                pkmn_object.item = to_id_str(item)
+            if (
+                pkmn_object.item is not None
+                and "berry" not in item
+                and "herb" not in item
+            ):
+                # don't assign an item that was just consumed
+                pkmn_object.item = item
 
     def _check_heal_message_for_ability(self, split_message: List[str]):
         # Catches when a side heals from it's own ability
@@ -477,6 +482,7 @@ class AbstractBattle(ABC):
         elif event[1] == "move":
             use = True
             failed = False
+            reveal = True
             override_move = None
             reveal_other_move = False
 
@@ -488,7 +494,7 @@ class AbstractBattle(ABC):
             if event[-1] == "[notarget]":
                 event = event[:-1]
 
-            if event[-1].startswith("[spread]"):
+            while event[-1].startswith("[spread]"):
                 event = event[:-1]
 
             if event[-1] in {"[from] lockedmove", "[from]lockedmove"}:
@@ -531,7 +537,8 @@ class AbstractBattle(ABC):
                 self.get_pokemon(pokemon).ability = revealed_ability
 
                 if revealed_ability == "Magic Bounce":
-                    return
+                    use = False
+                    reveal = False
                 elif revealed_ability == "Dancer":
                     return
                 elif self.logger is not None:
@@ -595,43 +602,7 @@ class AbstractBattle(ABC):
                 temp_pokemon = self.get_pokemon(pokemon)
                 temp_pokemon.start_effect("MINIMIZE")
 
-            if isinstance(self.active_pokemon, Pokemon):
-                move_data = self._data.moves[Move.retrieve_id(move)]
-                if move_data["target"] == "all" or presumed_target is None:
-                    target = (
-                        self.opponent_active_pokemon
-                        if self.player_role == pokemon[:2]
-                        else self.active_pokemon
-                    )
-                else:
-                    target = self.get_pokemon(presumed_target)
-                pressure = (
-                    target.ability == "pressure"
-                    and not target.fainted
-                    and (
-                        move_data["target"]
-                        in [
-                            "all",
-                            "allAdjacent",
-                            "allAdjacentFoes",
-                            "any",
-                            "normal",
-                            "randomNormal",
-                            "scripted",
-                        ]
-                        or "mustpressure" in move_data["flags"]
-                    )
-                )
-            elif isinstance(self.active_pokemon, list):
-                pressure = self._data.moves[Move.retrieve_id(move)]["target"] in [
-                    "all",
-                    "allAdjacent",
-                    "allAdjacentFoes",
-                    "foeSide",
-                ]
-            else:
-                raise TypeError()
-
+            pressure = self._pressure_on(pokemon, move, presumed_target)
             mon = self.get_pokemon(pokemon)
             if override_move:
                 # Moves that can trigger this branch results in two `move` messages being sent.
@@ -642,7 +613,9 @@ class AbstractBattle(ABC):
                     2 if pressure else 1
                 )
             else:
-                mon.moved(move, failed=failed, use=use, pressure=pressure)
+                mon.moved(
+                    move, failed=failed, use=use, reveal=reveal, pressure=pressure
+                )
                 if not failed and move in {
                     "Sleep Talk",
                     "Copycat",
@@ -653,8 +626,12 @@ class AbstractBattle(ABC):
                     # since override determines pressure interaction
                     mon.moves[Move.retrieve_id(move)].current_pp += 1
         elif event[1] == "cant":
-            pokemon, _ = event[2:4]
-            self.get_pokemon(pokemon).cant_move()
+            if len(event) == 4:
+                pokemon, _ = event[2:4]
+                self.get_pokemon(pokemon).cant_move()
+            elif len(event) == 5:
+                pokemon, _, move = event[2:5]
+                self.get_pokemon(pokemon).cant_move(move)
         elif event[1] == "turn":
             # Saving the beginning-of-turn battle state and events as we go into the turn
             self.observations[self.turn] = self._current_observation
@@ -1083,6 +1060,10 @@ class AbstractBattle(ABC):
     def parse_request(
         self, request: Dict[str, Any], strict_battle_tracking: bool = False
     ):
+        pass
+
+    @abstractmethod
+    def _pressure_on(self, pokemon: str, move: str, target_str: Optional[str]) -> bool:
         pass
 
     def _register_teampreview_pokemon(self, player: str, details: str):

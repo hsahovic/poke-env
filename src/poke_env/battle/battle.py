@@ -98,6 +98,7 @@ class Battle(AbstractBattle):
             if self.active_pokemon is not None:
                 if (
                     strict_battle_tracking
+                    and self.gen not in [7, 8]
                     and "illusion" not in [p.ability for p in self.team.values()]
                     and "illusion"
                     not in [p.ability for p in self.opponent_team.values()]
@@ -131,6 +132,37 @@ class Battle(AbstractBattle):
                 pokemon = self.team[pkmn_json["ident"]]
                 if not pokemon.active and self.reviving == pokemon.fainted:
                     self._available_switches.append(pokemon)
+
+    def _pressure_on(self, pokemon: str, move: str, target_str: Optional[str]) -> bool:
+        if self.gen == 7:
+            return False
+        move_data = self._data.moves[Move.retrieve_id(move)]
+        if move_data["target"] == "all" or target_str is None:
+            target = (
+                self.opponent_active_pokemon
+                if self.player_role == pokemon[:2]
+                else self.active_pokemon
+            )
+            assert target is not None
+        else:
+            target = self.get_pokemon(target_str)
+        return (
+            target.ability == "pressure"
+            and not target.fainted
+            and (
+                move_data["target"]
+                in [
+                    "all",
+                    "allAdjacent",
+                    "allAdjacentFoes",
+                    "any",
+                    "normal",
+                    "randomNormal",
+                    "scripted",
+                ]
+                or "mustpressure" in move_data["flags"]
+            )
+        )
 
     def switch(self, pokemon_str: str, details: str, hp_status: str):
         identifier = pokemon_str.split(":")[0][:2]
