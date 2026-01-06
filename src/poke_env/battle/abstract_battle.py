@@ -512,7 +512,12 @@ class AbstractBattle(ABC):
 
                 if overriden_move == "Sleep Talk":
                     pass
-                elif overriden_move in {"Copycat", "Metronome", "Nature Power", "Round"}:
+                elif overriden_move in {
+                    "Copycat",
+                    "Metronome",
+                    "Nature Power",
+                    "Round",
+                }:
                     # triggers moves not owned by actor, so no reveal
                     reveal = False
                 elif overriden_move in {"Grass Pledge", "Water Pledge", "Fire Pledge"}:
