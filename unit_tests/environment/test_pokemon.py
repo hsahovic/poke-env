@@ -77,6 +77,7 @@ def test_pokemon_damage_multiplier():
 
 def test_powerherb_ends_move_preparation():
     mon = Pokemon(species="roserade", gen=8)
+    mon._add_move("solarbeam")
     mon.item = "powerherb"
 
     mon.prepare("solarbeam", None)
@@ -195,7 +196,7 @@ def test_details():
 
 def test_teambuilder(showdown_format_teams):
     tb_mons = Teambuilder.parse_showdown_team(
-        showdown_format_teams["gen9vgc2025regi"][0]
+        showdown_format_teams["gen9vgc2026regi"][0]
     )
     mon = Pokemon(9, teambuilder=tb_mons[0])
 
@@ -279,7 +280,7 @@ def test_name(example_doubles_request):
 def test_stats(example_request, showdown_format_teams):
     request_mons = example_request["side"]["pokemon"]
     tb_mons = Teambuilder.parse_showdown_team(
-        showdown_format_teams["gen9vgc2025regi"][0]
+        showdown_format_teams["gen9vgc2026regi"][0]
     )
 
     species_mon = Pokemon(9, species="furret")

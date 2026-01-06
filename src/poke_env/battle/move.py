@@ -1,4 +1,3 @@
-import copy
 from functools import lru_cache
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
@@ -13,7 +12,6 @@ from poke_env.battle.weather import Weather
 from poke_env.data import GenData, to_id_str
 
 SPECIAL_MOVES: Set[str] = {"struggle", "recharge"}
-
 _PROTECT_MOVES = {
     "protect",
     "detect",
@@ -110,8 +108,11 @@ class Move:
     def __repr__(self) -> str:
         return f"{self._id} (Move object)"
 
-    def use(self):
-        self._current_pp -= 1
+    def use(self, pressure: bool = False):
+        if pressure:
+            self.current_pp -= 2
+        else:
+            self.current_pp -= 1
 
     @staticmethod
     def is_id_z(id_: str, gen: int) -> bool:
@@ -218,6 +219,14 @@ class Move:
         :rtype: int
         """
         return self._current_pp
+
+    @current_pp.setter
+    def current_pp(self, pp: int):
+        """
+        :param pp: New PP value.
+        :type pp: int
+        """
+        self._current_pp = min(max(0, pp), self.max_pp)
 
     @property
     def damage(self) -> Union[int, str]:
@@ -766,21 +775,6 @@ class Move:
         elif base_power <= 130:
             return 195
         return 200
-
-
-class EmptyMove(Move):
-    def __init__(self, move_id: str):
-        self._id = move_id
-        self._is_empty: bool = True
-
-    def __getattribute__(self, name: str):
-        try:
-            return super(Move, self).__getattribute__(name)
-        except (AttributeError, TypeError, ValueError):
-            return 0
-
-    def __deepcopy__(self, memodict: Optional[Dict[int, Any]] = {}):
-        return EmptyMove(copy.deepcopy(self._id, memodict))
 
 
 class DynamaxMove(Move):

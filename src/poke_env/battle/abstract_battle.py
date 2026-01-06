@@ -6,6 +6,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 from poke_env.battle.effect import Effect
 from poke_env.battle.field import Field
+from poke_env.battle.move import Move
 from poke_env.battle.observation import Observation
 from poke_env.battle.observed_pokemon import ObservedPokemon
 from poke_env.battle.pokemon import Pokemon
@@ -479,9 +480,10 @@ class AbstractBattle(ABC):
             self._check_damage_message_for_item(event)
             self._check_damage_message_for_ability(event)
         elif event[1] == "move":
+            use = True
             failed = False
-            override_move = None
-            reveal_other_move = False
+            reveal = True
+            overridden_move = None
 
             for move_failed_suffix in ["[miss]", "[still]", "[notarget]"]:
                 if event[-1] == move_failed_suffix:
@@ -491,37 +493,40 @@ class AbstractBattle(ABC):
             if event[-1] == "[notarget]":
                 event = event[:-1]
 
-            if event[-1].startswith("[spread]"):
+            while event[-1].startswith("[spread]"):
                 event = event[:-1]
 
-            if event[-1] in {
-                "[from] lockedmove",
-                "[from] Pursuit",
-                "[from]lockedmove",
-                "[from] Sky Attack",
-                "[from]Pursuit",
-                "[zeffect]",
-            }:
+            if event[-1] in {"[from] lockedmove", "[from]lockedmove"}:
+                use = False
+                reveal = False
+                event = event[:-1]
+
+            if event[-1] in {"[from] Pursuit", "[from]Pursuit", "[zeffect]"}:
                 event = event[:-1]
 
             if event[-1].startswith("[anim]"):
                 event = event[:-1]
 
             if event[-1].startswith(("[from] move: ", "[from]move: ")):
-                override_move = event.pop().split(": ")[-1]
+                overridden_move = event.pop().split(": ")[-1]
 
-                if override_move == "Sleep Talk":
-                    # Sleep talk was used, but also reveals another move
-                    reveal_other_move = True
-                elif override_move in {"Copycat", "Metronome", "Nature Power", "Round"}:
+                if overridden_move == "Sleep Talk":
                     pass
-                elif override_move in {"Grass Pledge", "Water Pledge", "Fire Pledge"}:
-                    override_move = None
+                elif overridden_move in {
+                    "Copycat",
+                    "Metronome",
+                    "Nature Power",
+                    "Round",
+                }:
+                    # triggers moves not owned by actor, so no reveal
+                    reveal = False
+                elif overridden_move in {"Grass Pledge", "Water Pledge", "Fire Pledge"}:
+                    overridden_move = None
                 elif self.logger is not None:
                     self.logger.warning(
                         "Unmanaged [from] move message received - move %s in cleaned up "
                         "message %s in battle %s turn %d",
-                        override_move,
+                        overridden_move,
                         event,
                         self.battle_tag,
                         self.turn,
@@ -537,7 +542,8 @@ class AbstractBattle(ABC):
                 self.get_pokemon(pokemon).ability = revealed_ability
 
                 if revealed_ability == "Magic Bounce":
-                    return
+                    use = False
+                    reveal = False
                 elif revealed_ability == "Dancer":
                     return
                 elif self.logger is not None:
@@ -558,6 +564,7 @@ class AbstractBattle(ABC):
             if event[-1] == "":
                 event = event[:-1]
 
+            presumed_target = None
             if len(event) == 4:
                 pokemon, move = event[2:4]
             elif len(event) == 5:
@@ -600,16 +607,35 @@ class AbstractBattle(ABC):
                 temp_pokemon = self.get_pokemon(pokemon)
                 temp_pokemon.start_effect("MINIMIZE")
 
-            if override_move:
+            pressure = self._pressure_on(pokemon, move, presumed_target)
+            mon = self.get_pokemon(pokemon)
+            if overridden_move:
                 # Moves that can trigger this branch results in two `move` messages being sent.
                 # We're setting use=False in the one (with the override) in order to prevent two pps from being used
                 # incorrectly.
-                self.get_pokemon(pokemon).moved(override_move, failed=failed, use=False)
-            if override_move is None or reveal_other_move:
-                self.get_pokemon(pokemon).moved(move, failed=failed, use=False)
+                mon.moved(move, failed=failed, use=False, reveal=reveal)
+                overriden = mon.moves[Move.retrieve_id(overridden_move)]
+                overriden.use(pressure)
+            else:
+                if not failed and move in {
+                    "Sleep Talk",
+                    "Copycat",
+                    "Metronome",
+                    "Nature Power",
+                }:
+                    # wait until override move to decide how much pp to deduct
+                    # since override determines pressure interaction
+                    use = False
+                mon.moved(
+                    move, failed=failed, use=use, reveal=reveal, pressure=pressure
+                )
         elif event[1] == "cant":
-            pokemon, _ = event[2:4]
-            self.get_pokemon(pokemon).cant_move()
+            if len(event) == 4:
+                pokemon, _ = event[2:4]
+                self.get_pokemon(pokemon).cant_move()
+            elif len(event) == 5:
+                pokemon, _, move = event[2:5]
+                self.get_pokemon(pokemon).cant_move(move)
         elif event[1] == "turn":
             # Saving the beginning-of-turn battle state and events as we go into the turn
             self.observations[self.turn] = self._current_observation
@@ -747,6 +773,9 @@ class AbstractBattle(ABC):
                     "[item] ", ""
                 )
                 self.get_pokemon(target).item = None
+            elif effect == "item: Leppa Berry":
+                move = to_id_str(event[4])
+                self.get_pokemon(target).moves[move].current_pp += 10
             elif target != "":  # ['', '-activate', '', 'move: Splash']
                 self.get_pokemon(target).start_effect(effect)
         elif event[1] == "-status":
@@ -1038,6 +1067,10 @@ class AbstractBattle(ABC):
     def parse_request(
         self, request: Dict[str, Any], strict_battle_tracking: bool = False
     ):
+        pass
+
+    @abstractmethod
+    def _pressure_on(self, pokemon: str, move: str, target_str: Optional[str]) -> bool:
         pass
 
     def _register_teampreview_pokemon(self, player: str, details: str):
