@@ -196,7 +196,7 @@ def test_details():
 
 def test_teambuilder(showdown_format_teams):
     tb_mons = Teambuilder.parse_showdown_team(
-        showdown_format_teams["gen9vgc2025regi"][0]
+        showdown_format_teams["gen9vgc2026regi"][0]
     )
     mon = Pokemon(9, teambuilder=tb_mons[0])
 
@@ -280,7 +280,7 @@ def test_name(example_doubles_request):
 def test_stats(example_request, showdown_format_teams):
     request_mons = example_request["side"]["pokemon"]
     tb_mons = Teambuilder.parse_showdown_team(
-        showdown_format_teams["gen9vgc2025regi"][0]
+        showdown_format_teams["gen9vgc2026regi"][0]
     )
 
     species_mon = Pokemon(9, species="furret")
