@@ -483,7 +483,7 @@ class AbstractBattle(ABC):
             use = True
             failed = False
             reveal = True
-            overriden_move = None
+            overridden_move = None
 
             for move_failed_suffix in ["[miss]", "[still]", "[notarget]"]:
                 if event[-1] == move_failed_suffix:
@@ -508,11 +508,11 @@ class AbstractBattle(ABC):
                 event = event[:-1]
 
             if event[-1].startswith(("[from] move: ", "[from]move: ")):
-                overriden_move = event.pop().split(": ")[-1]
+                overridden_move = event.pop().split(": ")[-1]
 
-                if overriden_move == "Sleep Talk":
+                if overridden_move == "Sleep Talk":
                     pass
-                elif overriden_move in {
+                elif overridden_move in {
                     "Copycat",
                     "Metronome",
                     "Nature Power",
@@ -520,13 +520,13 @@ class AbstractBattle(ABC):
                 }:
                     # triggers moves not owned by actor, so no reveal
                     reveal = False
-                elif overriden_move in {"Grass Pledge", "Water Pledge", "Fire Pledge"}:
-                    overriden_move = None
+                elif overridden_move in {"Grass Pledge", "Water Pledge", "Fire Pledge"}:
+                    overridden_move = None
                 elif self.logger is not None:
                     self.logger.warning(
                         "Unmanaged [from] move message received - move %s in cleaned up "
                         "message %s in battle %s turn %d",
-                        overriden_move,
+                        overridden_move,
                         event,
                         self.battle_tag,
                         self.turn,
@@ -609,12 +609,12 @@ class AbstractBattle(ABC):
 
             pressure = self._pressure_on(pokemon, move, presumed_target)
             mon = self.get_pokemon(pokemon)
-            if overriden_move:
+            if overridden_move:
                 # Moves that can trigger this branch results in two `move` messages being sent.
                 # We're setting use=False in the one (with the override) in order to prevent two pps from being used
                 # incorrectly.
                 mon.moved(move, failed=failed, use=False, reveal=reveal)
-                overriden = mon.moves[Move.retrieve_id(overriden_move)]
+                overriden = mon.moves[Move.retrieve_id(overridden_move)]
                 overriden.use(pressure)
             else:
                 if not failed and move in {
