@@ -522,7 +522,6 @@ class AbstractBattle(ABC):
                     reveal = False
                 elif overriden_move in {"Grass Pledge", "Water Pledge", "Fire Pledge"}:
                     overriden_move = None
-                    reveal = False
                 elif self.logger is not None:
                     self.logger.warning(
                         "Unmanaged [from] move message received - move %s in cleaned up "
