@@ -269,10 +269,10 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 f"in battle {battle.battle_tag} - orders are incompatible!"
             )
             if strict:
-                raise ValueError(str(error_msg) + " Defaulting to random move.")
+                raise ValueError(error_msg)
             else:
                 if battle.logger is not None:
-                    battle.logger.warning(error_msg)
+                    battle.logger.warning(error_msg + " Defaulting to random move.")
                 return DoublesEnv.order_to_action(
                     Player.choose_random_doubles_move(battle), battle, fake, strict
                 )
