@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Dict, List, Optional, Union
 
 import numpy as np
 import numpy.typing as npt
@@ -24,7 +24,7 @@ from poke_env.ps_client import (
 from poke_env.teambuilder import Teambuilder
 
 
-class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
+class DoublesEnv(PokeEnv[Dict[str, ObsType], npt.NDArray[np.int64]]):
     def __init__(
         self,
         account_configuration1: Optional[AccountConfiguration] = None,
@@ -79,10 +79,85 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             num_gimmicks = 4
         else:
             num_gimmicks = 0
-        act_size = 1 + num_switches + num_moves * num_targets * (num_gimmicks + 1)
+        self._action_space_size = (
+            1 + num_switches + num_moves * num_targets * (num_gimmicks + 1)
+        )
         self.action_spaces = {
-            agent: MultiDiscrete([act_size, act_size]) for agent in self.possible_agents
+            agent: MultiDiscrete([self._action_space_size, self._action_space_size])
+            for agent in self.possible_agents
         }
+
+    def get_action_mask(self, battle: DoubleBattle) -> List[int]:
+        action_mask1 = self.get_action_mask_individual(battle, 0)
+        action_mask2 = self.get_action_mask_individual(battle, 1)
+        return action_mask1 + action_mask2
+
+    def get_action_mask_individual(self, battle: DoubleBattle, pos: int) -> List[int]:
+        switch_space = [
+            i + 1
+            for i, pokemon in enumerate(battle.team.values())
+            if not battle.trapped[pos]
+            and pokemon.base_species
+            in [p.base_species for p in battle.available_switches[pos]]
+        ]
+        active_mon = battle.active_pokemon[pos]
+        if battle._wait or (any(battle.force_switch) and not battle.force_switch[pos]):
+            actions = [0]
+        elif all(battle.force_switch) and len(battle.available_switches[0]) == 1:
+            actions = switch_space + [0]
+        elif battle.teampreview or active_mon is None:
+            actions = switch_space
+        else:
+            move_spaces = [
+                [
+                    7 + 5 * i + j + 2
+                    for j in battle.get_possible_showdown_targets(move, active_mon)
+                ]
+                for i, move in enumerate(active_mon.moves.values())
+                if move.id in [m.id for m in battle.available_moves[pos]]
+            ]
+            move_space = [i for s in move_spaces for i in s]
+            mega_space = [i + 20 for i in move_space if battle.can_mega_evolve[pos]]
+            zmove_spaces = [
+                [
+                    47 + 5 * i + j + 2
+                    for j in battle.get_possible_showdown_targets(move, active_mon)
+                ]
+                for i, move in enumerate(active_mon.moves.values())
+                if move.id in [m.id for m in active_mon.available_z_moves]
+                and battle.can_z_move[pos]
+            ]
+            zmove_space = [i for s in zmove_spaces for i in s]
+            dynamax_spaces = [
+                [
+                    67 + 5 * i + j + 2
+                    for j in battle.get_possible_showdown_targets(
+                        move, active_mon, dynamax=True
+                    )
+                ]
+                for i, move in enumerate(active_mon.moves.values())
+                if move.id in [m.id for m in battle.available_moves[pos]]
+                and battle.can_dynamax[pos]
+            ]
+            dynamax_space = [i for s in dynamax_spaces for i in s]
+            tera_space = [i + 80 for i in move_space if battle.can_tera[pos]]
+            if (
+                not move_space
+                and len(battle.available_moves[pos]) == 1
+                and battle.available_moves[pos][0].id in ["struggle", "recharge"]
+            ):
+                move_space = [9]
+            actions = (
+                switch_space
+                + move_space
+                + mega_space
+                + zmove_space
+                + dynamax_space
+                + tera_space
+            )
+        actions = actions or [0]
+        action_mask = [int(i in actions) for i in range(self.action_space_size)]
+        return action_mask
 
     @staticmethod
     def action_to_order(
@@ -363,3 +438,7 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 gimmick = 0
             action = 1 + 6 + 5 * action + target + 20 * gimmick
         return np.int64(action)
+
+    @property
+    def action_space_size(self) -> int:
+        return self._action_space_size
