@@ -108,11 +108,11 @@ def test_choose_random_move_doubles(pseudo_random, example_doubles_request):
 
     pseudo_random.side_effect = lambda: 0
     choice = player.choose_random_move(battle)
-    assert choice.message == "/choose switch zamazentacrowned, switch raichualola"
+    assert choice.message == "/choose switch Zamazenta, switch Raichu"
 
     pseudo_random.side_effect = lambda: 0.5
     choice = player.choose_random_move(battle)
-    assert choice.message == "/choose move rapidspin 1, switch raichualola"
+    assert choice.message == "/choose move rapidspin 1, switch Raichu"
 
     pseudo_random.side_effect = lambda: 0.999
     choice = player.choose_random_move(battle)
@@ -122,7 +122,7 @@ def test_choose_random_move_doubles(pseudo_random, example_doubles_request):
 
     pseudo_random.side_effect = lambda: 0
     choice = player.choose_random_move(battle)
-    assert choice.message == "/choose switch zamazentacrowned, switch raichualola"
+    assert choice.message == "/choose switch Zamazenta, switch Raichu"
 
     pseudo_random.side_effect = lambda: 0.5
     choice = player.choose_random_move(battle)
@@ -247,11 +247,11 @@ async def test_awaitable_move(send_message_patch):
 @pytest.mark.asyncio
 async def test_create_teampreview_team(showdown_format_teams):
     player = SimplePlayer(
-        battle_format="gen9vgc2025regi",
-        team=showdown_format_teams["gen9vgc2025regi"][0],
+        battle_format="gen9vgc2024regg",
+        team=showdown_format_teams["gen9vgc2024regg"][0],
     )
 
-    battle = await player._create_battle(["", "gen9vgc2025regi", "uuu"])
+    battle = await player._create_battle(["", "gen9vgc2024regg", "uuu"])
 
     assert len(battle.teampreview_team) == 6
 
@@ -280,9 +280,9 @@ async def test_create_teampreview_team(showdown_format_teams):
 
 @pytest.mark.asyncio
 async def test_parse_showteam(packed_format_teams):
-    packed_team = packed_format_teams["gen9vgc2025regi"][0]
-    player = SimplePlayer(battle_format="gen9vgc2025regi", team=packed_team)
-    battle = await player._create_battle(["", "gen9vgc2025regi", "uuu"])
+    packed_team = packed_format_teams["gen9vgc2024regg"][0]
+    player = SimplePlayer(battle_format="gen9vgc2024regg", team=packed_team)
+    battle = await player._create_battle(["", "gen9vgc2024regg", "uuu"])
     battle._player_role = "p2"
     assert battle.opponent_role is not None
 

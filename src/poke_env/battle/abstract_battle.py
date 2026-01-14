@@ -319,7 +319,7 @@ class AbstractBattle(ABC):
         ):
             ability = split_message[4].split("ability:")[-1]
             pkmn = split_message[5].split("[of]")[-1].strip()
-            self.get_pokemon(pkmn).ability = to_id_str(ability)
+            self.get_pokemon(pkmn).ability = ability
 
     def _check_heal_message_for_item(self, split_message: List[str]):
         # Catches when a side heals from it's own item
@@ -330,10 +330,15 @@ class AbstractBattle(ABC):
         #  |-heal|p2a: Quagsire|100/100|[from] item: Sitrus Berry
         if len(split_message) == 5 and split_message[4].startswith("[from] item:"):
             pkmn = split_message[2]
-            item = split_message[4].split("item:")[-1]
+            item = to_id_str(split_message[4].split("item:")[-1])
             pkmn_object = self.get_pokemon(pkmn)
-            if pkmn_object.item is not None:
-                pkmn_object.item = to_id_str(item)
+            if (
+                pkmn_object.item is not None
+                # don't assign an item that was just consumed
+                and "berry" not in item
+                and "herb" not in item
+            ):
+                pkmn_object.item = item
 
     def _check_heal_message_for_ability(self, split_message: List[str]):
         # Catches when a side heals from it's own ability
@@ -672,24 +677,32 @@ class AbstractBattle(ABC):
             self.get_pokemon(pokemon).boost(stat, -int(amount))
         elif event[1] == "-ability":
             pokemon, cause = event[2:4]
-            if (
-                len(event) > 4
-                and (
-                    event[4].startswith("[from] move:")
-                    or event[4].startswith("[from] ability: Trace")
-                )
-            ) or (
-                len(event) > 5
-                and (
-                    event[5].startswith("[from] move:")
-                    or event[5].startswith("[from] ability: Trace")
-                )
+            mon = self.get_pokemon(pokemon)
+            # As One is a special case ability that combines two abilities
+            if "calyrex" in mon.base_species and cause in [
+                "As One",
+                "Unnerve",
+                "Chilling Neigh",
+                "Grim Neigh",
+            ]:
+                return
+            if (len(event) > 4 and event[4].startswith("[from] ability: Trace")) or (
+                len(event) > 5 and event[5].startswith("[from] ability: Trace")
             ):
-                self.get_pokemon(pokemon).set_temporary_ability(cause)
+                if mon.ability != "trace":
+                    # correcting for bad PS ordering of logs, eg:
+                    # |-ability|p1a: Gardevoir|Intimidate|boost
+                    # |-ability|p1a: Gardevoir|Intimidate|[from] ability: Trace|[of] p2a: Luxray
+                    if mon.temporary_ability is not None:
+                        mon.temporary_ability = None
+                    elif mon.ability is not None:
+                        mon._ability = None
+                    mon.ability = "trace"
+                mon.ability = cause
             elif cause == "Neutralizing Gas":
                 self.field_start(cause)
             else:
-                self.get_pokemon(pokemon).ability = cause
+                mon.ability = cause
         elif split_message[1] == "-start":
             pokemon, effect = event[2:4]
             mon = self.get_pokemon(pokemon)
@@ -720,10 +733,15 @@ class AbstractBattle(ABC):
             if target and effect == "move: Skill Swap":
                 self.get_pokemon(target).start_effect(effect, event[4:6])
                 actor = event[6].replace("[of] ", "")
-                self.get_pokemon(actor).set_temporary_ability(event[5])
+                self.get_pokemon(actor).temporary_ability = event[5]
             elif effect == "ability: Mummy":
                 target = event[5].replace("[of] ", "")
-                self.get_pokemon(target).set_temporary_ability("mummy")
+                self.get_pokemon(target).temporary_ability = "mummy"
+            elif effect == "ability: Wandering Spirit":
+                actor = event[2]
+                target = event[6].replace("[of] ", "")
+                self.get_pokemon(actor).temporary_ability = event[4]
+                self.get_pokemon(target).temporary_ability = "wanderingspirit"
             elif effect == "ability: Symbiosis":
                 self.get_pokemon(event[5].replace("[of] ", "")).item = event[4].replace(
                     "[item] ", ""
@@ -769,7 +787,7 @@ class AbstractBattle(ABC):
                 self.get_pokemon(pokemon).end_effect(effect)
         elif event[1] == "-endability":
             pokemon = event[2]
-            self.get_pokemon(pokemon).set_temporary_ability(None)
+            self.get_pokemon(pokemon).temporary_ability = None
         elif event[1] == "-enditem":
             pokemon, item = event[2:4]
             self.get_pokemon(pokemon).end_item(item)
@@ -801,14 +819,14 @@ class AbstractBattle(ABC):
                         elif mon == self.opponent_active_pokemon:
                             self.active_pokemon.item = to_id_str(item)
 
-                    mon.ability = to_id_str("frisk")
+                    mon.ability = "frisk"
                 elif cause == "[from] ability: Pickpocket":
                     pickpocket = event[2]
                     pickpocketed = event[5].replace("[of] ", "")
                     item = event[3]
 
                     self.get_pokemon(pickpocket).item = to_id_str(item)
-                    self.get_pokemon(pickpocket).ability = to_id_str("pickpocket")
+                    self.get_pokemon(pickpocket).ability = "pickpocket"
                     self.get_pokemon(pickpocketed).item = None
                 elif cause == "[from] ability: Magician":
                     magician = event[2]
@@ -816,7 +834,7 @@ class AbstractBattle(ABC):
                     item = event[3]
 
                     self.get_pokemon(magician).item = to_id_str(item)
-                    self.get_pokemon(magician).ability = to_id_str("magician")
+                    self.get_pokemon(magician).ability = "magician"
                     self.get_pokemon(victim).item = None
                 elif cause in {"[from] move: Thief", "[from] move: Covet"}:
                     thief = event[2]
@@ -994,7 +1012,7 @@ class AbstractBattle(ABC):
 
                 if cause.startswith("[from] ability:"):
                     cause = cause.replace("[from] ability:", "")
-                    self.get_pokemon(pokemon).ability = to_id_str(cause)
+                    self.get_pokemon(pokemon).ability = cause
         elif event[1] == "-swapsideconditions":
             self._side_conditions, self._opponent_side_conditions = (
                 self._opponent_side_conditions,

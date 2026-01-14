@@ -13,8 +13,6 @@ from poke_env.data import GenData, to_id_str
 from poke_env.stats import compute_raw_stats
 from poke_env.teambuilder.teambuilder_pokemon import TeambuilderPokemon
 
-_NO_ABILITY = "NO_ABILITY"
-
 
 class Pokemon:
     __slots__ = (
@@ -34,6 +32,7 @@ class Pokemon:
         "_last_request",
         "_level",
         "_max_hp",
+        "_forme_change_ability",
         "_moves",
         "_must_recharge",
         "_name",
@@ -123,6 +122,7 @@ class Pokemon:
         self._status: Optional[Status] = None
         self._status_counter: int = 0
         self._temporary_ability: Optional[str] = None
+        self._forme_change_ability: Optional[str] = None
         self._temporary_types: List[PokemonType] = []
 
         if request_pokemon:
@@ -269,6 +269,7 @@ class Pokemon:
     def faint(self):
         self._current_hp = 0
         self._status = Status.FNT
+        self.temporary_ability = None
         self._clear_effects()
 
     def forme_change(self, species: str):
@@ -290,6 +291,7 @@ class Pokemon:
             if not species_id_str.endswith("mega")
             else species_id_str
         )
+        self.temporary_ability = None
         if mega_species in self._data.pokedex:
             self._update_from_pokedex(mega_species, store_species=False)
         elif stone[-1] in "XYxy":
@@ -398,12 +400,6 @@ class Pokemon:
         if store:
             self._stats["hp"] = self._max_hp
 
-    def set_temporary_ability(self, ability: Optional[str]):
-        if ability is not None:
-            self._temporary_ability = to_id_str(ability)
-        else:
-            self._temporary_ability = _NO_ABILITY
-
     def start_effect(self, effect_str: str, details: Optional[Any] = None):
         effect = Effect.from_showdown_message(effect_str)
         if effect not in self._effects:
@@ -419,11 +415,10 @@ class Pokemon:
             for type_ in details.split("/"):
                 self._temporary_types.append(PokemonType.from_name(type_))
         elif effect == Effect.SKILL_SWAP and details:
-            self.set_temporary_ability(details[0])
-
             # Skill Swap reveals a mon's ability
             if self.ability is None:
-                self._ability = to_id_str(details[1])
+                self.ability = details[1]
+            self.temporary_ability = details[0]
 
     def _swap_boosts(self):
         self._boosts["atk"], self._boosts["spa"] = (
@@ -459,7 +454,7 @@ class Pokemon:
         self._preparing_move = None
         self._preparing_target = None
         self._protect_counter = 0
-        self._temporary_ability = None
+        self.temporary_ability = None
         self._temporary_types = []
 
         if self._status == Status.TOX:
@@ -489,12 +484,20 @@ class Pokemon:
         else:
             self._type_2 = PokemonType.from_name(dex_entry["types"][1])
 
-        self._possible_abilities = [
-            to_id_str(ability) for ability in dex_entry["abilities"].values()
-        ]
-
-        if len(self._possible_abilities) == 1:
-            self.ability = self._possible_abilities[0]
+        if "forme" in dex_entry and (
+            dex_entry["forme"].startswith("Mega")
+            or dex_entry["forme"] in ["Primal", "Stellar", "Terastal"]
+            or dex_entry["forme"].endswith("-Tera")
+        ):
+            self.forme_change_ability = dex_entry["abilities"]["0"]
+        elif self.forme_change_ability is None:
+            self._possible_abilities = [
+                to_id_str(ability) for ability in dex_entry["abilities"].values()
+            ]
+            if len(self._possible_abilities) == 1:
+                self.ability = self._possible_abilities[0]
+        else:
+            self.forme_change_ability = None
 
         self._heightm = dex_entry["heightm"]
         self._weightkg = dex_entry["weightkg"]
@@ -552,10 +555,13 @@ class Pokemon:
         if request_pokemon == self._last_request:
             return
 
-        if "ability" in request_pokemon:
-            self.ability = request_pokemon["ability"]
-        elif "baseAbility" in request_pokemon:
+        if self.ability is None:
             self.ability = request_pokemon["baseAbility"]
+        if (
+            "ability" in request_pokemon
+            and request_pokemon["ability"] != request_pokemon["baseAbility"]
+        ):
+            self.temporary_ability = request_pokemon["ability"]
 
         self._last_request = request_pokemon
 
@@ -634,6 +640,15 @@ class Pokemon:
             assert Move.retrieve_id(move_request) == Move.retrieve_id(
                 move.id
             ), f"{Move.retrieve_id(move_request)} != {Move.retrieve_id(move.id)}\nrequest: {pkmn_request}"
+        if self.ability is None:
+            self.ability = pkmn_request["baseAbility"]
+        assert pkmn_request["baseAbility"] == (
+            self.base_ability or ""
+        ), f"{pkmn_request['baseAbility']} != {self.base_ability or ''}"
+        if "ability" in pkmn_request:
+            assert pkmn_request["ability"] == (
+                self.ability or ""
+            ), f"{pkmn_request['ability']} != {self.ability or ''}"
 
     def _update_from_teambuilder(self, tb: TeambuilderPokemon):
         if tb.nickname is not None and tb.species is None:
@@ -760,19 +775,21 @@ class Pokemon:
         :return: The pokemon's ability. None if unknown or removed.
         :rtype: str, optional
         """
-        if self._temporary_ability == _NO_ABILITY:
-            return None
-        elif self._temporary_ability is not None:
-            return self._temporary_ability
+        if self.temporary_ability is not None:
+            return self.temporary_ability
+        elif self.forme_change_ability is not None:
+            return self.forme_change_ability
         else:
             return self._ability
 
     @ability.setter
-    def ability(self, ability: Optional[str]):
-        if ability is None:
-            self._ability = None
-        else:
+    def ability(self, ability: str):
+        if self.ability == to_id_str(ability):
+            return
+        elif self._ability is None:
             self._ability = to_id_str(ability)
+        else:
+            self._temporary_ability = to_id_str(ability)
 
     @property
     def active(self) -> Optional[bool]:
@@ -805,6 +822,14 @@ class Pokemon:
             elif move in self._moves:
                 return [self._moves[move]]
         return []
+
+    @property
+    def base_ability(self) -> Optional[str]:
+        """
+        :return: The pokemon's base ability. None if unknown.
+        :rtype: str, optional
+        """
+        return self._forme_change_ability or self._ability
 
     @property
     def base_species(self) -> str:
@@ -960,6 +985,18 @@ class Pokemon:
         :rtype: int
         """
         return self._max_hp or 0
+
+    @property
+    def forme_change_ability(self) -> Optional[str]:
+        """
+        :return: The pokemon's ability after changing forme. None if the pokemon hasn't changed forme.
+        :rtype: str, optional
+        """
+        return self._forme_change_ability
+
+    @forme_change_ability.setter
+    def forme_change_ability(self, ability: Optional[str]):
+        self._forme_change_ability = to_id_str(ability) if ability is not None else None
 
     @property
     def moves(self) -> Dict[str, Move]:
@@ -1134,6 +1171,18 @@ class Pokemon:
         elif self.ability == "adaptability":
             return 2
         return 1.5
+
+    @property
+    def temporary_ability(self) -> str | None:
+        """
+        :return: The pokemon's temporary ability, None if none is set.
+        :rtype: Optional[str]
+        """
+        return self._temporary_ability
+
+    @temporary_ability.setter
+    def temporary_ability(self, ability: str | None):
+        self._temporary_ability = to_id_str(ability) if ability is not None else None
 
     @property
     def tera_type(self) -> Optional[PokemonType]:
