@@ -80,7 +80,6 @@ class Move:
         "_current_pp",
         "_dynamaxed_move",
         "_gen",
-        "_is_empty",
         "_request_target",
     )
 
@@ -100,7 +99,6 @@ class Move:
                     pass
 
         self._current_pp = self.max_pp
-        self._is_empty: bool = False
 
         self._dynamaxed_move = None
         self._request_target = None
@@ -767,21 +765,6 @@ class Move:
         elif base_power <= 130:
             return 195
         return 200
-
-
-class EmptyMove(Move):
-    def __init__(self, move_id: str):
-        self._id = move_id
-        self._is_empty: bool = True
-
-    def __getattribute__(self, name: str):
-        try:
-            return super(Move, self).__getattribute__(name)
-        except (AttributeError, TypeError, ValueError):
-            return 0
-
-    def __deepcopy__(self, memodict: Optional[Dict[int, Any]] = {}):
-        return EmptyMove(copy.deepcopy(self._id, memodict))
 
 
 class DynamaxMove(Move):
