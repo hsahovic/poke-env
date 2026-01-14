@@ -107,6 +107,8 @@ class _EnvPlayer(Player):
         if isinstance(battle, Battle):
             return self.random_teampreview(battle)
         elif isinstance(battle, DoubleBattle):
+            if battle.format is None or "vgc" not in battle.format:
+                return self.random_teampreview(battle)
             species = [p.base_species for p in battle.team.values()]
             order1 = await self._choose_move(battle)
             if isinstance(order1, (ForfeitBattleOrder, _EmptyBattleOrder)):
