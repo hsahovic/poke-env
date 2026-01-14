@@ -70,6 +70,7 @@ class Move:
         PokemonType.ROCK: MoveCategory.PHYSICAL,
         PokemonType.STEEL: MoveCategory.PHYSICAL,
         PokemonType.WATER: MoveCategory.SPECIAL,
+        PokemonType.THREE_QUESTION_MARKS: MoveCategory.SPECIAL,
     }
 
     __slots__ = (

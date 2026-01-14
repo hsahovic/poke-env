@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: master
       - name: Run update script
@@ -17,7 +17,7 @@ jobs:
           ./scripts/update_all_data.sh
           chmod -x ./scripts/update_all_data.sh
       - name: Create or update pull request
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           commit-message: JSON data update from smogon
           branch: create-pull-request/update-data

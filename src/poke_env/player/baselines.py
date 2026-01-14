@@ -32,18 +32,20 @@ class MaxBasePowerPlayer(Player):
         else:
             return self.choose_singles_move(battle)
 
-    def choose_singles_move(self, battle: AbstractBattle):
+    @staticmethod
+    def choose_singles_move(battle: AbstractBattle):
         if battle.available_moves:
             best_move = max(battle.available_moves, key=lambda move: move.base_power)
-            return self.create_order(best_move)
-        return self.choose_random_move(battle)
+            return Player.create_order(best_move)
+        return Player.choose_random_move(battle)
 
-    def choose_doubles_move(self, battle: DoubleBattle):
+    @staticmethod
+    def choose_doubles_move(battle: DoubleBattle):
         orders: List[SingleBattleOrder] = []
         switched_in = None
 
         if any(battle.force_switch):
-            return self.choose_random_doubles_move(battle)
+            return Player.choose_random_doubles_move(battle)
 
         can_target_first_opponent = (
             battle.opponent_active_pokemon[0]
@@ -96,7 +98,7 @@ class MaxBasePowerPlayer(Player):
         if orders[0] or orders[1]:
             return DoubleBattleOrder(orders[0], orders[1])
 
-        return self.choose_random_move(battle)
+        return Player.choose_random_move(battle)
 
 
 class PseudoBattle(Battle):
@@ -141,22 +143,26 @@ class SimpleHeuristicsPlayer(Player):
     HP_FRACTION_COEFICIENT = 0.4
     SWITCH_OUT_MATCHUP_THRESHOLD = -2
 
-    def _estimate_matchup(self, mon: Pokemon, opponent: Pokemon):
+    @staticmethod
+    def _estimate_matchup(mon: Pokemon, opponent: Pokemon):
         score = max([opponent.damage_multiplier(t) for t in mon.types if t is not None])
         score -= max(
             [mon.damage_multiplier(t) for t in opponent.types if t is not None]
         )
         if mon.base_stats["spe"] > opponent.base_stats["spe"]:
-            score += self.SPEED_TIER_COEFICIENT
+            score += SimpleHeuristicsPlayer.SPEED_TIER_COEFICIENT
         elif opponent.base_stats["spe"] > mon.base_stats["spe"]:
-            score -= self.SPEED_TIER_COEFICIENT
+            score -= SimpleHeuristicsPlayer.SPEED_TIER_COEFICIENT
 
-        score += mon.current_hp_fraction * self.HP_FRACTION_COEFICIENT
-        score -= opponent.current_hp_fraction * self.HP_FRACTION_COEFICIENT
+        score += mon.current_hp_fraction * SimpleHeuristicsPlayer.HP_FRACTION_COEFICIENT
+        score -= (
+            opponent.current_hp_fraction * SimpleHeuristicsPlayer.HP_FRACTION_COEFICIENT
+        )
 
         return score
 
-    def _should_dynamax(self, battle: AbstractBattle, n_remaining_mons: int):
+    @staticmethod
+    def _should_dynamax(battle: AbstractBattle, n_remaining_mons: int):
         if battle.can_dynamax:
             # Last full HP mon
             if (
@@ -167,7 +173,7 @@ class SimpleHeuristicsPlayer(Player):
                 return True
             # Matchup advantage and full hp on full hp
             if (
-                self._estimate_matchup(
+                SimpleHeuristicsPlayer._estimate_matchup(
                     battle.active_pokemon, battle.opponent_active_pokemon
                 )
                 > 0
@@ -179,7 +185,8 @@ class SimpleHeuristicsPlayer(Player):
                 return True
         return False
 
-    def _should_terastallize(self, battle: Battle, move: Move) -> bool:
+    @staticmethod
+    def _should_terastallize(battle: Battle, move: Move) -> bool:
         active = battle.active_pokemon
         opp_active = battle.opponent_active_pokemon
         if (
@@ -208,14 +215,15 @@ class SimpleHeuristicsPlayer(Player):
         )
         return offensive_tera_score * (defensive_tera_score / defensive_score) > 1
 
-    def _should_switch_out(self, battle: AbstractBattle):
+    @staticmethod
+    def _should_switch_out(battle: AbstractBattle):
         active = battle.active_pokemon
         opponent = battle.opponent_active_pokemon
         # If there is a decent switch in...
         if [
             m
             for m in battle.available_switches
-            if self._estimate_matchup(m, opponent) > 0
+            if SimpleHeuristicsPlayer._estimate_matchup(m, opponent) > 0
         ]:
             # ...and a 'good' reason to switch out
             if active.boosts["def"] <= -3 or active.boosts["spd"] <= -3:
@@ -231,13 +239,14 @@ class SimpleHeuristicsPlayer(Player):
             ):
                 return True
             if (
-                self._estimate_matchup(active, opponent)
-                < self.SWITCH_OUT_MATCHUP_THRESHOLD
+                SimpleHeuristicsPlayer._estimate_matchup(active, opponent)
+                < SimpleHeuristicsPlayer.SWITCH_OUT_MATCHUP_THRESHOLD
             ):
                 return True
         return False
 
-    def _stat_estimation(self, mon: Pokemon, stat: str):
+    @staticmethod
+    def _stat_estimation(mon: Pokemon, stat: str):
         # Stats boosts value
         if mon.boosts[stat] > 1:
             boost = (2 + mon.boosts[stat]) / 2
@@ -245,24 +254,26 @@ class SimpleHeuristicsPlayer(Player):
             boost = 2 / (2 - mon.boosts[stat])
         return ((2 * mon.base_stats[stat] + 31) + 5) * boost
 
-    def choose_singles_move(self, battle: Battle) -> Tuple[SingleBattleOrder, float]:
+    @staticmethod
+    def choose_singles_move(battle: Battle) -> Tuple[SingleBattleOrder, float]:
         # Main mons shortcuts
         active = battle.active_pokemon
         opponent = battle.opponent_active_pokemon
 
         if active is None or opponent is None:
-            return self.choose_random_singles_move(battle), 0
+            return Player.choose_random_singles_move(battle), 0
 
         # Rough estimation of damage ratio
-        physical_ratio = self._stat_estimation(active, "atk") / self._stat_estimation(
-            opponent, "def"
-        )
-        special_ratio = self._stat_estimation(active, "spa") / self._stat_estimation(
-            opponent, "spd"
-        )
+        physical_ratio = SimpleHeuristicsPlayer._stat_estimation(
+            active, "atk"
+        ) / SimpleHeuristicsPlayer._stat_estimation(opponent, "def")
+        special_ratio = SimpleHeuristicsPlayer._stat_estimation(
+            active, "spa"
+        ) / SimpleHeuristicsPlayer._stat_estimation(opponent, "spd")
 
         if battle.available_moves and (
-            not self._should_switch_out(battle) or not battle.available_switches
+            not SimpleHeuristicsPlayer._should_switch_out(battle)
+            or not battle.available_switches
         ):
             n_remaining_mons = len(
                 [m for m in battle.team.values() if m.fainted is False]
@@ -276,24 +287,24 @@ class SimpleHeuristicsPlayer(Player):
                 # ...setup
                 if (
                     n_opp_remaining_mons >= 3
-                    and move.id in self.ENTRY_HAZARDS
-                    and self.ENTRY_HAZARDS[move.id]
+                    and move.id in SimpleHeuristicsPlayer.ENTRY_HAZARDS
+                    and SimpleHeuristicsPlayer.ENTRY_HAZARDS[move.id]
                     not in battle.opponent_side_conditions
                 ):
-                    return self.create_order(move), 0
+                    return Player.create_order(move), 0
 
                 # ...removal
                 elif (
                     battle.side_conditions
-                    and move.id in self.ANTI_HAZARDS_MOVES
+                    and move.id in SimpleHeuristicsPlayer.ANTI_HAZARDS_MOVES
                     and n_remaining_mons >= 2
                 ):
-                    return self.create_order(move), 0
+                    return Player.create_order(move), 0
 
             # Setup moves
             if (
                 active.current_hp_fraction == 1
-                and self._estimate_matchup(active, opponent) > 0
+                and SimpleHeuristicsPlayer._estimate_matchup(active, opponent) > 0
             ):
                 for move in battle.available_moves:
                     if (
@@ -305,7 +316,7 @@ class SimpleHeuristicsPlayer(Player):
                         )
                         < 6
                     ):
-                        return self.create_order(move), 0
+                        return Player.create_order(move), 0
 
             move, score = max(
                 [
@@ -327,10 +338,14 @@ class SimpleHeuristicsPlayer(Player):
                 key=lambda x: x[1],
             )
             return (
-                self.create_order(
+                Player.create_order(
                     move,
-                    dynamax=self._should_dynamax(battle, n_remaining_mons),
-                    terastallize=self._should_terastallize(battle, move),
+                    dynamax=SimpleHeuristicsPlayer._should_dynamax(
+                        battle, n_remaining_mons
+                    ),
+                    terastallize=SimpleHeuristicsPlayer._should_terastallize(
+                        battle, move
+                    ),
                 ),
                 score,
             )
@@ -338,13 +353,18 @@ class SimpleHeuristicsPlayer(Player):
         if battle.available_switches:
             switches: List[Pokemon] = battle.available_switches
             return (
-                self.create_order(
-                    max(switches, key=lambda s: self._estimate_matchup(s, opponent))
+                Player.create_order(
+                    max(
+                        switches,
+                        key=lambda s: SimpleHeuristicsPlayer._estimate_matchup(
+                            s, opponent
+                        ),
+                    )
                 ),
                 0,
             )
 
-        return self.choose_random_singles_move(battle), 0
+        return Player.choose_random_singles_move(battle), 0
 
     @staticmethod
     def get_double_target_multiplier(battle: DoubleBattle, order: SingleBattleOrder):

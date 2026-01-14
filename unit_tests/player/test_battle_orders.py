@@ -26,7 +26,7 @@ def test_single_orders():
     )
 
     mon = Pokemon(species="charizard", gen=8)
-    assert SingleBattleOrder(mon).message == "/choose switch charizard"
+    assert SingleBattleOrder(mon).message == "/choose switch Charizard"
 
     assert SingleBattleOrder(move, mega=True, move_target=2) == SingleBattleOrder(
         move, mega=True, move_target=2
@@ -48,13 +48,13 @@ def test_double_orders():
 
     assert (
         DoubleBattleOrder(move, mon).message
-        == "/choose move selfdestruct 2, switch lugia"
+        == "/choose move selfdestruct 2, switch Lugia"
     )
     assert (
         DoubleBattleOrder(mon, move).message
-        == "/choose switch lugia, move selfdestruct 2"
+        == "/choose switch Lugia, move selfdestruct 2"
     )
-    assert DoubleBattleOrder(mon).message == "/choose switch lugia, pass"
+    assert DoubleBattleOrder(mon).message == "/choose switch Lugia, pass"
     assert (
         DoubleBattleOrder(second_order=move).message
         == "/choose pass, move selfdestruct 2"
@@ -70,11 +70,11 @@ def test_double_orders():
 
     assert both == {
         "/choose move selfdestruct 2, move selfdestruct 2",
-        "/choose move selfdestruct 2, switch lugia",
-        "/choose switch lugia, move selfdestruct 2",
+        "/choose move selfdestruct 2, switch Lugia",
+        "/choose switch Lugia, move selfdestruct 2",
     }
-    assert first == {"/choose move selfdestruct 2, pass", "/choose switch lugia, pass"}
-    assert second == {"/choose pass, move selfdestruct 2", "/choose pass, switch lugia"}
+    assert first == {"/choose move selfdestruct 2, pass", "/choose switch Lugia, pass"}
+    assert second == {"/choose pass, move selfdestruct 2", "/choose pass, switch Lugia"}
     assert none == set()
 
 
