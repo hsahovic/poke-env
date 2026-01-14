@@ -10,7 +10,8 @@ BUILDDIR      = build
 
 # New target for copying notebooks
 copynotebooks:
-	cp ../examples/*.ipynb $(SOURCEDIR)/examples
+	cp ../examples/quickstart.ipynb $(SOURCEDIR)/examples
+	cp ../examples/using_a_custom_teambuilder.ipynb $(SOURCEDIR)/examples
 
 # Put it first so that "make" without argument is like "make help".
 help:

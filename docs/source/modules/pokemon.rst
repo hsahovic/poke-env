@@ -4,7 +4,7 @@ The pokémon object
 ==================
 
 
-.. automodule:: poke_env.environment.pokemon
+.. automodule:: poke_env.battle.pokemon
    :members:
    :undoc-members:
    :show-inheritance:

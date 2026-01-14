@@ -39,6 +39,7 @@ On top of the main modules dedicated to building Pokémon Showdown bots, Poke-en
    Teambuilder - Parse and generate showdown teams <modules/teambuilder.rst>
    Concurrency utilities <modules/concurrency.rst>
    Damage calculator <modules/calc.rst>
+   Stats utilities <modules/stats.rst>
    Exceptions <modules/exceptions.rst>
 
 Acknowledgements

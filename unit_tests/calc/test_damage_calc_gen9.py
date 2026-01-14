@@ -329,7 +329,7 @@ def test_flying_press():
         attacker_ident, defender_ident, Move("flyingpress", gen=9), battle
     ) == (0, 0)
 
-    attacker.set_temporary_ability("scrappy")
+    attacker.temporary_ability = "scrappy"
     assert calculate_damage(
         attacker_ident, defender_ident, Move("flyingpress", gen=9), battle
     ) == (188, 224)
@@ -513,7 +513,7 @@ def test_psychicterrain_psystrike_and_marvelscale():
 
     assert calculate_damage(
         attacker_ident, defender_ident, Move("psystrike", gen=9), battle
-    ) == (288, 339)
+    ) == (430, 507)
     assert calculate_damage(
         attacker_ident, defender_ident, Move("suckerpunch", gen=9), battle
     ) == (0, 0)

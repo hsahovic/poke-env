@@ -332,7 +332,7 @@ def test_temporary():
     furret.start_effect("typechange", "Fighting")
     assert furret.damage_multiplier(PokemonType.PSYCHIC) == 2
 
-    furret.switch_out()
+    furret.switch_out({})
     furret.switch_in()
 
     assert furret.ability == "adaptability"
@@ -342,12 +342,9 @@ def test_temporary():
     assert furret.type_2 is None
     assert furret.damage_multiplier(PokemonType.ICE) == 2
 
-    furret.set_temporary_ability("frisk")
+    furret.temporary_ability = "frisk"
     assert furret.ability == "frisk"
 
-    furret.set_temporary_ability(None)
-    assert furret.ability is None
-
-    furret.switch_out()
+    furret.switch_out({})
     assert furret.ability == "adaptability"
     assert furret.types == [PokemonType.DRAGON]

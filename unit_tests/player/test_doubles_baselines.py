@@ -21,7 +21,7 @@ def test_doubles_max_damage_player():
 
     # calls player.choose_random_doubles_move(battle)
     battle._available_switches[0].append(Pokemon(species="ponyta", gen=8))
-    assert player.choose_move(battle).message == "/choose switch ponyta, pass"
+    assert player.choose_move(battle).message == "/choose switch Ponyta, pass"
 
     active_raichu = Pokemon(species="raichu", gen=8)
     active_raichu.switch_in()
@@ -30,7 +30,7 @@ def test_doubles_max_damage_player():
     # calls player.choose_random_doubles_move(battle)
     battle._available_switches[1].append(Pokemon(species="rapidash", gen=8))
     assert (
-        player.choose_move(battle).message == "/choose switch ponyta, switch rapidash"
+        player.choose_move(battle).message == "/choose switch Ponyta, switch Rapidash"
     )
 
     active_ducklett = Pokemon(species="ducklett", gen=8)
@@ -42,7 +42,7 @@ def test_doubles_max_damage_player():
 
     # chooses a move for p1a, other slot defaults
     battle._available_moves[0].append(Move("protect", gen=8))
-    assert player.choose_move(battle).message == "/choose move protect, switch rapidash"
+    assert player.choose_move(battle).message == "/choose move protect, switch Rapidash"
 
     # chooses max BP move for both pokemon, targets chosen randomly
     battle._available_moves[0].append(Move("quickattack", gen=8))
@@ -64,13 +64,13 @@ def test_doubles_max_damage_player():
 
     # forced switch
     battle._force_switch = [True, False]
-    assert player.choose_move(battle).message in ["/choose switch ponyta, pass"]
+    assert player.choose_move(battle).message in ["/choose switch Ponyta, pass"]
 
     battle._force_switch = [False, True]
-    assert player.choose_move(battle).message in ["/choose pass, switch rapidash"]
+    assert player.choose_move(battle).message in ["/choose pass, switch Rapidash"]
 
     battle._force_switch = [True, True]
     battle._available_switches[0].append(battle._available_switches[1][0])
     assert player.choose_move(battle).message in [
-        "/choose switch ponyta, switch rapidash"
+        "/choose switch Ponyta, switch Rapidash"
     ]

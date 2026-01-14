@@ -304,9 +304,10 @@ def test_battle_request_and_interactions(example_request):
     battle.parse_message(["", "-damage", "p2: Necrozma", "10/293g"])
     assert battle.active_pokemon.current_hp == 10
 
-    assert battle.active_pokemon.ability is not None
+    battle.active_pokemon.temporary_ability = "temporaryability"
+    assert battle.active_pokemon.ability == "temporaryability"
     battle.parse_message(["", "-endability", "p2: Necrozma"])
-    assert battle.active_pokemon.ability is None
+    assert battle.active_pokemon.ability == "prismarmor"
 
     battle.active_pokemon.item = "focussash"
     battle.parse_message(["", "-enditem", "p2: Necrozma", "focussash"])
@@ -413,7 +414,6 @@ def test_battle_request_and_interactions(example_request):
 
     battle.opponent_active_pokemon.item = "grassiumz"
     battle.parse_message(["", "-zpower", "p1: Sunflora"])
-    assert battle.opponent_active_pokemon.item is None
 
     sunflora = battle.opponent_active_pokemon
     assert sunflora.fainted is False
@@ -516,7 +516,7 @@ def test_battle_request_and_interactions(example_request):
         ]
     )
     assert battle.opponent_active_pokemon.ability == "ironbarbs"
-    battle.opponent_active_pokemon._ability = None
+    battle.opponent_active_pokemon.temporary_ability = None
 
     battle.parse_message(
         [
@@ -529,7 +529,7 @@ def test_battle_request_and_interactions(example_request):
         ]
     )
     assert battle.opponent_active_pokemon.ability == "ironbarbs"
-    battle.opponent_active_pokemon._ability = None
+    battle.opponent_active_pokemon.temporary_ability = None
 
     battle.parse_message(
         [
@@ -545,9 +545,9 @@ def test_battle_request_and_interactions(example_request):
     necrozma = battle.active_pokemon
     groudon = battle.opponent_active_pokemon
 
-    necrozma.switch_out()
+    necrozma.switch_out(battle.fields)
     groudon.switch_in()
-    groudon._ability = None
+    groudon.temporary_ability = None
 
     battle.parse_message(
         [
@@ -590,12 +590,11 @@ def test_battle_request_and_interactions(example_request):
     battle.parse_message(
         ["", "-endability", "p1a: Groudon", "Desolate Land", "[from] move: Worry Seed"]
     )
-    assert groudon.ability is None
     battle.parse_message(
         ["", "-ability", "p1a: Groudon", "Insomnia", "[from] move: Worry Seed"]
     )
     assert groudon.ability == "insomnia"
-    groudon.switch_out()
+    groudon.switch_out(battle.fields)
     groudon.switch_in()
     assert groudon.ability == "desolateland"
 
@@ -614,7 +613,7 @@ def test_battle_request_and_interactions(example_request):
     assert groudon.ability == "prismarmor"
     assert necrozma.ability == "desolateland"
     groudon.switch_in()
-    groudon.switch_out()
+    groudon.switch_out(battle.fields)
     assert groudon.ability == "desolateland"
 
     battle.parse_message(["", "switch", "p1a: Ho-oh", "Ho-oh, L82", "100/100"])
@@ -631,7 +630,7 @@ def test_battle_request_and_interactions(example_request):
     assert hooh.type_1 == PokemonType.THREE_QUESTION_MARKS
     assert hooh.type_2 == PokemonType.FLYING
     assert hooh.types == [PokemonType.THREE_QUESTION_MARKS, PokemonType.FLYING]
-    hooh.switch_out()
+    hooh.switch_out(battle.fields)
     hooh.switch_in()
     assert hooh.type_1 == PokemonType.FIRE
     assert hooh.type_2 == PokemonType.FLYING
@@ -642,7 +641,7 @@ def test_battle_request_and_interactions(example_request):
     assert hooh.type_1 == PokemonType.WATER
     assert hooh.type_2 is None
     assert hooh.types == [PokemonType.WATER]
-    hooh.switch_out()
+    hooh.switch_out(battle.fields)
     hooh.switch_in()
     assert hooh.type_1 == PokemonType.FIRE
     assert hooh.type_2 == PokemonType.FLYING

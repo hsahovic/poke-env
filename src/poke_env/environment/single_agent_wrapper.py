@@ -16,6 +16,16 @@ class SingleAgentWrapper(Env[Dict[str, ObsType], ActionType]):
     def step(
         self, action: ActionType
     ) -> Tuple[Dict[str, ObsType], float, bool, bool, Dict[str, Any]]:
+        """Run one timestep of the environment's dynamics.
+
+        Takes an action from the main agent and automatically generates an action
+        for the opponent using the opponent's choose_move method.
+
+        :param action: Action from the main agent.
+        :type action: ActionType
+        :return: Tuple of (observation, reward, terminated, truncated, info) for the main agent.
+        :rtype: Tuple[ObsType, float, bool, bool, Dict[str, Any]]
+        """
         assert self.env.battle2 is not None
         opp_order = self.opponent.choose_move(self.env.battle2)
         assert not isinstance(opp_order, Awaitable)
