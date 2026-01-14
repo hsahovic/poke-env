@@ -14,6 +14,7 @@ from ray.rllib.env import ParallelPettingZooEnv
 from ray.tune.registry import register_env
 
 from poke_env.battle import AbstractBattle, Battle
+from poke_env.data import GenData
 from poke_env.environment import SingleAgentWrapper, SinglesEnv
 from poke_env.player import RandomPlayer
 
@@ -73,7 +74,7 @@ class ExampleEnv(SinglesEnv[npt.NDArray[np.float32]]):
                 moves_dmg_multiplier[i] = move.type.damage_multiplier(
                     battle.opponent_active_pokemon.type_1,
                     battle.opponent_active_pokemon.type_2,
-                    type_chart=battle.opponent_active_pokemon._data.type_chart,
+                    type_chart=GenData.from_gen(battle.gen).type_chart,
                 )
 
         # We count how many pokemons have fainted in each team

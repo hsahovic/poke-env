@@ -76,13 +76,13 @@ def test_category():
 
 
 def test_right_gen_move():
-    for gen in range(4, 8 + 1):
+    for gen in range(4, 10):
         mon = Pokemon(species="charizard", gen=gen)
 
         mon.moved("flamethrower")
         assert "flamethrower" in mon.moves
-        flame_thrower = mon.moves["flamethrower"]
-        assert flame_thrower._moves_dict == GenData.from_gen(gen).moves
+        flamethrower = mon.moves["flamethrower"]
+        assert flamethrower.gen == gen
 
 
 def test_right_abilities():
@@ -118,4 +118,4 @@ def test_right_gen_mon():
         battle.get_pokemon("p2: azumarill", force_self_team=True)
 
         assert "p2: azumarill" in battle.team
-        assert battle.team["p2: azumarill"]._data.gen == gen
+        assert battle.team["p2: azumarill"].gen == gen

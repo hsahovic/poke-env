@@ -112,8 +112,8 @@ def test_simple_heuristics_player_should_terastallize():
     opponent.set_hp("100/100")
 
     battle = namedtuple(
-        "PseudoBattle", ["active_pokemon", "opponent_active_pokemon", "can_tera"]
-    )(active, opponent, True)
+        "PseudoBattle", ["active_pokemon", "opponent_active_pokemon", "can_tera", "gen"]
+    )(active, opponent, True, 9)
 
     assert player._should_terastallize(battle, move) is True
 
