@@ -623,7 +623,7 @@ class Pokemon:
         ), f"{pkmn_request['active']} != {self.active}\nrequest: {pkmn_request}"
         if self.item == "unknown_item":
             self._item = pkmn_request["item"]
-        if self._data.gen > 4:
+        if self.gen > 4:
             assert pkmn_request["item"] == (
                 self.item or ""
             ), f"{pkmn_request['item']} != {self.item or ''}"
