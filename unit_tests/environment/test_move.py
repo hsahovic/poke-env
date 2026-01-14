@@ -3,7 +3,6 @@ import itertools
 
 from poke_env.battle import (
     Effect,
-    EmptyMove,
     Field,
     Move,
     MoveCategory,
@@ -151,14 +150,6 @@ def test_drain():
     for move in move_generator():
         assert isinstance(move.drain, float)
         assert 0 <= move.drain <= 1
-
-
-def test_empty_move_basic():
-    empty_move = EmptyMove("justamove")
-
-    assert empty_move.drain == 0
-    assert empty_move.base_power == 0
-    assert empty_move.is_empty is True
 
 
 def test_flags():
@@ -795,15 +786,6 @@ def test_deepcopy_move():
     copy_move = copy.deepcopy(move)
     assert copy_move != move
     assert copy_move.id == move.id
-
-
-def test_deepcopy_empty_move():
-    move = EmptyMove("recharge")
-    copy_move = copy.deepcopy(move)
-    assert copy_move != move
-    assert copy_move.id == move.id
-    assert copy_move.base_power == 0
-    assert copy_move.is_empty
 
 
 def test_three_question_marks_move():

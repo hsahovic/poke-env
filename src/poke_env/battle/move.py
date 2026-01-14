@@ -1,4 +1,3 @@
-import copy
 from functools import lru_cache
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
@@ -80,8 +79,6 @@ class Move:
         "_current_pp",
         "_dynamaxed_move",
         "_gen",
-        "_is_empty",
-        "_moves_dict",
         "_request_target",
     )
 
@@ -89,7 +86,6 @@ class Move:
         self._id = move_id
         self._base_power_override = None
         self._gen = gen
-        self._moves_dict = GenData.from_gen(gen).moves
 
         if move_id.startswith("hiddenpower") and raw_id is not None:
             base_power = "".join([c for c in raw_id if c.isdigit()])
@@ -102,7 +98,6 @@ class Move:
                     pass
 
         self._current_pp = self.max_pp
-        self._is_empty: bool = False
 
         self._dynamaxed_move = None
         self._request_target = None
@@ -195,7 +190,7 @@ class Move:
         :return: The move category.
         :rtype: MoveCategory
         """
-        if self._gen <= 3 and self.entry["category"].upper() in {"PHYSICAL", "SPECIAL"}:
+        if self.gen <= 3 and self.entry["category"].upper() in {"PHYSICAL", "SPECIAL"}:
             return self._MOVE_CATEGORY_PER_TYPE_PRE_SPLIT[self.type]
         return MoveCategory[self.entry["category"].upper()]
 
@@ -290,10 +285,13 @@ class Move:
         :return: The data entry corresponding to the move
         :rtype: Dict
         """
-        if self._id in self._moves_dict:
-            return self._moves_dict[self._id]
-        elif self._id.startswith("z") and self._id[1:] in self._moves_dict:
-            return self._moves_dict[self._id[1:]]
+        if self._id in GenData.from_gen(self.gen).moves:
+            return GenData.from_gen(self.gen).moves[self._id]
+        elif (
+            self._id.startswith("z")
+            and self._id[1:] in GenData.from_gen(self.gen).moves
+        ):
+            return GenData.from_gen(self.gen).moves[self._id[1:]]
         elif self._id == "recharge":
             return {"pp": 1, "type": "normal", "category": "Special", "accuracy": 1}
         else:
@@ -342,6 +340,14 @@ class Move:
         :rtype: bool
         """
         return self.entry.get("forceSwitch", False)
+
+    @property
+    def gen(self) -> int:
+        """
+        :return: The generation of the move.
+        :rtype: int
+        """
+        return self._gen
 
     @property
     def heal(self) -> float:
@@ -403,14 +409,6 @@ class Move:
         return False
 
     @property
-    def is_empty(self) -> bool:
-        """
-        :return: Whether the move is an empty move.
-        :rtype: bool
-        """
-        return self._is_empty
-
-    @property
     def is_protect_counter(self) -> bool:
         """
         :return: Wheter this move increments a mon's protect counter.
@@ -440,7 +438,7 @@ class Move:
         :return: Whether the move is a z move.
         :rtype: bool
         """
-        return Move.is_id_z(self.id, gen=self._gen)
+        return Move.is_id_z(self.id, gen=self.gen)
 
     @property
     def max_pp(self) -> int:
@@ -766,21 +764,6 @@ class Move:
         elif base_power <= 130:
             return 195
         return 200
-
-
-class EmptyMove(Move):
-    def __init__(self, move_id: str):
-        self._id = move_id
-        self._is_empty: bool = True
-
-    def __getattribute__(self, name: str):
-        try:
-            return super(Move, self).__getattribute__(name)
-        except (AttributeError, TypeError, ValueError):
-            return 0
-
-    def __deepcopy__(self, memodict: Optional[Dict[int, Any]] = {}):
-        return EmptyMove(copy.deepcopy(self._id, memodict))
 
 
 class DynamaxMove(Move):
