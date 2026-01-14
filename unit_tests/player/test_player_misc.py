@@ -247,11 +247,11 @@ async def test_awaitable_move(send_message_patch):
 @pytest.mark.asyncio
 async def test_create_teampreview_team(showdown_format_teams):
     player = SimplePlayer(
-        battle_format="gen9vgc2026regi",
-        team=showdown_format_teams["gen9vgc2026regi"][0],
+        battle_format="gen9vgc2024regg",
+        team=showdown_format_teams["gen9vgc2024regg"][0],
     )
 
-    battle = await player._create_battle(["", "gen9vgc2026regi", "uuu"])
+    battle = await player._create_battle(["", "gen9vgc2024regg", "uuu"])
 
     assert len(battle.teampreview_team) == 6
 
@@ -280,9 +280,9 @@ async def test_create_teampreview_team(showdown_format_teams):
 
 @pytest.mark.asyncio
 async def test_parse_showteam(packed_format_teams):
-    packed_team = packed_format_teams["gen9vgc2026regi"][0]
-    player = SimplePlayer(battle_format="gen9vgc2026regi", team=packed_team)
-    battle = await player._create_battle(["", "gen9vgc2026regi", "uuu"])
+    packed_team = packed_format_teams["gen9vgc2024regg"][0]
+    player = SimplePlayer(battle_format="gen9vgc2024regg", team=packed_team)
+    battle = await player._create_battle(["", "gen9vgc2024regg", "uuu"])
     battle._player_role = "p2"
     assert battle.opponent_role is not None
 
