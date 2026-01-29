@@ -114,12 +114,9 @@ class GenData:
 
     @classmethod
     def from_gen(cls, gen: int) -> GenData:
-        if gen in cls._gen_data_per_gen:
-            return cls._gen_data_per_gen[gen]
-        else:
-            gen_data = GenData(gen)
-            cls._gen_data_per_gen[gen] = gen_data
-            return gen_data
+        if gen not in cls._gen_data_per_gen:
+            cls._gen_data_per_gen[gen] = GenData(gen)
+        return cls._gen_data_per_gen[gen]
 
     @classmethod
     def from_format(cls, format: str) -> GenData:
