@@ -108,9 +108,10 @@ class Move:
 
     def use(self, pressure: bool = False):
         if pressure:
-            self.current_pp -= 2
+            # don't let PP go below 0
+            self._current_pp = max(self._current_pp - 2, 0)
         else:
-            self.current_pp -= 1
+            self._current_pp -= 1
 
     @staticmethod
     def is_id_z(id_: str, gen: int) -> bool:
@@ -217,14 +218,6 @@ class Move:
         :rtype: int
         """
         return self._current_pp
-
-    @current_pp.setter
-    def current_pp(self, pp: int):
-        """
-        :param pp: New PP value.
-        :type pp: int
-        """
-        self._current_pp = min(max(0, pp), self.max_pp)
 
     @property
     def damage(self) -> Union[int, str]:

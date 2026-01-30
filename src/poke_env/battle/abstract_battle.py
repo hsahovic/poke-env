@@ -774,8 +774,10 @@ class AbstractBattle(ABC):
                 )
                 self.get_pokemon(target).item = None
             elif effect == "item: Leppa Berry":
-                move = to_id_str(event[4])
-                self.get_pokemon(target).moves[move].current_pp += 10
+                mon = self.get_pokemon(target)
+                move = mon.moves[to_id_str(event[4])]
+                # Don't let current pp exceed max pp
+                move._current_pp = min(move._current_pp + 10, move.max_pp)
             elif target != "":  # ['', '-activate', '', 'move: Splash']
                 self.get_pokemon(target).start_effect(effect)
         elif event[1] == "-status":
