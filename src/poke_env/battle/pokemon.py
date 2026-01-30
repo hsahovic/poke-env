@@ -238,8 +238,7 @@ class Pokemon:
 
     def check_move_consistency(self, active_request: Dict[str, Any]):
         if (
-            self._data.gen in [7, 8]
-            or self.base_species in ["ditto", "mew"]
+            self.base_species in ["ditto", "mew"]
             or "copycat" in [m.id for m in self.moves.values()]
         ):
             return
@@ -252,7 +251,8 @@ class Pokemon:
             if not matches:
                 continue
             move = matches[0]
-            if "pp" in move_request:
+            if "pp" in move_request and self._data.gen not in [7, 8]:
+                # exclude gen 7 and 8 because of Z-move and Max Move PP untrackability
                 assert (
                     move_request["pp"] == move.current_pp
                 ), f"{move_request['pp']} != {move.current_pp}\n{move_request}"
