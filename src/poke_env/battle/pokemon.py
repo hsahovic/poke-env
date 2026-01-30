@@ -248,6 +248,7 @@ class Pokemon:
                 for m in self.moves.values()
                 if Move.retrieve_id(m.id) == move_request["id"]
             ]
+            assert len(matches) <= 1
             if not matches:
                 continue
             move = matches[0]
