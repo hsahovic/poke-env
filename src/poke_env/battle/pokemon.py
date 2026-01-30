@@ -238,9 +238,9 @@ class Pokemon:
 
     def check_move_consistency(self, active_request: Dict[str, Any]):
         if (
-            self.base_species in ["ditto", "mew"]
+            self._data.gen in [7, 8]
+            or self.base_species in ["ditto", "mew"]
             or "copycat" in [m.id for m in self.moves.values()]
-            or ("canDynamax" not in active_request and "maxMoves" in active_request)
         ):
             return
         for move_request in active_request["moves"]:

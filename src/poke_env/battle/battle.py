@@ -98,7 +98,6 @@ class Battle(AbstractBattle):
             if self.active_pokemon is not None:
                 if (
                     strict_battle_tracking
-                    and self.gen not in [7, 8]
                     and "illusion" not in [p.ability for p in self.team.values()]
                     and "illusion"
                     not in [p.ability for p in self.opponent_team.values()]
