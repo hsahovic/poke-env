@@ -114,12 +114,14 @@ class Move:
     def __repr__(self) -> str:
         return f"{self._id} (Move object)"
 
-    def use(self, pressure: bool = False):
+    def use(self, pressure: bool = False, overridden: bool = False):
+        decrement = 1
         if pressure:
-            # don't let PP go below 0
-            self._current_pp = max(self._current_pp - 2, 0)
-        else:
-            self._current_pp -= 1
+            decrement += 1
+        if overridden:
+            decrement -= 1
+        # don't let PP go below 0
+        self._current_pp = max(self._current_pp - decrement, 0)
 
     @staticmethod
     def is_id_z(id_: str, gen: int) -> bool:

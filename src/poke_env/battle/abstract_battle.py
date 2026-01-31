@@ -622,17 +622,16 @@ class AbstractBattle(ABC):
                 # incorrectly.
                 mon.moved(move, failed=failed, use=False, reveal=reveal)
                 overridden = mon.moves[Move.retrieve_id(overridden_move)]
-                overridden.use(pressure)
+                overridden.use(pressure, overridden=True)
+            elif not failed and move in {
+                "Sleep Talk",
+                "Copycat",
+                "Metronome",
+                "Nature Power",
+            }:
+                # make preemptive deduction in case override move fails
+                mon.moved(move, failed=failed, use=use, reveal=reveal)
             else:
-                if not failed and move in {
-                    "Sleep Talk",
-                    "Copycat",
-                    "Metronome",
-                    "Nature Power",
-                }:
-                    # wait until override move to decide how much pp to deduct
-                    # since override determines pressure interaction
-                    use = False
                 mon.moved(
                     move, failed=failed, use=use, reveal=reveal, pressure=pressure
                 )
