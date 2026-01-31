@@ -228,11 +228,10 @@ class Pokemon:
         ), f"{pkmn_request['condition']} != {self.hp_status}\nrequest: {pkmn_request}"
         if self.base_species == "mew":
             return
-        if not (
+        if not (  # only check moves if no mimic, or mimic copies a non-duplicate move
             self._mimic_move is not None
             and self._mimic_move.id in [m.id for m in self._moves.values()]
         ):
-            # Ensures no duplicate move due to mimic copying an already-known move
             for move_request, move in zip(pkmn_request["moves"], self.moves.values()):
                 assert Move.retrieve_id(move_request) == Move.retrieve_id(
                     move.id
