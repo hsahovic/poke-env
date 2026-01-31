@@ -579,6 +579,7 @@ class Pokemon:
         self._preparing_target = None
         self._protect_counter = 0
         self.temporary_ability = None
+        self._temporary_base_stats = None
         self._temporary_moves = None
         self._temporary_types = []
         self._mimic_move = None
