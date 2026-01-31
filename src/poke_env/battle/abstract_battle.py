@@ -570,16 +570,14 @@ class AbstractBattle(ABC):
             while event[-1] == "[still]":
                 event = event[:-1]
 
-            if event[-1] == "":
-                event = event[:-1]
-
             presumed_target = None
             if len(event) == 4:
                 pokemon, move = event[2:4]
             elif len(event) == 5:
                 pokemon, move, presumed_target = event[2:5]
-
-                if len(presumed_target) > 4 and presumed_target[:4] in {
+                if presumed_target == "":
+                    pass
+                elif len(presumed_target) > 4 and presumed_target[:4] in {
                     "p1: ",
                     "p2: ",
                     "p1a:",
@@ -616,7 +614,7 @@ class AbstractBattle(ABC):
                 temp_pokemon = self.get_pokemon(pokemon)
                 temp_pokemon.start_effect("MINIMIZE")
 
-            pressure = self._pressure_on(pokemon, move, presumed_target)
+            pressure = self._pressure_on(pokemon, move, presumed_target or None)
             mon = self.get_pokemon(pokemon)
             if overridden_move:
                 # Moves that can trigger this branch results in two `move` messages being sent.
