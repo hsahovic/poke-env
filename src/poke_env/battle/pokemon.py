@@ -49,6 +49,7 @@ class Pokemon:
         "_status",
         "_status_counter",
         "_temporary_ability",
+        "_temporary_moves",
         "_temporary_types",
         "_terastallized",
         "_terastallized_type",
@@ -125,6 +126,7 @@ class Pokemon:
         self._status_counter: int = 0
         self._temporary_ability: Optional[str] = None
         self._forme_change_ability: Optional[str] = None
+        self._temporary_moves: Optional[Dict[str, Move]] = None
         self._temporary_types: List[PokemonType] = []
         self._mimic_move: Optional[Move] = None
 
@@ -161,10 +163,10 @@ class Pokemon:
             return self.moves[id_]
         if not Move.should_be_stored(id_, self._data.gen):
             return None
-        if id_ not in self._moves:
+        if id_ not in self.base_moves:
             move = Move(move_id=id_, raw_id=move_id, gen=self._data.gen)
-            self._moves[id_] = move
-        return self._moves[id_]
+            self.base_moves[id_] = move
+        return self.base_moves[id_]
 
     def boost(self, stat: str, amount: int):
         self._boosts[stat] += amount
@@ -378,6 +380,7 @@ class Pokemon:
         self._current_hp = 0
         self._status = Status.FNT
         self.temporary_ability = None
+        self._temporary_moves = None
         self._mimic_move = None
         self._clear_effects()
 
@@ -573,6 +576,7 @@ class Pokemon:
         self._preparing_target = None
         self._protect_counter = 0
         self.temporary_ability = None
+        self._temporary_moves = None
         self._temporary_types = []
         self._mimic_move = None
 
@@ -585,11 +589,15 @@ class Pokemon:
         self._temporary_types = []
 
     def transform(self, into: Pokemon):
-        current_hp = self.current_hp
-        self._update_from_pokedex(into.species, store_species=False)
-        self._current_hp = int(current_hp)
+        dex_entry = self._data.pokedex[into.species]
+        self._heightm = dex_entry["heightm"]
+        self._weightkg = dex_entry["weightkg"]
         if into.ability is not None:
             self.ability = into.ability
+        self._temporary_types = [PokemonType.from_name(t) for t in dex_entry["types"]]
+        self._temporary_moves = {m.id: Move(m.id, m._gen) for m in into.moves.values()}
+        for m in self._temporary_moves.values():
+            m._current_pp = 5
         self._boosts = into.boosts.copy()
 
     def _update_from_pokedex(self, species: str, store_species: bool = True):
@@ -673,7 +681,7 @@ class Pokemon:
     def update_from_request(self, request_pokemon: Dict[str, Any]):
         self._active = request_pokemon["active"]
 
-        if request_pokemon == self._last_request:
+        if not request_pokemon["active"] and request_pokemon == self._last_request:
             return
 
         if self.ability is None:
@@ -878,11 +886,11 @@ class Pokemon:
             if type_:
                 return [
                     move
-                    for move in self._moves.values()
+                    for move in self.moves.values()
                     if move.type == type_ and move.can_z_move
                 ]
-            elif move in self._moves:
-                return [self._moves[move]]
+            elif move in self.moves:
+                return [self.moves[move]]
         return []
 
     @property
@@ -892,6 +900,17 @@ class Pokemon:
         :rtype: str, optional
         """
         return self._forme_change_ability or self._ability
+
+    @property
+    def base_moves(self) -> Dict[str, Move]:
+        """
+        :return: The pokemon's underlying move dictionary. When transformed, this
+            returns the temporary move set; otherwise it returns the learned moves.
+        :rtype: Dict[str, Move]
+        """
+        return (
+            self._temporary_moves if self._temporary_moves is not None else self._moves
+        )
 
     @property
     def base_species(self) -> str:
@@ -1066,15 +1085,16 @@ class Pokemon:
         :return: A dictionary of the pokemon's known moves.
         :rtype: Dict[str, Move]
         """
+        moves = self.base_moves
         if self._mimic_move is not None:
             return dict(
                 [
                     (k, v) if k != "mimic" else (self._mimic_move.id, self._mimic_move)
-                    for k, v in self._moves.items()
+                    for k, v in moves.items()
                 ]
             )
         else:
-            return self._moves
+            return moves
 
     @property
     def must_recharge(self) -> bool:
