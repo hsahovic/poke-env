@@ -33,6 +33,7 @@ class Pokemon:
         "_last_request",
         "_level",
         "_max_hp",
+        "_mimic_move",
         "_forme_change_ability",
         "_moves",
         "_must_recharge",
@@ -125,6 +126,7 @@ class Pokemon:
         self._temporary_ability: Optional[str] = None
         self._forme_change_ability: Optional[str] = None
         self._temporary_types: List[PokemonType] = []
+        self._mimic_move: Optional[Move] = None
 
         if request_pokemon:
             self.update_from_request(request_pokemon)
@@ -155,6 +157,8 @@ class Pokemon:
     def _add_move(self, move_id: str) -> Optional[Move]:
         """Store the move if applicable."""
         id_ = Move.retrieve_id(move_id)
+        if id_ in self.moves:
+            return self.moves[id_]
         if not Move.should_be_stored(id_, self._data.gen):
             return None
         if id_ not in self._moves:
@@ -210,6 +214,8 @@ class Pokemon:
             pkmn_request["active"] == self.active
         ), f"{pkmn_request['active']} != {self.active}\nrequest: {pkmn_request}"
         if self.item == "unknown_item":
+            # needed for ability initialization in start of game,
+            # done anyway in update_from_request()
             self._item = pkmn_request["item"]
         if self._data.gen > 4:
             assert pkmn_request["item"] == (
@@ -222,11 +228,18 @@ class Pokemon:
         ), f"{pkmn_request['condition']} != {self.hp_status}\nrequest: {pkmn_request}"
         if self.base_species == "mew":
             return
-        for move_request, move in zip(pkmn_request["moves"], self.moves.values()):
-            assert Move.retrieve_id(move_request) == Move.retrieve_id(
-                move.id
-            ), f"{Move.retrieve_id(move_request)} != {Move.retrieve_id(move.id)}\nrequest: {pkmn_request}"
+        if not (
+            self._mimic_move is not None
+            and self._mimic_move.id in [m.id for m in self._moves.values()]
+        ):
+            # Ensures no duplicate move due to mimic copying an already-known move
+            for move_request, move in zip(pkmn_request["moves"], self.moves.values()):
+                assert Move.retrieve_id(move_request) == Move.retrieve_id(
+                    move.id
+                ), f"{Move.retrieve_id(move_request)} != {Move.retrieve_id(move.id)}\nrequest: {pkmn_request}"
         if self.ability is None:
+            # needed for ability initialization in start of game,
+            # done anyway in update_from_request()
             self.ability = pkmn_request["baseAbility"]
         assert pkmn_request["baseAbility"] == (
             self.base_ability or ""
@@ -237,10 +250,7 @@ class Pokemon:
             ), f"{pkmn_request['ability']} != {self.ability or ''}"
 
     def check_move_consistency(self, active_request: Dict[str, Any]):
-        if (
-            self.base_species in ["ditto", "mew"]
-            or "copycat" in [m.id for m in self.moves.values()]
-        ):
+        if self.base_species in ["ditto", "mew"]:
             return
         for move_request in active_request["moves"]:
             matches = [
@@ -252,7 +262,8 @@ class Pokemon:
             if not matches:
                 continue
             move = matches[0]
-            if "pp" in move_request and self._data.gen not in [7, 8]:
+            if "pp" in move_request and self._data.gen not in [1, 2, 3, 7, 8]:
+                # exclude early gens because of unreliable Showdown event messages
                 # exclude gen 7 and 8 because of Z-move and Max Move PP untrackability
                 assert (
                     move_request["pp"] == move.current_pp
@@ -368,6 +379,7 @@ class Pokemon:
         self._current_hp = 0
         self._status = Status.FNT
         self.temporary_ability = None
+        self._mimic_move = None
         self._clear_effects()
 
     def forme_change(self, species: str):
@@ -563,6 +575,7 @@ class Pokemon:
         self._protect_counter = 0
         self.temporary_ability = None
         self._temporary_types = []
+        self._mimic_move = None
 
         if self._status == Status.TOX:
             self._status_counter = 0
@@ -603,7 +616,7 @@ class Pokemon:
             self._possible_abilities = [
                 to_id_str(ability) for ability in dex_entry["abilities"].values()
             ]
-            if len(self._possible_abilities) == 1:
+            if len(self._possible_abilities) == 1 and self._data.gen >= 3:
                 self.ability = self._possible_abilities[0]
         else:
             self.forme_change_ability = None
@@ -956,6 +969,18 @@ class Pokemon:
         return self._first_turn
 
     @property
+    def forme_change_ability(self) -> Optional[str]:
+        """
+        :return: The pokemon's ability after changing forme. None if the pokemon hasn't changed forme.
+        :rtype: str, optional
+        """
+        return self._forme_change_ability
+
+    @forme_change_ability.setter
+    def forme_change_ability(self, ability: Optional[str]):
+        self._forme_change_ability = to_id_str(ability) if ability is not None else None
+
+    @property
     def gender(self) -> Optional[PokemonGender]:
         """
         :return: The pokemon's gender.
@@ -1037,24 +1062,20 @@ class Pokemon:
         return self._max_hp or 0
 
     @property
-    def forme_change_ability(self) -> Optional[str]:
-        """
-        :return: The pokemon's ability after changing forme. None if the pokemon hasn't changed forme.
-        :rtype: str, optional
-        """
-        return self._forme_change_ability
-
-    @forme_change_ability.setter
-    def forme_change_ability(self, ability: Optional[str]):
-        self._forme_change_ability = to_id_str(ability) if ability is not None else None
-
-    @property
     def moves(self) -> Dict[str, Move]:
         """
         :return: A dictionary of the pokemon's known moves.
         :rtype: Dict[str, Move]
         """
-        return self._moves
+        if self._mimic_move is not None:
+            return dict(
+                [
+                    (k, v) if k != "mimic" else (self._mimic_move.id, self._mimic_move)
+                    for k, v in self._moves.items()
+                ]
+            )
+        else:
+            return self._moves
 
     @property
     def must_recharge(self) -> bool:

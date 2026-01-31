@@ -496,13 +496,20 @@ class AbstractBattle(ABC):
             while event[-1].startswith("[spread]"):
                 event = event[:-1]
 
-            if event[-1] in {"[from] lockedmove", "[from]lockedmove"}:
+            if event[-1] in {
+                "[from] lockedmove",
+                "[from]lockedmove",
+                "[from] Sky Attack",
+            }:
                 use = False
                 reveal = False
                 event = event[:-1]
 
             if event[-1] in {"[from] Pursuit", "[from]Pursuit", "[zeffect]"}:
                 event = event[:-1]
+
+            if event[-1] == "[from] Sleep Talk":
+                event[-1] = "[from] move: Sleep Talk"
 
             if event[-1].startswith("[anim]"):
                 event = event[:-1]
@@ -555,8 +562,10 @@ class AbstractBattle(ABC):
                         self.battle_tag,
                         self.turn,
                     )
-            if event[-1] == "[from] Magic Coat":
-                return
+            if event[-1] == "[from] Magic Coat" or event[-1] == "[from] Mirror Move":
+                use = False
+                reveal = False
+                event = event[:-1]
 
             while event[-1] == "[still]":
                 event = event[:-1]
@@ -614,8 +623,8 @@ class AbstractBattle(ABC):
                 # We're setting use=False in the one (with the override) in order to prevent two pps from being used
                 # incorrectly.
                 mon.moved(move, failed=failed, use=False, reveal=reveal)
-                overriden = mon.moves[Move.retrieve_id(overridden_move)]
-                overriden.use(pressure)
+                overridden = mon.moves[Move.retrieve_id(overridden_move)]
+                overridden.use(pressure)
             else:
                 if not failed and move in {
                     "Sleep Talk",
@@ -742,6 +751,10 @@ class AbstractBattle(ABC):
                     types = event[4]
                 mon.start_effect(effect, details=types)
             else:
+                if effect == "Mimic":
+                    mon._mimic_move = Move(
+                        Move.retrieve_id(event[4]), gen=self._data.gen, from_mimic=True
+                    )
                 mon.start_effect(effect)
 
             if mon.is_dynamaxed:
@@ -778,6 +791,11 @@ class AbstractBattle(ABC):
                 mv = mon.moves[to_id_str(event[4])]
                 # Don't let current pp exceed max pp
                 mv._current_pp = min(mv._current_pp + 10, mv.max_pp)
+            if effect == "move: Mimic":
+                mon = self.get_pokemon(target)
+                mon._mimic_move = Move(
+                    Move.retrieve_id(event[4]), gen=self._data.gen, from_mimic=True
+                )
             elif target != "":  # ['', '-activate', '', 'move: Splash']
                 self.get_pokemon(target).start_effect(effect)
         elif event[1] == "-status":
