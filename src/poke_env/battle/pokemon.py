@@ -218,21 +218,22 @@ class Pokemon:
             pkmn_request["active"] == self.active
         ), f"{pkmn_request['active']} != {self.active}\nrequest: {pkmn_request}"
         if self.item == "unknown_item":
-            # needed for ability initialization in start of game,
+            # needed for item initialization in start of game,
             # done anyway in update_from_request()
             self._item = pkmn_request["item"]
         if self._data.gen > 4:
             assert pkmn_request["item"] == (
                 self.item or ""
             ), f"{pkmn_request['item']} != {self.item or ''}"
+        assert len(self.moves) <= 4, f"More than 4 moves: {self.moves}"
         if self.base_species == "ditto":
             return
         assert (
             pkmn_request["condition"] == self.hp_status
         ), f"{pkmn_request['condition']} != {self.hp_status}\nrequest: {pkmn_request}"
-        if self.base_species == "mew":
-            return
-        if not (  # only check moves if no mimic, or mimic copies a non-duplicate move
+        if self.base_species != "mew" and not (
+            # only check moves if mimic hasn't copied a move yet,
+            # or if mimic copies a move not already in the moveset
             self._mimic_move is not None
             and self._mimic_move.id in [m.id for m in self._moves.values()]
         ):
@@ -437,23 +438,6 @@ class Pokemon:
 
         if self._status == Status.SLP:
             self._status_counter += 1
-
-        if len(self._moves) > 4:
-            new_moves = {}
-
-            # Keep the current move
-            if move is not None and move in self._moves.values():
-                new_moves = {
-                    move_id: m for move_id, m in self._moves.items() if m is move
-                }
-
-            for move_name in self._moves:
-                if len(new_moves) == 4:
-                    break
-                elif move_name not in new_moves:
-                    new_moves[move_name] = self._moves[move_name]
-
-            self._moves = new_moves
 
         # Handle silent effect ending
         if Effect.GLAIVE_RUSH in self.effects:
@@ -710,16 +694,6 @@ class Pokemon:
 
         for move in request_pokemon["moves"]:
             self._add_move(move)
-
-        if len(self._moves) > 4:
-            moves_to_keep = {
-                Move.retrieve_id(move_id) for move_id in request_pokemon["moves"]
-            }
-            self._moves = {
-                move_id: move
-                for move_id, move in self._moves.items()
-                if move_id in moves_to_keep
-            }
 
         if "stats" in request_pokemon:
             for stat in request_pokemon["stats"]:
