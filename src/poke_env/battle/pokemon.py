@@ -50,7 +50,7 @@ class Pokemon:
         "_status_counter",
         "_temporary_ability",
         "_temporary_base_stats",
-        "_temporary_moves",
+        "_transform_moves",
         "_temporary_types",
         "_terastallized",
         "_terastallized_type",
@@ -128,7 +128,7 @@ class Pokemon:
         self._temporary_ability: Optional[str] = None
         self._forme_change_ability: Optional[str] = None
         self._temporary_base_stats: Optional[Dict[str, int]] = None
-        self._temporary_moves: Optional[Dict[str, Move]] = None
+        self._transform_moves: Optional[Dict[str, Move]] = None
         self._temporary_types: List[PokemonType] = []
         self._mimic_move: Optional[Move] = None
 
@@ -231,7 +231,9 @@ class Pokemon:
         assert (
             pkmn_request["condition"] == self.hp_status
         ), f"{pkmn_request['condition']} != {self.hp_status}\nrequest: {pkmn_request}"
-        if self.base_species != "mew" and not (
+        if self.base_species == "mew":
+            return
+        if not (
             # only check moves if mimic hasn't copied a move yet,
             # or if mimic copies a move not already in the moveset
             self._mimic_move is not None
@@ -384,7 +386,7 @@ class Pokemon:
         self._status = Status.FNT
         self.temporary_ability = None
         self._temporary_base_stats = None
-        self._temporary_moves = None
+        self._transform_moves = None
         self._mimic_move = None
         self._clear_effects()
 
@@ -564,7 +566,7 @@ class Pokemon:
         self._protect_counter = 0
         self.temporary_ability = None
         self._temporary_base_stats = None
-        self._temporary_moves = None
+        self._transform_moves = None
         self._temporary_types = []
         self._mimic_move = None
 
@@ -584,8 +586,8 @@ class Pokemon:
         if into.ability is not None:
             self.ability = into.ability
         self._temporary_types = [PokemonType.from_name(t) for t in dex_entry["types"]]
-        self._temporary_moves = {m.id: Move(m.id, m._gen) for m in into.moves.values()}
-        for m in self._temporary_moves.values():
+        self._transform_moves = {m.id: Move(m.id, m._gen) for m in into.moves.values()}
+        for m in self._transform_moves.values():
             m._current_pp = 5
         self._boosts = into.boosts.copy()
 
@@ -888,7 +890,7 @@ class Pokemon:
         :rtype: Dict[str, Move]
         """
         return (
-            self._temporary_moves if self._temporary_moves is not None else self._moves
+            self._transform_moves if self._transform_moves is not None else self._moves
         )
 
     @property
