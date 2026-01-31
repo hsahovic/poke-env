@@ -49,6 +49,7 @@ class Pokemon:
         "_status",
         "_status_counter",
         "_temporary_ability",
+        "_temporary_base_stats",
         "_temporary_moves",
         "_temporary_types",
         "_terastallized",
@@ -126,6 +127,7 @@ class Pokemon:
         self._status_counter: int = 0
         self._temporary_ability: Optional[str] = None
         self._forme_change_ability: Optional[str] = None
+        self._temporary_base_stats: Optional[Dict[str, int]] = None
         self._temporary_moves: Optional[Dict[str, Move]] = None
         self._temporary_types: List[PokemonType] = []
         self._mimic_move: Optional[Move] = None
@@ -380,6 +382,7 @@ class Pokemon:
         self._current_hp = 0
         self._status = Status.FNT
         self.temporary_ability = None
+        self._temporary_base_stats = None
         self._temporary_moves = None
         self._mimic_move = None
         self._clear_effects()
@@ -592,6 +595,7 @@ class Pokemon:
         dex_entry = self._data.pokedex[into.species]
         self._heightm = dex_entry["heightm"]
         self._weightkg = dex_entry["weightkg"]
+        self._temporary_base_stats = dex_entry["baseStats"]
         if into.ability is not None:
             self.ability = into.ability
         self._temporary_types = [PokemonType.from_name(t) for t in dex_entry["types"]]
@@ -927,7 +931,11 @@ class Pokemon:
         :return: The pokemon's base stats.
         :rtype: Dict[str, int]
         """
-        return self._base_stats
+        return (
+            self._temporary_base_stats
+            if self._temporary_base_stats is not None
+            else self._base_stats
+        )
 
     @property
     def boosts(self) -> Dict[str, int]:
