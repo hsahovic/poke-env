@@ -791,11 +791,15 @@ class AbstractBattle(ABC):
                 mv = mon.moves[to_id_str(event[4])]
                 # Don't let current pp exceed max pp
                 mv._current_pp = min(mv._current_pp + 10, mv.max_pp)
-            if effect == "move: Mimic":
+            elif effect == "move: Mimic":
                 mon = self.get_pokemon(target)
                 mon._mimic_move = Move(
                     Move.retrieve_id(event[4]), gen=self._data.gen, from_mimic=True
                 )
+            elif effect == "move: Trick":
+                mon = self.get_pokemon(target)
+                mon2 = self.get_pokemon(event[4].replace("[of] ", ""))
+                mon._item, mon2._item = mon2.item, mon.item
             elif target != "":  # ['', '-activate', '', 'move: Splash']
                 self.get_pokemon(target).start_effect(effect)
         elif event[1] == "-status":
@@ -894,7 +898,13 @@ class AbstractBattle(ABC):
                     self.get_pokemon(victim).item = None
                 else:
                     raise ValueError(f"Unhandled item message: {event}")
-
+            elif len(event) == 5:
+                pokemon, item, cause = event[2:5]
+                self.get_pokemon(pokemon).item = to_id_str(item)
+                if cause == "[from] move: Trick":
+                    # event messages come out of order
+                    # if we see this, the item has already been consumed
+                    pass
             else:
                 pokemon, item = event[2:4]
                 self.get_pokemon(pokemon).item = to_id_str(item)
