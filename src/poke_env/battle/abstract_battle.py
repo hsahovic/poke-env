@@ -898,8 +898,7 @@ class AbstractBattle(ABC):
             else:
                 pokemon, item = event[2:4]
                 if len(event) > 4 and event[4] == "[from] move: Trick":
-                    # event messages come out of order
-                    # if we see this, the item has already been consumed
+                    # this event is handled in when consuming -activate event
                     return
                 self.get_pokemon(pokemon).item = to_id_str(item)
         elif event[1] == "-mega":
