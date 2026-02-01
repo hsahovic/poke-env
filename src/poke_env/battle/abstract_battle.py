@@ -895,15 +895,12 @@ class AbstractBattle(ABC):
                     self.get_pokemon(victim).item = None
                 else:
                     raise ValueError(f"Unhandled item message: {event}")
-            elif len(event) == 5:
-                pokemon, item, cause = event[2:5]
-                if cause == "[from] move: Trick":
+            else:
+                pokemon, item = event[2:4]
+                if len(event) > 4 and event[4] == "[from] move: Trick":
                     # event messages come out of order
                     # if we see this, the item has already been consumed
                     return
-                self.get_pokemon(pokemon).item = to_id_str(item)
-            else:
-                pokemon, item = event[2:4]
                 self.get_pokemon(pokemon).item = to_id_str(item)
         elif event[1] == "-mega":
             assert self.player_role is not None
