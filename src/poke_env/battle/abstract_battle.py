@@ -897,11 +897,11 @@ class AbstractBattle(ABC):
                     raise ValueError(f"Unhandled item message: {event}")
             elif len(event) == 5:
                 pokemon, item, cause = event[2:5]
-                self.get_pokemon(pokemon).item = to_id_str(item)
                 if cause == "[from] move: Trick":
                     # event messages come out of order
                     # if we see this, the item has already been consumed
-                    pass
+                    return
+                self.get_pokemon(pokemon).item = to_id_str(item)
             else:
                 pokemon, item = event[2:4]
                 self.get_pokemon(pokemon).item = to_id_str(item)
