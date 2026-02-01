@@ -22,7 +22,6 @@ class Pokemon:
         "_base_stats",
         "_boosts",
         "_current_hp",
-        "_data",
         "_effects",
         "_first_turn",
         "_gen",
