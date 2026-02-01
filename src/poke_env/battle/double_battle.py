@@ -140,12 +140,7 @@ class DoubleBattle(AbstractBattle):
                     force_self_team=True,
                     details=pokemon_dict["details"],
                 )
-                if (
-                    strict_battle_tracking
-                    and "illusion" not in [p.ability for p in self.team.values()]
-                    and "illusion"
-                    not in [p.ability for p in self.opponent_team.values()]
-                ):
+                if strict_battle_tracking:
                     active_pokemon.check_move_consistency(active_request)
                 if self.player_role is not None:
                     if (
