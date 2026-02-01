@@ -617,9 +617,6 @@ class AbstractBattle(ABC):
             pressure = self._pressure_on(pokemon, move, presumed_target or None)
             mon = self.get_pokemon(pokemon)
             if overridden_move:
-                # Moves that can trigger this branch results in two `move` messages being sent.
-                # We're setting use=False in the one (with the override) in order to prevent two pps from being used
-                # incorrectly.
                 mon.moved(move, failed=failed, use=False, reveal=reveal)
                 overridden = mon.moves[Move.retrieve_id(overridden_move)]
                 overridden.use(pressure, overridden=True)
