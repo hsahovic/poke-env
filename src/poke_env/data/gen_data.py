@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import os
-from functools import lru_cache
 from typing import Any, Dict, Optional, Union
 
 import orjson
@@ -114,15 +113,12 @@ class GenData:
         return os.path.join(os.path.dirname(os.path.realpath(__file__)), "static")
 
     @classmethod
-    @lru_cache(None)
     def from_gen(cls, gen: int) -> GenData:
-        gen_data = GenData(gen)
-        cls._gen_data_per_gen[gen] = gen_data
-
-        return gen_data
+        if gen not in cls._gen_data_per_gen:
+            cls._gen_data_per_gen[gen] = GenData(gen)
+        return cls._gen_data_per_gen[gen]
 
     @classmethod
-    @lru_cache(None)
     def from_format(cls, format: str) -> GenData:
         gen = int(format[3])  # Update when Gen 10 comes
         return cls.from_gen(gen)

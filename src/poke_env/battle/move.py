@@ -79,7 +79,6 @@ class Move:
         "_dynamaxed_move",
         "_from_mimic",
         "_gen",
-        "_moves_dict",
         "_request_target",
     )
 
@@ -94,7 +93,6 @@ class Move:
         self._base_power_override = None
         self._gen = gen
         self._from_mimic = from_mimic
-        self._moves_dict = GenData.from_gen(gen).moves
 
         if move_id.startswith("hiddenpower") and raw_id is not None:
             base_power = "".join([c for c in raw_id if c.isdigit()])
@@ -205,7 +203,7 @@ class Move:
         :return: The move category.
         :rtype: MoveCategory
         """
-        if self._gen <= 3 and self.entry["category"].upper() in {"PHYSICAL", "SPECIAL"}:
+        if self.gen <= 3 and self.entry["category"].upper() in {"PHYSICAL", "SPECIAL"}:
             return self._MOVE_CATEGORY_PER_TYPE_PRE_SPLIT[self.type]
         return MoveCategory[self.entry["category"].upper()]
 
@@ -300,10 +298,13 @@ class Move:
         :return: The data entry corresponding to the move
         :rtype: Dict
         """
-        if self._id in self._moves_dict:
-            return self._moves_dict[self._id]
-        elif self._id.startswith("z") and self._id[1:] in self._moves_dict:
-            return self._moves_dict[self._id[1:]]
+        if self._id in GenData.from_gen(self.gen).moves:
+            return GenData.from_gen(self.gen).moves[self._id]
+        elif (
+            self._id.startswith("z")
+            and self._id[1:] in GenData.from_gen(self.gen).moves
+        ):
+            return GenData.from_gen(self.gen).moves[self._id[1:]]
         elif self._id == "recharge":
             return {"pp": 1, "type": "normal", "category": "Special", "accuracy": 1}
         else:
@@ -352,6 +353,14 @@ class Move:
         :rtype: bool
         """
         return self.entry.get("forceSwitch", False)
+
+    @property
+    def gen(self) -> int:
+        """
+        :return: The generation of the move.
+        :rtype: int
+        """
+        return self._gen
 
     @property
     def heal(self) -> float:
@@ -442,7 +451,7 @@ class Move:
         :return: Whether the move is a z move.
         :rtype: bool
         """
-        return Move.is_id_z(self.id, gen=self._gen)
+        return Move.is_id_z(self.id, gen=self.gen)
 
     @property
     def max_pp(self) -> int:

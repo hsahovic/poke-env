@@ -23,9 +23,9 @@ class Pokemon:
         "_base_stats",
         "_boosts",
         "_current_hp",
-        "_data",
         "_effects",
         "_first_turn",
+        "_gen",
         "_gender",
         "_heightm",
         "_item",
@@ -69,9 +69,6 @@ class Pokemon:
         details: Optional[str] = None,
         teambuilder: Optional[TeambuilderPokemon] = None,
     ):
-        # Base data
-        self._data = GenData.from_gen(gen)
-
         # Species related attributes
         self._base_stats: Dict[str, int]
         self._heightm: int
@@ -91,7 +88,7 @@ class Pokemon:
         self._shiny: Optional[bool] = False
 
         # Battle related attributes
-
+        self._gen = gen
         self._active: bool = False
         self._boosts: Dict[str, int] = {
             "accuracy": 0,
@@ -107,7 +104,7 @@ class Pokemon:
         self._first_turn: bool = False
         self._terastallized: bool = False
         self._terastallized_type: Optional[PokemonType] = None
-        self._item: Optional[str] = self._data.UNKNOWN_ITEM
+        self._item: Optional[str] = GenData.from_gen(gen).UNKNOWN_ITEM
         self._last_request: Optional[Dict[str, Any]] = {}
         self._last_details: str = ""
         self._must_recharge: bool = False
@@ -163,10 +160,10 @@ class Pokemon:
         id_ = Move.retrieve_id(move_id)
         if id_ in self.moves:
             return self.moves[id_]
-        if not Move.should_be_stored(id_, self._data.gen):
+        if not Move.should_be_stored(id_, self.gen):
             return None
         if id_ not in self.base_moves:
-            move = Move(move_id=id_, raw_id=move_id, gen=self._data.gen)
+            move = Move(move_id=id_, raw_id=move_id, gen=self.gen)
             self.base_moves[id_] = move
         return self.base_moves[id_]
 
@@ -221,7 +218,7 @@ class Pokemon:
             # needed for item initialization in start of game,
             # done anyway in update_from_request()
             self._item = pkmn_request["item"]
-        if self._data.gen > 4:
+        if self.gen > 4:
             assert pkmn_request["item"] == (
                 self.item or ""
             ), f"{pkmn_request['item']} != {self.item or ''}"
@@ -268,7 +265,7 @@ class Pokemon:
             if not matches:
                 continue
             move = matches[0]
-            if "pp" in move_request and self._data.gen not in [1, 2, 3, 7, 8]:
+            if "pp" in move_request and self.gen not in [1, 2, 3, 7, 8]:
                 # exclude early gens because of unreliable Showdown event messages
                 # exclude gen 7 and 8 because of Z-move and Max Move PP untrackability
                 assert (
@@ -410,7 +407,7 @@ class Pokemon:
             else species_id_str
         )
         self.temporary_ability = None
-        if mega_species in self._data.pokedex:
+        if mega_species in GenData.from_gen(self.gen).pokedex:
             self._update_from_pokedex(mega_species, store_species=False)
         elif stone[-1] in "XYxy":
             mega_species = mega_species + stone[-1].lower()
@@ -579,7 +576,7 @@ class Pokemon:
         self._temporary_types = []
 
     def transform(self, into: Pokemon):
-        dex_entry = self._data.pokedex[into.species]
+        dex_entry = GenData.from_gen(self.gen).pokedex[into.species]
         self._heightm = dex_entry["heightm"]
         self._weightkg = dex_entry["weightkg"]
         self._temporary_base_stats = dex_entry["baseStats"]
@@ -593,7 +590,7 @@ class Pokemon:
 
     def _update_from_pokedex(self, species: str, store_species: bool = True):
         species = to_id_str(species)
-        dex_entry = self._data.pokedex[species]
+        dex_entry = GenData.from_gen(self.gen).pokedex[species]
         if store_species:
             self._species = species
         self._base_stats = dex_entry["baseStats"]
@@ -614,7 +611,7 @@ class Pokemon:
             self._possible_abilities = [
                 to_id_str(ability) for ability in dex_entry["abilities"].values()
             ]
-            if len(self._possible_abilities) == 1 and self._data.gen >= 3:
+            if len(self._possible_abilities) == 1 and self.gen >= 3:
                 self.ability = self._possible_abilities[0]
         else:
             self.forme_change_ability = None
@@ -725,14 +722,19 @@ class Pokemon:
             self._terastallized_type = PokemonType.from_name(tb.tera_type)
         self._moves = {}
         for move_str in tb.moves:
-            move = Move(Move.retrieve_id(move_str), gen=self._data.gen)
+            move = Move(Move.retrieve_id(move_str), gen=self.gen)
             self._moves[move.id] = move
 
         if tb.level:
             nature = tb.nature.lower() if tb.nature else "serious"
             self._stats = {}
             stats = compute_raw_stats(
-                self._species, tb.evs, tb.ivs, tb.level, nature, self._data
+                self._species,
+                tb.evs,
+                tb.ivs,
+                tb.level,
+                nature,
+                GenData.from_gen(self.gen),
             )
             for stat, val in zip(["hp", "atk", "def", "spa", "spd", "spe"], stats):
                 self._stats[stat] = val
@@ -763,7 +765,7 @@ class Pokemon:
                 else:
                     moves.append(self.moves[move])
             elif move in SPECIAL_MOVES:
-                moves.append(Move(move, gen=self._data.gen))
+                moves.append(Move(move, gen=self.gen))
             elif (
                 move == "hiddenpower"
                 and len([m for m in self.moves if m.startswith("hiddenpower")]) == 1
@@ -799,7 +801,7 @@ class Pokemon:
                         f"or the pokemon to have a move-granting ability. Got moves: {self.moves}, "
                         f"ability: {self.ability}"
                     )
-                moves.append(Move(move, gen=self._data.gen))
+                moves.append(Move(move, gen=self.gen))
         return moves
 
     def damage_multiplier(self, type_or_move: Union[PokemonType, Move]) -> float:
@@ -817,7 +819,7 @@ class Pokemon:
         if isinstance(type_or_move, Move):
             type_or_move = type_or_move.type
         return type_or_move.damage_multiplier(
-            self.type_1, self.type_2, type_chart=self._data.type_chart
+            self.type_1, self.type_2, type_chart=GenData.from_gen(self.gen).type_chart
         )
 
     @property
@@ -899,7 +901,7 @@ class Pokemon:
         :return: The pokemon's base species.
         :rtype: str
         """
-        dex_entry = self._data.pokedex[self._species]
+        dex_entry = GenData.from_gen(self.gen).pokedex[self._species]
         return to_id_str(dex_entry["baseSpecies"])
 
     @property
@@ -982,6 +984,14 @@ class Pokemon:
     @forme_change_ability.setter
     def forme_change_ability(self, ability: Optional[str]):
         self._forme_change_ability = to_id_str(ability) if ability is not None else None
+
+    @property
+    def gen(self) -> int:
+        """
+        :return: The generation of the pokemon.
+        :rtype: int
+        """
+        return self._gen
 
     @property
     def gender(self) -> Optional[PokemonGender]:
@@ -1103,7 +1113,7 @@ class Pokemon:
         if self._name is not None:
             return self._name
         else:
-            dex_entry = self._data.pokedex[self._species]
+            dex_entry = GenData.from_gen(self.gen).pokedex[self._species]
             if dex_entry["baseSpecies"].islower():
                 return dex_entry["name"]
             else:

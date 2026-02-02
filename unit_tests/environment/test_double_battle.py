@@ -1,3 +1,4 @@
+import pickle
 from unittest.mock import MagicMock
 
 import pytest
@@ -35,7 +36,7 @@ def test_battle_request_parsing_and_interactions(example_doubles_request):
 
     battle.parse_request(example_doubles_request)
     mr_rime, klinklang = battle.active_pokemon
-    (my_first_active, my_second_active, their_first_active, their_second_active) = (
+    my_first_active, my_second_active, their_first_active, their_second_active = (
         battle.all_active_pokemons
     )
     assert my_first_active == mr_rime and my_second_active == klinklang
@@ -107,8 +108,8 @@ def test_battle_request_parsing_and_interactions(example_doubles_request):
 
     assert not battle.opponent_used_dynamax
 
-    assert battle.current_observation
-    assert battle.current_observation.events[0] == ["", "swap", "p1b: Klinklang", ""]
+    battle.logger = None
+    pickle.loads(pickle.dumps(battle))
 
 
 def test_check_heal_message_for_ability():

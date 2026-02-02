@@ -13,7 +13,7 @@ from poke_env.battle.pokemon import Pokemon
 from poke_env.battle.pokemon_type import PokemonType
 from poke_env.battle.side_condition import STACKABLE_CONDITIONS, SideCondition
 from poke_env.battle.weather import Weather
-from poke_env.data import GenData, to_id_str
+from poke_env.data import to_id_str
 from poke_env.data.replay_template import REPLAY_TEMPLATE
 
 
@@ -78,7 +78,6 @@ class AbstractBattle(ABC):
         "_can_tera",
         "_can_z_move",
         "_current_observation",
-        "_data",
         "_dynamax_turn",
         "_fields",
         "_finished",
@@ -134,9 +133,6 @@ class AbstractBattle(ABC):
         save_replays: Union[str, bool],
         gen: int,
     ):
-        # Load data
-        self._data = GenData.from_gen(gen)
-
         # Utils attributes
         self._battle_tag: str = battle_tag
         self._gen: int = gen
@@ -270,14 +266,12 @@ class AbstractBattle(ABC):
             )
 
         if request:
-            team[identifier] = Pokemon(
-                request_pokemon=request, name=name, gen=self._data.gen
-            )
+            team[identifier] = Pokemon(request_pokemon=request, name=name, gen=self.gen)
         elif details:
-            team[identifier] = Pokemon(details=details, name=name, gen=self._data.gen)
+            team[identifier] = Pokemon(details=details, name=name, gen=self.gen)
         else:
             species = identifier[4:]
-            team[identifier] = Pokemon(species=species, name=name, gen=self._data.gen)
+            team[identifier] = Pokemon(species=species, name=name, gen=self.gen)
 
         return team[identifier]
 
@@ -1095,7 +1089,7 @@ class AbstractBattle(ABC):
 
     def _register_teampreview_pokemon(self, player: str, details: str):
         if player != self._player_role:
-            mon = Pokemon(details=details, gen=self._data.gen)
+            mon = Pokemon(details=details, gen=self.gen)
             self._teampreview_opponent_team.append(mon)
 
     def side_end(self, side: str, condition_str: str):
