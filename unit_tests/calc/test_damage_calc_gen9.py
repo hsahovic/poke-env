@@ -479,8 +479,7 @@ def test_weight():
 
 
 def test_psychicterrain_psystrike_and_marvelscale():
-    mewtwo = Teambuilder.parse_showdown_team(
-        """
+    mewtwo = Teambuilder.parse_showdown_team("""
     Mewtwo
     Ability: Pressure
     Level: 100
@@ -489,20 +488,17 @@ def test_psychicterrain_psystrike_and_marvelscale():
     Timid Nature
     - Psystrike
     - Sucker Punch
-    """
-    )[0]
+    """)[0]
     attacker = Pokemon(9, teambuilder=mewtwo)
     attacker.boosts["spa"] = 2
-    milotic = Teambuilder.parse_showdown_team(
-        """
+    milotic = Teambuilder.parse_showdown_team("""
     Milotic @ Flame Orb
     Ability: Marvel Scale
     Level: 100
     EVs: 248 HP / 184 Def
     Bold Nature
     - Water Pulse
-    """
-    )[0]
+    """)[0]
     defender = Pokemon(9, teambuilder=milotic)
     defender.set_hp_status("100/100 brn")
     defender.boosts["spd"] = 1
