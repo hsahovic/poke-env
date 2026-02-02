@@ -227,6 +227,8 @@ class DoubleBattle(AbstractBattle):
                 else self.active_pokemon
             )
             cleaned_targets = [t for t in targets if t is not None]
+            if not cleaned_targets:
+                return False
             target = cleaned_targets[0]
             for t in cleaned_targets:
                 if target.ability != "pressure":
