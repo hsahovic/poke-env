@@ -583,7 +583,7 @@ class Pokemon:
         if into.ability is not None:
             self.ability = into.ability
         self._temporary_types = [PokemonType.from_name(t) for t in dex_entry["types"]]
-        self._transform_moves = {m.id: Move(m.id, m._gen) for m in into.moves.values()}
+        self._transform_moves = {m.id: Move(m.id, m.gen) for m in into.moves.values()}
         for m in self._transform_moves.values():
             m._current_pp = 5
         self._boosts = into.boosts.copy()
