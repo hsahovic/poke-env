@@ -3,6 +3,7 @@ import logging
 from poke_env.battle import Battle, Move, Pokemon
 from poke_env.battle.side_condition import SideCondition
 from poke_env.calc.damage_calc_gen1_2 import calculate_damage_gen12
+from poke_env.data import GenData
 from poke_env.stats import compute_raw_stats_dvs
 
 
@@ -27,7 +28,9 @@ def create_battle(
                 k: v
                 for k, v in zip(
                     ["hp", "atk", "def", "spa", "spd", "spe"],
-                    compute_raw_stats_dvs(mon.species, [15] * 6, mon.level, mon._data),
+                    compute_raw_stats_dvs(
+                        mon.species, [15] * 6, mon.level, GenData.from_gen(mon.gen)
+                    ),
                 )
             }
     for position, mon in zip(["p1", "p2"], [p1a, p2a]):

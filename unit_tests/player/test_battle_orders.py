@@ -1,4 +1,4 @@
-from poke_env.battle import EmptyMove, Move, Pokemon
+from poke_env.battle import Move, Pokemon
 from poke_env.player import (
     BattleOrder,
     DoubleBattleOrder,
@@ -9,7 +9,7 @@ from poke_env.player import (
 
 
 def test_recharge_order():
-    recharge = EmptyMove("recharge")
+    recharge = Move("recharge", gen=9)
     assert SingleBattleOrder(recharge).message == "/choose move 1"
 
 

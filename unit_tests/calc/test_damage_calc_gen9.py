@@ -3,6 +3,7 @@ from typing import Union
 
 from poke_env.battle import Battle, DoubleBattle, Move, Pokemon
 from poke_env.calc.damage_calc_gen9 import calculate_base_power, calculate_damage
+from poke_env.data import GenData
 from poke_env.stats import compute_raw_stats
 from poke_env.teambuilder import Teambuilder
 
@@ -35,7 +36,7 @@ def create_battle(
                             [31] * 6,
                             mon.level,
                             "serious",
-                            mon._data,
+                            GenData.from_gen(battle.gen),
                         ),
                     )
                 }
@@ -67,7 +68,7 @@ def create_battle(
                             [31] * 6,
                             mon.level,
                             "serious",
-                            mon._data,
+                            GenData.from_gen(battle.gen),
                         ),
                     )
                 }
