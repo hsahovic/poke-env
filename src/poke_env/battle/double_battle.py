@@ -7,7 +7,7 @@ from poke_env.battle.move_category import MoveCategory
 from poke_env.battle.pokemon import Pokemon
 from poke_env.battle.pokemon_type import PokemonType
 from poke_env.battle.target import Target
-from poke_env.data.gen_data import GenData
+from poke_env.data import GenData
 from poke_env.player.battle_order import (
     DefaultBattleOrder,
     PassBattleOrder,
