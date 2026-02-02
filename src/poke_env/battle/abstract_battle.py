@@ -741,7 +741,7 @@ class AbstractBattle(ABC):
             else:
                 if effect == "Mimic":
                     mon._mimic_move = Move(
-                        Move.retrieve_id(event[4]), gen=self._data.gen, from_mimic=True
+                        Move.retrieve_id(event[4]), gen=self.gen, from_mimic=True
                     )
                 mon.start_effect(effect)
 
@@ -782,7 +782,7 @@ class AbstractBattle(ABC):
             elif effect == "move: Mimic":
                 mon = self.get_pokemon(target)
                 mon._mimic_move = Move(
-                    Move.retrieve_id(event[4]), gen=self._data.gen, from_mimic=True
+                    Move.retrieve_id(event[4]), gen=self.gen, from_mimic=True
                 )
             elif effect == "move: Trick":
                 mon = self.get_pokemon(target)

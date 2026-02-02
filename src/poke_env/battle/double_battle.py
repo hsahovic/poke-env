@@ -7,6 +7,7 @@ from poke_env.battle.move_category import MoveCategory
 from poke_env.battle.pokemon import Pokemon
 from poke_env.battle.pokemon_type import PokemonType
 from poke_env.battle.target import Target
+from poke_env.data.gen_data import GenData
 from poke_env.player.battle_order import (
     DefaultBattleOrder,
     PassBattleOrder,
@@ -214,11 +215,11 @@ class DoubleBattle(AbstractBattle):
 
     def _pressure_on(self, pokemon: str, move: str, target_str: Optional[str]) -> bool:
         move_id = Move.retrieve_id(move)
-        if move_id not in self._data.moves:
+        if move_id not in GenData.from_gen(self.gen).moves:
             # This happens when `move` is a z-move. Since z-moves cannot be PP tracked
             # anyway, we just return False here.
             return False
-        move_data = self._data.moves[move_id]
+        move_data = GenData.from_gen(self.gen).moves[move_id]
         if move_data["target"] == "all" or target_str is None:
             targets = (
                 self.opponent_active_pokemon
@@ -236,7 +237,7 @@ class DoubleBattle(AbstractBattle):
         return (
             target.ability == "pressure"
             and not target.fainted
-            and self._data.moves[Move.retrieve_id(move)]["target"]
+            and move_data["target"]
             in [
                 "all",
                 "allAdjacent",

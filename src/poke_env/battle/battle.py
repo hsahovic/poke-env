@@ -4,6 +4,7 @@ from typing import Any, Dict, List, Optional, Union
 from poke_env.battle.abstract_battle import AbstractBattle
 from poke_env.battle.move import Move
 from poke_env.battle.pokemon import Pokemon
+from poke_env.data.gen_data import GenData
 from poke_env.player.battle_order import DefaultBattleOrder, SingleBattleOrder
 
 
@@ -129,11 +130,11 @@ class Battle(AbstractBattle):
 
     def _pressure_on(self, pokemon: str, move: str, target_str: Optional[str]) -> bool:
         move_id = Move.retrieve_id(move)
-        if move_id not in self._data.moves:
+        if move_id not in GenData.from_gen(self.gen).moves:
             # This happens when `move` is a z-move. Since z-moves cannot be PP tracked
             # anyway, we just return False here.
             return False
-        move_data = self._data.moves[move_id]
+        move_data = GenData.from_gen(self.gen).moves[move_id]
         if move_data["target"] == "all" or target_str is None:
             target = (
                 self.opponent_active_pokemon
