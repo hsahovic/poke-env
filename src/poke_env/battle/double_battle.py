@@ -96,6 +96,7 @@ class DoubleBattle(AbstractBattle):
             for target in targets:
                 if target is not None and target.ability == "pressure":
                     return target
+            return None
 
     def parse_request(
         self, request: Dict[str, Any], strict_battle_tracking: bool = False
