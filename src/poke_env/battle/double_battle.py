@@ -7,7 +7,6 @@ from poke_env.battle.move_category import MoveCategory
 from poke_env.battle.pokemon import Pokemon
 from poke_env.battle.pokemon_type import PokemonType
 from poke_env.battle.target import Target
-from poke_env.data import GenData
 from poke_env.player.battle_order import (
     DefaultBattleOrder,
     PassBattleOrder,
@@ -82,6 +81,21 @@ class DoubleBattle(AbstractBattle):
         if pokemon_2 is None or not pokemon_2.active or pokemon_2.fainted:
             pokemon_2 = None
         return [pokemon_1, pokemon_2]
+
+    def _get_target_mon(
+        self, pokemon: str, target_type: str, target_str: str | None
+    ) -> Pokemon | None:
+        if target_type != "all" and target_str is not None:
+            return self.get_pokemon(target_str)
+        else:
+            targets = (
+                self.opponent_active_pokemon
+                if self.player_role == pokemon[:2]
+                else self.active_pokemon
+            )
+            for target in targets:
+                if target is not None and target.ability == "pressure":
+                    return target
 
     def parse_request(
         self, request: Dict[str, Any], strict_battle_tracking: bool = False
@@ -212,45 +226,6 @@ class DoubleBattle(AbstractBattle):
                     pokemon = self.team[pkmn_json["ident"]]
                     if not pokemon.active and self.reviving == pokemon.fainted:
                         self._available_switches[i].append(pokemon)
-
-    def _pressure_on(self, pokemon: str, move: str, target_str: Optional[str]) -> bool:
-        move_id = Move.retrieve_id(move)
-        if move_id not in GenData.from_gen(self.gen).moves:
-            # This happens when `move` is a z-move. Since z-moves cannot be PP tracked
-            # anyway, we just return False here.
-            return False
-        move_data = GenData.from_gen(self.gen).moves[move_id]
-        if move_data["target"] == "all" or target_str is None:
-            targets = (
-                self.opponent_active_pokemon
-                if self.player_role == pokemon[:2]
-                else self.active_pokemon
-            )
-            cleaned_targets = [t for t in targets if t is not None]
-            if not cleaned_targets:
-                return False
-            target = cleaned_targets[0]
-            for t in cleaned_targets:
-                if target.ability != "pressure":
-                    target = t
-            assert target is not None
-        else:
-            target = self.get_pokemon(target_str)
-        return (
-            target.ability == "pressure"
-            and not target.fainted
-            and move_data["target"]
-            in [
-                "all",
-                "allAdjacent",
-                "allAdjacentFoes",
-                "any",
-                "normal",
-                "randomNormal",
-                "scripted",
-            ]
-            or "mustpressure" in move_data["flags"]
-        )
 
     def switch(self, pokemon_str: str, details: str, hp_status: str):
         pokemon_identifier = pokemon_str.split(":")[0][:3]
