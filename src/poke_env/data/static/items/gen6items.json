@@ -1,0 +1,129 @@
+{
+    "aguavberry": {
+        "inherit": true,
+        "onEat": "onEat",
+        "onUpdate": "onUpdate"
+    },
+    "belueberry": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "cornnberry": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "durinberry": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "fastball": {
+        "inherit": true,
+        "isNonstandard": "Unobtainable"
+    },
+    "figyberry": {
+        "inherit": true,
+        "onEat": "onEat",
+        "onUpdate": "onUpdate"
+    },
+    "heavyball": {
+        "inherit": true,
+        "isNonstandard": "Unobtainable"
+    },
+    "iapapaberry": {
+        "inherit": true,
+        "onEat": "onEat",
+        "onUpdate": "onUpdate"
+    },
+    "jabocaberry": {
+        "inherit": true,
+        "onDamagingHit": "onDamagingHit"
+    },
+    "levelball": {
+        "inherit": true,
+        "isNonstandard": "Unobtainable"
+    },
+    "lifeorb": {
+        "inherit": true,
+        "onAfterMoveSecondarySelf": "onAfterMoveSecondarySelf"
+    },
+    "loveball": {
+        "inherit": true,
+        "isNonstandard": "Unobtainable"
+    },
+    "lureball": {
+        "inherit": true,
+        "isNonstandard": "Unobtainable"
+    },
+    "machobrace": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "magoberry": {
+        "inherit": true,
+        "onEat": "onEat",
+        "onUpdate": "onUpdate"
+    },
+    "magostberry": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "moonball": {
+        "inherit": true,
+        "isNonstandard": "Unobtainable"
+    },
+    "nanabberry": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "nomelberry": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "oldamber": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "pamtreberry": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "rabutaberry": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "razzberry": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "rockyhelmet": {
+        "inherit": true,
+        "onDamagingHit": "onDamagingHit"
+    },
+    "rowapberry": {
+        "inherit": true,
+        "onDamagingHit": "onDamagingHit"
+    },
+    "souldew": {
+        "inherit": true,
+        "onBasePower": "onBasePower",
+        "onModifySpD": "onModifySpD",
+        "onModifySpDPriority": 2
+    },
+    "spelonberry": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "watmelberry": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "wepearberry": {
+        "inherit": true,
+        "isNonstandard": null
+    },
+    "wikiberry": {
+        "inherit": true,
+        "onEat": "onEat",
+        "onUpdate": "onUpdate"
+    }
+}

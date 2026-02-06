@@ -1,0 +1,173 @@
+{
+    "aguavberry": {
+        "inherit": true,
+        "onUpdate": "onUpdate"
+    },
+    "apicotberry": {
+        "inherit": true,
+        "onUpdate": "onUpdate"
+    },
+    "berryjuice": {
+        "inherit": true,
+        "isNonstandard": "Unobtainable",
+        "onUpdate": "onUpdate"
+    },
+    "blackbelt": {
+        "inherit": true,
+        "onBasePower": "onBasePower"
+    },
+    "blackglasses": {
+        "inherit": true,
+        "onBasePower": "onBasePower"
+    },
+    "charcoal": {
+        "inherit": true,
+        "onBasePower": "onBasePower"
+    },
+    "dragonfang": {
+        "inherit": true,
+        "onBasePower": "onBasePower"
+    },
+    "enigmaberry": {
+        "gen": 3,
+        "isBerry": true,
+        "isNonstandard": "Unobtainable",
+        "name": "Enigma Berry",
+        "num": 208,
+        "spritenum": 124
+    },
+    "fastball": {
+        "inherit": true,
+        "isNonstandard": "Unobtainable"
+    },
+    "figyberry": {
+        "inherit": true,
+        "onUpdate": "onUpdate"
+    },
+    "ganlonberry": {
+        "inherit": true,
+        "onUpdate": "onUpdate"
+    },
+    "hardstone": {
+        "inherit": true,
+        "onBasePower": "onBasePower"
+    },
+    "heavyball": {
+        "inherit": true,
+        "isNonstandard": "Unobtainable"
+    },
+    "iapapaberry": {
+        "inherit": true,
+        "onUpdate": "onUpdate"
+    },
+    "kingsrock": {
+        "inherit": true,
+        "onModifyMove": "onModifyMove"
+    },
+    "lansatberry": {
+        "inherit": true,
+        "onUpdate": "onUpdate"
+    },
+    "laxincense": {
+        "inherit": true,
+        "onModifyAccuracy": "onModifyAccuracy"
+    },
+    "levelball": {
+        "inherit": true,
+        "isNonstandard": "Unobtainable"
+    },
+    "liechiberry": {
+        "inherit": true,
+        "onUpdate": "onUpdate"
+    },
+    "lightball": {
+        "inherit": true,
+        "onBasePower": "onBasePower",
+        "onModifySpA": "onModifySpA"
+    },
+    "magoberry": {
+        "inherit": true,
+        "onUpdate": "onUpdate"
+    },
+    "metalcoat": {
+        "inherit": true,
+        "onBasePower": "onBasePower"
+    },
+    "miracleseed": {
+        "inherit": true,
+        "onBasePower": "onBasePower"
+    },
+    "moonball": {
+        "inherit": true,
+        "isNonstandard": "Unobtainable"
+    },
+    "mysticwater": {
+        "inherit": true,
+        "onBasePower": "onBasePower"
+    },
+    "nevermeltice": {
+        "inherit": true,
+        "onBasePower": "onBasePower"
+    },
+    "oranberry": {
+        "inherit": true,
+        "onUpdate": "onUpdate"
+    },
+    "petayaberry": {
+        "inherit": true,
+        "onUpdate": "onUpdate"
+    },
+    "poisonbarb": {
+        "inherit": true,
+        "onBasePower": "onBasePower"
+    },
+    "quickclaw": {
+        "inherit": true,
+        "onFractionalPriority": "onFractionalPriority"
+    },
+    "seaincense": {
+        "inherit": true,
+        "onBasePower": "onBasePower"
+    },
+    "sharpbeak": {
+        "inherit": true,
+        "onBasePower": "onBasePower"
+    },
+    "silkscarf": {
+        "inherit": true,
+        "onBasePower": "onBasePower"
+    },
+    "silverpowder": {
+        "inherit": true,
+        "onBasePower": "onBasePower"
+    },
+    "sitrusberry": {
+        "inherit": true,
+        "onEat": "onEat",
+        "onUpdate": "onUpdate"
+    },
+    "softsand": {
+        "inherit": true,
+        "onBasePower": "onBasePower"
+    },
+    "spelltag": {
+        "inherit": true,
+        "onBasePower": "onBasePower"
+    },
+    "sportball": {
+        "inherit": true,
+        "isNonstandard": "Unobtainable"
+    },
+    "starfberry": {
+        "inherit": true,
+        "onUpdate": "onUpdate"
+    },
+    "twistedspoon": {
+        "inherit": true,
+        "onBasePower": "onBasePower"
+    },
+    "wikiberry": {
+        "inherit": true,
+        "onUpdate": "onUpdate"
+    }
+}

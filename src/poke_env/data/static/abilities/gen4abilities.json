@@ -1,0 +1,265 @@
+{
+    "airlock": {
+        "inherit": true,
+        "onSwitchIn": "onSwitchIn"
+    },
+    "angerpoint": {
+        "inherit": true,
+        "onAfterSubDamage": "onAfterSubDamage",
+        "rating": 1.5
+    },
+    "baddreams": {
+        "inherit": true,
+        "onResidualOrder": 10,
+        "onResidualSubOrder": 10
+    },
+    "blaze": {
+        "name": "Blaze",
+        "num": 66,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 2,
+        "rating": 2
+    },
+    "cloudnine": {
+        "inherit": true,
+        "onSwitchIn": "onSwitchIn"
+    },
+    "colorchange": {
+        "inherit": true,
+        "onAfterMoveSecondary": "onAfterMoveSecondary",
+        "onDamagingHit": "onDamagingHit"
+    },
+    "cutecharm": {
+        "inherit": true,
+        "onDamagingHit": "onDamagingHit"
+    },
+    "download": {
+        "inherit": true,
+        "onStart": "onStart"
+    },
+    "effectspore": {
+        "inherit": true,
+        "onDamagingHit": "onDamagingHit"
+    },
+    "flamebody": {
+        "inherit": true,
+        "onDamagingHit": "onDamagingHit"
+    },
+    "flashfire": {
+        "condition": {
+            "noCopy": true,
+            "onEnd": "onEnd",
+            "onModifyDamagePhase1": "onModifyDamagePhase1",
+            "onStart": "onStart"
+        },
+        "inherit": true,
+        "onTryHit": "onTryHit"
+    },
+    "flowergift": {
+        "flags": {
+            "breakable": 1
+        },
+        "inherit": true,
+        "onAllyModifyAtk": "onAllyModifyAtk",
+        "onAllyModifySpD": "onAllyModifySpD"
+    },
+    "forecast": {
+        "flags": {
+            "notrace": 1
+        },
+        "inherit": true
+    },
+    "forewarn": {
+        "inherit": true,
+        "onStart": "onStart"
+    },
+    "frisk": {
+        "inherit": true,
+        "onStart": "onStart"
+    },
+    "hustle": {
+        "inherit": true,
+        "onSourceModifyAccuracy": "onSourceModifyAccuracy",
+        "onSourceModifyAccuracyPriority": 7
+    },
+    "hydration": {
+        "name": "Hydration",
+        "num": 93,
+        "onWeather": "onWeather",
+        "rating": 1.5
+    },
+    "insomnia": {
+        "inherit": true,
+        "rating": 2.5
+    },
+    "intimidate": {
+        "inherit": true,
+        "onStart": "onStart"
+    },
+    "leafguard": {
+        "inherit": true,
+        "onSetStatus": "onSetStatus"
+    },
+    "lightningrod": {
+        "inherit": true,
+        "onTryHit": "onTryHit"
+    },
+    "magicguard": {
+        "name": "Magic Guard",
+        "num": 98,
+        "onDamage": "onDamage",
+        "onSetStatus": "onSetStatus",
+        "rating": 4.5
+    },
+    "minus": {
+        "name": "Minus",
+        "num": 58,
+        "onModifySpA": "onModifySpA",
+        "rating": 0
+    },
+    "naturalcure": {
+        "inherit": true,
+        "onCheckShow": "onCheckShow"
+    },
+    "normalize": {
+        "inherit": true,
+        "onModifyMove": "onModifyMove"
+    },
+    "overgrow": {
+        "name": "Overgrow",
+        "num": 65,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 2,
+        "rating": 2
+    },
+    "pickup": {
+        "name": "Pickup",
+        "num": 53,
+        "rating": 0
+    },
+    "plus": {
+        "name": "Plus",
+        "num": 57,
+        "onModifySpA": "onModifySpA",
+        "rating": 0
+    },
+    "poisonpoint": {
+        "inherit": true,
+        "onDamagingHit": "onDamagingHit"
+    },
+    "pressure": {
+        "name": "Pressure",
+        "num": 46,
+        "onDeductPP": "onDeductPP",
+        "onStart": "onStart",
+        "rating": 1.5
+    },
+    "rebound": {
+        "inherit": true,
+        "onTryHitSide": "onTryHitSide"
+    },
+    "roughskin": {
+        "inherit": true,
+        "onDamagingHit": "onDamagingHit"
+    },
+    "sandveil": {
+        "inherit": true,
+        "onModifyAccuracy": "onModifyAccuracy",
+        "onModifyAccuracyPriority": 8
+    },
+    "serenegrace": {
+        "inherit": true,
+        "onModifyMove": "onModifyMove"
+    },
+    "shedskin": {
+        "inherit": true,
+        "onResidualOrder": 10,
+        "onResidualSubOrder": 3
+    },
+    "simple": {
+        "flags": {
+            "breakable": 1
+        },
+        "name": "Simple",
+        "num": 86,
+        "onModifyBoost": "onModifyBoost",
+        "rating": 4
+    },
+    "snowcloak": {
+        "inherit": true,
+        "onModifyAccuracy": "onModifyAccuracy",
+        "onModifyAccuracyPriority": 8
+    },
+    "speedboost": {
+        "inherit": true,
+        "onResidualOrder": 10,
+        "onResidualSubOrder": 3
+    },
+    "static": {
+        "inherit": true,
+        "onDamagingHit": "onDamagingHit"
+    },
+    "stench": {
+        "name": "Stench",
+        "num": 1,
+        "rating": 0
+    },
+    "stickyhold": {
+        "inherit": true,
+        "onTakeItem": "onTakeItem"
+    },
+    "stormdrain": {
+        "inherit": true,
+        "name": "Swarm",
+        "num": 68,
+        "onTryHit": "onTryHit",
+        "rating": 2
+    },
+    "synchronize": {
+        "inherit": true,
+        "onAfterSetStatus": "onAfterSetStatus"
+    },
+    "tangledfeet": {
+        "inherit": true,
+        "onModifyAccuracy": "onModifyAccuracy",
+        "onModifyAccuracyPriority": 6
+    },
+    "thickfat": {
+        "flags": {
+            "breakable": 1
+        },
+        "name": "Thick Fat",
+        "num": 47,
+        "onSourceBasePower": "onSourceBasePower",
+        "onSourceBasePowerPriority": 1,
+        "rating": 3.5
+    },
+    "torrent": {
+        "name": "Torrent",
+        "num": 67,
+        "onBasePower": "onBasePower",
+        "onBasePowerPriority": 2,
+        "rating": 2
+    },
+    "trace": {
+        "flags": {
+            "notrace": 1
+        },
+        "inherit": true,
+        "onUpdate": "onUpdate"
+    },
+    "unburden": {
+        "condition": {
+            "onModifySpe": "onModifySpe"
+        },
+        "inherit": true
+    },
+    "vitalspirit": {
+        "inherit": true,
+        "rating": 2.5
+    },
+    "wonderguard": {
+        "inherit": true,
+        "onTryHit": "onTryHit"
+    }
+}

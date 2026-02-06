@@ -1,0 +1,43 @@
+{
+    "darkaura": {
+        "flags": {
+            "breakable": 1
+        },
+        "inherit": true
+    },
+    "disguise": {
+        "inherit": true,
+        "onDamage": "onDamage",
+        "onUpdate": "onUpdate"
+    },
+    "fairyaura": {
+        "flags": {
+            "breakable": 1
+        },
+        "inherit": true
+    },
+    "innerfocus": {
+        "inherit": true,
+        "onTryBoost": "onTryBoost",
+        "rating": 1
+    },
+    "oblivious": {
+        "inherit": true,
+        "name": "Rattled",
+        "num": 155,
+        "onTryBoost": "onTryBoost",
+        "rating": 1.5
+    },
+    "scrappy": {
+        "inherit": true,
+        "onTryBoost": "onTryBoost"
+    },
+    "soundproof": {
+        "inherit": true,
+        "onTryHit": "onTryHit"
+    },
+    "technician": {
+        "inherit": true,
+        "onBasePowerPriority": 19
+    }
+}
