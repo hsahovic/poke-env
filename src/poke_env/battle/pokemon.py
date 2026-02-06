@@ -279,7 +279,11 @@ class Pokemon:
             if "target" in move_request:
                 if move.non_ghost_target and PokemonType.GHOST not in self.types:
                     target_name = Target.SELF.name
-                elif move.id == "terastarstorm" and self.type_1 == PokemonType.STELLAR:
+                elif (
+                    move.id == "terastarstorm"
+                    and self.is_terastallized
+                    and self.tera_type == PokemonType.STELLAR
+                ):
                     target_name = Target.ALL_ADJACENT_FOES.name
                 elif move.id == "pollenpuff" and Effect.HEAL_BLOCK in self.effects:
                     target_name = Target.ADJACENT_FOE.name

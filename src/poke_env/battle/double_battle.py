@@ -314,7 +314,11 @@ class DoubleBattle(AbstractBattle):
             return [self.EMPTY_TARGET_POSITION]
         elif move.id == "pollenpuff" and Effect.HEAL_BLOCK in pokemon.effects:
             return [self.OPPONENT_1_POSITION, self.OPPONENT_2_POSITION]
-        elif move.id == "terastarstorm" and pokemon.type_1 == PokemonType.STELLAR:
+        elif (
+            move.id == "terastarstorm"
+            and pokemon.is_terastallized
+            and pokemon.tera_type == PokemonType.STELLAR
+        ):
             targets = [self.EMPTY_TARGET_POSITION]
         else:
             targets = {
