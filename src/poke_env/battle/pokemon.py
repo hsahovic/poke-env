@@ -277,16 +277,14 @@ class Pokemon:
                 ), f"{move_request['maxpp']} != {move.max_pp}"
             assert move.target is not None
             if "target" in move_request:
-                target_name = (
-                    Target.SELF.name
-                    if move.non_ghost_target and PokemonType.GHOST not in self.types
-                    else (
-                        Target.ALL_ADJACENT_FOES.name
-                        if move.id == "terastarstorm"
-                        and self.type_1 == PokemonType.STELLAR
-                        else move.target.name
-                    )
-                )
+                if move.non_ghost_target and PokemonType.GHOST not in self.types:
+                    target_name = Target.SELF.name
+                elif move.id == "terastarstorm" and self.type_1 == PokemonType.STELLAR:
+                    target_name = Target.ALL_ADJACENT_FOES.name
+                elif move.id == "pollenpuff" and Effect.HEAL_BLOCK in self.effects:
+                    target_name = Target.ADJACENT_FOE.name
+                else:
+                    target_name = move.target.name
                 assert (
                     Target.from_showdown_message(move_request["target"]).name
                     == target_name

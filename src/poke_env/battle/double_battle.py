@@ -2,6 +2,7 @@ from logging import Logger
 from typing import Any, Dict, List, Optional, Union
 
 from poke_env.battle.abstract_battle import AbstractBattle
+from poke_env.battle.effect import Effect
 from poke_env.battle.move import SPECIAL_MOVES, Move
 from poke_env.battle.move_category import MoveCategory
 from poke_env.battle.pokemon import Pokemon
@@ -311,6 +312,8 @@ class DoubleBattle(AbstractBattle):
             PokemonType.GHOST not in pokemon.types
         ):  # fixing target for Curse
             return [self.EMPTY_TARGET_POSITION]
+        elif move.id == "pollenpuff" and Effect.HEAL_BLOCK in pokemon.effects:
+            return [self.OPPONENT_1_POSITION, self.OPPONENT_2_POSITION]
         elif move.id == "terastarstorm" and pokemon.type_1 == PokemonType.STELLAR:
             targets = [self.EMPTY_TARGET_POSITION]
         else:
