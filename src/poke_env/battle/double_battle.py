@@ -311,9 +311,9 @@ class DoubleBattle(AbstractBattle):
         elif move.non_ghost_target and (
             PokemonType.GHOST not in pokemon.types
         ):  # fixing target for Curse
-            return [self.EMPTY_TARGET_POSITION]
+            targets = [self.EMPTY_TARGET_POSITION]
         elif move.id == "pollenpuff" and Effect.HEAL_BLOCK in pokemon.effects:
-            return [self.OPPONENT_1_POSITION, self.OPPONENT_2_POSITION]
+            targets = [self.OPPONENT_1_POSITION, self.OPPONENT_2_POSITION]
         elif (
             move.id == "terastarstorm"
             and pokemon.is_terastallized
