@@ -746,7 +746,7 @@ class AbstractBattle(ABC):
                 mon.start_effect(effect, details=types)
             else:
                 if effect == "Mimic":
-                    mon._mimic_move = Move(
+                    mon._moves.mimic_move = Move(
                         Move.retrieve_id(event[4]), gen=self.gen, from_mimic=True
                     )
                 mon.start_effect(effect)
@@ -787,7 +787,7 @@ class AbstractBattle(ABC):
                 mv._current_pp = min(mv._current_pp + 10, mv.max_pp)
             elif effect == "move: Mimic":
                 mon = self.get_pokemon(target)
-                mon._mimic_move = Move(
+                mon._moves.mimic_move = Move(
                     Move.retrieve_id(event[4]), gen=self.gen, from_mimic=True
                 )
             elif effect == "move: Trick":

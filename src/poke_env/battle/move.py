@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+from dataclasses import dataclass
 from functools import lru_cache
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
@@ -931,3 +934,69 @@ class DynamaxMove(Move):
         if self.category != MoveCategory.STATUS:
             return self.WEATHER_MAP.get(self.type, None)
         return None
+
+
+@dataclass
+class MoveSet:
+    """
+    Container for a pokemon's moves, including Mimic and Transform overrides.
+    """
+
+    _base_moves: dict[str, Move]
+    _mimic_move: Move | None = None
+    _transform_moves: MoveSet | None = None
+
+    def __getitem__(self, key: str) -> Move:
+        return self.moves[key]
+
+    def __setitem__(self, key: str, value: Move):
+        assert not value._from_mimic, "Set mimic-copied move with mimic_move setter"
+        self.base_moves[key] = value
+
+    def _resolved(self) -> MoveSet:
+        """
+        :return: The effective move set after following Transform copies.
+        :rtype: MoveSet
+        """
+        if self._transform_moves is not None:
+            return self._transform_moves._resolved()
+        else:
+            return self
+
+    @property
+    def base_moves(self) -> dict[str, Move]:
+        """
+        :return: The resolved base move dictionary without Mimic substitution.
+        :rtype: dict[str, Move]
+        """
+        return self._resolved()._base_moves
+
+    @property
+    def mimic_move(self) -> Move | None:
+        """
+        :return: The move currently copied by Mimic, if any.
+        :rtype: Move | None
+        """
+        return self._resolved()._mimic_move
+
+    @mimic_move.setter
+    def mimic_move(self, move: Move | None):
+        assert move is None or move._from_mimic
+        self._resolved()._mimic_move = move
+
+    @property
+    def moves(self) -> dict[str, Move]:
+        """
+        :return: The resolved move dictionary with Mimic substitution applied.
+        :rtype: dict[str, Move]
+        """
+        if self.mimic_move is None:
+            return self.base_moves
+        else:
+            moves = {}
+            for k, v in self.base_moves.items():
+                if k == "mimic":
+                    moves[self.mimic_move.id] = self.mimic_move
+                else:
+                    moves[k] = v
+            return moves

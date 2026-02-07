@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional, Union
 
 from poke_env.battle.effect import Effect
 from poke_env.battle.field import Field
-from poke_env.battle.move import SPECIAL_MOVES, Move
+from poke_env.battle.move import SPECIAL_MOVES, Move, MoveSet
 from poke_env.battle.pokemon_gender import PokemonGender
 from poke_env.battle.pokemon_type import PokemonType
 from poke_env.battle.status import Status
@@ -25,6 +25,7 @@ class Pokemon:
         "_current_hp",
         "_effects",
         "_first_turn",
+        "_forme_change_ability",
         "_gen",
         "_gender",
         "_heightm",
@@ -33,8 +34,6 @@ class Pokemon:
         "_last_request",
         "_level",
         "_max_hp",
-        "_mimic_move",
-        "_forme_change_ability",
         "_moves",
         "_must_recharge",
         "_name",
@@ -50,7 +49,6 @@ class Pokemon:
         "_status_counter",
         "_temporary_ability",
         "_temporary_base_stats",
-        "_transform_moves",
         "_temporary_types",
         "_terastallized",
         "_terastallized_type",
@@ -83,7 +81,7 @@ class Pokemon:
         self._gender: Optional[PokemonGender] = None
         self._level: int = 100
         self._max_hp: Optional[int] = 0
-        self._moves: Dict[str, Move] = {}
+        self._moves = MoveSet({})
         self._name: Optional[str] = None
         self._shiny: Optional[bool] = False
 
@@ -125,9 +123,7 @@ class Pokemon:
         self._temporary_ability: Optional[str] = None
         self._forme_change_ability: Optional[str] = None
         self._temporary_base_stats: Optional[Dict[str, int]] = None
-        self._transform_moves: Optional[Dict[str, Move]] = None
         self._temporary_types: List[PokemonType] = []
-        self._mimic_move: Optional[Move] = None
 
         if request_pokemon:
             self.update_from_request(request_pokemon)
@@ -233,13 +229,13 @@ class Pokemon:
         if not (
             # only check moves if mimic hasn't copied a move yet,
             # or if mimic copies a move not already in the moveset
-            self._mimic_move is not None
-            and self._mimic_move.id in [m.id for m in self._moves.values()]
+            self.mimic_move is not None
+            and self.mimic_move.id in [m.id for m in self.base_moves.values()]
         ):
             for move_request, move in zip(pkmn_request["moves"], self.moves.values()):
                 assert Move.retrieve_id(move_request) == Move.retrieve_id(
                     move.id
-                ), f"{Move.retrieve_id(move_request)} != {Move.retrieve_id(move.id)}\nrequest: {pkmn_request}"
+                ), f"{Move.retrieve_id(move_request)} != {Move.retrieve_id(move.id)}\nrequest: {pkmn_request}, {self._moves._base_moves}, {self.base_moves}, {self.mimic_move}"
         if self.ability is None:
             # needed for ability initialization in start of game,
             # done anyway in update_from_request()
@@ -385,8 +381,8 @@ class Pokemon:
         self._status = Status.FNT
         self.temporary_ability = None
         self._temporary_base_stats = None
-        self._transform_moves = None
-        self._mimic_move = None
+        self._moves._transform_moves = None
+        self._moves.mimic_move = None
         self._clear_effects()
 
     def forme_change(self, species: str):
@@ -565,9 +561,9 @@ class Pokemon:
         self._protect_counter = 0
         self.temporary_ability = None
         self._temporary_base_stats = None
-        self._transform_moves = None
+        self._moves._transform_moves = None
+        self._moves.mimic_move = None
         self._temporary_types = []
-        self._mimic_move = None
 
         if self._status == Status.TOX:
             self._status_counter = 0
@@ -585,8 +581,10 @@ class Pokemon:
         if into.ability is not None:
             self.ability = into.ability
         self._temporary_types = [PokemonType.from_name(t) for t in dex_entry["types"]]
-        self._transform_moves = {m.id: Move(m.id, m.gen) for m in into.moves.values()}
-        for m in self._transform_moves.values():
+        self._moves._transform_moves = MoveSet(
+            {m.id: Move(m.id, m.gen) for m in into.moves.values()}
+        )
+        for m in self.base_moves.values():
             m._current_pp = 5
         self._boosts = into.boosts.copy()
 
@@ -722,7 +720,7 @@ class Pokemon:
         self._shiny = tb.shiny
         if tb.tera_type:
             self._terastallized_type = PokemonType.from_name(tb.tera_type)
-        self._moves = {}
+        self._moves = MoveSet({})
         for move_str in tb.moves:
             move = Move(Move.retrieve_id(move_str), gen=self.gen)
             self._moves[move.id] = move
@@ -893,9 +891,7 @@ class Pokemon:
             returns the temporary move set; otherwise it returns the learned moves.
         :rtype: Dict[str, Move]
         """
-        return (
-            self._transform_moves if self._transform_moves is not None else self._moves
-        )
+        return self._moves.base_moves
 
     @property
     def base_species(self) -> str:
@@ -1077,21 +1073,20 @@ class Pokemon:
         return self._max_hp or 0
 
     @property
+    def mimic_move(self) -> Move | None:
+        """
+        :return: The move currently copied by Mimic, if any.
+        :rtype: Move | None
+        """
+        return self._moves.mimic_move
+
+    @property
     def moves(self) -> Dict[str, Move]:
         """
         :return: A dictionary of the pokemon's known moves.
         :rtype: Dict[str, Move]
         """
-        moves = self.base_moves
-        if self._mimic_move is not None:
-            return dict(
-                [
-                    (k, v) if k != "mimic" else (self._mimic_move.id, self._mimic_move)
-                    for k, v in moves.items()
-                ]
-            )
-        else:
-            return moves
+        return self._moves.moves
 
     @property
     def must_recharge(self) -> bool:
