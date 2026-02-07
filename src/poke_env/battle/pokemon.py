@@ -261,9 +261,10 @@ class Pokemon:
             if not matches:
                 continue
             move = matches[0]
-            if "pp" in move_request and self.gen not in [1, 2, 3, 7, 8]:
+            if "pp" in move_request and self.gen not in [1, 2, 3, 4, 7, 8]:
                 # exclude early gens because of unreliable Showdown event messages
                 # exclude gen 7 and 8 because of Z-move and Max Move PP untrackability
+                # TODO: when gen 4 issues gets fixed by PS team, 4 can be allowed again
                 assert (
                     move_request["pp"] == move.current_pp
                 ), f"{move_request['pp']} != {move.current_pp}\n{move_request}"
