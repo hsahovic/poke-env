@@ -766,16 +766,16 @@ class AbstractBattle(ABC):
             if target and effect.replace("move: ", "") == "Skill Swap":
                 if "[of] " in event[6]:
                     actor = event[6].replace("[of] ", "")
-                    details = event[4:6]
+                    abilities = event[4:6]
                 else:
                     actor = event[4]
-                    details = event[5:7]
-                details = [
+                    abilities = event[5:7]
+                abilities = [
                     d.replace("[ability] ", "").replace("[ability2] ", "")
-                    for d in details
+                    for d in abilities
                 ]
-                self.get_pokemon(target).start_effect(effect, details)
-                self.get_pokemon(actor).temporary_ability = details[1]
+                self.get_pokemon(target).start_effect(effect, abilities)
+                self.get_pokemon(actor).temporary_ability = abilities[1]
             elif effect == "ability: Mummy":
                 target = (
                     event[5].replace("[of] ", "") if "[of] " in event[5] else event[4]
