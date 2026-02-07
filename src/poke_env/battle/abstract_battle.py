@@ -768,7 +768,9 @@ class AbstractBattle(ABC):
                 actor = event[6].replace("[of] ", "")
                 self.get_pokemon(actor).temporary_ability = event[5]
             elif effect == "ability: Mummy":
-                target = event[4].replace("[of] ", "")
+                target = (
+                    event[5].replace("[of] ", "") if "[of] " in event[5] else event[4]
+                )
                 self.get_pokemon(target).temporary_ability = "mummy"
             elif effect == "ability: Wandering Spirit":
                 actor = event[2]
