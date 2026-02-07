@@ -905,7 +905,10 @@ class AbstractBattle(ABC):
                     raise ValueError(f"Unhandled item message: {event}")
             else:
                 pokemon, item = event[2:4]
-                if len(event) > 4 and event[4] == "[from] move: Trick":
+                if len(event) > 4 and event[4] in [
+                    "[from] move: Switcheroo",
+                    "[from] move: Trick",
+                ]:
                     # this event is handled in when consuming -activate event
                     return
                 self.get_pokemon(pokemon).item = to_id_str(item)
