@@ -219,13 +219,11 @@ class Pokemon:
                 self.item or ""
             ), f"{pkmn_request['item']} != {self.item or ''}"
         assert len(self.moves) <= 4, f"More than 4 moves: {self.moves}"
-        if self.base_species == "ditto":
+        if self.transformed or "transform" in self.moves:
             return
         assert (
             pkmn_request["condition"] == self.hp_status
         ), f"{pkmn_request['condition']} != {self.hp_status}\nrequest: {pkmn_request}"
-        if self.base_species == "mew":
-            return
         if not (
             # only check moves if mimic hasn't copied a move yet,
             # or if mimic copies a move not already in the moveset
@@ -244,6 +242,13 @@ class Pokemon:
             self.base_ability or ""
         ), f"{pkmn_request['baseAbility']} != {self.base_ability or ''}"
         if "ability" in pkmn_request:
+            if (
+                pkmn_request["baseAbility"] != pkmn_request["ability"]
+                and self._temporary_ability is None
+            ):
+                # needed for ability initialization in start of game,
+                # done anyway in update_from_request()
+                self._temporary_ability = to_id_str(pkmn_request["ability"])
             assert pkmn_request["ability"] == (
                 self.ability or ""
             ), f"{pkmn_request['ability']} != {self.ability or ''}"
@@ -580,7 +585,7 @@ class Pokemon:
         self._weightkg = dex_entry["weightkg"]
         self._temporary_base_stats = dex_entry["baseStats"]
         if into.ability is not None:
-            self.ability = into.ability
+            self._temporary_ability = into.ability
         self._temporary_types = [PokemonType.from_name(t) for t in dex_entry["types"]]
         self._moves._transform_moves = MoveSet(
             {m.id: Move(m.id, m.gen) for m in into.moves.values()}
@@ -613,7 +618,7 @@ class Pokemon:
                 to_id_str(ability) for ability in dex_entry["abilities"].values()
             ]
             if len(self._possible_abilities) == 1 and self.gen >= 3:
-                self.ability = self._possible_abilities[0]
+                self._ability = self._possible_abilities[0]
         else:
             self.forme_change_ability = None
 
@@ -838,9 +843,7 @@ class Pokemon:
 
     @ability.setter
     def ability(self, ability: str):
-        if self.ability == to_id_str(ability):
-            return
-        elif self._ability is None:
+        if self._ability is None:
             self._ability = to_id_str(ability)
         else:
             self._temporary_ability = to_id_str(ability)
@@ -1274,6 +1277,14 @@ class Pokemon:
         :rtype: Optional[PokemonType]
         """
         return self._terastallized_type
+
+    @property
+    def transformed(self) -> bool:
+        """
+        :return: Whether the pokemon is currently transformed.
+        :rtype: bool
+        """
+        return self._moves._transform_moves is not None
 
     @property
     def type_1(self) -> PokemonType:
