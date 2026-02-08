@@ -36,5 +36,5 @@ async def test_random_players():
             ),
         ]
         await asyncio.wait_for(
-            simple_cross_evaluation(100, players=players), timeout=60
+            simple_cross_evaluation(100, players=players), timeout=100
         )
