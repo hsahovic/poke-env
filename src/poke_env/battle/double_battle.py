@@ -320,6 +320,7 @@ class DoubleBattle(AbstractBattle):
             targets = [self.OPPONENT_1_POSITION, self.OPPONENT_2_POSITION]
         elif (
             move.id == "terastarstorm"
+            and not pokemon.fainted
             and pokemon.is_terastallized
             and pokemon.tera_type == PokemonType.STELLAR
         ):

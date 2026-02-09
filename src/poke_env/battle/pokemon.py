@@ -290,6 +290,7 @@ class Pokemon:
                     target_name = Target.SELF.name
                 elif (
                     move.id == "terastarstorm"
+                    and not self.fainted
                     and self.is_terastallized
                     and self.tera_type == PokemonType.STELLAR
                 ):
@@ -1051,7 +1052,7 @@ class Pokemon:
         :return: Whether the pokemon is currently terastallized
         :rtype: bool
         """
-        return self._terastallized and not self.fainted
+        return self._terastallized
 
     @property
     def item(self) -> Optional[str]:
