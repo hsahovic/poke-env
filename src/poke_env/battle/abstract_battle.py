@@ -980,6 +980,7 @@ class AbstractBattle(ABC):
             pokemon, into = event[2:4]
             mon = self.get_pokemon(pokemon)
             if len(event) > 4 and event[4] == "[from] ability: Imposter":
+                mon._add_move("transform")
                 mon.ability = "imposter"
             mon.transform(self.get_pokemon(into))
         elif event[1] == "-zpower":
