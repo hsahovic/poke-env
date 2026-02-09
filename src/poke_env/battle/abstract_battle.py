@@ -484,6 +484,7 @@ class AbstractBattle(ABC):
             failed = False
             reveal = True
             overridden_move = None
+            spread = False
 
             for move_failed_suffix in ["[miss]", "[still]", "[notarget]"]:
                 if event[-1] == move_failed_suffix:
@@ -494,6 +495,7 @@ class AbstractBattle(ABC):
                 event = event[:-1]
 
             while event[-1].startswith("[spread]"):
+                spread = True
                 event = event[:-1]
 
             if event[-1] in {
@@ -614,7 +616,9 @@ class AbstractBattle(ABC):
                 temp_pokemon = self.get_pokemon(pokemon)
                 temp_pokemon.start_effect("MINIMIZE")
 
-            pressure = self._pressure_on(pokemon, move, presumed_target or None)
+            if spread or presumed_target == "":
+                presumed_target = None
+            pressure = self._pressure_on(pokemon, move, presumed_target)
             mon = self.get_pokemon(pokemon)
             if overridden_move:
                 mon.moved(move, failed=failed, use=False, reveal=reveal)

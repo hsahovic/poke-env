@@ -253,7 +253,9 @@ class Pokemon:
                 self.ability or ""
             ), f"{pkmn_request['ability']} != {self.ability or ''}"
 
-    def check_move_consistency(self, active_request: Dict[str, Any]):
+    def check_move_consistency(
+        self, active_request: Dict[str, Any], is_doubles: bool = False
+    ):
         if self.base_species in ["ditto", "mew"]:
             return
         for move_request in active_request["moves"]:
@@ -266,10 +268,15 @@ class Pokemon:
             if not matches:
                 continue
             move = matches[0]
-            if "pp" in move_request and self.gen not in [1, 2, 3, 4, 7, 8]:
+            if (
+                "pp" in move_request
+                and self.gen not in [1, 2, 3, 4, 7, 8]
+                and not is_doubles
+            ):
                 # exclude early gens because of unreliable Showdown event messages
                 # exclude gen 7 and 8 because of Z-move and Max Move PP untrackability
                 # TODO: when gen 4 issues gets fixed by PS team, 4 can be allowed again
+                # exclude doubles because targets are sometimes not resolvable
                 assert (
                     move_request["pp"] == move.current_pp
                 ), f"{move_request['pp']} != {move.current_pp}\n{move_request}"
@@ -1044,7 +1051,7 @@ class Pokemon:
         :return: Whether the pokemon is currently terastallized
         :rtype: bool
         """
-        return self._terastallized
+        return self._terastallized and not self.fainted
 
     @property
     def item(self) -> Optional[str]:

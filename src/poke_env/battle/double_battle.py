@@ -86,7 +86,9 @@ class DoubleBattle(AbstractBattle):
     def _get_target_mon(
         self, pokemon: str, target_type: str, target_str: str | None
     ) -> Pokemon | None:
-        if target_type != "all" and target_str is not None:
+        if target_str is not None and pokemon[:2] == target_str[:2]:
+            return None
+        elif target_type != "all" and target_str is not None:
             return self.get_pokemon(target_str)
         else:
             targets = (
@@ -158,7 +160,9 @@ class DoubleBattle(AbstractBattle):
                     details=pokemon_dict["details"],
                 )
                 if strict_battle_tracking:
-                    active_pokemon.check_move_consistency(active_request)
+                    active_pokemon.check_move_consistency(
+                        active_request, is_doubles=True
+                    )
                 if self.player_role is not None:
                     if (
                         active_pokemon_number == 0
