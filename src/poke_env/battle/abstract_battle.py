@@ -910,6 +910,7 @@ class AbstractBattle(ABC):
             else:
                 pokemon, item = event[2:4]
                 if len(event) > 4 and event[4] in [
+                    "[from] ability: Magician",
                     "[from] move: Switcheroo",
                     "[from] move: Trick",
                 ]:
