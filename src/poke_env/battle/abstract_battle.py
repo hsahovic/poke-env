@@ -480,11 +480,14 @@ class AbstractBattle(ABC):
             self._check_damage_message_for_item(event)
             self._check_damage_message_for_ability(event)
         elif event[1] == "move":
-            use = True
+            pokemon = event[2]
+            mon = self.get_pokemon(pokemon)
+            use = not mon._dancing
             failed = False
-            reveal = True
+            reveal = not mon._dancing
             overridden_move = None
             spread = False
+            mon._dancing = False
 
             for move_failed_suffix in ["[miss]", "[still]", "[notarget]"]:
                 if event[-1] == move_failed_suffix:
@@ -637,12 +640,8 @@ class AbstractBattle(ABC):
                     move, failed=failed, use=use, reveal=reveal, pressure=pressure
                 )
         elif event[1] == "cant":
-            if len(event) == 4:
-                pokemon, _ = event[2:4]
-                self.get_pokemon(pokemon).cant_move()
-            elif len(event) == 5:
-                pokemon, _, move = event[2:5]
-                self.get_pokemon(pokemon).cant_move(move)
+            pokemon, _ = event[2:4]
+            self.get_pokemon(pokemon).cant_move()
         elif event[1] == "turn":
             # Saving the beginning-of-turn battle state and events as we go into the turn
             self.observations[self.turn] = self._current_observation
@@ -780,6 +779,8 @@ class AbstractBattle(ABC):
                 ]
                 self.get_pokemon(target).start_effect(effect, abilities)
                 self.get_pokemon(actor).temporary_ability = abilities[1]
+            elif effect == "ability: Dancer":
+                self.get_pokemon(target)._dancing = True
             elif effect == "ability: Mummy":
                 target = (
                     event[5].replace("[of] ", "") if "[of] " in event[5] else event[4]

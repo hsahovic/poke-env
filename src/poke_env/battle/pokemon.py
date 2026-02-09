@@ -23,6 +23,7 @@ class Pokemon:
         "_base_stats",
         "_boosts",
         "_current_hp",
+        "_dancing",
         "_effects",
         "_first_turn",
         "_forme_change_ability",
@@ -124,6 +125,7 @@ class Pokemon:
         self._forme_change_ability: Optional[str] = None
         self._temporary_base_stats: Optional[Dict[str, int]] = None
         self._temporary_types: List[PokemonType] = []
+        self._dancing = False
 
         if request_pokemon:
             self.update_from_request(request_pokemon)
@@ -170,11 +172,10 @@ class Pokemon:
         elif self._boosts[stat] < -6:
             self._boosts[stat] = -6
 
-    def cant_move(self, move: Optional[str] = None):
-        if move:
-            self._add_move(move)
+    def cant_move(self):
         self._first_turn = False
         self._protect_counter = 0
+
         if self._status == Status.SLP:
             self._status_counter += 1
 
@@ -788,34 +789,7 @@ class Pokemon:
                     [v for m, v in self.moves.items() if m.startswith("hiddenpower")][0]
                 )
             else:
-                has_copy_move = {
-                    "copycat",
-                    "metronome",
-                    "mefirst",
-                    "mirrormove",
-                    "assist",
-                    "transform",
-                    "mimic",
-                }.intersection(self.moves)
-
-                """
-                Check if the pokemon has abilities that can grant moves
-
-                Some abilities (like Dancer, which can be copied via Trace) allow using
-                moves that aren't in the pokemon's moveset
-                """
-                has_move_granting_ability = (
-                    self.ability in ("dancer", "trace") if self.ability else False
-                )
-
-                if not has_copy_move and not has_move_granting_ability:
-                    assert False, (
-                        f"Error with move {move}. Expected self.moves to contain copycat, "
-                        "metronome, mefirst, mirrormove, assist, transform, mimic, "
-                        f"or the pokemon to have a move-granting ability. Got moves: {self.moves}, "
-                        f"ability: {self.ability}"
-                    )
-                moves.append(Move(move, gen=self.gen))
+                raise ValueError(f"Move {move} not in moves {self.moves}!")
         return moves
 
     def damage_multiplier(self, type_or_move: Union[PokemonType, Move]) -> float:
