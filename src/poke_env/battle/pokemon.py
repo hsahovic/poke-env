@@ -789,7 +789,18 @@ class Pokemon:
                     [v for m, v in self.moves.items() if m.startswith("hiddenpower")][0]
                 )
             else:
-                raise ValueError(f"Move {move} not in moves {self.moves}!")
+                assert self.ability == "dancer" or {
+                    "copycat",
+                    "metronome",
+                    "mefirst",
+                    "mirrormove",
+                    "assist",
+                }.intersection(self.moves), (
+                    f"Error with move {move}. Expected self.moves to contain copycat, "
+                    "metronome, mefirst, mirrormove, or assist, or to have the ability "
+                    f"dancer. Got {self.moves}, ability: {self.ability}"
+                )
+                moves.append(Move(move, gen=self.gen))
         return moves
 
     def damage_multiplier(self, type_or_move: Union[PokemonType, Move]) -> float:
