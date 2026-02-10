@@ -1,4 +1,5 @@
 import pickle
+from copy import deepcopy
 from unittest.mock import MagicMock
 
 import pytest
@@ -358,13 +359,8 @@ def test_battle_request_and_interactions(example_request):
     battle.parse_message(["", "-mustrecharge", "p1: Latias"])
     assert battle.opponent_active_pokemon.must_recharge is True
 
+    battle.opponent_active_pokemon._add_move("solarbeam")
     battle.parse_message(["", "-prepare", "p1: Latias", "Solar Beam", "p2: Necrozma"])
-    assert (
-        battle.opponent_active_pokemon.preparing_move
-        == battle.opponent_active_pokemon.moves["solarbeam"]
-    )
-    assert battle.opponent_active_pokemon.preparing_target.species == "necrozma"
-
     assert (
         battle.opponent_active_pokemon.preparing_move
         == battle.opponent_active_pokemon.moves["solarbeam"]
@@ -834,3 +830,111 @@ def test_teampreview_opponent_team():
         "amoonguss",
         "urshifu",
     }
+
+
+def test_reviving_request_only_allows_fainted_switches(example_request):
+    battle = Battle("tag", "username", MagicMock(), gen=8)
+    request = deepcopy(example_request)
+    side = request["side"]["pokemon"]
+
+    side[0]["active"] = True
+    side[0]["condition"] = "100/100"
+    side[0]["moves"] = ["tackle"]
+    for mon in side[1:]:
+        mon["active"] = False
+        mon["condition"] = "100/100"
+        mon["reviving"] = False
+    side[1]["condition"] = "0 fnt"
+    side[1]["reviving"] = True
+    request["active"] = [
+        {
+            "moves": [
+                {
+                    "move": "Tackle",
+                    "id": "tackle",
+                    "pp": 35,
+                    "maxpp": 56,
+                    "target": "normal",
+                    "disabled": False,
+                }
+            ]
+        }
+    ]
+
+    battle.parse_request(request)
+    assert len(battle.available_switches) == 1
+    assert battle.available_switches[0].fainted
+
+
+def test_move_event_tracks_pressure_pp_cost():
+    battle = Battle("tag", "username", MagicMock(), gen=9)
+    battle.player_role = "p1"
+    battle.switch("p1: Pikachu", "Pikachu, L50, F", "100/100")
+    battle.switch("p2: Absol", "Absol, L50, F", "100/100")
+    assert battle.opponent_active_pokemon is not None
+    battle.opponent_active_pokemon._ability = "pressure"
+
+    battle.parse_message(["", "move", "p1: Pikachu", "Tackle", "p2: Absol"])
+    move = battle.active_pokemon.moves["tackle"]
+    assert move.current_pp == move.max_pp - 2
+
+
+def test_move_event_ignores_dancer_reveal_and_pp():
+    battle = Battle("tag", "username", MagicMock(), gen=9)
+    battle.player_role = "p1"
+    battle.switch("p1: Oricorio", "Oricorio, L50, F", "100/100")
+    battle.switch("p2: Raichu", "Raichu, L50, F", "100/100")
+
+    mon = battle.active_pokemon
+    mon._add_move("teeterdance")
+    pp_before = mon.moves["teeterdance"].current_pp
+
+    battle.parse_message(["", "-activate", "p1: Oricorio", "ability: Dancer"])
+    assert mon._dancing
+    battle.parse_message(["", "move", "p1: Oricorio", "Teeter Dance"])
+
+    assert not mon._dancing
+    assert mon.moves["teeterdance"].current_pp == pp_before
+
+
+def test_activate_events_handle_leppa_and_trick_item_swaps():
+    battle = Battle("tag", "username", MagicMock(), gen=9)
+    battle.player_role = "p1"
+    battle.switch("p1: Gengar", "Gengar, L50, M", "100/100")
+    battle.switch("p2: Alakazam", "Alakazam, L50, M", "100/100")
+
+    mon = battle.active_pokemon
+    mon._add_move("tackle")
+    move = mon.moves["tackle"]
+    move._current_pp = move.max_pp - 1
+    battle.parse_message(["", "-activate", "p1: Gengar", "item: Leppa Berry", "Tackle"])
+    assert mon.moves["tackle"].current_pp == mon.moves["tackle"].max_pp
+
+    battle.active_pokemon.item = "leftovers"
+    battle.opponent_active_pokemon.item = "choiceband"
+    battle.parse_message(
+        ["", "-activate", "p1: Gengar", "move: Trick", "[of] p2: Alakazam"]
+    )
+    assert battle.active_pokemon.item == "choiceband"
+    assert battle.opponent_active_pokemon.item == "leftovers"
+
+    battle.parse_message(
+        ["", "-item", "p1: Gengar", "Mystic Water", "[from] move: Trick"]
+    )
+    assert battle.active_pokemon.item == "choiceband"
+
+
+def test_transform_from_imposter_tracks_transform_and_ability():
+    battle = Battle("tag", "username", MagicMock(), gen=9)
+    battle.player_role = "p1"
+    battle.switch("p1: Ditto", "Ditto, L50", "100/100")
+    battle.switch("p2: Tyranitar", "Tyranitar, L50, F", "100/100")
+
+    battle.parse_message(
+        ["", "-transform", "p1: Ditto", "p2: Tyranitar", "[from] ability: Imposter"]
+    )
+    mon = battle.active_pokemon
+
+    assert "transform" in mon._moves._base_moves
+    assert mon.ability == "imposter"
+    assert mon.transformed

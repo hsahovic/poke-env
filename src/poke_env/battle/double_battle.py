@@ -2,6 +2,7 @@ from logging import Logger
 from typing import Any, Dict, List, Optional, Union
 
 from poke_env.battle.abstract_battle import AbstractBattle
+from poke_env.battle.effect import Effect
 from poke_env.battle.move import SPECIAL_MOVES, Move
 from poke_env.battle.move_category import MoveCategory
 from poke_env.battle.pokemon import Pokemon
@@ -82,6 +83,24 @@ class DoubleBattle(AbstractBattle):
             pokemon_2 = None
         return [pokemon_1, pokemon_2]
 
+    def _get_target_mon(
+        self, pokemon: str, target_type: str, target_str: str | None
+    ) -> Pokemon | None:
+        if target_str is not None and pokemon[:2] == target_str[:2]:
+            return None
+        elif target_type != "all" and target_str is not None:
+            return self.get_pokemon(target_str)
+        else:
+            targets = (
+                self.opponent_active_pokemon
+                if self.player_role == pokemon[:2]
+                else self.active_pokemon
+            )
+            for target in targets:
+                if target is not None and target.ability == "pressure":
+                    return target
+            return None
+
     def parse_request(
         self, request: Dict[str, Any], strict_battle_tracking: bool = False
     ):
@@ -140,6 +159,10 @@ class DoubleBattle(AbstractBattle):
                     force_self_team=True,
                     details=pokemon_dict["details"],
                 )
+                if strict_battle_tracking:
+                    active_pokemon.check_move_consistency(
+                        active_request, is_doubles=True
+                    )
                 if self.player_role is not None:
                     if (
                         active_pokemon_number == 0
@@ -207,7 +230,10 @@ class DoubleBattle(AbstractBattle):
             if not self.trapped[i]:
                 for pkmn_json in side["pokemon"]:
                     pokemon = self.team[pkmn_json["ident"]]
-                    if not pokemon.active and self.reviving == pokemon.fainted:
+                    if self.reviving:
+                        if pokemon.fainted:
+                            self._available_switches[i].append(pokemon)
+                    elif not pokemon.active and not pokemon.fainted:
                         self._available_switches[i].append(pokemon)
 
     def switch(self, pokemon_str: str, details: str, hp_status: str):
@@ -292,8 +318,15 @@ class DoubleBattle(AbstractBattle):
         elif move.non_ghost_target and (
             PokemonType.GHOST not in pokemon.types
         ):  # fixing target for Curse
-            return [self.EMPTY_TARGET_POSITION]
-        elif move.id == "terastarstorm" and pokemon.type_1 == PokemonType.STELLAR:
+            targets = [self.EMPTY_TARGET_POSITION]
+        elif move.id == "pollenpuff" and Effect.HEAL_BLOCK in pokemon.effects:
+            targets = [self.OPPONENT_1_POSITION, self.OPPONENT_2_POSITION]
+        elif (
+            move.id == "terastarstorm"
+            and not pokemon.fainted
+            and pokemon.is_terastallized
+            and pokemon.tera_type == PokemonType.STELLAR
+        ):
             targets = [self.EMPTY_TARGET_POSITION]
         else:
             targets = {

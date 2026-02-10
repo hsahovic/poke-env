@@ -4,10 +4,11 @@ from typing import Any, Dict, List, Optional, Union
 
 from poke_env.battle.effect import Effect
 from poke_env.battle.field import Field
-from poke_env.battle.move import SPECIAL_MOVES, Move
+from poke_env.battle.move import SPECIAL_MOVES, Move, MoveSet
 from poke_env.battle.pokemon_gender import PokemonGender
 from poke_env.battle.pokemon_type import PokemonType
 from poke_env.battle.status import Status
+from poke_env.battle.target import Target
 from poke_env.battle.z_crystal import Z_CRYSTAL
 from poke_env.data import GenData, to_id_str
 from poke_env.stats import compute_raw_stats
@@ -22,8 +23,10 @@ class Pokemon:
         "_base_stats",
         "_boosts",
         "_current_hp",
+        "_dancing",
         "_effects",
         "_first_turn",
+        "_forme_change_ability",
         "_gen",
         "_gender",
         "_heightm",
@@ -32,7 +35,6 @@ class Pokemon:
         "_last_request",
         "_level",
         "_max_hp",
-        "_forme_change_ability",
         "_moves",
         "_must_recharge",
         "_name",
@@ -47,6 +49,7 @@ class Pokemon:
         "_status",
         "_status_counter",
         "_temporary_ability",
+        "_temporary_base_stats",
         "_temporary_types",
         "_terastallized",
         "_terastallized_type",
@@ -79,7 +82,7 @@ class Pokemon:
         self._gender: Optional[PokemonGender] = None
         self._level: int = 100
         self._max_hp: Optional[int] = 0
-        self._moves: Dict[str, Move] = {}
+        self._moves = MoveSet({})
         self._name: Optional[str] = None
         self._shiny: Optional[bool] = False
 
@@ -120,7 +123,9 @@ class Pokemon:
         self._status_counter: int = 0
         self._temporary_ability: Optional[str] = None
         self._forme_change_ability: Optional[str] = None
+        self._temporary_base_stats: Optional[Dict[str, int]] = None
         self._temporary_types: List[PokemonType] = []
+        self._dancing = False
 
         if request_pokemon:
             self.update_from_request(request_pokemon)
@@ -148,20 +153,17 @@ class Pokemon:
             f"[Active: {self._active}, Status: {status_repr}]"
         )
 
-    def _add_move(self, move_id: str, use: bool = False) -> Optional[Move]:
+    def _add_move(self, move_id: str) -> Optional[Move]:
         """Store the move if applicable."""
         id_ = Move.retrieve_id(move_id)
-
+        if id_ in self.moves:
+            return self.moves[id_]
         if not Move.should_be_stored(id_, self.gen):
             return None
-
-        if id_ not in self._moves:
+        if id_ not in self.base_moves:
             move = Move(move_id=id_, raw_id=move_id, gen=self.gen)
-            self._moves[id_] = move
-        if use:
-            self._moves[id_].use()
-
-        return self._moves[id_]
+            self.base_moves[id_] = move
+        return self.base_moves[id_]
 
     def boost(self, stat: str, amount: int):
         self._boosts[stat] += amount
@@ -171,11 +173,138 @@ class Pokemon:
             self._boosts[stat] = -6
 
     def cant_move(self):
+        self._dancing = False
         self._first_turn = False
         self._protect_counter = 0
 
         if self._status == Status.SLP:
             self._status_counter += 1
+
+    def check_consistency(self, pkmn_request: Dict[str, Any], player_role: str):
+        assert (
+            pkmn_request["ident"] == f"{player_role}: {self.name}"
+        ), f"{pkmn_request['ident']} != {player_role}: {self.name}\nrequest: {pkmn_request}"
+        split_details = pkmn_request["details"].split(", ")
+        level = None
+        gender = None
+        shiny = split_details[-1] == "shiny"
+        if shiny:
+            split_details.pop()
+        if len(split_details) == 3:
+            _, level, gender = split_details
+        elif len(split_details) == 2:
+            if split_details[1].startswith("L"):
+                _, level = split_details
+            else:
+                _, gender = split_details
+        level = int(level[1:]) if level is not None else 100
+        gender = (
+            PokemonGender.from_request_details(gender)
+            if gender is not None
+            else PokemonGender.NEUTRAL
+        )
+        assert level == self.level, f"{level} != {self.level}\nrequest: {pkmn_request}"
+        assert self.gender is not None
+        assert (
+            gender == self.gender
+        ), f"{gender.name.lower()} != {self.gender.name.lower()}\nrequest: {pkmn_request}"
+        assert shiny == self.shiny, f"{shiny} != {self.shiny}\nrequest: {pkmn_request}"
+        assert (
+            pkmn_request["active"] == self.active
+        ), f"{pkmn_request['active']} != {self.active}\nrequest: {pkmn_request}"
+        if self.item == "unknown_item":
+            # needed for item initialization in start of game,
+            # done anyway in update_from_request()
+            self._item = pkmn_request["item"]
+        if self.gen > 4:
+            assert pkmn_request["item"] == (
+                self.item or ""
+            ), f"{pkmn_request['item']} != {self.item or ''}"
+        assert len(self.moves) <= 4, f"More than 4 moves: {self.moves}"
+        if self.transformed or "transform" in self.moves:
+            return
+        assert (
+            pkmn_request["condition"] == self.hp_status
+        ), f"{pkmn_request['condition']} != {self.hp_status}\nrequest: {pkmn_request}"
+        if not (
+            # only check moves if mimic hasn't copied a move yet,
+            # or if mimic copies a move not already in the moveset
+            self.mimic_move is not None
+            and self.mimic_move.id in [m.id for m in self.base_moves.values()]
+        ):
+            for move_request, move in zip(pkmn_request["moves"], self.moves.values()):
+                assert Move.retrieve_id(move_request) == Move.retrieve_id(
+                    move.id
+                ), f"{Move.retrieve_id(move_request)} != {Move.retrieve_id(move.id)}\nrequest: {pkmn_request}, {self._moves._base_moves}, {self.base_moves}, {self.mimic_move}"
+        if self.ability is None:
+            # needed for ability initialization in start of game,
+            # done anyway in update_from_request()
+            self.ability = pkmn_request["baseAbility"]
+        assert pkmn_request["baseAbility"] == (
+            self.base_ability or ""
+        ), f"{pkmn_request['baseAbility']} != {self.base_ability or ''}"
+        if "ability" in pkmn_request:
+            if (
+                pkmn_request["baseAbility"] != pkmn_request["ability"]
+                and self._temporary_ability is None
+            ):
+                # needed for ability initialization in start of game,
+                # done anyway in update_from_request()
+                self._temporary_ability = to_id_str(pkmn_request["ability"])
+            assert pkmn_request["ability"] == (
+                self.ability or ""
+            ), f"{pkmn_request['ability']} != {self.ability or ''}"
+
+    def check_move_consistency(
+        self, active_request: Dict[str, Any], is_doubles: bool = False
+    ):
+        if self.base_species in ["ditto", "mew"]:
+            return
+        for move_request in active_request["moves"]:
+            matches = [
+                m
+                for m in self.moves.values()
+                if Move.retrieve_id(m.id) == move_request["id"]
+            ]
+            assert len(matches) <= 1
+            if not matches:
+                continue
+            move = matches[0]
+            if (
+                "pp" in move_request
+                and self.gen not in [1, 2, 3, 4, 7, 8]
+                and not is_doubles
+            ):
+                # exclude early gens because of unreliable Showdown event messages
+                # exclude gen 7 and 8 because of Z-move and Max Move PP untrackability
+                # TODO: when gen 4 issues gets fixed by PS team, 4 can be allowed again
+                # exclude doubles because targets are sometimes not resolvable
+                assert (
+                    move_request["pp"] == move.current_pp
+                ), f"{move_request['pp']} != {move.current_pp}\n{move_request}"
+            if "maxpp" in move_request:
+                assert (
+                    move_request["maxpp"] == move.max_pp
+                ), f"{move_request['maxpp']} != {move.max_pp}"
+            assert move.target is not None
+            if "target" in move_request:
+                if move.non_ghost_target and PokemonType.GHOST not in self.types:
+                    target_name = Target.SELF.name
+                elif (
+                    move.id == "terastarstorm"
+                    and not self.fainted
+                    and self.is_terastallized
+                    and self.tera_type == PokemonType.STELLAR
+                ):
+                    target_name = Target.ALL_ADJACENT_FOES.name
+                elif move.id == "pollenpuff" and Effect.HEAL_BLOCK in self.effects:
+                    target_name = Target.ADJACENT_FOE.name
+                else:
+                    target_name = move.target.name
+                assert (
+                    Target.from_showdown_message(move_request["target"]).name
+                    == target_name
+                ), f"{Target.from_showdown_message(move_request['target']).name} != {target_name}\n{move_request}"
 
     def clear_active(self):
         self._active = False
@@ -267,6 +396,9 @@ class Pokemon:
         self._current_hp = 0
         self._status = Status.FNT
         self.temporary_ability = None
+        self._temporary_base_stats = None
+        self._moves._transform_moves = None
+        self._moves.mimic_move = None
         self._clear_effects()
 
     def forme_change(self, species: str):
@@ -295,36 +427,30 @@ class Pokemon:
             mega_species = mega_species + stone[-1].lower()
             self._update_from_pokedex(mega_species, store_species=False)
 
-    def moved(self, move_id: str, failed: bool = False, use: bool = True):
+    def moved(
+        self,
+        move_id: str,
+        failed: bool = False,
+        use: bool = True,
+        reveal: bool = True,
+        pressure: bool = False,
+    ):
         self._must_recharge = False
         self._preparing_move = None
         self._preparing_target = None
-        move = self._add_move(move_id, use=use)
+        move = None
+        if reveal:
+            move = self._add_move(move_id)
+        if move is not None and use:
+            move.use(pressure)
 
-        if move and move.is_protect_counter and not failed:
+        if move is not None and move.is_protect_counter and not failed:
             self._protect_counter += 1
         else:
             self._protect_counter = 0
 
         if self._status == Status.SLP:
             self._status_counter += 1
-
-        if len(self._moves) > 4:
-            new_moves = {}
-
-            # Keep the current move
-            if move and move in self._moves.values():
-                new_moves = {
-                    move_id: m for move_id, m in self._moves.items() if m is move
-                }
-
-            for move_name in self._moves:
-                if len(new_moves) == 4:
-                    break
-                elif move_name not in new_moves:
-                    new_moves[move_name] = self._moves[move_name]
-
-            self._moves = new_moves
 
         # Handle silent effect ending
         if Effect.GLAIVE_RUSH in self.effects:
@@ -347,13 +473,11 @@ class Pokemon:
             self.end_effect("Flash Fire")
 
     def prepare(self, move_id: str, target: Optional[Pokemon]):
-        self.moved(move_id, use=False)
-
         move_id = Move.retrieve_id(move_id)
-        move = self.moves[move_id]
-
-        self._preparing_move = move
-        self._preparing_target = target
+        if move_id in self.moves:
+            move = self.moves[move_id]
+            self._preparing_move = move
+            self._preparing_target = target
 
     def primal(self):
         species_id_str = to_id_str(self._species)
@@ -452,6 +576,9 @@ class Pokemon:
         self._preparing_target = None
         self._protect_counter = 0
         self.temporary_ability = None
+        self._temporary_base_stats = None
+        self._moves._transform_moves = None
+        self._moves.mimic_move = None
         self._temporary_types = []
 
         if self._status == Status.TOX:
@@ -463,9 +590,18 @@ class Pokemon:
         self._temporary_types = []
 
     def transform(self, into: Pokemon):
-        current_hp = self.current_hp
-        self._update_from_pokedex(into.species, store_species=False)
-        self._current_hp = int(current_hp)
+        dex_entry = GenData.from_gen(self.gen).pokedex[into.species]
+        self._heightm = dex_entry["heightm"]
+        self._weightkg = dex_entry["weightkg"]
+        self._temporary_base_stats = dex_entry["baseStats"]
+        if into.ability is not None:
+            self._temporary_ability = into.ability
+        self._temporary_types = [PokemonType.from_name(t) for t in dex_entry["types"]]
+        self._moves._transform_moves = MoveSet(
+            {m.id: Move(m.id, m.gen) for m in into.moves.values()}
+        )
+        for m in self.base_moves.values():
+            m._current_pp = 5
         self._boosts = into.boosts.copy()
 
     def _update_from_pokedex(self, species: str, store_species: bool = True):
@@ -491,8 +627,8 @@ class Pokemon:
             self._possible_abilities = [
                 to_id_str(ability) for ability in dex_entry["abilities"].values()
             ]
-            if len(self._possible_abilities) == 1:
-                self.ability = self._possible_abilities[0]
+            if len(self._possible_abilities) == 1 and self.gen >= 3:
+                self._ability = self._possible_abilities[0]
         else:
             self.forme_change_ability = None
 
@@ -549,7 +685,7 @@ class Pokemon:
     def update_from_request(self, request_pokemon: Dict[str, Any]):
         self._active = request_pokemon["active"]
 
-        if request_pokemon == self._last_request:
+        if not request_pokemon["active"] and request_pokemon == self._last_request:
             return
 
         if self.ability is None:
@@ -574,78 +710,9 @@ class Pokemon:
         for move in request_pokemon["moves"]:
             self._add_move(move)
 
-        if len(self._moves) > 4:
-            moves_to_keep = {
-                Move.retrieve_id(move_id) for move_id in request_pokemon["moves"]
-            }
-            self._moves = {
-                move_id: move
-                for move_id, move in self._moves.items()
-                if move_id in moves_to_keep
-            }
-
         if "stats" in request_pokemon:
             for stat in request_pokemon["stats"]:
                 self._stats[stat] = request_pokemon["stats"][stat]
-
-    def check_consistency(self, pkmn_request: Dict[str, Any], player_role: str):
-        assert (
-            pkmn_request["ident"] == f"{player_role}: {self.name}"
-        ), f"{pkmn_request['ident']} != {player_role}: {self.name}\nrequest: {pkmn_request}"
-        split_details = pkmn_request["details"].split(", ")
-        level = None
-        gender = None
-        shiny = split_details[-1] == "shiny"
-        if shiny:
-            split_details.pop()
-        if len(split_details) == 3:
-            _, level, gender = split_details
-        elif len(split_details) == 2:
-            if split_details[1].startswith("L"):
-                _, level = split_details
-            else:
-                _, gender = split_details
-        level = int(level[1:]) if level is not None else 100
-        gender = (
-            PokemonGender.from_request_details(gender)
-            if gender is not None
-            else PokemonGender.NEUTRAL
-        )
-        assert level == self.level, f"{level} != {self.level}\nrequest: {pkmn_request}"
-        assert self.gender is not None
-        assert (
-            gender == self.gender
-        ), f"{gender.name.lower()} != {self.gender.name.lower()}\nrequest: {pkmn_request}"
-        assert shiny == self.shiny, f"{shiny} != {self.shiny}\nrequest: {pkmn_request}"
-        assert (
-            pkmn_request["active"] == self.active
-        ), f"{pkmn_request['active']} != {self.active}\nrequest: {pkmn_request}"
-        if self.item == "unknown_item":
-            self._item = pkmn_request["item"]
-        if self.gen > 4:
-            assert pkmn_request["item"] == (
-                self.item or ""
-            ), f"{pkmn_request['item']} != {self.item or ''}"
-        if self.base_species == "ditto":
-            return
-        assert (
-            pkmn_request["condition"] == self.hp_status
-        ), f"{pkmn_request['condition']} != {self.hp_status}\nrequest: {pkmn_request}"
-        if self.base_species == "mew":
-            return
-        for move_request, move in zip(pkmn_request["moves"], self.moves.values()):
-            assert Move.retrieve_id(move_request) == Move.retrieve_id(
-                move.id
-            ), f"{Move.retrieve_id(move_request)} != {Move.retrieve_id(move.id)}\nrequest: {pkmn_request}"
-        if self.ability is None:
-            self.ability = pkmn_request["baseAbility"]
-        assert pkmn_request["baseAbility"] == (
-            self.base_ability or ""
-        ), f"{pkmn_request['baseAbility']} != {self.base_ability or ''}"
-        if "ability" in pkmn_request:
-            assert pkmn_request["ability"] == (
-                self.ability or ""
-            ), f"{pkmn_request['ability']} != {self.ability or ''}"
 
     def _update_from_teambuilder(self, tb: TeambuilderPokemon):
         if tb.nickname is not None and tb.species is None:
@@ -669,7 +736,7 @@ class Pokemon:
         self._shiny = tb.shiny
         if tb.tera_type:
             self._terastallized_type = PokemonType.from_name(tb.tera_type)
-        self._moves = {}
+        self._moves = MoveSet({})
         for move_str in tb.moves:
             move = Move(Move.retrieve_id(move_str), gen=self.gen)
             self._moves[move.id] = move
@@ -723,33 +790,17 @@ class Pokemon:
                     [v for m, v in self.moves.items() if m.startswith("hiddenpower")][0]
                 )
             else:
-                has_copy_move = {
+                assert self.ability == "dancer" or {
                     "copycat",
                     "metronome",
                     "mefirst",
                     "mirrormove",
                     "assist",
-                    "transform",
-                    "mimic",
-                }.intersection(self.moves)
-
-                """
-                Check if the pokemon has abilities that can grant moves
-
-                Some abilities (like Dancer, which can be copied via Trace) allow using
-                moves that aren't in the pokemon's moveset
-                """
-                has_move_granting_ability = (
-                    self.ability in ("dancer", "trace") if self.ability else False
+                }.intersection(self.moves), (
+                    f"Error with move {move}. Expected self.moves to contain copycat, "
+                    "metronome, mefirst, mirrormove, or assist, or to have the ability "
+                    f"dancer. Got {self.moves}, ability: {self.ability}"
                 )
-
-                if not has_copy_move and not has_move_granting_ability:
-                    assert False, (
-                        f"Error with move {move}. Expected self.moves to contain copycat, "
-                        "metronome, mefirst, mirrormove, assist, transform, mimic, "
-                        f"or the pokemon to have a move-granting ability. Got moves: {self.moves}, "
-                        f"ability: {self.ability}"
-                    )
                 moves.append(Move(move, gen=self.gen))
         return moves
 
@@ -786,9 +837,7 @@ class Pokemon:
 
     @ability.setter
     def ability(self, ability: str):
-        if self.ability == to_id_str(ability):
-            return
-        elif self._ability is None:
+        if self._ability is None:
             self._ability = to_id_str(ability)
         else:
             self._temporary_ability = to_id_str(ability)
@@ -818,11 +867,11 @@ class Pokemon:
             if type_:
                 return [
                     move
-                    for move in self._moves.values()
+                    for move in self.moves.values()
                     if move.type == type_ and move.can_z_move
                 ]
-            elif move in self._moves:
-                return [self._moves[move]]
+            elif move in self.moves:
+                return [self.moves[move]]
         return []
 
     @property
@@ -832,6 +881,15 @@ class Pokemon:
         :rtype: str, optional
         """
         return self._forme_change_ability or self._ability
+
+    @property
+    def base_moves(self) -> Dict[str, Move]:
+        """
+        :return: The pokemon's underlying move dictionary. When transformed, this
+            returns the temporary move set; otherwise it returns the learned moves.
+        :rtype: Dict[str, Move]
+        """
+        return self._moves.base_moves
 
     @property
     def base_species(self) -> str:
@@ -848,7 +906,11 @@ class Pokemon:
         :return: The pokemon's base stats.
         :rtype: Dict[str, int]
         """
-        return self._base_stats
+        return (
+            self._temporary_base_stats
+            if self._temporary_base_stats is not None
+            else self._base_stats
+        )
 
     @property
     def boosts(self) -> Dict[str, int]:
@@ -906,6 +968,18 @@ class Pokemon:
         :rtype: bool
         """
         return self._first_turn
+
+    @property
+    def forme_change_ability(self) -> Optional[str]:
+        """
+        :return: The pokemon's ability after changing forme. None if the pokemon hasn't changed forme.
+        :rtype: str, optional
+        """
+        return self._forme_change_ability
+
+    @forme_change_ability.setter
+    def forme_change_ability(self, ability: Optional[str]):
+        self._forme_change_ability = to_id_str(ability) if ability is not None else None
 
     @property
     def gen(self) -> int:
@@ -997,16 +1071,12 @@ class Pokemon:
         return self._max_hp or 0
 
     @property
-    def forme_change_ability(self) -> Optional[str]:
+    def mimic_move(self) -> Move | None:
         """
-        :return: The pokemon's ability after changing forme. None if the pokemon hasn't changed forme.
-        :rtype: str, optional
+        :return: The move currently copied by Mimic, if any.
+        :rtype: Move | None
         """
-        return self._forme_change_ability
-
-    @forme_change_ability.setter
-    def forme_change_ability(self, ability: Optional[str]):
-        self._forme_change_ability = to_id_str(ability) if ability is not None else None
+        return self._moves.mimic_move
 
     @property
     def moves(self) -> Dict[str, Move]:
@@ -1014,7 +1084,7 @@ class Pokemon:
         :return: A dictionary of the pokemon's known moves.
         :rtype: Dict[str, Move]
         """
-        return self._moves
+        return self._moves.moves
 
     @property
     def must_recharge(self) -> bool:
@@ -1201,6 +1271,14 @@ class Pokemon:
         :rtype: Optional[PokemonType]
         """
         return self._terastallized_type
+
+    @property
+    def transformed(self) -> bool:
+        """
+        :return: Whether the pokemon is currently transformed.
+        :rtype: bool
+        """
+        return self._moves._transform_moves is not None
 
     @property
     def type_1(self) -> PokemonType:

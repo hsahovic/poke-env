@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+from dataclasses import dataclass
 from functools import lru_cache
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
@@ -12,7 +15,6 @@ from poke_env.battle.weather import Weather
 from poke_env.data import GenData, to_id_str
 
 SPECIAL_MOVES: Set[str] = {"struggle", "recharge"}
-
 _PROTECT_MOVES = {
     "protect",
     "detect",
@@ -78,14 +80,22 @@ class Move:
         "_base_power_override",
         "_current_pp",
         "_dynamaxed_move",
+        "_from_mimic",
         "_gen",
         "_request_target",
     )
 
-    def __init__(self, move_id: str, gen: int, raw_id: Optional[str] = None):
+    def __init__(
+        self,
+        move_id: str,
+        gen: int,
+        raw_id: Optional[str] = None,
+        from_mimic: bool = False,
+    ):
         self._id = move_id
         self._base_power_override = None
         self._gen = gen
+        self._from_mimic = from_mimic
 
         if move_id.startswith("hiddenpower") and raw_id is not None:
             base_power = "".join([c for c in raw_id if c.isdigit()])
@@ -105,8 +115,14 @@ class Move:
     def __repr__(self) -> str:
         return f"{self._id} (Move object)"
 
-    def use(self):
-        self._current_pp -= 1
+    def use(self, pressure: bool = False, overridden: bool = False):
+        decrement = 1
+        if pressure:
+            decrement += 1
+        if overridden:
+            decrement -= 1
+        # don't let PP go below 0
+        self._current_pp = max(self._current_pp - decrement, 0)
 
     @staticmethod
     def is_id_z(id_: str, gen: int) -> bool:
@@ -446,7 +462,10 @@ class Move:
         :return: The move's max pp.
         :rtype: int
         """
-        return self.entry["pp"] * 8 // 5
+        max_pp = self.entry["pp"] * 8 // 5
+        if self._gen < 3 and not self._from_mimic:
+            max_pp = min(max_pp, 61)
+        return max_pp
 
     @property
     def n_hit(self) -> Tuple[int, int]:
@@ -915,3 +934,69 @@ class DynamaxMove(Move):
         if self.category != MoveCategory.STATUS:
             return self.WEATHER_MAP.get(self.type, None)
         return None
+
+
+@dataclass
+class MoveSet:
+    """
+    Container for a pokemon's moves, including Mimic and Transform overrides.
+    """
+
+    _base_moves: dict[str, Move]
+    _mimic_move: Move | None = None
+    _transform_moves: MoveSet | None = None
+
+    def __getitem__(self, key: str) -> Move:
+        return self.moves[key]
+
+    def __setitem__(self, key: str, value: Move):
+        assert not value._from_mimic, "Set mimic-copied move with mimic_move setter"
+        self.base_moves[key] = value
+
+    def _resolved(self) -> MoveSet:
+        """
+        :return: The effective move set after following Transform copies.
+        :rtype: MoveSet
+        """
+        if self._transform_moves is not None:
+            return self._transform_moves._resolved()
+        else:
+            return self
+
+    @property
+    def base_moves(self) -> dict[str, Move]:
+        """
+        :return: The resolved base move dictionary without Mimic substitution.
+        :rtype: dict[str, Move]
+        """
+        return self._resolved()._base_moves
+
+    @property
+    def mimic_move(self) -> Move | None:
+        """
+        :return: The move currently copied by Mimic, if any.
+        :rtype: Move | None
+        """
+        return self._resolved()._mimic_move
+
+    @mimic_move.setter
+    def mimic_move(self, move: Move | None):
+        assert move is None or move._from_mimic
+        self._resolved()._mimic_move = move
+
+    @property
+    def moves(self) -> dict[str, Move]:
+        """
+        :return: The resolved move dictionary with Mimic substitution applied.
+        :rtype: dict[str, Move]
+        """
+        if self.mimic_move is None:
+            return self.base_moves
+        else:
+            moves = {}
+            for k, v in self.base_moves.items():
+                if k == "mimic":
+                    moves[self.mimic_move.id] = self.mimic_move
+                else:
+                    moves[k] = v
+            return moves
