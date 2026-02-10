@@ -1,6 +1,6 @@
 import pickle
 from copy import deepcopy
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 
