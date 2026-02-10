@@ -5,8 +5,8 @@ from poke_env.battle import (
     Effect,
     Field,
     Move,
-    MoveSet,
     MoveCategory,
+    MoveSet,
     PokemonType,
     SideCondition,
     Status,
@@ -142,20 +142,12 @@ def test_max_pp_pre_gen3_cap_and_mimic_exception():
 
 
 def test_moveset_mimic_and_transform_resolution():
-    moves = MoveSet(
-        {
-            "mimic": Move("mimic", gen=9),
-            "tackle": Move("tackle", gen=9),
-        }
-    )
+    moves = MoveSet({"mimic": Move("mimic", gen=9), "tackle": Move("tackle", gen=9)})
     moves.mimic_move = Move("thunderbolt", gen=9, from_mimic=True)
     assert set(moves.moves) == {"thunderbolt", "tackle"}
 
     transform_moves = MoveSet(
-        {
-            "mimic": Move("mimic", gen=9),
-            "surf": Move("surf", gen=9),
-        }
+        {"mimic": Move("mimic", gen=9), "surf": Move("surf", gen=9)}
     )
     moves._transform_moves = transform_moves
     moves.mimic_move = Move("hydropump", gen=9, from_mimic=True)
