@@ -173,6 +173,7 @@ class Pokemon:
             self._boosts[stat] = -6
 
     def cant_move(self):
+        self._dancing = False
         self._first_turn = False
         self._protect_counter = 0
 
