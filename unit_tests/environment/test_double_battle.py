@@ -1,5 +1,6 @@
 import pickle
-from unittest.mock import MagicMock
+from copy import deepcopy
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -423,6 +424,21 @@ def test_is_grounded():
     furret.item = "ironball"
     assert battle.grounded == [True, True]
     assert battle.is_grounded(furret)
+
+
+def test_pressure_tracking_targets_in_doubles():
+    battle = DoubleBattle("tag", "username", MagicMock(), gen=9)
+    battle.player_role = "p1"
+    battle.switch("p1a: Charizard", "Charizard, L50, F", "100/100")
+    battle.switch("p1b: Blastoise", "Blastoise, L50, F", "100/100")
+    battle.switch("p2a: Absol", "Absol, L50, F", "100/100")
+    battle.switch("p2b: Venusaur", "Venusaur, L50, F", "100/100")
+
+    battle.get_pokemon("p2: Absol")._ability = "pressure"
+
+    assert battle._pressure_on("p1a: Charizard", "Tackle", "p2a: Absol")
+    assert not battle._pressure_on("p1a: Charizard", "Tackle", "p1b: Blastoise")
+    assert battle._pressure_on("p1a: Charizard", "Surf", None)
 
 
 def test_dondozo_tatsugiri():
