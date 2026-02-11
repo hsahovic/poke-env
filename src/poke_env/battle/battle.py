@@ -122,7 +122,10 @@ class Battle(AbstractBattle):
         if not self.trapped:
             for pkmn_json in side["pokemon"]:
                 pokemon = self.team[pkmn_json["ident"]]
-                if not pokemon.active and self.reviving == pokemon.fainted:
+                if self.reviving:
+                    if pokemon.fainted:
+                        self._available_switches.append(pokemon)
+                elif not pokemon.active and not pokemon.fainted:
                     self._available_switches.append(pokemon)
 
     def switch(self, pokemon_str: str, details: str, hp_status: str):
