@@ -140,6 +140,10 @@ class DoubleBattle(AbstractBattle):
                     force_self_team=True,
                     details=pokemon_dict["details"],
                 )
+                if strict_battle_tracking:
+                    active_pokemon.check_move_consistency(
+                        active_request, is_doubles=True
+                    )
                 if self.player_role is not None:
                     if (
                         active_pokemon_number == 0
