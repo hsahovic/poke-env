@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional, Union
 
 from poke_env.battle.effect import Effect
 from poke_env.battle.field import Field
-from poke_env.battle.move import SPECIAL_MOVES, Move
+from poke_env.battle.move import SPECIAL_MOVES, Move, MoveSet
 from poke_env.battle.pokemon_gender import PokemonGender
 from poke_env.battle.pokemon_type import PokemonType
 from poke_env.battle.status import Status
@@ -585,6 +585,11 @@ class Pokemon:
         if into.ability is not None:
             self._temporary_ability = into.ability
         self._temporary_types = [PokemonType.from_name(t) for t in dex_entry["types"]]
+        self._moves._transform_moves = MoveSet(
+            {m.id: Move(m.id, m.gen) for m in into.moves.values()}
+        )
+        for m in self.base_moves.values():
+            m._current_pp = 5
         self._boosts = into.boosts.copy()
 
     def _update_from_pokedex(self, species: str, store_species: bool = True):
