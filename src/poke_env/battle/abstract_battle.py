@@ -710,6 +710,12 @@ class AbstractBattle(ABC):
                     types = event[4]
                 mon.start_effect(effect, details=types)
             else:
+                if effect == "Mimic":
+                    from poke_env.battle.move import Move
+
+                    mon._moves.mimic_move = Move(
+                        Move.retrieve_id(event[4]), gen=self.gen, from_mimic=True
+                    )
                 mon.start_effect(effect)
 
             if mon.is_dynamaxed:
@@ -769,6 +775,13 @@ class AbstractBattle(ABC):
                     "[item] ", ""
                 )
                 self.get_pokemon(target).item = None
+            elif effect == "move: Mimic":
+                from poke_env.battle.move import Move
+
+                mon = self.get_pokemon(target)
+                mon._moves.mimic_move = Move(
+                    Move.retrieve_id(event[4]), gen=self.gen, from_mimic=True
+                )
             elif target != "":  # ['', '-activate', '', 'move: Splash']
                 self.get_pokemon(target).start_effect(effect)
         elif event[1] == "-status":
