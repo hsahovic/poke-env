@@ -410,11 +410,7 @@ class Pokemon:
             self._update_from_pokedex(mega_species, store_species=False)
 
     def moved(
-        self,
-        move_id: str,
-        failed: bool = False,
-        use: bool = True,
-        reveal: bool = True,
+        self, move_id: str, failed: bool = False, use: bool = True, reveal: bool = True
     ):
         self._must_recharge = False
         self._preparing_move = None
