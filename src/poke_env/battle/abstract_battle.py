@@ -613,6 +613,8 @@ class AbstractBattle(ABC):
                 temp_pokemon.start_effect("MINIMIZE")
 
             mon = self.get_pokemon(pokemon)
+            if spread or presumed_target == "":
+                presumed_target = None
             if overridden_move:
                 mon.moved(move, failed=failed, use=False, reveal=reveal)
             elif not failed and move in {
