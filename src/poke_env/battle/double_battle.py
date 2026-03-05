@@ -82,6 +82,24 @@ class DoubleBattle(AbstractBattle):
             pokemon_2 = None
         return [pokemon_1, pokemon_2]
 
+    def _get_target_mon(
+        self, pokemon: str, target_type: str, target_str: str | None
+    ) -> Pokemon | None:
+        if target_str is not None and pokemon[:2] == target_str[:2]:
+            return None
+        elif target_type != "all" and target_str is not None:
+            return self.get_pokemon(target_str)
+        else:
+            targets = (
+                self.opponent_active_pokemon
+                if self.player_role == pokemon[:2]
+                else self.active_pokemon
+            )
+            for target in targets:
+                if target is not None and target.ability == "pressure":
+                    return target
+            return None
+
     def parse_request(
         self, request: Dict[str, Any], strict_battle_tracking: bool = False
     ):

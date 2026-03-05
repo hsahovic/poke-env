@@ -406,11 +406,15 @@ class Pokemon:
             mega_species = mega_species + stone[-1].lower()
             self._update_from_pokedex(mega_species, store_species=False)
 
-    def moved(self, move_id: str, failed: bool = False, use: bool = True):
+    def moved(
+        self, move_id: str, failed: bool = False, use: bool = True, pressure: bool = False
+    ):
         self._must_recharge = False
         self._preparing_move = None
         self._preparing_target = None
-        move = self._add_move(move_id, use=use)
+        move = self._add_move(move_id, use=False)
+        if move and use:
+            move.use(pressure)
 
         if move and move.is_protect_counter and not failed:
             self._protect_counter += 1

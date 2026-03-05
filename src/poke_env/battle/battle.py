@@ -48,6 +48,16 @@ class Battle(AbstractBattle):
             illusioned=active, illusionist=pokemon_name, details=details
         )
 
+    def _get_target_mon(
+        self, pokemon: str, target_type: str, target_str: str | None
+    ) -> Pokemon | None:
+        if target_type != "all" and target_str is not None:
+            return self.get_pokemon(target_str)
+        elif self.player_role == pokemon[:2]:
+            return self.opponent_active_pokemon
+        else:
+            return self.active_pokemon
+
     def parse_request(
         self, request: Dict[str, Any], strict_battle_tracking: bool = False
     ):
