@@ -587,6 +587,7 @@ class AbstractBattle(ABC):
             if event[-1] == "":
                 event = event[:-1]
 
+            presumed_target = None
             if len(event) == 4:
                 pokemon, move = event[2:4]
             elif len(event) == 5:
@@ -629,13 +630,17 @@ class AbstractBattle(ABC):
                 temp_pokemon = self.get_pokemon(pokemon)
                 temp_pokemon.start_effect("MINIMIZE")
 
+            pressure = self._pressure_on(pokemon, move, presumed_target)
+
             if override_move:
                 # Moves that can trigger this branch results in two `move` messages being sent.
                 # We're setting use=False in the one (with the override) in order to prevent two pps from being used
                 # incorrectly.
                 self.get_pokemon(pokemon).moved(override_move, failed=failed, use=False)
             if override_move is None or reveal_other_move:
-                self.get_pokemon(pokemon).moved(move, failed=failed, use=False)
+                self.get_pokemon(pokemon).moved(
+                    move, failed=failed, use=False, pressure=pressure
+                )
         elif event[1] == "cant":
             pokemon, _ = event[2:4]
             self.get_pokemon(pokemon).cant_move()
