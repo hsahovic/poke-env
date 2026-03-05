@@ -23,6 +23,7 @@ class Pokemon:
         "_base_stats",
         "_boosts",
         "_current_hp",
+        "_dancing",
         "_effects",
         "_first_turn",
         "_gen",
@@ -122,6 +123,7 @@ class Pokemon:
         self._temporary_ability: Optional[str] = None
         self._forme_change_ability: Optional[str] = None
         self._temporary_types: List[PokemonType] = []
+        self._dancing = False
 
         if request_pokemon:
             self.update_from_request(request_pokemon)
@@ -172,6 +174,7 @@ class Pokemon:
             self._boosts[stat] = -6
 
     def cant_move(self):
+        self._dancing = False
         self._first_turn = False
         self._protect_counter = 0
 
@@ -406,11 +409,23 @@ class Pokemon:
             mega_species = mega_species + stone[-1].lower()
             self._update_from_pokedex(mega_species, store_species=False)
 
-    def moved(self, move_id: str, failed: bool = False, use: bool = True):
+    def moved(
+        self,
+        move_id: str,
+        failed: bool = False,
+        use: bool = True,
+        reveal: bool = True,
+    ):
         self._must_recharge = False
         self._preparing_move = None
         self._preparing_target = None
-        move = self._add_move(move_id, use=use)
+        move = None
+        if reveal:
+            move = self._add_move(move_id, use=use)
+        elif use:
+            id_ = Move.retrieve_id(move_id)
+            if id_ in self._moves:
+                self._moves[id_].use()
 
         if move and move.is_protect_counter and not failed:
             self._protect_counter += 1
