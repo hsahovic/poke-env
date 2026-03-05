@@ -6,6 +6,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 from poke_env.battle.effect import Effect
 from poke_env.battle.field import Field
+from poke_env.battle.move import Move
 from poke_env.battle.observation import Observation
 from poke_env.battle.observed_pokemon import ObservedPokemon
 from poke_env.battle.pokemon import Pokemon
@@ -710,6 +711,10 @@ class AbstractBattle(ABC):
                     types = event[4]
                 mon.start_effect(effect, details=types)
             else:
+                if effect == "Mimic":
+                    mon._moves.mimic_move = Move(
+                        Move.retrieve_id(event[4]), gen=self.gen, from_mimic=True
+                    )
                 mon.start_effect(effect)
 
             if mon.is_dynamaxed:
@@ -769,6 +774,11 @@ class AbstractBattle(ABC):
                     "[item] ", ""
                 )
                 self.get_pokemon(target).item = None
+            elif effect == "move: Mimic":
+                mon = self.get_pokemon(target)
+                mon._moves.mimic_move = Move(
+                    Move.retrieve_id(event[4]), gen=self.gen, from_mimic=True
+                )
             elif target != "":  # ['', '-activate', '', 'move: Splash']
                 self.get_pokemon(target).start_effect(effect)
         elif event[1] == "-status":
