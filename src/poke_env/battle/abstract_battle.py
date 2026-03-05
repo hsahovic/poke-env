@@ -931,7 +931,11 @@ class AbstractBattle(ABC):
                     )
         elif event[1] == "-transform":
             pokemon, into = event[2:4]
-            self.get_pokemon(pokemon).transform(self.get_pokemon(into))
+            mon = self.get_pokemon(pokemon)
+            if len(event) > 4 and event[4] == "[from] ability: Imposter":
+                mon._add_move("transform")
+                mon.ability = "imposter"
+            mon.transform(self.get_pokemon(into))
         elif event[1] == "-zpower":
             assert self.player_role is not None
             if event[2].startswith(self.player_role):
