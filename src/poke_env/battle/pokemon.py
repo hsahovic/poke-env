@@ -566,9 +566,18 @@ class Pokemon:
         self._temporary_types = []
 
     def transform(self, into: Pokemon):
-        current_hp = self.current_hp
-        self._update_from_pokedex(into.species, store_species=False)
-        self._current_hp = int(current_hp)
+        dex_entry = GenData.from_gen(self.gen).pokedex[into.species]
+        self._heightm = dex_entry["heightm"]
+        self._weightkg = dex_entry["weightkg"]
+        self._temporary_base_stats = dex_entry["baseStats"]
+        if into.ability is not None:
+            self._temporary_ability = into.ability
+        self._temporary_types = [PokemonType.from_name(t) for t in dex_entry["types"]]
+        self._moves._transform_moves = MoveSet(
+            {m.id: Move(m.id, m.gen) for m in into.moves.values()}
+        )
+        for m in self.base_moves.values():
+            m._current_pp = 5
         self._boosts = into.boosts.copy()
 
     def _update_from_pokedex(self, species: str, store_species: bool = True):
@@ -594,8 +603,8 @@ class Pokemon:
             self._possible_abilities = [
                 to_id_str(ability) for ability in dex_entry["abilities"].values()
             ]
-            if len(self._possible_abilities) == 1:
-                self.ability = self._possible_abilities[0]
+            if len(self._possible_abilities) == 1 and self.gen >= 3:
+                self._ability = self._possible_abilities[0]
         else:
             self.forme_change_ability = None
 
@@ -891,7 +900,11 @@ class Pokemon:
         :return: The pokemon's base stats.
         :rtype: Dict[str, int]
         """
-        return self._base_stats
+        return (
+            self._temporary_base_stats
+            if self._temporary_base_stats is not None
+            else self._base_stats
+        )
 
     @property
     def boosts(self) -> Dict[str, int]:
