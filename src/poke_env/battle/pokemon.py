@@ -219,15 +219,21 @@ class Pokemon:
                 self.item or ""
             ), f"{pkmn_request['item']} != {self.item or ''}"
         assert len(self.moves) <= 4, f"More than 4 moves: {self.moves}"
-        if self.base_species == "ditto" or "transform" in self.moves:
+        if self.transformed or "transform" in self.moves:
             return
         assert (
             pkmn_request["condition"] == self.hp_status
         ), f"{pkmn_request['condition']} != {self.hp_status}"
-        for move_request, move in zip(pkmn_request["moves"], self.moves.values()):
-            assert Move.retrieve_id(move_request) == Move.retrieve_id(
-                move.id
-            ), f"{Move.retrieve_id(move_request)} != {Move.retrieve_id(move.id)}"
+        if not (
+            # only check moves if mimic hasn't copied a move yet,
+            # or if mimic copies a move not already in the moveset
+            self.mimic_move is not None
+            and self.mimic_move.id in [m.id for m in self.base_moves.values()]
+        ):
+            for move_request, move in zip(pkmn_request["moves"], self.moves.values()):
+                assert Move.retrieve_id(move_request) == Move.retrieve_id(
+                    move.id
+                ), f"{Move.retrieve_id(move_request)} != {Move.retrieve_id(move.id)}"
         if self.ability is None:
             # needed for ability initialization in start of game,
             # done anyway in update_from_request()
