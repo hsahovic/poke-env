@@ -6,6 +6,7 @@ from poke_env.battle import (
     Field,
     Move,
     MoveCategory,
+    MoveSet,
     PokemonType,
     SideCondition,
     Status,
@@ -112,6 +113,46 @@ def test_current_pp():
     for move in move_generator():
         assert isinstance(move.current_pp, int)
         assert move.current_pp == move.max_pp
+
+
+def test_move_use_pressure_and_override():
+    move = Move("tackle", gen=9)
+    max_pp = move.max_pp
+
+    move.use()
+    assert move.current_pp == max_pp - 1
+
+    move.use(pressure=True)
+    assert move.current_pp == max_pp - 3
+
+    move.use(pressure=True, overridden=True)
+    assert move.current_pp == max_pp - 4
+
+    move._current_pp = 0
+    move.use(pressure=True)
+    assert move.current_pp == 0
+
+
+def test_max_pp_pre_gen3_cap_and_mimic_exception():
+    move = Move("splash", gen=2)
+    mimic_move = Move("splash", gen=2, from_mimic=True)
+
+    assert move.max_pp == 61
+    assert mimic_move.max_pp == 64
+
+
+def test_moveset_mimic_and_transform_resolution():
+    moves = MoveSet({"mimic": Move("mimic", gen=9), "tackle": Move("tackle", gen=9)})
+    moves.mimic_move = Move("thunderbolt", gen=9, from_mimic=True)
+    assert set(moves.moves) == {"thunderbolt", "tackle"}
+
+    transform_moves = MoveSet(
+        {"mimic": Move("mimic", gen=9), "surf": Move("surf", gen=9)}
+    )
+    moves._transform_moves = transform_moves
+    moves.mimic_move = Move("hydropump", gen=9, from_mimic=True)
+    assert set(moves.moves) == {"hydropump", "surf"}
+    assert set(moves.base_moves) == {"mimic", "surf"}
 
 
 def test_damage():
