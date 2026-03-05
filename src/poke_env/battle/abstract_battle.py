@@ -6,6 +6,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 from poke_env.battle.effect import Effect
 from poke_env.battle.field import Field
+from poke_env.battle.move import Move
 from poke_env.battle.observation import Observation
 from poke_env.battle.observed_pokemon import ObservedPokemon
 from poke_env.battle.pokemon import Pokemon
@@ -711,8 +712,6 @@ class AbstractBattle(ABC):
                 mon.start_effect(effect, details=types)
             else:
                 if effect == "Mimic":
-                    from poke_env.battle.move import Move
-
                     mon._moves.mimic_move = Move(
                         Move.retrieve_id(event[4]), gen=self.gen, from_mimic=True
                     )
@@ -776,8 +775,6 @@ class AbstractBattle(ABC):
                 )
                 self.get_pokemon(target).item = None
             elif effect == "move: Mimic":
-                from poke_env.battle.move import Move
-
                 mon = self.get_pokemon(target)
                 mon._moves.mimic_move = Move(
                     Move.retrieve_id(event[4]), gen=self.gen, from_mimic=True
