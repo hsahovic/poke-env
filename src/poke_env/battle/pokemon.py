@@ -418,10 +418,6 @@ class Pokemon:
         move = None
         if reveal:
             move = self._add_move(move_id, use=use)
-        elif use:
-            id_ = Move.retrieve_id(move_id)
-            if id_ in self._moves:
-                self._moves[id_].use()
 
         if move and move.is_protect_counter and not failed:
             self._protect_counter += 1
