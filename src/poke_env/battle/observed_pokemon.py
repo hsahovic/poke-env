@@ -10,7 +10,7 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Mapping, Optional, Union
 
 from poke_env.battle.effect import Effect
-from poke_env.battle.move import Move
+from poke_env.battle.move import Move, MoveSet
 from poke_env.battle.pokemon import Pokemon
 from poke_env.battle.pokemon_gender import PokemonGender
 from poke_env.battle.pokemon_type import PokemonType
@@ -51,7 +51,7 @@ class ObservedPokemon:
         mon = Pokemon(gen=gen, species=self.species, name=self.name)
         mon._item = self.item
         mon._level = self.level
-        mon._moves = self.moves
+        mon._moves = MoveSet(self.moves)
         mon._ability = self.ability
         mon._terastallized_type = self.tera_type
 

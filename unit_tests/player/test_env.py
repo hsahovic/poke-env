@@ -13,6 +13,7 @@ from poke_env.battle import (
     Battle,
     DoubleBattle,
     Move,
+    MoveSet,
     Pokemon,
     PokemonType,
     Status,
@@ -376,7 +377,7 @@ def test_singles_action_order_conversions():
         battle = Battle("bat1", p.agent1.username, p.agent1.logger, gen=gen)
         active_pokemon = Pokemon(species="charizard", gen=gen)
         move = Move("flamethrower", gen=gen)
-        active_pokemon._moves = {move.id: move}
+        active_pokemon._moves = MoveSet({move.id: move})
         active_pokemon._active = True
         active_pokemon._item = "firiumz"
         active_pokemon._terastallized_type = PokemonType.FIRE
@@ -452,7 +453,7 @@ def test_doubles_action_order_conversions():
         battle._player_role = "p1"
         active_pokemon = Pokemon(species="charizard", gen=gen)
         move = Move("flamethrower", gen=gen)
-        active_pokemon._moves = {move.id: move}
+        active_pokemon._moves = MoveSet({move.id: move})
         active_pokemon._active = True
         active_pokemon._item = "firiumz"
         battle._team = {"charizard": active_pokemon}
