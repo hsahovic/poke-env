@@ -173,7 +173,7 @@ class AbstractBattle(ABC):
         self._opponent_side_conditions: Dict[SideCondition, int] = {}  # set()
         self._side_conditions: Dict[SideCondition, int] = {}  # set()
         self._reviving: bool = False
-        self._commanding: list[bool] = [False, False]
+        self._commanding: bool = False
         self._opponent_used_mega_evolve = False
         self._opponent_used_z_move = False
         self._opponent_used_dynamax = False
@@ -1184,10 +1184,10 @@ class AbstractBattle(ABC):
         pass
 
     @property
-    def commanding(self) -> list[bool]:
+    def commanding(self) -> bool:
         """
-        :return: A list of booleans indicating whether each active pokemon is commanding
-        :rtype: list[bool]
+        :return: Whether commander is active with Dondozo and Tatsugiri on the field
+        :rtype: bool
         """
         return self._commanding
 

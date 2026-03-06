@@ -2,6 +2,7 @@ from logging import Logger
 from typing import Any, Dict, List, Optional, Union
 
 from poke_env.battle.abstract_battle import AbstractBattle
+from poke_env.battle.effect import Effect
 from poke_env.battle.move import SPECIAL_MOVES, Move
 from poke_env.battle.move_category import MoveCategory
 from poke_env.battle.pokemon import Pokemon
@@ -117,7 +118,9 @@ class DoubleBattle(AbstractBattle):
         self._reviving = any(
             [mon.get("reviving") for mon in request["side"]["pokemon"]]
         )
-        self._commanding = [mon.get("commanding") for mon in request["side"]["pokemon"]]
+        self._commanding = any(
+            [mon.get("commanding") for mon in request["side"]["pokemon"]]
+        )
 
         self._last_request = request
 
@@ -209,7 +212,10 @@ class DoubleBattle(AbstractBattle):
                     self._maybe_trapped[active_pokemon_number] = True
 
         for i in range(2):
-            if not self.trapped[i] and not self.commanding[i]:
+            if not self.trapped[i]:
+                active_mon = self.active_pokemon[i]
+                if active_mon is not None and Effect.COMMANDER in active_mon.effects:
+                    continue
                 for pkmn_json in side["pokemon"]:
                     pokemon = self.team[pkmn_json["ident"]]
                     if not pokemon.active and self.reviving == pokemon.fainted:
