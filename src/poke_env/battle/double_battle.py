@@ -213,9 +213,6 @@ class DoubleBattle(AbstractBattle):
 
         for i in range(2):
             if not self.trapped[i]:
-                active_mon = self.active_pokemon[i]
-                if active_mon is not None and Effect.COMMANDER in active_mon.effects:
-                    continue
                 for pkmn_json in side["pokemon"]:
                     pokemon = self.team[pkmn_json["ident"]]
                     if not pokemon.active and self.reviving == pokemon.fainted:
