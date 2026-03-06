@@ -396,10 +396,7 @@ class SimpleHeuristicsPlayer(Player):
             if mon is not None and Effect.COMMANDER in mon.effects:
                 orders += [PassBattleOrder()]
                 continue
-            if (
-                mon is None
-                and not battle.available_switches[active_id]
-            ):
+            if mon is None and not battle.available_switches[active_id]:
                 orders += [PassBattleOrder()]
                 continue
             results = [

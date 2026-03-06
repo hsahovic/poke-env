@@ -463,7 +463,21 @@ def test_dondozo_tatsugiri():
                             "disabled": False,
                         },
                     ],
-                }
+                    "trapped": True,
+                },
+                {
+                    "moves": [
+                        {
+                            "move": "Draco Meteor",
+                            "id": "dracometeor",
+                            "pp": 8,
+                            "maxpp": 8,
+                            "target": "normal",
+                            "disabled": False,
+                        },
+                    ],
+                    "trapped": True,
+                },
             ],
             "side": {
                 "name": "username",
@@ -543,7 +557,7 @@ def test_dondozo_tatsugiri():
 
     # Dondozo slot (0) should have moves and switches
     assert len(battle.available_moves[0]) == 1
-    assert len(battle.available_switches[0]) == 1  # Flamigo
+    assert battle.available_switches[0] == []
 
     # Tatsugiri slot (1) should have nothing (commanding)
     assert battle.available_moves[1] == []
