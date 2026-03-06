@@ -461,7 +461,7 @@ def test_dondozo_tatsugiri():
                             "maxpp": 16,
                             "target": "normal",
                             "disabled": False,
-                        },
+                        }
                     ],
                     "trapped": True,
                 },
@@ -474,7 +474,7 @@ def test_dondozo_tatsugiri():
                             "maxpp": 8,
                             "target": "normal",
                             "disabled": False,
-                        },
+                        }
                     ],
                     "trapped": True,
                 },
