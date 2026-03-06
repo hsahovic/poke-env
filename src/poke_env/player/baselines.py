@@ -4,6 +4,7 @@ from typing import List, Tuple
 from poke_env.battle.abstract_battle import AbstractBattle
 from poke_env.battle.battle import Battle
 from poke_env.battle.double_battle import DoubleBattle
+from poke_env.battle.effect import Effect
 from poke_env.battle.move import Move
 from poke_env.battle.move_category import MoveCategory
 from poke_env.battle.pokemon import Pokemon
@@ -391,8 +392,12 @@ class SimpleHeuristicsPlayer(Player):
             return self.choose_singles_move(battle)[0]  # type: ignore
         orders: List[SingleBattleOrder] = []
         for active_id in [0, 1]:
+            mon = battle.active_pokemon[active_id]
+            if mon is not None and Effect.COMMANDER in mon.effects:
+                orders += [PassBattleOrder()]
+                continue
             if (
-                battle.active_pokemon[active_id] is None
+                mon is None
                 and not battle.available_switches[active_id]
             ):
                 orders += [PassBattleOrder()]
@@ -404,7 +409,6 @@ class SimpleHeuristicsPlayer(Player):
             possible_orders = [r[0] for r in results]
             scores = [r[1] for r in results]
             for order in possible_orders:
-                mon = battle.active_pokemon[active_id]
                 if (
                     order is not None
                     and hasattr(order, "order")
