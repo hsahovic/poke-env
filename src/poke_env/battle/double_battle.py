@@ -2,7 +2,6 @@ from logging import Logger
 from typing import Any, Dict, List, Optional, Union
 
 from poke_env.battle.abstract_battle import AbstractBattle
-from poke_env.battle.effect import Effect
 from poke_env.battle.move import SPECIAL_MOVES, Move
 from poke_env.battle.move_category import MoveCategory
 from poke_env.battle.pokemon import Pokemon
