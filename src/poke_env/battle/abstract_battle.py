@@ -1183,6 +1183,7 @@ class AbstractBattle(ABC):
     def can_z_move(self) -> Any:
         pass
 
+    @property
     def commanding(self) -> list[bool]:
         """
         :return: A list of booleans indicating whether each active pokemon is commanding
