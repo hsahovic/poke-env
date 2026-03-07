@@ -664,7 +664,7 @@ class AbstractBattle(ABC):
         elif event[1] == "faint":
             mon = self.get_pokemon(event[2])
             mon.faint()
-            if mon.species == "dondozo":
+            if mon.species == "dondozo" and isinstance(self.active_pokemon, list):
                 active_mons = (
                     self.active_pokemon
                     if event[2][:2] == self.player_role
