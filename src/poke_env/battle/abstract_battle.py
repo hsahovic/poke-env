@@ -6,13 +6,14 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 from poke_env.battle.effect import Effect
 from poke_env.battle.field import Field
+from poke_env.battle.move import Move
 from poke_env.battle.observation import Observation
 from poke_env.battle.observed_pokemon import ObservedPokemon
 from poke_env.battle.pokemon import Pokemon
 from poke_env.battle.pokemon_type import PokemonType
 from poke_env.battle.side_condition import STACKABLE_CONDITIONS, SideCondition
 from poke_env.battle.weather import Weather
-from poke_env.data import to_id_str
+from poke_env.data import GenData, to_id_str
 from poke_env.data.replay_template import REPLAY_TEMPLATE
 
 
@@ -440,6 +441,40 @@ class AbstractBattle(ABC):
 
         self._finished = True
 
+    @abstractmethod
+    def _get_target_mon(
+        self, pokemon: str, target_type: str, target_str: str | None
+    ) -> Pokemon | None:
+        pass
+
+    def _pressure_on(self, pokemon: str, move: str, target_str: Optional[str]) -> bool:
+        move_id = Move.retrieve_id(move)
+        if move_id not in GenData.from_gen(self.gen).moves:
+            # This happens when `move` is a z-move. Since z-moves cannot be PP tracked
+            # anyway, we just return False here.
+            return False
+        move_data = GenData.from_gen(self.gen).moves[move_id]
+        target = self._get_target_mon(pokemon, move_data["target"], target_str)
+        if target is None:
+            return False
+        return (
+            target.ability == "pressure"
+            and not target.fainted
+            and (
+                move_data["target"]
+                in [
+                    "all",
+                    "allAdjacent",
+                    "allAdjacentFoes",
+                    "any",
+                    "normal",
+                    "randomNormal",
+                    "scripted",
+                ]
+                or "mustpressure" in move_data["flags"]
+            )
+        )
+
     def is_grounded(self, mon: Pokemon):
         if Field.GRAVITY in self.fields:
             return True
@@ -554,6 +589,7 @@ class AbstractBattle(ABC):
             if event[-1] == "":
                 event = event[:-1]
 
+            presumed_target = None
             if len(event) == 4:
                 pokemon, move = event[2:4]
             elif len(event) == 5:
@@ -596,13 +632,17 @@ class AbstractBattle(ABC):
                 temp_pokemon = self.get_pokemon(pokemon)
                 temp_pokemon.start_effect("MINIMIZE")
 
+            pressure = self._pressure_on(pokemon, move, presumed_target)
+
             if override_move:
                 # Moves that can trigger this branch results in two `move` messages being sent.
                 # We're setting use=False in the one (with the override) in order to prevent two pps from being used
                 # incorrectly.
                 self.get_pokemon(pokemon).moved(override_move, failed=failed, use=False)
             if override_move is None or reveal_other_move:
-                self.get_pokemon(pokemon).moved(move, failed=failed, use=False)
+                self.get_pokemon(pokemon).moved(
+                    move, failed=failed, use=False, pressure=pressure
+                )
         elif event[1] == "cant":
             pokemon, _ = event[2:4]
             self.get_pokemon(pokemon).cant_move()
