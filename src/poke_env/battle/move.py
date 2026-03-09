@@ -952,6 +952,7 @@ class MoveSet:
     def __setitem__(self, key: str, value: Move):
         assert not value._from_mimic, "Set mimic-copied move with mimic_move setter"
         self.base_moves[key] = value
+        assert len(self.base_moves) <= 4, "A pokemon cannot have more than 4 moves"
 
     def _resolved(self) -> MoveSet:
         """

@@ -1083,6 +1083,14 @@ class Pokemon:
         return self._moves.mimic_move
 
     @property
+    def mimic_move(self) -> Move | None:
+        """
+        :return: The move currently copied by Mimic, if any.
+        :rtype: Move | None
+        """
+        return self._moves.mimic_move
+
+    @property
     def moves(self) -> Dict[str, Move]:
         """
         :return: A dictionary of the pokemon's known moves.
