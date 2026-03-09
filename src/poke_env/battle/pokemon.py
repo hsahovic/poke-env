@@ -23,6 +23,7 @@ class Pokemon:
         "_base_stats",
         "_boosts",
         "_current_hp",
+        "_dancing",
         "_effects",
         "_first_turn",
         "_gen",
@@ -47,6 +48,7 @@ class Pokemon:
         "_species",
         "_status",
         "_status_counter",
+        "_selected_in_teampreview",
         "_temporary_ability",
         "_temporary_types",
         "_terastallized",
@@ -109,6 +111,7 @@ class Pokemon:
         self._preparing_target: Optional[bool | Pokemon] = None
         self._protect_counter: int = 0
         self._revealed: bool = False
+        self._selected_in_teampreview: bool = False
         self._stats: Dict[str, Optional[int]] = {
             "hp": None,
             "atk": None,
@@ -122,6 +125,7 @@ class Pokemon:
         self._temporary_ability: Optional[str] = None
         self._forme_change_ability: Optional[str] = None
         self._temporary_types: List[PokemonType] = []
+        self._dancing = False
 
         if request_pokemon:
             self.update_from_request(request_pokemon)
@@ -172,6 +176,7 @@ class Pokemon:
             self._boosts[stat] = -6
 
     def cant_move(self):
+        self._dancing = False
         self._first_turn = False
         self._protect_counter = 0
 
@@ -406,36 +411,31 @@ class Pokemon:
             mega_species = mega_species + stone[-1].lower()
             self._update_from_pokedex(mega_species, store_species=False)
 
-    def moved(self, move_id: str, failed: bool = False, use: bool = True):
+    def moved(
+        self,
+        move_id: str,
+        failed: bool = False,
+        use: bool = True,
+        reveal: bool = True,
+        pressure: bool = False,
+    ):
         self._must_recharge = False
         self._preparing_move = None
         self._preparing_target = None
-        move = self._add_move(move_id, use=use)
+        move = None
+        if reveal:
+            move = self._add_move(move_id)
+        if use:
+            if move is not None:
+                move.use(pressure)
 
-        if move and move.is_protect_counter and not failed:
+        if move is not None and move.is_protect_counter and not failed:
             self._protect_counter += 1
         else:
             self._protect_counter = 0
 
         if self._status == Status.SLP:
             self._status_counter += 1
-
-        if len(self._moves) > 4:
-            new_moves = {}
-
-            # Keep the current move
-            if move and move in self._moves.values():
-                new_moves = {
-                    move_id: m for move_id, m in self._moves.items() if m is move
-                }
-
-            for move_name in self._moves:
-                if len(new_moves) == 4:
-                    break
-                elif move_name not in new_moves:
-                    new_moves[move_name] = self._moves[move_name]
-
-            self._moves = new_moves
 
         # Handle silent effect ending
         if Effect.GLAIVE_RUSH in self.effects:
@@ -755,6 +755,8 @@ class Pokemon:
 
     def available_moves_from_request(self, request: Dict[str, Any]) -> List[Move]:
         moves: List[Move] = []
+        if Effect.COMMANDER in self.effects:
+            return []
 
         request_moves: List[str] = [
             move["id"] for move in request["moves"] if not move.get("disabled", False)
@@ -1233,6 +1235,14 @@ class Pokemon:
         elif self.ability == "adaptability":
             return 2
         return 1.5
+
+    @property
+    def selected_in_teampreview(self) -> bool:
+        """
+        :return: Whether this pokemon was selected in teampreview.
+        :rtype: bool
+        """
+        return self._selected_in_teampreview
 
     @property
     def temporary_ability(self) -> str | None:

@@ -4,6 +4,7 @@ from unittest.mock import MagicMock
 import pytest
 
 from poke_env.battle import DoubleBattle, Effect, Field, Move, Pokemon, PokemonType
+from poke_env.player.battle_order import PassBattleOrder
 
 
 def test_battle_request_parsing(example_doubles_request):
@@ -457,6 +458,129 @@ def test_dondozo_tatsugiri():
         ["", "-activate", "p1b: Tatsugiri", "ability: Commander", "[of] p1a: Dondozo"]
     )
     assert Effect.COMMANDER in tatsu.effects
+
+    # Add a third back-pokemon so available_switches would normally be non-empty
+    flamigo = Pokemon(gen=9, species="flamigo")
+    battle.team["p1: Flamigo"] = flamigo
+
+    # Parse a request with Commander active (only 1 active entry for Dondozo)
+    battle.parse_request(
+        {
+            "active": [
+                {
+                    "moves": [
+                        {
+                            "move": "Wave Crash",
+                            "id": "wavecrash",
+                            "pp": 16,
+                            "maxpp": 16,
+                            "target": "normal",
+                            "disabled": False,
+                        }
+                    ],
+                    "trapped": True,
+                },
+                {
+                    "moves": [
+                        {
+                            "move": "Draco Meteor",
+                            "id": "dracometeor",
+                            "pp": 8,
+                            "maxpp": 8,
+                            "target": "normal",
+                            "disabled": False,
+                        }
+                    ],
+                    "trapped": True,
+                },
+            ],
+            "side": {
+                "name": "username",
+                "id": "p1",
+                "pokemon": [
+                    {
+                        "ident": "p1: Dondozo",
+                        "details": "Dondozo, L50, F",
+                        "condition": "100/100",
+                        "active": True,
+                        "stats": {
+                            "atk": 150,
+                            "def": 135,
+                            "spa": 65,
+                            "spd": 85,
+                            "spe": 55,
+                        },
+                        "moves": ["wavecrash"],
+                        "baseAbility": "unaware",
+                        "item": "",
+                        "pokeball": "pokeball",
+                        "ability": "unaware",
+                        "commanding": False,
+                        "reviving": False,
+                        "teraType": "Water",
+                        "terastallized": "",
+                    },
+                    {
+                        "ident": "p1: Tatsugiri",
+                        "details": "Tatsugiri, L50, M",
+                        "condition": "100/100",
+                        "active": True,
+                        "stats": {
+                            "atk": 40,
+                            "def": 62,
+                            "spa": 120,
+                            "spd": 75,
+                            "spe": 82,
+                        },
+                        "moves": ["muddywater"],
+                        "baseAbility": "commander",
+                        "item": "",
+                        "pokeball": "pokeball",
+                        "ability": "commander",
+                        "commanding": True,
+                        "reviving": False,
+                        "teraType": "Water",
+                        "terastallized": "",
+                    },
+                    {
+                        "ident": "p1: Flamigo",
+                        "details": "Flamigo, L50, F",
+                        "condition": "100/100",
+                        "active": False,
+                        "stats": {
+                            "atk": 115,
+                            "def": 74,
+                            "spa": 75,
+                            "spd": 64,
+                            "spe": 90,
+                        },
+                        "moves": ["closecombat"],
+                        "baseAbility": "costar",
+                        "item": "",
+                        "pokeball": "pokeball",
+                        "ability": "costar",
+                        "commanding": False,
+                        "reviving": False,
+                        "teraType": "Fighting",
+                        "terastallized": "",
+                    },
+                ],
+            },
+            "rqid": 2,
+        }
+    )
+
+    # Dondozo slot (0) should have moves and switches
+    assert len(battle.available_moves[0]) == 1
+    assert battle.available_switches[0] == []
+
+    # Tatsugiri slot (1) should have nothing (commanding)
+    assert battle.available_moves[1] == []
+    assert battle.available_switches[1] == []
+
+    # valid_orders for commanding slot should be only pass
+    assert len(battle.valid_orders[1]) == 1
+    assert isinstance(battle.valid_orders[1][0], PassBattleOrder)
 
     battle.parse_message(["", "faint", "p1a: Dondozo"])
     assert Effect.COMMANDER not in tatsu.effects
