@@ -596,6 +596,11 @@ def test_battle_request_and_interactions(example_request):
     assert groudon.ability == "desolateland"
 
     battle.parse_message(["", "move", "p1a: Groudon", "Skill Swap", "p2a: Necrozma"])
+    groudon_ability_before_short_skill_swap = groudon.ability
+    necrozma_ability_before_short_skill_swap = necrozma.ability
+    battle.parse_message(["", "-activate", "p1a: Groudon", "Skill Swap"])
+    assert groudon.ability == groudon_ability_before_short_skill_swap
+    assert necrozma.ability == necrozma_ability_before_short_skill_swap
     battle.parse_message(
         [
             "",
