@@ -786,6 +786,10 @@ class AbstractBattle(ABC):
                     types = event[4]
                 mon.start_effect(effect, details=types)
             else:
+                if effect == "Mimic":
+                    mon._moves.mimic_move = Move(
+                        Move.retrieve_id(event[4]), gen=self.gen, from_mimic=True
+                    )
                 mon.start_effect(effect)
 
             if mon.is_dynamaxed:
@@ -852,6 +856,11 @@ class AbstractBattle(ABC):
                 mv = mon.moves[to_id_str(event[4])]
                 # Don't let current pp exceed max pp
                 mv._current_pp = min(mv._current_pp + 10, mv.max_pp)
+            elif effect == "move: Mimic":
+                mon = self.get_pokemon(target)
+                mon._moves.mimic_move = Move(
+                    Move.retrieve_id(event[4]), gen=self.gen, from_mimic=True
+                )
             elif effect == "move: Trick":
                 mon = self.get_pokemon(target)
                 mon2 = self.get_pokemon(event[4].replace("[of] ", ""))
@@ -1025,7 +1034,11 @@ class AbstractBattle(ABC):
                     )
         elif event[1] == "-transform":
             pokemon, into = event[2:4]
-            self.get_pokemon(pokemon).transform(self.get_pokemon(into))
+            mon = self.get_pokemon(pokemon)
+            if len(event) > 4 and event[4] == "[from] ability: Imposter":
+                mon._add_move("transform")
+                mon.ability = "imposter"
+            mon.transform(self.get_pokemon(into))
         elif event[1] == "-zpower":
             assert self.player_role is not None
             if event[2].startswith(self.player_role):
