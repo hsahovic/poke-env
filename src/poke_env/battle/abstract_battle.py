@@ -447,34 +447,6 @@ class AbstractBattle(ABC):
     ) -> Pokemon | None:
         pass
 
-    def _pressure_on(self, pokemon: str, move: str, target_str: Optional[str]) -> bool:
-        move_id = Move.retrieve_id(move)
-        if move_id not in GenData.from_gen(self.gen).moves:
-            # This happens when `move` is a z-move. Since z-moves cannot be PP tracked
-            # anyway, we just return False here.
-            return False
-        move_data = GenData.from_gen(self.gen).moves[move_id]
-        target = self._get_target_mon(pokemon, move_data["target"], target_str)
-        if target is None:
-            return False
-        return (
-            target.ability == "pressure"
-            and not target.fainted
-            and (
-                move_data["target"]
-                in [
-                    "all",
-                    "allAdjacent",
-                    "allAdjacentFoes",
-                    "any",
-                    "normal",
-                    "randomNormal",
-                    "scripted",
-                ]
-                or "mustpressure" in move_data["flags"]
-            )
-        )
-
     def is_grounded(self, mon: Pokemon):
         if Field.GRAVITY in self.fields:
             return True
@@ -603,9 +575,6 @@ class AbstractBattle(ABC):
                 event = event[:-1]
 
             while event[-1] == "[still]":
-                event = event[:-1]
-
-            if event[-1] == "":
                 event = event[:-1]
 
             presumed_target = None
@@ -963,7 +932,6 @@ class AbstractBattle(ABC):
                     self.get_pokemon(victim).item = None
                 else:
                     raise ValueError(f"Unhandled item message: {event}")
-
             else:
                 pokemon, item = event[2:4]
                 if len(event) > 4 and event[4] in [
@@ -1168,6 +1136,34 @@ class AbstractBattle(ABC):
         self, request: Dict[str, Any], strict_battle_tracking: bool = False
     ):
         pass
+
+    def _pressure_on(self, pokemon: str, move: str, target_str: Optional[str]) -> bool:
+        move_id = Move.retrieve_id(move)
+        if move_id not in GenData.from_gen(self.gen).moves:
+            # This happens when `move` is a z-move. Since z-moves cannot be PP tracked
+            # anyway, we just return False here.
+            return False
+        move_data = GenData.from_gen(self.gen).moves[move_id]
+        target = self._get_target_mon(pokemon, move_data["target"], target_str)
+        if target is None:
+            return False
+        return (
+            target.ability == "pressure"
+            and not target.fainted
+            and (
+                move_data["target"]
+                in [
+                    "all",
+                    "allAdjacent",
+                    "allAdjacentFoes",
+                    "any",
+                    "normal",
+                    "randomNormal",
+                    "scripted",
+                ]
+                or "mustpressure" in move_data["flags"]
+            )
+        )
 
     def _register_teampreview_pokemon(self, player: str, details: str):
         if player != self._player_role:
