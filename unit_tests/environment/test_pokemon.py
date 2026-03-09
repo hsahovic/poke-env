@@ -87,6 +87,110 @@ def test_powerherb_ends_move_preparation():
     assert not mon.preparing
 
 
+def test_transform_updates_move_tracking():
+    ditto = Pokemon(species="ditto", gen=9)
+    ditto._add_move("transform")
+    ditto._add_move("tackle")
+    dragonite = Pokemon(species="dragonite", gen=9)
+    dragonite._add_move("hypervoice")
+    dragonite._ability = "frisk"
+    dragonite.boost("spa", 2)
+
+    ditto.transform(dragonite)
+
+    assert ditto.transformed
+    assert set(ditto.moves) == {"hypervoice"}
+    assert ditto.base_stats == dragonite.base_stats
+    assert ditto.ability == "frisk"
+    assert ditto.boosts["spa"] == 2
+    assert ditto.moves["hypervoice"].current_pp == 5
+
+    ditto.switch_out({})
+    assert not ditto.transformed
+    assert set(ditto.moves) == {"transform", "tackle"}
+
+
+def test_faint_clears_mimic_move():
+    mon = Pokemon(species="scizor", gen=9)
+    mon._add_move("mimic")
+    mon._moves.mimic_move = Move("thunderbolt", gen=9, from_mimic=True)
+
+    assert "thunderbolt" in mon.moves
+    assert mon.mimic_move is not None
+
+    mon.faint()
+    assert mon.mimic_move is None
+    assert "mimic" in mon.moves
+
+
+def test_check_move_consistency_target_overrides():
+    mon = Pokemon(species="gengar", gen=9)
+    mon._add_move("curse")
+    curse = mon.moves["curse"]
+    mon.check_move_consistency(
+        {
+            "moves": [
+                {
+                    "id": "curse",
+                    "pp": curse.current_pp,
+                    "maxpp": curse.max_pp,
+                    "target": "normal",
+                }
+            ]
+        }
+    )
+
+    mon = Pokemon(species="blissey", gen=9)
+    mon._add_move("curse")
+    curse = mon.moves["curse"]
+    mon.check_move_consistency(
+        {
+            "moves": [
+                {
+                    "id": "curse",
+                    "pp": curse.current_pp,
+                    "maxpp": curse.max_pp,
+                    "target": "self",
+                }
+            ]
+        }
+    )
+
+    mon = Pokemon(species="amoonguss", gen=9)
+    mon._add_move("pollenpuff")
+    mon.start_effect("heal block")
+    pollen_puff = mon.moves["pollenpuff"]
+    mon.check_move_consistency(
+        {
+            "moves": [
+                {
+                    "id": "pollenpuff",
+                    "pp": pollen_puff.current_pp,
+                    "maxpp": pollen_puff.max_pp,
+                    "target": "adjacentFoe",
+                }
+            ]
+        }
+    )
+
+    mon = Pokemon(species="terapagos", gen=9)
+    mon._add_move("terastarstorm")
+    mon.terastallize("stellar")
+    tera_starstorm = mon.moves["terastarstorm"]
+    mon.check_move_consistency(
+        {
+            "moves": [
+                {
+                    "id": "terastarstorm",
+                    "pp": tera_starstorm.current_pp,
+                    "maxpp": tera_starstorm.max_pp,
+                    "target": "allAdjacentFoes",
+                }
+            ]
+        }
+    )
+
+
 def test_protect_counter_interactions():
     mon = Pokemon(species="xerneas", gen=8)
     mon.moved("protect", failed=False)
