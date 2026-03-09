@@ -81,6 +81,7 @@ class Move:
         "_current_pp",
         "_dynamaxed_move",
         "_from_mimic",
+        "_from_transform",
         "_gen",
         "_request_target",
     )
@@ -91,11 +92,13 @@ class Move:
         gen: int,
         raw_id: Optional[str] = None,
         from_mimic: bool = False,
+        from_transform: bool = False,
     ):
         self._id = move_id
         self._base_power_override = None
         self._gen = gen
         self._from_mimic = from_mimic
+        self._from_transform = from_transform
 
         if move_id.startswith("hiddenpower") and raw_id is not None:
             base_power = "".join([c for c in raw_id if c.isdigit()])
@@ -107,7 +110,7 @@ class Move:
                 except ValueError:
                     pass
 
-        self._current_pp = self.max_pp
+        self._current_pp = 5 if from_transform else self.max_pp
 
         self._dynamaxed_move = None
         self._request_target = None
@@ -462,8 +465,10 @@ class Move:
         :return: The move's max pp.
         :rtype: int
         """
+        if self.gen >= 5 and self._from_transform:
+            return 5
         max_pp = self.entry["pp"] * 8 // 5
-        if self._gen < 3 and not self._from_mimic:
+        if self.gen < 3 and not self._from_mimic:
             max_pp = min(max_pp, 61)
         return max_pp
 
