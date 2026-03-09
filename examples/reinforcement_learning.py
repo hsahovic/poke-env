@@ -1,10 +1,10 @@
 from typing import Any, Dict, Optional
 
+import gymnasium.spaces as spaces
 import numpy as np
 import numpy.typing as npt
 import torch
 import torch.nn as nn
-from gymnasium.spaces import Box, Discrete, Space
 from ray.rllib.algorithms import PPOConfig
 from ray.rllib.core import Columns
 from ray.rllib.core.rl_module import RLModuleSpec
@@ -26,32 +26,29 @@ class ExampleEnv(SinglesEnv[npt.NDArray[np.float32]]):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.observation_spaces = {
-            agent: Box(
-                np.array(self.LOW, dtype=np.float32),
-                np.array(self.HIGH, dtype=np.float32),
-                dtype=np.float32,
+            agent: spaces.Dict(
+                {
+                    "observation": spaces.Box(
+                        low=np.array(ExampleEnv.LOW, dtype=np.float32),
+                        high=np.array(ExampleEnv.HIGH, dtype=np.float32),
+                        dtype=np.float32,
+                    ),
+                    "action_mask": spaces.Box(
+                        low=0, high=1, shape=(26,), dtype=np.int64
+                    ),
+                }
             )
             for agent in self.possible_agents
         }
 
     @classmethod
     def create_multi_agent_env(cls, config: Dict[str, Any]) -> ParallelPettingZooEnv:
-        env = cls(
-            battle_format=config["battle_format"],
-            log_level=25,
-            open_timeout=None,
-            strict=False,
-        )
+        env = cls(battle_format=config["battle_format"], log_level=25)
         return ParallelPettingZooEnv(env)
 
     @classmethod
     def create_single_agent_env(cls, config: Dict[str, Any]) -> SingleAgentWrapper:
-        env = cls(
-            battle_format=config["battle_format"],
-            log_level=25,
-            open_timeout=None,
-            strict=False,
-        )
+        env = cls(battle_format=config["battle_format"], log_level=25)
         opponent = RandomPlayer(start_listening=False)
         return SingleAgentWrapper(env, opponent)
 
@@ -97,8 +94,8 @@ class ExampleEnv(SinglesEnv[npt.NDArray[np.float32]]):
 class ActorCriticModule(TorchRLModule, ValueFunctionAPI):
     def __init__(
         self,
-        observation_space: Space,
-        action_space: Space,
+        observation_space: spaces.Space,
+        action_space: spaces.Space,
         inference_only: bool,
         model_config: Dict[str, Any],
         catalog_class: Any,
@@ -115,16 +112,19 @@ class ActorCriticModule(TorchRLModule, ValueFunctionAPI):
         self.critic = nn.Linear(100, 1)
 
     def _forward(self, batch: Dict[str, Any], **kwargs) -> Dict[str, Any]:
-        obs = batch[Columns.OBS]
-        embeddings = self.model(obs)
+        embeddings = self.model(batch[Columns.OBS]["observation"])
         logits = self.actor(embeddings)
-        return {Columns.EMBEDDINGS: embeddings, Columns.ACTION_DIST_INPUTS: logits}
+        mask = torch.where(batch[Columns.OBS]["action_mask"].bool(), 0, float("-inf"))
+        return {
+            Columns.EMBEDDINGS: embeddings,
+            Columns.ACTION_DIST_INPUTS: logits + mask,
+        }
 
     def compute_values(
         self, batch: Dict[str, Any], embeddings: Optional[torch.Tensor] = None
     ) -> torch.Tensor:
         if embeddings is None:
-            embeddings = self.model(batch[Columns.OBS])
+            embeddings = self.model(batch[Columns.OBS]["observation"])
         return self.critic(embeddings).squeeze(-1)
 
 
@@ -140,12 +140,19 @@ def single_agent_train():
     config = config.rl_module(
         rl_module_spec=RLModuleSpec(
             module_class=ActorCriticModule,
-            observation_space=Box(
-                np.array(ExampleEnv.LOW, dtype=np.float32),
-                np.array(ExampleEnv.HIGH, dtype=np.float32),
-                dtype=np.float32,
+            observation_space=spaces.Dict(
+                {
+                    "observation": spaces.Box(
+                        low=np.array(ExampleEnv.LOW, dtype=np.float32),
+                        high=np.array(ExampleEnv.HIGH, dtype=np.float32),
+                        dtype=np.float32,
+                    ),
+                    "action_mask": spaces.Box(
+                        low=0, high=1, shape=(26,), dtype=np.int64
+                    ),
+                }
             ),
-            action_space=Discrete(26),
+            action_space=spaces.Discrete(26),
             model_config={},
         )
     )
@@ -173,12 +180,19 @@ def multi_agent_train():
     config = config.rl_module(
         rl_module_spec=RLModuleSpec(
             module_class=ActorCriticModule,
-            observation_space=Box(
-                np.array(ExampleEnv.LOW, dtype=np.float32),
-                np.array(ExampleEnv.HIGH, dtype=np.float32),
-                dtype=np.float32,
+            observation_space=spaces.Dict(
+                {
+                    "observation": spaces.Box(
+                        low=np.array(ExampleEnv.LOW, dtype=np.float32),
+                        high=np.array(ExampleEnv.HIGH, dtype=np.float32),
+                        dtype=np.float32,
+                    ),
+                    "action_mask": spaces.Box(
+                        low=0, high=1, shape=(26,), dtype=np.int64
+                    ),
+                }
             ),
-            action_space=Discrete(26),
+            action_space=spaces.Discrete(26),
             model_config={},
         )
     )

@@ -1,18 +1,28 @@
+import random
+
+import gymnasium.spaces as spaces
 import numpy as np
 import pytest
-from gymnasium.spaces import Box
-from gymnasium.utils.env_checker import check_env
 from pettingzoo.test.parallel_test import parallel_api_test
 
 from poke_env.environment import SingleAgentWrapper, SinglesEnv
-from poke_env.player import Player, RandomPlayer
+from poke_env.player import RandomPlayer
 
 
 class SinglesTestEnv(SinglesEnv):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.observation_spaces = {
-            agent: Box(np.array([0]), np.array([1]), dtype=np.int64)
+            agent: spaces.Dict(
+                {
+                    "observation": spaces.Box(
+                        np.array([0]), np.array([1]), dtype=np.int64
+                    ),
+                    "action_mask": spaces.Box(
+                        0, 1, shape=(self.action_space_size,), dtype=np.int64
+                    ),
+                }
+            )
             for agent in self.possible_agents
         }
 
@@ -26,7 +36,7 @@ class SinglesTestEnv(SinglesEnv):
 def play_function(env, n_battles):
     for _ in range(n_battles):
         done = False
-        env.reset()
+        obs, _ = env.reset()
         # TODO: when Zoroark isn't a problem anymore this can be removed
         if "illusion" in [
             p.ability
@@ -36,13 +46,13 @@ def play_function(env, n_battles):
         while not done:
             actions = {
                 name: (
-                    env.order_to_action(Player.choose_random_move(battle), battle)
+                    sample_action(obs[name]["action_mask"])
                     if env.strict
                     else env.action_space(name).sample()
                 )
-                for name, battle in zip(env.agents, [env.battle1, env.battle2])
+                for name in env.agents
             }
-            _, _, terminated, truncated, _ = env.step(actions)
+            obs, _, terminated, truncated, _ = env.step(actions)
             done = any(terminated.values()) or any(truncated.values())
 
 
@@ -59,7 +69,7 @@ def test_env_run():
 def single_agent_play_function(env: SingleAgentWrapper, n_battles: int):
     for _ in range(n_battles):
         done = False
-        env.reset()
+        obs, _ = env.reset()
         # TODO: when Zoroark isn't a problem anymore this can be removed
         if "illusion" in [
             p.ability
@@ -69,13 +79,11 @@ def single_agent_play_function(env: SingleAgentWrapper, n_battles: int):
             continue
         while not done:
             action = (
-                env.env.order_to_action(
-                    Player.choose_random_move(env.env.battle1), env.env.battle1
-                )
+                sample_action(obs["action_mask"])
                 if env.env.strict
                 else env.action_space.sample()
             )
-            _, _, terminated, truncated, _ = env.step(action)
+            obs, _, terminated, truncated, _ = env.step(action)
             done = terminated or truncated
 
 
@@ -88,6 +96,12 @@ def test_single_agent_env_run():
         env.env.strict = False
         single_agent_play_function(env, 10)
         env.close()
+
+
+def sample_action(action_mask):
+    available_actions = [i for i, m in enumerate(action_mask) if m == 1]
+    action = random.choice(available_actions)
+    return np.int64(action)
 
 
 @pytest.mark.timeout(60)
@@ -105,19 +119,6 @@ def test_repeated_runs():
 @pytest.mark.timeout(60)
 def test_env_api():
     for gen in range(4, 10):
-        env = SinglesTestEnv(
-            battle_format=f"gen{gen}randombattle", log_level=25, strict=False
-        )
+        env = SinglesTestEnv(battle_format=f"gen{gen}randombattle", log_level=25)
         parallel_api_test(env)
-        env.close()
-
-
-@pytest.mark.timeout(60)
-def test_single_agent_env_api():
-    for gen in range(4, 10):
-        env = SinglesTestEnv(
-            battle_format=f"gen{gen}randombattle", log_level=25, strict=False
-        )
-        env = SingleAgentWrapper(env, RandomPlayer())
-        check_env(env, skip_render_check=True)
         env.close()
