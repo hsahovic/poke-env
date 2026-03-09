@@ -2,6 +2,7 @@ from unittest.mock import MagicMock
 
 from poke_env.battle import DoubleBattle, Move, Pokemon, PokemonGender, PokemonType
 from poke_env.stats import _raw_hp, _raw_stat
+from poke_env.teambuilder import TeambuilderPokemon
 from poke_env.teambuilder.teambuilder import Teambuilder
 
 
@@ -338,6 +339,16 @@ def test_teambuilder(showdown_format_teams):
         "spd": 90,
         "spe": 80,
     }
+
+
+def test_teambuilder_without_ability_in_gen2():
+    tb_mon = TeambuilderPokemon(
+        species="snorlax", level=100, moves=["Body Slam"], ability=None
+    )
+
+    mon = Pokemon(2, teambuilder=tb_mon)
+
+    assert mon.ability is None
 
 
 def test_name(example_doubles_request):
