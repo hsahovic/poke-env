@@ -757,6 +757,8 @@ class Pokemon:
 
     def available_moves_from_request(self, request: Dict[str, Any]) -> List[Move]:
         moves: List[Move] = []
+        if Effect.COMMANDER in self.effects:
+            return []
 
         request_moves: List[str] = [
             move["id"] for move in request["moves"] if not move.get("disabled", False)

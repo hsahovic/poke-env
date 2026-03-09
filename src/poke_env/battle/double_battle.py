@@ -117,6 +117,9 @@ class DoubleBattle(AbstractBattle):
         self._reviving = any(
             [mon.get("reviving") for mon in request["side"]["pokemon"]]
         )
+        self._commanding = any(
+            [mon.get("commanding") for mon in request["side"]["pokemon"]]
+        )
 
         self._last_request = request
 
