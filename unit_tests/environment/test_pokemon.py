@@ -80,6 +80,7 @@ def test_powerherb_ends_move_preparation():
     mon._add_move("solarbeam")
     mon.item = "powerherb"
 
+    mon._add_move("solarbeam")
     mon.prepare("solarbeam", None)
     assert mon.preparing
 
