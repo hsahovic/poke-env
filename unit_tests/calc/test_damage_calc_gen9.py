@@ -3,6 +3,7 @@ from typing import Union
 
 from poke_env.battle import Battle, DoubleBattle, Move, Pokemon
 from poke_env.calc.damage_calc_gen9 import calculate_base_power, calculate_damage
+from poke_env.data import GenData
 from poke_env.stats import compute_raw_stats
 from poke_env.teambuilder import Teambuilder
 
@@ -35,7 +36,7 @@ def create_battle(
                             [31] * 6,
                             mon.level,
                             "serious",
-                            mon._data,
+                            GenData.from_gen(battle.gen),
                         ),
                     )
                 }
@@ -67,7 +68,7 @@ def create_battle(
                             [31] * 6,
                             mon.level,
                             "serious",
-                            mon._data,
+                            GenData.from_gen(battle.gen),
                         ),
                     )
                 }
@@ -479,8 +480,7 @@ def test_weight():
 
 
 def test_psychicterrain_psystrike_and_marvelscale():
-    mewtwo = Teambuilder.parse_showdown_team(
-        """
+    mewtwo = Teambuilder.parse_showdown_team("""
     Mewtwo
     Ability: Pressure
     Level: 100
@@ -489,20 +489,17 @@ def test_psychicterrain_psystrike_and_marvelscale():
     Timid Nature
     - Psystrike
     - Sucker Punch
-    """
-    )[0]
+    """)[0]
     attacker = Pokemon(9, teambuilder=mewtwo)
     attacker.boosts["spa"] = 2
-    milotic = Teambuilder.parse_showdown_team(
-        """
+    milotic = Teambuilder.parse_showdown_team("""
     Milotic @ Flame Orb
     Ability: Marvel Scale
     Level: 100
     EVs: 248 HP / 184 Def
     Bold Nature
     - Water Pulse
-    """
-    )[0]
+    """)[0]
     defender = Pokemon(9, teambuilder=milotic)
     defender.set_hp_status("100/100 brn")
     defender.boosts["spd"] = 1

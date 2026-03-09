@@ -16,9 +16,13 @@ from numpy.random import Generator
 from pettingzoo.utils.env import ParallelEnv  # type: ignore[import-untyped]
 
 from poke_env.battle.abstract_battle import AbstractBattle
+from poke_env.battle.battle import Battle
+from poke_env.battle.double_battle import DoubleBattle
+from poke_env.battle.pokemon import Pokemon
 from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
 from poke_env.player.battle_order import (
     BattleOrder,
+    DoubleBattleOrder,
     ForfeitBattleOrder,
     _EmptyBattleOrder,
 )
@@ -80,22 +84,67 @@ class _EnvPlayer(Player):
     battle_queue: _AsyncQueue[AbstractBattle]
     order_queue: _AsyncQueue[BattleOrder]
 
-    def __init__(self, *args: Any, **kwargs: Any):
+    def __init__(
+        self, *args: Any, choose_on_teampreview: bool | None = None, **kwargs: Any
+    ):
         super().__init__(*args, **kwargs)
+        if choose_on_teampreview is None:
+            self.logger.warning(
+                "choose_on_teampreview arg was not set in environment - by default, teampreview decisions will be made randomly."
+            )
+        self._choose_on_teampreview = choose_on_teampreview or False
         self.battle_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
         self.order_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
         self.battle: Optional[AbstractBattle] = None
 
     def choose_move(self, battle: AbstractBattle) -> Awaitable[BattleOrder]:
-        return self._env_move(battle)
+        return self._choose_move(battle)
 
-    async def _env_move(self, battle: AbstractBattle) -> BattleOrder:
+    async def _choose_move(self, battle: AbstractBattle) -> BattleOrder:
         if not self.battle or self.battle.finished:
             self.battle = battle
         assert self.battle.battle_tag == battle.battle_tag
         await self.battle_queue.async_put(battle)
         order = await self.order_queue.async_get()
         return order
+
+    def teampreview(self, battle: AbstractBattle) -> Awaitable[str]:
+        return self._teampreview(battle)
+
+    async def _teampreview(self, battle: AbstractBattle) -> str:
+        if not self._choose_on_teampreview:
+            return self.random_teampreview(battle)
+        elif isinstance(battle, Battle):
+            return self.random_teampreview(battle)
+        elif isinstance(battle, DoubleBattle):
+            if battle.format is None or "vgc" not in battle.format:
+                return self.random_teampreview(battle)
+            species = [p.base_species for p in battle.team.values()]
+            # derive first pair of teampreview selections from first order
+            order1 = await self._choose_move(battle)
+            if isinstance(order1, (ForfeitBattleOrder, _EmptyBattleOrder)):
+                return order1.message
+            assert isinstance(order1, DoubleBattleOrder)
+            assert isinstance(order1.first_order.order, Pokemon)
+            assert isinstance(order1.second_order.order, Pokemon)
+            action1 = species.index(order1.first_order.order.base_species) + 1
+            action2 = species.index(order1.second_order.order.base_species) + 1
+            list(battle.team.values())[action1 - 1]._selected_in_teampreview = True
+            list(battle.team.values())[action2 - 1]._selected_in_teampreview = True
+            # derive second pair of teampreview selections from second order
+            order2 = await self._choose_move(battle)
+            if isinstance(order2, (ForfeitBattleOrder, _EmptyBattleOrder)):
+                return order2.message
+            assert isinstance(order2, DoubleBattleOrder)
+            assert isinstance(order2.first_order.order, Pokemon)
+            assert isinstance(order2.second_order.order, Pokemon)
+            action3 = species.index(order2.first_order.order.base_species) + 1
+            action4 = species.index(order2.second_order.order.base_species) + 1
+            list(battle.team.values())[action3 - 1]._selected_in_teampreview = True
+            list(battle.team.values())[action4 - 1]._selected_in_teampreview = True
+            return f"/team {action1}{action2}{action3}{action4}"
+        else:
+            raise TypeError()
 
     def _battle_finished_callback(self, battle: AbstractBattle):
         asyncio.run_coroutine_threadsafe(self.battle_queue.async_put(battle), POKE_LOOP)
@@ -126,6 +175,7 @@ class PokeEnv(ParallelEnv[str, Dict[str, ObsType], ActionType]):
         ping_timeout: Optional[float] = 20.0,
         challenge_timeout: Optional[float] = 60.0,
         team: Optional[Union[str, Teambuilder]] = None,
+        choose_on_teampreview: bool | None = None,
         fake: bool = False,
         strict: bool = True,
     ):
@@ -177,6 +227,11 @@ class PokeEnv(ParallelEnv[str, Dict[str, ObsType], ActionType]):
             team string, a showdown packed team string, of a ShowdownTeam object.
             Defaults to None.
         :type team: str or Teambuilder, optional
+        :param choose_on_teampreview: Controls switch-action-based team preview
+            selection in formats that support it. If True, team preview uses
+            environment actions to pick leads. If False, team preview defaults to
+            a random order. If None, it behaves as False (with a warning).
+        :type choose_on_teampreview: bool | None
         :param fake: If true, action-order converters will try to avoid returning a default
             output if at all possible, even if the output isn't a legal decision. Defaults
             to False.
@@ -202,6 +257,7 @@ class PokeEnv(ParallelEnv[str, Dict[str, ObsType], ActionType]):
             ping_interval=ping_interval,
             ping_timeout=ping_timeout,
             team=team,
+            choose_on_teampreview=choose_on_teampreview,
         )
         self.agent2 = _EnvPlayer(
             account_configuration=account_configuration2
@@ -219,6 +275,7 @@ class PokeEnv(ParallelEnv[str, Dict[str, ObsType], ActionType]):
             ping_interval=ping_interval,
             ping_timeout=ping_timeout,
             team=team,
+            choose_on_teampreview=choose_on_teampreview,
         )
         self.agents: List[str] = []
         self.possible_agents = [self.agent1.username, self.agent2.username]

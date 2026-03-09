@@ -3,7 +3,7 @@ from poke_env.battle.battle import Battle
 from poke_env.battle.double_battle import DoubleBattle
 from poke_env.battle.effect import Effect
 from poke_env.battle.field import Field
-from poke_env.battle.move import SPECIAL_MOVES, EmptyMove, Move
+from poke_env.battle.move import SPECIAL_MOVES, Move, MoveSet
 from poke_env.battle.move_category import MoveCategory
 from poke_env.battle.observation import Observation
 from poke_env.battle.observed_pokemon import ObservedPokemon
@@ -21,9 +21,9 @@ __all__ = [
     "Battle",
     "DoubleBattle",
     "Effect",
-    "EmptyMove",
     "Field",
     "Move",
+    "MoveSet",
     "MoveCategory",
     "Observation",
     "ObservedPokemon",

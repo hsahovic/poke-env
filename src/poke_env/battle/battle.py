@@ -48,6 +48,16 @@ class Battle(AbstractBattle):
             illusioned=active, illusionist=pokemon_name, details=details
         )
 
+    def _get_target_mon(
+        self, pokemon: str, target_type: str, target_str: str | None
+    ) -> Pokemon | None:
+        if target_type != "all" and target_str is not None:
+            return self.get_pokemon(target_str)
+        elif self.player_role == pokemon[:2]:
+            return self.opponent_active_pokemon
+        else:
+            return self.active_pokemon
+
     def parse_request(
         self, request: Dict[str, Any], strict_battle_tracking: bool = False
     ):
@@ -96,6 +106,8 @@ class Battle(AbstractBattle):
                 self._trapped = True
 
             if self.active_pokemon is not None:
+                if strict_battle_tracking:
+                    self.active_pokemon.check_move_consistency(active_request)
                 # TODO: the illusion handling here works around Zoroark's
                 # difficulties. This should be properly handled at some point.
                 try:
@@ -122,7 +134,10 @@ class Battle(AbstractBattle):
         if not self.trapped:
             for pkmn_json in side["pokemon"]:
                 pokemon = self.team[pkmn_json["ident"]]
-                if not pokemon.active and self.reviving == pokemon.fainted:
+                if self.reviving:
+                    if pokemon.fainted:
+                        self._available_switches.append(pokemon)
+                elif not pokemon.active and not pokemon.fainted:
                     self._available_switches.append(pokemon)
 
     def switch(self, pokemon_str: str, details: str, hp_status: str):
