@@ -55,7 +55,7 @@ def test_random_teampreview():
     logger = MagicMock()
     battle = Battle("tag", "username", logger, 8)
 
-    battle._team = [None for _ in range(6)]
+    battle._team = {i: MagicMock() for i in range(6)}
 
     teampreview_orders = [player.random_teampreview(battle) for _ in range(1000)]
     for order in teampreview_orders:
@@ -69,7 +69,7 @@ def test_random_teampreview():
         assert order.startswith("/team")
         assert set(order[-6:]) == set([str(n) for n in range(1, 7)])
 
-    battle._team = [None for _ in range(4)]
+    battle._team = {i: MagicMock() for i in range(4)}
 
     teampreview_orders = [player.random_teampreview(battle) for _ in range(1000)]
     for order in teampreview_orders:
@@ -83,7 +83,7 @@ def test_random_teampreview():
         assert order.startswith("/team")
         assert set(order[-4:]) == set([str(n) for n in range(1, 5)])
 
-    battle._team = [None for _ in range(2)]
+    battle._team = {i: MagicMock() for i in range(2)}
 
     teampreview_orders = [player.random_teampreview(battle) for _ in range(1000)]
     for order in teampreview_orders:
