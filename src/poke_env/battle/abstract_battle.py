@@ -769,6 +769,15 @@ class AbstractBattle(ABC):
                     "[item] ", ""
                 )
                 self.get_pokemon(target).item = None
+            elif effect == "item: Leppa Berry":
+                mon = self.get_pokemon(target)
+                mv = mon.moves[to_id_str(event[4])]
+                # Don't let current pp exceed max pp
+                mv._current_pp = min(mv._current_pp + 10, mv.max_pp)
+            elif effect == "move: Trick":
+                mon = self.get_pokemon(target)
+                mon2 = self.get_pokemon(event[4].replace("[of] ", ""))
+                mon._item, mon2._item = mon2.item, mon.item
             elif target != "":  # ['', '-activate', '', 'move: Splash']
                 self.get_pokemon(target).start_effect(effect)
         elif event[1] == "-status":
@@ -870,6 +879,13 @@ class AbstractBattle(ABC):
 
             else:
                 pokemon, item = event[2:4]
+                if len(event) > 4 and event[4] in [
+                    "[from] ability: Magician",
+                    "[from] move: Switcheroo",
+                    "[from] move: Trick",
+                ]:
+                    # this event is handled when consuming -activate event
+                    return
                 self.get_pokemon(pokemon).item = to_id_str(item)
         elif event[1] == "-mega":
             assert self.player_role is not None
