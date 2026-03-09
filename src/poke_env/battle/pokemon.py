@@ -47,6 +47,7 @@ class Pokemon:
         "_species",
         "_status",
         "_status_counter",
+        "_selected_in_teampreview",
         "_temporary_ability",
         "_temporary_types",
         "_terastallized",
@@ -109,6 +110,7 @@ class Pokemon:
         self._preparing_target: Optional[bool | Pokemon] = None
         self._protect_counter: int = 0
         self._revealed: bool = False
+        self._selected_in_teampreview: bool = False
         self._stats: Dict[str, Optional[int]] = {
             "hp": None,
             "atk": None,
@@ -1233,6 +1235,14 @@ class Pokemon:
         elif self.ability == "adaptability":
             return 2
         return 1.5
+
+    @property
+    def selected_in_teampreview(self) -> bool:
+        """
+        :return: Whether this pokemon was selected in teampreview.
+        :rtype: bool
+        """
+        return self._selected_in_teampreview
 
     @property
     def temporary_ability(self) -> str | None:
