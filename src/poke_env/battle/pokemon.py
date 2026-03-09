@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional, Union
 
 from poke_env.battle.effect import Effect
 from poke_env.battle.field import Field
-from poke_env.battle.move import SPECIAL_MOVES, Move
+from poke_env.battle.move import SPECIAL_MOVES, Move, MoveSet
 from poke_env.battle.pokemon_gender import PokemonGender
 from poke_env.battle.pokemon_type import PokemonType
 from poke_env.battle.status import Status
@@ -26,6 +26,7 @@ class Pokemon:
         "_dancing",
         "_effects",
         "_first_turn",
+        "_forme_change_ability",
         "_gen",
         "_gender",
         "_heightm",
@@ -34,7 +35,6 @@ class Pokemon:
         "_last_request",
         "_level",
         "_max_hp",
-        "_forme_change_ability",
         "_moves",
         "_must_recharge",
         "_name",
@@ -50,6 +50,7 @@ class Pokemon:
         "_status_counter",
         "_selected_in_teampreview",
         "_temporary_ability",
+        "_temporary_base_stats",
         "_temporary_types",
         "_terastallized",
         "_terastallized_type",
@@ -82,7 +83,7 @@ class Pokemon:
         self._gender: Optional[PokemonGender] = None
         self._level: int = 100
         self._max_hp: Optional[int] = 0
-        self._moves: Dict[str, Move] = {}
+        self._moves = MoveSet({})
         self._name: Optional[str] = None
         self._shiny: Optional[bool] = False
 
@@ -124,6 +125,7 @@ class Pokemon:
         self._status_counter: int = 0
         self._temporary_ability: Optional[str] = None
         self._forme_change_ability: Optional[str] = None
+        self._temporary_base_stats: Optional[Dict[str, int]] = None
         self._temporary_types: List[PokemonType] = []
         self._dancing = False
 
@@ -153,20 +155,17 @@ class Pokemon:
             f"[Active: {self._active}, Status: {status_repr}]"
         )
 
-    def _add_move(self, move_id: str, use: bool = False) -> Optional[Move]:
+    def _add_move(self, move_id: str) -> Optional[Move]:
         """Store the move if applicable."""
         id_ = Move.retrieve_id(move_id)
-
+        if id_ in self.moves:
+            return self.moves[id_]
         if not Move.should_be_stored(id_, self.gen):
             return None
-
-        if id_ not in self._moves:
+        if id_ not in self.base_moves:
             move = Move(move_id=id_, raw_id=move_id, gen=self.gen)
-            self._moves[id_] = move
-        if use:
-            self._moves[id_].use()
-
-        return self._moves[id_]
+            self.base_moves[id_] = move
+        return self.base_moves[id_]
 
     def boost(self, stat: str, amount: int):
         self._boosts[stat] += amount
@@ -399,6 +398,9 @@ class Pokemon:
         self._current_hp = 0
         self._status = Status.FNT
         self.temporary_ability = None
+        self._temporary_base_stats = None
+        self._moves._transform_moves = None
+        self._moves.mimic_move = None
         self._clear_effects()
 
     def forme_change(self, species: str):
@@ -577,6 +579,9 @@ class Pokemon:
         self._preparing_target = None
         self._protect_counter = 0
         self.temporary_ability = None
+        self._temporary_base_stats = None
+        self._moves._transform_moves = None
+        self._moves.mimic_move = None
         self._temporary_types = []
 
         if self._status == Status.TOX:
@@ -588,9 +593,18 @@ class Pokemon:
         self._temporary_types = []
 
     def transform(self, into: Pokemon):
-        current_hp = self.current_hp
-        self._update_from_pokedex(into.species, store_species=False)
-        self._current_hp = int(current_hp)
+        dex_entry = GenData.from_gen(self.gen).pokedex[into.species]
+        self._heightm = dex_entry["heightm"]
+        self._weightkg = dex_entry["weightkg"]
+        self._temporary_base_stats = dex_entry["baseStats"]
+        if into.ability is not None:
+            self._temporary_ability = into.ability
+        self._temporary_types = [PokemonType.from_name(t) for t in dex_entry["types"]]
+        self._moves._transform_moves = MoveSet(
+            {m.id: Move(m.id, m.gen) for m in into.moves.values()}
+        )
+        for m in self.base_moves.values():
+            m._current_pp = 5
         self._boosts = into.boosts.copy()
 
     def _update_from_pokedex(self, species: str, store_species: bool = True):
@@ -616,8 +630,8 @@ class Pokemon:
             self._possible_abilities = [
                 to_id_str(ability) for ability in dex_entry["abilities"].values()
             ]
-            if len(self._possible_abilities) == 1:
-                self.ability = self._possible_abilities[0]
+            if len(self._possible_abilities) == 1 and self.gen >= 3:
+                self._ability = self._possible_abilities[0]
         else:
             self.forme_change_ability = None
 
@@ -699,16 +713,6 @@ class Pokemon:
         for move in request_pokemon["moves"]:
             self._add_move(move)
 
-        if len(self._moves) > 4:
-            moves_to_keep = {
-                Move.retrieve_id(move_id) for move_id in request_pokemon["moves"]
-            }
-            self._moves = {
-                move_id: move
-                for move_id, move in self._moves.items()
-                if move_id in moves_to_keep
-            }
-
         if "stats" in request_pokemon:
             for stat in request_pokemon["stats"]:
                 self._stats[stat] = request_pokemon["stats"][stat]
@@ -735,7 +739,7 @@ class Pokemon:
         self._shiny = tb.shiny
         if tb.tera_type:
             self._terastallized_type = PokemonType.from_name(tb.tera_type)
-        self._moves = {}
+        self._moves = MoveSet({})
         for move_str in tb.moves:
             move = Move(Move.retrieve_id(move_str), gen=self.gen)
             self._moves[move.id] = move
@@ -868,11 +872,11 @@ class Pokemon:
             if type_:
                 return [
                     move
-                    for move in self._moves.values()
+                    for move in self.moves.values()
                     if move.type == type_ and move.can_z_move
                 ]
-            elif move in self._moves:
-                return [self._moves[move]]
+            elif move in self.moves:
+                return [self.moves[move]]
         return []
 
     @property
@@ -882,6 +886,15 @@ class Pokemon:
         :rtype: str, optional
         """
         return self._forme_change_ability or self._ability
+
+    @property
+    def base_moves(self) -> Dict[str, Move]:
+        """
+        :return: The pokemon's underlying move dictionary. When transformed, this
+            returns the temporary move set; otherwise it returns the learned moves.
+        :rtype: Dict[str, Move]
+        """
+        return self._moves.base_moves
 
     @property
     def base_species(self) -> str:
@@ -898,7 +911,11 @@ class Pokemon:
         :return: The pokemon's base stats.
         :rtype: Dict[str, int]
         """
-        return self._base_stats
+        return (
+            self._temporary_base_stats
+            if self._temporary_base_stats is not None
+            else self._base_stats
+        )
 
     @property
     def boosts(self) -> Dict[str, int]:
@@ -1059,12 +1076,20 @@ class Pokemon:
         self._forme_change_ability = to_id_str(ability) if ability is not None else None
 
     @property
+    def mimic_move(self) -> Move | None:
+        """
+        :return: The move currently copied by Mimic, if any.
+        :rtype: Move | None
+        """
+        return self._moves.mimic_move
+
+    @property
     def moves(self) -> Dict[str, Move]:
         """
         :return: A dictionary of the pokemon's known moves.
         :rtype: Dict[str, Move]
         """
-        return self._moves
+        return self._moves.moves
 
     @property
     def must_recharge(self) -> bool:
@@ -1259,6 +1284,14 @@ class Pokemon:
         :rtype: Optional[PokemonType]
         """
         return self._terastallized_type
+
+    @property
+    def transformed(self) -> bool:
+        """
+        :return: Whether the pokemon is currently transformed.
+        :rtype: bool
+        """
+        return self._moves._transform_moves is not None
 
     @property
     def type_1(self) -> PokemonType:
