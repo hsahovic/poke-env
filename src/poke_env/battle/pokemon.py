@@ -48,6 +48,7 @@ class Pokemon:
         "_species",
         "_status",
         "_status_counter",
+        "_selected_in_teampreview",
         "_temporary_ability",
         "_temporary_base_stats",
         "_temporary_types",
@@ -111,6 +112,7 @@ class Pokemon:
         self._preparing_target: Optional[bool | Pokemon] = None
         self._protect_counter: int = 0
         self._revealed: bool = False
+        self._selected_in_teampreview: bool = False
         self._stats: Dict[str, Optional[int]] = {
             "hp": None,
             "atk": None,
@@ -173,6 +175,7 @@ class Pokemon:
             self._boosts[stat] = -6
 
     def cant_move(self):
+        self._dancing = False
         self._first_turn = False
         self._protect_counter = 0
 
@@ -410,13 +413,23 @@ class Pokemon:
             mega_species = mega_species + stone[-1].lower()
             self._update_from_pokedex(mega_species, store_species=False)
 
-    def moved(self, move_id: str, failed: bool = False, use: bool = True):
+    def moved(
+        self,
+        move_id: str,
+        failed: bool = False,
+        use: bool = True,
+        reveal: bool = True,
+        pressure: bool = False,
+    ):
         self._must_recharge = False
         self._preparing_move = None
         self._preparing_target = None
-        move = self._add_move(move_id)
-        if move is not None and use:
-            move.use()
+        move = None
+        if reveal:
+            move = self._add_move(move_id)
+        if use:
+            if move is not None:
+                move.use(pressure)
 
         if move is not None and move.is_protect_counter and not failed:
             self._protect_counter += 1
@@ -746,6 +759,8 @@ class Pokemon:
 
     def available_moves_from_request(self, request: Dict[str, Any]) -> List[Move]:
         moves: List[Move] = []
+        if Effect.COMMANDER in self.effects:
+            return []
 
         request_moves: List[str] = [
             move["id"] for move in request["moves"] if not move.get("disabled", False)
@@ -1245,6 +1260,14 @@ class Pokemon:
         elif self.ability == "adaptability":
             return 2
         return 1.5
+
+    @property
+    def selected_in_teampreview(self) -> bool:
+        """
+        :return: Whether this pokemon was selected in teampreview.
+        :rtype: bool
+        """
+        return self._selected_in_teampreview
 
     @property
     def temporary_ability(self) -> str | None:

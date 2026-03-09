@@ -412,7 +412,10 @@ class Player(ABC):
         ):
             message = self.choose_default_move().message
         elif battle.teampreview:
-            message = self.teampreview(battle)
+            m = self.teampreview(battle)
+            if isinstance(m, Awaitable):
+                m = await m
+            message = m
         else:
             if maybe_default_order:
                 self._trying_again.set()
@@ -669,6 +672,10 @@ class Player(ABC):
         """
         members = list(range(1, len(battle.team) + 1))
         random.shuffle(members)
+        if battle.format is not None and "vgc" in battle.format:
+            members = members[:4]
+        for i in members:
+            list(battle.team.values())[i - 1]._selected_in_teampreview = True
         return "/team " + "".join([str(c) for c in members])
 
     def reset_battles(self):
@@ -680,7 +687,7 @@ class Player(ABC):
                 )
         self._battles = {}
 
-    def teampreview(self, battle: AbstractBattle) -> str:
+    def teampreview(self, battle: AbstractBattle) -> Union[str, Awaitable[str]]:
         """Returns a teampreview order for the given battle.
 
         This order must be of the form /team TEAM, where TEAM is a string defining the
@@ -690,6 +697,10 @@ class Player(ABC):
         pokemons 6 and 1 in the back in double battles.
 
         Please refer to Pokemon Showdown's protocol documentation for more information.
+
+        IMPORTANT: If overwriting this method, make sure to mark Pokemon selected in
+        teampreview as such by setting their _selected_in_teampreview attribute to True.
+        See random_teampreview implementation for an example.
 
         :param battle: The battle.
         :type battle: AbstractBattle
