@@ -23,6 +23,7 @@ class Pokemon:
         "_base_stats",
         "_boosts",
         "_current_hp",
+        "_dancing",
         "_effects",
         "_first_turn",
         "_gen",
@@ -124,6 +125,7 @@ class Pokemon:
         self._temporary_ability: Optional[str] = None
         self._forme_change_ability: Optional[str] = None
         self._temporary_types: List[PokemonType] = []
+        self._dancing = False
 
         if request_pokemon:
             self.update_from_request(request_pokemon)
@@ -174,6 +176,7 @@ class Pokemon:
             self._boosts[stat] = -6
 
     def cant_move(self):
+        self._dancing = False
         self._first_turn = False
         self._protect_counter = 0
 
@@ -413,39 +416,26 @@ class Pokemon:
         move_id: str,
         failed: bool = False,
         use: bool = True,
+        reveal: bool = True,
         pressure: bool = False,
     ):
         self._must_recharge = False
         self._preparing_move = None
         self._preparing_target = None
-        move = self._add_move(move_id, use=False)
-        if move and use:
-            move.use(pressure)
+        move = None
+        if reveal:
+            move = self._add_move(move_id)
+        if use:
+            if move is not None:
+                move.use(pressure)
 
-        if move and move.is_protect_counter and not failed:
+        if move is not None and move.is_protect_counter and not failed:
             self._protect_counter += 1
         else:
             self._protect_counter = 0
 
         if self._status == Status.SLP:
             self._status_counter += 1
-
-        if len(self._moves) > 4:
-            new_moves = {}
-
-            # Keep the current move
-            if move and move in self._moves.values():
-                new_moves = {
-                    move_id: m for move_id, m in self._moves.items() if m is move
-                }
-
-            for move_name in self._moves:
-                if len(new_moves) == 4:
-                    break
-                elif move_name not in new_moves:
-                    new_moves[move_name] = self._moves[move_name]
-
-            self._moves = new_moves
 
         # Handle silent effect ending
         if Effect.GLAIVE_RUSH in self.effects:
