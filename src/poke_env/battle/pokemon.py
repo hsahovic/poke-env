@@ -163,7 +163,12 @@ class Pokemon:
         if not Move.should_be_stored(id_, self.gen):
             return None
         if id_ not in self.base_moves:
-            move = Move(move_id=id_, raw_id=move_id, gen=self.gen)
+            move = Move(
+                move_id=id_,
+                raw_id=move_id,
+                gen=self.gen,
+                from_transform=self.transformed,
+            )
             self.base_moves[id_] = move
         return self.base_moves[id_]
 
@@ -214,11 +219,11 @@ class Pokemon:
         assert (
             pkmn_request["active"] == self.active
         ), f"{pkmn_request['active']} != {self.active}"
-        if self.item == "unknown_item":
-            # needed for item initialization in start of game,
-            # done anyway in update_from_request()
-            self._item = pkmn_request["item"]
-        if self.gen > 4:
+        if self.gen >= 2:
+            if self.item == "unknown_item":
+                # needed for item initialization in start of game,
+                # done anyway in update_from_request()
+                self._item = pkmn_request["item"]
             assert pkmn_request["item"] == (
                 self.item or ""
             ), f"{pkmn_request['item']} != {self.item or ''}"
@@ -228,16 +233,6 @@ class Pokemon:
         assert (
             pkmn_request["condition"] == self.hp_status
         ), f"{pkmn_request['condition']} != {self.hp_status}"
-        if not (
-            # only check moves if mimic hasn't copied a move yet,
-            # or if mimic copies a move not already in the moveset
-            self.mimic_move is not None
-            and self.mimic_move.id in [m.id for m in self.base_moves.values()]
-        ):
-            for move_request, move in zip(pkmn_request["moves"], self.moves.values()):
-                assert Move.retrieve_id(move_request) == Move.retrieve_id(
-                    move.id
-                ), f"{Move.retrieve_id(move_request)} != {Move.retrieve_id(move.id)}"
         if self.ability is None:
             # needed for ability initialization in start of game,
             # done anyway in update_from_request()
@@ -260,7 +255,9 @@ class Pokemon:
     def check_move_consistency(
         self, active_request: Dict[str, Any], is_doubles: bool = False
     ):
-        if self.base_species in ["ditto", "mew"]:
+        if self.mimic_move is not None and self.mimic_move.id in [
+            m.id for m in self.base_moves.values()
+        ]:
             return
         for move_request in active_request["moves"]:
             matches = [
@@ -268,22 +265,39 @@ class Pokemon:
                 for m in self.moves.values()
                 if Move.retrieve_id(m.id) == move_request["id"]
             ]
-            assert len(matches) <= 1
             if not matches:
+                assert (
+                    active_request["moves"][0]["id"] in SPECIAL_MOVES
+                    or self.ability == "dancer"
+                    or {
+                        "copycat",
+                        "metronome",
+                        "mefirst",
+                        "mirrormove",
+                        "assist",
+                    }.intersection(self.moves)
+                ), (
+                    f"Error with move {move_request['id']} from json request. "
+                    "Expected self.moves to contain copycat, metronome, mefirst, "
+                    "mirrormove, or assist, or to have the ability dancer. Got "
+                    f"{self.moves}, ability: {self.ability}"
+                )
                 continue
+            assert (
+                len(matches) == 1
+            ), f"Expected exactly one move to match {move_request['id']}. Got {matches}"
             move = matches[0]
             if (
                 "pp" in move_request
-                and self.gen not in [1, 2, 3, 4, 7, 8]
+                and self.gen not in [1, 2, 3, 7, 8]
                 and not is_doubles
             ):
                 # exclude early gens because of unreliable Showdown event messages
                 # exclude gen 7 and 8 because of Z-move and Max Move PP untrackability
-                # TODO: when gen 4 issues gets fixed by PS team, 4 can be allowed again
                 # exclude doubles because targets are sometimes not resolvable
                 assert (
                     move_request["pp"] == move.current_pp
-                ), f"{move_request['pp']} != {move.current_pp}\n{move_request}"
+                ), f"{move_request['pp']} != {move.current_pp}"
             if "maxpp" in move_request:
                 assert (
                     move_request["maxpp"] == move.max_pp
@@ -306,7 +320,7 @@ class Pokemon:
                 assert (
                     Target.from_showdown_message(move_request["target"]).name
                     == target_name
-                ), f"{Target.from_showdown_message(move_request['target']).name} != {target_name}\n{move_request}"
+                ), f"{Target.from_showdown_message(move_request['target']).name} != {target_name}"
 
     def clear_active(self):
         self._active = False
@@ -475,11 +489,14 @@ class Pokemon:
             self.end_effect("Flash Fire")
 
     def prepare(self, move_id: str, target: Optional[Pokemon]):
-        move_id = Move.retrieve_id(move_id)
-        if move_id in self.moves:
-            move = self.moves[move_id]
-            self._preparing_move = move
-            self._preparing_target = target
+        ident = Move.retrieve_id(move_id)
+        if ident in self.moves:
+            move = self.moves[ident]
+        else:
+            # could happen if, for example, move is copied from opponent via copycat
+            move = Move(ident, raw_id=move_id, gen=self.gen)
+        self._preparing_move = move
+        self._preparing_target = target
 
     def primal(self):
         species_id_str = to_id_str(self._species)
@@ -600,10 +617,8 @@ class Pokemon:
             self._temporary_ability = into.ability
         self._temporary_types = [PokemonType.from_name(t) for t in dex_entry["types"]]
         self._moves._transform_moves = MoveSet(
-            {m.id: Move(m.id, m.gen) for m in into.moves.values()}
+            {m.id: Move(m.id, m.gen, from_transform=True) for m in into.moves.values()}
         )
-        for m in self.base_moves.values():
-            m._current_pp = 5
         self._boosts = into.boosts.copy()
 
     def _update_from_pokedex(self, species: str, store_species: bool = True):
