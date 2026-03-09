@@ -77,9 +77,9 @@ def test_pokemon_damage_multiplier():
 
 def test_powerherb_ends_move_preparation():
     mon = Pokemon(species="roserade", gen=8)
+    mon._add_move("solarbeam")
     mon.item = "powerherb"
 
-    mon._add_move("solarbeam")
     mon.prepare("solarbeam", None)
     assert mon.preparing
 
