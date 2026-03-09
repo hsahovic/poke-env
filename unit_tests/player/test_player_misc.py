@@ -3,7 +3,14 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from poke_env import AccountConfiguration
-from poke_env.battle import AbstractBattle, Battle, DoubleBattle, Move, PokemonType
+from poke_env.battle import (
+    AbstractBattle,
+    Battle,
+    DoubleBattle,
+    Move,
+    PokemonGender,
+    PokemonType,
+)
 from poke_env.player import (
     BattleOrder,
     Player,
@@ -276,6 +283,21 @@ async def test_create_teampreview_team(showdown_format_teams):
     assert mon.stats["atk"] == _raw_stat(mon.base_stats["atk"], 156, 31, 50, 1.1)
 
     assert any(map(lambda x: x.species == "fluttermane", battle.teampreview_team))
+
+
+@pytest.mark.asyncio
+async def test_create_teampreview_team_handles_neutral_gender_from_packed():
+    player = SimplePlayer(
+        battle_format="gen3ubers",
+        team="Starmie|||naturalcure|surf,icebeam,thunderbolt,rapidspin|Timid|"
+        "4,,,252,,252|N|||100|",
+    )
+
+    battle = await player._create_battle(["", "gen3ubers", "uuu"])
+
+    assert len(battle.teampreview_team) == 1
+    assert battle.teampreview_team[0].species == "starmie"
+    assert battle.teampreview_team[0].gender == PokemonGender.NEUTRAL
 
 
 @pytest.mark.asyncio

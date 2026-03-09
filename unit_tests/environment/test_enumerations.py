@@ -164,6 +164,7 @@ def test_pokemon_gender_str():
 def test_pokemon_gender_build():
     assert PokemonGender.from_request_details("F") == PokemonGender["FEMALE"]
     assert PokemonGender.from_request_details("M") == PokemonGender["MALE"]
+    assert PokemonGender.from_request_details("N") == PokemonGender["NEUTRAL"]
 
     with pytest.raises(ShowdownException):
         PokemonGender.from_request_details("dsfdsfd")
