@@ -411,7 +411,7 @@ class Pokemon:
             mega_species = mega_species + stone[-1].lower()
             self._update_from_pokedex(mega_species, store_species=False)
 
-    def moved(
+    def moved( 
         self,
         move_id: str,
         failed: bool = False,
