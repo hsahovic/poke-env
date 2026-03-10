@@ -13,7 +13,7 @@ To be accepted, your PR must:
 - Implement changes that were discussed.
 - Pass tests. We use the following tests:
     - Your code must be linted using `black` and `isort`
-    - Type hints must be consistent, as judged py `pyre`
+    - Type hints must be consistent, as judged by `mypy`
     - Unit tests, found in `/unit_tests`
     - Integration tests, found in `/integration_tests`
 - Be documented. If you introduce new functionalities, your code must be documented, and preferably include examples in the documentation. If applicable, update other files, such as the README.
@@ -26,7 +26,7 @@ These steps are not required, but are useful if you are unsure where to start.
 
 First, you should use a python virtual environment. Which flavor of virtual environment you want to use depends on a couple things, including personal habits and your OS of choice. On Windows, [we recommend using `anaconda`](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html). On Mac OS and Linux, [`pyenv` works very well](https://github.com/pyenv/pyenv).
 
-This project supports multiple versions of python 3, starting from version 3.9. You can use any supported version for development, but bear in mind that your work will be tested on all supported versions.
+This project supports multiple versions of python 3, starting from version 3.10. You can use any supported version for development, but bear in mind that your work will be tested on all supported versions.
 
 Once you have created your virtual environment, install dependencies with `pip install .` and `pip install .[dev]`. You can now setup pre-commits by running `pre-commit install` - the pre-commit configuration on the repo by defaults assumes Python 3.10.5, but you can modify it locally to your liking.
 
@@ -38,7 +38,7 @@ To run tests locally, you can run:
 
 - `PYTHONPATH=src/ pytest unit_tests/`
 - `PYTHONPATH=src/ pytest integration_tests/`
-- `pyre check`
+- `mypy src`
 
 If you do not have `pre-commit`s installed, be sure to also run `flake8`.
 

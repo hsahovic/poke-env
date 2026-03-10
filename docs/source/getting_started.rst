@@ -8,7 +8,7 @@ This section guides you through installing ``poke-env`` and setting up a Pokémo
 Installing ``poke-env``
 =======================
 
-Ensure Python 3.10 or later is installed. Dependencies listed `here <https://github.com/hsahovic/poke-env/blob/master/requirements.txt>`__ will be installed automatically.
+Ensure Python 3.10 or later is installed. Dependencies listed in ``pyproject.toml`` will be installed automatically.
 
 .. code-block:: bash
 
@@ -42,6 +42,9 @@ Agents in ``poke-env`` are instances of the ``Player`` class. Explore the follow
 - Quickstart: :doc:`examples/quickstart`
 - Custom team builder: :doc:`examples/using_a_custom_teambuilder`
 - RL agent: :ref:`rl_with_gymnasium_wrapper`
+- Action mapping and strict/fake conversion modes: :ref:`action_mapping_and_strict_modes`
+- Strict battle-state validation: :ref:`strict_battle_tracking`
+- Replay export: :ref:`saving_replays`
 
 Configuring Showdown Players
 ============================
