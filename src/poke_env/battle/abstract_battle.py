@@ -1,7 +1,7 @@
-import os
 import re
 from abc import ABC, abstractmethod
 from logging import Logger
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 from poke_env.battle.effect import Effect
@@ -397,9 +397,87 @@ class AbstractBattle(ABC):
 
         self._fields[field] = self.turn
 
+    @staticmethod
+    def _split_message_to_replay_event(split_message: List[str]) -> str:
+        return "|".join(split_message)
+
+    @staticmethod
+    def _replay_event_type(replay_event: str) -> str:
+        if not replay_event.startswith("|"):
+            return ""
+        replay_event_parts = replay_event.split("|", 2)
+        if len(replay_event_parts) <= 1:
+            return ""
+        return replay_event_parts[1]
+
+    def _has_terminal_replay_result(self) -> bool:
+        return any(
+            len(split_message) > 1 and split_message[1] in {"win", "tie"}
+            for split_message in self._replay_data
+        )
+
+    def _build_replay_events(self) -> List[str]:
+        replay_events = [
+            self._split_message_to_replay_event(split_message)
+            for split_message in self._replay_data
+        ]
+
+        # Fallback for cases where battle result is known but terminal replay event is
+        # missing from tracked protocol messages.
+        if self.finished and not any(
+            self._replay_event_type(event) in {"win", "tie"} for event in replay_events
+        ):
+            if self._won is True:
+                replay_events.append(f"|win|{self._player_username}")
+            elif self._won is False:
+                replay_events.append(f"|win|{self._opponent_username or 'Opponent'}")
+            else:
+                replay_events.append("|tie")
+
+        return replay_events
+
+    def _build_replay_log(self) -> str:
+        replay_events = self._build_replay_events()
+        replay_log = f">{self.battle_tag}"
+        if replay_events:
+            replay_log = f"{replay_log}\n" + "\n".join(replay_events)
+        return replay_log
+
+    def _build_replay_html(self) -> str:
+        formatted_replay = REPLAY_TEMPLATE
+        formatted_replay = formatted_replay.replace(
+            "{BATTLE_TAG}", f"{self.battle_tag}"
+        )
+        formatted_replay = formatted_replay.replace(
+            "{PLAYER_USERNAME}", f"{self._player_username}"
+        )
+        formatted_replay = formatted_replay.replace(
+            "{OPPONENT_USERNAME}", f"{self._opponent_username or 'Opponent'}"
+        )
+        formatted_replay = formatted_replay.replace(
+            "{REPLAY_LOG}", self._build_replay_log()
+        )
+
+        return formatted_replay
+
+    def save_replay(self, file_path: Union[str, Path]) -> Path:
+        """
+        Writes this battle replay to a file.
+
+        :param file_path: Path where replay html should be written.
+        :type file_path: str | pathlib.Path
+        :return: The written replay path.
+        :rtype: pathlib.Path
+        """
+        replay_path = Path(file_path)
+        replay_path.parent.mkdir(parents=True, exist_ok=True)
+        replay_path.write_text(self._build_replay_html(), encoding="utf-8")
+        return replay_path
+
     def _finish_battle(self):
         # Recording the battle state and save events as we finish up
         self.observations[self.turn] = self._current_observation
+        self._finished = True
 
         if self._save_replays:
             if self._save_replays is True:
@@ -407,39 +485,9 @@ class AbstractBattle(ABC):
             else:
                 folder = str(self._save_replays)
 
-            if not os.path.exists(folder):
-                os.mkdir(folder)
-
-            with open(
-                os.path.join(
-                    folder, f"{self._player_username} - {self.battle_tag}.html"
-                ),
-                "w+",
-                encoding="utf-8",
-            ) as f:
-                formatted_replay = REPLAY_TEMPLATE
-
-                formatted_replay = formatted_replay.replace(
-                    "{BATTLE_TAG}", f"{self.battle_tag}"
-                )
-                formatted_replay = formatted_replay.replace(
-                    "{PLAYER_USERNAME}", f"{self._player_username}"
-                )
-                formatted_replay = formatted_replay.replace(
-                    "{OPPONENT_USERNAME}", f"{self._opponent_username}"
-                )
-                replay_log = f">{self.battle_tag}" + "\n".join(
-                    [
-                        "|".join(split_message)
-                        for turn in sorted(self._observations.keys())
-                        for split_message in self._observations[turn].events
-                    ]
-                )
-                formatted_replay = formatted_replay.replace("{REPLAY_LOG}", replay_log)
-
-                f.write(formatted_replay)
-
-        self._finished = True
+            self.save_replay(
+                Path(folder) / f"{self._player_username} - {self.battle_tag}.html"
+            )
 
     @abstractmethod
     def _get_target_mon(
@@ -465,6 +513,7 @@ class AbstractBattle(ABC):
         return True
 
     def parse_message(self, split_message: List[str]):
+        self._replay_data.append(split_message[:])
         self._current_observation.events.append(split_message)
 
         # We copy because we directly modify split_message in poke-env; this is to
@@ -1199,6 +1248,8 @@ class AbstractBattle(ABC):
         pass
 
     def tied(self):
+        if not self._has_terminal_replay_result():
+            self._replay_data.append(["", "tie"])
         self._finish_battle()
 
     def _update_team_from_request(
@@ -1223,6 +1274,8 @@ class AbstractBattle(ABC):
                 )
 
     def won_by(self, player_name: str):
+        if not self._has_terminal_replay_result():
+            self._replay_data.append(["", "win", player_name])
         if player_name == self._player_username:
             self._won = True
         else:

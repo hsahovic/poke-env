@@ -1,4 +1,5 @@
 import pickle
+import re
 from copy import deepcopy
 from unittest.mock import MagicMock
 
@@ -14,6 +15,17 @@ from poke_env.battle import (
     Weather,
 )
 from poke_env.data import GenData
+
+
+def _extract_replay_log_lines(replay_html: str):
+    match = re.search(
+        r'<script type="text/plain" class="battle-log-data">\s*(.*?)\s*</script>',
+        replay_html,
+        re.DOTALL,
+    )
+    assert match is not None
+    replay_log = match.group(1).strip()
+    return replay_log.splitlines()
 
 
 def test_battle_get_pokemon():
@@ -943,3 +955,67 @@ def test_transform_from_imposter_tracks_transform_and_ability():
     assert "transform" in mon._moves._base_moves
     assert mon.ability == "imposter"
     assert mon.transformed
+
+
+def test_save_replay_includes_terminal_win_event(tmp_path):
+    battle = Battle("tag", "username", MagicMock(), gen=9)
+    battle.parse_message(["", "tier", "[Gen 9] Random Battle"])
+    battle.won_by("opponent")
+
+    replay_path = tmp_path / "battle_replay.html"
+    returned_path = battle.save_replay(replay_path)
+
+    replay_html = replay_path.read_text(encoding="utf-8")
+    replay_log_lines = _extract_replay_log_lines(replay_html)
+
+    assert returned_path == replay_path
+    assert replay_log_lines[0] == ">tag"
+    assert replay_log_lines[1] == "|tier|[Gen 9] Random Battle"
+    assert "|win|opponent" in replay_log_lines
+    assert "|tie" not in replay_log_lines
+
+
+def test_save_replay_includes_terminal_tie_event(tmp_path):
+    battle = Battle("tag", "username", MagicMock(), gen=9)
+    battle.parse_message(["", "tier", "[Gen 9] Random Battle"])
+    battle.tied()
+
+    replay_path = tmp_path / "battle_replay.html"
+    battle.save_replay(replay_path)
+
+    replay_html = replay_path.read_text(encoding="utf-8")
+    replay_log_lines = _extract_replay_log_lines(replay_html)
+
+    assert replay_log_lines[0] == ">tag"
+    assert replay_log_lines[1] == "|tier|[Gen 9] Random Battle"
+    assert "|tie" in replay_log_lines
+    assert not any(line.startswith("|win|") for line in replay_log_lines)
+
+
+def test_save_replay_works_without_auto_save_setting(tmp_path):
+    battle = Battle("tag", "username", MagicMock(), gen=9)
+    replay_path = tmp_path / "manual_replay.html"
+    battle.save_replay(replay_path)
+
+    replay_html = replay_path.read_text(encoding="utf-8")
+    replay_log_lines = _extract_replay_log_lines(replay_html)
+
+    assert replay_path.exists()
+    assert replay_log_lines == [">tag"]
+
+
+def test_auto_save_replay_includes_terminal_result_and_creates_nested_path(tmp_path):
+    save_replay_dir = tmp_path / "nested" / "replays"
+    battle = Battle(
+        "tag", "username", MagicMock(), gen=9, save_replays=str(save_replay_dir)
+    )
+    battle.parse_message(["", "tier", "[Gen 9] Random Battle"])
+    battle.won_by("username")
+
+    replay_path = save_replay_dir / "username - tag.html"
+    replay_html = replay_path.read_text(encoding="utf-8")
+    replay_log_lines = _extract_replay_log_lines(replay_html)
+
+    assert replay_path.exists()
+    assert replay_log_lines[0] == ">tag"
+    assert "|win|username" in replay_log_lines

@@ -54,6 +54,4 @@ async def test_random_double_players():
             strict_battle_tracking=True,
         ),
     ]
-    await asyncio.wait_for(
-        simple_cross_evaluation(100, players=players), timeout=100
-    )
+    await asyncio.wait_for(simple_cross_evaluation(100, players=players), timeout=100)

@@ -329,3 +329,28 @@ async def test_parse_showteam(packed_format_teams):
     assert "p1: donut" in battle.opponent_team
     assert mon.name == "donut"
     assert mon.species == "ironhands"
+
+
+def test_player_save_replay_delegates_and_supports_leading_gt(tmp_path):
+    player = SimplePlayer(start_listening=False)
+    battle = Battle(
+        "battle-gen9randombattle-123", player.username, player.logger, gen=9
+    )
+    battle.parse_message(["", "tier", "[Gen 9] Random Battle"])
+    battle.won_by(player.username)
+    player._battles[battle.battle_tag] = battle
+
+    replay_path = tmp_path / "player_saved_replay.html"
+    returned_path = player.save_replay(f">{battle.battle_tag}", replay_path)
+
+    replay_html = replay_path.read_text(encoding="utf-8")
+    assert returned_path == replay_path
+    assert replay_path.exists()
+    assert f"|win|{player.username}" in replay_html
+
+
+def test_player_save_replay_raises_on_unknown_battle_tag(tmp_path):
+    player = SimplePlayer(start_listening=False)
+
+    with pytest.raises(KeyError, match="Unknown battle_tag"):
+        player.save_replay("battle-gen9randombattle-missing", tmp_path / "missing.html")

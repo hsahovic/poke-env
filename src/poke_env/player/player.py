@@ -7,6 +7,7 @@ import random
 from abc import ABC, abstractmethod
 from asyncio import Condition, Event, Queue, Semaphore
 from logging import Logger
+from pathlib import Path
 from time import perf_counter
 from typing import Any, Awaitable, Dict, List, Optional, Union
 
@@ -743,6 +744,29 @@ class Player(ABC):
             dynamax=dynamax,
             terastallize=terastallize,
         )
+
+    def save_replay(self, battle_tag: str, file_path: Union[str, Path]) -> Path:
+        """
+        Saves replay html for a known battle.
+
+        :param battle_tag: The battle tag to export (with or without leading '>').
+        :type battle_tag: str
+        :param file_path: Path where replay html should be written.
+        :type file_path: str | pathlib.Path
+        :return: The written replay path.
+        :rtype: pathlib.Path
+        :raises KeyError: If battle_tag does not correspond to a known battle.
+        """
+        normalized_battle_tag = (
+            battle_tag[1:] if battle_tag.startswith(">") else battle_tag
+        )
+        battle = self._battles.get(normalized_battle_tag)
+        if battle is None:
+            known_battle_tags = ", ".join(sorted(self._battles.keys())) or "<none>"
+            raise KeyError(
+                f"Unknown battle_tag '{battle_tag}'. Known battle tags: {known_battle_tags}"
+            )
+        return battle.save_replay(file_path)
 
     @property
     def battles(self) -> Dict[str, AbstractBattle]:
