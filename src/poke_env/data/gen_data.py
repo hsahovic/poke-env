@@ -9,7 +9,7 @@ from poke_env.data.normalize import to_id_str
 
 
 class GenData:
-    __slots__ = ("gen", "moves", "natures", "pokedex", "type_chart", "learnset")
+    __slots__ = ("gen", "moves", "natures", "pokedex", "type_chart", "learnset", "abilities", "items")
 
     UNKNOWN_ITEM = "unknown_item"
 
@@ -25,6 +25,8 @@ class GenData:
         self.pokedex = self.load_pokedex(gen)
         self.type_chart = self.load_type_chart(gen)
         self.learnset = self.load_learnset()
+        self.abilities = self.load_abilities(gen)
+        self.items = self.load_items(gen)
 
     def __deepcopy__(self, memodict: Optional[Dict[int, Any]] = None) -> GenData:
         return self
@@ -42,6 +44,15 @@ class GenData:
     def load_learnset(self) -> Dict[str, Dict[str, Union[int, float]]]:
         with open(os.path.join(self._static_files_root, "learnset.json")) as f:
             return orjson.loads(f.read())
+
+    def load_abilities(self, gen: int) -> Dict[str, Dict[str, Union[int, float]]]:
+        with open(os.path.join(self._static_files_root, "abilities", f"gen{gen}abilities.json")) as f:
+            return orjson.loads(f.read())
+
+    def load_items(self, gen: int) -> Dict[str, Dict[str, Union[int, float]]]:
+        with open(os.path.join(self._static_files_root, "items", f"gen{gen}items.json")) as f:
+            return orjson.loads(f.read())
+
 
     def load_pokedex(self, gen: int) -> Dict[str, Any]:
         with open(
