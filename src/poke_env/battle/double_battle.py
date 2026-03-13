@@ -202,21 +202,23 @@ class DoubleBattle(AbstractBattle):
                             self._active_pokemon[f"{self.player_role}a"],
                         )
 
+                    # Fix slot if it points to wrong mon due to illusion
+                    slot_key = f"{self.player_role}{'a' if active_pokemon_number == 0 else 'b'}"
+                    if (
+                        slot_key in self._active_pokemon
+                        and self._active_pokemon[slot_key] != active_pokemon
+                    ):
+                        self._active_pokemon[slot_key] = active_pokemon
+
                 if active_pokemon.fainted:
                     continue
 
                 if active_request.get("trapped"):
                     self._trapped[active_pokemon_number] = True
 
-                # TODO: the illusion handling here works around Zoroark's
-                # difficulties. This should be properly handled at some point.
-                try:
-                    self._available_moves[active_pokemon_number] = (
-                        active_pokemon.available_moves_from_request(active_request)
-                    )
-                except AssertionError as e:
-                    if "illusion" not in [p.ability for p in self.team.values()]:
-                        raise e
+                self._available_moves[active_pokemon_number] = (
+                    active_pokemon.available_moves_from_request(active_request)
+                )
 
                 if active_request.get("canMegaEvo", False):
                     self._can_mega_evolve[active_pokemon_number] = True

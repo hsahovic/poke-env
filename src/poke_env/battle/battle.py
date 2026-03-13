@@ -97,7 +97,10 @@ class Battle(AbstractBattle):
             self._max_team_size = request.get("maxTeamSize", number_of_mons)
         else:
             self._teampreview = False
-        self._update_team_from_request(request["side"], strict_battle_tracking)
+
+        if side["pokemon"]:
+            self._player_role = side["pokemon"][0]["ident"][:2]
+        self._update_team_from_request(side, strict_battle_tracking)
 
         if "active" in request:
             active_request = request["active"][0]
@@ -108,15 +111,9 @@ class Battle(AbstractBattle):
             if self.active_pokemon is not None:
                 if strict_battle_tracking:
                     self.active_pokemon.check_move_consistency(active_request)
-                # TODO: the illusion handling here works around Zoroark's
-                # difficulties. This should be properly handled at some point.
-                try:
-                    self._available_moves.extend(
-                        self.active_pokemon.available_moves_from_request(active_request)
-                    )
-                except AssertionError as e:
-                    if "illusion" not in [p.ability for p in self.team.values()]:
-                        raise e
+                self._available_moves.extend(
+                    self.active_pokemon.available_moves_from_request(active_request)
+                )
             if active_request.get("canMegaEvo", False):
                 self._can_mega_evolve = True
             if active_request.get("canZMove", False):
@@ -127,9 +124,6 @@ class Battle(AbstractBattle):
                 self._can_tera = True
             if active_request.get("maybeTrapped", False):
                 self._maybe_trapped = True
-
-        if side["pokemon"]:
-            self._player_role = side["pokemon"][0]["ident"][:2]
 
         if not self.trapped:
             for pkmn_json in side["pokemon"]:

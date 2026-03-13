@@ -702,9 +702,6 @@ class Pokemon:
     def update_from_request(self, request_pokemon: Dict[str, Any]):
         self._active = request_pokemon["active"]
 
-        if not request_pokemon["active"] and request_pokemon == self._last_request:
-            return
-
         if self.ability is None:
             self.ability = request_pokemon["baseAbility"]
         if (
