@@ -465,10 +465,10 @@ class Move:
         :return: The move's max pp.
         :rtype: int
         """
-        if self.gen >= 5 and self._from_transform:
-            return 5
         max_pp = self.entry["pp"] * 8 // 5
-        if self.gen < 3 and not self._from_mimic:
+        if self.gen >= 5 and self._from_transform:
+            return min(5, max_pp)
+        elif self.gen < 3 and not self._from_mimic:
             max_pp = min(max_pp, 61)
         return max_pp
 
