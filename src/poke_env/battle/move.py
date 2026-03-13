@@ -110,7 +110,7 @@ class Move:
                 except ValueError:
                     pass
 
-        self._current_pp = 5 if from_transform else self.max_pp
+        self._current_pp = min(5, self.max_pp) if from_transform else self.max_pp
 
         self._dynamaxed_move = None
         self._request_target = None
