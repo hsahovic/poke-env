@@ -407,10 +407,7 @@ class Player(ABC):
     async def _handle_battle_request(
         self, battle: AbstractBattle, maybe_default_order: bool = False
     ):
-        if maybe_default_order and (
-            "illusion" in [p.ability for p in battle.team.values()]
-            or random.random() < self.DEFAULT_CHOICE_CHANCE
-        ):
+        if maybe_default_order and random.random() < self.DEFAULT_CHOICE_CHANCE:
             message = self.choose_default_move().message
         elif battle.teampreview:
             m = self.teampreview(battle)

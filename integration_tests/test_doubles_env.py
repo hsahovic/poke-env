@@ -27,12 +27,6 @@ def play_function(env, n_battles):
     for _ in range(n_battles):
         done = False
         env.reset()
-        # TODO: when Zoroark isn't a problem anymore this can be removed
-        if "illusion" in [
-            p.ability
-            for p in list(env.battle1.team.values()) + list(env.battle2.team.values())
-        ]:
-            continue
         while not done:
             actions = {
                 name: (
@@ -60,13 +54,6 @@ def single_agent_play_function(env: SingleAgentWrapper, n_battles: int):
     for _ in range(n_battles):
         done = False
         env.reset()
-        # TODO: when Zoroark isn't a problem anymore this can be removed
-        if "illusion" in [
-            p.ability
-            for p in list(env.env.battle1.team.values())
-            + list(env.env.battle2.team.values())
-        ]:
-            continue
         while not done:
             action = (
                 env.env.order_to_action(
