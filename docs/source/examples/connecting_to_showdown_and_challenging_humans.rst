@@ -23,7 +23,7 @@ To connect to `play.pokemonshowdown.com <https://play.pokemonshowdown.com/>`__, 
 
     # We create a random player
     player = RandomPlayer(
-        player_configuration=AccountConfiguration("bot_username", "bot_password"),
+        account_configuration=AccountConfiguration("bot_username", "bot_password"),
         server_configuration=ShowdownServerConfiguration,
     )
 
@@ -50,8 +50,7 @@ Passing ``None`` instead of a username will make the agent accept challenges fro
 
 .. code-block:: python
 
-    # Replace opp_username with None to accept challenges from any player
-    await player.accept_challenges('opp_username', 1)
+    await player.accept_challenges(None, 1)
 
 Playing on the ladder
 *********************
@@ -75,7 +74,7 @@ A complete example source code is:
 
 .. code-block:: python
 
-        import asyncio
+    import asyncio
 
     from poke_env.player import RandomPlayer
     from poke_env import AccountConfiguration, ShowdownServerConfiguration
@@ -84,7 +83,7 @@ A complete example source code is:
     async def main():
         # We create a random player
         player = RandomPlayer(
-            player_configuration=AccountConfiguration("bot_username", "bot_password")
+            account_configuration=AccountConfiguration("bot_username", "bot_password"),
             server_configuration=ShowdownServerConfiguration,
         )
 
@@ -95,7 +94,7 @@ A complete example source code is:
         await player.accept_challenges(None, 1)
 
         # Accepting three challenges from 'your_username'
-        await player.accept_challenges('your_username', 3)
+        await player.accept_challenges("your_username", 3)
 
         # Playing 5 games on the ladder
         await player.ladder(5)
@@ -106,4 +105,4 @@ A complete example source code is:
 
 
     if __name__ == "__main__":
-        asyncio.get_event_loop().run_until_complete(main())
+        asyncio.run(main())
