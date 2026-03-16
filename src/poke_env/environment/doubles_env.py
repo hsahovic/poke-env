@@ -6,7 +6,7 @@ from gymnasium.spaces import MultiDiscrete
 
 from poke_env.battle.double_battle import DoubleBattle
 from poke_env.battle.pokemon import Pokemon
-from poke_env.environment.env import ObsType, PokeEnv
+from poke_env.environment.env import PokeEnv
 from poke_env.player.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
@@ -24,7 +24,7 @@ from poke_env.ps_client import (
 from poke_env.teambuilder import Teambuilder
 
 
-class DoublesEnv(PokeEnv[dict[str, ObsType], npt.NDArray[np.int64]]):
+class DoublesEnv(PokeEnv[npt.NDArray[np.int64]]):
     def __init__(
         self,
         account_configuration1: Optional[AccountConfiguration] = None,

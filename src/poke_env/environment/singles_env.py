@@ -4,7 +4,7 @@ import numpy as np
 from gymnasium.spaces import Discrete, Space
 
 from poke_env.battle import Battle, Pokemon
-from poke_env.environment.env import ObsType, PokeEnv
+from poke_env.environment.env import PokeEnv
 from poke_env.player.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
@@ -20,7 +20,7 @@ from poke_env.ps_client import (
 from poke_env.teambuilder import Teambuilder
 
 
-class SinglesEnv(PokeEnv[dict[str, ObsType], np.int64]):
+class SinglesEnv(PokeEnv[np.int64]):
     def __init__(
         self,
         *,

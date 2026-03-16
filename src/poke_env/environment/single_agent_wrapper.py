@@ -4,12 +4,12 @@ import numpy as np
 import numpy.typing as npt
 from gymnasium import Env
 
-from poke_env.environment.env import ActionType, ObsType, PokeEnv
+from poke_env.environment.env import ActionType, PokeEnv
 from poke_env.player.player import Player
 
 
-class SingleAgentWrapper(Env[Dict[str, ObsType], ActionType]):
-    def __init__(self, env: PokeEnv[ObsType, ActionType], opponent: Player):
+class SingleAgentWrapper(Env[Dict[str, Any], ActionType]):
+    def __init__(self, env: PokeEnv[ActionType], opponent: Player):
         self.env = env
         self.opponent = opponent
         self.observation_space = env.observation_spaces[env.agent1.username]
@@ -18,7 +18,7 @@ class SingleAgentWrapper(Env[Dict[str, ObsType], ActionType]):
 
     def step(
         self, action: ActionType
-    ) -> Tuple[Dict[str, ObsType], float, bool, bool, Dict[str, Any]]:
+    ) -> Tuple[Dict[str, Any], float, bool, bool, Dict[str, Any]]:
         """Run one timestep of the environment's dynamics.
 
         Takes an action from the main agent and automatically generates an action
@@ -27,7 +27,7 @@ class SingleAgentWrapper(Env[Dict[str, ObsType], ActionType]):
         :param action: Action from the main agent.
         :type action: ActionType
         :return: Tuple of (observation, reward, terminated, truncated, info) for the main agent.
-        :rtype: Tuple[ObsType, float, bool, bool, Dict[str, Any]]
+        :rtype: Tuple[Dict[str, Any], float, bool, bool, Dict[str, Any]]
         """
         assert self.env.battle2 is not None
         if not self.env.battle2.teampreview:
@@ -72,7 +72,7 @@ class SingleAgentWrapper(Env[Dict[str, ObsType], ActionType]):
 
     def reset(
         self, *, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None
-    ) -> Tuple[Dict[str, ObsType], Dict[str, Any]]:
+    ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
         obs, infos = self.env.reset(seed, options)
         self.opponent.reset_battles()
         assert self.env.battle2 is not None

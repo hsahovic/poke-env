@@ -35,7 +35,6 @@ from poke_env.ps_client.server_configuration import (
 from poke_env.teambuilder.teambuilder import Teambuilder
 
 ItemType = TypeVar("ItemType")
-ObsType = TypeVar("ObsType")
 ActionType = TypeVar("ActionType")
 
 
@@ -150,7 +149,7 @@ class _EnvPlayer(Player):
         asyncio.run_coroutine_threadsafe(self.battle_queue.async_put(battle), POKE_LOOP)
 
 
-class PokeEnv(ParallelEnv[str, Dict[str, ObsType], ActionType]):
+class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
     """
     Base class implementing the PettingZoo API on the main thread.
     """
@@ -298,7 +297,7 @@ class PokeEnv(ParallelEnv[str, Dict[str, ObsType], ActionType]):
     def step(
         self, actions: Dict[str, ActionType]
     ) -> Tuple[
-        Dict[str, Dict[str, ObsType]],
+        Dict[str, Dict[str, Any]],
         Dict[str, float],
         Dict[str, bool],
         Dict[str, bool],
@@ -366,7 +365,7 @@ class PokeEnv(ParallelEnv[str, Dict[str, ObsType], ActionType]):
 
     def reset(
         self, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None
-    ) -> Tuple[Dict[str, Dict[str, ObsType]], Dict[str, Dict[str, Any]]]:
+    ) -> Tuple[Dict[str, Dict[str, Any]], Dict[str, Dict[str, Any]]]:
         self.agents = [self.agent1.username, self.agent2.username]
         if seed is not None:
             self._np_random, seed = seeding.np_random(seed)
@@ -475,7 +474,7 @@ class PokeEnv(ParallelEnv[str, Dict[str, ObsType], ActionType]):
         while not self.agent2.battle_queue.empty():
             self.agent2.battle_queue.get()
 
-    def observation_space(self, agent: str) -> Space[Dict[str, ObsType]]:
+    def observation_space(self, agent: str) -> Space[Dict[str, Any]]:
         return self.observation_spaces[agent]
 
     def action_space(self, agent: str) -> Space[ActionType]:
@@ -498,7 +497,7 @@ class PokeEnv(ParallelEnv[str, Dict[str, ObsType], ActionType]):
         pass
 
     @abstractmethod
-    def embed_battle(self, battle: AbstractBattle) -> ObsType:
+    def embed_battle(self, battle: AbstractBattle) -> Any:
         """
         Returns the embedding of the current battle state in a format compatible with
         the Gymnasium API.
