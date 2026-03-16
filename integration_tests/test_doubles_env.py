@@ -2,7 +2,6 @@ import random
 
 import numpy as np
 import pytest
-from gymnasium.envs.registration import EnvSpec
 from gymnasium.spaces import Box
 from gymnasium.utils.env_checker import check_env
 
@@ -122,6 +121,5 @@ def test_single_agent_env_api():
             battle_format=f"gen{gen}randomdoublesbattle", log_level=25, strict=False
         )
         env = SingleAgentWrapper(env, RandomPlayer())
-        env.spec = EnvSpec("poke-env-v0", nondeterministic=True)
         check_env(env, skip_render_check=True, skip_close_check=True)
         env.close()

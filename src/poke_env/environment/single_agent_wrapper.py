@@ -3,6 +3,7 @@ from typing import Any, Awaitable, Dict, Optional, Tuple
 import numpy as np
 import numpy.typing as npt
 from gymnasium import Env
+from gymnasium.envs.registration import EnvSpec
 
 from poke_env.environment.env import ActionType, PokeEnv
 from poke_env.player.player import Player
@@ -12,6 +13,7 @@ class SingleAgentWrapper(Env[Dict[str, Any], ActionType]):
     def __init__(self, env: PokeEnv[ActionType], opponent: Player):
         self.env = env
         self.opponent = opponent
+        self.spec = EnvSpec("poke-env-v0", nondeterministic=True)
         self.observation_space = env.observation_spaces[env.agent1.username]
         self.action_space = env.action_spaces[env.agent1.username]
         self.second_teampreview_action: npt.NDArray[np.int64] | None = None

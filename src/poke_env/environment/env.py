@@ -241,6 +241,8 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
             illegal. Otherwise, it will return default. Defaults to True.
         :type: strict: bool
         """
+        self.metadata = {"name": "poke-env-v0", "render_modes": ["human"]}
+        self.render_mode: str | None = None
         self._challenge_timeout = challenge_timeout
         self.agent1 = _EnvPlayer(
             account_configuration=account_configuration1
