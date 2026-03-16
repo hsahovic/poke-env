@@ -8,17 +8,17 @@ from poke_env.environment.env import ActionType, ObsType, PokeEnv
 from poke_env.player.player import Player
 
 
-class SingleAgentWrapper(Env[ObsType, ActionType]):
+class SingleAgentWrapper(Env[Dict[str, ObsType], ActionType]):
     def __init__(self, env: PokeEnv[ObsType, ActionType], opponent: Player):
         self.env = env
         self.opponent = opponent
-        self.observation_space = list(env.observation_spaces.values())[0]
-        self.action_space = list(env.action_spaces.values())[0]
+        self.observation_space = env.observation_spaces[env.agent1.username]
+        self.action_space = env.action_spaces[env.agent1.username]
         self.second_teampreview_action: npt.NDArray[np.int64] | None = None
 
     def step(
         self, action: ActionType
-    ) -> Tuple[ObsType, float, bool, bool, Dict[str, Any]]:
+    ) -> Tuple[Dict[str, ObsType], float, bool, bool, Dict[str, Any]]:
         """Run one timestep of the environment's dynamics.
 
         Takes an action from the main agent and automatically generates an action
@@ -72,7 +72,7 @@ class SingleAgentWrapper(Env[ObsType, ActionType]):
 
     def reset(
         self, *, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None
-    ) -> Tuple[ObsType, Dict[str, Any]]:
+    ) -> Tuple[Dict[str, ObsType], Dict[str, Any]]:
         obs, infos = self.env.reset(seed, options)
         self.opponent.reset_battles()
         assert self.env.battle2 is not None
