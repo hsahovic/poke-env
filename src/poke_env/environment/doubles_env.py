@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Union
+from typing import Optional, Union
 
 import numpy as np
 import numpy.typing as npt
@@ -24,7 +24,7 @@ from poke_env.ps_client import (
 from poke_env.teambuilder import Teambuilder
 
 
-class DoublesEnv(PokeEnv[Dict[str, ObsType], npt.NDArray[np.int64]]):
+class DoublesEnv(PokeEnv[dict[str, ObsType], npt.NDArray[np.int64]]):
     def __init__(
         self,
         account_configuration1: Optional[AccountConfiguration] = None,
@@ -89,12 +89,12 @@ class DoublesEnv(PokeEnv[Dict[str, ObsType], npt.NDArray[np.int64]]):
             for agent in self.possible_agents
         }
 
-    def get_action_mask(self, battle: DoubleBattle) -> List[int]:
+    def get_action_mask(self, battle: DoubleBattle) -> list[int]:
         action_mask1 = self.get_action_mask_individual(battle, 0)
         action_mask2 = self.get_action_mask_individual(battle, 1)
         return action_mask1 + action_mask2
 
-    def get_action_mask_individual(self, battle: DoubleBattle, pos: int) -> List[int]:
+    def get_action_mask_individual(self, battle: DoubleBattle, pos: int) -> list[int]:
         switch_space = [
             i + 1
             for i, pokemon in enumerate(battle.team.values())
@@ -107,7 +107,13 @@ class DoublesEnv(PokeEnv[Dict[str, ObsType], npt.NDArray[np.int64]]):
             actions = [0]
         elif all(battle.force_switch) and len(battle.available_switches[0]) == 1:
             actions = switch_space + [0]
-        elif battle.teampreview or active_mon is None:
+        elif battle.teampreview:
+            actions = [
+                i
+                for i, p in enumerate(battle.team.values(), start=1)
+                if not p.selected_in_teampreview
+            ]
+        elif active_mon is None:
             actions = switch_space
         else:
             move_spaces = [

@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 import numpy as np
 from gymnasium.spaces import Discrete, Space
@@ -20,7 +20,7 @@ from poke_env.ps_client import (
 from poke_env.teambuilder import Teambuilder
 
 
-class SinglesEnv(PokeEnv[Dict[str, ObsType], np.int64]):
+class SinglesEnv(PokeEnv[dict[str, ObsType], np.int64]):
     def __init__(
         self,
         *,
@@ -78,11 +78,11 @@ class SinglesEnv(PokeEnv[Dict[str, ObsType], np.int64]):
         else:
             num_gimmicks = 0
         self._action_space_size = num_switches + num_moves * (num_gimmicks + 1)
-        self.action_spaces: Dict[str, Space[Any]] = {
+        self.action_spaces: dict[str, Space[Any]] = {
             agent: Discrete(self._action_space_size) for agent in self.possible_agents
         }
 
-    def get_action_mask(self, battle: Battle) -> List[int]:
+    def get_action_mask(self, battle: Battle) -> list[int]:
         switch_space = [
             i
             for i, pokemon in enumerate(battle.team.values())
