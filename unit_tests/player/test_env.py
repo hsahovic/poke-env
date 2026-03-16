@@ -36,7 +36,7 @@ account_configuration2 = AccountConfiguration("username2", "password2")
 server_configuration = ServerConfiguration("server.url", "auth.url")
 
 
-class CustomEnv(SinglesEnv[npt.NDArray[np.float32]]):
+class CustomEnv(SinglesEnv):
     def calc_reward(self, battle: AbstractBattle) -> float:
         return 69.42
 

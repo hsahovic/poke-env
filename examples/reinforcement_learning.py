@@ -19,7 +19,7 @@ from poke_env.environment import SingleAgentWrapper, SinglesEnv
 from poke_env.player import RandomPlayer
 
 
-class ExampleEnv(SinglesEnv[npt.NDArray[np.float32]]):
+class ExampleEnv(SinglesEnv):
     LOW = [-1, -1, -1, -1, 0, 0, 0, 0, 0, 0]
     HIGH = [3, 3, 3, 3, 4, 4, 4, 4, 1, 1]
 
