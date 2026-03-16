@@ -1,6 +1,6 @@
 from typing import Any, Dict, Optional
 
-import gymnasium.spaces as spaces
+from gymnasium.spaces import Box, Space
 import numpy as np
 import torch
 import torch.nn as nn
@@ -25,9 +25,9 @@ class ExampleEnv(SinglesEnv):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.observation_spaces = {
-            agent: spaces.Box(
-                low=np.array(ExampleEnv.LOW, dtype=np.float32),
-                high=np.array(ExampleEnv.HIGH, dtype=np.float32),
+            agent: Box(
+                low=np.array(self.LOW, dtype=np.float32),
+                high=np.array(self.HIGH, dtype=np.float32),
                 dtype=np.float32,
             )
             for agent in self.possible_agents
@@ -86,8 +86,8 @@ class ExampleEnv(SinglesEnv):
 class ActorCriticModule(TorchRLModule, ValueFunctionAPI):
     def __init__(
         self,
-        observation_space: spaces.Space,
-        action_space: spaces.Space,
+        observation_space: Space,
+        action_space: Space,
         inference_only: bool,
         model_config: Dict[str, Any],
         catalog_class: Any,
@@ -104,9 +104,10 @@ class ActorCriticModule(TorchRLModule, ValueFunctionAPI):
         self.critic = nn.Linear(100, 1)
 
     def _forward(self, batch: Dict[str, Any], **kwargs) -> Dict[str, Any]:
-        embeddings = self.model(batch[Columns.OBS]["observation"])
+        obs = batch[Columns.OBS]
+        embeddings = self.model(obs["observation"])
         logits = self.actor(embeddings)
-        mask = torch.where(batch[Columns.OBS]["action_mask"].bool(), 0, float("-inf"))
+        mask = torch.where(obs["action_mask"].bool(), 0, float("-inf"))
         return {
             Columns.EMBEDDINGS: embeddings,
             Columns.ACTION_DIST_INPUTS: logits + mask,
