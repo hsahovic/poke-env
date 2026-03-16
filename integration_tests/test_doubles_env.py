@@ -1,9 +1,9 @@
 import random
 
-import gymnasium.spaces as spaces
 import numpy as np
 import pytest
 from gymnasium.envs.registration import EnvSpec
+from gymnasium.spaces import Box
 from gymnasium.utils.env_checker import check_env
 
 from poke_env.environment import DoublesEnv, SingleAgentWrapper
@@ -14,7 +14,7 @@ class DoublesTestEnv(DoublesEnv):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.observation_spaces = {
-            agent: spaces.Box(np.array([0]), np.array([1]), dtype=np.int64)
+            agent: Box(np.array([0]), np.array([1]), dtype=np.int64)
             for agent in self.possible_agents
         }
 
@@ -55,14 +55,14 @@ def test_env_run():
 def single_agent_play_function(env: SingleAgentWrapper, n_battles: int):
     for _ in range(n_battles):
         done = False
-        obs, _ = env.reset()
+        obs_dict, _ = env.reset()
         while not done:
             action = (
-                sample_action(obs["action_mask"])
+                sample_action(obs_dict["action_mask"])
                 if env.env.strict
                 else env.action_space.sample()
             )
-            obs, _, terminated, truncated, _ = env.step(action)
+            obs_dict, _, terminated, truncated, _ = env.step(action)
             done = terminated or truncated
 
 

@@ -85,7 +85,7 @@ class DoublesEnv(PokeEnv[npt.NDArray[np.int64]]):
             1 + num_switches + num_moves * num_targets * (num_gimmicks + 1)
         )
         self.action_spaces = {
-            agent: MultiDiscrete([self._action_space_size, self._action_space_size])
+            agent: MultiDiscrete([self.action_space_size, self.action_space_size])
             for agent in self.possible_agents
         }
 

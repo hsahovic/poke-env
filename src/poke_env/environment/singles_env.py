@@ -79,7 +79,7 @@ class SinglesEnv(PokeEnv[np.int64]):
             num_gimmicks = 0
         self._action_space_size = num_switches + num_moves * (num_gimmicks + 1)
         self.action_spaces: dict[str, Space[Any]] = {
-            agent: Discrete(self._action_space_size) for agent in self.possible_agents
+            agent: Discrete(self.action_space_size) for agent in self.possible_agents
         }
 
     def get_action_mask(self, battle: Battle) -> list[int]:

@@ -1,9 +1,9 @@
 import random
 
-import gymnasium.spaces as spaces
 import numpy as np
 import pytest
 from gymnasium.envs.registration import EnvSpec
+from gymnasium.spaces import Box
 from gymnasium.utils.env_checker import check_env
 from pettingzoo.test.parallel_test import parallel_api_test
 
@@ -15,7 +15,7 @@ class SinglesTestEnv(SinglesEnv):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.observation_spaces = {
-            agent: spaces.Box(np.array([0]), np.array([1]), dtype=np.int64)
+            agent: Box(np.array([0]), np.array([1]), dtype=np.int64)
             for agent in self.possible_agents
         }
 
