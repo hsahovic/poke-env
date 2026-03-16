@@ -1255,6 +1255,30 @@ class AbstractBattle(ABC):
     def _update_team_from_request(
         self, side: Dict[str, Any], strict_battle_tracking: bool = False
     ):
+        # Detect and fix illusion-induced active/inactive mismatches.
+        # The request always contains the truth about which mons are active,
+        # but switch events during illusion will have set the wrong mon active.\
+        falsely_active = []
+        truly_active = []
+        for pokemon in side["pokemon"]:
+            if pokemon["ident"] not in self.team:
+                self.get_pokemon(
+                    pokemon["ident"],
+                    force_self_team=True,
+                    details=pokemon["details"],
+                    request=pokemon,
+                )
+            mon = self.team[pokemon["ident"]]
+            if pokemon["active"] and not mon.active:
+                truly_active.append(mon)
+            elif not pokemon["active"] and mon.active:
+                falsely_active.append(mon)
+
+        for illusioned in falsely_active:
+            illusioned.was_illusioned(self.fields)
+        for illusionist in truly_active:
+            illusionist.switch_in()
+
         for pokemon in side["pokemon"]:
             if pokemon["ident"] in self._team:
                 if strict_battle_tracking and "illusion" not in [

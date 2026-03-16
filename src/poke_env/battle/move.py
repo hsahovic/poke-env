@@ -110,7 +110,7 @@ class Move:
                 except ValueError:
                     pass
 
-        self._current_pp = 5 if from_transform else self.max_pp
+        self._current_pp = min(5, self.max_pp) if from_transform else self.max_pp
 
         self._dynamaxed_move = None
         self._request_target = None
@@ -465,10 +465,10 @@ class Move:
         :return: The move's max pp.
         :rtype: int
         """
-        if self.gen >= 5 and self._from_transform:
-            return 5
         max_pp = self.entry["pp"] * 8 // 5
-        if self.gen < 3 and not self._from_mimic:
+        if self.gen >= 5 and self._from_transform:
+            return min(5, max_pp)
+        elif self.gen < 3 and not self._from_mimic:
             max_pp = min(max_pp, 61)
         return max_pp
 
@@ -957,7 +957,6 @@ class MoveSet:
     def __setitem__(self, key: str, value: Move):
         assert not value._from_mimic, "Set mimic-copied move with mimic_move setter"
         self.base_moves[key] = value
-        assert len(self.base_moves) <= 4, "A pokemon cannot have more than 4 moves"
 
     def _resolved(self) -> MoveSet:
         """
