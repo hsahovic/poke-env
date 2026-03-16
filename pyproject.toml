@@ -74,6 +74,3 @@ multi_line_output = 3
 [tool.pyright]
 include = ["src"]
 pythonVersion = "3.10"
-
-[tool.setuptools.dynamic]
-dependencies = { file = ["requirements.txt"] }
