@@ -26,8 +26,8 @@ class ExampleEnv(SinglesEnv):
         super().__init__(**kwargs)
         self.observation_spaces = {
             agent: Box(
-                low=np.array(self.LOW, dtype=np.float32),
-                high=np.array(self.HIGH, dtype=np.float32),
+                np.array(self.LOW, dtype=np.float32),
+                np.array(self.HIGH, dtype=np.float32),
                 dtype=np.float32,
             )
             for agent in self.possible_agents
