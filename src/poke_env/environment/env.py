@@ -10,7 +10,9 @@ from typing import Any, Awaitable, Dict, Generic, List, Optional, Tuple, TypeVar
 from weakref import WeakKeyDictionary
 
 import numpy as np
+from gymnasium import spaces
 from gymnasium.spaces import Space
+from gymnasium.spaces.utils import flatdim
 from gymnasium.utils import seeding
 from numpy.random import Generator
 from pettingzoo.utils.env import ParallelEnv  # type: ignore[import-untyped]
@@ -289,6 +291,24 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
             WeakKeyDictionary()
         )
         self._challenge_task: Optional[Future[Any]] = None
+
+    def __setattr__(self, name: str, value: Any):
+        if name == "observation_spaces":
+            value = {
+                agent: spaces.Dict(
+                    {
+                        "observation": raw,
+                        "action_mask": spaces.Box(
+                            low=0,
+                            high=1,
+                            shape=(flatdim(self.action_spaces[agent]),),
+                            dtype=np.int64,
+                        ),
+                    }
+                )
+                for agent, raw in value.items()
+            }
+        super().__setattr__(name, value)
 
     ###################################################################################
     # PettingZoo API

@@ -15,16 +15,7 @@ class SinglesTestEnv(SinglesEnv):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.observation_spaces = {
-            agent: spaces.Dict(
-                {
-                    "observation": spaces.Box(
-                        np.array([0]), np.array([1]), dtype=np.int64
-                    ),
-                    "action_mask": spaces.Box(
-                        0, 1, shape=(self.action_space_size,), dtype=np.int64
-                    ),
-                }
-            )
+            agent: spaces.Box(np.array([0]), np.array([1]), dtype=np.int64)
             for agent in self.possible_agents
         }
 

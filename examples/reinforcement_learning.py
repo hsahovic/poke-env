@@ -2,7 +2,6 @@ from typing import Any, Dict, Optional
 
 import gymnasium.spaces as spaces
 import numpy as np
-import numpy.typing as npt
 import torch
 import torch.nn as nn
 from ray.rllib.algorithms import PPOConfig
@@ -26,17 +25,10 @@ class ExampleEnv(SinglesEnv):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.observation_spaces = {
-            agent: spaces.Dict(
-                {
-                    "observation": spaces.Box(
-                        low=np.array(ExampleEnv.LOW, dtype=np.float32),
-                        high=np.array(ExampleEnv.HIGH, dtype=np.float32),
-                        dtype=np.float32,
-                    ),
-                    "action_mask": spaces.Box(
-                        low=0, high=1, shape=(26,), dtype=np.int64
-                    ),
-                }
+            agent: spaces.Box(
+                low=np.array(ExampleEnv.LOW, dtype=np.float32),
+                high=np.array(ExampleEnv.HIGH, dtype=np.float32),
+                dtype=np.float32,
             )
             for agent in self.possible_agents
         }
@@ -130,6 +122,9 @@ class ActorCriticModule(TorchRLModule, ValueFunctionAPI):
 
 def single_agent_train():
     register_env("showdown", ExampleEnv.create_single_agent_env)
+    temp_env = ExampleEnv(battle_format="gen9randombattle", start_listening=False)
+    obs_space = temp_env.observation_space(temp_env.possible_agents[0])
+    act_space = temp_env.action_space(temp_env.possible_agents[0])
     config = PPOConfig()
     config = config.environment(
         "showdown",
@@ -140,19 +135,8 @@ def single_agent_train():
     config = config.rl_module(
         rl_module_spec=RLModuleSpec(
             module_class=ActorCriticModule,
-            observation_space=spaces.Dict(
-                {
-                    "observation": spaces.Box(
-                        low=np.array(ExampleEnv.LOW, dtype=np.float32),
-                        high=np.array(ExampleEnv.HIGH, dtype=np.float32),
-                        dtype=np.float32,
-                    ),
-                    "action_mask": spaces.Box(
-                        low=0, high=1, shape=(26,), dtype=np.int64
-                    ),
-                }
-            ),
-            action_space=spaces.Discrete(26),
+            observation_space=obs_space,
+            action_space=act_space,
             model_config={},
         )
     )
@@ -165,6 +149,9 @@ def single_agent_train():
 
 def multi_agent_train():
     register_env("showdown", ExampleEnv.create_multi_agent_env)
+    temp_env = ExampleEnv(battle_format="gen9randombattle", start_listening=False)
+    obs_space = temp_env.observation_space(temp_env.possible_agents[0])
+    act_space = temp_env.action_space(temp_env.possible_agents[0])
     config = PPOConfig()
     config = config.environment(
         "showdown",
@@ -180,19 +167,8 @@ def multi_agent_train():
     config = config.rl_module(
         rl_module_spec=RLModuleSpec(
             module_class=ActorCriticModule,
-            observation_space=spaces.Dict(
-                {
-                    "observation": spaces.Box(
-                        low=np.array(ExampleEnv.LOW, dtype=np.float32),
-                        high=np.array(ExampleEnv.HIGH, dtype=np.float32),
-                        dtype=np.float32,
-                    ),
-                    "action_mask": spaces.Box(
-                        low=0, high=1, shape=(26,), dtype=np.int64
-                    ),
-                }
-            ),
-            action_space=spaces.Discrete(26),
+            observation_space=obs_space,
+            action_space=act_space,
             model_config={},
         )
     )
