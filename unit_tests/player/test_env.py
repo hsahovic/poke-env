@@ -54,16 +54,20 @@ def test_queue():
     assert q.empty()
     q.put(1)
     assert q.queue.qsize() == 1
-    asyncio.get_event_loop().run_until_complete(q.async_put(2))
-    assert q.queue.qsize() == 2
-    item = q.get()
-    q.queue.task_done()
-    assert q.queue.qsize() == 1
-    assert item == 1
-    item = asyncio.get_event_loop().run_until_complete(q.async_get())
-    q.queue.task_done()
-    assert q.empty()
-    assert item == 2
+    loop = asyncio.new_event_loop()
+    try:
+        loop.run_until_complete(q.async_put(2))
+        assert q.queue.qsize() == 2
+        item = q.get()
+        q.queue.task_done()
+        assert q.queue.qsize() == 1
+        assert item == 1
+        item = loop.run_until_complete(q.async_get())
+        q.queue.task_done()
+        assert q.empty()
+        assert item == 2
+    finally:
+        loop.close()
 
 
 def test_async_player():
@@ -73,7 +77,11 @@ def test_async_player():
     player = _EnvPlayer(start_listening=False)
     battle = Battle("bat1", player.username, player.logger, gen=8)
     player.order_queue.put(ForfeitBattleOrder())
-    order = asyncio.get_event_loop().run_until_complete(player._choose_move(battle))
+    loop = asyncio.new_event_loop()
+    try:
+        order = loop.run_until_complete(player._choose_move(battle))
+    finally:
+        loop.close()
     assert isinstance(order, ForfeitBattleOrder)
     assert embed_battle(player.battle_queue.get()) == "battle"
 
