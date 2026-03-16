@@ -1,9 +1,9 @@
 from typing import Any, Dict, Optional
 
-from gymnasium.spaces import Box, Space
 import numpy as np
 import torch
 import torch.nn as nn
+from gymnasium.spaces import Box, Space
 from ray.rllib.algorithms import PPOConfig
 from ray.rllib.core import Columns
 from ray.rllib.core.rl_module import RLModuleSpec
