@@ -69,7 +69,7 @@ class PSClient:
             If None pings will never time out.
         :type ping_timeout: float, optional
         """
-        self._active_tasks: Set[asyncio.Task] = set()  # type: ignore[type-arg]
+        self._active_tasks: Set[asyncio.Task] = set()
         self._battle_locks: dict[str, asyncio.Lock] = {}
         self._open_timeout = open_timeout
         self._ping_interval = ping_interval
