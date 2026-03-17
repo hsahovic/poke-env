@@ -3,10 +3,10 @@
 import asyncio
 import json
 import logging
-from asyncio import CancelledError, Event, Lock, create_task, sleep
+from asyncio import CancelledError, Event, Lock, sleep
 from logging import Logger
 from time import perf_counter
-from typing import Any, List, Optional, Set
+from typing import List, Optional
 
 import requests
 import websockets as ws
@@ -70,7 +70,6 @@ class PSClient:
             If None pings will never time out.
         :type ping_timeout: float, optional
         """
-        self._active_tasks: Set[Any] = set()
         self._open_timeout = open_timeout
         self._ping_interval = ping_interval
         self._ping_timeout = ping_timeout
@@ -223,9 +222,7 @@ class PSClient:
                 self.websocket = websocket
                 async for message in websocket:
                     self.logger.info("\033[92m\033[1m<<<\033[0m %s", message)
-                    task = create_task(self._handle_message(str(message)))
-                    self._active_tasks.add(task)
-                    task.add_done_callback(self._active_tasks.discard)
+                    await self._handle_message(str(message))
 
         except ConnectionClosedOK:
             self.logger.warning(
