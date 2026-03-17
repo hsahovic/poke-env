@@ -45,7 +45,9 @@ jobs:
       - name: Run mypy
         run: mypy src
 
-      - name: Build docs
+      - name: Validate docs links
+        run: python scripts/check_docs_links.py
+
+      - name: Build docs (strict)
         run: |
-            cd docs
-            make html
+            LC_ALL=C LANG=C python -m sphinx -b html -W docs/source docs/_build/html

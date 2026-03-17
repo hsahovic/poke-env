@@ -14,6 +14,9 @@ import datetime
 import os
 import sys
 
+from pygments.lexers.python import PythonLexer
+from sphinx.highlighting import lexers
+
 sys.path.insert(0, os.path.abspath("../../src"))
 sys.path.insert(0, os.path.abspath("../../examples"))
 
@@ -29,7 +32,13 @@ author = "Haris Sahovic"
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ["sphinx.ext.autodoc", "nbsphinx"]
+extensions = ["sphinx.ext.autodoc", "sphinx.ext.intersphinx", "nbsphinx"]
+
+# Notebook code cells often declare the "ipython3" lexer. Map it to Python so
+# strict sphinx builds with -W do not fail on unknown lexer warnings.
+lexers["ipython3"] = PythonLexer()
+
+intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]

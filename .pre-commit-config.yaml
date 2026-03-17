@@ -1,20 +1,30 @@
 default_language_version:
-  python: python3.10.5
+  python: python3.10
+
 repos:
-  - repo: https://github.com/ambv/black
-    rev: stable
+  - repo: https://github.com/psf/black
+    rev: 26.3.0
     hooks:
       - id: black
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v1.2.3
+
+  - repo: https://github.com/PyCQA/isort
+    rev: 8.0.1
+    hooks:
+      - id: isort
+
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.1.1
     hooks:
       - id: flake8
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
       - id: check-json
       - id: check-xml
       - id: check-yaml
       - id: check-merge-conflict
       - id: detect-private-key
-      - id: fix-encoding-pragma
+      - id: end-of-file-fixer
       - id: mixed-line-ending
-      - id: requirements-txt-fixer
       - id: trailing-whitespace
