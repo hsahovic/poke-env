@@ -824,34 +824,41 @@ class AbstractBattle(ABC):
             target, effect = event[2:4]
             if target and effect.replace("move: ", "") == "Skill Swap":
                 if len(event) > 4:
-                    actor: Optional[str] = None
-                    skill_swap_parts = event[4:]
-                    ability_parts: List[str]
-                    if skill_swap_parts[-1].startswith("[of] "):
-                        actor = skill_swap_parts[-1].replace("[of] ", "")
-                        ability_parts = skill_swap_parts[:-1]
+                    if event[-1].startswith("[of] "):
+                        target_mon = self.get_pokemon(target)
+                        actor_mon = self.get_pokemon(
+                            event[-1].replace("[of] ", "")
+                        )
+                        abilities = [
+                            a.replace("[ability] ", "").replace("[ability2] ", "")
+                            for a in event[4:-1]
+                            if a.replace("[ability] ", "").replace("[ability2] ", "")
+                        ]
+                        if len(abilities) >= 2:
+                            # Opponent swap, gen 5+: abilities revealed
+                            target_mon.start_effect(effect, abilities[:2])
+                            actor_mon.temporary_ability = abilities[1]
+                        elif (
+                            target_mon.ability is not None
+                            and actor_mon.ability is not None
+                        ):
+                            # Ally swap or gen <= 4: swap known abilities
+                            target_ability = target_mon.ability
+                            target_mon.temporary_ability = actor_mon.ability
+                            actor_mon.temporary_ability = target_ability
                     else:
-                        actor = (
-                            skill_swap_parts[0] if len(skill_swap_parts) > 2 else None
-                        )
-                        ability_parts = (
-                            skill_swap_parts[1:]
-                            if actor is not None
-                            else skill_swap_parts
-                        )
-
-                    normalized_abilities = [
-                        d.replace("[ability] ", "").replace("[ability2] ", "")
-                        for d in ability_parts
-                    ]
-                    if len(normalized_abilities) >= 2:
-                        self.get_pokemon(target).start_effect(
-                            effect, normalized_abilities[:2]
-                        )
-                        if actor is not None and actor[:2] in {"p1", "p2"}:
-                            self.get_pokemon(actor).temporary_ability = (
-                                normalized_abilities[1]
+                        # Legacy format: actor is event[4], abilities follow
+                        actor_mon = self.get_pokemon(event[4])
+                        abilities = [
+                            a.replace("[ability] ", "").replace("[ability2] ", "")
+                            for a in event[5:]
+                            if a.replace("[ability] ", "").replace("[ability2] ", "")
+                        ]
+                        if len(abilities) >= 2:
+                            self.get_pokemon(target).start_effect(
+                                effect, abilities[:2]
                             )
+                            actor_mon.temporary_ability = abilities[1]
             elif effect == "ability: Dancer":
                 self.get_pokemon(target)._dancing = True
             elif effect == "ability: Mummy":
