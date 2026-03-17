@@ -3,10 +3,10 @@
 import asyncio
 import json
 import logging
-from asyncio import CancelledError, Event, Lock, sleep
+from asyncio import CancelledError, Event, Lock, create_task, sleep
 from logging import Logger
 from time import perf_counter
-from typing import List, Optional
+from typing import Dict, List, Optional, Set
 
 import requests
 import websockets as ws
@@ -70,6 +70,8 @@ class PSClient:
             If None pings will never time out.
         :type ping_timeout: float, optional
         """
+        self._active_tasks: Set[asyncio.Task] = set()  # type: ignore[type-arg]
+        self._battle_locks: Dict[str, Lock] = {}
         self._open_timeout = open_timeout
         self._ping_interval = ping_interval
         self._ping_timeout = ping_timeout
@@ -137,8 +139,13 @@ class PSClient:
             # For battles, this is the zero-th entry
             # Otherwise it is the one-th entry
             if split_messages[0][0].startswith(">battle"):
-                # Battle update
-                await self._handle_battle_message(split_messages)  # type: ignore
+                # Battle update — serialize per battle to prevent race conditions
+                # between event messages and request messages
+                battle_tag = split_messages[0][0][1:]
+                if battle_tag not in self._battle_locks:
+                    self._battle_locks[battle_tag] = Lock()
+                async with self._battle_locks[battle_tag]:
+                    await self._handle_battle_message(split_messages)  # type: ignore
             elif split_messages[0][1] == "challstr":
                 # Confirms connection to the server: we can login
                 await self.log_in(split_messages[0])
@@ -222,7 +229,9 @@ class PSClient:
                 self.websocket = websocket
                 async for message in websocket:
                     self.logger.info("\033[92m\033[1m<<<\033[0m %s", message)
-                    await self._handle_message(str(message))
+                    task = create_task(self._handle_message(str(message)))
+                    self._active_tasks.add(task)
+                    task.add_done_callback(self._active_tasks.discard)
 
         except ConnectionClosedOK:
             self.logger.warning(
