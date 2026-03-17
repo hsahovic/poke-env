@@ -42,16 +42,17 @@ async def test_random_players():
 
 @pytest.mark.asyncio
 async def test_random_double_players():
-    players = [
-        ZoroarkForfeitRandomPlayer(
-            battle_format=f"gen9randomdoublesbattle",
-            max_concurrent_battles=10,
-            strict_battle_tracking=True,
-        ),
-        ZoroarkForfeitRandomPlayer(
-            battle_format=f"gen9randomdoublesbattle",
-            max_concurrent_battles=10,
-            strict_battle_tracking=True,
-        ),
-    ]
-    await asyncio.wait_for(simple_cross_evaluation(100, players=players), timeout=100)
+    for gen in range(8, 10):
+        players = [
+            ZoroarkForfeitRandomPlayer(
+                battle_format=f"gen{gen}randomdoublesbattle",
+                max_concurrent_battles=10,
+                strict_battle_tracking=True,
+            ),
+            ZoroarkForfeitRandomPlayer(
+                battle_format=f"gen{gen}randomdoublesbattle",
+                max_concurrent_battles=10,
+                strict_battle_tracking=True,
+            ),
+        ]
+        await asyncio.wait_for(simple_cross_evaluation(100, players=players), timeout=100)
