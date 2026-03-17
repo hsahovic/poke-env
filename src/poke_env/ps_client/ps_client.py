@@ -138,8 +138,7 @@ class PSClient:
             # For battles, this is the zero-th entry
             # Otherwise it is the one-th entry
             if split_messages[0][0].startswith(">battle"):
-                # Battle update — serialize per battle to prevent race conditions
-                # between event messages and request messages
+                # Battle update
                 battle_tag = split_messages[0][0][1:]
                 if battle_tag not in self._battle_locks:
                     self._battle_locks[battle_tag] = asyncio.Lock()
