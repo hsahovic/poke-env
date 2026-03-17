@@ -6,7 +6,7 @@ import logging
 from asyncio import CancelledError, Event, Lock, create_task, sleep
 from logging import Logger
 from time import perf_counter
-from typing import Dict, List, Optional, Set
+from typing import List, Optional, Set
 
 import requests
 import websockets as ws
@@ -71,7 +71,7 @@ class PSClient:
         :type ping_timeout: float, optional
         """
         self._active_tasks: Set[asyncio.Task] = set()  # type: ignore[type-arg]
-        self._battle_locks: Dict[str, Lock] = {}
+        self._battle_locks: dict[str, Lock] = {}
         self._open_timeout = open_timeout
         self._ping_interval = ping_interval
         self._ping_timeout = ping_timeout
