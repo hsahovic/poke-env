@@ -3,7 +3,6 @@
 import asyncio
 import json
 import logging
-from asyncio import CancelledError, Event, Lock, create_task, sleep
 from logging import Logger
 from time import perf_counter
 from typing import List, Optional, Set
@@ -71,7 +70,7 @@ class PSClient:
         :type ping_timeout: float, optional
         """
         self._active_tasks: Set[asyncio.Task] = set()  # type: ignore[type-arg]
-        self._battle_locks: dict[str, Lock] = {}
+        self._battle_locks: dict[str, asyncio.Lock] = {}
         self._open_timeout = open_timeout
         self._ping_interval = ping_interval
         self._ping_timeout = ping_timeout
@@ -81,8 +80,8 @@ class PSClient:
 
         self._avatar = avatar
 
-        self._logged_in: Event = create_in_poke_loop(Event)
-        self._sending_lock = create_in_poke_loop(Lock)
+        self._logged_in: asyncio.Event = create_in_poke_loop(asyncio.Event)
+        self._sending_lock = create_in_poke_loop(asyncio.Lock)
 
         self.websocket: ClientConnection
         self._logger: Logger = self._create_logger(log_level)
@@ -143,7 +142,7 @@ class PSClient:
                 # between event messages and request messages
                 battle_tag = split_messages[0][0][1:]
                 if battle_tag not in self._battle_locks:
-                    self._battle_locks[battle_tag] = Lock()
+                    self._battle_locks[battle_tag] = asyncio.Lock()
                 async with self._battle_locks[battle_tag]:
                     await self._handle_battle_message(split_messages)  # type: ignore
             elif split_messages[0][1] == "challstr":
@@ -194,7 +193,7 @@ class PSClient:
                     )
             else:
                 self.logger.warning("Unhandled message: %s", message)
-        except CancelledError as e:
+        except asyncio.CancelledError as e:
             self.logger.critical("CancelledError intercepted: %s", e)
         except Exception as exception:
             self.logger.exception(
@@ -229,7 +228,7 @@ class PSClient:
                 self.websocket = websocket
                 async for message in websocket:
                     self.logger.info("\033[92m\033[1m<<<\033[0m %s", message)
-                    task = create_task(self._handle_message(str(message)))
+                    task = asyncio.create_task(self._handle_message(str(message)))
                     self._active_tasks.add(task)
                     task.add_done_callback(self._active_tasks.discard)
 
@@ -237,7 +236,7 @@ class PSClient:
             self.logger.warning(
                 "Websocket connection with %s closed", self.websocket_url
             )
-        except (CancelledError, RuntimeError) as e:
+        except (asyncio.CancelledError, RuntimeError) as e:
             self.logger.critical("Listen interrupted by %s", e)
         except Exception as e:
             self.logger.exception(e)
@@ -308,7 +307,7 @@ class PSClient:
     async def wait_for_login(self, checking_interval: float = 0.001, wait_for: int = 5):
         start = perf_counter()
         while perf_counter() - start < wait_for:
-            await sleep(checking_interval)
+            await asyncio.sleep(checking_interval)
             if self.logged_in.is_set():
                 return
         assert self.logged_in, f"Expected {self.username} to be logged in."
@@ -323,7 +322,7 @@ class PSClient:
         return self._account_configuration
 
     @property
-    def logged_in(self) -> Event:
+    def logged_in(self) -> asyncio.Event:
         """Event object associated with user login.
 
         :return: The logged-in event
