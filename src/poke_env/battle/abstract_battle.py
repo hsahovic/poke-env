@@ -826,9 +826,7 @@ class AbstractBattle(ABC):
                 if len(event) > 4:
                     if event[-1].startswith("[of] "):
                         target_mon = self.get_pokemon(target)
-                        actor_mon = self.get_pokemon(
-                            event[-1].replace("[of] ", "")
-                        )
+                        actor_mon = self.get_pokemon(event[-1].replace("[of] ", ""))
                         abilities = [
                             a.replace("[ability] ", "").replace("[ability2] ", "")
                             for a in event[4:-1]
@@ -855,9 +853,7 @@ class AbstractBattle(ABC):
                             if a.replace("[ability] ", "").replace("[ability2] ", "")
                         ]
                         if len(abilities) >= 2:
-                            self.get_pokemon(target).start_effect(
-                                effect, abilities[:2]
-                            )
+                            self.get_pokemon(target).start_effect(effect, abilities[:2])
                             actor_mon.temporary_ability = abilities[1]
             elif effect == "ability: Dancer":
                 self.get_pokemon(target)._dancing = True
