@@ -282,16 +282,16 @@ def train(
     ppo.learn(98_304)
 
     # evaluate
-    players = [
-        PolicyPlayer(
-            policy=ppo.policy,
-            battle_format=battle_format,
-            server_configuration=ServerConfiguration(
-                f"ws://localhost:{port}/showdown/websocket",
-                "https://play.pokemonshowdown.com/action.php?",
-            ),
-            max_concurrent_battles=10,
+    agent = PolicyPlayer(
+        policy=ppo.policy,
+        battle_format=battle_format,
+        server_configuration=ServerConfiguration(
+            f"ws://localhost:{port}/showdown/websocket",
+            "https://play.pokemonshowdown.com/action.php?",
         ),
+        max_concurrent_battles=10,
+    )
+    opponents: list[Player] = [
         RandomPlayer(
             battle_format=battle_format,
             server_configuration=ServerConfiguration(
@@ -317,8 +317,12 @@ def train(
             max_concurrent_battles=10,
         ),
     ]
-    result = asyncio.run(cross_evaluate(players, 100))
-    print(result)
+    asyncio.run(agent.battle_against(*opponents, n_battles=100))
+    print("--- Win counts vs bots ---")
+    for opp in opponents:
+        win_rate = round(opp.n_lost_battles / opp.n_finished_battles, 2)
+        print(f"{opp.username}: {win_rate}")
+    print()
 
 
 if __name__ == "__main__":
