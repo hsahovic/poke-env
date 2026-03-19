@@ -7,7 +7,7 @@ import time
 from abc import abstractmethod
 from concurrent.futures import Future
 from threading import Thread
-from typing import Any, Awaitable, Dict, Generic, List, Optional, Tuple, TypeVar, Union
+from typing import Any, Awaitable, Dict, Generic, Optional, Tuple, TypeVar, Union
 from weakref import WeakKeyDictionary
 
 from gymnasium.spaces import Space
@@ -286,8 +286,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             team=team,
             choose_on_teampreview=choose_on_teampreview,
         )
-        self.agent1.action_to_order = self.action_to_order  # type: ignore
-        self.agent1.order_to_action = self.order_to_action  # type: ignore
         self.agent2 = _EnvPlayer(
             account_configuration=account_configuration2
             or AccountConfiguration.generate(self.__class__.__name__, rand=True),
@@ -307,9 +305,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             team=team,
             choose_on_teampreview=choose_on_teampreview,
         )
-        self.agent2.action_to_order = self.action_to_order  # type: ignore
-        self.agent2.order_to_action = self.order_to_action  # type: ignore
-        self.agents = [self.agent1.username, self.agent2.username]
+        self.agents: list[str] = []
         self.possible_agents = [self.agent1.username, self.agent2.username]
         self.battle1: Optional[AbstractBattle] = None
         self.battle2: Optional[AbstractBattle] = None
