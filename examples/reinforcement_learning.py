@@ -1,3 +1,4 @@
+import asyncio
 from typing import Any, Awaitable
 
 import numpy as np
@@ -24,7 +25,7 @@ from poke_env.player import (
     Player,
     RandomPlayer,
     SimpleHeuristicsPlayer,
-    background_cross_evaluate,
+    cross_evaluate,
 )
 from poke_env.ps_client import ServerConfiguration
 
@@ -33,7 +34,12 @@ ACT_LEN = 26
 
 class MaskedActorCriticPolicy(ActorCriticPolicy):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs, features_extractor_class=FeaturesExtractor)
+        super().__init__(
+            *args,
+            **kwargs,
+            net_arch=[64, 64],
+            features_extractor_class=FeaturesExtractor,
+        )
 
     def forward(
         self, obs: torch.Tensor, deterministic: bool = False
@@ -187,7 +193,6 @@ class PolicyPlayer(Player):
 
 
 class ExampleEnv(SinglesEnv[npt.NDArray[np.float32]]):
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.metadata = {"name": "showdown_v1", "render_modes": ["human"]}
@@ -239,12 +244,15 @@ class ExampleEnv(SinglesEnv[npt.NDArray[np.float32]]):
         return PolicyPlayer.embed_battle(battle)
 
 
-def train(is_single_agent: bool):
-    battle_format = "gen9randombattle"
-    num_envs = 2
-    log_level = 40
-    port = 8000
-    device = "cpu"
+def train(
+    battle_format: str = "gen9randombattle",
+    num_envs: int = 2,
+    log_level: int = 40,
+    port: int = 8000,
+    device: str = "cpu",
+    is_single_agent: bool = False,
+):
+    # setup
     env = (
         SubprocVecEnv(
             [
@@ -269,51 +277,50 @@ def train(is_single_agent: bool):
         ent_coef=0.01,
         device=device,
     )
-    ppo.learn(100_000)
-    env.close()
 
+    # train
+    ppo.learn(98_304)
 
-def evaluate(ppo: PPO):
-    battle_format = "gen9randombattle"
-    n_challenges = 100
-    server_configuration = ServerConfiguration(
-        "ws://localhost:8000/showdown/websocket",
-        "https://play.pokemonshowdown.com/action.php?",
-    )
-
+    # evaluate
     players = [
         PolicyPlayer(
             policy=ppo.policy,
             battle_format=battle_format,
-            server_configuration=server_configuration,
+            server_configuration=ServerConfiguration(
+                f"ws://localhost:{port}/showdown/websocket",
+                "https://play.pokemonshowdown.com/action.php?",
+            ),
             max_concurrent_battles=10,
         ),
         RandomPlayer(
             battle_format=battle_format,
-            server_configuration=server_configuration,
+            server_configuration=ServerConfiguration(
+                f"ws://localhost:{port}/showdown/websocket",
+                "https://play.pokemonshowdown.com/action.php?",
+            ),
             max_concurrent_battles=10,
         ),
         MaxBasePowerPlayer(
             battle_format=battle_format,
-            server_configuration=server_configuration,
+            server_configuration=ServerConfiguration(
+                f"ws://localhost:{port}/showdown/websocket",
+                "https://play.pokemonshowdown.com/action.php?",
+            ),
             max_concurrent_battles=10,
         ),
         SimpleHeuristicsPlayer(
             battle_format=battle_format,
-            server_configuration=server_configuration,
+            server_configuration=ServerConfiguration(
+                f"ws://localhost:{port}/showdown/websocket",
+                "https://play.pokemonshowdown.com/action.php?",
+            ),
             max_concurrent_battles=10,
         ),
     ]
-
-    cross_evaluation = background_cross_evaluate(players, n_challenges).result()
-
-    table = [["-"] + [p.username for p in players]]
-    for p_1, results in cross_evaluation.items():
-        table.append([p_1] + [str(cross_evaluation[p_1][p_2]) for p_2 in results])
-    for row in table:
-        print("\t".join(row))
+    result = asyncio.run(cross_evaluate(players, 100))
+    print(result)
 
 
 if __name__ == "__main__":
-    train(is_single_agent=False)
+    train()
     train(is_single_agent=True)
