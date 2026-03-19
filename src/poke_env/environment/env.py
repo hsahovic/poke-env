@@ -350,8 +350,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             team=self._team,
             choose_on_teampreview=self._choose_on_teampreview,
         )
-        self.agent1.action_to_order = self.action_to_order  # type: ignore
-        self.agent1.order_to_action = self.order_to_action  # type: ignore
         self.agent2 = _EnvPlayer(
             account_configuration=AccountConfiguration.generate(
                 self.__class__.__name__, rand=True
@@ -372,8 +370,6 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             team=self._team,
             choose_on_teampreview=self._choose_on_teampreview,
         )
-        self.agent2.action_to_order = self.action_to_order  # type: ignore
-        self.agent2.order_to_action = self.order_to_action  # type: ignore
         self.agents = []
         old_names = self.possible_agents
         self.possible_agents = [self.agent1.username, self.agent2.username]
