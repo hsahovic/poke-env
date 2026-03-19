@@ -31,7 +31,7 @@ def play_function(env, n_battles):
             actions = {
                 name: (
                     env.order_to_action(Player.choose_random_move(battle), battle)
-                    if env.strict
+                    if env._strict
                     else env.action_space(name).sample()
                 )
                 for name, battle in zip(env.agents, [env.battle1, env.battle2])
