@@ -45,7 +45,7 @@ def test_env_run():
     for gen in range(4, 10):
         env = SinglesTestEnv(battle_format=f"gen{gen}randombattle", log_level=25)
         play_function(env, 10)
-        env.strict = False
+        env._strict = False
         play_function(env, 10)
         env.close()
 
@@ -59,7 +59,7 @@ def single_agent_play_function(env: SingleAgentWrapper, n_battles: int):
                 env.env.order_to_action(
                     Player.choose_random_move(env.env.battle1), env.env.battle1
                 )
-                if env.env.strict
+                if env.env._strict
                 else env.action_space.sample()
             )
             _, _, terminated, truncated, _ = env.step(action)
@@ -72,7 +72,7 @@ def test_single_agent_env_run():
         env = SinglesTestEnv(battle_format=f"gen{gen}randombattle", log_level=25)
         env = SingleAgentWrapper(env, RandomPlayer())
         single_agent_play_function(env, 10)
-        env.env.strict = False
+        env.env._strict = False
         single_agent_play_function(env, 10)
         env.close()
 

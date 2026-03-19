@@ -42,6 +42,7 @@ class PSClient:
         open_timeout: Optional[float] = 10.0,
         ping_interval: Optional[float] = 20.0,
         ping_timeout: Optional[float] = 20.0,
+        loop: asyncio.AbstractEventLoop = POKE_LOOP,
     ):
         """
         :param account_configuration: Account configuration.
@@ -80,15 +81,16 @@ class PSClient:
 
         self._avatar = avatar
 
-        self._logged_in: asyncio.Event = create_in_poke_loop(asyncio.Event)
-        self._sending_lock = create_in_poke_loop(asyncio.Lock)
+        self.loop = loop
+        self._logged_in: asyncio.Event = create_in_poke_loop(asyncio.Event, loop)
+        self._sending_lock: asyncio.Lock = create_in_poke_loop(asyncio.Lock, loop)
 
         self.websocket: ClientConnection
         self._logger: Logger = self._create_logger(log_level)
 
         if start_listening:
             self._listening_coroutine = asyncio.run_coroutine_threadsafe(
-                self.listen(), POKE_LOOP
+                self.listen(), self.loop
             )
 
     async def accept_challenge(self, username: str, packed_team: Optional[str]):
@@ -301,7 +303,7 @@ class PSClient:
             await self.send_message("/utm null")
 
     async def stop_listening(self):
-        await handle_threaded_coroutines(self._stop_listening())
+        await handle_threaded_coroutines(self._stop_listening(), self.loop)
 
     async def wait_for_login(self, checking_interval: float = 0.001, wait_for: int = 5):
         start = perf_counter()
