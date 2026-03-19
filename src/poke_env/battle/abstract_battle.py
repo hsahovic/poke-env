@@ -1778,6 +1778,10 @@ class AbstractBattle(ABC):
 
     @property
     def wait(self) -> bool:
+        """
+        :return: If True, the battle does not currently need an action from the player.
+        :rtype: bool
+        """
         return self._wait
 
     @property
