@@ -187,6 +187,7 @@ def test_simple_heuristics_player():
             "can_tera",
             "side_conditions",
             "opponent_side_conditions",
+            "wait",
         ),
     )
     battle = PseudoBattle(
@@ -200,6 +201,7 @@ def test_simple_heuristics_player():
         True,
         set(),
         set(),
+        False,
     )
     battle.active_pokemon.stats = {
         stat: 100 for stat in battle.active_pokemon.base_stats

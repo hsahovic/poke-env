@@ -155,7 +155,7 @@ class AbstractBattle(ABC):
 
         # Turn choice attributes
         self.in_team_preview: bool = False
-        self._wait: Optional[bool] = None
+        self._wait: bool = False
 
         # Battle state attributes
         self._dynamax_turn: Optional[int] = None
@@ -1775,6 +1775,10 @@ class AbstractBattle(ABC):
     @abstractmethod
     def valid_orders(self) -> Any:
         pass
+
+    @property
+    def wait(self) -> bool:
+        return self._wait
 
     @property
     def weather(self) -> Dict[Weather, int]:
