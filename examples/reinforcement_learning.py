@@ -29,6 +29,7 @@ from poke_env.player import (
 )
 from poke_env.ps_client import ServerConfiguration
 
+N_FEATURES = 12
 ACT_LEN = 26
 
 
@@ -85,7 +86,7 @@ class MaskedActorCriticPolicy(ActorCriticPolicy):
 
 class FeaturesExtractor(BaseFeaturesExtractor):
     def __init__(self, observation_space: Space[Any]):
-        super().__init__(observation_space, features_dim=10)
+        super().__init__(observation_space, features_dim=N_FEATURES)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return x[:, ACT_LEN:]
@@ -118,12 +119,9 @@ class PolicyPlayer(Player):
     def embed_battle(battle: AbstractBattle) -> npt.NDArray[np.float32]:
         assert isinstance(battle, Battle)
         mask = PolicyPlayer.get_action_mask(battle)
-        # -1 indicates that the move does not have a base power
-        # or is not available
         moves_base_power = -np.ones(4)
         moves_dmg_multiplier = np.ones(4)
         for i, move in enumerate(battle.available_moves):
-            # Simple rescaling to facilitate learning
             moves_base_power[i] = move.base_power / 100
             if battle.opponent_active_pokemon is not None:
                 moves_dmg_multiplier[i] = move.type.damage_multiplier(
@@ -131,18 +129,25 @@ class PolicyPlayer(Player):
                     battle.opponent_active_pokemon.type_2,
                     type_chart=GenData.from_gen(battle.gen).type_chart,
                 )
-        # We count how many pokemons have fainted in each team
         fainted_mon_team = len([mon for mon in battle.team.values() if mon.fainted]) / 6
         fainted_mon_opponent = (
             len([mon for mon in battle.opponent_team.values() if mon.fainted]) / 6
         )
-        # Final vector with a mask and 10 feature components
+        our_hp = (
+            battle.active_pokemon.current_hp_fraction if battle.active_pokemon else 0.0
+        )
+        opp_hp = (
+            battle.opponent_active_pokemon.current_hp_fraction
+            if battle.opponent_active_pokemon
+            else 0.0
+        )
         return np.concatenate(
             [
                 mask,
                 moves_base_power,
                 moves_dmg_multiplier,
                 [fainted_mon_team, fainted_mon_opponent],
+                [our_hp, opp_hp],
             ]
         )
 
@@ -198,7 +203,7 @@ class ExampleEnv(SinglesEnv[npt.NDArray[np.float32]]):
         self.metadata = {"name": "showdown_v1", "render_modes": ["human"]}
         self.render_mode: str | None = None
         self.observation_spaces = {
-            agent: Box(-1, 4, shape=(10 + ACT_LEN,), dtype=np.float32)
+            agent: Box(-1, 4, shape=(N_FEATURES + ACT_LEN,), dtype=np.float32)
             for agent in self.possible_agents
         }
 
@@ -237,7 +242,11 @@ class ExampleEnv(SinglesEnv[npt.NDArray[np.float32]]):
 
     def calc_reward(self, battle) -> float:
         return self.reward_computing_helper(
-            battle, fainted_value=2.0, hp_value=1.0, victory_value=30.0
+            battle,
+            fainted_value=2.0,
+            hp_value=1.0,
+            status_value=0.5,
+            victory_value=30.0,
         )
 
     def embed_battle(self, battle: AbstractBattle):
@@ -270,16 +279,17 @@ def train(
     ppo = PPO(
         MaskedActorCriticPolicy,
         env,
-        learning_rate=1e-5,
+        learning_rate=3e-4,
         n_steps=(3072 // num_envs if is_single_agent else 3072 // (2 * num_envs)),
-        batch_size=64,
-        gamma=1,
+        batch_size=128,
+        gamma=0.99,
         ent_coef=0.01,
         device=device,
     )
 
     # train
     ppo.learn(98_304)
+    env.close()
 
     # evaluate
     agent = PolicyPlayer(
@@ -327,4 +337,3 @@ def train(
 
 if __name__ == "__main__":
     train()
-    train(is_single_agent=True)
