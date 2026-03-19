@@ -318,10 +318,10 @@ def train(
         ),
     ]
     asyncio.run(agent.battle_against(*opponents, n_battles=100))
-    print("--- Win counts vs bots ---")
+    print("--- Win rates vs bots ---")
     for opp in opponents:
-        win_rate = round(opp.n_lost_battles / opp.n_finished_battles, 2)
-        print(f"{opp.username}: {win_rate}")
+        win_rate = round(100 * opp.n_lost_battles / opp.n_finished_battles)
+        print(f"{opp.username}: {win_rate}%")
     print()
 
 
