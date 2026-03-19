@@ -105,7 +105,7 @@ class PolicyPlayer(Player):
     ) -> BattleOrder | Awaitable[BattleOrder]:
         assert isinstance(battle, Battle)
         assert self.policy is not None
-        if battle._wait:
+        if battle.wait:
             return DefaultBattleOrder()
         obs = self.embed_battle(battle)
         with torch.no_grad():
@@ -155,7 +155,7 @@ class PolicyPlayer(Player):
             and pokemon.base_species
             in [p.base_species for p in battle.available_switches]
         ]
-        if battle._wait:
+        if battle.wait:
             actions = [0]
         elif battle.active_pokemon is None:
             actions = switch_space
