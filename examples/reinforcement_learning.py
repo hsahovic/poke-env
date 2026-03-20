@@ -8,7 +8,6 @@ import torch
 from gymnasium import Env
 from gymnasium.spaces import Box, Space
 from stable_baselines3 import PPO
-from stable_baselines3.common.distributions import CategoricalDistribution
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.policies import ActorCriticPolicy
 from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
@@ -25,7 +24,6 @@ from poke_env.player import (
     Player,
     RandomPlayer,
     SimpleHeuristicsPlayer,
-    cross_evaluate,
 )
 from poke_env.ps_client import ServerConfiguration
 
@@ -42,46 +40,20 @@ class MaskedActorCriticPolicy(ActorCriticPolicy):
             features_extractor_class=FeaturesExtractor,
         )
 
-    def forward(
-        self, obs: torch.Tensor, deterministic: bool = False
-    ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-        action_logits, value_logits = self.get_logits(obs)
-        distribution = self.get_dist_from_logits(obs, action_logits)
-        actions = distribution.get_actions(deterministic=deterministic)
-        log_prob = distribution.log_prob(actions)
-        actions = actions.reshape((-1, *self.action_space.shape))  # type: ignore[misc]
-        return actions, value_logits, log_prob
+    def forward(self, obs: torch.Tensor, deterministic: bool = False):
+        self._current_obs = obs
+        return super().forward(obs, deterministic)
 
-    def evaluate_actions(
-        self, obs: PyTorchObs, actions: torch.Tensor
-    ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor | None]:
+    def evaluate_actions(self, obs: PyTorchObs, actions: torch.Tensor):
         assert isinstance(obs, torch.Tensor)
-        action_logits, value_logits = self.get_logits(obs)
-        distribution = self.get_dist_from_logits(obs, action_logits)
-        log_prob = distribution.log_prob(actions)
-        entropy = distribution.entropy()
-        return value_logits, log_prob, entropy
+        self._current_obs = obs
+        return super().evaluate_actions(obs, actions)
 
-    def get_logits(self, obs: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
-        features = self.extract_features(obs)
-        if self.share_features_extractor:
-            latent_pi, latent_vf = self.mlp_extractor(features)
-        else:
-            pi_features, vf_features = features
-            latent_pi = self.mlp_extractor.forward_actor(pi_features)
-            latent_vf = self.mlp_extractor.forward_critic(vf_features)
+    def _get_action_dist_from_latent(self, latent_pi: torch.Tensor):
         action_logits = self.action_net(latent_pi)
-        value_logits = self.value_net(latent_vf)
-        return action_logits, value_logits
-
-    def get_dist_from_logits(
-        self, obs: torch.Tensor, action_logits: torch.Tensor
-    ) -> CategoricalDistribution:
-        mask = obs[:, :ACT_LEN]
+        mask = self._current_obs[:, :ACT_LEN]
         mask = torch.where(mask == 1, 0, float("-inf"))
-        distribution = self.action_dist.proba_distribution(action_logits + mask)
-        assert isinstance(distribution, CategoricalDistribution)
-        return distribution
+        return self.action_dist.proba_distribution(action_logits + mask)
 
 
 class FeaturesExtractor(BaseFeaturesExtractor):
