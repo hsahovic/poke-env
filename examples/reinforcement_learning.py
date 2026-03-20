@@ -234,8 +234,8 @@ def train(
     is_single_agent: bool = False,
 ):
     # setup
-    env = (
-        SubprocVecEnv(
+    if is_single_agent:
+        env = SubprocVecEnv(
             [
                 lambda: ExampleEnv.create_env(
                     battle_format, num_envs, log_level, port, is_single_agent
@@ -243,16 +243,15 @@ def train(
                 for _ in range(num_envs)
             ]
         )
-        if is_single_agent
-        else ExampleEnv.create_env(
+    else:
+        env = ExampleEnv.create_env(
             battle_format, num_envs, log_level, port, is_single_agent
         )
-    )
     ppo = PPO(
         MaskedActorCriticPolicy,
         env,
         learning_rate=3e-4,
-        n_steps=(3072 // num_envs if is_single_agent else 3072 // (2 * num_envs)),
+        n_steps=3072 // num_envs if is_single_agent else 3072 // (2 * num_envs),
         batch_size=128,
         gamma=0.99,
         ent_coef=0.01,
