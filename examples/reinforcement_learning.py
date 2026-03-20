@@ -304,7 +304,6 @@ def train(
     for opp in opponents:
         win_rate = round(100 * opp.n_lost_battles / opp.n_finished_battles)
         print(f"{opp.username}: {win_rate}%")
-    print()
 
 
 if __name__ == "__main__":
