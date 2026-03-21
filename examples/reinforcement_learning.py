@@ -204,29 +204,25 @@ class ExampleEnv(SinglesEnv[npt.NDArray[np.float32]]):
         return PolicyPlayer.embed_battle(battle)
 
 
-def train(
-    battle_format: str = "gen9randombattle",
-    num_envs: int = 2,
-    log_level: int = 40,
-    port: int = 8000,
-    device: str = "cpu",
-):
+def train():
     # setup
     env = SubprocVecEnv(
         [
-            lambda: ExampleEnv.create_env(battle_format, log_level, port)
-            for _ in range(num_envs)
+            lambda: ExampleEnv.create_env(
+                battle_format="gen9randombattle", log_level=40, port=8000
+            )
+            for _ in range(2)
         ]
     )
     ppo = PPO(
         MaskedActorCriticPolicy,
         env,
         learning_rate=3e-4,
-        n_steps=3072 // num_envs,
+        n_steps=3072 // 2,
         batch_size=128,
         gamma=0.99,
         ent_coef=0.01,
-        device=device,
+        device="cpu",
     )
 
     # train
@@ -235,39 +231,11 @@ def train(
 
     # evaluate
     agent = PolicyPlayer(
-        policy=ppo.policy,
-        battle_format=battle_format,
-        server_configuration=ServerConfiguration(
-            f"ws://localhost:{port}/showdown/websocket",
-            "https://play.pokemonshowdown.com/action.php?",
-        ),
-        max_concurrent_battles=10,
+        policy=ppo.policy, battle_format="gen9randombattle", max_concurrent_battles=10
     )
     opponents: list[Player] = [
-        RandomPlayer(
-            battle_format=battle_format,
-            server_configuration=ServerConfiguration(
-                f"ws://localhost:{port}/showdown/websocket",
-                "https://play.pokemonshowdown.com/action.php?",
-            ),
-            max_concurrent_battles=10,
-        ),
-        MaxBasePowerPlayer(
-            battle_format=battle_format,
-            server_configuration=ServerConfiguration(
-                f"ws://localhost:{port}/showdown/websocket",
-                "https://play.pokemonshowdown.com/action.php?",
-            ),
-            max_concurrent_battles=10,
-        ),
-        SimpleHeuristicsPlayer(
-            battle_format=battle_format,
-            server_configuration=ServerConfiguration(
-                f"ws://localhost:{port}/showdown/websocket",
-                "https://play.pokemonshowdown.com/action.php?",
-            ),
-            max_concurrent_battles=10,
-        ),
+        c(battle_format="gen9randombattle", max_concurrent_battles=10)
+        for c in [RandomPlayer, MaxBasePowerPlayer, SimpleHeuristicsPlayer]
     ]
     asyncio.run(agent.battle_against(*opponents, n_battles=100))
     print("--- Win rates vs bots ---")
