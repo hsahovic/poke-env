@@ -6,6 +6,7 @@ from gymnasium.spaces import MultiDiscrete
 
 from poke_env.battle.double_battle import DoubleBattle
 from poke_env.battle.pokemon import Pokemon
+from poke_env.data import GenData
 from poke_env.environment.env import PokeEnv
 from poke_env.player.battle_order import (
     BattleOrder,
@@ -68,7 +69,8 @@ class DoublesEnv(PokeEnv[npt.NDArray[np.int64]]):
             fake=fake,
             strict=strict,
         )
-        action_space_size = DoublesEnv.get_action_space_size(battle_format)
+        gen = GenData.from_format(battle_format).gen
+        action_space_size = DoublesEnv.get_action_space_size(gen)
         self.action_spaces = {
             agent: MultiDiscrete([action_space_size, action_space_size])
             for agent in self.possible_agents
@@ -431,25 +433,24 @@ class DoublesEnv(PokeEnv[npt.NDArray[np.int64]]):
                 + tera_space
             )
         actions = actions or [0]
-        assert battle.format is not None
         action_mask = [
             int(i in actions)
-            for i in range(DoublesEnv.get_action_space_size(battle.format))
+            for i in range(DoublesEnv.get_action_space_size(battle.gen))
         ]
         return action_mask
 
     @staticmethod
-    def get_action_space_size(battle_format: str) -> int:
+    def get_action_space_size(gen: int) -> int:
         num_switches = 6
         num_moves = 4
         num_targets = 5
-        if battle_format.startswith("gen6"):
+        if gen == 6:
             num_gimmicks = 1
-        elif battle_format.startswith("gen7"):
+        elif gen == 7:
             num_gimmicks = 2
-        elif battle_format.startswith("gen8"):
+        elif gen == 8:
             num_gimmicks = 3
-        elif battle_format.startswith("gen9"):
+        elif gen == 9:
             num_gimmicks = 4
         else:
             num_gimmicks = 0

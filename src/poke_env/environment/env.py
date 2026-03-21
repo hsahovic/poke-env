@@ -671,7 +671,7 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
 
     @staticmethod
     @abstractmethod
-    def get_action_space_size(battle_format: str) -> int:
+    def get_action_space_size(gen: int) -> int:
         pass
 
     ###################################################################################

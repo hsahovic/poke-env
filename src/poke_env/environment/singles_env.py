@@ -4,6 +4,7 @@ import numpy as np
 from gymnasium.spaces import Discrete, Space
 
 from poke_env.battle import Battle, Pokemon
+from poke_env.data import GenData
 from poke_env.environment.env import PokeEnv
 from poke_env.player.battle_order import (
     BattleOrder,
@@ -65,8 +66,9 @@ class SinglesEnv(PokeEnv[np.int64]):
             fake=fake,
             strict=strict,
         )
+        gen = GenData.from_format(battle_format).gen
         self.action_spaces: dict[str, Space[Any]] = {
-            agent: Discrete(SinglesEnv.get_action_space_size(battle_format))
+            agent: Discrete(SinglesEnv.get_action_space_size(gen))
             for agent in self.possible_agents
         }
 
@@ -264,24 +266,23 @@ class SinglesEnv(PokeEnv[np.int64]):
                 + dynamax_space
                 + tera_space
             )
-        assert battle.format is not None
         action_mask = [
             int(i in actions)
-            for i in range(SinglesEnv.get_action_space_size(battle.format))
+            for i in range(SinglesEnv.get_action_space_size(battle.gen))
         ]
         return action_mask
 
     @staticmethod
-    def get_action_space_size(battle_format: str) -> int:
+    def get_action_space_size(gen: int) -> int:
         num_switches = 6
         num_moves = 4
-        if battle_format.startswith("gen6"):
+        if gen == 6:
             num_gimmicks = 1
-        elif battle_format.startswith("gen7"):
+        elif gen == 7:
             num_gimmicks = 2
-        elif battle_format.startswith("gen8"):
+        elif gen == 8:
             num_gimmicks = 3
-        elif battle_format.startswith("gen9"):
+        elif gen == 9:
             num_gimmicks = 4
         else:
             num_gimmicks = 0
