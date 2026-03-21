@@ -127,8 +127,6 @@ class PolicyPlayer(Player):
 class ExampleEnv(SinglesEnv):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.metadata = {"name": "showdown_v1", "render_modes": ["human"]}
-        self.render_mode: str | None = None
         self.observation_spaces = {
             agent: Box(-1, 4, shape=(N_FEATURES,), dtype=np.float32)
             for agent in self.possible_agents
