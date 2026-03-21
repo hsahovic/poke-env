@@ -23,7 +23,6 @@ from poke_env.player import (
     RandomPlayer,
     SimpleHeuristicsPlayer,
 )
-from poke_env.ps_client import ServerConfiguration
 
 N_FEATURES = 12
 ACT_LEN = 26
@@ -178,16 +177,8 @@ class ExampleEnv(SinglesEnv[npt.NDArray[np.float32]]):
         }
 
     @classmethod
-    def create_env(cls, battle_format: str, log_level: int, port: int) -> Monitor:
-        env = cls(
-            server_configuration=ServerConfiguration(
-                f"ws://localhost:{port}/showdown/websocket",
-                "https://play.pokemonshowdown.com/action.php?",
-            ),
-            battle_format=battle_format,
-            log_level=log_level,
-            open_timeout=None,
-        )
+    def create_env(cls) -> Monitor:
+        env = cls(battle_format="gen9randombattle", log_level=40, open_timeout=None)
         opponent = SimpleHeuristicsPlayer(start_listening=False)
         return Monitor(SingleAgentWrapper(env, opponent))
 
@@ -206,14 +197,7 @@ class ExampleEnv(SinglesEnv[npt.NDArray[np.float32]]):
 
 def train():
     # setup
-    env = SubprocVecEnv(
-        [
-            lambda: ExampleEnv.create_env(
-                battle_format="gen9randombattle", log_level=40, port=8000
-            )
-            for _ in range(2)
-        ]
-    )
+    env = SubprocVecEnv([ExampleEnv.create_env for _ in range(2)])
     ppo = PPO(
         MaskedActorCriticPolicy,
         env,
