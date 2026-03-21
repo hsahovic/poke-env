@@ -1,365 +1,244 @@
-.. _rl_with_gymnasium_wrapper:
+.. _reinforcement_learning:
 
-Reinforcement learning with the Gymnasium wrapper
-==================================================
+Reinforcement learning with Stable-Baselines3
+==============================================
 
 The corresponding complete source code can be found `here <https://github.com/hsahovic/poke-env/blob/master/examples/reinforcement_learning.py>`__.
 
-The goal of this example is to demonstrate how to use the `farama gymnasium <https://gymnasium.farama.org/>`__ interface proposed by ``PokeEnv``, and to train a simple deep reinforcement learning agent.
+The goal of this example is to demonstrate how to use the ``PokeEnv`` environment with `Stable-Baselines3 <https://stable-baselines3.readthedocs.io/>`__ to train a reinforcement learning agent that plays ``gen9randombattle`` with action masking.
 
-.. note:: This example necessitates `keras-rl <https://github.com/keras-rl/keras-rl>`__ (compatible with Tensorflow 1.X) or `keras-rl2 <https://github.com/wau/keras-rl2>`__ (Tensorflow 2.X), which implement numerous reinforcement learning algorithms and offer a simple API fully compatible with the Gymnasium API. You can install them by running ``pip install keras-rl`` or ``pip install keras-rl2``. If you are unsure, ``pip install keras-rl2`` is recommended.
+.. note:: This example requires `stable-baselines3 <https://github.com/DLR-RM/stable-baselines3>`__ and `PyTorch <https://pytorch.org/>`__. You can install them by running ``pip install stable-baselines3``.
 
-Implementing rewards and observations
-*************************************
+Defining the environment
+************************
 
-The Gymnasium API provides *rewards* and *observations* for each step of each episode. In our case, each step corresponds to one decision in a battle and battles correspond to episodes.
+The environment is built by subclassing ``SinglesEnv``. We need to define three things: the observation space, the observation embedding, and the reward function.
+
+``SinglesEnv`` automatically provides action masking via ``get_action_mask``, action-to-order conversion via ``action_to_order``, and the action space. We only need to define how we observe and reward battles.
 
 Defining observations
 ^^^^^^^^^^^^^^^^^^^^^
 
-Observations are embeddings of the current state of the battle. They can be an arbitrarily precise description of battle states, or a very simple representation. In this example, we will create embedding vectors containing:
+Observations are embeddings of the current battle state. In this example, we create a 12-component vector containing:
 
-- the base power of each available move
-- the damage multiplier of each available move against the current active opponent pokemon
-- the number of non fainted pokemons in our team
-- the number of non fainted pokemons in the opponent's team
+- the base power of each available move (4 values)
+- the damage multiplier of each available move against the opponent's active pokemon (4 values)
+- the fraction of fainted pokemon in each team (2 values)
+- the current HP fraction of each active pokemon (2 values)
 
-To define our observations, we will create a custom ``embed_battle`` method. It takes one argument, a ``Battle`` object, and returns our embedding.
-
-In addition to this, we also need to describe the embedding to the gymnasium interface.
-To achieve this, we need to initialize the ``observation_spaces`` field in the ``__init__`` method where we specify the low bound and the high bound
-for each component of the embedding vector and return them as a ``gymnasium.Space`` object.
-
-Defining rewards
-^^^^^^^^^^^^^^^^
-
-Rewards are signals that the agent will use in its optimization process (a common objective is optimizing a discounted total reward). ``PokeEnv`` objects provide a helper method, ``reward_computing_helper``, that can help defining simple symmetric rewards that take into account fainted pokemons, remaining hp, status conditions and victory.
-
-We will use this method to define the following reward:
-
-- Winning corresponds to a positive reward of 30
-- Making an opponent's pokemon faint corresponds to a positive reward of 1
-- Making an opponent lose % hp corresponds to a positive reward of %
-- Other status conditions are ignored
-
-Conversely, negative actions lead to symmetrically negative rewards: losing is a reward of -30 points, etc.
-
-To define our rewards, we will create a custom ``compute_reward`` method. It takes one argument, a ``Battle`` object, and returns the reward.
-
-Defining our custom class
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Our player will play the ``gen8randombattle`` format. We can therefore inherit from ``Gen8EnvSinglePlayer``.
+We define a static ``embed_battle`` method on a ``PolicyPlayer`` class so it can be shared between the environment and the evaluation player.
 
 .. code-block:: python
 
-        import numpy as np
-    from gymnasium.spaces import Space, Box
-    from poke_env.player import Gen8EnvSinglePlayer
+    N_FEATURES = 12
 
-    class SimpleRLPlayer(Gen8EnvSinglePlayer):
-        def __init__(self, **kwargs):
-            super().__init__(**kwargs)
-            low = [-1, -1, -1, -1, 0, 0, 0, 0, 0, 0]
-            high = [3, 3, 3, 3, 4, 4, 4, 4, 1, 1]
-            self.observation_spaces = {
-                agent: Box(
-                    np.array(low, dtype=np.float32),
-                    np.array(high, dtype=np.float32),
-                    dtype=np.float32,
-                )
-                for agent in self.possible_agents
-            }
-
-        def calc_reward(self, battle) -> float:
-            return self.reward_computing_helper(
-                battle, fainted_value=2.0, hp_value=1.0, victory_value=30.0
-            )
-
-        def embed_battle(self, battle: AbstractBattle) -> ObservationType:
-            # -1 indicates that the move does not have a base power
-            # or is not available
+    class PolicyPlayer(Player):
+        @staticmethod
+        def embed_battle(battle: AbstractBattle):
             moves_base_power = -np.ones(4)
             moves_dmg_multiplier = np.ones(4)
             for i, move in enumerate(battle.available_moves):
-                moves_base_power[i] = (
-                    move.base_power / 100
-                )  # Simple rescaling to facilitate learning
-                if move.type:
+                moves_base_power[i] = move.base_power / 100
+                if battle.opponent_active_pokemon is not None:
                     moves_dmg_multiplier[i] = move.type.damage_multiplier(
                         battle.opponent_active_pokemon.type_1,
                         battle.opponent_active_pokemon.type_2,
+                        type_chart=GenData.from_gen(battle.gen).type_chart,
                     )
-
-            # We count how many pokemons have fainted in each team
             fainted_mon_team = len([mon for mon in battle.team.values() if mon.fainted]) / 6
             fainted_mon_opponent = (
                 len([mon for mon in battle.opponent_team.values() if mon.fainted]) / 6
             )
-
-            # Final vector with 10 components
-            final_vector = np.concatenate(
+            our_hp = (
+                battle.active_pokemon.current_hp_fraction if battle.active_pokemon else 0.0
+            )
+            opp_hp = (
+                battle.opponent_active_pokemon.current_hp_fraction
+                if battle.opponent_active_pokemon
+                else 0.0
+            )
+            return np.concatenate(
                 [
                     moves_base_power,
                     moves_dmg_multiplier,
                     [fainted_mon_team, fainted_mon_opponent],
-                ]
+                    [our_hp, opp_hp],
+                ],
+                dtype=np.float32,
             )
-            return np.float32(final_vector)
 
-    ...
-
-Instantiating and testing a player
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Now that our custom class is defined, we can instantiate our RL player and test if it's compliant with the Gymnasium API.
-
-.. code-block:: python
-
-    ...
-    from gymnasium.utils.env_checker import check_env
-    from poke_env.player import RandomPlayer
-
-    opponent = RandomPlayer(battle_format="gen8randombattle")
-    test_env = SimpleRLPlayer(
-        battle_format="gen8randombattle", opponent=opponent
-    )
-    check_env(test_env)
-    test_env.close()
-    ...
-
-The ``close`` method of ``test_env`` closes all underlying processes and clears from memory all objects related to the environment.
-After an environment is closed, no further actions should be taken on that environment.
-
-Instantiating train environment and evaluation environment
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Normally, to ensure isolation between training and testing, two different environments are created.
-
-.. code-block:: python
-
-    ...
-    from poke_env.player import RandomPlayer
-
-    opponent = RandomPlayer(battle_format="gen8randombattle")
-    train_env = SimpleRLPlayer(
-        battle_format="gen8randombattle", opponent=opponent
-    )
-    opponent = RandomPlayer(battle_format="gen8randombattle")
-    eval_env = SimpleRLPlayer(
-        battle_format="gen8randombattle", opponent=opponent
-    )
-    ...
-
-Creating a DQN with keras-rl
-****************************
-
-We have defined observations and rewards. We can now build a model that will control our player. In this section, we will implement the `DQN algorithm <https://web.stanford.edu/class/psych209/Readings/MnihEtAlHassibis15NatureControlDeepRL.pdf>`__ using `keras-rl <https://github.com/keras-rl/keras-rl>`__.
-
-Defining a base model
-^^^^^^^^^^^^^^^^^^^^^
-
-We build a simple keras sequential model. Our observation vectors have 10 components; our model will therefore accept inputs of dimension 10.
-
-The output of the model must map to the environment's action space. The action space can be accessed through the ``action_space`` property. Each action correspond to one order: a switch or an attack, with additional options for dynamaxing, mega-evolving and using z-moves.
-
-.. code-block:: python
-
-    ...
-    from tensorflow.keras.layers import Dense, Flatten
-    from tensorflow.keras.models import Sequential
-
-    # Compute dimensions
-    n_action = train_env.action_space.n
-    input_shape = (1,) + train_env.observation_space.shape # (1,) is the batch size that the model expects in input.
-
-    # Create model
-    model = Sequential()
-    model.add(Dense(128, activation="elu", input_shape=input_shape))
-    model.add(Flatten())
-    model.add(Dense(64, activation="elu"))
-    model.add(Dense(n_action, activation="linear"))
-    ...
-
-Defining the DQN
+Defining rewards
 ^^^^^^^^^^^^^^^^
 
-Now that we have a model, we can build the DQN agent. This agent combines our model with a *policy* and a *memory*. The *memory* is an object that will store past actions and define samples used during learning. The *policy* describes how actions are chosen during learning.
+Rewards are signals that the agent uses during optimization. ``PokeEnv`` provides a ``reward_computing_helper`` method that computes symmetric rewards based on fainted pokemon, remaining HP, status conditions, and victory.
 
-We will use a simple memory containing 10000 steps, and an epsilon greedy policy.
+We define the following reward scheme:
 
-For more information regarding keras-rl, please refer to their `documentation <https://keras-rl.readthedocs.io/en/latest/>`__.
+- Winning: +30
+- Opponent pokemon fainting: +2
+- Opponent losing HP: proportional positive reward
+- Status conditions on opponents: +0.5
 
-.. code-block:: python
+Negative actions lead to symmetrically negative rewards.
 
-    ...
-    from rl.agents.dqn import DQNAgent
-    from rl.memory import SequentialMemory
-    from rl.policy import LinearAnnealedPolicy, EpsGreedyQPolicy
-    from tensorflow.keras.optimizers import Adam
+Defining the environment class
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    # Defining the DQN
-    memory = SequentialMemory(limit=10000, window_length=1)
-
-    policy = LinearAnnealedPolicy(
-        EpsGreedyQPolicy(),
-        attr="eps",
-        value_max=1.0,
-        value_min=0.05,
-        value_test=0.0,
-        nb_steps=10000,
-    )
-
-    dqn = DQNAgent(
-        model=model,
-        nb_actions=n_action,
-        policy=policy,
-        memory=memory,
-        nb_steps_warmup=1000,
-        gamma=0.5,
-        target_model_update=1,
-        delta_clip=0.01,
-        enable_double_dqn=True,
-    )
-    dqn.compile(Adam(learning_rate=0.00025), metrics=["mae"])
-    ...
-
-
-Training the model
-******************
-
-Training the model is as simple as
+Our environment subclasses ``SinglesEnv`` and defines the observation space, reward, and embedding:
 
 .. code-block:: python
 
-    ...
-    dqn.fit(train_env, nb_steps=10000)
-    train_env.close()
-    ...
+    BATTLE_FORMAT = "gen9randombattle"
 
+    class ExampleEnv(SinglesEnv):
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+            self.observation_spaces = {
+                agent: Box(-1, 4, shape=(N_FEATURES,), dtype=np.float32)
+                for agent in self.possible_agents
+            }
 
-Evaluating the model
-********************
+        @classmethod
+        def create_env(cls) -> Monitor:
+            env = cls(battle_format=BATTLE_FORMAT, log_level=40, open_timeout=None)
+            opponent = SimpleHeuristicsPlayer(start_listening=False)
+            return Monitor(SingleAgentWrapper(env, opponent))
 
-We have trained our agent. Now we can use different strategies to evaluate the result.
+        def calc_reward(self, battle) -> float:
+            return self.reward_computing_helper(
+                battle,
+                fainted_value=2.0,
+                hp_value=1.0,
+                status_value=0.5,
+                victory_value=30.0,
+            )
 
-Simple win rate evaluation
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+        def embed_battle(self, battle: AbstractBattle):
+            return PolicyPlayer.embed_battle(battle)
 
-A first way to evaluate the result is having it play against different agents and printing the won battles.
-This can be done with the following code:
+The ``create_env`` classmethod wraps the environment with ``SingleAgentWrapper`` (which converts the two-agent ``PokeEnv`` into a single-agent Gymnasium environment) and ``Monitor`` (for SB3 logging). The opponent is a ``SimpleHeuristicsPlayer`` that doesn't need its own server connection.
 
-.. code-block:: python
+Action masking with Stable-Baselines3
+*************************************
 
-    ...
-    print("Results against random player:")
-    dqn.test(eval_env, nb_episodes=100, verbose=False, visualize=False)
-    print(
-        f"DQN Evaluation: {eval_env.n_won_battles} victories out of {eval_env.n_finished_battles} episodes"
-    )
-    second_opponent = MaxBasePowerPlayer(battle_format="gen8randombattle")
-    eval_env.reset_env(restart=True, opponent=second_opponent)
-    print("Results against max base power player:")
-    dqn.test(eval_env, nb_episodes=100, verbose=False, visualize=False)
-    print(
-        f"DQN Evaluation: {eval_env.n_won_battles} victories out of {eval_env.n_finished_battles} episodes"
-    )
-    ...
+``PokeEnv`` environments automatically provide observations as dicts with ``"observation"`` and ``"action_mask"`` keys. To use the action mask during training, we need a custom policy that applies the mask to the action distribution.
 
-The ``reset_env`` method of the ``PokeEnv`` class allows you to reset the environment
-to a clean state, including internal counters for victories, battles, etc.
+Features extractor
+^^^^^^^^^^^^^^^^^^
 
-It takes two optional parameters:
-
-- ``restart``: a boolean that will tell the environment if the challenge loop is to be restarted after the reset;
-- ``opponent``: the new opponent to use after the reset in the challenge loop. If empty it will keep old opponent.
-
-Use provided ``evaluate_player`` method
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-In order to evaluate the player with the provided method, we need to use a background version.
-``background_evaluate_player`` has the same interface as the foreground counterpart, but it will return a
-``Future`` object.
+SB3 uses a features extractor to preprocess observations before passing them to the policy network. Since the observation space is a dict, we need a custom extractor that pulls out the ``"observation"`` tensor and declares the correct ``features_dim``:
 
 .. code-block:: python
 
-    ...
-    from poke_env.player import background_evaluate_player
+    class FeaturesExtractor(BaseFeaturesExtractor):
+        """Extracts the observation tensor from the dict obs and declares
+        features_dim so SB3 builds the MLP with the right input size.
+        """
 
-    n_challenges = 250
-    placement_battles = 40
-    eval_task = background_evaluate_player(
-        eval_env.agent, n_challenges, placement_battles
-    )
-    dqn.test(eval_env, nb_episodes=n_challenges, verbose=False, visualize=False)
-    print("Evaluation with included method:", eval_task.result())
-    ...
+        def __init__(self, observation_space):
+            super().__init__(observation_space, features_dim=N_FEATURES)
 
-The ``result`` method of the ``Future`` object will block until the task is done and will return the result.
+        def forward(self, obs):
+            return obs["observation"]
 
-.. warning:: ``background_evaluate_player`` requires the challenge loop to be stopped. To ensure this use method ``reset_env(restart=False)`` of ``PokeEnv``.
+Masked policy
+^^^^^^^^^^^^^
 
-.. warning:: If you call ``result`` before the task is finished, the main thread will be blocked. Only do that if the agent is operating on a different thread than the one asking for the result.
-
-Use provided ``cross_evaluate`` method
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-To use the ``cross_evaluate`` method, the strategy is the same to the one used for the ``evaluate_player`` method:
+We subclass ``ActorCriticPolicy`` to intercept the action mask from the observation dict and apply it as ``-inf`` masking on the action logits, ensuring the agent never selects illegal actions:
 
 .. code-block:: python
 
-    ...
-    from poke_env.player import background_cross_evaluate
+    class MaskedActorCriticPolicy(ActorCriticPolicy):
+        def __init__(self, *args, **kwargs):
+            super().__init__(
+                *args,
+                **kwargs,
+                net_arch=[64, 64],
+                features_extractor_class=FeaturesExtractor,
+            )
 
-    n_challenges = 50
-    players = [
-        eval_env.agent,
-        RandomPlayer(battle_format="gen8randombattle"),
-        MaxBasePowerPlayer(battle_format="gen8randombattle"),
-        SimpleHeuristicsPlayer(battle_format="gen8randombattle"),
+        def forward(self, obs, deterministic=False):
+            self._mask = obs["action_mask"]
+            return super().forward(obs, deterministic)
+
+        def evaluate_actions(self, obs, actions):
+            self._mask = obs["action_mask"]
+            return super().evaluate_actions(obs, actions)
+
+        def _get_action_dist_from_latent(self, latent_pi):
+            action_logits = self.action_net(latent_pi)
+            mask = torch.where(self._mask == 1, 0, float("-inf"))
+            return self.action_dist.proba_distribution(action_logits + mask)
+
+The ``forward`` and ``evaluate_actions`` overrides stash the mask before delegating to the parent. Then ``_get_action_dist_from_latent`` applies it: legal actions (mask == 1) keep their logits, illegal actions get ``-inf``, making their probability zero.
+
+Training
+********
+
+We use ``SubprocVecEnv`` to run multiple environments in parallel for faster data collection, and train with PPO:
+
+.. code-block:: python
+
+    def train():
+        num_envs = 2
+        env = SubprocVecEnv([ExampleEnv.create_env for _ in range(num_envs)])
+        ppo = PPO(
+            MaskedActorCriticPolicy,
+            env,
+            learning_rate=3e-4,
+            n_steps=3072 // 2,
+            batch_size=128,
+            gamma=0.99,
+            ent_coef=0.01,
+            device="cpu",
+        )
+
+        ppo.learn(98_304)
+        env.close()
+
+Evaluation
+**********
+
+After training, we wrap the learned policy in a ``PolicyPlayer`` — a standard ``Player`` subclass that uses the trained policy to select actions. It constructs the same observation dict the policy expects and calls ``SinglesEnv.action_to_order`` to convert the chosen action index back into a battle order:
+
+.. code-block:: python
+
+    class PolicyPlayer(Player):
+        def choose_move(self, battle):
+            if battle.wait:
+                return DefaultBattleOrder()
+            obs = self.embed_battle(battle)
+            mask = np.array(SinglesEnv.get_action_mask(battle))
+            with torch.no_grad():
+                obs_dict = {
+                    "observation": torch.as_tensor(
+                        obs, device=self.policy.device
+                    ).unsqueeze(0),
+                    "action_mask": torch.as_tensor(
+                        mask, device=self.policy.device
+                    ).unsqueeze(0),
+                }
+                action, _, _ = self.policy.forward(obs_dict)
+            action = action.cpu().numpy()[0]
+            return SinglesEnv.action_to_order(action, battle)
+
+Note that ``SinglesEnv.get_action_mask`` and ``SinglesEnv.action_to_order`` are static methods — they can be called without an environment instance, using only the battle state.
+
+We then evaluate against three baseline opponents:
+
+.. code-block:: python
+
+    agent = PolicyPlayer(
+        policy=ppo.policy, battle_format=BATTLE_FORMAT, max_concurrent_battles=10
+    )
+    opponents = [
+        c(battle_format=BATTLE_FORMAT, max_concurrent_battles=10)
+        for c in [RandomPlayer, MaxBasePowerPlayer, SimpleHeuristicsPlayer]
     ]
-    cross_eval_task = background_cross_evaluate(players, n_challenges)
-    dqn.test(
-        eval_env,
-        nb_episodes=n_challenges * (len(players) - 1),
-        verbose=False,
-        visualize=False,
-    )
-    cross_evaluation = cross_eval_task.result()
-    table = [["-"] + [p.username for p in players]]
-    for p_1, results in cross_evaluation.items():
-        table.append([p_1] + [cross_evaluation[p_1][p_2] for p_2 in results])
-    print("Cross evaluation of DQN with baselines:")
-    print(tabulate(table))
-    ...
+    asyncio.run(agent.battle_against(*opponents, n_battles=100))
+    print("--- Win rates vs bots ---")
+    for opp in opponents:
+        win_rate = round(100 * opp.n_lost_battles / opp.n_finished_battles)
+        print(f"{opp.username}: {win_rate}%")
 
-.. warning:: ``background_cross_evaluate`` requires the challenge loop to be stopped. To ensure this use method ``reset_env(restart=False)`` of ``PokeEnv``.
-
-.. warning:: If you call ``result`` before the task is finished, the main thread will be blocked. Only do that if the agent is operating on a different thread than the one asking for the result.
-
-Final result
-************
-
-Running the `whole file <https://github.com/hsahovic/poke-env/blob/master/examples/reinforcement_learning.py>`__ should take a couple of minutes and print something similar to this:
-
-.. code-block:: console
-
-    Training for 10000 steps ...
-    Interval 1 (0 steps performed)
-    10000/10000 [==============================] - 194s 19ms/step - reward: 0.6015
-    done, took 195.208 seconds
-    Results against random player:
-    DQN Evaluation: 94 victories out of 100 episodes
-    Results against max base power player:
-    DQN Evaluation: 65 victories out of 100 episodes
-    Evaluation with included method: (16.028896545454547, (11.79801006617441, 22.609978288238203))
-    Cross evaluation of DQN with baselines:
-    ------------------  ----------------  --------------  ------------------  ------------------
-    -                   SimpleRLPlayer 3  RandomPlayer 5  MaxBasePowerPlay 3  SimpleHeuristics 2
-    SimpleRLPlayer 3                      0.96            0.76                0.16
-    RandomPlayer 5      0.04                              0.12                0.0
-    MaxBasePowerPlay 3  0.24              0.88                                0.1
-    SimpleHeuristics 2  0.84              1.0             0.9
-    ------------------  ----------------  --------------  ------------------  ------------------
-
-.. warning:: Remember to use ``reset_env`` between different evaluations on the same environment or use different environments to avoid interferences between evaluations.
+Running the `complete example <https://github.com/hsahovic/poke-env/blob/master/examples/reinforcement_learning.py>`__ should take a few minutes and print win rates against each opponent.
