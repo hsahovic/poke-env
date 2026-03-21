@@ -41,7 +41,7 @@ Agents in ``poke-env`` are instances of the ``Player`` class. Explore the follow
 
 - Quickstart: :doc:`examples/quickstart`
 - Custom team builder: :doc:`examples/using_a_custom_teambuilder`
-- RL agent: :ref:`rl_with_gymnasium_wrapper`
+- RL agent: :ref:`reinforcement_learning`
 
 Configuring Showdown Players
 ============================
