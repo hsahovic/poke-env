@@ -269,7 +269,7 @@ class Battle(AbstractBattle):
     @property
     def valid_orders(self) -> List[SingleBattleOrder]:
         orders: List[SingleBattleOrder] = []
-        if self._wait:
+        if self.wait:
             return [DefaultBattleOrder()]
         if not self.trapped:
             orders += [SingleBattleOrder(mon) for mon in self.available_switches]

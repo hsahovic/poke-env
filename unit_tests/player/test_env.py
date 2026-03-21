@@ -1,4 +1,5 @@
 import asyncio
+import pickle
 import sys
 from io import StringIO
 from unittest.mock import AsyncMock
@@ -6,7 +7,7 @@ from unittest.mock import AsyncMock
 import numpy as np
 import numpy.typing as npt
 import pytest
-from gymnasium.spaces import Discrete
+from gymnasium.spaces import Box, Discrete
 
 from poke_env.battle import (
     AbstractBattle,
@@ -37,6 +38,16 @@ server_configuration = ServerConfiguration("server.url", "auth.url")
 
 
 class CustomEnv(SinglesEnv[npt.NDArray[np.float32]]):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.observation_spaces = {
+            agent: Box(
+                np.array([0, 0, 0], dtype=np.float32),
+                np.array([2, 2, 2], dtype=np.float32),
+            )
+            for agent in self.possible_agents
+        }
+
     def calc_reward(self, battle: AbstractBattle) -> float:
         return 69.42
 
@@ -44,13 +55,31 @@ class CustomEnv(SinglesEnv[npt.NDArray[np.float32]]):
         return np.array([0, 1, 2])
 
 
+def test_pickle_unpickle():
+    env = CustomEnv()
+    pickled = pickle.dumps(env)
+    restored = pickle.loads(pickled)
+
+    assert isinstance(restored, CustomEnv)
+    assert restored._battle_format == env._battle_format
+    assert restored._strict == env._strict
+    assert restored._fake == env._fake
+    assert restored.agent1 is not None
+    assert restored.agent2 is not None
+    assert restored._loop is not None
+    assert restored._reward_buffer is not None
+    assert len(restored.possible_agents) == 2
+    assert len(restored.observation_spaces) == 2
+    assert len(restored.action_spaces) == 2
+
+
 def test_init_queue():
-    q = _AsyncQueue(asyncio.Queue())
+    q = _AsyncQueue(asyncio.Queue(), POKE_LOOP)
     assert isinstance(q, _AsyncQueue)
 
 
 def test_queue():
-    q = _AsyncQueue(asyncio.Queue())
+    q = _AsyncQueue(asyncio.Queue(), POKE_LOOP)
     assert q.empty()
     q.put(1)
     assert q.queue.qsize() == 1

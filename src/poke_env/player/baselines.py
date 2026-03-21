@@ -113,7 +113,7 @@ class PseudoBattle(Battle):
         self._available_switches = battle.available_switches[active_id]
         self._force_switch = battle.force_switch[active_id]
         self._trapped = battle.trapped[active_id]
-        self._wait = battle._wait
+        self._wait = battle.wait
         self._side_conditions = battle.side_conditions
         self._opponent_side_conditions = battle.opponent_side_conditions
         self._can_mega_evolve = battle.can_mega_evolve[active_id]
@@ -261,7 +261,7 @@ class SimpleHeuristicsPlayer(Player):
         active = battle.active_pokemon
         opponent = battle.opponent_active_pokemon
 
-        if active is None or opponent is None:
+        if active is None or opponent is None or battle.wait:
             return Player.choose_random_singles_move(battle), 0
 
         # Rough estimation of damage ratio
