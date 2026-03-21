@@ -614,10 +614,6 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
         """
         pass
 
-    @abstractmethod
-    def get_action_mask(self, battle: Any) -> List[int]:
-        pass
-
     @staticmethod
     @abstractmethod
     def action_to_order(
@@ -666,6 +662,16 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
         :return: The action for the given battle order in context of the current battle.
         :rtype: ActionType
         """
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def get_action_mask(battle: Any) -> List[int]:
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def get_action_space_size(battle_format: str) -> int:
         pass
 
     ###################################################################################
@@ -809,11 +815,3 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
             return True
         time.sleep(timeout)
         return self._challenge_task.done()
-
-    ###################################################################################
-    # Properties
-
-    @property
-    @abstractmethod
-    def action_space_size(self) -> int:
-        pass
