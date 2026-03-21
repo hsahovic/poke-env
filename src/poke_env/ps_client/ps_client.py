@@ -3,10 +3,9 @@
 import asyncio
 import json
 import logging
-from asyncio import CancelledError, Event, Lock, create_task, sleep
 from logging import Logger
 from time import perf_counter
-from typing import Any, List, Optional, Set
+from typing import List, Optional, Set
 
 import requests
 import websockets as ws
@@ -43,6 +42,7 @@ class PSClient:
         open_timeout: Optional[float] = 10.0,
         ping_interval: Optional[float] = 20.0,
         ping_timeout: Optional[float] = 20.0,
+        loop: asyncio.AbstractEventLoop = POKE_LOOP,
     ):
         """
         :param account_configuration: Account configuration.
@@ -70,7 +70,8 @@ class PSClient:
             If None pings will never time out.
         :type ping_timeout: float, optional
         """
-        self._active_tasks: Set[Any] = set()
+        self._active_tasks: Set[asyncio.Task] = set()
+        self._battle_locks: dict[str, asyncio.Lock] = {}
         self._open_timeout = open_timeout
         self._ping_interval = ping_interval
         self._ping_timeout = ping_timeout
@@ -80,15 +81,16 @@ class PSClient:
 
         self._avatar = avatar
 
-        self._logged_in: Event = create_in_poke_loop(Event)
-        self._sending_lock = create_in_poke_loop(Lock)
+        self.loop = loop
+        self._logged_in: asyncio.Event = create_in_poke_loop(asyncio.Event, loop)
+        self._sending_lock: asyncio.Lock = create_in_poke_loop(asyncio.Lock, loop)
 
         self.websocket: ClientConnection
         self._logger: Logger = self._create_logger(log_level)
 
         if start_listening:
             self._listening_coroutine = asyncio.run_coroutine_threadsafe(
-                self.listen(), POKE_LOOP
+                self.listen(), self.loop
             )
 
     async def accept_challenge(self, username: str, packed_team: Optional[str]):
@@ -139,7 +141,11 @@ class PSClient:
             # Otherwise it is the one-th entry
             if split_messages[0][0].startswith(">battle"):
                 # Battle update
-                await self._handle_battle_message(split_messages)  # type: ignore
+                battle_tag = split_messages[0][0][1:]
+                if battle_tag not in self._battle_locks:
+                    self._battle_locks[battle_tag] = asyncio.Lock()
+                async with self._battle_locks[battle_tag]:
+                    await self._handle_battle_message(split_messages)  # type: ignore
             elif split_messages[0][1] == "challstr":
                 # Confirms connection to the server: we can login
                 await self.log_in(split_messages[0])
@@ -188,7 +194,7 @@ class PSClient:
                     )
             else:
                 self.logger.warning("Unhandled message: %s", message)
-        except CancelledError as e:
+        except asyncio.CancelledError as e:
             self.logger.critical("CancelledError intercepted: %s", e)
         except Exception as exception:
             self.logger.exception(
@@ -223,7 +229,7 @@ class PSClient:
                 self.websocket = websocket
                 async for message in websocket:
                     self.logger.info("\033[92m\033[1m<<<\033[0m %s", message)
-                    task = create_task(self._handle_message(str(message)))
+                    task = asyncio.create_task(self._handle_message(str(message)))
                     self._active_tasks.add(task)
                     task.add_done_callback(self._active_tasks.discard)
 
@@ -231,7 +237,7 @@ class PSClient:
             self.logger.warning(
                 "Websocket connection with %s closed", self.websocket_url
             )
-        except (CancelledError, RuntimeError) as e:
+        except (asyncio.CancelledError, RuntimeError) as e:
             self.logger.critical("Listen interrupted by %s", e)
         except Exception as e:
             self.logger.exception(e)
@@ -297,12 +303,12 @@ class PSClient:
             await self.send_message("/utm null")
 
     async def stop_listening(self):
-        await handle_threaded_coroutines(self._stop_listening())
+        await handle_threaded_coroutines(self._stop_listening(), self.loop)
 
     async def wait_for_login(self, checking_interval: float = 0.001, wait_for: int = 5):
         start = perf_counter()
         while perf_counter() - start < wait_for:
-            await sleep(checking_interval)
+            await asyncio.sleep(checking_interval)
             if self.logged_in.is_set():
                 return
         assert self.logged_in, f"Expected {self.username} to be logged in."
@@ -317,7 +323,7 @@ class PSClient:
         return self._account_configuration
 
     @property
-    def logged_in(self) -> Event:
+    def logged_in(self) -> asyncio.Event:
         """Event object associated with user login.
 
         :return: The logged-in event

@@ -3,7 +3,7 @@
 Reinforcement learning with the Gymnasium wrapper
 ==================================================
 
-The corresponding complete source code can be found `here <https://github.com/hsahovic/poke-env/blob/master/examples/rl_with_new_gymnasium_wrapper.py>`__.
+The corresponding complete source code can be found `here <https://github.com/hsahovic/poke-env/blob/master/examples/reinforcement_learning.py>`__.
 
 The goal of this example is to demonstrate how to use the `farama gymnasium <https://gymnasium.farama.org/>`__ interface proposed by ``PokeEnv``, and to train a simple deep reinforcement learning agent.
 
@@ -340,7 +340,7 @@ To use the ``cross_evaluate`` method, the strategy is the same to the one used f
 Final result
 ************
 
-Running the `whole file <https://github.com/hsahovic/poke-env/blob/master/examples/rl_with_gymnasium_wrapper.py>`__ should take a couple of minutes and print something similar to this:
+Running the `whole file <https://github.com/hsahovic/poke-env/blob/master/examples/reinforcement_learning.py>`__ should take a couple of minutes and print something similar to this:
 
 .. code-block:: console
 

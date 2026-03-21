@@ -547,7 +547,7 @@ class DoubleBattle(AbstractBattle):
     @property
     def valid_orders(self) -> List[List[SingleBattleOrder]]:
         orders: List[List[SingleBattleOrder]] = [[], []]
-        if self._wait:
+        if self.wait:
             return [[DefaultBattleOrder()], [DefaultBattleOrder()]]
         for i in range(2):
             if any(self.force_switch) and not self.force_switch[i]:

@@ -23,7 +23,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
-          python-version: "3.13"
+          python-version: "3.14"
 
       - name: Install dependencies
         run: pip install .[dev]
@@ -45,7 +45,9 @@ jobs:
       - name: Run mypy
         run: mypy src
 
-      - name: Build docs
+      - name: Validate docs links
+        run: python scripts/check_docs_links.py
+
+      - name: Build docs (strict)
         run: |
-            cd docs
-            make html
+            LC_ALL=C LANG=C python -m sphinx -b html -W docs/source docs/_build/html

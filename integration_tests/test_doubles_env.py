@@ -32,7 +32,7 @@ def play_function(env, n_battles):
             actions = {
                 name: (
                     sample_action(obs_dict[name]["action_mask"])
-                    if env.strict
+                    if env._strict
                     else env.action_space(name).sample()
                 )
                 for name in env.agents
@@ -46,7 +46,7 @@ def test_env_run():
     for gen in range(8, 10):
         env = DoublesTestEnv(battle_format=f"gen{gen}randomdoublesbattle", log_level=25)
         play_function(env, 10)
-        env.strict = False
+        env._strict = False
         play_function(env, 10)
         env.close()
 
@@ -58,7 +58,7 @@ def single_agent_play_function(env: SingleAgentWrapper, n_battles: int):
         while not done:
             action = (
                 sample_action(obs_dict["action_mask"])
-                if env.env.strict
+                if env.env._strict
                 else env.action_space.sample()
             )
             obs_dict, _, terminated, truncated, _ = env.step(action)
@@ -71,7 +71,7 @@ def test_single_agent_env_run():
         env = DoublesTestEnv(battle_format=f"gen{gen}randomdoublesbattle", log_level=25)
         env = SingleAgentWrapper(env, RandomPlayer())
         single_agent_play_function(env, 10)
-        env.env.strict = False
+        env.env._strict = False
         single_agent_play_function(env, 10)
         env.close()
 

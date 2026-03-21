@@ -6,6 +6,7 @@ import asyncio
 import time
 from abc import abstractmethod
 from concurrent.futures import Future
+from threading import Thread
 from typing import Any, Awaitable, Dict, Generic, List, Optional, Tuple, TypeVar, Union
 from weakref import WeakKeyDictionary
 
@@ -21,7 +22,7 @@ from poke_env.battle.abstract_battle import AbstractBattle
 from poke_env.battle.battle import Battle
 from poke_env.battle.double_battle import DoubleBattle
 from poke_env.battle.pokemon import Pokemon
-from poke_env.concurrency import POKE_LOOP, create_in_poke_loop
+from poke_env.concurrency import create_in_poke_loop
 from poke_env.player.battle_order import (
     BattleOrder,
     DoubleBattleOrder,
@@ -41,15 +42,16 @@ ActionType = TypeVar("ActionType")
 
 
 class _AsyncQueue(Generic[ItemType]):
-    def __init__(self, queue: asyncio.Queue[ItemType]):
+    def __init__(self, queue: asyncio.Queue[ItemType], loop: asyncio.AbstractEventLoop):
         self.queue = queue
+        self._loop = loop
 
     async def async_get(self) -> ItemType:
         return await self.queue.get()
 
     def get(self, timeout: Optional[float] = None) -> ItemType:
         res = asyncio.run_coroutine_threadsafe(
-            asyncio.wait_for(self.async_get(), timeout), POKE_LOOP
+            asyncio.wait_for(self.async_get(), timeout), self._loop
         )
         return res.result()
 
@@ -67,14 +69,14 @@ class _AsyncQueue(Generic[ItemType]):
             else:
                 return None
 
-        res = asyncio.run_coroutine_threadsafe(_race_get(), POKE_LOOP)
+        res = asyncio.run_coroutine_threadsafe(_race_get(), self._loop)
         return res.result()
 
     async def async_put(self, item: ItemType):
         await self.queue.put(item)
 
     def put(self, item: ItemType):
-        task = asyncio.run_coroutine_threadsafe(self.queue.put(item), POKE_LOOP)
+        task = asyncio.run_coroutine_threadsafe(self.queue.put(item), self._loop)
         task.result()
 
     def empty(self):
@@ -94,8 +96,9 @@ class _EnvPlayer(Player):
                 "choose_on_teampreview arg was not set in environment - by default, teampreview decisions will be made randomly."
             )
         self._choose_on_teampreview = choose_on_teampreview or False
-        self.battle_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
-        self.order_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, 1))
+        lp = self.ps_client.loop
+        self.battle_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, lp, 1), lp)
+        self.order_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, lp, 1), lp)
         self.battle: Optional[AbstractBattle] = None
 
     def choose_move(self, battle: AbstractBattle) -> Awaitable[BattleOrder]:
@@ -148,7 +151,9 @@ class _EnvPlayer(Player):
             raise TypeError()
 
     def _battle_finished_callback(self, battle: AbstractBattle):
-        asyncio.run_coroutine_threadsafe(self.battle_queue.async_put(battle), POKE_LOOP)
+        asyncio.run_coroutine_threadsafe(
+            self.battle_queue.async_put(battle), self.ps_client.loop
+        )
 
 
 class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
@@ -243,7 +248,24 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
         """
         self.metadata = {"name": "poke-env-v0", "render_modes": ["human"]}
         self.render_mode: str | None = None
+        self._avatar = avatar
+        self._battle_format = battle_format
+        self._log_level = log_level
+        self._save_replays = save_replays
+        self._server_configuration = server_configuration
+        self._accept_open_team_sheet = accept_open_team_sheet
+        self._start_timer_on_battle_start = start_timer_on_battle_start
+        self._start_listening = start_listening
+        self._open_timeout = open_timeout
+        self._ping_interval = ping_interval
+        self._ping_timeout = ping_timeout
         self._challenge_timeout = challenge_timeout
+        self._team = team
+        self._choose_on_teampreview = choose_on_teampreview
+        self._fake = fake
+        self._strict = strict
+        self._loop = asyncio.new_event_loop()
+        Thread(target=self._loop.run_forever, daemon=True).start()
         self.agent1 = _EnvPlayer(
             account_configuration=account_configuration1
             or AccountConfiguration.generate(self.__class__.__name__, rand=True),
@@ -259,6 +281,7 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
             open_timeout=open_timeout,
             ping_interval=ping_interval,
             ping_timeout=ping_timeout,
+            loop=self._loop,
             team=team,
             choose_on_teampreview=choose_on_teampreview,
         )
@@ -277,6 +300,7 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
             open_timeout=open_timeout,
             ping_interval=ping_interval,
             ping_timeout=ping_timeout,
+            loop=self._loop,
             team=team,
             choose_on_teampreview=choose_on_teampreview,
         )
@@ -286,8 +310,6 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
         self.battle2: Optional[AbstractBattle] = None
         self.agent1_to_move = False
         self.agent2_to_move = False
-        self.fake = fake
-        self.strict = strict
         self._np_random: Optional[Generator] = None
         self._reward_buffer: WeakKeyDictionary[AbstractBattle, float] = (
             WeakKeyDictionary()
@@ -312,6 +334,67 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
             }
         super().__setattr__(name, value)
 
+    def __getstate__(self) -> Dict[str, Any]:
+        state = self.__dict__.copy()
+        state["_loop"] = None
+        state["agent1"] = None
+        state["agent2"] = None
+        state["_reward_buffer"] = None
+        state["_challenge_task"] = None
+        return state
+
+    def __setstate__(self, state: Dict[str, Any]):
+        self.__dict__.update(state)
+        self._loop = asyncio.new_event_loop()
+        Thread(target=self._loop.run_forever, daemon=True).start()
+        self.agent1 = _EnvPlayer(
+            account_configuration=AccountConfiguration.generate(
+                self.__class__.__name__, rand=True
+            ),
+            avatar=self._avatar,
+            battle_format=self._battle_format,
+            log_level=self._log_level,
+            max_concurrent_battles=1,
+            save_replays=self._save_replays,
+            server_configuration=self._server_configuration,
+            accept_open_team_sheet=self._accept_open_team_sheet,
+            start_timer_on_battle_start=self._start_timer_on_battle_start,
+            start_listening=self._start_listening,
+            open_timeout=self._open_timeout,
+            ping_interval=self._ping_interval,
+            ping_timeout=self._ping_timeout,
+            loop=self._loop,
+            team=self._team,
+            choose_on_teampreview=self._choose_on_teampreview,
+        )
+        self.agent2 = _EnvPlayer(
+            account_configuration=AccountConfiguration.generate(
+                self.__class__.__name__, rand=True
+            ),
+            avatar=self._avatar,
+            battle_format=self._battle_format,
+            log_level=self._log_level,
+            max_concurrent_battles=1,
+            save_replays=self._save_replays,
+            server_configuration=self._server_configuration,
+            accept_open_team_sheet=self._accept_open_team_sheet,
+            start_timer_on_battle_start=self._start_timer_on_battle_start,
+            start_listening=self._start_listening,
+            open_timeout=self._open_timeout,
+            ping_interval=self._ping_interval,
+            ping_timeout=self._ping_timeout,
+            loop=self._loop,
+            team=self._team,
+            choose_on_teampreview=self._choose_on_teampreview,
+        )
+        self.agents = []
+        old_names = self.possible_agents
+        self.possible_agents = [self.agent1.username, self.agent2.username]
+        for old, new in zip(old_names, self.possible_agents):
+            self.observation_spaces[new] = self.observation_spaces.pop(old)
+            self.action_spaces[new] = self.action_spaces.pop(old)
+        self._reward_buffer = WeakKeyDictionary()
+
     ###################################################################################
     # PettingZoo API
     # https://pettingzoo.farama.org/api/parallel/#parallelenv
@@ -334,8 +417,8 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
             order1 = self.action_to_order(
                 actions[self.agents[0]],
                 self.battle1,
-                fake=self.fake,
-                strict=self.strict,
+                fake=self._fake,
+                strict=self._strict,
             )
             self.agent1.order_queue.put(order1)
         if self.agent2_to_move:
@@ -343,8 +426,8 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
             order2 = self.action_to_order(
                 actions[self.agents[1]],
                 self.battle2,
-                fake=self.fake,
-                strict=self.strict,
+                fake=self._fake,
+                strict=self._strict,
             )
             self.agent2.order_queue.put(order2)
         battle1 = self.agent1.battle_queue.race_get(
@@ -412,7 +495,7 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
                 )
         self.reset_battles()
         self._challenge_task = asyncio.run_coroutine_threadsafe(
-            self.agent1.battle_against(self.agent2, n_battles=1), POKE_LOOP
+            self.agent1.battle_against(self.agent2, n_battles=1), self._loop
         )
         try:
             self.battle1 = self.agent1.battle_queue.get(timeout=self._challenge_timeout)

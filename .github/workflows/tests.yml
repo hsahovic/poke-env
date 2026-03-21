@@ -18,7 +18,7 @@ jobs:
 
     strategy:
       matrix:
-        version: ['3.10', '3.11', '3.12', '3.13']
+        version: ['3.10', '3.11', '3.12', '3.13', '3.14']
 
     steps:
       - name: Checkout repository code
@@ -85,24 +85,8 @@ jobs:
           key: showdown-python${{ matrix.version }}-${{ steps.showdown-hash.outputs.hash }}
           restore-keys: showdown-python${{ matrix.version }}-
 
-      - name: Install PS dependencies & setup config
-        run: |
-            cd pokemon-showdown
-            npm install
-            cp config/config-example.js config/config.js
-            sed  -i 's/backdoor = true/backdoor = false/g' config/config.js
-            sed  -i 's/simulatorprocesses = 1/simulatorprocesses = 2/g' config/config.js
-            sed  -i 's/.workers = 1 = 1/.workers = 2/g' config/config.js
-
-      - name: Start PS
-        run: cd pokemon-showdown;node pokemon-showdown start --no-security --max-old-space-size=3000 &
-
-      - name: Wait for server to be up
-        run: |
-            until $(curl --output /dev/null --silent --head --fail http://localhost:8000); do
-              sleep .01
-            done
-            sleep 1
+      - name: Install PS dependencies and start server
+        run: bash scripts/ci_setup_showdown.sh
 
       - name: Run integration tests
         run: pytest -x integration_tests/

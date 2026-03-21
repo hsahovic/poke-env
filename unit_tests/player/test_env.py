@@ -1,4 +1,5 @@
 import asyncio
+import pickle
 import sys
 from io import StringIO
 from unittest.mock import AsyncMock
@@ -6,7 +7,7 @@ from unittest.mock import AsyncMock
 import numpy as np
 import numpy.typing as npt
 import pytest
-from gymnasium.spaces import Discrete
+from gymnasium.spaces import Box, Discrete
 
 from poke_env.battle import (
     AbstractBattle,
@@ -37,6 +38,16 @@ server_configuration = ServerConfiguration("server.url", "auth.url")
 
 
 class CustomEnv(SinglesEnv):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.observation_spaces = {
+            agent: Box(
+                np.array([0, 0, 0], dtype=np.float32),
+                np.array([2, 2, 2], dtype=np.float32),
+            )
+            for agent in self.possible_agents
+        }
+
     def calc_reward(self, battle: AbstractBattle) -> float:
         return 69.42
 
@@ -44,26 +55,48 @@ class CustomEnv(SinglesEnv):
         return np.array([0, 1, 2])
 
 
+def test_pickle_unpickle():
+    env = CustomEnv()
+    pickled = pickle.dumps(env)
+    restored = pickle.loads(pickled)
+
+    assert isinstance(restored, CustomEnv)
+    assert restored._battle_format == env._battle_format
+    assert restored._strict == env._strict
+    assert restored._fake == env._fake
+    assert restored.agent1 is not None
+    assert restored.agent2 is not None
+    assert restored._loop is not None
+    assert restored._reward_buffer is not None
+    assert len(restored.possible_agents) == 2
+    assert len(restored.observation_spaces) == 2
+    assert len(restored.action_spaces) == 2
+
+
 def test_init_queue():
-    q = _AsyncQueue(asyncio.Queue())
+    q = _AsyncQueue(asyncio.Queue(), POKE_LOOP)
     assert isinstance(q, _AsyncQueue)
 
 
 def test_queue():
-    q = _AsyncQueue(asyncio.Queue())
+    q = _AsyncQueue(asyncio.Queue(), POKE_LOOP)
     assert q.empty()
     q.put(1)
     assert q.queue.qsize() == 1
-    asyncio.get_event_loop().run_until_complete(q.async_put(2))
-    assert q.queue.qsize() == 2
-    item = q.get()
-    q.queue.task_done()
-    assert q.queue.qsize() == 1
-    assert item == 1
-    item = asyncio.get_event_loop().run_until_complete(q.async_get())
-    q.queue.task_done()
-    assert q.empty()
-    assert item == 2
+    loop = asyncio.new_event_loop()
+    try:
+        loop.run_until_complete(q.async_put(2))
+        assert q.queue.qsize() == 2
+        item = q.get()
+        q.queue.task_done()
+        assert q.queue.qsize() == 1
+        assert item == 1
+        item = loop.run_until_complete(q.async_get())
+        q.queue.task_done()
+        assert q.empty()
+        assert item == 2
+    finally:
+        loop.close()
 
 
 def test_async_player():
@@ -73,7 +106,11 @@ def test_async_player():
     player = _EnvPlayer(start_listening=False)
     battle = Battle("bat1", player.username, player.logger, gen=8)
     player.order_queue.put(ForfeitBattleOrder())
-    order = asyncio.get_event_loop().run_until_complete(player._choose_move(battle))
+    loop = asyncio.new_event_loop()
+    try:
+        order = loop.run_until_complete(player._choose_move(battle))
+    finally:
+        loop.close()
     assert isinstance(order, ForfeitBattleOrder)
     assert embed_battle(player.battle_queue.get()) == "battle"
 

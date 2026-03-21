@@ -65,6 +65,7 @@ instance/
 
 # Sphinx documentation
 docs/build/
+docs/_build/
 docs/source/_build/
 
 # PyBuilder
@@ -103,6 +104,14 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# Local project artifacts
+.poke_env_stats_cache/
+out.json
+log
+prof
+replays/
+replays_*/
 
 # VSCode
 *.code-workspace

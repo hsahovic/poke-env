@@ -8,7 +8,7 @@ This section guides you through installing ``poke-env`` and setting up a Pokémo
 Installing ``poke-env``
 =======================
 
-Ensure Python 3.10 or later is installed. Dependencies listed `here <https://github.com/hsahovic/poke-env/blob/master/requirements.txt>`__ will be installed automatically.
+Ensure Python 3.10 or later is installed. Dependencies listed `here <https://github.com/hsahovic/poke-env/blob/master/pyproject.toml>`__ will be installed automatically.
 
 .. code-block:: bash
 
