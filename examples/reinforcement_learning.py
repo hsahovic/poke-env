@@ -42,7 +42,6 @@ class MaskedActorCriticPolicy(ActorCriticPolicy):
         return super().forward(obs, deterministic)
 
     def evaluate_actions(self, obs: PyTorchObs, actions: torch.Tensor):
-        assert isinstance(obs, torch.Tensor)
         self._current_obs = obs
         return super().evaluate_actions(obs, actions)
 
@@ -73,8 +72,6 @@ class PolicyPlayer(Player):
     def choose_move(
         self, battle: AbstractBattle
     ) -> BattleOrder | Awaitable[BattleOrder]:
-        assert isinstance(battle, Battle)
-        assert self.policy is not None
         if battle.wait:
             return DefaultBattleOrder()
         obs = self.embed_battle(battle)
@@ -86,7 +83,6 @@ class PolicyPlayer(Player):
 
     @staticmethod
     def embed_battle(battle: AbstractBattle) -> npt.NDArray[np.float32]:
-        assert isinstance(battle, Battle)
         mask = PolicyPlayer.get_action_mask(battle)
         moves_base_power = -np.ones(4)
         moves_dmg_multiplier = np.ones(4)
