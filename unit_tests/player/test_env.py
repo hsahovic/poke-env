@@ -427,15 +427,33 @@ def test_singles_action_order_conversions():
         active_pokemon._item = "firiumz"
         active_pokemon._terastallized_type = PokemonType.FIRE
         battle._team = {"charizard": active_pokemon}
+        # Test action mask with no available moves or switches
+        mask = SinglesEnv.get_action_mask(battle)
+        assert len(mask) == SinglesEnv.get_action_space_size(gen)
+        assert sum(mask) == 0
+
         assert p.action_to_order(np.int64(-1), battle).message == "/forfeit"
         check_action_order_roundtrip(p, ForfeitBattleOrder(), battle)
         battle._available_moves = [move]
+
+        # Test action mask with one available move
+        mask = SinglesEnv.get_action_mask(battle)
+        assert mask[6] == 1  # flamethrower at move slot 0
+        assert sum(mask) == 1
+
         assert (
             p.action_to_order(np.int64(6), battle).message
             == "/choose move flamethrower"
         )
         check_action_order_roundtrip(p, Player.create_order(move), battle)
         battle._available_switches = [active_pokemon]
+
+        # Test action mask with one move and one switch
+        mask = SinglesEnv.get_action_mask(battle)
+        assert mask[0] == 1  # charizard switch
+        assert mask[6] == 1  # flamethrower
+        assert sum(mask) == 2
+
         assert (
             p.action_to_order(np.int64(0), battle).message == "/choose switch Charizard"
         )
@@ -451,6 +469,8 @@ def test_singles_action_order_conversions():
         )
         if has_megas:
             battle._can_mega_evolve = True
+            mask = SinglesEnv.get_action_mask(battle)
+            assert mask[6 + 4] == 1  # mega flamethrower
             assert (
                 p.action_to_order(np.int64(6 + 4), battle).message
                 == "/choose move flamethrower mega"
@@ -460,6 +480,8 @@ def test_singles_action_order_conversions():
             )
         if has_z_moves:
             battle._can_z_move = True
+            mask = SinglesEnv.get_action_mask(battle)
+            assert mask[6 + 4 + 4] == 1  # z-move flamethrower
             assert (
                 p.action_to_order(np.int64(6 + 4 + 4), battle).message
                 == "/choose move flamethrower zmove"
@@ -469,6 +491,8 @@ def test_singles_action_order_conversions():
             )
         if has_dynamax:
             battle._can_dynamax = True
+            mask = SinglesEnv.get_action_mask(battle)
+            assert mask[6 + 4 + 8] == 1  # dynamax flamethrower
             assert (
                 p.action_to_order(np.int64(6 + 4 + 8), battle).message
                 == "/choose move flamethrower dynamax"
@@ -478,6 +502,8 @@ def test_singles_action_order_conversions():
             )
         if has_tera:
             battle._can_tera = True
+            mask = SinglesEnv.get_action_mask(battle)
+            assert mask[6 + 4 + 12] == 1  # tera flamethrower
             assert (
                 p.action_to_order(np.int64(6 + 4 + 12), battle).message
                 == "/choose move flamethrower terastallize"
@@ -504,10 +530,22 @@ def test_doubles_action_order_conversions():
         battle._team = {"charizard": active_pokemon}
         battle._opponent_active_pokemon = {"p2a": active_pokemon}
         battle._active_pokemon = {"p1a": active_pokemon}
+        # Test action mask — doubles returns two masks concatenated (one per slot)
+        action_space_size = DoublesEnv.get_action_space_size(gen)
+        mask = DoublesEnv.get_action_mask(battle)
+        assert len(mask) == action_space_size * 2
+        mask1 = mask[:action_space_size]
+
         assert p.action_to_order(np.array([-1, 0]), battle).message == "/forfeit"
         check_action_order_roundtrip(p, DefaultBattleOrder(), battle)
         check_action_order_roundtrip(p, ForfeitBattleOrder(), battle)
         battle._available_moves = [[move], []]
+
+        # Test action mask with one available move (check first slot's mask)
+        mask = DoublesEnv.get_action_mask(battle)
+        mask1 = mask[:action_space_size]
+        assert mask1[10] == 1  # flamethrower targeting slot 1
+
         assert (
             p.action_to_order(np.array([10, 0]), battle).message
             == "/choose move flamethrower 1, pass"
@@ -516,6 +554,13 @@ def test_doubles_action_order_conversions():
             p, DoubleBattleOrder(Player.create_order(move, move_target=1)), battle
         )
         battle._available_switches = [[active_pokemon], []]
+
+        # Test action mask with one move and one switch
+        mask = DoublesEnv.get_action_mask(battle)
+        mask1 = mask[:action_space_size]
+        assert mask1[1] == 1  # charizard switch
+        assert mask1[10] == 1  # flamethrower
+
         assert (
             p.action_to_order(np.array([1, -2]), battle).message
             == "/choose switch Charizard, default"
