@@ -3,9 +3,7 @@ from typing import Any, Awaitable
 
 import numpy as np
 import numpy.typing as npt
-import supersuit as ss
 import torch
-from gymnasium import Env
 from gymnasium.spaces import Box, Space
 from stable_baselines3 import PPO
 from stable_baselines3.common.monitor import Monitor
@@ -180,14 +178,7 @@ class ExampleEnv(SinglesEnv[npt.NDArray[np.float32]]):
         }
 
     @classmethod
-    def create_env(
-        cls,
-        battle_format: str,
-        num_envs: int,
-        log_level: int,
-        port: int,
-        is_single_agent: bool,
-    ) -> Env:
+    def create_env(cls, battle_format: str, log_level: int, port: int) -> Monitor:
         env = cls(
             server_configuration=ServerConfiguration(
                 f"ws://localhost:{port}/showdown/websocket",
@@ -197,20 +188,8 @@ class ExampleEnv(SinglesEnv[npt.NDArray[np.float32]]):
             log_level=log_level,
             open_timeout=None,
         )
-        if is_single_agent:
-            opponent = SimpleHeuristicsPlayer(start_listening=False)
-            env = SingleAgentWrapper(env, opponent)
-            env = Monitor(env)
-            return env
-        else:
-            env = ss.pettingzoo_env_to_vec_env_v1(env)
-            env = ss.concat_vec_envs_v1(
-                env,
-                num_vec_envs=num_envs,
-                num_cpus=num_envs,
-                base_class="stable_baselines3",
-            )
-            return env
+        opponent = SimpleHeuristicsPlayer(start_listening=False)
+        return Monitor(SingleAgentWrapper(env, opponent))
 
     def calc_reward(self, battle) -> float:
         return self.reward_computing_helper(
@@ -231,27 +210,19 @@ def train(
     log_level: int = 40,
     port: int = 8000,
     device: str = "cpu",
-    is_single_agent: bool = False,
 ):
     # setup
-    if is_single_agent:
-        env = SubprocVecEnv(
-            [
-                lambda: ExampleEnv.create_env(
-                    battle_format, num_envs, log_level, port, is_single_agent
-                )
-                for _ in range(num_envs)
-            ]
-        )
-    else:
-        env = ExampleEnv.create_env(
-            battle_format, num_envs, log_level, port, is_single_agent
-        )
+    env = SubprocVecEnv(
+        [
+            lambda: ExampleEnv.create_env(battle_format, log_level, port)
+            for _ in range(num_envs)
+        ]
+    )
     ppo = PPO(
         MaskedActorCriticPolicy,
         env,
         learning_rate=3e-4,
-        n_steps=3072 // num_envs if is_single_agent else 3072 // (2 * num_envs),
+        n_steps=3072 // num_envs,
         batch_size=128,
         gamma=0.99,
         ent_coef=0.01,
