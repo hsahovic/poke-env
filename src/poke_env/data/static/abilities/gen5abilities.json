@@ -1,0 +1,32 @@
+{
+    "anticipation": {
+        "inherit": true,
+        "onStart": "onStart"
+    },
+    "frisk": {
+        "inherit": true,
+        "onStart": "onStart"
+    },
+    "infiltrator": {
+        "inherit": true,
+        "rating": 1.5
+    },
+    "keeneye": {
+        "inherit": true,
+        "onModifyMove": "onModifyMove"
+    },
+    "oblivious": {
+        "inherit": true,
+        "onTryHit": "onTryHit",
+        "onUpdate": "onUpdate",
+        "rating": 0.5
+    },
+    "overcoat": {
+        "inherit": true,
+        "onTryHit": "onTryHit"
+    },
+    "soundproof": {
+        "inherit": true,
+        "onAllyTryHitSide": "onAllyTryHitSide"
+    }
+}
