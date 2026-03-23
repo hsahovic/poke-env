@@ -5,8 +5,8 @@ import numpy.typing as npt
 from gymnasium.spaces import MultiDiscrete
 
 from poke_env.battle.double_battle import DoubleBattle
-from poke_env.battle.pokemon import Pokemon
 from poke_env.battle.move import SPECIAL_MOVES
+from poke_env.battle.pokemon import Pokemon
 from poke_env.data import GenData
 from poke_env.environment.env import PokeEnv
 from poke_env.player.battle_order import (

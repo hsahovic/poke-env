@@ -4,9 +4,9 @@ import numpy as np
 from gymnasium.spaces import Discrete, Space
 
 from poke_env.battle import Battle, Pokemon
+from poke_env.battle.move import SPECIAL_MOVES
 from poke_env.data import GenData
 from poke_env.environment.env import PokeEnv
-from poke_env.battle.move import SPECIAL_MOVES
 from poke_env.player.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
