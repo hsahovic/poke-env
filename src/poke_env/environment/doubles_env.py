@@ -6,7 +6,8 @@ from gymnasium.spaces import MultiDiscrete
 
 from poke_env.battle.double_battle import DoubleBattle
 from poke_env.battle.pokemon import Pokemon
-from poke_env.environment.env import ObsType, PokeEnv
+from poke_env.data import GenData
+from poke_env.environment.env import PokeEnv
 from poke_env.player.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
@@ -24,7 +25,7 @@ from poke_env.ps_client import (
 from poke_env.teambuilder import Teambuilder
 
 
-class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
+class DoublesEnv(PokeEnv[npt.NDArray[np.int64]]):
     def __init__(
         self,
         account_configuration1: Optional[AccountConfiguration] = None,
@@ -68,22 +69,11 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
             fake=fake,
             strict=strict,
         )
-        num_switches = 6
-        num_moves = 4
-        num_targets = 5
-        if battle_format.startswith("gen6"):
-            num_gimmicks = 1
-        elif battle_format.startswith("gen7"):
-            num_gimmicks = 2
-        elif battle_format.startswith("gen8"):
-            num_gimmicks = 3
-        elif battle_format.startswith("gen9"):
-            num_gimmicks = 4
-        else:
-            num_gimmicks = 0
-        act_size = 1 + num_switches + num_moves * num_targets * (num_gimmicks + 1)
+        gen = GenData.from_format(battle_format).gen
+        action_space_size = DoublesEnv.get_action_space_size(gen)
         self.action_spaces = {
-            agent: MultiDiscrete([act_size, act_size]) for agent in self.possible_agents
+            agent: MultiDiscrete([action_space_size, action_space_size])
+            for agent in self.possible_agents
         }
 
     @staticmethod
@@ -365,3 +355,103 @@ class DoublesEnv(PokeEnv[ObsType, npt.NDArray[np.int64]]):
                 gimmick = 0
             action = 1 + 6 + 5 * action + target + 20 * gimmick
         return np.int64(action)
+
+    @staticmethod
+    def get_action_mask(battle: DoubleBattle) -> list[int]:
+        action_mask1 = DoublesEnv.get_action_mask_individual(battle, 0)
+        action_mask2 = DoublesEnv.get_action_mask_individual(battle, 1)
+        return action_mask1 + action_mask2
+
+    @staticmethod
+    def get_action_mask_individual(battle: DoubleBattle, pos: int) -> list[int]:
+        switch_space = [
+            i + 1
+            for i, pokemon in enumerate(battle.team.values())
+            if not battle.trapped[pos]
+            and pokemon.base_species
+            in [p.base_species for p in battle.available_switches[pos]]
+        ]
+        active_mon = battle.active_pokemon[pos]
+        if battle._wait or (any(battle.force_switch) and not battle.force_switch[pos]):
+            actions = [0]
+        elif all(battle.force_switch) and len(battle.available_switches[0]) == 1:
+            actions = switch_space + [0]
+        elif battle.teampreview:
+            actions = [
+                i
+                for i, p in enumerate(battle.team.values(), start=1)
+                if not p.selected_in_teampreview
+            ]
+        elif active_mon is None:
+            actions = switch_space
+        else:
+            move_spaces = [
+                [
+                    7 + 5 * i + j + 2
+                    for j in battle.get_possible_showdown_targets(move, active_mon)
+                ]
+                for i, move in enumerate(active_mon.moves.values())
+                if move.id in [m.id for m in battle.available_moves[pos]]
+            ]
+            move_space = [i for s in move_spaces for i in s]
+            mega_space = [i + 20 for i in move_space if battle.can_mega_evolve[pos]]
+            zmove_spaces = [
+                [
+                    47 + 5 * i + j + 2
+                    for j in battle.get_possible_showdown_targets(move, active_mon)
+                ]
+                for i, move in enumerate(active_mon.moves.values())
+                if move.id in [m.id for m in active_mon.available_z_moves]
+                and battle.can_z_move[pos]
+            ]
+            zmove_space = [i for s in zmove_spaces for i in s]
+            dynamax_spaces = [
+                [
+                    67 + 5 * i + j + 2
+                    for j in battle.get_possible_showdown_targets(
+                        move, active_mon, dynamax=True
+                    )
+                ]
+                for i, move in enumerate(active_mon.moves.values())
+                if move.id in [m.id for m in battle.available_moves[pos]]
+                and battle.can_dynamax[pos]
+            ]
+            dynamax_space = [i for s in dynamax_spaces for i in s]
+            tera_space = [i + 80 for i in move_space if battle.can_tera[pos]]
+            if (
+                not move_space
+                and len(battle.available_moves[pos]) == 1
+                and battle.available_moves[pos][0].id in ["struggle", "recharge"]
+            ):
+                move_space = [9]
+            actions = (
+                switch_space
+                + move_space
+                + mega_space
+                + zmove_space
+                + dynamax_space
+                + tera_space
+            )
+        actions = actions or [0]
+        action_mask = [
+            int(i in actions)
+            for i in range(DoublesEnv.get_action_space_size(battle.gen))
+        ]
+        return action_mask
+
+    @staticmethod
+    def get_action_space_size(gen: int) -> int:
+        num_switches = 6
+        num_moves = 4
+        num_targets = 5
+        if gen == 6:
+            num_gimmicks = 1
+        elif gen == 7:
+            num_gimmicks = 2
+        elif gen == 8:
+            num_gimmicks = 3
+        elif gen == 9:
+            num_gimmicks = 4
+        else:
+            num_gimmicks = 0
+        return 1 + num_switches + num_moves * num_targets * (num_gimmicks + 1)

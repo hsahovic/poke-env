@@ -1,10 +1,11 @@
-from typing import Any, Dict, Optional, Union
+from typing import Any, Optional, Union
 
 import numpy as np
 from gymnasium.spaces import Discrete, Space
 
 from poke_env.battle import Battle, Pokemon
-from poke_env.environment.env import ObsType, PokeEnv
+from poke_env.data import GenData
+from poke_env.environment.env import PokeEnv
 from poke_env.player.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
@@ -20,7 +21,7 @@ from poke_env.ps_client import (
 from poke_env.teambuilder import Teambuilder
 
 
-class SinglesEnv(PokeEnv[ObsType, np.int64]):
+class SinglesEnv(PokeEnv[np.int64]):
     def __init__(
         self,
         *,
@@ -65,21 +66,10 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
             fake=fake,
             strict=strict,
         )
-        num_switches = 6
-        num_moves = 4
-        if battle_format.startswith("gen6"):
-            num_gimmicks = 1
-        elif battle_format.startswith("gen7"):
-            num_gimmicks = 2
-        elif battle_format.startswith("gen8"):
-            num_gimmicks = 3
-        elif battle_format.startswith("gen9"):
-            num_gimmicks = 4
-        else:
-            num_gimmicks = 0
-        act_size = num_switches + num_moves * (num_gimmicks + 1)
-        self.action_spaces: Dict[str, Space[Any]] = {
-            agent: Discrete(act_size) for agent in self.possible_agents
+        gen = GenData.from_format(battle_format).gen
+        self.action_spaces: dict[str, Space[Any]] = {
+            agent: Discrete(SinglesEnv.get_action_space_size(gen))
+            for agent in self.possible_agents
         }
 
     @staticmethod
@@ -233,3 +223,67 @@ class SinglesEnv(PokeEnv[ObsType, np.int64]):
                 return SinglesEnv.order_to_action(
                     Player.choose_random_singles_move(battle), battle, fake, strict
                 )
+
+    @staticmethod
+    def get_action_mask(battle: Battle) -> list[int]:
+        switch_space = [
+            i
+            for i, pokemon in enumerate(battle.team.values())
+            if not battle.trapped
+            and pokemon.base_species
+            in [p.base_species for p in battle.available_switches]
+        ]
+        if battle._wait:
+            actions = [0]
+        elif battle.active_pokemon is None:
+            actions = switch_space
+        else:
+            move_space = [
+                i + 6
+                for i, move in enumerate(battle.active_pokemon.moves.values())
+                if move.id in [m.id for m in battle.available_moves]
+            ]
+            mega_space = [i + 4 for i in move_space if battle.can_mega_evolve]
+            zmove_space = [
+                i + 6 + 8
+                for i, move in enumerate(battle.active_pokemon.moves.values())
+                if move.id in [m.id for m in battle.active_pokemon.available_z_moves]
+                and battle.can_z_move
+            ]
+            dynamax_space = [i + 12 for i in move_space if battle.can_dynamax]
+            tera_space = [i + 16 for i in move_space if battle.can_tera]
+            if (
+                not move_space
+                and len(battle.available_moves) == 1
+                and battle.available_moves[0].id in ["struggle", "recharge"]
+            ):
+                move_space = [6]
+            actions = (
+                switch_space
+                + move_space
+                + mega_space
+                + zmove_space
+                + dynamax_space
+                + tera_space
+            )
+        action_mask = [
+            int(i in actions)
+            for i in range(SinglesEnv.get_action_space_size(battle.gen))
+        ]
+        return action_mask
+
+    @staticmethod
+    def get_action_space_size(gen: int) -> int:
+        num_switches = 6
+        num_moves = 4
+        if gen == 6:
+            num_gimmicks = 1
+        elif gen == 7:
+            num_gimmicks = 2
+        elif gen == 8:
+            num_gimmicks = 3
+        elif gen == 9:
+            num_gimmicks = 4
+        else:
+            num_gimmicks = 0
+        return num_switches + num_moves * (num_gimmicks + 1)

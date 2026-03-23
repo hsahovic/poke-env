@@ -10,7 +10,10 @@ from threading import Thread
 from typing import Any, Awaitable, Dict, Generic, List, Optional, Tuple, TypeVar, Union
 from weakref import WeakKeyDictionary
 
+import numpy as np
+from gymnasium import spaces
 from gymnasium.spaces import Space
+from gymnasium.spaces.utils import flatdim
 from gymnasium.utils import seeding
 from numpy.random import Generator
 from pettingzoo.utils.env import ParallelEnv  # type: ignore[import-untyped]
@@ -35,7 +38,6 @@ from poke_env.ps_client.server_configuration import (
 from poke_env.teambuilder.teambuilder import Teambuilder
 
 ItemType = TypeVar("ItemType")
-ObsType = TypeVar("ObsType")
 ActionType = TypeVar("ActionType")
 
 
@@ -154,7 +156,7 @@ class _EnvPlayer(Player):
         )
 
 
-class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
+class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
     """
     Base class implementing the PettingZoo API on the main thread.
     """
@@ -244,6 +246,8 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             illegal. Otherwise, it will return default. Defaults to True.
         :type: strict: bool
         """
+        self.metadata = {"name": "poke-env-v0", "render_modes": ["human"]}
+        self.render_mode: str | None = None
         self._avatar = avatar
         self._battle_format = battle_format
         self._log_level = log_level
@@ -311,6 +315,24 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             WeakKeyDictionary()
         )
         self._challenge_task: Optional[Future[Any]] = None
+
+    def __setattr__(self, name: str, value: Any):
+        if name == "observation_spaces":
+            value = {
+                agent: spaces.Dict(
+                    {
+                        "observation": raw,
+                        "action_mask": spaces.Box(
+                            low=0,
+                            high=1,
+                            shape=(flatdim(self.action_spaces[agent]),),
+                            dtype=np.int64,
+                        ),
+                    }
+                )
+                for agent, raw in value.items()
+            }
+        super().__setattr__(name, value)
 
     def __getstate__(self) -> Dict[str, Any]:
         state = self.__dict__.copy()
@@ -380,7 +402,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
     def step(
         self, actions: Dict[str, ActionType]
     ) -> Tuple[
-        Dict[str, ObsType],
+        Dict[str, Dict[str, Any]],
         Dict[str, float],
         Dict[str, bool],
         Dict[str, bool],
@@ -425,8 +447,14 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
             self.agent1._trying_again.clear()
             battle2 = self.battle2
         observations = {
-            self.agents[0]: self.embed_battle(battle1),
-            self.agents[1]: self.embed_battle(battle2),
+            self.agents[0]: {
+                "observation": self.embed_battle(battle1),
+                "action_mask": np.array(self.get_action_mask(battle1)),
+            },
+            self.agents[1]: {
+                "observation": self.embed_battle(battle2),
+                "action_mask": np.array(self.get_action_mask(battle2)),
+            },
         }
         reward = {
             self.agents[0]: self.calc_reward(battle1),
@@ -442,7 +470,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
 
     def reset(
         self, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None
-    ) -> Tuple[Dict[str, ObsType], Dict[str, Dict[str, Any]]]:
+    ) -> Tuple[Dict[str, Dict[str, Any]], Dict[str, Dict[str, Any]]]:
         self.agents = [self.agent1.username, self.agent2.username]
         if seed is not None:
             self._np_random, seed = seeding.np_random(seed)
@@ -477,8 +505,14 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         self.agent1_to_move = True
         self.agent2_to_move = True
         observations = {
-            self.agents[0]: self.embed_battle(self.battle1),
-            self.agents[1]: self.embed_battle(self.battle2),
+            self.agents[0]: {
+                "observation": self.embed_battle(self.battle1),
+                "action_mask": np.array(self.get_action_mask(self.battle1)),
+            },
+            self.agents[1]: {
+                "observation": self.embed_battle(self.battle2),
+                "action_mask": np.array(self.get_action_mask(self.battle2)),
+            },
         }
         return observations, self.get_additional_info()
 
@@ -545,7 +579,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         while not self.agent2.battle_queue.empty():
             self.agent2.battle_queue.get()
 
-    def observation_space(self, agent: str) -> Space[ObsType]:
+    def observation_space(self, agent: str) -> Space[Dict[str, Any]]:
         return self.observation_spaces[agent]
 
     def action_space(self, agent: str) -> Space[ActionType]:
@@ -568,7 +602,7 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         pass
 
     @abstractmethod
-    def embed_battle(self, battle: AbstractBattle) -> ObsType:
+    def embed_battle(self, battle: AbstractBattle) -> Any:
         """
         Returns the embedding of the current battle state in a format compatible with
         the Gymnasium API.
@@ -628,6 +662,16 @@ class PokeEnv(ParallelEnv[str, ObsType, ActionType]):
         :return: The action for the given battle order in context of the current battle.
         :rtype: ActionType
         """
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def get_action_mask(battle: Any) -> List[int]:
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def get_action_space_size(gen: int) -> int:
         pass
 
     ###################################################################################

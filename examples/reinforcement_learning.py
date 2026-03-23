@@ -2,17 +2,15 @@ import asyncio
 from typing import Any, Awaitable
 
 import numpy as np
-import numpy.typing as npt
 import torch
-from gymnasium.spaces import Box, Space
+from gymnasium.spaces import Box
 from stable_baselines3 import PPO
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.policies import ActorCriticPolicy
 from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
-from stable_baselines3.common.type_aliases import PyTorchObs
 from stable_baselines3.common.vec_env import SubprocVecEnv
 
-from poke_env.battle import AbstractBattle, Battle
+from poke_env.battle import AbstractBattle
 from poke_env.data import GenData
 from poke_env.environment import SingleAgentWrapper, SinglesEnv
 from poke_env.player import (
@@ -24,8 +22,8 @@ from poke_env.player import (
     SimpleHeuristicsPlayer,
 )
 
+BATTLE_FORMAT = "gen9randombattle"
 N_FEATURES = 12
-ACT_LEN = 26
 
 
 class MaskedActorCriticPolicy(ActorCriticPolicy):
@@ -37,27 +35,29 @@ class MaskedActorCriticPolicy(ActorCriticPolicy):
             features_extractor_class=FeaturesExtractor,
         )
 
-    def forward(self, obs: torch.Tensor, deterministic: bool = False):
-        self._current_obs = obs
+    def forward(self, obs, deterministic=False):
+        self._mask = obs["action_mask"]
         return super().forward(obs, deterministic)
 
-    def evaluate_actions(self, obs: PyTorchObs, actions: torch.Tensor):
-        self._current_obs = obs
+    def evaluate_actions(self, obs, actions):
+        self._mask = obs["action_mask"]
         return super().evaluate_actions(obs, actions)
 
-    def _get_action_dist_from_latent(self, latent_pi: torch.Tensor):
+    def _get_action_dist_from_latent(self, latent_pi):
         action_logits = self.action_net(latent_pi)
-        mask = self._current_obs[:, :ACT_LEN]
-        mask = torch.where(mask == 1, 0, float("-inf"))
+        mask = torch.where(self._mask == 1, 0, float("-inf"))
         return self.action_dist.proba_distribution(action_logits + mask)
 
 
 class FeaturesExtractor(BaseFeaturesExtractor):
-    def __init__(self, observation_space: Space[Any]):
+    """Extracts the observation tensor from the dict obs and declares features_dim
+    so SB3 builds the MLP with the right input size."""
+
+    def __init__(self, observation_space):
         super().__init__(observation_space, features_dim=N_FEATURES)
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return x[:, ACT_LEN:]
+    def forward(self, obs):
+        return obs["observation"]
 
 
 class PolicyPlayer(Player):
@@ -75,15 +75,22 @@ class PolicyPlayer(Player):
         if battle.wait:
             return DefaultBattleOrder()
         obs = self.embed_battle(battle)
+        mask = np.array(SinglesEnv.get_action_mask(battle))
         with torch.no_grad():
-            obs_tensor = torch.as_tensor(obs, device=self.policy.device).unsqueeze(0)
-            action, _, _ = self.policy.forward(obs_tensor)
+            obs_dict = {
+                "observation": torch.as_tensor(
+                    obs, device=self.policy.device
+                ).unsqueeze(0),
+                "action_mask": torch.as_tensor(
+                    mask, device=self.policy.device
+                ).unsqueeze(0),
+            }
+            action, _, _ = self.policy.forward(obs_dict)
         action = action.cpu().numpy()[0]
         return SinglesEnv.action_to_order(action, battle)
 
     @staticmethod
-    def embed_battle(battle: AbstractBattle) -> npt.NDArray[np.float32]:
-        mask = PolicyPlayer.get_action_mask(battle)
+    def embed_battle(battle: AbstractBattle):
         moves_base_power = -np.ones(4)
         moves_dmg_multiplier = np.ones(4)
         for i, move in enumerate(battle.available_moves):
@@ -108,73 +115,26 @@ class PolicyPlayer(Player):
         )
         return np.concatenate(
             [
-                mask,
                 moves_base_power,
                 moves_dmg_multiplier,
                 [fainted_mon_team, fainted_mon_opponent],
                 [our_hp, opp_hp],
-            ]
+            ],
+            dtype=np.float32,
         )
 
-    @staticmethod
-    def get_action_mask(battle: Battle) -> list[int]:
-        switch_space = [
-            i
-            for i, pokemon in enumerate(battle.team.values())
-            if not battle.trapped
-            and pokemon.base_species
-            in [p.base_species for p in battle.available_switches]
-        ]
-        if battle.wait:
-            actions = [0]
-        elif battle.active_pokemon is None:
-            actions = switch_space
-        else:
-            move_space = [
-                i + 6
-                for i, move in enumerate(battle.active_pokemon.moves.values())
-                if move.id in [m.id for m in battle.available_moves]
-            ]
-            mega_space = [i + 4 for i in move_space if battle.can_mega_evolve]
-            zmove_space = [
-                i + 6 + 8
-                for i, move in enumerate(battle.active_pokemon.moves.values())
-                if move.id in [m.id for m in battle.active_pokemon.available_z_moves]
-                and battle.can_z_move
-            ]
-            dynamax_space = [i + 12 for i in move_space if battle.can_dynamax]
-            tera_space = [i + 16 for i in move_space if battle.can_tera]
-            if (
-                not move_space
-                and len(battle.available_moves) == 1
-                and battle.available_moves[0].id in ["struggle", "recharge"]
-            ):
-                move_space = [6]
-            actions = (
-                switch_space
-                + move_space
-                + mega_space
-                + zmove_space
-                + dynamax_space
-                + tera_space
-            )
-        action_mask = [int(i in actions) for i in range(ACT_LEN)]
-        return action_mask
 
-
-class ExampleEnv(SinglesEnv[npt.NDArray[np.float32]]):
+class ExampleEnv(SinglesEnv):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.metadata = {"name": "showdown_v1", "render_modes": ["human"]}
-        self.render_mode: str | None = None
         self.observation_spaces = {
-            agent: Box(-1, 4, shape=(N_FEATURES + ACT_LEN,), dtype=np.float32)
+            agent: Box(-1, 4, shape=(N_FEATURES,), dtype=np.float32)
             for agent in self.possible_agents
         }
 
     @classmethod
     def create_env(cls) -> Monitor:
-        env = cls(battle_format="gen9randombattle", log_level=40, open_timeout=None)
+        env = cls(battle_format=BATTLE_FORMAT, log_level=40, open_timeout=None)
         opponent = SimpleHeuristicsPlayer(start_listening=False)
         return Monitor(SingleAgentWrapper(env, opponent))
 
@@ -193,7 +153,8 @@ class ExampleEnv(SinglesEnv[npt.NDArray[np.float32]]):
 
 def train():
     # setup
-    env = SubprocVecEnv([ExampleEnv.create_env for _ in range(2)])
+    num_envs = 2
+    env = SubprocVecEnv([ExampleEnv.create_env for _ in range(num_envs)])
     ppo = PPO(
         MaskedActorCriticPolicy,
         env,
@@ -211,10 +172,10 @@ def train():
 
     # evaluate
     agent = PolicyPlayer(
-        policy=ppo.policy, battle_format="gen9randombattle", max_concurrent_battles=10
+        policy=ppo.policy, battle_format=BATTLE_FORMAT, max_concurrent_battles=10
     )
     opponents: list[Player] = [
-        c(battle_format="gen9randombattle", max_concurrent_battles=10)
+        c(battle_format=BATTLE_FORMAT, max_concurrent_battles=10)
         for c in [RandomPlayer, MaxBasePowerPlayer, SimpleHeuristicsPlayer]
     ]
     asyncio.run(agent.battle_against(*opponents, n_battles=100))

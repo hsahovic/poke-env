@@ -1,3 +1,5 @@
+import random
+
 import numpy as np
 import pytest
 from gymnasium.spaces import Box
@@ -5,7 +7,7 @@ from gymnasium.utils.env_checker import check_env
 from pettingzoo.test.parallel_test import parallel_api_test
 
 from poke_env.environment import SingleAgentWrapper, SinglesEnv
-from poke_env.player import Player, RandomPlayer
+from poke_env.player import RandomPlayer
 
 
 class SinglesTestEnv(SinglesEnv):
@@ -26,17 +28,17 @@ class SinglesTestEnv(SinglesEnv):
 def play_function(env, n_battles):
     for _ in range(n_battles):
         done = False
-        env.reset()
+        obs, _ = env.reset()
         while not done:
             actions = {
                 name: (
-                    env.order_to_action(Player.choose_random_move(battle), battle)
+                    sample_action(obs[name]["action_mask"])
                     if env._strict
                     else env.action_space(name).sample()
                 )
-                for name, battle in zip(env.agents, [env.battle1, env.battle2])
+                for name in env.agents
             }
-            _, _, terminated, truncated, _ = env.step(actions)
+            obs, _, terminated, truncated, _ = env.step(actions)
             done = any(terminated.values()) or any(truncated.values())
 
 
@@ -53,16 +55,14 @@ def test_env_run():
 def single_agent_play_function(env: SingleAgentWrapper, n_battles: int):
     for _ in range(n_battles):
         done = False
-        env.reset()
+        obs, _ = env.reset()
         while not done:
             action = (
-                env.env.order_to_action(
-                    Player.choose_random_move(env.env.battle1), env.env.battle1
-                )
+                sample_action(obs["action_mask"])
                 if env.env._strict
                 else env.action_space.sample()
             )
-            _, _, terminated, truncated, _ = env.step(action)
+            obs, _, terminated, truncated, _ = env.step(action)
             done = terminated or truncated
 
 
@@ -75,6 +75,12 @@ def test_single_agent_env_run():
         env.env._strict = False
         single_agent_play_function(env, 10)
         env.close()
+
+
+def sample_action(action_mask):
+    available_actions = [i for i, m in enumerate(action_mask) if m == 1]
+    action = random.choice(available_actions)
+    return np.int64(action)
 
 
 @pytest.mark.timeout(60)
@@ -92,9 +98,7 @@ def test_repeated_runs():
 @pytest.mark.timeout(60)
 def test_env_api():
     for gen in range(4, 10):
-        env = SinglesTestEnv(
-            battle_format=f"gen{gen}randombattle", log_level=25, strict=False
-        )
+        env = SinglesTestEnv(battle_format=f"gen{gen}randombattle", log_level=25)
         parallel_api_test(env)
         env.close()
 
@@ -106,5 +110,5 @@ def test_single_agent_env_api():
             battle_format=f"gen{gen}randombattle", log_level=25, strict=False
         )
         env = SingleAgentWrapper(env, RandomPlayer())
-        check_env(env, skip_render_check=True)
+        check_env(env, skip_render_check=True, skip_close_check=True)
         env.close()

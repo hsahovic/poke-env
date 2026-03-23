@@ -11,4 +11,4 @@ This page lists detailed examples demonstrating how to use this package. They ar
     quickstart
     using_a_custom_teambuilder
     connecting_to_showdown_and_challenging_humans
-    rl_with_gymnasium_wrapper
+    reinforcement_learning

@@ -3,22 +3,24 @@ from typing import Any, Awaitable, Dict, Optional, Tuple
 import numpy as np
 import numpy.typing as npt
 from gymnasium import Env
+from gymnasium.envs.registration import EnvSpec
 
-from poke_env.environment.env import ActionType, ObsType, PokeEnv
+from poke_env.environment.env import ActionType, PokeEnv
 from poke_env.player.player import Player
 
 
-class SingleAgentWrapper(Env[ObsType, ActionType]):
-    def __init__(self, env: PokeEnv[ObsType, ActionType], opponent: Player):
+class SingleAgentWrapper(Env[Dict[str, Any], ActionType]):
+    def __init__(self, env: PokeEnv[ActionType], opponent: Player):
         self.env = env
         self.opponent = opponent
-        self.observation_space = list(env.observation_spaces.values())[0]
-        self.action_space = list(env.action_spaces.values())[0]
+        self.spec = EnvSpec("poke-env-v0", nondeterministic=True)
+        self.observation_space = env.observation_spaces[env.agent1.username]
+        self.action_space = env.action_spaces[env.agent1.username]
         self.second_teampreview_action: npt.NDArray[np.int64] | None = None
 
     def step(
         self, action: ActionType
-    ) -> Tuple[ObsType, float, bool, bool, Dict[str, Any]]:
+    ) -> Tuple[Dict[str, Any], float, bool, bool, Dict[str, Any]]:
         """Run one timestep of the environment's dynamics.
 
         Takes an action from the main agent and automatically generates an action
@@ -27,7 +29,7 @@ class SingleAgentWrapper(Env[ObsType, ActionType]):
         :param action: Action from the main agent.
         :type action: ActionType
         :return: Tuple of (observation, reward, terminated, truncated, info) for the main agent.
-        :rtype: Tuple[ObsType, float, bool, bool, Dict[str, Any]]
+        :rtype: Tuple[Dict[str, Any], float, bool, bool, Dict[str, Any]]
         """
         assert self.env.battle2 is not None
         if not self.env.battle2.teampreview:
@@ -75,7 +77,7 @@ class SingleAgentWrapper(Env[ObsType, ActionType]):
 
     def reset(
         self, *, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None
-    ) -> Tuple[ObsType, Dict[str, Any]]:
+    ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
         obs, infos = self.env.reset(seed, options)
         self.opponent.reset_battles()
         assert self.env.battle2 is not None
