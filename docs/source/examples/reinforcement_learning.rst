@@ -186,7 +186,7 @@ We use ``SubprocVecEnv`` to run multiple environments in parallel for faster dat
             MaskedActorCriticPolicy,
             env,
             learning_rate=3e-4,
-            n_steps=3072 // 2,
+            n_steps=3072 // num_envs,
             batch_size=128,
             gamma=0.99,
             ent_coef=0.01,
