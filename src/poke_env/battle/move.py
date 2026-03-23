@@ -14,7 +14,7 @@ from poke_env.battle.target import Target
 from poke_env.battle.weather import Weather
 from poke_env.data import GenData, to_id_str
 
-SPECIAL_MOVES: Set[str] = {"struggle", "recharge"}
+SPECIAL_MOVES: Set[str] = {"struggle", "recharge", "fight"}
 _PROTECT_MOVES = {
     "protect",
     "detect",
@@ -311,7 +311,7 @@ class Move:
             and self._id[1:] in GenData.from_gen(self.gen).moves
         ):
             return GenData.from_gen(self.gen).moves[self._id[1:]]
-        elif self._id == "recharge":
+        elif self._id in {"recharge", "fight"}:
             return {"pp": 1, "type": "normal", "category": "Special", "accuracy": 1}
         else:
             raise ValueError("Unknown move: %s" % self._id)

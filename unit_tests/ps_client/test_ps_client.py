@@ -129,25 +129,24 @@ async def test_listen(handle_message_mock):
         start_listening=False,
     )
 
-    websocket_url_as_mock = PropertyMock(return_value="ws://localhost:8899")
-    PSClient.websocket_url = websocket_url_as_mock
-
-    semaphore = asyncio.Semaphore()
-
     async def showdown_server_mock(websocket):
-        semaphore.release()
-        await websocket.ping()
         await websocket.send("error|test 1")
         await websocket.send("error|test 2")
         await websocket.send("error|test 3")
 
-    await semaphore.acquire()
+    async with websockets.serve(showdown_server_mock, "localhost", 0) as server:
+        port = server.sockets[0].getsockname()[1]
+        with patch.object(
+            type(client),
+            "websocket_url",
+            new_callable=PropertyMock,
+            return_value=f"ws://localhost:{port}",
+        ):
+            await client.listen()
+            # Wait for fire-and-forget _handle_message tasks to complete
+            if client._active_tasks:
+                await asyncio.gather(*client._active_tasks)
 
-    gathered = asyncio.gather(websockets.serve(showdown_server_mock, "0.0.0.0", 8899))
-
-    await client.listen()
-
-    await gathered
     assert handle_message_mock.await_count == 3
     handle_message_mock.assert_awaited_with("error|test 3")
 
