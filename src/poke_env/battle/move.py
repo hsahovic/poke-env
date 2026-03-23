@@ -311,9 +311,7 @@ class Move:
             and self._id[1:] in GenData.from_gen(self.gen).moves
         ):
             return GenData.from_gen(self.gen).moves[self._id[1:]]
-        elif self._id == "recharge":
-            return {"pp": 1, "type": "normal", "category": "Special", "accuracy": 1}
-        elif self._id == "fight":
+        elif self._id in {"recharge", "fight"}:
             return {"pp": 1, "type": "normal", "category": "Special", "accuracy": 1}
         else:
             raise ValueError("Unknown move: %s" % self._id)
