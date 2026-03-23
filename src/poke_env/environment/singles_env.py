@@ -6,6 +6,7 @@ from gymnasium.spaces import Discrete, Space
 from poke_env.battle import Battle, Pokemon
 from poke_env.data import GenData
 from poke_env.environment.env import PokeEnv
+from poke_env.battle.move import SPECIAL_MOVES
 from poke_env.player.battle_order import (
     BattleOrder,
     DefaultBattleOrder,
@@ -121,7 +122,7 @@ class SinglesEnv(PokeEnv[np.int64]):
                 mvs = (
                     battle.available_moves
                     if len(battle.available_moves) == 1
-                    and battle.available_moves[0].id in ["struggle", "recharge"]
+                    and battle.available_moves[0].id in SPECIAL_MOVES
                     else list(battle.active_pokemon.moves.values())
                 )
                 if (action - 6) % 4 not in range(len(mvs)):
@@ -198,7 +199,7 @@ class SinglesEnv(PokeEnv[np.int64]):
                     mvs = (
                         battle.available_moves
                         if len(battle.available_moves) == 1
-                        and battle.available_moves[0].id in ["struggle", "recharge"]
+                        and battle.available_moves[0].id in SPECIAL_MOVES
                         else list(battle.active_pokemon.moves.values())
                     )
                     action = [m.id for m in mvs].index(order.order.id)
@@ -255,7 +256,7 @@ class SinglesEnv(PokeEnv[np.int64]):
             if (
                 not move_space
                 and len(battle.available_moves) == 1
-                and battle.available_moves[0].id in ["struggle", "recharge"]
+                and battle.available_moves[0].id in SPECIAL_MOVES
             ):
                 move_space = [6]
             actions = (
