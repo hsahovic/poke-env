@@ -43,23 +43,20 @@ def run_battles(env, n_battles):
     return steps
 
 
-N_BATTLES = 50
-MIN_STEPS_PER_SECOND = 30
-
-
 @pytest.mark.timeout(120)
 def test_env_benchmark():
-    env = BenchEnv(battle_format="gen9randombattle", log_level=25)
+    min_rate = 100
+    env = BenchEnv(battle_format="gen9randombattle", log_level=40)
     # Warm up
     run_battles(env, 2)
     # Benchmark
     start = time.perf_counter()
-    steps = run_battles(env, N_BATTLES)
+    steps = run_battles(env, 100)
     elapsed = time.perf_counter() - start
     env.close()
     steps_per_second = steps / elapsed
     print(f"\n{steps} steps in {elapsed:.2f}s ({steps_per_second:.1f} steps/s)")
-    assert steps_per_second > MIN_STEPS_PER_SECOND, (
+    assert steps_per_second > min_rate, (
         f"Environment too slow: {steps_per_second:.1f} steps/s "
-        f"(minimum {MIN_STEPS_PER_SECOND} steps/s)"
+        f"(minimum {min_rate} steps/s)"
     )
