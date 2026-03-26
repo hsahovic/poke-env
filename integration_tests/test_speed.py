@@ -46,7 +46,7 @@ def run_battles(env, n_battles):
 
 @pytest.mark.timeout(120)
 def test_env_benchmark():
-    min_rate = 100
+    min_rate = 150
     env = BenchEnv(battle_format="gen9randombattle", log_level=40)
     # Warm up
     run_battles(env, 2)
@@ -66,7 +66,7 @@ def test_env_benchmark():
 @pytest.mark.asyncio
 @pytest.mark.timeout(120)
 async def test_random_player_benchmark():
-    min_rate = 100
+    min_rate = 150
     p1 = RandomPlayer(battle_format="gen9randombattle", log_level=40)
     p2 = RandomPlayer(battle_format="gen9randombattle", log_level=40)
     start = time.perf_counter()

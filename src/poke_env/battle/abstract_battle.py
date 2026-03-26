@@ -90,6 +90,7 @@ class AbstractBattle(ABC):
         "_max_team_size",
         "_maybe_trapped",
         "_observations",
+        "_record_observations",
         "_opponent_dynamax_turn",
         "_opponent_rating",
         "_opponent_side_conditions",
@@ -189,6 +190,7 @@ class AbstractBattle(ABC):
         self._opponent_team: Dict[str, Pokemon] = {}
 
         # Initialize Observations
+        self._record_observations: bool = True
         self._observations: Dict[int, Observation] = {}
         self._current_observation: Observation = Observation()
 
@@ -475,8 +477,8 @@ class AbstractBattle(ABC):
         return replay_path
 
     def _finish_battle(self):
-        # Recording the battle state and save events as we finish up
-        self.observations[self.turn] = self._current_observation
+        if self._record_observations:
+            self.observations[self.turn] = self._current_observation
         self._finished = True
 
         if self._save_replays:
@@ -514,7 +516,8 @@ class AbstractBattle(ABC):
 
     def parse_message(self, split_message: List[str]):
         self._replay_data.append(split_message[:])
-        self._current_observation.events.append(split_message)
+        if self._record_observations:
+            self._current_observation.events.append(split_message)
 
         # We copy because we directly modify split_message in poke-env; this is to
         # preserve further usage of this event upstream
@@ -694,45 +697,51 @@ class AbstractBattle(ABC):
             pokemon, _ = event[2:4]
             self.get_pokemon(pokemon).cant_move()
         elif event[1] == "turn":
-            # Saving the beginning-of-turn battle state and events as we go into the turn
-            self.observations[self.turn] = self._current_observation
+            if self._record_observations:
+                # Saving the beginning-of-turn battle state and events
+                self.observations[self.turn] = self._current_observation
 
             self.end_turn(int(event[2]))
 
-            opp_active_mon, active_mon = None, None
-            if isinstance(self.opponent_active_pokemon, Pokemon):
-                opp_active_mon = ObservedPokemon.from_pokemon(
-                    self.opponent_active_pokemon
-                )
-                active_mon = ObservedPokemon.from_pokemon(self.active_pokemon)
-            else:
-                opp_active_mon = [
-                    ObservedPokemon.from_pokemon(mon)
-                    for mon in self.opponent_active_pokemon
-                ]
-                active_mon = [
-                    ObservedPokemon.from_pokemon(mon) for mon in self.active_pokemon
-                ]
+            if self._record_observations:
 
-            # Create new Observation and record battle state going into the next turn
-            self._current_observation = Observation(
-                side_conditions={k: v for (k, v) in self.side_conditions.items()},
-                opponent_side_conditions={
-                    k: v for (k, v) in self.opponent_side_conditions.items()
-                },
-                weather={k: v for (k, v) in self.weather.items()},
-                fields={k: v for (k, v) in self.fields.items()},
-                active_pokemon=active_mon,
-                team={
-                    ident: ObservedPokemon.from_pokemon(mon)
-                    for (ident, mon) in self.team.items()
-                },
-                opponent_active_pokemon=opp_active_mon,
-                opponent_team={
-                    ident: ObservedPokemon.from_pokemon(mon)
-                    for (ident, mon) in self.opponent_team.items()
-                },
-            )
+                opp_active_mon, active_mon = None, None
+                if isinstance(self.opponent_active_pokemon, Pokemon):
+                    opp_active_mon = ObservedPokemon.from_pokemon(
+                        self.opponent_active_pokemon
+                    )
+                    active_mon = ObservedPokemon.from_pokemon(self.active_pokemon)
+                else:
+                    opp_active_mon = [
+                        ObservedPokemon.from_pokemon(mon)
+                        for mon in self.opponent_active_pokemon
+                    ]
+                    active_mon = [
+                        ObservedPokemon.from_pokemon(mon)
+                        for mon in self.active_pokemon
+                    ]
+
+                # Create new Observation for the next turn
+                self._current_observation = Observation(
+                    side_conditions={
+                        k: v for (k, v) in self.side_conditions.items()
+                    },
+                    opponent_side_conditions={
+                        k: v for (k, v) in self.opponent_side_conditions.items()
+                    },
+                    weather={k: v for (k, v) in self.weather.items()},
+                    fields={k: v for (k, v) in self.fields.items()},
+                    active_pokemon=active_mon,
+                    team={
+                        ident: ObservedPokemon.from_pokemon(mon)
+                        for (ident, mon) in self.team.items()
+                    },
+                    opponent_active_pokemon=opp_active_mon,
+                    opponent_team={
+                        ident: ObservedPokemon.from_pokemon(mon)
+                        for (ident, mon) in self.opponent_team.items()
+                    },
+                )
         elif event[1] == "-heal":
             pokemon, hp_status = event[2:4]
             self.get_pokemon(pokemon).set_hp_status(hp_status)
