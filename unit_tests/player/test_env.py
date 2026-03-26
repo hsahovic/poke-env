@@ -74,29 +74,20 @@ def test_pickle_unpickle():
 
 
 def test_init_queue():
-    q = _AsyncQueue(asyncio.Queue(), POKE_LOOP)
+    q = _AsyncQueue(POKE_LOOP)
     assert isinstance(q, _AsyncQueue)
 
 
 def test_queue():
-    q = _AsyncQueue(asyncio.Queue(), POKE_LOOP)
+    q = _AsyncQueue(POKE_LOOP)
     assert q.empty()
     q.put(1)
-    assert q.queue.qsize() == 1
-    loop = asyncio.new_event_loop()
-    try:
-        loop.run_until_complete(q.async_put(2))
-        assert q.queue.qsize() == 2
-        item = q.get()
-        q.queue.task_done()
-        assert q.queue.qsize() == 1
-        assert item == 1
-        item = loop.run_until_complete(q.async_get())
-        q.queue.task_done()
-        assert q.empty()
-        assert item == 2
-    finally:
-        loop.close()
+    item = q.get()
+    assert item == 1
+    q.put(2)
+    item = q.get()
+    assert item == 2
+    assert q.empty()
 
 
 def test_async_player():
