@@ -6,6 +6,7 @@ import pytest
 from gymnasium.spaces import Box
 
 from poke_env.environment import SinglesEnv
+from poke_env.player import RandomPlayer
 
 
 class BenchEnv(SinglesEnv):
@@ -58,5 +59,25 @@ def test_env_benchmark():
     print(f"\n{steps} steps in {elapsed:.2f}s ({steps_per_second:.1f} steps/s)")
     assert steps_per_second > min_rate, (
         f"Environment too slow: {steps_per_second:.1f} steps/s "
+        f"(minimum {min_rate} steps/s)"
+    )
+
+
+@pytest.mark.asyncio
+@pytest.mark.timeout(120)
+async def test_random_player_benchmark():
+    min_rate = 100
+    p1 = RandomPlayer(battle_format="gen9randombattle", log_level=40)
+    p2 = RandomPlayer(battle_format="gen9randombattle", log_level=40)
+    start = time.perf_counter()
+    await p1.battle_against(p2, n_battles=100)
+    elapsed = time.perf_counter() - start
+    total_turns = sum(b.turn for b in p1.battles.values())
+    await p1.ps_client.stop_listening()
+    await p2.ps_client.stop_listening()
+    steps_per_second = total_turns / elapsed
+    print(f"\n{total_turns} steps in {elapsed:.2f}s ({steps_per_second:.1f} steps/s)")
+    assert steps_per_second > min_rate, (
+        f"RandomPlayer too slow: {steps_per_second:.1f} steps/s "
         f"(minimum {min_rate} steps/s)"
     )
