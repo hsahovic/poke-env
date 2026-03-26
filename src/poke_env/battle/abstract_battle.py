@@ -717,15 +717,12 @@ class AbstractBattle(ABC):
                         for mon in self.opponent_active_pokemon
                     ]
                     active_mon = [
-                        ObservedPokemon.from_pokemon(mon)
-                        for mon in self.active_pokemon
+                        ObservedPokemon.from_pokemon(mon) for mon in self.active_pokemon
                     ]
 
                 # Create new Observation for the next turn
                 self._current_observation = Observation(
-                    side_conditions={
-                        k: v for (k, v) in self.side_conditions.items()
-                    },
+                    side_conditions={k: v for (k, v) in self.side_conditions.items()},
                     opponent_side_conditions={
                         k: v for (k, v) in self.opponent_side_conditions.items()
                     },
