@@ -11,9 +11,19 @@ def test_pokemon_moves():
 
     mon.moved("flamethrower")
     assert "flamethrower" in mon.moves
+    assert mon.moves["flamethrower"].is_last_used
+    assert mon.last_move == mon.moves["flamethrower"]
+
+    mon.moved("airslash")
+    assert mon.moves["airslash"].is_last_used
+    assert not mon.moves["flamethrower"].is_last_used
+    assert mon.last_move == mon.moves["airslash"]
 
     mon.moved("struggle")
     assert "struggle" not in mon.moves
+    assert not mon.moves["flamethrower"].is_last_used
+    assert not mon.moves["airslash"].is_last_used
+    assert mon.last_move is None
 
     assert not mon.preparing
     assert not mon.must_recharge
@@ -284,8 +294,8 @@ def test_tera_type():
     charizard.terastallize("bug")
     assert charizard.tera_type == PokemonType.BUG
     assert charizard.types == [PokemonType.BUG]
-    assert PokemonType.FIRE in charizard.original_types
-    assert PokemonType.FLYING in charizard.original_types
+    assert PokemonType.FIRE in charizard.base_types
+    assert PokemonType.FLYING in charizard.base_types
 
 
 def test_details():
@@ -435,12 +445,14 @@ def test_temporary():
     furret._ability = "adaptability"
 
     assert furret.types == [PokemonType.NORMAL]
+    assert furret.base_types == [PokemonType.NORMAL]
     assert furret.stab_multiplier == 2
 
     furret.start_effect("typechange", "???/Fighting")
     furret.start_effect("move: Skill Swap", ["Levitate", "Adaptability"])
 
     assert furret.types == [PokemonType.THREE_QUESTION_MARKS, PokemonType.FIGHTING]
+    assert furret.base_types == [PokemonType.THREE_QUESTION_MARKS, PokemonType.FIGHTING]
     assert furret.ability == "levitate"
     assert furret.damage_multiplier(PokemonType.PSYCHIC) == 1
     assert furret.stab_multiplier == 1.5
@@ -457,6 +469,7 @@ def test_temporary():
     assert furret.type_1 == PokemonType.DRAGON
     assert furret.type_2 is None
     assert furret.damage_multiplier(PokemonType.ICE) == 2
+    assert furret.base_types == [PokemonType.NORMAL]
 
     furret.temporary_ability = "frisk"
     assert furret.ability == "frisk"

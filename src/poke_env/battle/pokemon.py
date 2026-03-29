@@ -19,13 +19,12 @@ class Pokemon:
     __slots__ = (
         "_ability",
         "_active",
-        "_active",
+        "_active_turns",
         "_base_stats",
         "_boosts",
         "_current_hp",
         "_dancing",
         "_effects",
-        "_first_turn",
         "_forme_change_ability",
         "_gen",
         "_gender",
@@ -101,7 +100,7 @@ class Pokemon:
         }
         self._current_hp: Optional[int] = 0
         self._effects: Dict[Effect, int] = {}
-        self._first_turn: bool = False
+        self._active_turns: int = 0
         self._terastallized: bool = False
         self._terastallized_type: Optional[PokemonType] = None
         self._item: Optional[str] = GenData.from_gen(gen).UNKNOWN_ITEM
@@ -181,7 +180,6 @@ class Pokemon:
 
     def cant_move(self):
         self._dancing = False
-        self._first_turn = False
         self._protect_counter = 0
 
         if self._status == Status.SLP:
@@ -400,6 +398,7 @@ class Pokemon:
             self._preparing_target = False
 
     def end_turn(self):
+        self._active_turns += 1
         if self._status == Status.TOX:
             self._status_counter += 1
         for effect in list(self.effects.keys()):
@@ -457,8 +456,11 @@ class Pokemon:
         move = None
         if reveal:
             move = self._add_move(move_id)
-        if move is not None and use:
-            move.use(pressure)
+        if use:
+            if move is not None:
+                move.use(pressure)
+            for m in self.moves.values():
+                m._is_last_used = m is move
 
         if move is not None and move.is_protect_counter and not failed:
             self._protect_counter += 1
@@ -568,11 +570,8 @@ class Pokemon:
 
     def switch_in(self, details: Optional[str] = None):
         self._active = True
-
         if details:
             self._update_from_details(details)
-
-        self._first_turn = True
         self._revealed = True
 
     def switch_out(self, fields: Dict[Field, int]):
@@ -589,7 +588,7 @@ class Pokemon:
         self._active = False
         self.clear_boosts()
         self._clear_effects()
-        self._first_turn = False
+        self._active_turns = 0
         self._must_recharge = False
         self._preparing_move = None
         self._preparing_target = None
@@ -602,6 +601,9 @@ class Pokemon:
 
         if self._status == Status.TOX:
             self._status_counter = 0
+
+        for move in self.moves.values():
+            move._is_last_used = False
 
     def terastallize(self, type_: str):
         self._terastallized_type = PokemonType.from_name(type_)
@@ -929,6 +931,21 @@ class Pokemon:
         )
 
     @property
+    def base_types(self) -> List[PokemonType]:
+        """
+        :return: The pokemon's non-Tera types, accounting for temporary type changes.
+            Unlike `types`, this ignores Terastallization.
+        :rtype: List[PokemonType]
+        """
+        if len(self._temporary_types) > 0:
+            return self._temporary_types
+        else:
+            types = [self._type_1]
+            if self._type_2 is not None:
+                types.append(self._type_2)
+            return types
+
+    @property
     def boosts(self) -> Dict[str, int]:
         """
         :return: The pokemon's boosts.
@@ -983,7 +1000,7 @@ class Pokemon:
         :return: Whether this is this pokemon's first action since its last switch in.
         :rtype: bool
         """
-        return self._first_turn
+        return self._active_turns == 1
 
     @property
     def forme_change_ability(self) -> Optional[str]:
@@ -1069,6 +1086,17 @@ class Pokemon:
         self._item = to_id_str(item) if item is not None else None
 
     @property
+    def last_move(self) -> Optional[Move]:
+        """
+        :return: The last move used by this pokemon, or None.
+        :rtype: Move | None
+        """
+        for move in self.moves.values():
+            if move.is_last_used:
+                return move
+        return None
+
+    @property
     def level(self) -> int:
         """
         :return: The pokemon's level.
@@ -1129,13 +1157,6 @@ class Pokemon:
                 return dex_entry["name"]
             else:
                 return dex_entry["baseSpecies"]
-
-    @property
-    def original_types(self) -> List[PokemonType]:
-        if self._type_2 is None:
-            return [self._type_1]
-        else:
-            return [self._type_1, self._type_2]
 
     @property
     def pokeball(self) -> Optional[str]:
