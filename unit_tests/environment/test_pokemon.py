@@ -445,12 +445,14 @@ def test_temporary():
     furret._ability = "adaptability"
 
     assert furret.types == [PokemonType.NORMAL]
+    assert furret.base_types == [PokemonType.NORMAL]
     assert furret.stab_multiplier == 2
 
     furret.start_effect("typechange", "???/Fighting")
     furret.start_effect("move: Skill Swap", ["Levitate", "Adaptability"])
 
     assert furret.types == [PokemonType.THREE_QUESTION_MARKS, PokemonType.FIGHTING]
+    assert furret.base_types == [PokemonType.THREE_QUESTION_MARKS, PokemonType.FIGHTING]
     assert furret.ability == "levitate"
     assert furret.damage_multiplier(PokemonType.PSYCHIC) == 1
     assert furret.stab_multiplier == 1.5
@@ -467,6 +469,7 @@ def test_temporary():
     assert furret.type_1 == PokemonType.DRAGON
     assert furret.type_2 is None
     assert furret.damage_multiplier(PokemonType.ICE) == 2
+    assert furret.base_types == [PokemonType.NORMAL]
 
     furret.temporary_ability = "frisk"
     assert furret.ability == "frisk"
