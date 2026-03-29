@@ -251,6 +251,19 @@ async def test_awaitable_move(send_message_patch):
         send_message_patch.assert_called_with("/choose move bite", "bat1")
 
 
+@patch("poke_env.ps_client.ps_client.PSClient.send_message")
+@pytest.mark.asyncio
+async def test_handle_battle_request_waits_when_battle_waiting(send_message_patch):
+    player = SimplePlayer(start_listening=False)
+    battle = Battle("bat1", player.username, player.logger, 8)
+    battle._wait = True
+
+    await player._handle_battle_request(battle)
+
+    send_message_patch.assert_not_called()
+    assert player._waiting.is_set()
+
+
 @pytest.mark.asyncio
 async def test_create_teampreview_team(showdown_format_teams):
     player = SimplePlayer(
