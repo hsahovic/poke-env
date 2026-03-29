@@ -1556,7 +1556,7 @@ def get_stab_mod(pokemon: Pokemon, move: Move, move_type: Optional[PokemonType])
     if move.id == "struggle":  # struggle is typeless
         return stab_mod
 
-    if move_type in pokemon.original_types:
+    if move_type in pokemon.base_types:
         stab_mod += 2048
     elif pokemon.ability in ["protean", "libero"] and not pokemon.is_terastallized:
         stab_mod += 2048
@@ -1571,7 +1571,7 @@ def get_stab_mod(pokemon: Pokemon, move: Move, move_type: Optional[PokemonType])
     if pokemon.ability == "adaptability" and move_type in pokemon.types:
         stab_mod += (
             1024
-            if pokemon.is_terastallized and tera_type in pokemon.original_types
+            if pokemon.is_terastallized and tera_type in pokemon.base_types
             else 2048
         )
 
@@ -1589,7 +1589,7 @@ def get_stellar_stab_mod(pokemon: Pokemon, move: Move, stab_mod=1):
     # )
 
     if is_stellar_boosted:
-        if move.type in pokemon.original_types:
+        if move.type in pokemon.base_types:
             stab_mod += 2048
         else:
             stab_mod = 4915

@@ -294,8 +294,8 @@ def test_tera_type():
     charizard.terastallize("bug")
     assert charizard.tera_type == PokemonType.BUG
     assert charizard.types == [PokemonType.BUG]
-    assert PokemonType.FIRE in charizard.original_types
-    assert PokemonType.FLYING in charizard.original_types
+    assert PokemonType.FIRE in charizard.base_types
+    assert PokemonType.FLYING in charizard.base_types
 
 
 def test_details():
