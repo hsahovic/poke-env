@@ -11,9 +11,16 @@ def test_pokemon_moves():
 
     mon.moved("flamethrower")
     assert "flamethrower" in mon.moves
+    assert mon.moves["flamethrower"].is_last_used
+
+    mon.moved("airslash")
+    assert mon.moves["airslash"].is_last_used
+    assert not mon.moves["flamethrower"].is_last_used
 
     mon.moved("struggle")
     assert "struggle" not in mon.moves
+    assert not mon.moves["flamethrower"].is_last_used
+    assert not mon.moves["airslash"].is_last_used
 
     assert not mon.preparing
     assert not mon.must_recharge
