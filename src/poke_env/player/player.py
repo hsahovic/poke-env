@@ -292,9 +292,7 @@ class Player(ABC):
                 if split_message[2]:
                     request = orjson.loads(split_message[2])
                     battle.parse_request(request, self._strict_battle_tracking)
-                    if battle._wait:
-                        self._waiting.set()
-                    elif not (battle.teampreview and self.accept_open_team_sheet):
+                    if not (battle.teampreview and self.accept_open_team_sheet):
                         await self._handle_battle_request(battle)
             elif split_message[1] == "showteam":
                 role = split_message[2]
@@ -352,6 +350,9 @@ class Player(ABC):
     async def _handle_battle_request(
         self, battle: AbstractBattle, maybe_default_order: bool = False
     ):
+        if battle._wait:
+            self._waiting.set()
+            return
         if maybe_default_order and random.random() < self.DEFAULT_CHOICE_CHANCE:
             message = self.choose_default_move().message
         elif battle.teampreview:
