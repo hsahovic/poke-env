@@ -17,8 +17,8 @@ async def main():
     # Accepting one challenge from any user
     # await player.accept_challenges(None, 1)
 
-    # Accepting three challenges from 'your_username'
-    # await player.accept_challenges('your_username', 3)
+    # Accepting three challenges from "your_username"
+    # await player.accept_challenges("your_username", 3)
 
     # Playing 5 games on the ladder
     # await player.ladder(5)
@@ -29,4 +29,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.get_event_loop().run_until_complete(main())
+    asyncio.run(main())

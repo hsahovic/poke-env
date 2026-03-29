@@ -4,7 +4,7 @@
 Poke-env: A Python Interface for Training Reinforcement Learning Pokémon Bots
 #############################################################################
 
-Poke-env provides an environment for engaging in `Pokémon Showdown <https://pokemonshowdown.com/>`__ battles with a focus on reinforcement learning. 
+Poke-env provides an environment for engaging in `Pokémon Showdown <https://pokemonshowdown.com/>`__ battles with a focus on reinforcement learning.
 
 It boasts a straightforward API for handling Pokémon, Battles, Moves, and other battle-centric objects, alongside a `Farama Gymnasium <https://gymnasium.farama.org/>`__ interface for training agents.
 
@@ -45,12 +45,12 @@ On top of the main modules dedicated to building Pokémon Showdown bots, Poke-en
 Acknowledgements
 ================
 
-Originated from a group project at `École Polytechnique <https://www.polytechnique.edu/>`_. Inspired partially by `showdown-battle-bot <https://github.com/Synedh/showdown-battle-bot>`__ and built upon `Pokemon Showdown <https://github.com/Zarel/Pokemon-Showdown>`__.
+Originated from a group project at `École Polytechnique <https://www.polytechnique.edu/>`_. Inspired partially by `showdown-battle-bot <https://github.com/Synedh/showdown-battle-bot>`__ and built upon `Pokemon Showdown <https://github.com/smogon/pokemon-showdown>`__.
 
 Data
 ====
 
-Data adapted from `Pokemon Showdown <https://github.com/Zarel/Pokemon-Showdown>`__ and team data sourced from `Smogon forums' RMT section <https://www.smogon.com/>`__.
+Data adapted from `Pokemon Showdown <https://github.com/smogon/pokemon-showdown>`__ and team data sourced from `Smogon forums' RMT section <https://www.smogon.com/>`__.
 
 License
 =======

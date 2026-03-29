@@ -1,4 +1,4 @@
-# The pokemon showdown Python environment
+# The Pokemon Showdown Python Environment
 
 [![PyPI version fury.io](https://badge.fury.io/py/poke-env.svg)](https://pypi.python.org/pypi/poke-env/)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/poke-env.svg)](https://pypi.python.org/pypi/poke-env/)
@@ -6,13 +6,16 @@
 [![Documentation Status](https://readthedocs.org/projects/poke-env/badge/?version=stable)](https://poke-env.readthedocs.io/en/stable/?badge=stable)
 [![codecov](https://codecov.io/gh/hsahovic/poke-env/branch/master/graph/badge.svg)](https://codecov.io/gh/hsahovic/poke-env)
 
-A Python interface to create battling pokemon agents. `poke-env` offers an easy-to-use interface for creating rule-based or training Reinforcement Learning bots to battle on [pokemon showdown](https://pokemonshowdown.com/).
+A Python interface for creating battling Pokemon agents. `poke-env` offers an
+easy-to-use interface for building rule-based bots or training reinforcement
+learning agents to battle on [Pokemon Showdown](https://pokemonshowdown.com/).
 
 ![A simple agent in action](rl-gif.gif)
 
 ## Getting started
 
-Agents are instance of python classes inheriting from `Player`. Here is what your first agent could look like:
+Agents are instances of Python classes inheriting from `Player`. Here is what
+your first agent could look like:
 
 ```python
 class YourFirstAgent(Player):
@@ -42,7 +45,8 @@ Documentation, detailed examples and starting code can be found [on readthedocs]
 
 ## Installation
 
-This project requires python >= 3.9 and a [Pokemon Showdown](https://github.com/Zarel/Pokemon-Showdown) server.
+This project requires Python >= 3.10 and a
+[Pokemon Showdown](https://github.com/smogon/pokemon-showdown) server.
 
 ```
 pip install poke-env
@@ -77,13 +81,14 @@ pip install .[dev]
 
 This project is a follow-up of a group project from an artificial intelligence class at [Ecole Polytechnique](https://www.polytechnique.edu/).
 
-You can find the original repository [here](https://github.com/hsahovic/inf581-project). It is partially inspired by the [showdown-battle-bot project](https://github.com/Synedh/showdown-battle-bot). Of course, none of these would have been possible without [Pokemon Showdown](https://github.com/Zarel/Pokemon-Showdown).
+You can find the original repository [here](https://github.com/hsahovic/inf581-project). It is partially inspired by the [showdown-battle-bot project](https://github.com/Synedh/showdown-battle-bot). Of course, none of these would have been possible without [Pokemon Showdown](https://github.com/smogon/pokemon-showdown).
 
 Team data comes from [Smogon forums' RMT section](https://www.smogon.com/).
 
 ## Data
 
-Data files are adapted version of the `js` data files of [Pokemon Showdown](https://github.com/Zarel/Pokemon-Showdown).
+Data files are adapted versions of the `js` data files from
+[Pokemon Showdown](https://github.com/smogon/pokemon-showdown).
 
 ## License
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)

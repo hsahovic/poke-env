@@ -1,20 +1,29 @@
 .. _connecting_to_showdown_and_challenging_humans:
 
-Connecting to showdown and challenging humans
+Connecting to Showdown and Challenging Humans
 =============================================
 
-The corresponding complete source code can be found `here <https://github.com/hsahovic/poke-env/blob/master/examples/connecting_an_agent_to_showdown.py>`__.
+The complete example source code is available
+`here <https://github.com/hsahovic/poke-env/blob/master/examples/connecting_an_agent_to_showdown.py>`__.
 
-The goal of this example is to demonstrate how to run an agent on showdown, and how to challenge human players.
+This example demonstrates how to connect an agent to Pokémon Showdown and
+challenge human players.
 
-Connecting your agent to showdown
+Connecting Your Agent to Showdown
 *********************************
 
-To connect an agent to a showdown server hosted online, you must specify a matching server configuration.
+To connect an agent to a Showdown server hosted online, you must specify a
+matching server configuration.
 
-A configuration pointing towards `play.pokemonshowdown.com <https://play.pokemonshowdown.com/>`__ is available in ``poke_env.ps_client.server_configuration`` and can be used directly. To specify a different server, see :ref:`configuring a showdown server`.
+A configuration pointing to
+`play.pokemonshowdown.com <https://play.pokemonshowdown.com/>`__ is available
+in ``poke_env.ps_client.server_configuration`` and can be used directly. To
+specify a different server, see :ref:`configuring a showdown server`.
 
-To connect to `play.pokemonshowdown.com <https://play.pokemonshowdown.com/>`__, you also need an account for your agent to use. The following snippets assumes that the account ``bot_username`` exists, and can be accessed with ``bot_password``.
+To connect to `play.pokemonshowdown.com <https://play.pokemonshowdown.com/>`__,
+you also need an account for your agent to use. The following snippet assumes
+that the account ``bot_username`` exists and can be accessed with
+``bot_password``.
 
 .. code-block:: python
 
@@ -23,37 +32,33 @@ To connect to `play.pokemonshowdown.com <https://play.pokemonshowdown.com/>`__, 
 
     # We create a random player
     player = RandomPlayer(
-        player_configuration=AccountConfiguration("bot_username", "bot_password"),
+        account_configuration=AccountConfiguration("bot_username", "bot_password"),
         server_configuration=ShowdownServerConfiguration,
     )
 
-Challenging a human player
+Challenging a Human Player
 **************************
 
-Now that your agent is configured to access showdown, you can use it to challenge any specific user connected on showdown. To do so, you just need their username. The following snippet will make your agent challenge user ``your_username`` for one battle.
+Now that your agent is configured to access Showdown, you can use it to
+challenge any specific connected user. The following snippet will make your
+agent challenge ``your_username`` for one battle.
 
 .. code-block:: python
 
     await player.send_challenges("your_username", n_challenges=1)
 
-Accepting challenges from human players
+Accepting Challenges from Human Players
 ***************************************
 
-You can use the ``accept_challenges`` method to automatically accept challenges from a player. To do so, run:
+You can use ``accept_challenges`` to automatically accept challenges from a
+specific player or from any player.
 
 .. code-block:: python
 
-    # Replace opp_username with None to accept challenges from any player
-    await player.accept_challenges('opp_username', 1)
+    await player.accept_challenges("opp_username", 1)
+    await player.accept_challenges(None, 1)
 
-Passing ``None`` instead of a username will make the agent accept challenges from any player.
-
-.. code-block:: python
-
-    # Replace opp_username with None to accept challenges from any player
-    await player.accept_challenges('opp_username', 1)
-
-Playing on the ladder
+Playing on the Ladder
 *********************
 
 Finally, you can use the ``ladder`` method to play games on the ladder.
@@ -63,7 +68,8 @@ Finally, you can use the ``ladder`` method to play games on the ladder.
     # Play five games on the ladder
     await player.ladder(5)
 
-After playing games on the ladder, you may receive rating information. You can access them with the ``Battle.rating`` and ``Battle.opponent_rating`` methods:
+After playing games on the ladder, you may receive rating information. You can
+access it with the ``Battle.rating`` and ``Battle.opponent_rating`` properties:
 
 .. code-block:: python
 
@@ -71,11 +77,11 @@ After playing games on the ladder, you may receive rating information. You can a
     for battle in player.battles.values():
         print(battle.rating, battle.opponent_rating)
 
-A complete example source code is:
+The complete example is:
 
 .. code-block:: python
 
-        import asyncio
+    import asyncio
 
     from poke_env.player import RandomPlayer
     from poke_env import AccountConfiguration, ShowdownServerConfiguration
@@ -84,7 +90,7 @@ A complete example source code is:
     async def main():
         # We create a random player
         player = RandomPlayer(
-            player_configuration=AccountConfiguration("bot_username", "bot_password")
+            account_configuration=AccountConfiguration("bot_username", "bot_password"),
             server_configuration=ShowdownServerConfiguration,
         )
 
@@ -95,7 +101,7 @@ A complete example source code is:
         await player.accept_challenges(None, 1)
 
         # Accepting three challenges from 'your_username'
-        await player.accept_challenges('your_username', 3)
+        await player.accept_challenges("your_username", 3)
 
         # Playing 5 games on the ladder
         await player.ladder(5)
@@ -106,4 +112,4 @@ A complete example source code is:
 
 
     if __name__ == "__main__":
-        asyncio.get_event_loop().run_until_complete(main())
+        asyncio.run(main())
