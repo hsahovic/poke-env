@@ -35,6 +35,34 @@ Though ``poke-env`` can interact with a `public server <https://play.pokemonshow
 
 .. warning:: The ``--no-security`` flag disables crucial security features, use with caution. This flag facilitates AI training by removing rate limiting and authentication requirements.
 
+Your First Local Battle
+=======================
+
+Once your local server is running, you can verify your setup by running two
+built-in players against each other. ``RandomPlayer`` uses the default
+localhost server configuration, so no explicit account or server setup is
+required for this example.
+
+.. code-block:: python
+
+    import asyncio
+
+    from poke_env.player import RandomPlayer
+
+
+    async def main():
+        player_1 = RandomPlayer(max_concurrent_battles=1)
+        player_2 = RandomPlayer(max_concurrent_battles=1)
+
+        await player_1.battle_against(player_2, n_battles=1)
+
+        print(f"Finished battles: {player_1.n_finished_battles}")
+        print(f"Player 1 wins: {player_1.n_won_battles}")
+
+
+    if __name__ == "__main__":
+        asyncio.run(main())
+
 Creating Agents
 ===============
 
@@ -117,3 +145,8 @@ For custom servers, create a ``ServerConfiguration`` object with the server URL 
         "https://my.custom.host/action.php?",
     )
     player = RandomPlayer(server_configuration=custom_config)
+
+What Next
+=========
+
+- Browse task-oriented guides: :doc:`examples/index`

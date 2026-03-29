@@ -11,6 +11,13 @@ The complete source code for this example is available
 - automatic replay persistence with ``save_replays``;
 - explicit replay export from a ``Player`` or ``Battle``.
 
+Prerequisites
+*************
+
+- Replay files are produced from completed battles.
+- The explicit example below uses two local players, so it requires a running
+  Showdown server.
+
 Automatic Replay Saving
 ***********************
 

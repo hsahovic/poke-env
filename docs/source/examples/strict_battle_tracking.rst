@@ -6,6 +6,13 @@ Strict Battle Tracking
 ``Player`` provides ``strict_battle_tracking`` to aggressively validate
 internal battle-state consistency against Showdown requests.
 
+Prerequisites
+*************
+
+- This option is most useful while running live battles or integration tests.
+- It is intended for debugging parser/state issues rather than day-to-day
+  training runs.
+
 .. code-block:: python
 
     from poke_env.player import RandomPlayer

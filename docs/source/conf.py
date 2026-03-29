@@ -12,13 +12,31 @@
 #
 import datetime
 import os
+import shutil
 import sys
+from pathlib import Path
 
 from pygments.lexers.python import PythonLexer
 from sphinx.highlighting import lexers
 
 sys.path.insert(0, os.path.abspath("../../src"))
 sys.path.insert(0, os.path.abspath("../../examples"))
+
+
+def _sync_example_notebooks() -> None:
+    """Keep docs notebook copies in sync for direct sphinx-build invocations."""
+    repo_root = Path(__file__).resolve().parents[2]
+    source_dir = Path(__file__).resolve().parent / "examples"
+    notebook_names = ["quickstart.ipynb", "using_a_custom_teambuilder.ipynb"]
+
+    for notebook_name in notebook_names:
+        src = repo_root / "examples" / notebook_name
+        dst = source_dir / notebook_name
+        if src.exists() and (not dst.exists() or src.read_bytes() != dst.read_bytes()):
+            shutil.copy2(src, dst)
+
+
+_sync_example_notebooks()
 
 # -- Project information -----------------------------------------------------
 

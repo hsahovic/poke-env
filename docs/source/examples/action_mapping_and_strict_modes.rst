@@ -15,6 +15,14 @@ Both methods support two important flags:
 - ``strict`` (default ``True``): raises ``ValueError`` when a conversion is invalid.
 - ``fake`` (default ``False``): allows best-effort conversions, even if not legal.
 
+Prerequisites
+*************
+
+- You need a live ``Battle`` or ``DoubleBattle`` object, usually from a player
+  callback or an environment step.
+- This guide is most useful when building custom RL policies, wrappers, or
+  action encoders.
+
 Why This Matters
 ****************
 

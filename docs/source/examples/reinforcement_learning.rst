@@ -9,6 +9,13 @@ The goal of this example is to demonstrate how to use the ``PokeEnv`` environmen
 
 .. note:: This example requires `stable-baselines3 <https://github.com/DLR-RM/stable-baselines3>`__ and `PyTorch <https://pytorch.org/>`__. You can install them by running ``pip install stable-baselines3``.
 
+Prerequisites
+*************
+
+- A local Pokémon Showdown server is strongly recommended for training runs.
+- Install ``stable-baselines3`` and PyTorch before running the full example.
+- If you are new to ``poke-env``, read :doc:`quickstart` first.
+
 Defining the environment
 ************************
 

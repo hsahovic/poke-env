@@ -9,6 +9,13 @@ The complete example source code is available
 This example demonstrates how to connect an agent to Pokémon Showdown and
 challenge human players.
 
+Prerequisites
+*************
+
+- For the official server, you need a Showdown account and password.
+- For a custom server, you need a matching ``ServerConfiguration``.
+- For local bot-vs-bot testing, start with :doc:`../getting_started` instead.
+
 Connecting Your Agent to Showdown
 *********************************
 
