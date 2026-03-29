@@ -1071,6 +1071,17 @@ class Pokemon:
         self._item = to_id_str(item) if item is not None else None
 
     @property
+    def last_move(self) -> Optional[Move]:
+        """
+        :return: The last move used by this pokemon, or None.
+        :rtype: Move | None
+        """
+        for move in self.moves.values():
+            if move.is_last_used:
+                return move
+        return None
+
+    @property
     def level(self) -> int:
         """
         :return: The pokemon's level.
