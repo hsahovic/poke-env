@@ -29,22 +29,6 @@ Double Battle
    :undoc-members:
    :show-inheritance:
 
-Observation
-***********
-
-.. automodule:: poke_env.battle.observation
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Observed Pokemon
-****************
-
-.. automodule:: poke_env.battle.observed_pokemon
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Target
 ******
 

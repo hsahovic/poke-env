@@ -31,6 +31,7 @@ Choose an Example
     quickstart
     using_a_custom_teambuilder
     connecting_to_showdown_and_challenging_humans
+    tracking_observations
     reinforcement_learning
     action_mapping_and_strict_modes
     strict_battle_tracking
