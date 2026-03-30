@@ -7,8 +7,6 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 from poke_env.battle.effect import Effect
 from poke_env.battle.field import Field
 from poke_env.battle.move import Move
-from poke_env.battle.observation import Observation
-from poke_env.battle.observed_pokemon import ObservedPokemon
 from poke_env.battle.pokemon import Pokemon
 from poke_env.battle.pokemon_type import PokemonType
 from poke_env.battle.side_condition import STACKABLE_CONDITIONS, SideCondition
@@ -78,7 +76,6 @@ class AbstractBattle(ABC):
         "_can_tera",
         "_can_z_move",
         "_commanding",
-        "_current_observation",
         "_dynamax_turn",
         "_fields",
         "_finished",
@@ -89,8 +86,6 @@ class AbstractBattle(ABC):
         "_last_request",
         "_max_team_size",
         "_maybe_trapped",
-        "_observations",
-        "_record_observations",
         "_opponent_dynamax_turn",
         "_opponent_rating",
         "_opponent_side_conditions",
@@ -188,11 +183,6 @@ class AbstractBattle(ABC):
         # Pokemon attributes
         self._team: Dict[str, Pokemon] = {}
         self._opponent_team: Dict[str, Pokemon] = {}
-
-        # Initialize Observations
-        self._record_observations: bool = True
-        self._observations: Dict[int, Observation] = {}
-        self._current_observation: Observation = Observation()
 
     def get_pokemon(
         self,
@@ -477,8 +467,6 @@ class AbstractBattle(ABC):
         return replay_path
 
     def _finish_battle(self):
-        if self._record_observations:
-            self.observations[self.turn] = self._current_observation
         self._finished = True
 
         if self._save_replays:
@@ -516,8 +504,6 @@ class AbstractBattle(ABC):
 
     def parse_message(self, split_message: List[str]):
         self._replay_data.append(split_message[:])
-        if self._record_observations:
-            self._current_observation.events.append(split_message)
 
         # We copy because we directly modify split_message in poke-env; this is to
         # preserve further usage of this event upstream
@@ -697,48 +683,7 @@ class AbstractBattle(ABC):
             pokemon, _ = event[2:4]
             self.get_pokemon(pokemon).cant_move()
         elif event[1] == "turn":
-            if self._record_observations:
-                # Saving the beginning-of-turn battle state and events
-                self.observations[self.turn] = self._current_observation
-
             self.end_turn(int(event[2]))
-
-            if self._record_observations:
-
-                opp_active_mon, active_mon = None, None
-                if isinstance(self.opponent_active_pokemon, Pokemon):
-                    opp_active_mon = ObservedPokemon.from_pokemon(
-                        self.opponent_active_pokemon
-                    )
-                    active_mon = ObservedPokemon.from_pokemon(self.active_pokemon)
-                else:
-                    opp_active_mon = [
-                        ObservedPokemon.from_pokemon(mon)
-                        for mon in self.opponent_active_pokemon
-                    ]
-                    active_mon = [
-                        ObservedPokemon.from_pokemon(mon) for mon in self.active_pokemon
-                    ]
-
-                # Create new Observation for the next turn
-                self._current_observation = Observation(
-                    side_conditions={k: v for (k, v) in self.side_conditions.items()},
-                    opponent_side_conditions={
-                        k: v for (k, v) in self.opponent_side_conditions.items()
-                    },
-                    weather={k: v for (k, v) in self.weather.items()},
-                    fields={k: v for (k, v) in self.fields.items()},
-                    active_pokemon=active_mon,
-                    team={
-                        ident: ObservedPokemon.from_pokemon(mon)
-                        for (ident, mon) in self.team.items()
-                    },
-                    opponent_active_pokemon=opp_active_mon,
-                    opponent_team={
-                        ident: ObservedPokemon.from_pokemon(mon)
-                        for (ident, mon) in self.opponent_team.items()
-                    },
-                )
         elif event[1] == "-heal":
             pokemon, hp_status = event[2:4]
             self.get_pokemon(pokemon).set_hp_status(hp_status)
@@ -1379,16 +1324,6 @@ class AbstractBattle(ABC):
         return self._commanding
 
     @property
-    def current_observation(self) -> Observation:
-        """
-        :return: The current observation of the current turn in the Battle.
-            Most useful for when a force_switch triggers in the middle of a
-            turn, and our player has to return an action.
-        :rtype: Observation
-        """
-        return self._current_observation
-
-    @property
     def dynamax_turns_left(self) -> Optional[int]:
         """
         :return: How many turns of dynamax are left. None if dynamax is not active
@@ -1476,16 +1411,6 @@ class AbstractBattle(ABC):
     @abstractmethod
     def maybe_trapped(self) -> Any:
         pass
-
-    @property
-    def observations(self) -> Dict[int, Observation]:
-        """
-        :return: Observations of the battle on a turn, where the key is the turn number.
-            The Observation stores the battle state at the beginning of the turn,
-            and all the events that transpired on that turn.
-        :rtype: Dict[int, Observation]
-        """
-        return self._observations
 
     @property
     @abstractmethod
