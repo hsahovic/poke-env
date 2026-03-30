@@ -71,7 +71,6 @@ class Player(ABC):
         loop: asyncio.AbstractEventLoop = POKE_LOOP,
         team: Optional[Union[str, Teambuilder]] = None,
         strict_battle_tracking: bool = False,
-        record_observations: bool = False,
     ):
         """
         :param account_configuration: Player configuration. If empty, defaults to an
@@ -158,7 +157,6 @@ class Player(ABC):
         self._trying_again: Event = create_in_poke_loop(Event, loop)
         self._team: Optional[Teambuilder] = None
         self._strict_battle_tracking = strict_battle_tracking
-        self._record_observations = record_observations
 
         if isinstance(team, Teambuilder):
             self._team = team
@@ -214,8 +212,6 @@ class Player(ABC):
                         gen=gen,
                         save_replays=self._save_replays,
                     )
-
-                battle._record_observations = self._record_observations
 
                 # Add our team as teampreview_team, as part of battle initialisation
                 if isinstance(self._team, ConstantTeambuilder):
