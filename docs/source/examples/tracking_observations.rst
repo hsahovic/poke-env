@@ -54,10 +54,14 @@ Create a dataclass that captures whatever battle state you need. Since ``Battle`
 
 This is just one example — add or remove fields to suit your needs.
 
+.. tip::
+
+   If you'd rather not define a custom snapshot class, you can also ``copy.deepcopy(battle)`` to capture the full ``Battle`` object at each turn. This preserves every attribute without manually extracting fields. The trade-off is higher memory usage and slower copies, but it's a convenient option when you want to keep everything or aren't sure what you'll need yet.
+
 Recording snapshots in choose_move
 ***********************************
 
-Override ``choose_move`` to take a snapshot each turn. The guard on ``history[-1].turn`` prevents duplicates when ``choose_move`` is called more than once on the same turn (e.g. after an invalid choice):
+Override ``choose_move`` to take a snapshot each turn:
 
 .. code-block:: python
 
@@ -70,8 +74,7 @@ Override ``choose_move`` to take a snapshot each turn. The guard on ``history[-1
             assert isinstance(battle, Battle)
             history = self.observations.setdefault(battle.battle_tag, [])
             snapshot = TurnSnapshot.from_battle(battle)
-            if not history or history[-1].turn != snapshot.turn:
-                history.append(snapshot)
+            history.append(snapshot)
             return self.choose_random_singles_move(battle)
 
 Cleaning up to prevent memory leaks

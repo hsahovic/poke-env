@@ -54,8 +54,7 @@ class ObservationTrackingPlayer(Player):
         assert isinstance(battle, Battle)
         history = self.observations.setdefault(battle.battle_tag, [])
         snapshot = TurnSnapshot.from_battle(battle)
-        if not history or history[-1].turn != snapshot.turn:
-            history.append(snapshot)
+        history.append(snapshot)
         return self.choose_random_singles_move(battle)
 
     def _battle_finished_callback(self, battle: AbstractBattle):
