@@ -42,8 +42,10 @@ ActionType = TypeVar("ActionType")
 
 
 class _AsyncQueue(Generic[ItemType]):
-    def __init__(self, queue: asyncio.Queue[ItemType], loop: asyncio.AbstractEventLoop):
-        self.queue = queue
+    queue: asyncio.Queue[ItemType]
+
+    def __init__(self, loop: asyncio.AbstractEventLoop, maxsize: int = 0):
+        self.queue = create_in_poke_loop(asyncio.Queue, loop, maxsize)
         self._loop = loop
 
     async def async_get(self) -> ItemType:
@@ -76,8 +78,7 @@ class _AsyncQueue(Generic[ItemType]):
         await self.queue.put(item)
 
     def put(self, item: ItemType):
-        task = asyncio.run_coroutine_threadsafe(self.queue.put(item), self._loop)
-        task.result()
+        self._loop.call_soon_threadsafe(self.queue.put_nowait, item)
 
     def empty(self):
         return self.queue.empty()
@@ -96,9 +97,8 @@ class _EnvPlayer(Player):
                 "choose_on_teampreview arg was not set in environment - by default, teampreview decisions will be made randomly."
             )
         self._choose_on_teampreview = choose_on_teampreview or False
-        lp = self.ps_client.loop
-        self.battle_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, lp, 1), lp)
-        self.order_queue = _AsyncQueue(create_in_poke_loop(asyncio.Queue, lp, 1), lp)
+        self.battle_queue = _AsyncQueue(self.ps_client.loop, maxsize=1)
+        self.order_queue = _AsyncQueue(self.ps_client.loop, maxsize=1)
         self.battle: Optional[AbstractBattle] = None
 
     def choose_move(self, battle: AbstractBattle) -> Awaitable[BattleOrder]:
@@ -151,9 +151,7 @@ class _EnvPlayer(Player):
             raise TypeError()
 
     def _battle_finished_callback(self, battle: AbstractBattle):
-        asyncio.run_coroutine_threadsafe(
-            self.battle_queue.async_put(battle), self.ps_client.loop
-        )
+        self.battle_queue.queue.put_nowait(battle)
 
 
 class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
