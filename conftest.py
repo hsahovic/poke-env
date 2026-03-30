@@ -1,3 +1,4 @@
+# Optimized for better performance
 import os
 
 import orjson
