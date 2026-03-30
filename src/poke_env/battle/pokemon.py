@@ -25,11 +25,13 @@ class Pokemon:
         "_current_hp",
         "_dancing",
         "_effects",
+        "_evs",
         "_forme_change_ability",
         "_gen",
         "_gender",
         "_heightm",
         "_item",
+        "_ivs",
         "_last_details",
         "_last_request",
         "_level",
@@ -37,6 +39,7 @@ class Pokemon:
         "_moves",
         "_must_recharge",
         "_name",
+        "_nature",
         "_possible_abilities",
         "_preparing_move",
         "_preparing_target",
@@ -85,6 +88,11 @@ class Pokemon:
         self._moves = MoveSet({})
         self._name: Optional[str] = None
         self._shiny: Optional[bool] = False
+
+        # Teambuilder related attributes
+        self._evs: list[int] | None = None
+        self._ivs: list[int] | None = None
+        self._nature: str | None = None
 
         # Battle related attributes
         self._gen = gen
@@ -757,6 +765,11 @@ class Pokemon:
             move = Move(Move.retrieve_id(move_str), gen=self.gen)
             self._moves[move.id] = move
 
+        if tb.nature is not None:
+            self._evs = tb.evs
+            self._ivs = tb.ivs
+            self._nature = tb.nature
+
         if tb.level:
             nature = tb.nature.lower() if tb.nature else "serious"
             self._stats = {}
@@ -987,6 +1000,15 @@ class Pokemon:
         return self._effects
 
     @property
+    def evs(self) -> list[int] | None:
+        """
+        :return: The pokemon's EVs as a list of [HP, Atk, Def, SpA, SpD, Spe].
+            None if unknown (e.g. opponent's pokemon).
+        :rtype: List[int] | None
+        """
+        return self._evs
+
+    @property
     def fainted(self) -> bool:
         """
         :return: Whether the pokemon has fainted.
@@ -1086,6 +1108,15 @@ class Pokemon:
         self._item = to_id_str(item) if item is not None else None
 
     @property
+    def ivs(self) -> list[int] | None:
+        """
+        :return: The pokemon's IVs as a list of [HP, Atk, Def, SpA, SpD, Spe].
+            None if unknown (e.g. opponent's pokemon).
+        :rtype: List[int] | None
+        """
+        return self._ivs
+
+    @property
     def last_move(self) -> Optional[Move]:
         """
         :return: The last move used by this pokemon, or None.
@@ -1157,6 +1188,14 @@ class Pokemon:
                 return dex_entry["name"]
             else:
                 return dex_entry["baseSpecies"]
+
+    @property
+    def nature(self) -> str | None:
+        """
+        :return: The pokemon's nature if known. None if not provided by the teambuilder.
+        :rtype: str | None
+        """
+        return self._nature
 
     @property
     def pokeball(self) -> Optional[str]:
