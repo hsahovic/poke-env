@@ -97,11 +97,8 @@ def test_async_player():
     player = _EnvPlayer(start_listening=False)
     battle = Battle("bat1", player.username, player.logger, gen=8)
     player.order_queue.put(ForfeitBattleOrder())
-    loop = asyncio.new_event_loop()
-    try:
-        order = loop.run_until_complete(player._choose_move(battle))
-    finally:
-        loop.close()
+    future = asyncio.run_coroutine_threadsafe(player._choose_move(battle), POKE_LOOP)
+    order = future.result()
     assert isinstance(order, ForfeitBattleOrder)
     assert embed_battle(player.battle_queue.get()) == "battle"
 
