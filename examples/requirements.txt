@@ -1,2 +1,2 @@
-stable-baselines3==2.7.1
+stable-baselines3==2.8.0
 torch==2.11.0
