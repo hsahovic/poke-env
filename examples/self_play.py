@@ -150,7 +150,10 @@ def train():
     env = SelfPlayEnv(battle_format=BATTLE_FORMAT, log_level=40, open_timeout=None)
     vec_env = ss.pettingzoo_env_to_vec_env(env)
     vec_env = ss.concat_vec_envs_v1(
-        vec_env, num_vec_envs=num_envs, num_cpus=0, base_class="stable_baselines3"
+        vec_env,
+        num_vec_envs=num_envs,
+        num_cpus=num_envs,
+        base_class="stable_baselines3",
     )
     ppo = PPO(
         MaskedActorCriticPolicy,
