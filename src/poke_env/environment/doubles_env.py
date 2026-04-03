@@ -196,10 +196,12 @@ class DoublesEnv(PokeEnv[npt.NDArray[np.int64]]):
                     f"in battle {battle.battle_tag} at position {pos} - action "
                     f"specifies a move, but battle.active_pokemon is None!"
                 )
+            avail_ids = [m.id for m in battle.available_moves[pos]]
+            known_ids = [m.id for m in active_mon.moves.values()]
             mvs = (
                 battle.available_moves[pos]
-                if len(battle.available_moves[pos]) == 1
-                and battle.available_moves[pos][0].id in SPECIAL_MOVES
+                if len(avail_ids) == 1
+                and (avail_ids[0] in SPECIAL_MOVES or avail_ids[0] not in known_ids)
                 else list(active_mon.moves.values())
             )
             if (action - 7) % 20 // 5 not in range(len(mvs)):
@@ -336,10 +338,12 @@ class DoublesEnv(PokeEnv[npt.NDArray[np.int64]]):
         else:
             active_mon = battle.active_pokemon[pos]
             assert active_mon is not None
+            avail_ids = [m.id for m in battle.available_moves[pos]]
+            known_ids = [m.id for m in active_mon.moves.values()]
             mvs = (
                 battle.available_moves[pos]
-                if len(battle.available_moves[pos]) == 1
-                and battle.available_moves[pos][0].id in SPECIAL_MOVES
+                if len(avail_ids) == 1
+                and (avail_ids[0] in SPECIAL_MOVES or avail_ids[0] not in known_ids)
                 else list(active_mon.moves.values())
             )
             action = [m.id for m in mvs].index(order.order.id)
@@ -395,6 +399,17 @@ class DoublesEnv(PokeEnv[npt.NDArray[np.int64]]):
                 if move.id in [m.id for m in battle.available_moves[pos]]
             ]
             move_space = [i for s in move_spaces for i in s]
+            if (
+                not move_space
+                and len(battle.available_moves[pos]) == 1
+                and battle.available_moves[pos][0].id not in SPECIAL_MOVES
+            ):
+                move_space = [
+                    7 + j + 2
+                    for j in battle.get_possible_showdown_targets(
+                        battle.available_moves[pos][0], active_mon
+                    )
+                ]
             mega_space = [i + 20 for i in move_space if battle.can_mega_evolve[pos]]
             zmove_spaces = [
                 [
