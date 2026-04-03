@@ -203,7 +203,10 @@ class SinglesEnv(PokeEnv[np.int64]):
                     mvs = (
                         battle.available_moves
                         if len(avail_ids) == 1
-                        and (avail_ids[0] in SPECIAL_MOVES or avail_ids[0] not in known_ids)
+                        and (
+                            avail_ids[0] in SPECIAL_MOVES
+                            or avail_ids[0] not in known_ids
+                        )
                         else list(battle.active_pokemon.moves.values())
                     )
                     action = [m.id for m in mvs].index(order.order.id)
