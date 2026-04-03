@@ -119,10 +119,12 @@ class SinglesEnv(PokeEnv[np.int64]):
                         f"in battle {battle.battle_tag} - action specifies a "
                         f"move, but battle.active_pokemon is None!"
                     )
+                avail_ids = [m.id for m in battle.available_moves]
+                known_ids = [m.id for m in battle.active_pokemon.moves.values()]
                 mvs = (
                     battle.available_moves
-                    if len(battle.available_moves) == 1
-                    and battle.available_moves[0].id in SPECIAL_MOVES
+                    if len(avail_ids) == 1
+                    and (avail_ids[0] in SPECIAL_MOVES or avail_ids[0] not in known_ids)
                     else list(battle.active_pokemon.moves.values())
                 )
                 if (action - 6) % 4 not in range(len(mvs)):
@@ -196,10 +198,12 @@ class SinglesEnv(PokeEnv[np.int64]):
                     )
                 else:
                     assert battle.active_pokemon is not None
+                    avail_ids = [m.id for m in battle.available_moves]
+                    known_ids = [m.id for m in battle.active_pokemon.moves.values()]
                     mvs = (
                         battle.available_moves
-                        if len(battle.available_moves) == 1
-                        and battle.available_moves[0].id in SPECIAL_MOVES
+                        if len(avail_ids) == 1
+                        and (avail_ids[0] in SPECIAL_MOVES or avail_ids[0] not in known_ids)
                         else list(battle.active_pokemon.moves.values())
                     )
                     action = [m.id for m in mvs].index(order.order.id)
@@ -244,6 +248,12 @@ class SinglesEnv(PokeEnv[np.int64]):
                 for i, move in enumerate(battle.active_pokemon.moves.values())
                 if move.id in [m.id for m in battle.available_moves]
             ]
+            if (
+                not move_space
+                and len(battle.available_moves) == 1
+                and battle.available_moves[0].id not in SPECIAL_MOVES
+            ):
+                move_space = [6]
             mega_space = [i + 4 for i in move_space if battle.can_mega_evolve]
             zmove_space = [
                 i + 6 + 8
