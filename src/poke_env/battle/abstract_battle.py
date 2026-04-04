@@ -1265,7 +1265,7 @@ class AbstractBattle(ABC):
                     for tb_mon in self._teambuilder_mons:
                         species = tb_mon.species or tb_mon.nickname or ""
                         if mon.identifies_as(species) and tb_mon.nature is not None:
-                            mon._nature = tb_mon.nature
+                            mon._nature = tb_mon.nature.lower()
                             mon._evs = tb_mon.evs
                             mon._ivs = tb_mon.ivs
                             break

@@ -768,7 +768,7 @@ class Pokemon:
         if tb.nature is not None:
             self._evs = tb.evs
             self._ivs = tb.ivs
-            self._nature = tb.nature
+            self._nature = tb.nature.lower()
 
         if tb.level:
             nature = tb.nature.lower() if tb.nature else "serious"
