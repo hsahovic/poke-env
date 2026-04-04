@@ -259,9 +259,10 @@ class SinglesEnv(PokeEnv[np.int64]):
                 move_space = [6]
             mega_space = [i + 4 for i in move_space if battle.can_mega_evolve]
             zmove_space = [
-                i + 6 + 8
-                for i, move in enumerate(battle.active_pokemon.moves.values())
-                if move.id in [m.id for m in battle.active_pokemon.available_z_moves]
+                i + 8
+                for i in move_space
+                if list(battle.active_pokemon.moves.values())[i - 6].id
+                in [m.id for m in battle.active_pokemon.available_z_moves]
                 and battle.can_z_move
             ]
             dynamax_space = [i + 12 for i in move_space if battle.can_dynamax]
