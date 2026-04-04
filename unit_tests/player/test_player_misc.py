@@ -3,14 +3,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from poke_env import AccountConfiguration
-from poke_env.battle import (
-    AbstractBattle,
-    Battle,
-    DoubleBattle,
-    Move,
-    PokemonGender,
-    PokemonType,
-)
+from poke_env.battle import AbstractBattle, Battle, DoubleBattle, Move
 from poke_env.player import (
     BattleOrder,
     Player,
@@ -18,7 +11,6 @@ from poke_env.player import (
     SingleBattleOrder,
     cross_evaluate,
 )
-from poke_env.stats import _raw_hp, _raw_stat
 
 
 class SimplePlayer(Player):
