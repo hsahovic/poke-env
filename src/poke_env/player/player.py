@@ -447,7 +447,7 @@ class Player(ABC):
                 self._current_packed_team = packed_team
                 team: str | None = packed_team
             else:
-                team = self.next_team
+                team = self.get_next_team()
                 self._current_packed_team = team
             while True:
                 username = to_id_str(await self._challenge_queue.get())
@@ -536,7 +536,7 @@ class Player(ABC):
 
         for _ in range(n_games):
             async with self._battle_start_condition:
-                self._current_packed_team = self.next_team
+                self._current_packed_team = self.get_next_team()
                 await self.ps_client.search_ladder_game(self._format, self._current_packed_team)
                 await self._battle_start_condition.wait()
                 while self._battle_count_queue.full():
@@ -610,7 +610,7 @@ class Player(ABC):
         start_time = perf_counter()
 
         for _ in range(n_challenges):
-            self._current_packed_team = self.next_team
+            self._current_packed_team = self.get_next_team()
             await self.ps_client.challenge(opponent, self._format, self._current_packed_team)
             await self._battle_semaphore.acquire()
         await self._battle_count_queue.join()
@@ -725,6 +725,11 @@ class Player(ABC):
             )
         return battle.save_replay(file_path)
 
+    def get_next_team(self) -> str | None:
+        if self._team:
+            return self._team.yield_team()
+        return None
+
     @property
     def battles(self) -> Dict[str, AbstractBattle]:
         return self._battles
@@ -773,9 +778,3 @@ class Player(ABC):
     @property
     def username(self) -> str:
         return self.ps_client.username
-
-    @property
-    def next_team(self) -> Optional[str]:
-        if self._team:
-            return self._team.yield_team()
-        return None
