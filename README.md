@@ -84,8 +84,11 @@ git clone https://github.com/hsahovic/poke-env.git
 Dependencies and development dependencies can then be installed with:
 
 ```
-pip install .[dev]
+cd poke-env
+uv sync --dev
 ```
+
+Run development commands through `uv run`, for example `uv run pytest unit_tests/`.
 
 ## Acknowledgements
 

@@ -19,28 +19,30 @@ jobs:
       - name: Checkout repository code
         uses: actions/checkout@v6
 
-      # Setup Python with caching
+      # Setup Python
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
           python-version: 3.11
-          cache: 'pip'
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --dev
 
       - name: Install Python Kernel
         run: |
-          pip install ipykernel
-          python -m ipykernel install --user --name python3
-
-      - name: Install dependencies
-        run: pip install .[dev]
+          uv pip install -p .venv/bin/python ipykernel
+          uv run python -m ipykernel install --user --name python3
 
       - name: Build package
-        run: |
-          pip install build
-          python -m build
+        run: uv build
 
       - name: Install built package
-        run: pip install --force-reinstall dist/*.whl
+        run: uv pip install -p .venv/bin/python --reinstall dist/*.whl
 
       - name: Remove source
         run: rm -rf ./src
@@ -77,7 +79,7 @@ jobs:
       - name: Run example notebooks
         run: |
             for notebook in $(find examples -name '*.ipynb'); do
-              jupyter nbconvert --to notebook --execute "$notebook" --output temp.ipynb
+              uv run --no-sync jupyter nbconvert --to notebook --execute "$notebook" --output temp.ipynb
               if [ $? -ne 0 ]; then
               echo "Execution of $notebook failed"
               exit 1

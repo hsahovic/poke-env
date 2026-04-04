@@ -25,8 +25,13 @@ jobs:
         with:
           python-version: "3.14"
 
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
       - name: Install dependencies
-        run: pip install .[dev]
+        run: uv sync --dev
 
       - name: Download Pandoc
         run: |
@@ -34,20 +39,20 @@ jobs:
           tar xvzf pandoc-3.1.9-linux-amd64.tar.gz --strip-components 2 -C /usr/local/bin
 
       - name: Run black
-        run: black --check src/ unit_tests/ integration_tests/
+        run: uv run black --check src/ unit_tests/ integration_tests/
 
       - name: Run flake8
-        run: flake8 src/ unit_tests/ integration_tests/
+        run: uv run flake8 src/ unit_tests/ integration_tests/
 
       - name: Run isort
-        run: isort --check .
+        run: uv run isort --check .
 
       - name: Run mypy
-        run: mypy src
+        run: uv run mypy src
 
       - name: Validate docs links
-        run: python scripts/check_docs_links.py
+        run: uv run python scripts/check_docs_links.py
 
       - name: Build docs (strict)
         run: |
-            LC_ALL=C LANG=C python -m sphinx -b html -W docs/source docs/_build/html
+            LC_ALL=C LANG=C uv run python -m sphinx -b html -W docs/source docs/_build/html

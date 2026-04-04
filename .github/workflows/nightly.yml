@@ -15,15 +15,19 @@ jobs:
       - name: Checkout repository code
         uses: actions/checkout@v6
 
-      # Setup Python with caching
+      # Setup Python
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
           python-version: "3.14"
-          cache: 'pip'
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
 
       - name: Install dependencies
-        run: pip install .[dev]
+        run: uv sync --dev
 
       - name: Setup node
         uses: actions/setup-node@v6
@@ -55,4 +59,4 @@ jobs:
         run: bash scripts/ci_setup_showdown.sh
 
       - name: Run nightly-only checks
-        run: pytest -x strict_integration_tests/
+        run: uv run pytest -x strict_integration_tests/

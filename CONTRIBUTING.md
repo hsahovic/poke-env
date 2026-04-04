@@ -28,18 +28,18 @@ First, you should use a python virtual environment. Which flavor of virtual envi
 
 This project supports multiple versions of python 3, starting from version 3.10. You can use any supported version for development, but bear in mind that your work will be tested on all supported versions.
 
-Once you have created your virtual environment, install dependencies with `pip install .` and `pip install .[dev]`. You can now setup pre-commits by running `pre-commit install` - the pre-commit configuration on the repo by defaults assumes Python 3.10.5, but you can modify it locally to your liking.
+Once you have created your virtual environment, install dependencies with `uv sync --dev`. You can then set up pre-commits by running `uv run pre-commit install` - the pre-commit configuration on the repo by defaults assumes Python 3.10.5, but you can modify it locally to your liking.
 
 ## Locally testing your commits
 
-First, make sure your code is black and isort formatted by running `black .` and `isort .`.
+First, make sure your code is black and isort formatted by running `uv run black .` and `uv run isort .`.
 
 To run tests locally, you can run:
 
-- `PYTHONPATH=src/ pytest unit_tests/`
-- `PYTHONPATH=src/ pytest integration_tests/`
-- `mypy src`
+- `uv run pytest unit_tests/`
+- `uv run pytest integration_tests/`
+- `uv run mypy src`
 
-If you do not have `pre-commit`s installed, be sure to also run `flake8`.
+If you do not have `pre-commit`s installed, be sure to also run `uv run flake8`.
 
 If all tests pass, you are ready to commit your changes!
