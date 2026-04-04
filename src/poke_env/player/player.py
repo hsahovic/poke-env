@@ -451,8 +451,8 @@ class Player(ABC):
 
         :param battle: The battle.
         :type battle: AbstractBattle
-        :return: The move order.
-        :rtype: str
+        :return: The move order, or an awaitable resolving to one.
+        :rtype: BattleOrder or Awaitable[BattleOrder]
         """
         pass
 
