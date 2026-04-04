@@ -120,12 +120,13 @@ class SinglesEnv(PokeEnv[np.int64]):
                         f"move, but battle.active_pokemon is None!"
                     )
                 avail_ids = [m.id for m in battle.available_moves]
-                known_ids = [m.id for m in battle.active_pokemon.moves.values()]
+                known_moves = list(battle.active_pokemon.moves.values())[:4]
+                known_ids = [m.id for m in known_moves]
                 mvs = (
                     battle.available_moves
                     if len(avail_ids) == 1
                     and (avail_ids[0] in SPECIAL_MOVES or avail_ids[0] not in known_ids)
-                    else list(battle.active_pokemon.moves.values())
+                    else known_moves
                 )
                 if (action - 6) % 4 not in range(len(mvs)):
                     raise ValueError(
@@ -199,7 +200,10 @@ class SinglesEnv(PokeEnv[np.int64]):
                 else:
                     assert battle.active_pokemon is not None
                     avail_ids = [m.id for m in battle.available_moves]
-                    known_ids = [m.id for m in battle.active_pokemon.moves.values()]
+                    known_moves = list(
+                        battle.active_pokemon.moves.values()
+                    )[:4]
+                    known_ids = [m.id for m in known_moves]
                     mvs = (
                         battle.available_moves
                         if len(avail_ids) == 1
@@ -207,7 +211,7 @@ class SinglesEnv(PokeEnv[np.int64]):
                             avail_ids[0] in SPECIAL_MOVES
                             or avail_ids[0] not in known_ids
                         )
-                        else list(battle.active_pokemon.moves.values())
+                        else known_moves
                     )
                     action = [m.id for m in mvs].index(order.order.id)
                     if order.mega:
@@ -246,9 +250,10 @@ class SinglesEnv(PokeEnv[np.int64]):
         elif battle.active_pokemon is None:
             actions = switch_space
         else:
+            known_moves = list(battle.active_pokemon.moves.values())[:4]
             move_space = [
                 i + 6
-                for i, move in enumerate(battle.active_pokemon.moves.values())
+                for i, move in enumerate(known_moves)
                 if move.id in [m.id for m in battle.available_moves]
             ]
             if (
@@ -261,7 +266,7 @@ class SinglesEnv(PokeEnv[np.int64]):
             zmove_space = [
                 i + 8
                 for i in move_space
-                if list(battle.active_pokemon.moves.values())[i - 6].id
+                if known_moves[i - 6].id
                 in [m.id for m in battle.active_pokemon.available_z_moves]
                 and battle.can_z_move
             ]
