@@ -146,6 +146,40 @@ For custom servers, create a ``ServerConfiguration`` object with the server URL 
     )
     player = RandomPlayer(server_configuration=custom_config)
 
+Connection Lifecycle
+--------------------
+
+``Player`` starts a background Showdown listener by default
+(``start_listening=True``). That is typically the right choice for live
+battles.
+
+If you want explicit teardown in scripts, notebooks, or tests, stop the
+underlying client when you are done:
+
+.. code-block:: python
+
+    import asyncio
+
+    from poke_env.player import RandomPlayer
+
+
+    async def main():
+        player = RandomPlayer()
+        opponent = RandomPlayer()
+
+        try:
+            await player.battle_against(opponent, n_battles=1)
+        finally:
+            await player.ps_client.stop_listening()
+            await opponent.ps_client.stop_listening()
+
+
+    if __name__ == "__main__":
+        asyncio.run(main())
+
+For offline tests or object construction that should not connect to Showdown,
+use ``start_listening=False``.
+
 What Next
 =========
 
