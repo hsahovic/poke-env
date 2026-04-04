@@ -10,7 +10,7 @@ STATIC_DATA_ROOT = "src/poke_env/data/static"
 
 
 def fetch_and_clean_ps_data(url: str, deserialize: bool = True):
-    data = requests.get(url).text
+    data = requests.get(url, timeout=10.0).text
 
     if data == "404: Not Found":
         return {}
