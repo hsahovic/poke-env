@@ -271,6 +271,7 @@ async def test_create_teampreview_team(showdown_format_teams):
         team=showdown_format_teams["gen9vgc2024regg"][0],
     )
 
+    player._current_packed_team = player.next_team
     battle = await player._create_battle(["", "gen9vgc2024regg", "uuu"])
 
     assert len(battle.teampreview_team) == 6
@@ -306,6 +307,7 @@ async def test_create_teampreview_team_handles_neutral_gender_from_packed():
         "4,,,252,,252|N|||100|",
     )
 
+    player._current_packed_team = player.next_team
     battle = await player._create_battle(["", "gen3ubers", "uuu"])
 
     assert len(battle.teampreview_team) == 1

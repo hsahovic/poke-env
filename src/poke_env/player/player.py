@@ -214,12 +214,8 @@ class Player(ABC):
                         save_replays=self._save_replays,
                     )
 
-                packed_team = self._current_packed_team
-                if packed_team is None and self._team:
-                    packed_team = self._team.yield_team()
-
-                if packed_team:
-                    tb_mons = Teambuilder.parse_packed_team(packed_team)
+                if self._current_packed_team:
+                    tb_mons = Teambuilder.parse_packed_team(self._current_packed_team)
                     battle.teampreview_team = [
                         Pokemon(gen=gen, teambuilder=tb_mon) for tb_mon in tb_mons
                     ]
@@ -452,6 +448,7 @@ class Player(ABC):
                 team: str | None = packed_team
             else:
                 team = self.next_team
+                self._current_packed_team = team
             while True:
                 username = to_id_str(await self._challenge_queue.get())
                 self.logger.debug(
@@ -539,7 +536,8 @@ class Player(ABC):
 
         for _ in range(n_games):
             async with self._battle_start_condition:
-                await self.ps_client.search_ladder_game(self._format, self.next_team)
+                self._current_packed_team = self.next_team
+                await self.ps_client.search_ladder_game(self._format, self._current_packed_team)
                 await self._battle_start_condition.wait()
                 while self._battle_count_queue.full():
                     async with self._battle_end_condition:
@@ -612,7 +610,8 @@ class Player(ABC):
         start_time = perf_counter()
 
         for _ in range(n_challenges):
-            await self.ps_client.challenge(opponent, self._format, self.next_team)
+            self._current_packed_team = self.next_team
+            await self.ps_client.challenge(opponent, self._format, self._current_packed_team)
             await self._battle_semaphore.acquire()
         await self._battle_count_queue.join()
         self.logger.info(
@@ -778,7 +777,5 @@ class Player(ABC):
     @property
     def next_team(self) -> Optional[str]:
         if self._team:
-            packed = self._team.yield_team()
-            self._current_packed_team = packed
-            return packed
+            return self._team.yield_team()
         return None
