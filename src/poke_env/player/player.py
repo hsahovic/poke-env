@@ -117,7 +117,7 @@ class Player(ABC):
             timer on battle start. Defaults to False.
         :type start_timer_on_battle_start: bool
         :param team: The team to use for formats requiring a team. Can be a showdown
-            team string, a showdown packed team string, of a ShowdownTeam object.
+            team string, a showdown packed team string, or a Teambuilder object.
             Defaults to None.
         :type team: str or Teambuilder, optional
         """

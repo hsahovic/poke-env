@@ -223,12 +223,12 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
             (important for backend websockets.
             Increase only if timeouts occur during runtime).
             If None pings will never time out.
-        :type challenge_timeout: float, optional
+        :type ping_timeout: float, optional
         :param challenge_timeout: How long to wait for agents to challenge.
             If None agent challenging will never time out.
-        :type ping_timeout: float, optional
+        :type challenge_timeout: float, optional
         :param team: The team to use for formats requiring a team. Can be a showdown
-            team string, a showdown packed team string, of a ShowdownTeam object.
+            team string, a showdown packed team string, or a Teambuilder object.
             Defaults to None.
         :type team: str or Teambuilder, optional
         :param choose_on_teampreview: Controls switch-action-based team preview
@@ -242,7 +242,7 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
         :type fake: bool
         :param strict: If true, action-order converters will throw an error if the move is
             illegal. Otherwise, it will return default. Defaults to True.
-        :type: strict: bool
+        :type strict: bool
         """
         self.metadata = {"name": "poke-env-v0", "render_modes": ["human"]}
         self.render_mode: str | None = None
