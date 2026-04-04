@@ -218,10 +218,6 @@ class Player(ABC):
                     battle._teambuilder_team = Teambuilder.parse_packed_team(
                         self._current_packed_team
                     )
-                    battle.teampreview_team = [
-                        Pokemon(gen=gen, teambuilder=tb_mon)
-                        for tb_mon in battle._teambuilder_team
-                    ]
 
                 await self._battle_count_queue.put(None)
                 if battle_tag in self._battles:

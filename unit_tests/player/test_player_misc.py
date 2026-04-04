@@ -265,7 +265,7 @@ async def test_handle_battle_request_waits_when_battle_waiting(send_message_patc
 
 
 @pytest.mark.asyncio
-async def test_create_teampreview_team(showdown_format_teams):
+async def test_create_teambuilder_team(showdown_format_teams):
     player = SimplePlayer(
         battle_format="gen9vgc2024regg",
         team=showdown_format_teams["gen9vgc2024regg"][0],
@@ -274,33 +274,33 @@ async def test_create_teampreview_team(showdown_format_teams):
     player._current_packed_team = player.get_next_team()
     battle = await player._create_battle(["", "gen9vgc2024regg", "uuu"])
 
-    assert len(battle.teampreview_team) == 6
+    assert battle.teambuilder_team is not None
+    assert len(battle.teambuilder_team) == 6
 
-    mon = None
-    for teampreview_mon in battle.teampreview_team:
-        if teampreview_mon.species == "ironhands":
-            mon = teampreview_mon
+    tb_mon = None
+    for m in battle.teambuilder_team:
+        if m.nickname == "Iron Hands":
+            tb_mon = m
 
-    assert mon
-    assert mon.name == "Iron Hands"
-    assert mon.level == 50
-    assert mon.ability == "quarkdrive"
-    assert mon.item == "assaultvest"
-    assert list(mon.moves.keys()) == [
+    assert tb_mon
+    assert tb_mon.nickname == "Iron Hands"
+    assert tb_mon.level == 50
+    assert tb_mon.ability == "quarkdrive"
+    assert tb_mon.item == "assaultvest"
+    assert tb_mon.moves == [
         "fakeout",
         "drainpunch",
         "wildcharge",
         "heavyslam",
     ]
-    assert mon.tera_type == PokemonType.WATER
-    assert mon.stats["hp"] == _raw_hp(mon.base_stats["hp"], 4, 31, 50)
-    assert mon.stats["atk"] == _raw_stat(mon.base_stats["atk"], 156, 31, 50, 1.1)
-
-    assert any(map(lambda x: x.species == "fluttermane", battle.teampreview_team))
+    assert tb_mon.tera_type == "Water"
+    assert tb_mon.nature == "Adamant"
+    assert tb_mon.evs == [4, 156, 4, 0, 252, 92]
+    assert tb_mon.ivs == [31, 31, 31, 31, 31, 31]
 
 
 @pytest.mark.asyncio
-async def test_create_teampreview_team_handles_neutral_gender_from_packed():
+async def test_create_teambuilder_team_handles_neutral_gender_from_packed():
     player = SimplePlayer(
         battle_format="gen3ubers",
         team="Starmie|||naturalcure|surf,icebeam,thunderbolt,rapidspin|Timid|"
@@ -310,9 +310,9 @@ async def test_create_teampreview_team_handles_neutral_gender_from_packed():
     player._current_packed_team = player.get_next_team()
     battle = await player._create_battle(["", "gen3ubers", "uuu"])
 
-    assert len(battle.teampreview_team) == 1
-    assert battle.teampreview_team[0].species == "starmie"
-    assert battle.teampreview_team[0].gender == PokemonGender.NEUTRAL
+    assert len(battle.teambuilder_team) == 1
+    assert battle.teambuilder_team[0].nickname == "Starmie"
+    assert battle.teambuilder_team[0].gender == "N"
 
 
 @pytest.mark.asyncio
