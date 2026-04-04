@@ -422,7 +422,10 @@ class Player(ABC):
         self.logger.debug("Event logged in received in accept_challenge")
 
         for _ in range(n_challenges):
-            self._current_packed_team = packed_team or self.get_next_team()
+            if packed_team:
+                self._current_packed_team = packed_team
+            else:
+                self.get_next_team()
             while True:
                 username = to_id_str(await self._challenge_queue.get())
                 self.logger.debug(
@@ -512,9 +515,8 @@ class Player(ABC):
 
         for _ in range(n_games):
             async with self._battle_start_condition:
-                self._current_packed_team = self.get_next_team()
                 await self.ps_client.search_ladder_game(
-                    self._format, self._current_packed_team
+                    self._format, self.get_next_team()
                 )
                 await self._battle_start_condition.wait()
                 while self._battle_count_queue.full():
@@ -588,10 +590,7 @@ class Player(ABC):
         start_time = perf_counter()
 
         for _ in range(n_challenges):
-            self._current_packed_team = self.get_next_team()
-            await self.ps_client.challenge(
-                opponent, self._format, self._current_packed_team
-            )
+            await self.ps_client.challenge(opponent, self._format, self.get_next_team())
             await self._battle_semaphore.acquire()
         await self._battle_count_queue.join()
         self.logger.info(
@@ -707,7 +706,8 @@ class Player(ABC):
 
     def get_next_team(self) -> str | None:
         if self._team:
-            return self._team.yield_team()
+            self._current_packed_team = self._team.yield_team()
+            return self._current_packed_team
         return None
 
     @property

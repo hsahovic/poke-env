@@ -263,7 +263,7 @@ async def test_create_teambuilder_team(showdown_format_teams):
         team=showdown_format_teams["gen9vgc2024regg"][0],
     )
 
-    player._current_packed_team = player.get_next_team()
+    player.get_next_team()
     battle = await player._create_battle(["", "gen9vgc2024regg", "uuu"])
 
     assert battle.teambuilder_team is not None
@@ -294,7 +294,7 @@ async def test_create_teambuilder_team_handles_neutral_gender_from_packed():
         "4,,,252,,252|N|||100|",
     )
 
-    player._current_packed_team = player.get_next_team()
+    player.get_next_team()
     battle = await player._create_battle(["", "gen3ubers", "uuu"])
 
     assert len(battle.teambuilder_team) == 1
