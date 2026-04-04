@@ -437,6 +437,7 @@ class Player(ABC):
         self.logger.debug("Event logged in received in accept_challenge")
 
         for _ in range(n_challenges):
+            team: Optional[str]
             if packed_team:
                 self._current_packed_team = packed_team
                 team = packed_team

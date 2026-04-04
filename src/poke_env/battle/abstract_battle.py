@@ -1258,8 +1258,10 @@ class AbstractBattle(ABC):
 
         if self._teambuilder_mons is not None:
             for pokemon in side["pokemon"]:
-                mon = self._team.get(pokemon["ident"])
-                if mon is not None and mon.nature is None:
+                if pokemon["ident"] not in self._team:
+                    continue
+                mon = self._team[pokemon["ident"]]
+                if mon.nature is None:
                     for tb_mon in self._teambuilder_mons:
                         species = tb_mon.species or tb_mon.nickname or ""
                         if mon.identifies_as(species) and tb_mon.nature is not None:
