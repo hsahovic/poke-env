@@ -220,7 +220,6 @@ class Player(ABC):
 
                 if packed_team:
                     tb_mons = Teambuilder.parse_packed_team(packed_team)
-                    battle._teambuilder_mons = tb_mons
                     battle.teampreview_team = [
                         Pokemon(gen=gen, teambuilder=tb_mon) for tb_mon in tb_mons
                     ]
@@ -302,11 +301,20 @@ class Player(ABC):
             elif split_message[1] == "showteam":
                 role = split_message[2]
                 if role == battle.player_role:
-                    continue
-                teambuilder_team = Teambuilder.parse_packed_team(
-                    "|".join(split_message[3:])
+                    assert self._current_packed_team is not None
+                    teambuilder_team = Teambuilder.parse_packed_team(
+                        self._current_packed_team
+                    )
+                else:
+                    teambuilder_team = Teambuilder.parse_packed_team(
+                        "|".join(split_message[3:])
+                    )
+                teampreview_team = (
+                    battle.teampreview_team
+                    if role == battle.player_role
+                    else battle.teampreview_opponent_team
                 )
-                for preview_mon in battle.teampreview_opponent_team:
+                for preview_mon in teampreview_team:
                     teambuilder_mon = [
                         m
                         for m in teambuilder_team
@@ -318,7 +326,9 @@ class Player(ABC):
                         details=preview_mon._last_details,
                     )
                     mon._update_from_teambuilder(teambuilder_mon)
-                await self._handle_battle_request(battle)
+                # only handle battle request after all open sheets are processed
+                if role == "p2":
+                    await self._handle_battle_request(battle)
             elif split_message[1] == "win" or split_message[1] == "tie":
                 if split_message[1] == "win":
                     battle.won_by(split_message[2])

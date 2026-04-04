@@ -13,7 +13,6 @@ from poke_env.battle.side_condition import STACKABLE_CONDITIONS, SideCondition
 from poke_env.battle.weather import Weather
 from poke_env.data import GenData, to_id_str
 from poke_env.data.replay_template import REPLAY_TEMPLATE
-from poke_env.teambuilder.teambuilder_pokemon import TeambuilderPokemon
 
 
 class AbstractBattle(ABC):
@@ -110,7 +109,6 @@ class AbstractBattle(ABC):
         "_side_conditions",
         "_team_size",
         "_team",
-        "_teambuilder_mons",
         "_teampreview_team",
         "_teampreview_opponent_team",
         "_teampreview",
@@ -187,7 +185,6 @@ class AbstractBattle(ABC):
         # Pokemon attributes
         self._team: Dict[str, Pokemon] = {}
         self._opponent_team: Dict[str, Pokemon] = {}
-        self._teambuilder_mons: Optional[List[TeambuilderPokemon]] = None
 
     def get_pokemon(
         self,
@@ -1256,19 +1253,6 @@ class AbstractBattle(ABC):
                     request=pokemon,
                 )
 
-        if self._teambuilder_mons is not None:
-            for pokemon in side["pokemon"]:
-                if pokemon["ident"] not in self._team:
-                    continue
-                mon = self._team[pokemon["ident"]]
-                if mon.nature is None:
-                    for tb_mon in self._teambuilder_mons:
-                        species = tb_mon.species or tb_mon.nickname or ""
-                        if mon.identifies_as(species) and tb_mon.nature is not None:
-                            mon._nature = tb_mon.nature.lower()
-                            mon._evs = tb_mon.evs
-                            mon._ivs = tb_mon.ivs
-                            break
 
     def won_by(self, player_name: str):
         if not self._has_terminal_replay_result():
