@@ -233,9 +233,7 @@ def test_battle_request_applies_teambuilder_data(example_request):
         "Venusaur||blacksludge|chlorophyll|leechseed,sleeppowder,substitute,sludgebomb"
         "|Calm|252,,4,,252,|M|,,,,,||82|"
     )
-    battle.teampreview_team = [
-        Pokemon(details="Venusaur, L82, M", gen=8)
-    ]
+    battle.teampreview_team = [Pokemon(details="Venusaur, L82, M", gen=8)]
 
     battle.parse_request(example_request)
 
