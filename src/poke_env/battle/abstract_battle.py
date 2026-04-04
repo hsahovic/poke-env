@@ -1253,7 +1253,6 @@ class AbstractBattle(ABC):
                     request=pokemon,
                 )
 
-
     def won_by(self, player_name: str):
         if not self._has_terminal_replay_result():
             self._replay_data.append(["", "win", player_name])
