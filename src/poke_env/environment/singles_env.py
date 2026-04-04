@@ -200,9 +200,7 @@ class SinglesEnv(PokeEnv[np.int64]):
                 else:
                     assert battle.active_pokemon is not None
                     avail_ids = [m.id for m in battle.available_moves]
-                    known_moves = list(
-                        battle.active_pokemon.moves.values()
-                    )[:4]
+                    known_moves = list(battle.active_pokemon.moves.values())[:4]
                     known_ids = [m.id for m in known_moves]
                     mvs = (
                         battle.available_moves
