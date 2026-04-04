@@ -86,6 +86,18 @@ async def test_change_avatar():
 
 
 @pytest.mark.asyncio
+async def test_wait_for_login_raises_on_timeout():
+    client = PSClient(
+        account_configuration=account_configuration,
+        server_configuration=server_configuration,
+        start_listening=False,
+    )
+
+    with pytest.raises(AssertionError, match="Expected username to be logged in."):
+        await client.wait_for_login(wait_for=0)
+
+
+@pytest.mark.asyncio
 async def test_handle_message():
     client = PSClient(
         account_configuration=account_configuration,

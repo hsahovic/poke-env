@@ -312,7 +312,7 @@ class PSClient:
             await asyncio.sleep(checking_interval)
             if self.logged_in.is_set():
                 return
-        assert self.logged_in, f"Expected {self.username} to be logged in."
+        assert self.logged_in.is_set(), f"Expected {self.username} to be logged in."
 
     @property
     def account_configuration(self) -> AccountConfiguration:
