@@ -443,12 +443,7 @@ class Player(ABC):
         self.logger.debug("Event logged in received in accept_challenge")
 
         for _ in range(n_challenges):
-            if packed_team:
-                self._current_packed_team = packed_team
-                team: str | None = packed_team
-            else:
-                team = self.get_next_team()
-                self._current_packed_team = team
+            self._current_packed_team = packed_team or self.get_next_team()
             while True:
                 username = to_id_str(await self._challenge_queue.get())
                 self.logger.debug(
@@ -459,7 +454,9 @@ class Player(ABC):
                     or (opponent == username)
                     or (isinstance(opponent, list) and (username in opponent))
                 ):
-                    await self.ps_client.accept_challenge(username, team)
+                    await self.ps_client.accept_challenge(
+                        username, self._current_packed_team
+                    )
                     await self._battle_semaphore.acquire()
                     break
         await self._battle_count_queue.join()
@@ -537,7 +534,9 @@ class Player(ABC):
         for _ in range(n_games):
             async with self._battle_start_condition:
                 self._current_packed_team = self.get_next_team()
-                await self.ps_client.search_ladder_game(self._format, self._current_packed_team)
+                await self.ps_client.search_ladder_game(
+                    self._format, self._current_packed_team
+                )
                 await self._battle_start_condition.wait()
                 while self._battle_count_queue.full():
                     async with self._battle_end_condition:
@@ -611,7 +610,9 @@ class Player(ABC):
 
         for _ in range(n_challenges):
             self._current_packed_team = self.get_next_team()
-            await self.ps_client.challenge(opponent, self._format, self._current_packed_team)
+            await self.ps_client.challenge(
+                opponent, self._format, self._current_packed_team
+            )
             await self._battle_semaphore.acquire()
         await self._battle_count_queue.join()
         self.logger.info(
