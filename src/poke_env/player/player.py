@@ -156,7 +156,7 @@ class Player(ABC):
         self._waiting: Event = create_in_poke_loop(Event, loop)
         self._trying_again: Event = create_in_poke_loop(Event, loop)
         self._team: Optional[Teambuilder] = None
-        self._current_packed_team: Optional[str] = None
+        self._current_packed_team: str | None = None
         self._strict_battle_tracking = strict_battle_tracking
 
         if isinstance(team, Teambuilder):
@@ -215,9 +215,12 @@ class Player(ABC):
                     )
 
                 if self._current_packed_team:
-                    tb_mons = Teambuilder.parse_packed_team(self._current_packed_team)
+                    battle._teambuilder_team = Teambuilder.parse_packed_team(
+                        self._current_packed_team
+                    )
                     battle.teampreview_team = [
-                        Pokemon(gen=gen, teambuilder=tb_mon) for tb_mon in tb_mons
+                        Pokemon(gen=gen, teambuilder=tb_mon)
+                        for tb_mon in battle._teambuilder_team
                     ]
 
                 await self._battle_count_queue.put(None)
@@ -297,10 +300,8 @@ class Player(ABC):
             elif split_message[1] == "showteam":
                 role = split_message[2]
                 if role == battle.player_role:
-                    assert self._current_packed_team is not None
-                    teambuilder_team = Teambuilder.parse_packed_team(
-                        self._current_packed_team
-                    )
+                    assert battle._teambuilder_team is not None
+                    teambuilder_team = battle._teambuilder_team
                 else:
                     teambuilder_team = Teambuilder.parse_packed_team(
                         "|".join(split_message[3:])

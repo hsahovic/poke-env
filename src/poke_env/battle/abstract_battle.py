@@ -13,6 +13,7 @@ from poke_env.battle.side_condition import STACKABLE_CONDITIONS, SideCondition
 from poke_env.battle.weather import Weather
 from poke_env.data import GenData, to_id_str
 from poke_env.data.replay_template import REPLAY_TEMPLATE
+from poke_env.teambuilder.teambuilder_pokemon import TeambuilderPokemon
 
 
 class AbstractBattle(ABC):
@@ -109,6 +110,7 @@ class AbstractBattle(ABC):
         "_side_conditions",
         "_team_size",
         "_team",
+        "_teambuilder_team",
         "_teampreview_team",
         "_teampreview_opponent_team",
         "_teampreview",
@@ -184,6 +186,7 @@ class AbstractBattle(ABC):
 
         # Pokemon attributes
         self._team: Dict[str, Pokemon] = {}
+        self._teambuilder_team: list[TeambuilderPokemon] | None = None
         self._opponent_team: Dict[str, Pokemon] = {}
 
     def get_pokemon(
