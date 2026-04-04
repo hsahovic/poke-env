@@ -222,8 +222,7 @@ class Player(ABC):
                     tb_mons = Teambuilder.parse_packed_team(packed_team)
                     battle._teambuilder_mons = tb_mons
                     battle.teampreview_team = [
-                        Pokemon(gen=gen, teambuilder=tb_mon)
-                        for tb_mon in tb_mons
+                        Pokemon(gen=gen, teambuilder=tb_mon) for tb_mon in tb_mons
                     ]
 
                 await self._battle_count_queue.put(None)
