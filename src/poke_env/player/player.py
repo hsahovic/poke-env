@@ -156,6 +156,7 @@ class Player(ABC):
         self._waiting: Event = create_in_poke_loop(Event, loop)
         self._trying_again: Event = create_in_poke_loop(Event, loop)
         self._team: Optional[Teambuilder] = None
+        self._current_packed_team: Optional[str] = None
         self._strict_battle_tracking = strict_battle_tracking
 
         if isinstance(team, Teambuilder):
@@ -213,11 +214,16 @@ class Player(ABC):
                         save_replays=self._save_replays,
                     )
 
-                # Add our team as teampreview_team, as part of battle initialisation
-                if isinstance(self._team, ConstantTeambuilder):
+                packed_team = self._current_packed_team
+                if packed_team is None and self._team:
+                    packed_team = self._team.yield_team()
+
+                if packed_team:
+                    tb_mons = Teambuilder.parse_packed_team(packed_team)
+                    battle._teambuilder_mons = tb_mons
                     battle.teampreview_team = [
                         Pokemon(gen=gen, teambuilder=tb_mon)
-                        for tb_mon in self._team.team
+                        for tb_mon in tb_mons
                     ]
 
                 await self._battle_count_queue.put(None)
@@ -296,15 +302,12 @@ class Player(ABC):
                         await self._handle_battle_request(battle)
             elif split_message[1] == "showteam":
                 role = split_message[2]
+                if role == battle.player_role:
+                    continue
                 teambuilder_team = Teambuilder.parse_packed_team(
                     "|".join(split_message[3:])
                 )
-                teampreview_team = (
-                    battle.teampreview_team
-                    if role == battle.player_role
-                    else battle.teampreview_opponent_team
-                )
-                for preview_mon in teampreview_team:
+                for preview_mon in battle.teampreview_opponent_team:
                     teambuilder_mon = [
                         m
                         for m in teambuilder_team
@@ -316,9 +319,7 @@ class Player(ABC):
                         details=preview_mon._last_details,
                     )
                     mon._update_from_teambuilder(teambuilder_mon)
-                # only handle battle request after all open sheets are processed
-                if role == "p2":
-                    await self._handle_battle_request(battle)
+                await self._handle_battle_request(battle)
             elif split_message[1] == "win" or split_message[1] == "tie":
                 if split_message[1] == "win":
                     battle.won_by(split_message[2])
@@ -437,7 +438,11 @@ class Player(ABC):
         self.logger.debug("Event logged in received in accept_challenge")
 
         for _ in range(n_challenges):
-            team = packed_team or self.next_team
+            if packed_team:
+                self._current_packed_team = packed_team
+                team = packed_team
+            else:
+                team = self.next_team
             while True:
                 username = to_id_str(await self._challenge_queue.get())
                 self.logger.debug(
@@ -764,5 +769,7 @@ class Player(ABC):
     @property
     def next_team(self) -> Optional[str]:
         if self._team:
-            return self._team.yield_team()
+            packed = self._team.yield_team()
+            self._current_packed_team = packed
+            return packed
         return None
