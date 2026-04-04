@@ -287,12 +287,7 @@ async def test_create_teambuilder_team(showdown_format_teams):
     assert tb_mon.level == 50
     assert tb_mon.ability == "quarkdrive"
     assert tb_mon.item == "assaultvest"
-    assert tb_mon.moves == [
-        "fakeout",
-        "drainpunch",
-        "wildcharge",
-        "heavyslam",
-    ]
+    assert tb_mon.moves == ["fakeout", "drainpunch", "wildcharge", "heavyslam"]
     assert tb_mon.tera_type == "Water"
     assert tb_mon.nature == "Adamant"
     assert tb_mon.evs == [4, 156, 4, 0, 252, 92]
