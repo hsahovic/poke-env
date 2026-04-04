@@ -18,6 +18,8 @@ Choose an Example
   required for the public server.
 - :doc:`reinforcement_learning`: training with action masking and
   Stable-Baselines3; requires a local server plus RL dependencies.
+- :doc:`self_play`: self-play training with SuperSuit
+  and Stable-Baselines3; requires a local server plus RL dependencies.
 - :doc:`action_mapping_and_strict_modes`: understanding environment actions,
   legality checks, and masks for custom RL pipelines.
 - :doc:`strict_battle_tracking`: debugging request parsing and battle-state
@@ -33,6 +35,7 @@ Choose an Example
     connecting_to_showdown_and_challenging_humans
     tracking_observations
     reinforcement_learning
+    self_play
     action_mapping_and_strict_modes
     strict_battle_tracking
     saving_replays
