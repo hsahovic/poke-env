@@ -379,7 +379,8 @@ class Move:
         if "heal" in self.entry:
             if self.gen == 1:
                 return 1 / 2
-            return self.entry["heal"][0] / self.entry["heal"][1]
+            if self.entry["heal"] is not None:
+                return self.entry["heal"][0] / self.entry["heal"][1]
         return 0.0
 
     @property
