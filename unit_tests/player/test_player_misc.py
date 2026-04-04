@@ -331,12 +331,13 @@ async def test_parse_showteam(packed_format_teams):
     )
     assert len(battle.teampreview_opponent_team) == 1
 
-    await player._handle_battle_message(
-        [
-            [f">{battle.battle_tag}"],
-            ["", "showteam", battle.opponent_role, *packed_team.split("|")],
-        ]
-    )
+    with patch.object(player.ps_client, "send_message", new_callable=AsyncMock):
+        await player._handle_battle_message(
+            [
+                [f">{battle.battle_tag}"],
+                ["", "showteam", battle.opponent_role, *packed_team.split("|")],
+            ]
+        )
     assert "p1: Iron Hands" in battle.opponent_team
 
     mon = battle.get_pokemon("p1: donut", details="Iron Hands, L50")

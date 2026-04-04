@@ -1211,6 +1211,25 @@ class AbstractBattle(ABC):
             self._replay_data.append(["", "tie"])
         self._finish_battle()
 
+    def apply_teambuilder_team(
+        self,
+        role: str,
+        teambuilder_team: List[TeambuilderPokemon],
+        teampreview_team: List[Pokemon],
+    ):
+        for preview_mon in teampreview_team:
+            teambuilder_mon = [
+                m
+                for m in teambuilder_team
+                if m.nickname is not None
+                and preview_mon.identifies_as(m.nickname)
+            ][0]
+            mon = self.get_pokemon(
+                f"{role}: {teambuilder_mon.nickname}",
+                details=preview_mon._last_details,
+            )
+            mon._update_from_teambuilder(teambuilder_mon)
+
     def _update_team_from_request(
         self, side: Dict[str, Any], strict_battle_tracking: bool = False
     ):
@@ -1619,6 +1638,10 @@ class AbstractBattle(ABC):
         raise ValueError(
             "Team size cannot be inferred without an assigned player role."
         )
+
+    @property
+    def teambuilder_team(self) -> list[TeambuilderPokemon] | None:
+        return self._teambuilder_team
 
     @property
     def teampreview(self) -> bool:
