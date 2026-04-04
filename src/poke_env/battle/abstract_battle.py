@@ -1221,12 +1221,10 @@ class AbstractBattle(ABC):
             teambuilder_mon = [
                 m
                 for m in teambuilder_team
-                if m.nickname is not None
-                and preview_mon.identifies_as(m.nickname)
+                if m.nickname is not None and preview_mon.identifies_as(m.nickname)
             ][0]
             mon = self.get_pokemon(
-                f"{role}: {teambuilder_mon.nickname}",
-                details=preview_mon._last_details,
+                f"{role}: {teambuilder_mon.nickname}", details=preview_mon._last_details
             )
             mon._update_from_teambuilder(teambuilder_mon)
 

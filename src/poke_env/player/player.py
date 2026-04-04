@@ -305,9 +305,7 @@ class Player(ABC):
                     "|".join(split_message[3:])
                 )
                 battle.apply_teambuilder_team(
-                    role,
-                    teambuilder_team,
-                    battle.teampreview_opponent_team,
+                    role, teambuilder_team, battle.teampreview_opponent_team
                 )
                 await self._handle_battle_request(battle)
             elif split_message[1] == "win" or split_message[1] == "tie":
