@@ -377,6 +377,8 @@ class Move:
         :rtype: float
         """
         if "heal" in self.entry:
+            if self.gen == 1:
+                return 1 / 2
             return self.entry["heal"][0] / self.entry["heal"][1]
         return 0.0
 

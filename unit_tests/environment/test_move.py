@@ -214,6 +214,9 @@ def test_heal():
         assert isinstance(move.heal, float)
         assert 0 <= move.heal <= 1
 
+    gen1_recover = Move("recover", gen=1)
+    assert gen1_recover.heal == 0.5
+
 
 def test_ignore_ability():
     flame_thrower = Move("flamethrower", gen=8)
