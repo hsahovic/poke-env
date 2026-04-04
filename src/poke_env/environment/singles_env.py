@@ -124,8 +124,7 @@ class SinglesEnv(PokeEnv[np.int64]):
                 known_ids = [m.id for m in known_moves]
                 mvs = (
                     battle.available_moves
-                    if len(avail_ids) == 1
-                    and (avail_ids[0] in SPECIAL_MOVES or avail_ids[0] not in known_ids)
+                    if len(avail_ids) == 1 and avail_ids[0] not in known_ids
                     else known_moves
                 )
                 if (action - 6) % 4 not in range(len(mvs)):
@@ -204,11 +203,7 @@ class SinglesEnv(PokeEnv[np.int64]):
                     known_ids = [m.id for m in known_moves]
                     mvs = (
                         battle.available_moves
-                        if len(avail_ids) == 1
-                        and (
-                            avail_ids[0] in SPECIAL_MOVES
-                            or avail_ids[0] not in known_ids
-                        )
+                        if len(avail_ids) == 1 and avail_ids[0] not in known_ids
                         else known_moves
                     )
                     action = [m.id for m in mvs].index(order.order.id)
