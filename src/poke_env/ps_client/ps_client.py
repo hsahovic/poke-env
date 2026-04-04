@@ -260,6 +260,7 @@ class PSClient:
                     "pass": self.account_configuration.password,
                     "challstr": split_message[2] + "%7C" + split_message[3],
                 },
+                timeout=10.0,
             )
             self.logger.info("Sending authentication request")
             assertion = json.loads(log_in_request.text[1:])["assertion"]
