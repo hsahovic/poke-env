@@ -40,6 +40,13 @@ dependencies = [
     "websockets==16.0",
 ]
 
+[project.optional-dependencies]
+docs = [
+    "nbsphinx>=0.9.6",
+    "sphinx>=7.4.7",
+    "sphinx-rtd-theme>=3.0.2",
+]
+
 [dependency-groups]
 # Local development dependencies managed by uv.
 dev = [
