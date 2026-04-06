@@ -318,7 +318,7 @@ async def test_parse_showteam(packed_format_teams):
     )
     assert len(battle.teampreview_opponent_team) == 1
 
-    with patch.object(player.ps_client, "send_message", new_callable=AsyncMock):
+    with patch.object(player, "send_message", new_callable=AsyncMock):
         await player._handle_battle_message(
             [
                 [f">{battle.battle_tag}"],

@@ -170,8 +170,8 @@ underlying client when you are done:
         try:
             await player.battle_against(opponent, n_battles=1)
         finally:
-            await player.ps_client.stop_listening()
-            await opponent.ps_client.stop_listening()
+            await player.stop_listening()
+            await opponent.stop_listening()
 
 
     if __name__ == "__main__":

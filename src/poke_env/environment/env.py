@@ -97,8 +97,8 @@ class _EnvPlayer(Player):
                 "choose_on_teampreview arg was not set in environment - by default, teampreview decisions will be made randomly."
             )
         self._choose_on_teampreview = choose_on_teampreview or False
-        self.battle_queue = _AsyncQueue(self.ps_client.loop, maxsize=1)
-        self.order_queue = _AsyncQueue(self.ps_client.loop, maxsize=1)
+        self.battle_queue = _AsyncQueue(self.loop, maxsize=1)
+        self.order_queue = _AsyncQueue(self.loop, maxsize=1)
         self.battle: Optional[AbstractBattle] = None
 
     def choose_move(self, battle: AbstractBattle) -> Awaitable[BattleOrder]:

@@ -9,6 +9,19 @@ import websockets
 from poke_env import AccountConfiguration, ServerConfiguration
 from poke_env.player import PSClient
 
+
+class _ConcretePSClient(PSClient):
+    """Give dummy method implementations to allow testing PSClient functionality."""
+
+    async def _handle_battle_message(self, split_messages):
+        pass
+
+    async def _update_challenges(self, split_message):
+        pass
+
+    async def _handle_challenge_request(self, split_message):
+        pass
+
 account_configuration = AccountConfiguration("username", "password")
 requests_tuple = namedtuple("requests_tuple", ["text"])
 server_configuration = ServerConfiguration(
@@ -17,7 +30,7 @@ server_configuration = ServerConfiguration(
 
 
 def test_init_and_properties():
-    client = PSClient(
+    client = _ConcretePSClient(
         account_configuration=account_configuration,
         server_configuration=server_configuration,
         start_listening=False,
@@ -28,7 +41,7 @@ def test_init_and_properties():
 
 
 def test_create_logger():
-    client = PSClient(
+    client = _ConcretePSClient(
         account_configuration=account_configuration,
         server_configuration=server_configuration,
         start_listening=False,
@@ -50,7 +63,7 @@ def test_create_logger():
     return_value=requests_tuple(':{"assertion":"content"}'),
 )
 async def testlog_in(post_mock):
-    client = PSClient(
+    client = _ConcretePSClient(
         account_configuration=account_configuration,
         avatar=12,
         server_configuration=server_configuration,
@@ -70,7 +83,7 @@ async def testlog_in(post_mock):
 
 @pytest.mark.asyncio
 async def test_change_avatar():
-    client = PSClient(
+    client = _ConcretePSClient(
         account_configuration=account_configuration,
         avatar=12,
         server_configuration=server_configuration,
@@ -87,7 +100,7 @@ async def test_change_avatar():
 
 @pytest.mark.asyncio
 async def test_wait_for_login_raises_on_timeout():
-    client = PSClient(
+    client = _ConcretePSClient(
         account_configuration=account_configuration,
         server_configuration=server_configuration,
         start_listening=False,
@@ -99,7 +112,7 @@ async def test_wait_for_login_raises_on_timeout():
 
 @pytest.mark.asyncio
 async def test_handle_message():
-    client = PSClient(
+    client = _ConcretePSClient(
         account_configuration=account_configuration,
         avatar=12,
         server_configuration=server_configuration,
@@ -134,7 +147,7 @@ async def test_handle_message():
 @patch("poke_env.ps_client.ps_client.PSClient._handle_message")
 @pytest.mark.asyncio
 async def test_listen(handle_message_mock):
-    client = PSClient(
+    client = _ConcretePSClient(
         account_configuration=account_configuration,
         avatar=12,
         server_configuration=server_configuration,
@@ -165,7 +178,7 @@ async def test_listen(handle_message_mock):
 
 @pytest.mark.asyncio
 async def test_send_message():
-    client = PSClient(
+    client = _ConcretePSClient(
         account_configuration=account_configuration,
         avatar=12,
         server_configuration=server_configuration,

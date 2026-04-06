@@ -3,6 +3,7 @@
 import asyncio
 import json
 import logging
+from abc import ABC, abstractmethod
 from logging import Logger
 from time import perf_counter
 from typing import List, Optional, Set
@@ -22,7 +23,7 @@ from poke_env.ps_client.account_configuration import AccountConfiguration
 from poke_env.ps_client.server_configuration import ServerConfiguration
 
 
-class PSClient:
+class PSClient(ABC):
     """
     Pokemon Showdown client.
 
@@ -127,6 +128,18 @@ class PSClient:
         logger.addHandler(stream_handler)
         return logger
 
+    @abstractmethod
+    async def _handle_battle_message(self, split_messages: List[List[str]]):
+        pass
+
+    @abstractmethod
+    async def _update_challenges(self, split_message: List[str]):
+        pass
+
+    @abstractmethod
+    async def _handle_challenge_request(self, split_message: List[str]):
+        pass
+
     async def _handle_message(self, message: str):
         """Handle received messages.
 
@@ -145,7 +158,7 @@ class PSClient:
                 if battle_tag not in self._battle_locks:
                     self._battle_locks[battle_tag] = asyncio.Lock()
                 async with self._battle_locks[battle_tag]:
-                    await self._handle_battle_message(split_messages)  # type: ignore
+                    await self._handle_battle_message(split_messages)
             elif split_messages[0][1] == "challstr":
                 # Confirms connection to the server: we can login
                 await self.log_in(split_messages[0])
@@ -166,7 +179,7 @@ class PSClient:
                     )
             elif "updatechallenges" in split_messages[0][1]:
                 # Contain information about current challenge
-                await self._update_challenges(split_messages[0])  # type: ignore
+                await self._update_challenges(split_messages[0])
             elif split_messages[0][1] == "updatesearch":
                 pass
             elif split_messages[0][1] == "popup":
@@ -177,7 +190,7 @@ class PSClient:
             elif split_messages[0][1] == "pm":
                 if len(split_messages) == 1:
                     if split_messages[0][4].startswith("/challenge"):
-                        await self._handle_challenge_request(split_messages[0])  # type: ignore
+                        await self._handle_challenge_request(split_messages[0])
                     elif split_messages[0][4].startswith("/text"):
                         self.logger.info("Received pm with text: %s", message)
                     elif split_messages[0][4].startswith("/nonotify"):

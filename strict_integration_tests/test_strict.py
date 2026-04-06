@@ -17,7 +17,7 @@ async def simple_cross_evaluation(n_battles, players):
 
     for player in players:
         player.reset_battles()
-        await player.ps_client.stop_listening()
+        await player.stop_listening()
 
 
 @pytest.mark.asyncio

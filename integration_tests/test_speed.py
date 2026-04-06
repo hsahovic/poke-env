@@ -73,8 +73,8 @@ async def test_random_player_benchmark():
     await p1.battle_against(p2, n_battles=100)
     elapsed = time.perf_counter() - start
     total_turns = sum(b.turn for b in p1.battles.values())
-    await p1.ps_client.stop_listening()
-    await p2.ps_client.stop_listening()
+    await p1.stop_listening()
+    await p2.stop_listening()
     steps_per_second = total_turns / elapsed
     print(f"\n{total_turns} steps in {elapsed:.2f}s ({steps_per_second:.1f} steps/s)")
     assert steps_per_second > min_rate, (

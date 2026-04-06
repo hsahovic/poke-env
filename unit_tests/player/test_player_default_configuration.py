@@ -22,14 +22,14 @@ def test_default_player_configuration():
             assert username
             assert isinstance(username, str)
 
-            assert instance.ps_client.account_configuration.password is None
+            assert instance.account_configuration.password is None
 
 
 def test_default_server_configuration():
     for k in range(5):
         for C in [CustomPlayer, RandomPlayer]:
             instance = C()
-            url = instance.ps_client.websocket_url
+            url = instance.websocket_url
 
             assert url
             assert isinstance(url, str)

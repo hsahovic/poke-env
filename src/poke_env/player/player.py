@@ -4,9 +4,8 @@ from __future__ import annotations
 
 import asyncio
 import random
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from asyncio import Condition, Event, Queue, Semaphore
-from logging import Logger
 from pathlib import Path
 from time import perf_counter
 from typing import Any, Awaitable, Dict, List, Optional, Union
@@ -41,7 +40,7 @@ from poke_env.teambuilder.constant_teambuilder import ConstantTeambuilder
 from poke_env.teambuilder.teambuilder import Teambuilder
 
 
-class Player(ABC):
+class Player(PSClient):
     """
     Base class for players.
     """
@@ -121,7 +120,7 @@ class Player(ABC):
             Defaults to None.
         :type team: str or Teambuilder, optional
         """
-        self.ps_client = PSClient(
+        super().__init__(
             account_configuration=account_configuration
             or AccountConfiguration.generate(self.__class__.__name__),
             avatar=avatar,
@@ -133,10 +132,6 @@ class Player(ABC):
             ping_timeout=ping_timeout,
             loop=loop,
         )
-
-        self.ps_client._handle_battle_message = self._handle_battle_message  # type: ignore
-        self.ps_client._update_challenges = self._update_challenges  # type: ignore
-        self.ps_client._handle_challenge_request = self._handle_challenge_request  # type: ignore
 
         self._format: str = battle_format
         self._max_concurrent_battles: int = max_concurrent_battles
@@ -229,15 +224,15 @@ class Player(ABC):
                     self._battles[battle_tag] = battle
 
                 if self._start_timer_on_battle_start:
-                    await self.ps_client.send_message("/timer on", battle.battle_tag)
+                    await self.send_message("/timer on", battle.battle_tag)
 
-                if hasattr(self.ps_client, "websocket") and "vgc" in self.format:
+                if hasattr(self, "websocket") and "vgc" in self.format:
                     if self.accept_open_team_sheet:
-                        await self.ps_client.send_message(
+                        await self.send_message(
                             "/acceptopenteamsheets", room=battle_tag
                         )
                     else:
-                        await self.ps_client.send_message(
+                        await self.send_message(
                             "/rejectopenteamsheets", room=battle_tag
                         )
 
@@ -314,9 +309,9 @@ class Player(ABC):
                 self._battle_finished_callback(battle)
                 async with self._battle_end_condition:
                     self._battle_end_condition.notify_all()
-                self.ps_client._battle_locks.pop(battle.battle_tag)
-                if hasattr(self.ps_client, "websocket"):
-                    await self.ps_client.send_message(f"/leave {battle.battle_tag}")
+                self._battle_locks.pop(battle.battle_tag)
+                if hasattr(self, "websocket"):
+                    await self.send_message(f"/leave {battle.battle_tag}")
             elif split_message[1] == "error":
                 self.logger.log(
                     25, "Error message received: %s", "|".join(split_message)
@@ -353,7 +348,7 @@ class Player(ABC):
                 choice = await choice
             message = choice.message
         if message:
-            await self.ps_client.send_message(message, battle.battle_tag)
+            await self.send_message(message, battle.battle_tag)
 
     async def _handle_challenge_request(self, split_message: List[str]):
         """Handles an individual challenge."""
@@ -404,7 +399,7 @@ class Player(ABC):
         """
         await handle_threaded_coroutines(
             self._accept_challenges(opponent, n_challenges, packed_team),
-            self.ps_client.loop,
+            self.loop,
         )
 
     async def _accept_challenges(
@@ -418,7 +413,7 @@ class Player(ABC):
                 opponent = [to_id_str(o) for o in opponent]
             else:
                 opponent = to_id_str(opponent)
-        await self.ps_client.logged_in.wait()
+        await self.logged_in.wait()
         self.logger.debug("Event logged in received in accept_challenge")
 
         for _ in range(n_challenges):
@@ -436,7 +431,7 @@ class Player(ABC):
                     or (opponent == username)
                     or (isinstance(opponent, list) and (username in opponent))
                 ):
-                    await self.ps_client.accept_challenge(
+                    await self.accept_challenge(
                         username, self._current_packed_team
                     )
                     await self._battle_semaphore.acquire()
@@ -507,15 +502,15 @@ class Player(ABC):
         :param n_games: Number of battles that will be played
         :type n_games: int
         """
-        await handle_threaded_coroutines(self._ladder(n_games), self.ps_client.loop)
+        await handle_threaded_coroutines(self._ladder(n_games), self.loop)
 
     async def _ladder(self, n_games: int):
-        await self.ps_client.logged_in.wait()
+        await self.logged_in.wait()
         start_time = perf_counter()
 
         for _ in range(n_games):
             async with self._battle_start_condition:
-                await self.ps_client.search_ladder_game(
+                await self.search_ladder_game(
                     self._format, self.get_next_team()
                 )
                 await self._battle_start_condition.wait()
@@ -541,7 +536,7 @@ class Player(ABC):
         :type n_battles: int
         """
         await handle_threaded_coroutines(
-            self._battle_against(*opponents, n_battles=n_battles), self.ps_client.loop
+            self._battle_against(*opponents, n_battles=n_battles), self.loop
         )
 
     async def _battle_against(self, *opponents: Player, n_battles: int):
@@ -550,7 +545,7 @@ class Player(ABC):
                 self.send_challenges(
                     to_id_str(opponent.username),
                     n_battles,
-                    to_wait=opponent.ps_client.logged_in,
+                    to_wait=opponent.logged_in,
                 ),
                 opponent.accept_challenges(to_id_str(self.username), n_battles),
             )
@@ -575,13 +570,13 @@ class Player(ABC):
         :type to_wait: Event, optional.
         """
         await handle_threaded_coroutines(
-            self._send_challenges(opponent, n_challenges, to_wait), self.ps_client.loop
+            self._send_challenges(opponent, n_challenges, to_wait), self.loop
         )
 
     async def _send_challenges(
         self, opponent: str, n_challenges: int, to_wait: Optional[Event] = None
     ):
-        await self.ps_client.logged_in.wait()
+        await self.logged_in.wait()
         self.logger.info("Event logged in received in send challenge")
 
         if to_wait is not None:
@@ -590,7 +585,7 @@ class Player(ABC):
         start_time = perf_counter()
 
         for _ in range(n_challenges):
-            await self.ps_client.challenge(opponent, self._format, self.get_next_team())
+            await self.challenge(opponent, self._format, self.get_next_team())
             await self._battle_semaphore.acquire()
         await self._battle_count_queue.join()
         self.logger.info(
@@ -750,11 +745,3 @@ class Player(ABC):
     @property
     def win_rate(self) -> float:
         return self.n_won_battles / self.n_finished_battles
-
-    @property
-    def logger(self) -> Logger:
-        return self.ps_client.logger
-
-    @property
-    def username(self) -> str:
-        return self.ps_client.username

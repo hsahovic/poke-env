@@ -19,7 +19,7 @@ async def test_laddering_sequential(send_message_mock):
     async def start_battle():
         await asyncio.sleep(0.01)
         interactions.append(f"Battle {player.count} start")
-        await player.ps_client._handle_message(
+        await player._handle_message(
             f">battle-gen9randombattle-{player.count}\n|init|battle"
         )
         asyncio.ensure_future(end_battle(player.count))
@@ -28,14 +28,14 @@ async def test_laddering_sequential(send_message_mock):
     async def end_battle(count):
         await asyncio.sleep(0.01)
         interactions.append(f"Battle {count} end")
-        await player.ps_client._handle_message(
+        await player._handle_message(
             f">battle-gen9randombattle-{count}\n|win|{player.username}"
         )
 
     player = RandomPlayer(start_listening=False)
     player.count = 0
     send_message_mock.side_effect = send_message
-    player.ps_client.logged_in.set()
+    player.logged_in.set()
 
     interactions = []
     await asyncio.wait_for(player.ladder(5), timeout=3)
@@ -71,7 +71,7 @@ async def test_laddering_parallel(send_message_mock):
 
     async def start_battle():
         interactions.append(f"Battle {player.count} start")
-        await player.ps_client._handle_message(
+        await player._handle_message(
             f">battle-gen9randombattle-{player.count}\n|init|battle"
         )
         asyncio.ensure_future(end_battle(player.count))
@@ -80,14 +80,14 @@ async def test_laddering_parallel(send_message_mock):
     async def end_battle(count):
         await asyncio.sleep(0.05)
         interactions.append(f"Battle {count} end")
-        await player.ps_client._handle_message(
+        await player._handle_message(
             f">battle-gen9randombattle-{count}\n|win|{player.username}"
         )
 
     player = RandomPlayer(start_listening=False, max_concurrent_battles=3)
     player.count = 0
     send_message_mock.side_effect = send_message
-    player.ps_client.logged_in.set()
+    player.logged_in.set()
 
     interactions = []
 
