@@ -3,7 +3,7 @@
 import asyncio
 import json
 import logging
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from logging import Logger
 from time import perf_counter
 from typing import List, Optional, Set
@@ -23,7 +23,7 @@ from poke_env.ps_client.account_configuration import AccountConfiguration
 from poke_env.ps_client.server_configuration import ServerConfiguration
 
 
-class PSClient(ABC):
+class PSClient:
     """
     Pokemon Showdown client.
 
