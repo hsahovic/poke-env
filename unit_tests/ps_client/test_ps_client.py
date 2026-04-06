@@ -1,7 +1,7 @@
 import asyncio
 import logging
 from collections import namedtuple
-from unittest.mock import AsyncMock, PropertyMock, patch
+from unittest.mock import AsyncMock, Mock, PropertyMock, patch
 
 import pytest
 import websockets
@@ -99,9 +99,15 @@ async def test_wait_for_login_raises_on_timeout():
 
 @pytest.mark.asyncio
 async def test_handle_message():
+    on_battle_message = AsyncMock()
+    on_update_challenges = AsyncMock()
+    on_challenge_request = AsyncMock()
     client = PSClient(
         account_configuration=account_configuration,
         avatar=12,
+        on_battle_message=on_battle_message,
+        on_update_challenges=on_update_challenges,
+        on_challenge_request=on_challenge_request,
         server_configuration=server_configuration,
         start_listening=False,
     )
@@ -114,17 +120,20 @@ async def test_handle_message():
     await client._handle_message("|updateuser| username")
     assert client._logged_in.is_set() is True
 
-    client._update_challenges = AsyncMock()
     await client._handle_message("|updatechallenges")
-    client._update_challenges.assert_called_once_with(["", "updatechallenges"])
+    on_update_challenges.assert_called_once_with(["", "updatechallenges"])
 
-    client._handle_battle_message = AsyncMock()
     await client._handle_message(">battle|thing")
-    client._handle_battle_message.assert_called_once_with([[">battle", "thing"]])
+    on_battle_message.assert_called_once_with([[">battle", "thing"]])
+
+    await client._handle_message("|pm| opponent| username|/challenge gen9randombattle")
+    on_challenge_request.assert_called_once_with(
+        ["", "pm", " opponent", " username", "/challenge gen9randombattle"]
+    )
 
     await client._handle_message("|updatesearch")
 
-    client._logger.warning = AsyncMock()
+    client._logger.warning = Mock()
     await client._handle_message("that was unexpected!|")
     client._logger.warning.assert_called_once_with(
         "Unhandled message: %s", "that was unexpected!|"

@@ -121,23 +121,6 @@ class Player(ABC):
             Defaults to None.
         :type team: str or Teambuilder, optional
         """
-        self.ps_client = PSClient(
-            account_configuration=account_configuration
-            or AccountConfiguration.generate(self.__class__.__name__),
-            avatar=avatar,
-            log_level=log_level,
-            server_configuration=server_configuration,
-            start_listening=start_listening,
-            open_timeout=open_timeout,
-            ping_interval=ping_interval,
-            ping_timeout=ping_timeout,
-            loop=loop,
-        )
-
-        self.ps_client._handle_battle_message = self._handle_battle_message  # type: ignore
-        self.ps_client._update_challenges = self._update_challenges  # type: ignore
-        self.ps_client._handle_challenge_request = self._handle_challenge_request  # type: ignore
-
         self._format: str = battle_format
         self._max_concurrent_battles: int = max_concurrent_battles
         self._save_replays = save_replays
@@ -163,6 +146,22 @@ class Player(ABC):
             self._team = team
         elif isinstance(team, str):
             self._team = ConstantTeambuilder(team)
+
+        self.ps_client = PSClient(
+            account_configuration=account_configuration
+            or AccountConfiguration.generate(self.__class__.__name__),
+            avatar=avatar,
+            log_level=log_level,
+            on_battle_message=self._handle_battle_message,
+            on_update_challenges=self._update_challenges,
+            on_challenge_request=self._handle_challenge_request,
+            server_configuration=server_configuration,
+            start_listening=start_listening,
+            open_timeout=open_timeout,
+            ping_interval=ping_interval,
+            ping_timeout=ping_timeout,
+            loop=loop,
+        )
 
         self.logger.debug("Player initialisation finished")
 

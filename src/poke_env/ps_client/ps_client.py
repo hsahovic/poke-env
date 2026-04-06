@@ -5,7 +5,7 @@ import json
 import logging
 from logging import Logger
 from time import perf_counter
-from typing import List, Optional, Set
+from typing import Awaitable, Callable, List, Optional, Set
 
 import requests
 import websockets as ws
@@ -20,6 +20,17 @@ from poke_env.concurrency import (
 from poke_env.exceptions import ShowdownException
 from poke_env.ps_client.account_configuration import AccountConfiguration
 from poke_env.ps_client.server_configuration import ServerConfiguration
+
+BattleMessageCallback = Callable[[List[List[str]]], Awaitable[None]]
+ChallengeCallback = Callable[[List[str]], Awaitable[None]]
+
+
+async def _noop_battle_message(split_messages: List[List[str]]) -> None:
+    return None
+
+
+async def _noop_challenge_message(split_message: List[str]) -> None:
+    return None
 
 
 class PSClient:
@@ -37,6 +48,9 @@ class PSClient:
         *,
         avatar: Optional[str] = None,
         log_level: Optional[int] = None,
+        on_battle_message: Optional[BattleMessageCallback] = None,
+        on_update_challenges: Optional[ChallengeCallback] = None,
+        on_challenge_request: Optional[ChallengeCallback] = None,
         server_configuration: ServerConfiguration,
         start_listening: bool = True,
         open_timeout: Optional[float] = 10.0,
@@ -80,6 +94,9 @@ class PSClient:
         self._account_configuration = account_configuration
 
         self._avatar = avatar
+        self._on_battle_message = on_battle_message or _noop_battle_message
+        self._on_update_challenges = on_update_challenges or _noop_challenge_message
+        self._on_challenge_request = on_challenge_request or _noop_challenge_message
 
         self.loop = loop
         self._logged_in: asyncio.Event = create_in_poke_loop(asyncio.Event, loop)
@@ -92,6 +109,15 @@ class PSClient:
             self._listening_coroutine = asyncio.run_coroutine_threadsafe(
                 self.listen(), self.loop
             )
+
+    async def _handle_battle_message(self, split_messages: List[List[str]]) -> None:
+        await self._on_battle_message(split_messages)
+
+    async def _update_challenges(self, split_message: List[str]) -> None:
+        await self._on_update_challenges(split_message)
+
+    async def _handle_challenge_request(self, split_message: List[str]) -> None:
+        await self._on_challenge_request(split_message)
 
     async def accept_challenge(self, username: str, packed_team: Optional[str]):
         assert self.logged_in.is_set(), f"Expected {self.username} to be logged in."
