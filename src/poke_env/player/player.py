@@ -398,8 +398,7 @@ class Player(PSClient):
         :type packed_team: string, optional.
         """
         await handle_threaded_coroutines(
-            self._accept_challenges(opponent, n_challenges, packed_team),
-            self.loop,
+            self._accept_challenges(opponent, n_challenges, packed_team), self.loop
         )
 
     async def _accept_challenges(
@@ -431,9 +430,7 @@ class Player(PSClient):
                     or (opponent == username)
                     or (isinstance(opponent, list) and (username in opponent))
                 ):
-                    await self.accept_challenge(
-                        username, self._current_packed_team
-                    )
+                    await self.accept_challenge(username, self._current_packed_team)
                     await self._battle_semaphore.acquire()
                     break
         await self._battle_count_queue.join()
@@ -510,9 +507,7 @@ class Player(PSClient):
 
         for _ in range(n_games):
             async with self._battle_start_condition:
-                await self.search_ladder_game(
-                    self._format, self.get_next_team()
-                )
+                await self.search_ladder_game(self._format, self.get_next_team())
                 await self._battle_start_condition.wait()
                 while self._battle_count_queue.full():
                     async with self._battle_end_condition:
@@ -543,9 +538,7 @@ class Player(PSClient):
         for opponent in opponents:
             await asyncio.gather(
                 self.send_challenges(
-                    to_id_str(opponent.username),
-                    n_battles,
-                    to_wait=opponent.logged_in,
+                    to_id_str(opponent.username), n_battles, to_wait=opponent.logged_in
                 ),
                 opponent.accept_challenges(to_id_str(self.username), n_battles),
             )

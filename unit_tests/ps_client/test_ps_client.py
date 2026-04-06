@@ -22,6 +22,7 @@ class _ConcretePSClient(PSClient):
     async def _handle_challenge_request(self, split_message):
         pass
 
+
 account_configuration = AccountConfiguration("username", "password")
 requests_tuple = namedtuple("requests_tuple", ["text"])
 server_configuration = ServerConfiguration(
