@@ -291,7 +291,11 @@ class AbstractBattle(ABC):
         # For now only check our pokemon
         if identifier[:2] == self.player_role:
 
-            if type(self.active_pokemon) == list:
+            # Don't know the bench yet
+            if identifier not in self._team:
+                return None
+
+            if isinstance(self.active_pokemon, list):
                 index = ord(position) - ord("a")
                 believed_active = self.active_pokemon[index]
             else:

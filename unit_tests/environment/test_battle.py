@@ -727,6 +727,127 @@ def test_end_illusion():
     assert battle.get_pokemon("p2: Celebi").boosts == empty_boosts
 
 
+def test_illusion_our_moves():
+    """
+    Test that if our active Pokémon is a disguised Zoroark,
+    we don't add the move it uses to the Pokémon being disguised as.
+
+    Initially we don't know that our Pokémon is a Zorark because the messages
+    say that it is Deoxys, but once we receive the battle request, we need to know
+    that Zororak is active and not update the moves of Deoxys.
+    """
+    logger = MagicMock()
+    battle = Battle("tag", "username", logger, gen=9)
+    battle.player_role = "p1"
+
+    battle.switch("p1a: Deoxys", "Deoxys-Defense, L84", "100/100")
+    battle.switch("p2a: Poliwrath", "Poliwrath, L88, F", "302/302")
+
+    assert battle.active_pokemon.species == "deoxysdefense"
+
+    battle_request = {
+        "active": [
+            {
+                "moves": [
+                    {
+                        "move": "Will-O-Wisp",
+                        "id": "willowisp",
+                        "pp": 24,
+                        "maxpp": 24,
+                        "target": "normal",
+                        "disabled": False,
+                    },
+                    {
+                        "move": "Focus Blast",
+                        "id": "focusblast",
+                        "pp": 8,
+                        "maxpp": 8,
+                        "target": "normal",
+                        "disabled": False,
+                    },
+                    {
+                        "move": "Hyper Voice",
+                        "id": "hypervoice",
+                        "pp": 16,
+                        "maxpp": 16,
+                        "target": "allAdjacentFoes",
+                        "disabled": False,
+                    },
+                    {
+                        "move": "Poltergeist",
+                        "id": "poltergeist",
+                        "pp": 8,
+                        "maxpp": 8,
+                        "target": "normal",
+                        "disabled": False,
+                    },
+                ],
+                "canTerastallize": "Dark",
+            }
+        ],
+        "side": {
+            "name": "RandomPlayer 1",
+            "id": "p1",
+            "pokemon": [
+                {
+                    "ident": "p1: Deoxys",
+                    "details": "Deoxys-Defense, L84",
+                    "condition": "221/221",
+                    "active": False,
+                    "stats": {
+                        "atk": 122,
+                        "def": 317,
+                        "spa": 166,
+                        "spd": 317,
+                        "spe": 199,
+                    },
+                    "moves": ["cosmicpower", "recover", "storedpower", "nightshade"],
+                    "baseAbility": "pressure",
+                    "item": "leftovers",
+                    "pokeball": "pokeball",
+                    "ability": "pressure",
+                    "commanding": False,
+                    "reviving": False,
+                    "teraType": "Steel",
+                    "terastallized": "",
+                },
+                {
+                    "ident": "p1: Zoroark",
+                    "details": "Zoroark-Hisui, L80, F",
+                    "condition": "219/219",
+                    "active": True,
+                    "stats": {
+                        "hp": 219,
+                        "atk": 206,
+                        "def": 142,
+                        "spa": 246,
+                        "spd": 142,
+                        "spe": 222,
+                    },
+                    "moves": ["willowisp", "focusblast", "hypervoice", "poltergeist"],
+                    "baseAbility": "illusion",
+                    "item": "lifeorb",
+                    "pokeball": "pokeball",
+                    "ability": "illusion",
+                    "commanding": False,
+                    "reviving": False,
+                    "teraType": "Dark",
+                    "terastallized": "",
+                },
+            ],
+        },
+        "rqid": 2,
+    }
+
+    battle.parse_request(battle_request, strict_battle_tracking=True)
+    assert battle.active_pokemon.species == "zoroarkhisui"
+
+    battle.parse_message(["", "move", "p1a: Deoxys", "Focus Blast", "p2a: Poliwrath"])
+    assert battle.active_pokemon.species == "zoroarkhisui"
+    assert len(battle._team["p1: Deoxys"].moves) == 4
+    assert "focusblast" not in battle._team["p1: Deoxys"].moves
+
+
 def test_toxic_counter(example_request):
     logger = MagicMock()
     battle = Battle("tag", "username", logger, gen=8)
