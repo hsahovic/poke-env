@@ -217,7 +217,12 @@ class AbstractBattle(ABC):
             teamsize component of battle initialisation.
         """
         if identifier[3] != " ":
+            position = identifier[2]
             identifier = identifier[:2] + identifier[3:]
+
+            possiblePokemon = self.get_active_pokemon_by_id(position, identifier)
+            if possiblePokemon is not None:
+                return possiblePokemon
 
         if identifier in self._team:
             return self._team[identifier]
@@ -273,6 +278,48 @@ class AbstractBattle(ABC):
             team[identifier] = Pokemon(species=species, name=name, gen=self.gen)
 
         return team[identifier]
+
+    def get_active_pokemon_by_id(
+        self, position: str, identifier: str
+    ) -> Optional[Pokemon]:
+        """
+        This function is here to handle the cases when the server gives p1a instead of p1.
+
+        This means the message thinks the pokemon is activate, but here we can check if this
+        correct or Zoroark is playing tricks on us.
+        """
+        # For now only check our pokemon
+        if identifier[:2] == self.player_role:
+
+            if type(self.active_pokemon) == list:
+                index = ord(position) - ord("a")
+                believed_active = self.active_pokemon[index]
+            else:
+                believed_active = self.active_pokemon
+
+            # Only when our Pokémon is initialy sent out
+            if believed_active is None:
+                return None
+
+            # Zoroark isn't playing tricks
+            if believed_active == self._team[identifier]:
+                return believed_active
+
+            # Illusion has probably been broken the same turn as switching in
+            if self._team[identifier]._ability == "illusion":
+                return self._team[identifier]
+
+            # Illusion is active
+            if believed_active._ability == "illusion":
+                return believed_active
+
+            # Something has gone wrong
+            if self.logger is not None:
+                self.logger.warning(
+                    "Message thinks %s is active, but it's not.", identifier
+                )
+
+        return None
 
     @abstractmethod
     def clear_all_boosts(self):
