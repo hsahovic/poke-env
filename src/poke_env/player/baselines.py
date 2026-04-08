@@ -261,7 +261,7 @@ class SimpleHeuristicsPlayer(Player):
         active = battle.active_pokemon
         opponent = battle.opponent_active_pokemon
 
-        if active is None or opponent is None or battle.wait:
+        if active is None or opponent is None:
             return Player.choose_random_singles_move(battle), 0
 
         # Rough estimation of damage ratio
