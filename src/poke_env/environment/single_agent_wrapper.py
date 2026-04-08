@@ -6,6 +6,7 @@ from gymnasium import Env
 from gymnasium.envs.registration import EnvSpec
 
 from poke_env.environment.env import ActionType, PokeEnv
+from poke_env.player.battle_order import DefaultBattleOrder
 from poke_env.player.player import Player
 
 
@@ -32,7 +33,14 @@ class SingleAgentWrapper(Env[Dict[str, Any], ActionType]):
         :rtype: Tuple[Dict[str, Any], float, bool, bool, Dict[str, Any]]
         """
         assert self.env.battle2 is not None
-        if not self.env.battle2.teampreview:
+        if self.env.battle2.wait:
+            opp_action = self.env.order_to_action(
+                DefaultBattleOrder(),
+                self.env.battle2,
+                fake=self.env._fake,
+                strict=self.env._strict,
+            )
+        elif not self.env.battle2.teampreview:
             opp_order = self.opponent.choose_move(self.env.battle2)
             assert not isinstance(opp_order, Awaitable)
             opp_action = self.env.order_to_action(
