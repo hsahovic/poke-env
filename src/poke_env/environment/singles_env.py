@@ -255,13 +255,15 @@ class SinglesEnv(PokeEnv[np.int64]):
                 and battle.available_moves[0].id not in SPECIAL_MOVES
             ):
                 move_space = [6]
+            avail_move_ids = [m.id for m in battle.available_moves]
+            available_z_ids = [m.id for m in battle.active_pokemon.available_z_moves]
             mega_space = [i + 4 for i in move_space if battle.can_mega_evolve]
             zmove_space = [
-                i + 8
-                for i in move_space
+                i + 6 + 8
+                for i, move in enumerate(known_moves)
                 if battle.can_z_move
-                and known_moves[i - 6].id
-                in [m.id for m in battle.active_pokemon.available_z_moves]
+                and move.id in avail_move_ids
+                and move.id in available_z_ids
             ]
             dynamax_space = [i + 12 for i in move_space if battle.can_dynamax]
             tera_space = [i + 16 for i in move_space if battle.can_tera]
