@@ -260,7 +260,6 @@ class SinglesEnv(PokeEnv[np.int64]):
                 i + 8
                 for i in move_space
                 if battle.can_z_move
-                and (i - 6) < len(known_moves)
                 and known_moves[i - 6].id
                 in [m.id for m in battle.active_pokemon.available_z_moves]
             ]
