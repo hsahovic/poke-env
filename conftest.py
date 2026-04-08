@@ -42,6 +42,12 @@ def example_request():
 
 
 @fixture
+def example_zoroark_request():
+    with open(os.path.join(FIXTURE_DIR, "example_zoroark_request.json")) as f:
+        return orjson.loads(f.read())
+
+
+@fixture
 def force_switch_example_request():
     with open(os.path.join(FIXTURE_DIR, "force_switch_example_request.json")) as f:
         return orjson.loads(f.read())
@@ -57,3 +63,9 @@ def example_doubles_request():
 def example_doubles_logs():
     with open(os.path.join(FIXTURE_DIR, "example_doubles_logs.txt")) as f:
         return list(map(lambda x: x.split("|"), orjson.loads(f.read())))
+
+
+@fixture
+def example_doubles_zoroark_request():
+    with open(os.path.join(FIXTURE_DIR, "example_doubles_zoroark_request.json")) as f:
+        return orjson.loads(f.read())

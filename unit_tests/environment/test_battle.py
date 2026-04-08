@@ -727,7 +727,7 @@ def test_end_illusion():
     assert battle.get_pokemon("p2: Celebi").boosts == empty_boosts
 
 
-def test_illusion_our_moves():
+def test_illusion_our_moves(example_zoroark_request):
     """
     Test that if our active Pokémon is a disguised Zoroark,
     we don't add the move it uses to the Pokémon being disguised as.
@@ -745,101 +745,7 @@ def test_illusion_our_moves():
 
     assert battle.active_pokemon.species == "deoxysdefense"
 
-    battle_request = {
-        "active": [
-            {
-                "moves": [
-                    {
-                        "move": "Will-O-Wisp",
-                        "id": "willowisp",
-                        "pp": 24,
-                        "maxpp": 24,
-                        "target": "normal",
-                        "disabled": False,
-                    },
-                    {
-                        "move": "Focus Blast",
-                        "id": "focusblast",
-                        "pp": 8,
-                        "maxpp": 8,
-                        "target": "normal",
-                        "disabled": False,
-                    },
-                    {
-                        "move": "Hyper Voice",
-                        "id": "hypervoice",
-                        "pp": 16,
-                        "maxpp": 16,
-                        "target": "allAdjacentFoes",
-                        "disabled": False,
-                    },
-                    {
-                        "move": "Poltergeist",
-                        "id": "poltergeist",
-                        "pp": 8,
-                        "maxpp": 8,
-                        "target": "normal",
-                        "disabled": False,
-                    },
-                ],
-                "canTerastallize": "Dark",
-            }
-        ],
-        "side": {
-            "name": "RandomPlayer 1",
-            "id": "p1",
-            "pokemon": [
-                {
-                    "ident": "p1: Deoxys",
-                    "details": "Deoxys-Defense, L84",
-                    "condition": "221/221",
-                    "active": False,
-                    "stats": {
-                        "atk": 122,
-                        "def": 317,
-                        "spa": 166,
-                        "spd": 317,
-                        "spe": 199,
-                    },
-                    "moves": ["cosmicpower", "recover", "storedpower", "nightshade"],
-                    "baseAbility": "pressure",
-                    "item": "leftovers",
-                    "pokeball": "pokeball",
-                    "ability": "pressure",
-                    "commanding": False,
-                    "reviving": False,
-                    "teraType": "Steel",
-                    "terastallized": "",
-                },
-                {
-                    "ident": "p1: Zoroark",
-                    "details": "Zoroark-Hisui, L80, F",
-                    "condition": "219/219",
-                    "active": True,
-                    "stats": {
-                        "hp": 219,
-                        "atk": 206,
-                        "def": 142,
-                        "spa": 246,
-                        "spd": 142,
-                        "spe": 222,
-                    },
-                    "moves": ["willowisp", "focusblast", "hypervoice", "poltergeist"],
-                    "baseAbility": "illusion",
-                    "item": "lifeorb",
-                    "pokeball": "pokeball",
-                    "ability": "illusion",
-                    "commanding": False,
-                    "reviving": False,
-                    "teraType": "Dark",
-                    "terastallized": "",
-                },
-            ],
-        },
-        "rqid": 2,
-    }
-
-    battle.parse_request(battle_request, strict_battle_tracking=True)
+    battle.parse_request(example_zoroark_request, strict_battle_tracking=True)
     assert battle.active_pokemon.species == "zoroarkhisui"
 
     battle.parse_message(["", "move", "p1a: Deoxys", "Focus Blast", "p2a: Poliwrath"])

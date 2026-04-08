@@ -1,0 +1,146 @@
+{
+  "active": [
+    {
+      "moves": [
+        {
+          "move": "Will-O-Wisp",
+          "id": "willowisp",
+          "pp": 24,
+          "maxpp": 24,
+          "target": "normal",
+          "disabled": false
+        },
+        {
+          "move": "Focus Blast",
+          "id": "focusblast",
+          "pp": 8,
+          "maxpp": 8,
+          "target": "normal",
+          "disabled": false
+        },
+        {
+          "move": "Hyper Voice",
+          "id": "hypervoice",
+          "pp": 16,
+          "maxpp": 16,
+          "target": "allAdjacentFoes",
+          "disabled": false
+        },
+        {
+          "move": "Poltergeist",
+          "id": "poltergeist",
+          "pp": 8,
+          "maxpp": 8,
+          "target": "normal",
+          "disabled": false
+        }
+      ],
+      "canTerastallize": "Dark"
+    },
+    {
+      "moves": [
+        {
+          "move": "Earth Power",
+          "id": "earthpower",
+          "pp": 16,
+          "maxpp": 16,
+          "target": "normal",
+          "disabled": false
+        },
+        {
+          "move": "Sludge Bomb",
+          "id": "sludgebomb",
+          "pp": 16,
+          "maxpp": 16,
+          "target": "normal",
+          "disabled": false
+        },
+        {
+          "move": "Leaf Storm",
+          "id": "leafstorm",
+          "pp": 8,
+          "maxpp": 8,
+          "target": "normal",
+          "disabled": false
+        },
+        {
+          "move": "Protect",
+          "id": "protect",
+          "pp": 16,
+          "maxpp": 16,
+          "target": "self",
+          "disabled": false
+        }
+      ],
+      "canTerastallize": "Water"
+    }
+  ],
+  "side": {
+    "name": "RandomPlayer 1",
+    "id": "p1",
+    "pokemon": [
+            {
+        "ident": "p1: Emo",
+        "details": "Zoroark-Hisui, L80, F",
+        "condition": "219/219",
+        "active": true,
+        "stats": {
+          "hp": 219,
+          "atk": 206,
+          "def": 142,
+          "spa": 246,
+          "spd": 142,
+          "spe": 222
+        },
+        "moves": ["willowisp", "focusblast", "hypervoice", "poltergeist"],
+        "baseAbility": "illusion",
+        "item": "lifeorb",
+        "pokeball": "pokeball",
+        "ability": "illusion",
+        "commanding": false,
+        "reviving": false,
+        "teraType": "Dark",
+        "terastallized": ""
+      },
+      {
+        "ident": "p1: Plant",
+        "details": "Venusaur, L86, M",
+        "condition": "278/278",
+        "active": true,
+        "stats": { "atk": 146, "def": 192, "spa": 221, "spd": 221, "spe": 187 },
+        "moves": ["earthpower", "sludgebomb", "leafstorm", "protect"],
+        "baseAbility": "overgrow",
+        "item": "lifeorb",
+        "pokeball": "pokeball",
+        "ability": "overgrow",
+        "commanding": false,
+        "reviving": false,
+        "teraType": "Water",
+        "terastallized": ""
+      },
+      {
+        "ident": "p1: Alien",
+        "details": "Deoxys-Defense, L84",
+        "condition": "221/221",
+        "active": false,
+        "stats": {
+          "atk": 122,
+          "def": 317,
+          "spa": 166,
+          "spd": 317,
+          "spe": 199
+        },
+        "moves": ["cosmicpower", "recover", "storedpower", "nightshade"],
+        "baseAbility": "pressure",
+        "item": "leftovers",
+        "pokeball": "pokeball",
+        "ability": "pressure",
+        "commanding": false,
+        "reviving": false,
+        "teraType": "Steel",
+        "terastallized": ""
+      }
+    ]
+  },
+  "rqid": 2
+}

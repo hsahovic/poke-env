@@ -213,6 +213,33 @@ def test_end_illusion():
     assert celebi not in battle.active_pokemon
 
 
+def test_illusion_our_moves(example_doubles_zoroark_request):
+    """
+    This is basically the same test as in the single battle test,
+    but this time by using nicknames for all our pokemon.
+    """
+    logger = MagicMock()
+    battle = DoubleBattle("tag", "username", logger, gen=9)
+    battle.player_role = "p1"
+
+    battle.switch("p1a: Alien", "Deoxys-Defense, L84", "100/100")
+    battle.switch("p1b: Plant", "Venusaur, L86, M", "100/100")
+    battle.switch("p2a: Poliwrath", "Poliwrath, L88, F", "302/302")
+    battle.switch("p2b: Politoed", "Politoed, L88, M", "302/302")
+
+    assert battle.active_pokemon[0].species == "deoxysdefense"
+    assert battle.active_pokemon[1].species == "venusaur"
+
+    battle.parse_request(example_doubles_zoroark_request, strict_battle_tracking=True)
+    assert battle.active_pokemon[0].species == "zoroarkhisui"
+    assert battle.active_pokemon[1].species == "venusaur"
+
+    battle.parse_message(["", "move", "p1a: Alien", "Focus Blast", "p2a: Poliwrath"])
+    assert battle.active_pokemon[0].species == "zoroarkhisui"
+    assert len(battle._team["p1: Alien"].moves) == 4
+    assert "focusblast" not in battle._team["p1: Alien"].moves
+
+
 def test_one_mon_left_in_double_battles_results_in_available_move_in_the_correct_slot():
     request = {
         "active": [
