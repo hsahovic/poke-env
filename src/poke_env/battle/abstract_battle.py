@@ -220,9 +220,9 @@ class AbstractBattle(ABC):
             position = identifier[2]
             identifier = identifier[:2] + identifier[3:]
 
-            possiblePokemon = self.get_active_pokemon_by_id(position, identifier)
-            if possiblePokemon is not None:
-                return possiblePokemon
+            possible_pokemon = self.get_active_pokemon_by_id(position, identifier)
+            if possible_pokemon is not None:
+                return possible_pokemon
 
         if identifier in self._team:
             return self._team[identifier]
@@ -287,6 +287,23 @@ class AbstractBattle(ABC):
 
         This means the message thinks the pokemon is activate, but here we can check if this
         correct or Zoroark is playing tricks on us.
+
+        The way to check for a zoroark is seeing that the pokemon it is asking for isn't
+        currently active. For that we need to have the Pokemon instance of both the active
+        and the believed active in the team. If we don't we need to use the normal get_pokemon.
+
+        If both are the same, we can simply return either. If they are different, we need to check
+        which one has illusion. If there is none, we log a warning, but this should never happen.
+
+        If the Pokémon with the Illusion is not active, the following has occurred:
+            - For some reason or another in the current turn, our Zoroark has switched in.
+            - The message from the switch in has made it so the illusion is the active Pokémon
+            - Now the illusion has been broken, it says that the active is Zoroark, but in our battle it isn't.
+            - We need to return the Zoroark.
+
+        If it isn't broken, the request for the next turn will tell us the Zoroark is active. However
+        the messages that tell us the active Pokémon will be referring to the illusion, so we use:
+        if believed_active._ability == "illusion":
         """
         # For now only check our pokemon
         if identifier[:2] == self.player_role:
@@ -296,7 +313,7 @@ class AbstractBattle(ABC):
                 return None
 
             if isinstance(self.active_pokemon, list):
-                index = ord(position) - ord("a")
+                index = {"a": 0, "b": 1, "c": 2}[position]
                 believed_active = self.active_pokemon[index]
             else:
                 believed_active = self.active_pokemon
