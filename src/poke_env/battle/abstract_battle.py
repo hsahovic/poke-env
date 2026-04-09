@@ -201,6 +201,26 @@ class AbstractBattle(ABC):
         object does not exist, it will be created. Details can be given, which is
         necessary to initialize alternate forms (eg. alolan pokemons) properly.
 
+        When the message says the pokemon is active we can check if this
+        correct or Zoroark is playing tricks on us:
+
+            The way to check for a zoroark is seeing that the pokemon it is asking for isn't
+            currently active. For that we need to have the Pokemon instance of both the active
+            and the believed active in the team. If we don't we need to use the normal get_pokemon.
+
+            If both are the same, we can simply return either. If they are different, we need to check
+            which one has illusion. If there is none, we log a warning, but this should never happen.
+
+            If the Pokémon with the Illusion is not active, the following has occurred:
+                - For some reason or another in the current turn, our Zoroark has switched in.
+                - The message from the switch in has made it so the illusion is the active Pokémon
+                - Now the illusion has been broken, it says that the active is Zoroark, but in our battle it isn't.
+                - We need to return the Zoroark.
+
+            If it isn't broken, the request for the next turn will tell us the Zoroark is active. However
+            the messages that tell us the active Pokémon will be referring to the illusion, so we use:
+            if believed_active._ability == "illusion":
+
         :param identifier: The identifier to use to retrieve the pokemon.
         :type identifier: str
         :param force_self_team: Wheter to force returning a Pokemon from the player's
@@ -216,8 +236,40 @@ class AbstractBattle(ABC):
         :raises ValueError: If the team has too many pokemons, as determined by the
             teamsize component of battle initialisation.
         """
+        # Handle the cases when the server gives p1a instead of p1
         if identifier[3] != " ":
+            position = identifier[2]
             identifier = identifier[:2] + identifier[3:]
+
+            # For now only check our pokemon
+            if identifier[:2] == self.player_role and identifier in self._team:
+
+                if isinstance(self.active_pokemon, list):
+                    index = {"a": 0, "b": 1, "c": 2}[position]
+                    believed_active = self.active_pokemon[index]
+                else:
+                    believed_active = self.active_pokemon
+
+                # Only None when our Pokémon is initialy sent out
+                if believed_active is not None:
+
+                    # Zoroark isn't playing tricks
+                    if believed_active == self._team[identifier]:
+                        return believed_active
+
+                    # Illusion has probably been broken the same turn as switching in
+                    if self._team[identifier]._ability == "illusion":
+                        return self._team[identifier]
+
+                    # Illusion is active
+                    if believed_active._ability == "illusion":
+                        return believed_active
+
+                    # Something has gone wrong
+                    if self.logger is not None:
+                        self.logger.warning(
+                            "Message thinks %s is active, but it's not.", identifier
+                        )
 
         if identifier in self._team:
             return self._team[identifier]

@@ -727,6 +727,33 @@ def test_end_illusion():
     assert battle.get_pokemon("p2: Celebi").boosts == empty_boosts
 
 
+def test_illusion_our_moves(example_zoroark_request):
+    """
+    Test that if our active Pokémon is a disguised Zoroark,
+    we don't add the move it uses to the Pokémon being disguised as.
+
+    Initially we don't know that our Pokémon is a Zorark because the messages
+    say that it is Deoxys, but once we receive the battle request, we need to know
+    that Zororak is active and not update the moves of Deoxys.
+    """
+    logger = MagicMock()
+    battle = Battle("tag", "username", logger, gen=9)
+    battle.player_role = "p1"
+
+    battle.switch("p1a: Deoxys", "Deoxys-Defense, L84", "100/100")
+    battle.switch("p2a: Poliwrath", "Poliwrath, L88, F", "302/302")
+
+    assert battle.active_pokemon.species == "deoxysdefense"
+
+    battle.parse_request(example_zoroark_request, strict_battle_tracking=True)
+    assert battle.active_pokemon.species == "zoroarkhisui"
+
+    battle.parse_message(["", "move", "p1a: Deoxys", "Focus Blast", "p2a: Poliwrath"])
+    assert battle.active_pokemon.species == "zoroarkhisui"
+    assert len(battle._team["p1: Deoxys"].moves) == 4
+    assert "focusblast" not in battle._team["p1: Deoxys"].moves
+
+
 def test_toxic_counter(example_request):
     logger = MagicMock()
     battle = Battle("tag", "username", logger, gen=8)
