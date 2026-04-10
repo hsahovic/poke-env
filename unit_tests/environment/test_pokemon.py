@@ -477,3 +477,88 @@ def test_temporary():
     furret.switch_out({})
     assert furret.ability == "adaptability"
     assert furret.types == [PokemonType.DRAGON]
+
+
+def test_normal_learnset():
+    formats = [
+        "gen9randombattle",
+        "gen9randomdoublesbattle",
+        "gen9ou",
+        "gen9ubers",
+        "gen9ru",
+        "gen9vgc2026regi",
+        "gen9freeforallrandombattle",
+    ]
+
+    for format_ in formats:
+        mon = Pokemon(species="bulbasaur", gen=9, format=format_)
+        assert mon._format == format_
+        assert mon._learnset_format
+
+
+def test_different_learnset():
+    formats = [
+        (7, "gen7anythinggoes"),
+        (8, "gen8anythinggoes"),
+        (9, "gen9anythinggoes"),
+        (6, "gen6purehackmons"),
+        (7, "gen7balancedhackmons"),
+        (9, "gen9stabmons"),
+    ]
+
+    for gen, format_ in formats:
+        mon = Pokemon(species="bulbasaur", gen=gen, format=format_)
+        assert mon._format == format_
+        assert not mon._learnset_format
+
+
+def test_breloom_learnset():
+    # Breeloom only has spore from Shroomish
+
+    for gen in range(3, 8):
+        mon = Pokemon(species="breloom", gen=gen)
+        assert "spore" in mon.learnset
+
+
+def test_pikachu_learnset():
+
+    pikachu_normal = Pokemon(species="pikachu", gen=6)
+    pikachu_rock = Pokemon(species="pikachurockstar", gen=6)
+    raichu_normal = Pokemon(species="raichu", gen=7)
+    raichu_alola = Pokemon(species="raichualola", gen=7)
+
+    # Thunderbolt is in all learnsets
+    assert "thunderbolt" in pikachu_normal.learnset
+    assert "thunderbolt" in pikachu_rock.learnset
+    assert "thunderbolt" in raichu_normal.learnset
+    assert "thunderbolt" in raichu_alola.learnset
+
+    # Only pikachurockstar has meteormash
+    assert "meteormash" not in pikachu_normal.learnset
+    assert "meteormash" in pikachu_rock.learnset
+    assert "meteormash" not in raichu_normal.learnset
+    assert "meteormash" not in raichu_alola.learnset
+
+    # Only psychic on alolan raichu
+    assert "psychic" not in pikachu_normal.learnset
+    assert "psychic" not in pikachu_rock.learnset
+    assert "psychic" not in raichu_normal.learnset
+    assert "psychic" in raichu_alola.learnset
+
+
+def test_deoxys_learnset():
+    # Deoxys has the same learnset across all forms
+
+    for gen in [3, 4, 5, 6, 7, 9]:  # 8 DEXIT
+
+        deoxys_normal = Pokemon(species="deoxys", gen=gen)
+        deoxys_attack = Pokemon(species="deoxysattack", gen=gen)
+        deoxys_defense = Pokemon(species="deoxysdefense", gen=gen)
+        deoxys_speed = Pokemon(species="deoxysspeed", gen=gen)
+
+        assert (
+            deoxys_normal.learnset
+            == deoxys_attack.learnset
+            == deoxys_defense.learnset
+            == deoxys_speed.learnset
+        )

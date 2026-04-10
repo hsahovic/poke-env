@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 import orjson
 
@@ -39,7 +39,9 @@ class GenData:
         with open(os.path.join(self._static_files_root, "natures.json")) as f:
             return orjson.loads(f.read())
 
-    def load_learnset(self) -> Dict[str, Dict[str, Union[int, float]]]:
+    def load_learnset(
+        self,
+    ) -> Dict[str, Dict[str, Union[int, float, Dict[str, List[str]]]]]:
         with open(os.path.join(self._static_files_root, "learnset.json")) as f:
             return orjson.loads(f.read())
 
