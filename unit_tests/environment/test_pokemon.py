@@ -562,3 +562,24 @@ def test_deoxys_learnset():
             == deoxys_defense.learnset
             == deoxys_speed.learnset
         )
+
+
+def test_zamazenta_learnset():
+    zamazenta = Pokemon(species="zamazenta", gen=8)
+    zamazenta_crowned = Pokemon(species="zamazentacrowned", gen=8)
+    assert zamazenta.learnset.union({"behemothbash"}) == zamazenta_crowned.learnset
+
+
+def test_indeedee_learnset():
+    indeedee_male = Pokemon(species="indeedee", gen=8)
+    indeedee_female = Pokemon(species="indeedeef", gen=8)
+
+    # Encore only for male
+    assert "encore" in indeedee_male.learnset
+    assert "encore" not in indeedee_female.learnset
+
+    # Screens only for female
+    assert "reflect" not in indeedee_male.learnset
+    assert "reflect" in indeedee_female.learnset
+    assert "lightscreen" not in indeedee_male.learnset
+    assert "lightscreen" in indeedee_female.learnset

@@ -687,6 +687,15 @@ class Pokemon:
                 for move, sources in learn.items():
                     all_moves[move].extend(sources)
 
+        # Moveset from the form without the item
+        if "species" in dex_entry and "battleOnly" in dex_entry:
+            dex_species = to_id_str(dex_entry["species"])
+            if dex_species in learnsets and "learnset" in learnsets[dex_species]:
+                learn = learnsets[dex_species]["learnset"]
+                if isinstance(learn, dict):
+                    for move, sources in learn.items():
+                        all_moves[move].extend(sources)
+
         # Moveset from the form it comes from
         if "changesFrom" in dex_entry:
             previous_form = to_id_str(dex_entry["changesFrom"])
