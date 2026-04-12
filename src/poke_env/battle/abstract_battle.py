@@ -523,6 +523,9 @@ class AbstractBattle(ABC):
         replay_path.write_text(self._build_replay_html(), encoding="utf-8")
         return replay_path
 
+    def _clear_commander_from_partner(self, pokemon_identifier: str):
+        pass
+
     def _finish_battle(self):
         self._finished = True
 
@@ -759,15 +762,8 @@ class AbstractBattle(ABC):
         elif event[1] == "faint":
             mon = self.get_pokemon(event[2])
             mon.faint()
-            if mon.species == "dondozo" and isinstance(self.active_pokemon, list):
-                active_mons = (
-                    self.active_pokemon
-                    if event[2][:2] == self.player_role
-                    else self.opponent_active_pokemon
-                )
-                other = active_mons[1 if event[2][2] == "a" else 0]
-                if other is not None and Effect.COMMANDER in other.effects:
-                    other.end_effect("Commander")
+            if mon.species == "dondozo":
+                self._clear_commander_from_partner(event[2][:3])
         elif event[1] == "-unboost":
             pokemon, stat, amount = event[2:5]
             self.get_pokemon(pokemon).boost(stat, -int(amount))

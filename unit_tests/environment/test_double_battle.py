@@ -613,6 +613,41 @@ def test_dondozo_tatsugiri():
     assert Effect.COMMANDER not in tatsu.effects
 
 
+def test_dondozo_tatsugiri_switch_out():
+    battle = DoubleBattle("tag", "username", MagicMock(), gen=9)
+    battle.player_role = "p1"
+    dozo = Pokemon(gen=9, species="dondozo")
+    battle.team = {"p1: Dondozo": dozo}
+    tatsu = Pokemon(gen=9, species="tatsugiri")
+    tatsu._ability = "commander"
+    battle.team["p1: Tatsugiri"] = tatsu
+    urshifu = Pokemon(gen=9, species="urshifu")
+    battle.team["p1: Urshifu"] = urshifu
+
+    # Start with Dondozo at p1a, Urshifu at p1b
+    battle.parse_message(["", "switch", "p1a: Dondozo", "Dondozo, L50, M", "100/100"])
+    battle.parse_message(["", "switch", "p1b: Urshifu", "Urshifu, L50, M", "100/100"])
+
+    # Turn 1: Tatsugiri switches in at p1b, Commander activates
+    battle.parse_message(
+        ["", "switch", "p1b: Tatsugiri", "Tatsugiri, L50, M", "100/100"]
+    )
+    battle.parse_message(
+        ["", "-activate", "p1b: Tatsugiri", "ability: Commander", "[of] p1a: Dondozo"]
+    )
+    assert Effect.COMMANDER in tatsu.effects
+
+    # Dondozo switches out at p1a, replaced by Flutter Mane
+    flutter = Pokemon(gen=9, species="fluttermane")
+    battle.team["p1: Flutter Mane"] = flutter
+    battle.parse_message(
+        ["", "switch", "p1a: Flutter Mane", "Flutter Mane, L50", "100/100"]
+    )
+
+    # Commander effect should be cleared from Tatsugiri
+    assert Effect.COMMANDER not in tatsu.effects
+
+
 def test_symbiosis():
     battle = DoubleBattle("tag", "username", MagicMock(), gen=9)
     battle.player_role = "p1"
