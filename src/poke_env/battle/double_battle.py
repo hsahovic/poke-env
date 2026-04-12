@@ -58,6 +58,16 @@ class DoubleBattle(AbstractBattle):
                 if active_pokemon is not None:
                     active_pokemon.clear_boosts()
 
+    def _clear_commander_from_partner(self, pokemon_identifier: str):
+        active_mons = (
+            self.active_pokemon
+            if pokemon_identifier[:2] == self.player_role
+            else self.opponent_active_pokemon
+        )
+        other = active_mons[1 if pokemon_identifier[2] == "a" else 0]
+        if other is not None and Effect.COMMANDER in other.effects:
+            other.end_effect("Commander")
+
     def end_illusion(self, pokemon_name: str, details: str):
         player_identifier = pokemon_name[:2]
         pokemon_identifier = pokemon_name[:3]
@@ -258,14 +268,7 @@ class DoubleBattle(AbstractBattle):
         if pokemon_out is not None:
             pokemon_out.switch_out(self.fields)
             if pokemon_out.species == "dondozo":
-                partner_key = (
-                    f"{player_identifier}b"
-                    if pokemon_identifier[2] == "a"
-                    else f"{player_identifier}a"
-                )
-                partner = team.get(partner_key)
-                if partner is not None and Effect.COMMANDER in partner.effects:
-                    partner.end_effect("Commander")
+                self._clear_commander_from_partner(pokemon_identifier)
         pokemon_in = self.get_pokemon(pokemon_str, details=details)
         pokemon_in.switch_in()
         pokemon_in.set_hp_status(hp_status)
