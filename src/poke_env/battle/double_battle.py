@@ -257,6 +257,15 @@ class DoubleBattle(AbstractBattle):
         pokemon_out = team.pop(pokemon_identifier, None)
         if pokemon_out is not None:
             pokemon_out.switch_out(self.fields)
+            if pokemon_out.species == "dondozo":
+                partner_key = (
+                    f"{player_identifier}b"
+                    if pokemon_identifier[2] == "a"
+                    else f"{player_identifier}a"
+                )
+                partner = team.get(partner_key)
+                if partner is not None and Effect.COMMANDER in partner.effects:
+                    partner.end_effect("Commander")
         pokemon_in = self.get_pokemon(pokemon_str, details=details)
         pokemon_in.switch_in()
         pokemon_in.set_hp_status(hp_status)
