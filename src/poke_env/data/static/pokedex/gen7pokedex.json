@@ -152,13 +152,15 @@
         ],
         "formeOrder": [
             "Absol",
-            "Absol-Mega"
+            "Absol-Mega",
+            "Absol-Mega-Z"
         ],
         "heightm": 1.2,
         "name": "Absol",
         "num": 359,
         "otherFormes": [
-            "Absol-Mega"
+            "Absol-Mega",
+            "Absol-Mega-Z"
         ],
         "types": [
             "Dark"
@@ -189,6 +191,35 @@
         "requiredItem": "Absolite",
         "types": [
             "Dark"
+        ],
+        "weightkg": 49
+    },
+    "absolmegaz": {
+        "abilities": {
+            "0": "Magic Bounce"
+        },
+        "baseSpecies": "Absol",
+        "baseStats": {
+            "atk": 154,
+            "def": 60,
+            "hp": 65,
+            "spa": 75,
+            "spd": 60,
+            "spe": 151
+        },
+        "color": "Black",
+        "eggGroups": [
+            "Field"
+        ],
+        "forme": "Mega-Z",
+        "gen": 9,
+        "heightm": 1.2,
+        "name": "Absol-Mega-Z",
+        "num": 359,
+        "requiredItem": "Absolite Z",
+        "types": [
+            "Dark",
+            "Ghost"
         ],
         "weightkg": 49
     },
@@ -2374,15 +2405,53 @@
             "Water 3"
         ],
         "evoLevel": 39,
+        "formeOrder": [
+            "Barbaracle",
+            "Barbaracle-Mega"
+        ],
         "heightm": 1.3,
         "name": "Barbaracle",
         "num": 689,
+        "otherFormes": [
+            "Barbaracle-Mega"
+        ],
         "prevo": "Binacle",
         "types": [
             "Rock",
             "Water"
         ],
         "weightkg": 96
+    },
+    "barbaraclemega": {
+        "abilities": {
+            "0": "Tough Claws",
+            "1": "Sniper",
+            "H": "Pickpocket"
+        },
+        "baseSpecies": "Barbaracle",
+        "baseStats": {
+            "atk": 140,
+            "def": 130,
+            "hp": 72,
+            "spa": 64,
+            "spd": 106,
+            "spe": 88
+        },
+        "color": "Brown",
+        "eggGroups": [
+            "Water 3"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "heightm": 2.2,
+        "name": "Barbaracle-Mega",
+        "num": 689,
+        "requiredItem": "Barbaracite",
+        "types": [
+            "Rock",
+            "Fighting"
+        ],
+        "weightkg": 100
     },
     "barboach": {
         "abilities": {
@@ -3886,6 +3955,20 @@
         ],
         "weightkg": 3.4
     },
+    "burmysandy": {
+        "baseSpecies": "Burmy",
+        "color": "Green",
+        "forme": "Sandy",
+        "isCosmeticForme": true,
+        "name": "Burmy-Sandy"
+    },
+    "burmytrash": {
+        "baseSpecies": "Burmy",
+        "color": "Green",
+        "forme": "Trash",
+        "isCosmeticForme": true,
+        "name": "Burmy-Trash"
+    },
     "butterfree": {
         "abilities": {
             "0": "Compound Eyes",
@@ -4596,15 +4679,51 @@
         ],
         "evoItem": "Dusk Stone",
         "evoType": "useItem",
+        "formeOrder": [
+            "Chandelure",
+            "Chandelure-Mega"
+        ],
         "heightm": 1,
         "name": "Chandelure",
         "num": 609,
+        "otherFormes": [
+            "Chandelure-Mega"
+        ],
         "prevo": "Lampent",
         "types": [
             "Ghost",
             "Fire"
         ],
         "weightkg": 34.3
+    },
+    "chandeluremega": {
+        "abilities": {
+            "0": "Infiltrator"
+        },
+        "baseSpecies": "Chandelure",
+        "baseStats": {
+            "atk": 75,
+            "def": 110,
+            "hp": 60,
+            "spa": 175,
+            "spd": 110,
+            "spe": 90
+        },
+        "color": "Black",
+        "eggGroups": [
+            "Amorphous"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "heightm": 2.5,
+        "name": "Chandelure-Mega",
+        "num": 609,
+        "requiredItem": "Chandelurite",
+        "types": [
+            "Ghost",
+            "Fire"
+        ],
+        "weightkg": 69.6
     },
     "chansey": {
         "abilities": {
@@ -5019,6 +5138,10 @@
             "Field"
         ],
         "evoLevel": 36,
+        "formeOrder": [
+            "Chesnaught",
+            "Chesnaught-Mega"
+        ],
         "genderRatio": {
             "F": 0.125,
             "M": 0.875
@@ -5026,7 +5149,43 @@
         "heightm": 1.6,
         "name": "Chesnaught",
         "num": 652,
+        "otherFormes": [
+            "Chesnaught-Mega"
+        ],
         "prevo": "Quilladin",
+        "types": [
+            "Grass",
+            "Fighting"
+        ],
+        "weightkg": 90
+    },
+    "chesnaughtmega": {
+        "abilities": {
+            "0": "Bulletproof"
+        },
+        "baseSpecies": "Chesnaught",
+        "baseStats": {
+            "atk": 137,
+            "def": 172,
+            "hp": 88,
+            "spa": 74,
+            "spd": 115,
+            "spe": 44
+        },
+        "color": "Green",
+        "eggGroups": [
+            "Field"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "genderRatio": {
+            "F": 0.125,
+            "M": 0.875
+        },
+        "heightm": 1.6,
+        "name": "Chesnaught-Mega",
+        "num": 652,
+        "requiredItem": "Chesnaughtite",
         "types": [
             "Grass",
             "Fighting"
@@ -5150,14 +5309,50 @@
         ],
         "evoCondition": "at night",
         "evoType": "levelFriendship",
+        "formeOrder": [
+            "Chimecho",
+            "Chimecho-Mega"
+        ],
         "heightm": 0.6,
         "name": "Chimecho",
         "num": 358,
+        "otherFormes": [
+            "Chimecho-Mega"
+        ],
         "prevo": "Chingling",
         "types": [
             "Psychic"
         ],
         "weightkg": 1
+    },
+    "chimechomega": {
+        "abilities": {
+            "0": "Levitate"
+        },
+        "baseSpecies": "Chimecho",
+        "baseStats": {
+            "atk": 50,
+            "def": 110,
+            "hp": 75,
+            "spa": 135,
+            "spd": 120,
+            "spe": 65
+        },
+        "color": "Blue",
+        "eggGroups": [
+            "Amorphous"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "heightm": 1.2,
+        "name": "Chimecho-Mega",
+        "num": 358,
+        "requiredItem": "Chimechite",
+        "types": [
+            "Psychic",
+            "Steel"
+        ],
+        "weightkg": 8
     },
     "chinchou": {
         "abilities": {
@@ -5475,6 +5670,10 @@
         ],
         "evoItem": "Moon Stone",
         "evoType": "useItem",
+        "formeOrder": [
+            "Clefable",
+            "Clefable-Mega"
+        ],
         "genderRatio": {
             "F": 0.75,
             "M": 0.25
@@ -5482,11 +5681,47 @@
         "heightm": 1.3,
         "name": "Clefable",
         "num": 36,
+        "otherFormes": [
+            "Clefable-Mega"
+        ],
         "prevo": "Clefairy",
         "types": [
             "Fairy"
         ],
         "weightkg": 40
+    },
+    "clefablemega": {
+        "abilities": {
+            "0": "Magic Bounce"
+        },
+        "baseSpecies": "Clefable",
+        "baseStats": {
+            "atk": 80,
+            "def": 93,
+            "hp": 95,
+            "spa": 135,
+            "spd": 110,
+            "spe": 70
+        },
+        "color": "Pink",
+        "eggGroups": [
+            "Field"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "genderRatio": {
+            "F": 0.75,
+            "M": 0.25
+        },
+        "heightm": 1.7,
+        "name": "Clefable-Mega",
+        "num": 36,
+        "requiredItem": "Clefablite",
+        "types": [
+            "Fairy",
+            "Flying"
+        ],
+        "weightkg": 42.3
     },
     "clefairy": {
         "abilities": {
@@ -6062,15 +6297,51 @@
         "evoCondition": "at Mount Lanakila",
         "evoItem": "Ice Stone",
         "evoType": "levelExtra",
+        "formeOrder": [
+            "Crabominable",
+            "Crabominable-Mega"
+        ],
         "heightm": 1.7,
         "name": "Crabominable",
         "num": 740,
+        "otherFormes": [
+            "Crabominable-Mega"
+        ],
         "prevo": "Crabrawler",
         "types": [
             "Fighting",
             "Ice"
         ],
         "weightkg": 180
+    },
+    "crabominablemega": {
+        "abilities": {
+            "0": "Iron Fist"
+        },
+        "baseSpecies": "Crabominable",
+        "baseStats": {
+            "atk": 157,
+            "def": 122,
+            "hp": 97,
+            "spa": 62,
+            "spd": 107,
+            "spe": 33
+        },
+        "color": "White",
+        "eggGroups": [
+            "Water 3"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "heightm": 2.6,
+        "name": "Crabominable-Mega",
+        "num": 740,
+        "requiredItem": "Crabominite",
+        "types": [
+            "Fighting",
+            "Ice"
+        ],
+        "weightkg": 252.8
     },
     "crabrawler": {
         "abilities": {
@@ -6674,10 +6945,17 @@
         "eggGroups": [
             "Undiscovered"
         ],
+        "formeOrder": [
+            "Darkrai",
+            "Darkrai-Mega"
+        ],
         "gender": "N",
         "heightm": 1.5,
         "name": "Darkrai",
         "num": 491,
+        "otherFormes": [
+            "Darkrai-Mega"
+        ],
         "tags": [
             "Mythical"
         ],
@@ -6685,6 +6963,38 @@
             "Dark"
         ],
         "weightkg": 50.5
+    },
+    "darkraimega": {
+        "abilities": {
+            "0": "Bad Dreams"
+        },
+        "baseSpecies": "Darkrai",
+        "baseStats": {
+            "atk": 120,
+            "def": 130,
+            "hp": 70,
+            "spa": 165,
+            "spd": 130,
+            "spe": 85
+        },
+        "color": "Black",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "gender": "N",
+        "heightm": 3,
+        "name": "Darkrai-Mega",
+        "num": 491,
+        "requiredItem": "Darkranite",
+        "tags": [
+            "Mythical"
+        ],
+        "types": [
+            "Dark"
+        ],
+        "weightkg": 240
     },
     "darmanitan": {
         "abilities": {
@@ -7057,6 +7367,27 @@
         ],
         "weightkg": 19.5
     },
+    "deerlingautumn": {
+        "baseSpecies": "Deerling",
+        "color": "Pink",
+        "forme": "Autumn",
+        "isCosmeticForme": true,
+        "name": "Deerling-Autumn"
+    },
+    "deerlingsummer": {
+        "baseSpecies": "Deerling",
+        "color": "Pink",
+        "forme": "Summer",
+        "isCosmeticForme": true,
+        "name": "Deerling-Summer"
+    },
+    "deerlingwinter": {
+        "baseSpecies": "Deerling",
+        "color": "Pink",
+        "forme": "Winter",
+        "isCosmeticForme": true,
+        "name": "Deerling-Winter"
+    },
     "deino": {
         "abilities": {
             "0": "Hustle"
@@ -7165,6 +7496,10 @@
             "Field"
         ],
         "evoLevel": 36,
+        "formeOrder": [
+            "Delphox",
+            "Delphox-Mega"
+        ],
         "genderRatio": {
             "F": 0.125,
             "M": 0.875
@@ -7172,7 +7507,43 @@
         "heightm": 1.5,
         "name": "Delphox",
         "num": 655,
+        "otherFormes": [
+            "Delphox-Mega"
+        ],
         "prevo": "Braixen",
+        "types": [
+            "Fire",
+            "Psychic"
+        ],
+        "weightkg": 39
+    },
+    "delphoxmega": {
+        "abilities": {
+            "0": "Levitate"
+        },
+        "baseSpecies": "Delphox",
+        "baseStats": {
+            "atk": 69,
+            "def": 72,
+            "hp": 75,
+            "spa": 159,
+            "spd": 125,
+            "spe": 134
+        },
+        "color": "Red",
+        "eggGroups": [
+            "Field"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "genderRatio": {
+            "F": 0.125,
+            "M": 0.875
+        },
+        "heightm": 1.5,
+        "name": "Delphox-Mega",
+        "num": 655,
+        "requiredItem": "Delphoxite",
         "types": [
             "Fire",
             "Psychic"
@@ -7848,15 +8219,54 @@
             "Dragon"
         ],
         "evoLevel": 48,
+        "formeOrder": [
+            "Dragalge",
+            "Dragalge-Mega"
+        ],
         "heightm": 1.8,
         "name": "Dragalge",
         "num": 691,
+        "otherFormes": [
+            "Dragalge-Mega"
+        ],
         "prevo": "Skrelp",
         "types": [
             "Poison",
             "Dragon"
         ],
         "weightkg": 81.5
+    },
+    "dragalgemega": {
+        "abilities": {
+            "0": "Poison Point",
+            "1": "Poison Touch",
+            "H": "Adaptability"
+        },
+        "baseSpecies": "Dragalge",
+        "baseStats": {
+            "atk": 85,
+            "def": 105,
+            "hp": 65,
+            "spa": 132,
+            "spd": 163,
+            "spe": 44
+        },
+        "color": "Brown",
+        "eggGroups": [
+            "Water 1",
+            "Dragon"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "heightm": 2.1,
+        "name": "Dragalge-Mega",
+        "num": 691,
+        "requiredItem": "Dragalgite",
+        "types": [
+            "Poison",
+            "Dragon"
+        ],
+        "weightkg": 100.3
     },
     "draggalong": {
         "abilities": {
@@ -7942,15 +8352,52 @@
             "Dragon"
         ],
         "evoLevel": 55,
+        "formeOrder": [
+            "Dragonite",
+            "Dragonite-Mega"
+        ],
         "heightm": 2.2,
         "name": "Dragonite",
         "num": 149,
+        "otherFormes": [
+            "Dragonite-Mega"
+        ],
         "prevo": "Dragonair",
         "types": [
             "Dragon",
             "Flying"
         ],
         "weightkg": 210
+    },
+    "dragonitemega": {
+        "abilities": {
+            "0": "Multiscale"
+        },
+        "baseSpecies": "Dragonite",
+        "baseStats": {
+            "atk": 124,
+            "def": 115,
+            "hp": 91,
+            "spa": 145,
+            "spd": 125,
+            "spe": 100
+        },
+        "color": "Brown",
+        "eggGroups": [
+            "Water 1",
+            "Dragon"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "heightm": 2.2,
+        "name": "Dragonite-Mega",
+        "num": 149,
+        "requiredItem": "Dragoninite",
+        "types": [
+            "Dragon",
+            "Flying"
+        ],
+        "weightkg": 290
     },
     "drampa": {
         "abilities": {
@@ -7971,14 +8418,51 @@
             "Monster",
             "Dragon"
         ],
+        "formeOrder": [
+            "Drampa",
+            "Drampa-Mega"
+        ],
         "heightm": 3,
         "name": "Drampa",
         "num": 780,
+        "otherFormes": [
+            "Drampa-Mega"
+        ],
         "types": [
             "Normal",
             "Dragon"
         ],
         "weightkg": 185
+    },
+    "drampamega": {
+        "abilities": {
+            "0": "Berserk"
+        },
+        "baseSpecies": "Drampa",
+        "baseStats": {
+            "atk": 85,
+            "def": 110,
+            "hp": 78,
+            "spa": 160,
+            "spd": 116,
+            "spe": 36
+        },
+        "color": "White",
+        "eggGroups": [
+            "Monster",
+            "Dragon"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "heightm": 3,
+        "name": "Drampa-Mega",
+        "num": 780,
+        "requiredItem": "Drampanite",
+        "types": [
+            "Normal",
+            "Dragon"
+        ],
+        "weightkg": 240.5
     },
     "drapion": {
         "abilities": {
@@ -8594,14 +9078,49 @@
         ],
         "evoItem": "Thunder Stone",
         "evoType": "useItem",
+        "formeOrder": [
+            "Eelektross",
+            "Eelektross-Mega"
+        ],
         "heightm": 2.1,
         "name": "Eelektross",
         "num": 604,
+        "otherFormes": [
+            "Eelektross-Mega"
+        ],
         "prevo": "Eelektrik",
         "types": [
             "Electric"
         ],
         "weightkg": 80.5
+    },
+    "eelektrossmega": {
+        "abilities": {
+            "0": "Levitate"
+        },
+        "baseSpecies": "Eelektross",
+        "baseStats": {
+            "atk": 145,
+            "def": 80,
+            "hp": 85,
+            "spa": 135,
+            "spd": 90,
+            "spe": 80
+        },
+        "color": "Blue",
+        "eggGroups": [
+            "Amorphous"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "heightm": 3,
+        "name": "Eelektross-Mega",
+        "num": 604,
+        "requiredItem": "Eelektrossite",
+        "types": [
+            "Electric"
+        ],
+        "weightkg": 180
     },
     "eevee": {
         "abilities": {
@@ -9058,6 +9577,10 @@
             "Field"
         ],
         "evoLevel": 36,
+        "formeOrder": [
+            "Emboar",
+            "Emboar-Mega"
+        ],
         "genderRatio": {
             "F": 0.125,
             "M": 0.875
@@ -9065,12 +9588,48 @@
         "heightm": 1.6,
         "name": "Emboar",
         "num": 500,
+        "otherFormes": [
+            "Emboar-Mega"
+        ],
         "prevo": "Pignite",
         "types": [
             "Fire",
             "Fighting"
         ],
         "weightkg": 150
+    },
+    "emboarmega": {
+        "abilities": {
+            "0": "Mold Breaker"
+        },
+        "baseSpecies": "Emboar",
+        "baseStats": {
+            "atk": 148,
+            "def": 75,
+            "hp": 110,
+            "spa": 110,
+            "spd": 110,
+            "spe": 75
+        },
+        "color": "Red",
+        "eggGroups": [
+            "Field"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "genderRatio": {
+            "F": 0.125,
+            "M": 0.875
+        },
+        "heightm": 1.8,
+        "name": "Emboar-Mega",
+        "num": 500,
+        "requiredItem": "Emboarite",
+        "types": [
+            "Fire",
+            "Fighting"
+        ],
+        "weightkg": 180.3
     },
     "emolga": {
         "abilities": {
@@ -9302,15 +9861,51 @@
             "Field"
         ],
         "evoLevel": 31,
+        "formeOrder": [
+            "Excadrill",
+            "Excadrill-Mega"
+        ],
         "heightm": 0.7,
         "name": "Excadrill",
         "num": 530,
+        "otherFormes": [
+            "Excadrill-Mega"
+        ],
         "prevo": "Drilbur",
         "types": [
             "Ground",
             "Steel"
         ],
         "weightkg": 40.4
+    },
+    "excadrillmega": {
+        "abilities": {
+            "0": "Piercing Drill"
+        },
+        "baseSpecies": "Excadrill",
+        "baseStats": {
+            "atk": 165,
+            "def": 100,
+            "hp": 110,
+            "spa": 65,
+            "spd": 65,
+            "spe": 103
+        },
+        "color": "Gray",
+        "eggGroups": [
+            "Field"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "heightm": 0.9,
+        "name": "Excadrill-Mega",
+        "num": 530,
+        "requiredItem": "Excadrite",
+        "types": [
+            "Ground",
+            "Steel"
+        ],
+        "weightkg": 60
     },
     "exeggcute": {
         "abilities": {
@@ -9646,6 +10241,10 @@
             "Water 1"
         ],
         "evoLevel": 30,
+        "formeOrder": [
+            "Feraligatr",
+            "Feraligatr-Mega"
+        ],
         "genderRatio": {
             "F": 0.125,
             "M": 0.875
@@ -9653,11 +10252,48 @@
         "heightm": 2.3,
         "name": "Feraligatr",
         "num": 160,
+        "otherFormes": [
+            "Feraligatr-Mega"
+        ],
         "prevo": "Croconaw",
         "types": [
             "Water"
         ],
         "weightkg": 88.8
+    },
+    "feraligatrmega": {
+        "abilities": {
+            "0": "Dragonize"
+        },
+        "baseSpecies": "Feraligatr",
+        "baseStats": {
+            "atk": 160,
+            "def": 125,
+            "hp": 85,
+            "spa": 89,
+            "spd": 93,
+            "spe": 78
+        },
+        "color": "Blue",
+        "eggGroups": [
+            "Monster",
+            "Water 1"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "genderRatio": {
+            "F": 0.125,
+            "M": 0.875
+        },
+        "heightm": 2.3,
+        "name": "Feraligatr-Mega",
+        "num": 160,
+        "requiredItem": "Feraligite",
+        "types": [
+            "Water",
+            "Dragon"
+        ],
+        "weightkg": 108.8
     },
     "ferroseed": {
         "abilities": {
@@ -10069,14 +10705,16 @@
             "Floette-Orange",
             "Floette-Blue",
             "Floette-White",
-            "Floette-Eternal"
+            "Floette-Eternal",
+            "Floette-Mega"
         ],
         "gender": "F",
         "heightm": 0.2,
         "name": "Floette",
         "num": 670,
         "otherFormes": [
-            "Floette-Eternal"
+            "Floette-Eternal",
+            "Floette-Mega"
         ],
         "prevo": "Flabe\u0301be\u0301",
         "types": [
@@ -10086,7 +10724,8 @@
     },
     "floetteeternal": {
         "abilities": {
-            "0": "Flower Veil"
+            "0": "Flower Veil",
+            "H": "Symbiosis"
         },
         "baseSpecies": "Floette",
         "baseStats": {
@@ -10110,6 +10749,36 @@
             "Fairy"
         ],
         "weightkg": 0.9
+    },
+    "floettemega": {
+        "abilities": {
+            "0": "Fairy Aura"
+        },
+        "baseSpecies": "Floette",
+        "baseStats": {
+            "atk": 85,
+            "def": 87,
+            "hp": 74,
+            "spa": 155,
+            "spd": 148,
+            "spe": 102
+        },
+        "battleOnly": "Floette-Eternal",
+        "color": "White",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "gender": "F",
+        "heightm": 0.2,
+        "name": "Floette-Mega",
+        "num": 670,
+        "requiredItem": "Floettite",
+        "types": [
+            "Fairy"
+        ],
+        "weightkg": 100.8
     },
     "florges": {
         "abilities": {
@@ -10153,6 +10822,37 @@
             "Fairy"
         ],
         "weightkg": 10
+    },
+    "flox": {
+        "abilities": {
+            "0": "Static",
+            "1": "Sticky Hold",
+            "H": "Cud Chew"
+        },
+        "baseStats": {
+            "atk": 25,
+            "def": 67,
+            "hp": 96,
+            "spa": 73,
+            "spd": 68,
+            "spe": 61
+        },
+        "color": "Brown",
+        "eggGroups": [
+            "Field"
+        ],
+        "evos": [
+            "Shox"
+        ],
+        "gen": 9,
+        "heightm": 0.9,
+        "name": "Flox",
+        "num": -76,
+        "types": [
+            "Normal",
+            "Electric"
+        ],
+        "weightkg": 66.6
     },
     "flygon": {
         "abilities": {
@@ -10414,16 +11114,54 @@
         ],
         "evoItem": "Dawn Stone",
         "evoType": "useItem",
+        "formeOrder": [
+            "Froslass",
+            "Froslass-Mega"
+        ],
         "gender": "F",
         "heightm": 1.3,
         "name": "Froslass",
         "num": 478,
+        "otherFormes": [
+            "Froslass-Mega"
+        ],
         "prevo": "Snorunt",
         "types": [
             "Ice",
             "Ghost"
         ],
         "weightkg": 26.6
+    },
+    "froslassmega": {
+        "abilities": {
+            "0": "Snow Warning"
+        },
+        "baseSpecies": "Froslass",
+        "baseStats": {
+            "atk": 80,
+            "def": 70,
+            "hp": 70,
+            "spa": 140,
+            "spd": 100,
+            "spe": 120
+        },
+        "color": "White",
+        "eggGroups": [
+            "Fairy",
+            "Mineral"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "gender": "F",
+        "heightm": 2.6,
+        "name": "Froslass-Mega",
+        "num": 478,
+        "requiredItem": "Froslassite",
+        "types": [
+            "Ice",
+            "Ghost"
+        ],
+        "weightkg": 29.6
     },
     "furfrou": {
         "abilities": {
@@ -10707,13 +11445,15 @@
         "evoLevel": 48,
         "formeOrder": [
             "Garchomp",
-            "Garchomp-Mega"
+            "Garchomp-Mega",
+            "Garchomp-Mega-Z"
         ],
         "heightm": 1.9,
         "name": "Garchomp",
         "num": 445,
         "otherFormes": [
-            "Garchomp-Mega"
+            "Garchomp-Mega",
+            "Garchomp-Mega-Z"
         ],
         "prevo": "Gabite",
         "types": [
@@ -10750,6 +11490,35 @@
             "Ground"
         ],
         "weightkg": 95
+    },
+    "garchompmegaz": {
+        "abilities": {
+            "0": "Sand Force"
+        },
+        "baseSpecies": "Garchomp",
+        "baseStats": {
+            "atk": 130,
+            "def": 85,
+            "hp": 108,
+            "spa": 141,
+            "spd": 85,
+            "spe": 151
+        },
+        "color": "Blue",
+        "eggGroups": [
+            "Monster",
+            "Dragon"
+        ],
+        "forme": "Mega-Z",
+        "gen": 9,
+        "heightm": 1.9,
+        "name": "Garchomp-Mega-Z",
+        "num": 445,
+        "requiredItem": "Garchompite Z",
+        "types": [
+            "Dragon"
+        ],
+        "weightkg": 99
     },
     "gardevoir": {
         "abilities": {
@@ -10880,6 +11649,13 @@
             "Ground"
         ],
         "weightkg": 29.9
+    },
+    "gastrodoneast": {
+        "baseSpecies": "Gastrodon",
+        "color": "Blue",
+        "forme": "East",
+        "isCosmeticForme": true,
+        "name": "Gastrodon-East"
     },
     "genesect": {
         "abilities": {
@@ -11814,15 +12590,52 @@
             "Water 3"
         ],
         "evoLevel": 30,
+        "formeOrder": [
+            "Golisopod",
+            "Golisopod-Mega"
+        ],
         "heightm": 2,
         "name": "Golisopod",
         "num": 768,
+        "otherFormes": [
+            "Golisopod-Mega"
+        ],
         "prevo": "Wimpod",
         "types": [
             "Bug",
             "Water"
         ],
         "weightkg": 108
+    },
+    "golisopodmega": {
+        "abilities": {
+            "0": "Emergency Exit"
+        },
+        "baseSpecies": "Golisopod",
+        "baseStats": {
+            "atk": 150,
+            "def": 175,
+            "hp": 75,
+            "spa": 70,
+            "spd": 120,
+            "spe": 40
+        },
+        "color": "Gray",
+        "eggGroups": [
+            "Bug",
+            "Water 3"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "heightm": 2.3,
+        "name": "Golisopod-Mega",
+        "num": 768,
+        "requiredItem": "Golisopite",
+        "types": [
+            "Bug",
+            "Steel"
+        ],
+        "weightkg": 148
     },
     "golurk": {
         "abilities": {
@@ -11843,11 +12656,48 @@
             "Mineral"
         ],
         "evoLevel": 43,
+        "formeOrder": [
+            "Golurk",
+            "Golurk-Mega"
+        ],
         "gender": "N",
         "heightm": 2.8,
         "name": "Golurk",
         "num": 623,
+        "otherFormes": [
+            "Golurk-Mega"
+        ],
         "prevo": "Golett",
+        "types": [
+            "Ground",
+            "Ghost"
+        ],
+        "weightkg": 330
+    },
+    "golurkmega": {
+        "abilities": {
+            "0": "Unseen Fist"
+        },
+        "baseSpecies": "Golurk",
+        "baseStats": {
+            "atk": 159,
+            "def": 105,
+            "hp": 89,
+            "spa": 70,
+            "spd": 105,
+            "spe": 55
+        },
+        "color": "Green",
+        "eggGroups": [
+            "Mineral"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "gender": "N",
+        "heightm": 4,
+        "name": "Golurk-Mega",
+        "num": 623,
+        "requiredItem": "Golurkite",
         "types": [
             "Ground",
             "Ghost"
@@ -12340,7 +13190,8 @@
         "formeOrder": [
             "Greninja",
             "Greninja-Bond",
-            "Greninja-Ash"
+            "Greninja-Ash",
+            "Greninja-Mega"
         ],
         "genderRatio": {
             "F": 0.125,
@@ -12351,7 +13202,8 @@
         "num": 658,
         "otherFormes": [
             "Greninja-Bond",
-            "Greninja-Ash"
+            "Greninja-Ash",
+            "Greninja-Mega"
         ],
         "prevo": "Frogadier",
         "types": [
@@ -12414,6 +13266,39 @@
         "heightm": 1.5,
         "name": "Greninja-Bond",
         "num": 658,
+        "types": [
+            "Water",
+            "Dark"
+        ],
+        "weightkg": 40
+    },
+    "greninjamega": {
+        "abilities": {
+            "0": "Protean"
+        },
+        "baseSpecies": "Greninja",
+        "baseStats": {
+            "atk": 125,
+            "def": 77,
+            "hp": 72,
+            "spa": 133,
+            "spd": 81,
+            "spe": 142
+        },
+        "color": "Blue",
+        "eggGroups": [
+            "Water 1"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "genderRatio": {
+            "F": 0.125,
+            "M": 0.875
+        },
+        "heightm": 1.5,
+        "name": "Greninja-Mega",
+        "num": 658,
+        "requiredItem": "Greninjite",
         "types": [
             "Water",
             "Dark"
@@ -13116,14 +14001,51 @@
         "eggGroups": [
             "Human-Like"
         ],
+        "formeOrder": [
+            "Hawlucha",
+            "Hawlucha-Mega"
+        ],
         "heightm": 0.8,
         "name": "Hawlucha",
         "num": 701,
+        "otherFormes": [
+            "Hawlucha-Mega"
+        ],
         "types": [
             "Fighting",
             "Flying"
         ],
         "weightkg": 21.5
+    },
+    "hawluchamega": {
+        "abilities": {
+            "0": "No Guard"
+        },
+        "baseSpecies": "Hawlucha",
+        "baseStats": {
+            "atk": 137,
+            "def": 100,
+            "hp": 78,
+            "spa": 74,
+            "spd": 93,
+            "spe": 118
+        },
+        "color": "Green",
+        "eggGroups": [
+            "Flying",
+            "Human-Like"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "heightm": 1,
+        "name": "Hawlucha-Mega",
+        "num": 701,
+        "requiredItem": "Hawluchanite",
+        "types": [
+            "Fighting",
+            "Flying"
+        ],
+        "weightkg": 25
     },
     "haxorus": {
         "abilities": {
@@ -13197,9 +14119,16 @@
         "eggGroups": [
             "Undiscovered"
         ],
+        "formeOrder": [
+            "Heatran",
+            "Heatran-Mega"
+        ],
         "heightm": 1.7,
         "name": "Heatran",
         "num": 485,
+        "otherFormes": [
+            "Heatran-Mega"
+        ],
         "tags": [
             "Sub-Legendary"
         ],
@@ -13209,6 +14138,39 @@
         ],
         "unreleasedHidden": true,
         "weightkg": 430
+    },
+    "heatranmega": {
+        "abilities": {
+            "0": "Flash Fire",
+            "H": "Flame Body"
+        },
+        "baseSpecies": "Heatran",
+        "baseStats": {
+            "atk": 120,
+            "def": 106,
+            "hp": 91,
+            "spa": 175,
+            "spd": 141,
+            "spe": 67
+        },
+        "color": "Brown",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "heightm": 2.8,
+        "name": "Heatran-Mega",
+        "num": 485,
+        "requiredItem": "Heatranite",
+        "tags": [
+            "Sub-Legendary"
+        ],
+        "types": [
+            "Fire",
+            "Steel"
+        ],
+        "weightkg": 570
     },
     "heliolisk": {
         "abilities": {
@@ -16665,7 +17627,8 @@
         "evoType": "levelFriendship",
         "formeOrder": [
             "Lucario",
-            "Lucario-Mega"
+            "Lucario-Mega",
+            "Lucario-Mega-Z"
         ],
         "genderRatio": {
             "F": 0.125,
@@ -16675,7 +17638,8 @@
         "name": "Lucario",
         "num": 448,
         "otherFormes": [
-            "Lucario-Mega"
+            "Lucario-Mega",
+            "Lucario-Mega-Z"
         ],
         "prevo": "Riolu",
         "types": [
@@ -16716,6 +17680,40 @@
             "Steel"
         ],
         "weightkg": 57.5
+    },
+    "lucariomegaz": {
+        "abilities": {
+            "0": "Adaptability"
+        },
+        "baseSpecies": "Lucario",
+        "baseStats": {
+            "atk": 100,
+            "def": 70,
+            "hp": 70,
+            "spa": 164,
+            "spd": 70,
+            "spe": 151
+        },
+        "color": "Gray",
+        "eggGroups": [
+            "Field",
+            "Human-Like"
+        ],
+        "forme": "Mega-Z",
+        "gen": 9,
+        "genderRatio": {
+            "F": 0.125,
+            "M": 0.875
+        },
+        "heightm": 1.3,
+        "name": "Lucario-Mega-Z",
+        "num": 448,
+        "requiredItem": "Lucarionite Z",
+        "types": [
+            "Fighting",
+            "Steel"
+        ],
+        "weightkg": 49.4
     },
     "ludicolo": {
         "abilities": {
@@ -17325,14 +18323,18 @@
         ],
         "formeOrder": [
             "Magearna",
-            "Magearna-Original"
+            "Magearna-Original",
+            "Magearna-Mega",
+            "Magearna-Original-Mega"
         ],
         "gender": "N",
         "heightm": 1,
         "name": "Magearna",
         "num": 801,
         "otherFormes": [
-            "Magearna-Original"
+            "Magearna-Original",
+            "Magearna-Mega",
+            "Magearna-Original-Mega"
         ],
         "tags": [
             "Mythical"
@@ -17342,6 +18344,36 @@
             "Fairy"
         ],
         "weightkg": 80.5
+    },
+    "magearnamega": {
+        "abilities": {
+            "0": "Soul-Heart"
+        },
+        "baseSpecies": "Magearna",
+        "baseStats": {
+            "atk": 125,
+            "def": 115,
+            "hp": 80,
+            "spa": 170,
+            "spd": 115,
+            "spe": 95
+        },
+        "color": "Gray",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "gender": "N",
+        "heightm": 1.3,
+        "name": "Magearna-Mega",
+        "num": 801,
+        "requiredItem": "Magearnite",
+        "types": [
+            "Steel",
+            "Fairy"
+        ],
+        "weightkg": 248.1
     },
     "magearnaoriginal": {
         "abilities": {
@@ -17370,6 +18402,37 @@
             "Fairy"
         ],
         "weightkg": 80.5
+    },
+    "magearnaoriginalmega": {
+        "abilities": {
+            "0": "Soul-Heart"
+        },
+        "baseSpecies": "Magearna",
+        "baseStats": {
+            "atk": 125,
+            "def": 115,
+            "hp": 80,
+            "spa": 170,
+            "spd": 115,
+            "spe": 95
+        },
+        "battleOnly": "Magearna-Original",
+        "color": "Red",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "forme": "Original-Mega",
+        "gen": 9,
+        "gender": "N",
+        "heightm": 1.3,
+        "name": "Magearna-Original-Mega",
+        "num": 801,
+        "requiredItem": "Magearnite",
+        "types": [
+            "Steel",
+            "Fairy"
+        ],
+        "weightkg": 248.1
     },
     "magikarp": {
         "abilities": {
@@ -17647,15 +18710,54 @@
         ],
         "evoCondition": "with the console turned upside-down",
         "evoLevel": 30,
+        "formeOrder": [
+            "Malamar",
+            "Malamar-Mega"
+        ],
         "heightm": 1.5,
         "name": "Malamar",
         "num": 687,
+        "otherFormes": [
+            "Malamar-Mega"
+        ],
         "prevo": "Inkay",
         "types": [
             "Dark",
             "Psychic"
         ],
         "weightkg": 47
+    },
+    "malamarmega": {
+        "abilities": {
+            "0": "Contrary",
+            "1": "Suction Cups",
+            "H": "Infiltrator"
+        },
+        "baseSpecies": "Malamar",
+        "baseStats": {
+            "atk": 102,
+            "def": 88,
+            "hp": 86,
+            "spa": 98,
+            "spd": 120,
+            "spe": 88
+        },
+        "color": "Blue",
+        "eggGroups": [
+            "Water 1",
+            "Water 2"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "heightm": 2.9,
+        "name": "Malamar-Mega",
+        "num": 687,
+        "requiredItem": "Malamarite",
+        "types": [
+            "Dark",
+            "Psychic"
+        ],
+        "weightkg": 69.8
     },
     "mamoswine": {
         "abilities": {
@@ -18384,6 +19486,10 @@
             "Grass"
         ],
         "evoLevel": 32,
+        "formeOrder": [
+            "Meganium",
+            "Meganium-Mega"
+        ],
         "genderRatio": {
             "F": 0.125,
             "M": 0.875
@@ -18391,11 +19497,48 @@
         "heightm": 1.8,
         "name": "Meganium",
         "num": 154,
+        "otherFormes": [
+            "Meganium-Mega"
+        ],
         "prevo": "Bayleef",
         "types": [
             "Grass"
         ],
         "weightkg": 100.5
+    },
+    "meganiummega": {
+        "abilities": {
+            "0": "Mega Sol"
+        },
+        "baseSpecies": "Meganium",
+        "baseStats": {
+            "atk": 92,
+            "def": 115,
+            "hp": 80,
+            "spa": 143,
+            "spd": 115,
+            "spe": 80
+        },
+        "color": "Green",
+        "eggGroups": [
+            "Monster",
+            "Grass"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "genderRatio": {
+            "F": 0.125,
+            "M": 0.875
+        },
+        "heightm": 2.4,
+        "name": "Meganium-Mega",
+        "num": 154,
+        "requiredItem": "Meganiumite",
+        "types": [
+            "Grass",
+            "Fairy"
+        ],
+        "weightkg": 201
     },
     "melmetal": {
         "abilities": {
@@ -18571,14 +19714,18 @@
         "evoLevel": 25,
         "formeOrder": [
             "Meowstic",
-            "Meowstic-F"
+            "Meowstic-F",
+            "Meowstic-M-Mega",
+            "Meowstic-F-Mega"
         ],
         "gender": "M",
         "heightm": 0.6,
         "name": "Meowstic",
         "num": 678,
         "otherFormes": [
-            "Meowstic-F"
+            "Meowstic-F",
+            "Meowstic-M-Mega",
+            "Meowstic-F-Mega"
         ],
         "prevo": "Espurr",
         "types": [
@@ -18616,6 +19763,66 @@
             "Psychic"
         ],
         "weightkg": 8.5
+    },
+    "meowsticfmega": {
+        "abilities": {
+            "0": "Trace"
+        },
+        "baseSpecies": "Meowstic",
+        "baseStats": {
+            "atk": 48,
+            "def": 76,
+            "hp": 74,
+            "spa": 143,
+            "spd": 101,
+            "spe": 124
+        },
+        "battleOnly": "Meowstic-F",
+        "color": "White",
+        "eggGroups": [
+            "Field"
+        ],
+        "forme": "F-Mega",
+        "gen": 9,
+        "gender": "F",
+        "heightm": 0.8,
+        "name": "Meowstic-F-Mega",
+        "num": 678,
+        "requiredItem": "Meowsticite",
+        "types": [
+            "Psychic"
+        ],
+        "weightkg": 10.1
+    },
+    "meowsticmmega": {
+        "abilities": {
+            "0": "Trace"
+        },
+        "baseSpecies": "Meowstic",
+        "baseStats": {
+            "atk": 48,
+            "def": 76,
+            "hp": 74,
+            "spa": 143,
+            "spd": 101,
+            "spe": 124
+        },
+        "battleOnly": "Meowstic",
+        "color": "Blue",
+        "eggGroups": [
+            "Field"
+        ],
+        "forme": "M-Mega",
+        "gen": 9,
+        "gender": "M",
+        "heightm": 0.8,
+        "name": "Meowstic-M-Mega",
+        "num": 678,
+        "requiredItem": "Meowsticite",
+        "types": [
+            "Psychic"
+        ],
+        "weightkg": 10.1
     },
     "meowth": {
         "abilities": {
@@ -19472,6 +20679,27 @@
         ],
         "weightkg": 0.3
     },
+    "miniorblue": {
+        "baseSpecies": "Minior",
+        "color": "Blue",
+        "forme": "Blue",
+        "isCosmeticForme": true,
+        "name": "Minior-Blue"
+    },
+    "miniorgreen": {
+        "baseSpecies": "Minior",
+        "color": "Green",
+        "forme": "Green",
+        "isCosmeticForme": true,
+        "name": "Minior-Green"
+    },
+    "miniorindigo": {
+        "baseSpecies": "Minior",
+        "color": "Blue",
+        "forme": "Indigo",
+        "isCosmeticForme": true,
+        "name": "Minior-Indigo"
+    },
     "miniormeteor": {
         "abilities": {
             "0": "Shields Down"
@@ -19501,6 +20729,27 @@
             "Flying"
         ],
         "weightkg": 40
+    },
+    "miniororange": {
+        "baseSpecies": "Minior",
+        "color": "Red",
+        "forme": "Orange",
+        "isCosmeticForme": true,
+        "name": "Minior-Orange"
+    },
+    "miniorviolet": {
+        "baseSpecies": "Minior",
+        "color": "Purple",
+        "forme": "Violet",
+        "isCosmeticForme": true,
+        "name": "Minior-Violet"
+    },
+    "minioryellow": {
+        "baseSpecies": "Minior",
+        "color": "Yellow",
+        "forme": "Yellow",
+        "isCosmeticForme": true,
+        "name": "Minior-Yellow"
     },
     "minun": {
         "abilities": {
@@ -24556,6 +25805,10 @@
             "Field"
         ],
         "evoLevel": 35,
+        "formeOrder": [
+            "Pyroar",
+            "Pyroar-Mega"
+        ],
         "genderRatio": {
             "F": 0.875,
             "M": 0.125
@@ -24563,12 +25816,50 @@
         "heightm": 1.5,
         "name": "Pyroar",
         "num": 668,
+        "otherFormes": [
+            "Pyroar-Mega"
+        ],
         "prevo": "Litleo",
         "types": [
             "Fire",
             "Normal"
         ],
         "weightkg": 81.5
+    },
+    "pyroarmega": {
+        "abilities": {
+            "0": "Rivalry",
+            "1": "Unnerve",
+            "H": "Moxie"
+        },
+        "baseSpecies": "Pyroar",
+        "baseStats": {
+            "atk": 88,
+            "def": 92,
+            "hp": 86,
+            "spa": 129,
+            "spd": 86,
+            "spe": 126
+        },
+        "color": "Brown",
+        "eggGroups": [
+            "Field"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "genderRatio": {
+            "F": 0.875,
+            "M": 0.125
+        },
+        "heightm": 1.5,
+        "name": "Pyroar-Mega",
+        "num": 668,
+        "requiredItem": "Pyroarite",
+        "types": [
+            "Fire",
+            "Normal"
+        ],
+        "weightkg": 93.3
     },
     "pyukumuku": {
         "abilities": {
@@ -24782,13 +26073,17 @@
         "evoType": "useItem",
         "formeOrder": [
             "Raichu",
-            "Raichu-Alola"
+            "Raichu-Alola",
+            "Raichu-Mega-X",
+            "Raichu-Mega-Y"
         ],
         "heightm": 0.8,
         "name": "Raichu",
         "num": 26,
         "otherFormes": [
-            "Raichu-Alola"
+            "Raichu-Alola",
+            "Raichu-Mega-X",
+            "Raichu-Mega-Y"
         ],
         "prevo": "Pikachu",
         "types": [
@@ -24827,6 +26122,64 @@
             "Psychic"
         ],
         "weightkg": 21
+    },
+    "raichumegax": {
+        "abilities": {
+            "0": "Surge Surfer"
+        },
+        "baseSpecies": "Raichu",
+        "baseStats": {
+            "atk": 135,
+            "def": 95,
+            "hp": 60,
+            "spa": 90,
+            "spd": 95,
+            "spe": 110
+        },
+        "color": "Yellow",
+        "eggGroups": [
+            "Field",
+            "Fairy"
+        ],
+        "forme": "Mega-X",
+        "gen": 9,
+        "heightm": 1.2,
+        "name": "Raichu-Mega-X",
+        "num": 26,
+        "requiredItem": "Raichunite X",
+        "types": [
+            "Electric"
+        ],
+        "weightkg": 38
+    },
+    "raichumegay": {
+        "abilities": {
+            "0": "Surge Surfer"
+        },
+        "baseSpecies": "Raichu",
+        "baseStats": {
+            "atk": 100,
+            "def": 55,
+            "hp": 60,
+            "spa": 160,
+            "spd": 80,
+            "spe": 130
+        },
+        "color": "Yellow",
+        "eggGroups": [
+            "Field",
+            "Fairy"
+        ],
+        "forme": "Mega-Y",
+        "gen": 9,
+        "heightm": 1,
+        "name": "Raichu-Mega-Y",
+        "num": 26,
+        "requiredItem": "Raichunite Y",
+        "types": [
+            "Electric"
+        ],
+        "weightkg": 26
     },
     "raikou": {
         "abilities": {
@@ -24893,10 +26246,10 @@
         },
         "baseForme": "Dormant",
         "baseStats": {
-            "atk": 63,
+            "atk": 56,
             "def": 104,
             "hp": 110,
-            "spa": 104,
+            "spa": 111,
             "spd": 134,
             "spe": 85
         },
@@ -24931,10 +26284,10 @@
         },
         "baseSpecies": "Ramnarok",
         "baseStats": {
-            "atk": 63,
+            "atk": 56,
             "def": 85,
             "hp": 110,
-            "spa": 134,
+            "spa": 141,
             "spd": 54,
             "spe": 154
         },
@@ -27022,15 +28375,53 @@
             "Bug"
         ],
         "evoLevel": 30,
+        "formeOrder": [
+            "Scolipede",
+            "Scolipede-Mega"
+        ],
         "heightm": 2.5,
         "name": "Scolipede",
         "num": 545,
+        "otherFormes": [
+            "Scolipede-Mega"
+        ],
         "prevo": "Whirlipede",
         "types": [
             "Bug",
             "Poison"
         ],
         "weightkg": 200.5
+    },
+    "scolipedemega": {
+        "abilities": {
+            "0": "Poison Point",
+            "1": "Swarm",
+            "H": "Speed Boost"
+        },
+        "baseSpecies": "Scolipede",
+        "baseStats": {
+            "atk": 140,
+            "def": 149,
+            "hp": 60,
+            "spa": 75,
+            "spd": 99,
+            "spe": 62
+        },
+        "color": "Red",
+        "eggGroups": [
+            "Bug"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "heightm": 3.2,
+        "name": "Scolipede-Mega",
+        "num": 545,
+        "requiredItem": "Scolipite",
+        "types": [
+            "Bug",
+            "Poison"
+        ],
+        "weightkg": 230.5
     },
     "scrafty": {
         "abilities": {
@@ -27052,15 +28443,54 @@
             "Dragon"
         ],
         "evoLevel": 39,
+        "formeOrder": [
+            "Scrafty",
+            "Scrafty-Mega"
+        ],
         "heightm": 1.1,
         "name": "Scrafty",
         "num": 560,
+        "otherFormes": [
+            "Scrafty-Mega"
+        ],
         "prevo": "Scraggy",
         "types": [
             "Dark",
             "Fighting"
         ],
         "weightkg": 30
+    },
+    "scraftymega": {
+        "abilities": {
+            "0": "Shed Skin",
+            "1": "Moxie",
+            "H": "Intimidate"
+        },
+        "baseSpecies": "Scrafty",
+        "baseStats": {
+            "atk": 130,
+            "def": 135,
+            "hp": 65,
+            "spa": 55,
+            "spd": 135,
+            "spe": 68
+        },
+        "color": "Red",
+        "eggGroups": [
+            "Field",
+            "Dragon"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "heightm": 1.1,
+        "name": "Scrafty-Mega",
+        "num": 560,
+        "requiredItem": "Scraftinite",
+        "types": [
+            "Dark",
+            "Fighting"
+        ],
+        "weightkg": 31
     },
     "scraggy": {
         "abilities": {
@@ -27744,6 +29174,13 @@
         ],
         "weightkg": 6.3
     },
+    "shelloseast": {
+        "baseSpecies": "Shellos",
+        "color": "Blue",
+        "forme": "East",
+        "isCosmeticForme": true,
+        "name": "Shellos-East"
+    },
     "shelmet": {
         "abilities": {
             "0": "Hydration",
@@ -27913,13 +29350,15 @@
         "eggGroups": [
             "Field"
         ],
+        "evoLevel": 34,
         "gen": 9,
         "heightm": 3,
         "name": "Shox",
         "num": -77,
+        "prevo": "Flox",
         "types": [
-            "Electric",
-            "Normal"
+            "Normal",
+            "Electric"
         ],
         "weightkg": 99.9
     },
@@ -28742,14 +30181,50 @@
         "eggGroups": [
             "Flying"
         ],
+        "formeOrder": [
+            "Skarmory",
+            "Skarmory-Mega"
+        ],
         "heightm": 1.7,
         "name": "Skarmory",
         "num": 227,
+        "otherFormes": [
+            "Skarmory-Mega"
+        ],
         "types": [
             "Steel",
             "Flying"
         ],
         "weightkg": 50.5
+    },
+    "skarmorymega": {
+        "abilities": {
+            "0": "Stalwart"
+        },
+        "baseSpecies": "Skarmory",
+        "baseStats": {
+            "atk": 140,
+            "def": 110,
+            "hp": 65,
+            "spa": 40,
+            "spd": 100,
+            "spe": 110
+        },
+        "color": "Gray",
+        "eggGroups": [
+            "Flying"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "heightm": 1.7,
+        "name": "Skarmory-Mega",
+        "num": 227,
+        "requiredItem": "Skarmorite",
+        "types": [
+            "Steel",
+            "Flying"
+        ],
+        "weightkg": 40.4
     },
     "skiddo": {
         "abilities": {
@@ -30313,15 +31788,52 @@
             "Flying"
         ],
         "evoLevel": 34,
+        "formeOrder": [
+            "Staraptor",
+            "Staraptor-Mega"
+        ],
         "heightm": 1.2,
         "name": "Staraptor",
         "num": 398,
+        "otherFormes": [
+            "Staraptor-Mega"
+        ],
         "prevo": "Staravia",
         "types": [
             "Normal",
             "Flying"
         ],
         "weightkg": 24.9
+    },
+    "staraptormega": {
+        "abilities": {
+            "0": "Intimidate",
+            "H": "Reckless"
+        },
+        "baseSpecies": "Staraptor",
+        "baseStats": {
+            "atk": 140,
+            "def": 100,
+            "hp": 85,
+            "spa": 60,
+            "spd": 90,
+            "spe": 110
+        },
+        "color": "Gray",
+        "eggGroups": [
+            "Flying"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "heightm": 1.9,
+        "name": "Staraptor-Mega",
+        "num": 398,
+        "requiredItem": "Staraptite",
+        "types": [
+            "Fighting",
+            "Flying"
+        ],
+        "weightkg": 50
     },
     "staravia": {
         "abilities": {
@@ -30403,11 +31915,48 @@
         ],
         "evoItem": "Water Stone",
         "evoType": "useItem",
+        "formeOrder": [
+            "Starmie",
+            "Starmie-Mega"
+        ],
         "gender": "N",
         "heightm": 1.1,
         "name": "Starmie",
         "num": 121,
+        "otherFormes": [
+            "Starmie-Mega"
+        ],
         "prevo": "Staryu",
+        "types": [
+            "Water",
+            "Psychic"
+        ],
+        "weightkg": 80
+    },
+    "starmiemega": {
+        "abilities": {
+            "0": "Huge Power"
+        },
+        "baseSpecies": "Starmie",
+        "baseStats": {
+            "atk": 100,
+            "def": 105,
+            "hp": 60,
+            "spa": 130,
+            "spd": 105,
+            "spe": 120
+        },
+        "color": "Purple",
+        "eggGroups": [
+            "Water 3"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "gender": "N",
+        "heightm": 2.3,
+        "name": "Starmie-Mega",
+        "num": 121,
+        "requiredItem": "Starminite",
         "types": [
             "Water",
             "Psychic"
@@ -33838,15 +35387,51 @@
         ],
         "evoItem": "Leaf Stone",
         "evoType": "useItem",
+        "formeOrder": [
+            "Victreebel",
+            "Victreebel-Mega"
+        ],
         "heightm": 1.7,
         "name": "Victreebel",
         "num": 71,
+        "otherFormes": [
+            "Victreebel-Mega"
+        ],
         "prevo": "Weepinbell",
         "types": [
             "Grass",
             "Poison"
         ],
         "weightkg": 15.5
+    },
+    "victreebelmega": {
+        "abilities": {
+            "0": "Innards Out"
+        },
+        "baseSpecies": "Victreebel",
+        "baseStats": {
+            "atk": 125,
+            "def": 85,
+            "hp": 80,
+            "spa": 135,
+            "spd": 95,
+            "spe": 70
+        },
+        "color": "Green",
+        "eggGroups": [
+            "Grass"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "heightm": 4.5,
+        "name": "Victreebel-Mega",
+        "num": 71,
+        "requiredItem": "Victreebelite",
+        "types": [
+            "Grass",
+            "Poison"
+        ],
+        "weightkg": 125.5
     },
     "vigoroth": {
         "abilities": {
@@ -34013,7 +35598,7 @@
             "spd": 50,
             "spe": 89
         },
-        "color": "White",
+        "color": "Pink",
         "cosmeticFormes": [
             "Vivillon-Archipelago",
             "Vivillon-Continental",
@@ -34073,6 +35658,27 @@
         ],
         "weightkg": 17
     },
+    "vivillonarchipelago": {
+        "baseSpecies": "Vivillon",
+        "color": "White",
+        "forme": "Archipelago",
+        "isCosmeticForme": true,
+        "name": "Vivillon-Archipelago"
+    },
+    "vivilloncontinental": {
+        "baseSpecies": "Vivillon",
+        "color": "White",
+        "forme": "Continental",
+        "isCosmeticForme": true,
+        "name": "Vivillon-Continental"
+    },
+    "vivillonelegant": {
+        "baseSpecies": "Vivillon",
+        "color": "White",
+        "forme": "Elegant",
+        "isCosmeticForme": true,
+        "name": "Vivillon-Elegant"
+    },
     "vivillonfancy": {
         "abilities": {
             "0": "Shield Dust",
@@ -34087,7 +35693,7 @@
             "spd": 50,
             "spe": 89
         },
-        "color": "Black",
+        "color": "White",
         "eggGroups": [
             "Bug"
         ],
@@ -34103,6 +35709,62 @@
         ],
         "weightkg": 17
     },
+    "vivillongarden": {
+        "baseSpecies": "Vivillon",
+        "color": "White",
+        "forme": "Garden",
+        "isCosmeticForme": true,
+        "name": "Vivillon-Garden"
+    },
+    "vivillonhighplains": {
+        "baseSpecies": "Vivillon",
+        "color": "White",
+        "forme": "High Plains",
+        "isCosmeticForme": true,
+        "name": "Vivillon-High Plains"
+    },
+    "vivillonicysnow": {
+        "baseSpecies": "Vivillon",
+        "color": "White",
+        "forme": "Icy Snow",
+        "isCosmeticForme": true,
+        "name": "Vivillon-Icy Snow"
+    },
+    "vivillonjungle": {
+        "baseSpecies": "Vivillon",
+        "color": "White",
+        "forme": "Jungle",
+        "isCosmeticForme": true,
+        "name": "Vivillon-Jungle"
+    },
+    "vivillonmarine": {
+        "baseSpecies": "Vivillon",
+        "color": "White",
+        "forme": "Marine",
+        "isCosmeticForme": true,
+        "name": "Vivillon-Marine"
+    },
+    "vivillonmodern": {
+        "baseSpecies": "Vivillon",
+        "color": "White",
+        "forme": "Modern",
+        "isCosmeticForme": true,
+        "name": "Vivillon-Modern"
+    },
+    "vivillonmonsoon": {
+        "baseSpecies": "Vivillon",
+        "color": "White",
+        "forme": "Monsoon",
+        "isCosmeticForme": true,
+        "name": "Vivillon-Monsoon"
+    },
+    "vivillonocean": {
+        "baseSpecies": "Vivillon",
+        "color": "White",
+        "forme": "Ocean",
+        "isCosmeticForme": true,
+        "name": "Vivillon-Ocean"
+    },
     "vivillonpokeball": {
         "abilities": {
             "0": "Shield Dust",
@@ -34117,7 +35779,7 @@
             "spd": 50,
             "spe": 89
         },
-        "color": "Black",
+        "color": "White",
         "eggGroups": [
             "Bug"
         ],
@@ -34130,6 +35792,48 @@
             "Flying"
         ],
         "weightkg": 17
+    },
+    "vivillonpolar": {
+        "baseSpecies": "Vivillon",
+        "color": "White",
+        "forme": "Polar",
+        "isCosmeticForme": true,
+        "name": "Vivillon-Polar"
+    },
+    "vivillonriver": {
+        "baseSpecies": "Vivillon",
+        "color": "White",
+        "forme": "River",
+        "isCosmeticForme": true,
+        "name": "Vivillon-River"
+    },
+    "vivillonsandstorm": {
+        "baseSpecies": "Vivillon",
+        "color": "White",
+        "forme": "Sandstorm",
+        "isCosmeticForme": true,
+        "name": "Vivillon-Sandstorm"
+    },
+    "vivillonsavanna": {
+        "baseSpecies": "Vivillon",
+        "color": "White",
+        "forme": "Savanna",
+        "isCosmeticForme": true,
+        "name": "Vivillon-Savanna"
+    },
+    "vivillonsun": {
+        "baseSpecies": "Vivillon",
+        "color": "White",
+        "forme": "Sun",
+        "isCosmeticForme": true,
+        "name": "Vivillon-Sun"
+    },
+    "vivillontundra": {
+        "baseSpecies": "Vivillon",
+        "color": "White",
+        "forme": "Tundra",
+        "isCosmeticForme": true,
+        "name": "Vivillon-Tundra"
     },
     "volbeat": {
         "abilities": {
@@ -35855,10 +37559,49 @@
         "eggGroups": [
             "Undiscovered"
         ],
+        "formeOrder": [
+            "Zeraora",
+            "Zeraora-Mega"
+        ],
         "gender": "N",
         "heightm": 1.5,
         "name": "Zeraora",
         "num": 807,
+        "otherFormes": [
+            "Zeraora-Mega"
+        ],
+        "tags": [
+            "Mythical"
+        ],
+        "types": [
+            "Electric"
+        ],
+        "weightkg": 44.5
+    },
+    "zeraoramega": {
+        "abilities": {
+            "0": "Volt Absorb"
+        },
+        "baseSpecies": "Zeraora",
+        "baseStats": {
+            "atk": 157,
+            "def": 75,
+            "hp": 88,
+            "spa": 147,
+            "spd": 80,
+            "spe": 153
+        },
+        "color": "Yellow",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "gender": "N",
+        "heightm": 1.5,
+        "name": "Zeraora-Mega",
+        "num": 807,
+        "requiredItem": "Zeraorite",
         "tags": [
             "Mythical"
         ],
@@ -36159,7 +37902,8 @@
             "Zygarde-10%",
             "Zygarde-10%",
             "Zygarde",
-            "Zygarde-Complete"
+            "Zygarde-Complete",
+            "Zygarde-Mega"
         ],
         "gender": "N",
         "heightm": 5,
@@ -36167,7 +37911,8 @@
         "num": 718,
         "otherFormes": [
             "Zygarde-10%",
-            "Zygarde-Complete"
+            "Zygarde-Complete",
+            "Zygarde-Mega"
         ],
         "tags": [
             "Restricted Legendary"
@@ -36237,6 +37982,40 @@
         "name": "Zygarde-Complete",
         "num": 718,
         "requiredAbility": "Power Construct",
+        "types": [
+            "Dragon",
+            "Ground"
+        ],
+        "weightkg": 610
+    },
+    "zygardemega": {
+        "abilities": {
+            "0": "Aura Break"
+        },
+        "baseSpecies": "Zygarde",
+        "baseStats": {
+            "atk": 70,
+            "def": 91,
+            "hp": 216,
+            "spa": 216,
+            "spd": 85,
+            "spe": 100
+        },
+        "battleOnly": [
+            "Zygarde",
+            "Zygarde-10%"
+        ],
+        "color": "Green",
+        "eggGroups": [
+            "Undiscovered"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "gender": "N",
+        "heightm": 7.7,
+        "name": "Zygarde-Mega",
+        "num": 718,
+        "requiredItem": "Zygardite",
         "types": [
             "Dragon",
             "Ground"
