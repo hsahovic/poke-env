@@ -69591,7 +69591,7 @@
    "worryseed": ["7T"]
   },
   "eventData": [
-   {"generation": 9, "level": 72, "nature": "Modest", "moves": ["lightofruin", "energyball", "gigadrain", "synthesis"], pokeball: "pokeball", "source": "gen9legends"}
+   {"generation": 9, "level": 72, "nature": "Modest", "moves": ["lightofruin", "energyball", "gigadrain", "synthesis"], "pokeball": "pokeball", "source": "gen9legends"}
   ],
   "eventOnly": true
  },

@@ -70,10 +70,10 @@ def clean_ps_data_text(data: str, deserialize: bool = True):
     # Remove incorrect commas
     data = re.sub(r",\n( *)\}", r"\n\1}", data)
     data = re.sub(r",\n( +)\]", r"\n\1]", data)
-    # Correct double-quoted text inside double-quoted text
-
-    data = re.sub(r': "(.*)"(.*)":(.*)",', r': "\1\2:\3",', data)
-    data = re.sub(r': ""(.*)":(.*)",', r': "\1:\2",', data)
+    # Correct malformed values that start with an accidental extra quote.
+    # The broader historical fixer was greedy enough to strip quotes from
+    # later inline object keys such as `"pokeball"` in learnset eventData.
+    data = re.sub(r': ""([^"\n]+)":([^"\n]+)",', r': "\1:\2",', data)
 
     # Correct non-quoted number keys
     data = re.sub(r"(\d+):", r'"\1":', data)
