@@ -1340,6 +1340,10 @@
         ],
         "evoItem": "Moon Stone",
         "evoType": "useItem",
+        "formeOrder": [
+            "Clefable",
+            "Clefable-Mega"
+        ],
         "genderRatio": {
             "F": 0.75,
             "M": 0.25
@@ -1347,11 +1351,47 @@
         "heightm": 1.3,
         "name": "Clefable",
         "num": 36,
+        "otherFormes": [
+            "Clefable-Mega"
+        ],
         "prevo": "Clefairy",
         "types": [
             "Normal"
         ],
         "weightkg": 40
+    },
+    "clefablemega": {
+        "abilities": {
+            "0": "Magic Bounce"
+        },
+        "baseSpecies": "Clefable",
+        "baseStats": {
+            "atk": 80,
+            "def": 93,
+            "hp": 95,
+            "spa": 135,
+            "spd": 110,
+            "spe": 70
+        },
+        "color": "Pink",
+        "eggGroups": [
+            "Field"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "genderRatio": {
+            "F": 0.75,
+            "M": 0.25
+        },
+        "heightm": 1.7,
+        "name": "Clefable-Mega",
+        "num": 36,
+        "requiredItem": "Clefablite",
+        "types": [
+            "Fairy",
+            "Flying"
+        ],
+        "weightkg": 42.3
     },
     "clefairy": {
         "abilities": {
@@ -1960,15 +2000,52 @@
             "Dragon"
         ],
         "evoLevel": 55,
+        "formeOrder": [
+            "Dragonite",
+            "Dragonite-Mega"
+        ],
         "heightm": 2.2,
         "name": "Dragonite",
         "num": 149,
+        "otherFormes": [
+            "Dragonite-Mega"
+        ],
         "prevo": "Dragonair",
         "types": [
             "Dragon",
             "Flying"
         ],
         "weightkg": 210
+    },
+    "dragonitemega": {
+        "abilities": {
+            "0": "Multiscale"
+        },
+        "baseSpecies": "Dragonite",
+        "baseStats": {
+            "atk": 124,
+            "def": 115,
+            "hp": 91,
+            "spa": 145,
+            "spd": 125,
+            "spe": 100
+        },
+        "color": "Brown",
+        "eggGroups": [
+            "Water 1",
+            "Dragon"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "heightm": 2.2,
+        "name": "Dragonite-Mega",
+        "num": 149,
+        "requiredItem": "Dragoninite",
+        "types": [
+            "Dragon",
+            "Flying"
+        ],
+        "weightkg": 290
     },
     "dratini": {
         "abilities": {
@@ -2798,6 +2875,36 @@
             "Water"
         ],
         "weightkg": 1.9
+    },
+    "flox": {
+        "abilities": {
+            "0": "Static",
+            "1": "Sticky Hold"
+        },
+        "baseStats": {
+            "atk": 25,
+            "def": 67,
+            "hp": 96,
+            "spa": 73,
+            "spd": 68,
+            "spe": 61
+        },
+        "color": "Brown",
+        "eggGroups": [
+            "Field"
+        ],
+        "evos": [
+            "Shox"
+        ],
+        "gen": 9,
+        "heightm": 0.9,
+        "name": "Flox",
+        "num": -76,
+        "types": [
+            "Normal",
+            "Electric"
+        ],
+        "weightkg": 66.6
     },
     "gastly": {
         "abilities": {
@@ -7603,13 +7710,17 @@
         "evoType": "useItem",
         "formeOrder": [
             "Raichu",
-            "Raichu-Alola"
+            "Raichu-Alola",
+            "Raichu-Mega-X",
+            "Raichu-Mega-Y"
         ],
         "heightm": 0.8,
         "name": "Raichu",
         "num": 26,
         "otherFormes": [
-            "Raichu-Alola"
+            "Raichu-Alola",
+            "Raichu-Mega-X",
+            "Raichu-Mega-Y"
         ],
         "prevo": "Pikachu",
         "types": [
@@ -7649,16 +7760,74 @@
         ],
         "weightkg": 21
     },
+    "raichumegax": {
+        "abilities": {
+            "0": "Surge Surfer"
+        },
+        "baseSpecies": "Raichu",
+        "baseStats": {
+            "atk": 135,
+            "def": 95,
+            "hp": 60,
+            "spa": 90,
+            "spd": 95,
+            "spe": 110
+        },
+        "color": "Yellow",
+        "eggGroups": [
+            "Field",
+            "Fairy"
+        ],
+        "forme": "Mega-X",
+        "gen": 9,
+        "heightm": 1.2,
+        "name": "Raichu-Mega-X",
+        "num": 26,
+        "requiredItem": "Raichunite X",
+        "types": [
+            "Electric"
+        ],
+        "weightkg": 38
+    },
+    "raichumegay": {
+        "abilities": {
+            "0": "Surge Surfer"
+        },
+        "baseSpecies": "Raichu",
+        "baseStats": {
+            "atk": 100,
+            "def": 55,
+            "hp": 60,
+            "spa": 160,
+            "spd": 80,
+            "spe": 130
+        },
+        "color": "Yellow",
+        "eggGroups": [
+            "Field",
+            "Fairy"
+        ],
+        "forme": "Mega-Y",
+        "gen": 9,
+        "heightm": 1,
+        "name": "Raichu-Mega-Y",
+        "num": 26,
+        "requiredItem": "Raichunite Y",
+        "types": [
+            "Electric"
+        ],
+        "weightkg": 26
+    },
     "ramnarok": {
         "abilities": {
             "0": "No Guard"
         },
         "baseForme": "Dormant",
         "baseStats": {
-            "atk": 63,
+            "atk": 56,
             "def": 104,
             "hp": 110,
-            "spa": 104,
+            "spa": 111,
             "spd": 134,
             "spe": 85
         },
@@ -7693,10 +7862,10 @@
         },
         "baseSpecies": "Ramnarok",
         "baseStats": {
-            "atk": 63,
+            "atk": 56,
             "def": 85,
             "hp": 110,
-            "spa": 134,
+            "spa": 141,
             "spd": 54,
             "spe": 154
         },
@@ -8476,13 +8645,15 @@
         "eggGroups": [
             "Field"
         ],
+        "evoLevel": 34,
         "gen": 9,
         "heightm": 3,
         "name": "Shox",
         "num": -77,
+        "prevo": "Flox",
         "types": [
-            "Electric",
-            "Normal"
+            "Normal",
+            "Electric"
         ],
         "weightkg": 99.9
     },
@@ -8997,11 +9168,48 @@
         ],
         "evoItem": "Water Stone",
         "evoType": "useItem",
+        "formeOrder": [
+            "Starmie",
+            "Starmie-Mega"
+        ],
         "gender": "N",
         "heightm": 1.1,
         "name": "Starmie",
         "num": 121,
+        "otherFormes": [
+            "Starmie-Mega"
+        ],
         "prevo": "Staryu",
+        "types": [
+            "Water",
+            "Psychic"
+        ],
+        "weightkg": 80
+    },
+    "starmiemega": {
+        "abilities": {
+            "0": "Huge Power"
+        },
+        "baseSpecies": "Starmie",
+        "baseStats": {
+            "atk": 100,
+            "def": 105,
+            "hp": 60,
+            "spa": 130,
+            "spd": 105,
+            "spe": 120
+        },
+        "color": "Purple",
+        "eggGroups": [
+            "Water 3"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "gender": "N",
+        "heightm": 2.3,
+        "name": "Starmie-Mega",
+        "num": 121,
+        "requiredItem": "Starminite",
         "types": [
             "Water",
             "Psychic"
@@ -9707,15 +9915,51 @@
         ],
         "evoItem": "Leaf Stone",
         "evoType": "useItem",
+        "formeOrder": [
+            "Victreebel",
+            "Victreebel-Mega"
+        ],
         "heightm": 1.7,
         "name": "Victreebel",
         "num": 71,
+        "otherFormes": [
+            "Victreebel-Mega"
+        ],
         "prevo": "Weepinbell",
         "types": [
             "Grass",
             "Poison"
         ],
         "weightkg": 15.5
+    },
+    "victreebelmega": {
+        "abilities": {
+            "0": "Innards Out"
+        },
+        "baseSpecies": "Victreebel",
+        "baseStats": {
+            "atk": 125,
+            "def": 85,
+            "hp": 80,
+            "spa": 135,
+            "spd": 95,
+            "spe": 70
+        },
+        "color": "Green",
+        "eggGroups": [
+            "Grass"
+        ],
+        "forme": "Mega",
+        "gen": 9,
+        "heightm": 4.5,
+        "name": "Victreebel-Mega",
+        "num": 71,
+        "requiredItem": "Victreebelite",
+        "types": [
+            "Grass",
+            "Poison"
+        ],
+        "weightkg": 125.5
     },
     "vileplume": {
         "abilities": {

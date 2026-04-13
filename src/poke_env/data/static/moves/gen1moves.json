@@ -17,7 +17,6 @@
         "num": 71,
         "pp": 20,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Grass"
     },
@@ -60,7 +59,6 @@
         "num": 151,
         "pp": 40,
         "priority": 0,
-        "secondary": null,
         "target": "self",
         "type": "Poison",
         "zMove": {
@@ -83,7 +81,6 @@
         "num": 97,
         "pp": 30,
         "priority": 0,
-        "secondary": null,
         "target": "self",
         "type": "Psychic",
         "zMove": {
@@ -107,7 +104,6 @@
         "num": 133,
         "pp": 20,
         "priority": 0,
-        "secondary": null,
         "target": "self",
         "type": "Psychic",
         "zMove": {
@@ -157,7 +153,6 @@
         "num": 140,
         "pp": 20,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal"
     },
@@ -178,7 +173,6 @@
         "num": 112,
         "pp": 30,
         "priority": 0,
-        "secondary": null,
         "target": "self",
         "type": "Psychic",
         "zMove": {
@@ -193,6 +187,7 @@
         "condition": {
             "onBeforeMove": "onBeforeMove",
             "onDisableMove": "onDisableMove",
+            "onSemiLockMove": "bide",
             "onStart": "onStart"
         },
         "contestType": "Tough",
@@ -209,7 +204,6 @@
         "num": 117,
         "pp": 10,
         "priority": 0,
-        "secondary": null,
         "target": "self",
         "type": "???",
         "volatileStatus": "bide"
@@ -228,11 +222,9 @@
         "ignoreImmunity": true,
         "name": "Bind",
         "num": 20,
-        "onHit": "onHit",
         "onTryMove": "onTryMove",
         "pp": 20,
         "priority": 0,
-        "secondary": null,
         "self": {
             "volatileStatus": "partialtrappinglock"
         },
@@ -276,7 +268,7 @@
         },
         "name": "Blizzard",
         "num": 59,
-        "onModifyMove": "onModifyMove",
+        "onModifyMove": null,
         "pp": 5,
         "priority": 0,
         "secondary": {
@@ -350,7 +342,6 @@
         "num": 155,
         "pp": 10,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Ground"
     },
@@ -415,11 +406,9 @@
         "isNonstandard": null,
         "name": "Clamp",
         "num": 128,
-        "onHit": "onHit",
         "onTryMove": "onTryMove",
         "pp": 10,
         "priority": 0,
-        "secondary": null,
         "self": {
             "volatileStatus": "partialtrappinglock"
         },
@@ -451,7 +440,6 @@
         "num": 4,
         "pp": 15,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal"
     },
@@ -470,7 +458,6 @@
         "num": 109,
         "pp": 10,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Ghost",
         "volatileStatus": "confusion",
@@ -539,7 +526,6 @@
         "onHit": "onHit",
         "pp": 30,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal",
         "zMove": {
@@ -555,7 +541,7 @@
     "counter": {
         "accuracy": 100,
         "basePower": 1,
-        "beforeTurnCallback": "beforeTurnCallback",
+        "beforeTurnCallback": null,
         "category": "Physical",
         "condition": {},
         "contestType": "Tough",
@@ -571,10 +557,9 @@
         },
         "name": "Counter",
         "num": 68,
-        "onTry": "onTry",
+        "onTry": null,
         "pp": 20,
         "priority": -1,
-        "secondary": null,
         "target": "scripted",
         "type": "Fighting",
         "willCrit": false
@@ -595,7 +580,6 @@
         "num": 152,
         "pp": 10,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Water"
     },
@@ -616,7 +600,6 @@
         "num": 15,
         "pp": 30,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal"
     },
@@ -640,7 +623,6 @@
         "num": 111,
         "pp": 40,
         "priority": 0,
-        "secondary": null,
         "target": "self",
         "type": "Normal",
         "volatileStatus": "defensecurl",
@@ -671,7 +653,6 @@
         "onTryMove": "onTryMove",
         "pp": 10,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Ground"
     },
@@ -680,12 +661,14 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
+            "durationCallback": null,
+            "inherit": true,
             "onBeforeMove": "onBeforeMove",
             "onBeforeMovePriority": 6,
             "onDisableMove": "onDisableMove",
-            "onEnd": "onEnd",
             "onStart": "onStart"
         },
+        "contestType": "Clever",
         "flags": {
             "bypasssub": 1,
             "metronome": 1,
@@ -697,10 +680,12 @@
         "onTryHit": "onTryHit",
         "pp": 20,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal",
-        "volatileStatus": "disable"
+        "volatileStatus": "disable",
+        "zMove": {
+            "effect": "clearnegativeboost"
+        }
     },
     "dizzypunch": {
         "accuracy": 100,
@@ -742,7 +727,6 @@
             25,
             100
         ],
-        "secondary": null,
         "target": "normal",
         "type": "Normal"
     },
@@ -765,7 +749,6 @@
         "num": 24,
         "pp": 30,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Fighting"
     },
@@ -789,7 +772,6 @@
         "num": 3,
         "pp": 10,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal"
     },
@@ -809,7 +791,6 @@
         "num": 104,
         "pp": 15,
         "priority": 0,
-        "secondary": null,
         "target": "self",
         "type": "Normal",
         "zMove": {
@@ -832,7 +813,6 @@
         "num": 82,
         "pp": 10,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Dragon"
     },
@@ -855,7 +835,6 @@
         "onTryImmunity": "onTryImmunity",
         "pp": 15,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Psychic"
     },
@@ -875,7 +854,6 @@
         "num": 65,
         "pp": 20,
         "priority": 0,
-        "secondary": null,
         "target": "any",
         "type": "Flying"
     },
@@ -894,7 +872,6 @@
         "num": 89,
         "pp": 10,
         "priority": 0,
-        "secondary": null,
         "target": "allAdjacent",
         "type": "Ground"
     },
@@ -914,7 +891,6 @@
         "num": 121,
         "pp": 10,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal"
     },
@@ -955,7 +931,6 @@
         "num": 153,
         "pp": 5,
         "priority": 0,
-        "secondary": null,
         "selfdestruct": "always",
         "target": "normal",
         "type": "Normal"
@@ -1016,11 +991,9 @@
         },
         "name": "Fire Spin",
         "num": 83,
-        "onHit": "onHit",
         "onTryMove": "onTryMove",
         "pp": 15,
         "priority": 0,
-        "secondary": null,
         "self": {
             "volatileStatus": "partialtrappinglock"
         },
@@ -1047,7 +1020,6 @@
         "ohko": true,
         "pp": 5,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Ground",
         "zMove": {
@@ -1094,7 +1066,6 @@
         "num": 148,
         "pp": 20,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal",
         "zMove": {
@@ -1124,7 +1095,6 @@
         "onTryMove": "onTryMove",
         "pp": 15,
         "priority": 0,
-        "secondary": null,
         "target": "any",
         "type": "Flying"
     },
@@ -1133,8 +1103,8 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "onModifyMove": "onModifyMove",
-            "onStart": "onStart"
+            "inherit": true,
+            "onModifyCritRatio": null
         },
         "contestType": "Cool",
         "flags": {
@@ -1145,7 +1115,6 @@
         "num": 116,
         "pp": 30,
         "priority": 0,
-        "secondary": null,
         "target": "self",
         "type": "Normal",
         "volatileStatus": "focusenergy",
@@ -1174,7 +1143,6 @@
         "num": 31,
         "pp": 20,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal"
     },
@@ -1200,7 +1168,6 @@
         "num": 154,
         "pp": 15,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal"
     },
@@ -1220,7 +1187,6 @@
         "num": 137,
         "pp": 30,
         "priority": 0,
-        "secondary": null,
         "status": "par",
         "target": "normal",
         "type": "Normal",
@@ -1249,7 +1215,6 @@
         "num": 45,
         "pp": 40,
         "priority": 0,
-        "secondary": null,
         "target": "allAdjacentFoes",
         "type": "Normal",
         "zMove": {
@@ -1273,10 +1238,9 @@
         },
         "name": "Growth",
         "num": 74,
-        "onModifyMove": "onModifyMove",
+        "onModifyMove": null,
         "pp": 40,
         "priority": 0,
-        "secondary": null,
         "target": "self",
         "type": "Normal",
         "zMove": {
@@ -1304,7 +1268,6 @@
         "ohko": true,
         "pp": 5,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal",
         "zMove": {
@@ -1327,7 +1290,6 @@
         "num": 16,
         "pp": 35,
         "priority": 0,
-        "secondary": null,
         "target": "any",
         "type": "Normal"
     },
@@ -1347,7 +1309,6 @@
         "num": 106,
         "pp": 30,
         "priority": 0,
-        "secondary": null,
         "target": "self",
         "type": "Normal",
         "zMove": {
@@ -1371,7 +1332,6 @@
         "onHitField": "onHitField",
         "pp": 30,
         "priority": 0,
-        "secondary": null,
         "target": "self",
         "type": "Ice",
         "zMove": {
@@ -1418,7 +1378,6 @@
         "onMoveFail": "onMoveFail",
         "pp": 20,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Fighting"
     },
@@ -1437,7 +1396,6 @@
         "num": 30,
         "pp": 25,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal"
     },
@@ -1460,7 +1418,6 @@
         "ohko": true,
         "pp": 5,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal",
         "zMove": {
@@ -1481,7 +1438,6 @@
         "num": 56,
         "pp": 5,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Water"
     },
@@ -1500,7 +1456,6 @@
         "num": 63,
         "pp": 5,
         "priority": 0,
-        "secondary": null,
         "self": {
             "volatileStatus": "mustrecharge"
         },
@@ -1546,7 +1501,6 @@
         "num": 95,
         "pp": 20,
         "priority": 0,
-        "secondary": null,
         "status": "slp",
         "target": "normal",
         "type": "Psychic",
@@ -1619,7 +1573,6 @@
         "onMoveFail": "onMoveFail",
         "pp": 25,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Fighting"
     },
@@ -1640,7 +1593,6 @@
         "num": 2,
         "pp": 25,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal"
     },
@@ -1663,7 +1615,6 @@
         "num": 134,
         "pp": 15,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Psychic",
         "zMove": {
@@ -1691,7 +1642,6 @@
         "num": 141,
         "pp": 15,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Bug"
     },
@@ -1700,9 +1650,9 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
+            "inherit": true,
             "onAfterMoveSelf": "onAfterMoveSelf",
-            "onAfterMoveSelfPriority": 1,
-            "onStart": "onStart"
+            "onAfterMoveSelfPriority": 1
         },
         "contestType": "Clever",
         "flags": {
@@ -1713,11 +1663,10 @@
         },
         "name": "Leech Seed",
         "num": 73,
-        "onHit": "onHit",
+        "onHit": null,
         "onTryImmunity": "onTryImmunity",
         "pp": 10,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Grass",
         "volatileStatus": "leechseed",
@@ -1743,7 +1692,6 @@
         "num": 43,
         "pp": 30,
         "priority": 0,
-        "secondary": null,
         "target": "allAdjacentFoes",
         "type": "Normal",
         "zMove": {
@@ -1781,17 +1729,25 @@
         "condition": {
             "onStart": "onStart"
         },
+        "contestType": "Beautiful",
         "flags": {
-            "metronome": 1
+            "metronome": 1,
+            "snatch": 1
         },
         "name": "Light Screen",
         "num": 113,
         "onTryHit": "onTryHit",
         "pp": 30,
         "priority": 0,
+        "sideCondition": null,
         "target": "self",
         "type": "Psychic",
-        "volatileStatus": "lightscreen"
+        "volatileStatus": "lightscreen",
+        "zMove": {
+            "boost": {
+                "spd": 1
+            }
+        }
     },
     "lovelykiss": {
         "accuracy": 75,
@@ -1809,7 +1765,6 @@
         "num": 142,
         "pp": 10,
         "priority": 0,
-        "secondary": null,
         "status": "slp",
         "target": "normal",
         "type": "Normal",
@@ -1822,7 +1777,7 @@
     "lowkick": {
         "accuracy": 90,
         "basePower": 50,
-        "basePowerCallback": "basePowerCallback",
+        "basePowerCallback": null,
         "category": "Physical",
         "contestType": "Tough",
         "flags": {
@@ -1833,7 +1788,7 @@
         },
         "name": "Low Kick",
         "num": 67,
-        "onTryHit": "onTryHit",
+        "onTryHit": null,
         "pp": 20,
         "priority": 0,
         "secondary": {
@@ -1863,7 +1818,6 @@
         "num": 96,
         "pp": 40,
         "priority": 0,
-        "secondary": null,
         "target": "self",
         "type": "Psychic",
         "zMove": {
@@ -1890,7 +1844,6 @@
         "num": 72,
         "pp": 10,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Grass",
         "zMove": {
@@ -1912,7 +1865,6 @@
         "num": 25,
         "pp": 5,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal"
     },
@@ -1932,7 +1884,6 @@
         "num": 5,
         "pp": 20,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal"
     },
@@ -1951,7 +1902,6 @@
         "onHit": "onHit",
         "pp": 10,
         "priority": 0,
-        "secondary": null,
         "target": "self",
         "type": "Normal"
     },
@@ -1970,7 +1920,6 @@
         "onHit": "onHit",
         "pp": 10,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal",
         "zMove": {
@@ -1987,8 +1936,8 @@
         },
         "category": "Status",
         "condition": {
-            "noCopy": true,
-            "onSourceModifyDamage": "onSourceModifyDamage"
+            "inherit": true,
+            "onSourceModifyDamage": null
         },
         "contestType": "Cute",
         "flags": {
@@ -1999,7 +1948,6 @@
         "num": 107,
         "pp": 20,
         "priority": 0,
-        "secondary": null,
         "target": "self",
         "type": "Normal",
         "volatileStatus": "minimize",
@@ -2022,10 +1970,9 @@
         "name": "Mirror Move",
         "num": 119,
         "onHit": "onHit",
-        "onTryHit": "onTryHit",
+        "onTryHit": null,
         "pp": 20,
         "priority": 0,
-        "secondary": null,
         "target": "self",
         "type": "Flying",
         "zMove": {
@@ -2039,20 +1986,25 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "onStart": "onStart",
+            "inherit": true,
             "onTryBoost": "onTryBoost"
         },
+        "contestType": "Beautiful",
         "flags": {
-            "metronome": 1
+            "metronome": 1,
+            "snatch": 1
         },
         "name": "Mist",
         "num": 54,
         "pp": 30,
         "priority": 0,
-        "secondary": null,
+        "sideCondition": null,
         "target": "self",
         "type": "Ice",
-        "volatileStatus": "mist"
+        "volatileStatus": "mist",
+        "zMove": {
+            "effect": "heal"
+        }
     },
     "nightshade": {
         "accuracy": 100,
@@ -2070,7 +2022,6 @@
         "num": 101,
         "pp": 15,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Ghost"
     },
@@ -2085,7 +2036,7 @@
         },
         "isNonstandard": "CAP",
         "name": "Paleo Wave",
-        "num": 0,
+        "num": -1,
         "pp": 15,
         "priority": 0,
         "secondary": {
@@ -2112,7 +2063,6 @@
         "onHit": "onHit",
         "pp": 20,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal"
     },
@@ -2132,7 +2082,6 @@
         "num": 64,
         "pp": 35,
         "priority": 0,
-        "secondary": null,
         "target": "any",
         "type": "Flying"
     },
@@ -2151,11 +2100,9 @@
         },
         "name": "Petal Dance",
         "num": 80,
-        "onAfterMove": "onAfterMove",
-        "onMoveFail": "onMoveFail",
+        "onMoveFail": null,
         "pp": 20,
         "priority": 0,
-        "secondary": null,
         "self": {
             "volatileStatus": "lockedmove"
         },
@@ -2183,7 +2130,6 @@
         "num": 42,
         "pp": 20,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Bug",
         "zMove": {
@@ -2206,7 +2152,6 @@
         "num": 139,
         "pp": 40,
         "priority": 0,
-        "secondary": null,
         "status": "psn",
         "target": "normal",
         "type": "Poison",
@@ -2231,10 +2176,9 @@
         "ignoreImmunity": false,
         "name": "Poison Powder",
         "num": 77,
-        "onTryHit": "onTryHit",
+        "onTryHit": null,
         "pp": 35,
         "priority": 0,
-        "secondary": null,
         "status": "psn",
         "target": "normal",
         "type": "Poison",
@@ -2265,6 +2209,31 @@
         "target": "normal",
         "type": "Poison"
     },
+    "polarflare": {
+        "accuracy": 100,
+        "basePower": 75,
+        "category": "Special",
+        "contestType": "Beautiful",
+        "flags": {
+            "defrost": 1,
+            "mirror": 1,
+            "nosketch": 1,
+            "protect": 1
+        },
+        "isNonstandard": "CAP",
+        "name": "Polar Flare",
+        "num": -3,
+        "onAfterMoveSecondarySelf": "onAfterMoveSecondarySelf",
+        "onHit": "onHit",
+        "pp": 10,
+        "priority": 0,
+        "secondary": {
+            "chance": 10,
+            "status": "frz"
+        },
+        "target": "allAdjacentFoes",
+        "type": "Fire"
+    },
     "pound": {
         "accuracy": 100,
         "basePower": 40,
@@ -2280,7 +2249,6 @@
         "num": 1,
         "pp": 35,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal"
     },
@@ -2345,7 +2313,6 @@
         "num": 149,
         "pp": 15,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Psychic"
     },
@@ -2364,7 +2331,6 @@
         "num": 98,
         "pp": 30,
         "priority": 1,
-        "secondary": null,
         "target": "normal",
         "type": "Normal"
     },
@@ -2389,7 +2355,6 @@
         "num": 99,
         "pp": 20,
         "priority": 0,
-        "secondary": null,
         "self": {
             "volatileStatus": "rage"
         },
@@ -2412,7 +2377,6 @@
         "num": 75,
         "pp": 25,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Grass"
     },
@@ -2437,7 +2401,6 @@
         "onTryMove": "onTryMove",
         "pp": 10,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal"
     },
@@ -2457,7 +2420,6 @@
         "onHit": "onHit",
         "pp": 20,
         "priority": 0,
-        "secondary": null,
         "target": "self",
         "type": "Normal",
         "zMove": {
@@ -2471,18 +2433,25 @@
         "condition": {
             "onStart": "onStart"
         },
+        "contestType": "Clever",
         "flags": {
-            "metronome": 1
+            "metronome": 1,
+            "snatch": 1
         },
         "name": "Reflect",
         "num": 115,
         "onTryHit": "onTryHit",
         "pp": 20,
         "priority": 0,
-        "secondary": null,
+        "sideCondition": null,
         "target": "self",
         "type": "Psychic",
-        "volatileStatus": "reflect"
+        "volatileStatus": "reflect",
+        "zMove": {
+            "boost": {
+                "def": 1
+            }
+        }
     },
     "rest": {
         "accuracy": true,
@@ -2497,10 +2466,9 @@
         "name": "Rest",
         "num": 156,
         "onHit": "onHit",
-        "onTry": "onTry",
+        "onTry": null,
         "pp": 10,
         "priority": 0,
-        "secondary": null,
         "target": "self",
         "type": "Psychic",
         "zMove": {
@@ -2522,10 +2490,9 @@
         "forceSwitch": false,
         "name": "Roar",
         "num": 46,
-        "onTryHit": "onTryHit",
+        "onTryHit": null,
         "pp": 20,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal",
         "zMove": {
@@ -2566,7 +2533,6 @@
         "num": 88,
         "pp": 15,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Rock"
     },
@@ -2612,7 +2578,6 @@
         "num": 28,
         "pp": 15,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal",
         "zMove": {
@@ -2636,7 +2601,6 @@
         "num": 10,
         "pp": 35,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal"
     },
@@ -2659,7 +2623,6 @@
         "num": 103,
         "pp": 40,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal",
         "zMove": {
@@ -2689,7 +2652,6 @@
         "num": 69,
         "pp": 20,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Fighting"
     },
@@ -2709,7 +2671,6 @@
         "num": 120,
         "pp": 5,
         "priority": 0,
-        "secondary": null,
         "selfdestruct": "always",
         "target": "normal",
         "type": "Normal"
@@ -2726,7 +2687,7 @@
         },
         "isNonstandard": "CAP",
         "name": "Shadow Strike",
-        "num": 0,
+        "num": -2,
         "pp": 10,
         "priority": 0,
         "secondary": {
@@ -2755,7 +2716,6 @@
         "num": 159,
         "pp": 30,
         "priority": 0,
-        "secondary": null,
         "target": "self",
         "type": "Normal",
         "zMove": {
@@ -2780,7 +2740,6 @@
         "num": 47,
         "pp": 15,
         "priority": 0,
-        "secondary": null,
         "status": "slp",
         "target": "normal",
         "type": "Normal",
@@ -2811,7 +2770,6 @@
         "onTryMove": "onTryMove",
         "pp": 15,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal"
     },
@@ -2856,7 +2814,6 @@
         "num": 21,
         "pp": 20,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal"
     },
@@ -2877,7 +2834,6 @@
         "num": 163,
         "pp": 20,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal"
     },
@@ -2895,10 +2851,9 @@
         },
         "name": "Sleep Powder",
         "num": 79,
-        "onTryHit": "onTryHit",
+        "onTryHit": null,
         "pp": 15,
         "priority": 0,
-        "secondary": null,
         "status": "slp",
         "target": "normal",
         "type": "Grass",
@@ -2968,7 +2923,6 @@
         "num": 108,
         "pp": 20,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal",
         "zMove": {
@@ -2993,7 +2947,6 @@
         "onHit": "onHit",
         "pp": 10,
         "priority": 0,
-        "secondary": null,
         "target": "self",
         "type": "Normal",
         "zMove": {
@@ -3015,12 +2968,11 @@
         },
         "name": "Solar Beam",
         "num": 76,
-        "onBasePower": "onBasePower",
+        "onBasePower": null,
         "onPrepareHit": "onPrepareHit",
         "onTryMove": "onTryMove",
         "pp": 10,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Grass"
     },
@@ -3041,7 +2993,6 @@
         "num": 49,
         "pp": 20,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal"
     },
@@ -3067,7 +3018,6 @@
         "num": 131,
         "pp": 15,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal"
     },
@@ -3086,7 +3036,6 @@
         "onTryHit": "onTryHit",
         "pp": 40,
         "priority": 0,
-        "secondary": null,
         "target": "self",
         "type": "Normal",
         "zMove": {
@@ -3109,10 +3058,9 @@
         },
         "name": "Spore",
         "num": 147,
-        "onTryHit": "onTryHit",
+        "onTryHit": null,
         "pp": 15,
         "priority": 0,
-        "secondary": null,
         "status": "slp",
         "target": "normal",
         "type": "Grass",
@@ -3128,6 +3076,7 @@
         "flags": {
             "contact": 1,
             "metronome": 1,
+            "minimize": 1,
             "mirror": 1,
             "nonsky": 1,
             "protect": 1
@@ -3158,7 +3107,6 @@
         "num": 70,
         "pp": 15,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal"
     },
@@ -3180,7 +3128,6 @@
         "num": 81,
         "pp": 40,
         "priority": 0,
-        "secondary": null,
         "target": "allAdjacentFoes",
         "type": "Bug",
         "zMove": {
@@ -3205,14 +3152,13 @@
         "name": "Struggle",
         "noPPBoosts": true,
         "num": 165,
-        "onModifyMove": "onModifyMove",
+        "onModifyMove": null,
         "pp": 10,
         "priority": 0,
         "recoil": [
             1,
             2
         ],
-        "secondary": null,
         "struggleRecoil": false,
         "target": "randomNormal",
         "type": "Normal"
@@ -3231,10 +3177,9 @@
         },
         "name": "Stun Spore",
         "num": 78,
-        "onTryHit": "onTryHit",
+        "onTryHit": null,
         "pp": 30,
         "priority": 0,
-        "secondary": null,
         "status": "par",
         "target": "normal",
         "type": "Grass",
@@ -3264,7 +3209,6 @@
             1,
             4
         ],
-        "secondary": null,
         "target": "normal",
         "type": "Fighting"
     },
@@ -3273,13 +3217,17 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "onEnd": "onEnd",
+            "inherit": true,
             "onStart": "onStart",
             "onTryHit": "onTryHit",
-            "onTryHitPriority": -1
+            "onTryHitPriority": -1,
+            "onTryPrimaryHit": null
         },
+        "contestType": "Cute",
         "flags": {
-            "metronome": 1
+            "metronome": 1,
+            "nonsky": 1,
+            "snatch": 1
         },
         "name": "Substitute",
         "num": 164,
@@ -3287,10 +3235,12 @@
         "onTryHit": "onTryHit",
         "pp": 10,
         "priority": 0,
-        "secondary": null,
         "target": "self",
         "type": "Normal",
-        "volatileStatus": "substitute"
+        "volatileStatus": "substitute",
+        "zMove": {
+            "effect": "clearnegativeboost"
+        }
     },
     "superfang": {
         "accuracy": 90,
@@ -3309,7 +3259,6 @@
         "num": 162,
         "pp": 10,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal"
     },
@@ -3329,7 +3278,6 @@
         "num": 48,
         "pp": 20,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal",
         "volatileStatus": "confusion",
@@ -3354,7 +3302,6 @@
         "num": 57,
         "pp": 15,
         "priority": 0,
-        "secondary": null,
         "target": "allAdjacentFoes",
         "type": "Water"
     },
@@ -3372,7 +3319,6 @@
         "num": 129,
         "pp": 20,
         "priority": 0,
-        "secondary": null,
         "target": "allAdjacentFoes",
         "type": "Normal"
     },
@@ -3393,7 +3339,6 @@
         "num": 14,
         "pp": 30,
         "priority": 0,
-        "secondary": null,
         "target": "self",
         "type": "Normal",
         "zMove": {
@@ -3415,7 +3360,6 @@
         "num": 33,
         "pp": 35,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal"
     },
@@ -3437,7 +3381,6 @@
         "num": 39,
         "pp": 30,
         "priority": 0,
-        "secondary": null,
         "target": "allAdjacentFoes",
         "type": "Normal",
         "zMove": {
@@ -3465,7 +3408,6 @@
             1,
             4
         ],
-        "secondary": null,
         "target": "normal",
         "type": "Normal"
     },
@@ -3482,7 +3424,6 @@
         "onTry": false,
         "pp": 20,
         "priority": 0,
-        "secondary": null,
         "selfSwitch": false,
         "target": "self",
         "type": "Psychic",
@@ -3504,11 +3445,9 @@
         },
         "name": "Thrash",
         "num": 37,
-        "onAfterMove": "onAfterMove",
-        "onMoveFail": "onMoveFail",
+        "onMoveFail": null,
         "pp": 20,
         "priority": 0,
-        "secondary": null,
         "self": {
             "volatileStatus": "lockedmove"
         },
@@ -3618,7 +3557,6 @@
         "num": 86,
         "pp": 20,
         "priority": 0,
-        "secondary": null,
         "status": "par",
         "target": "normal",
         "type": "Electric",
@@ -3649,10 +3587,9 @@
         "ignoreImmunity": false,
         "name": "Toxic",
         "num": 92,
-        "onPrepareHit": "onPrepareHit",
+        "onPrepareHit": null,
         "pp": 10,
         "priority": 0,
-        "secondary": null,
         "status": "tox",
         "target": "normal",
         "type": "Poison",
@@ -3678,7 +3615,6 @@
         "onHit": "onHit",
         "pp": 10,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal",
         "zMove": {
@@ -3697,7 +3633,7 @@
         },
         "name": "Tri Attack",
         "num": 161,
-        "onHit": "onHit",
+        "onHit": null,
         "pp": 10,
         "priority": 0,
         "secondary": null,
@@ -3745,7 +3681,6 @@
         "num": 22,
         "pp": 10,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Grass"
     },
@@ -3764,7 +3699,6 @@
         "num": 11,
         "pp": 30,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal"
     },
@@ -3801,7 +3735,6 @@
         "num": 55,
         "pp": 25,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Water"
     },
@@ -3819,10 +3752,9 @@
         "forceSwitch": false,
         "name": "Whirlwind",
         "num": 18,
-        "onTryHit": "onTryHit",
+        "onTryHit": null,
         "pp": 20,
         "priority": 0,
-        "secondary": null,
         "target": "normal",
         "type": "Normal",
         "zMove": {
@@ -3847,7 +3779,6 @@
         "num": 17,
         "pp": 35,
         "priority": 0,
-        "secondary": null,
         "target": "any",
         "type": "Flying"
     },
@@ -3867,7 +3798,6 @@
         "num": 110,
         "pp": 40,
         "priority": 0,
-        "secondary": null,
         "target": "self",
         "type": "Water",
         "zMove": {
@@ -3890,11 +3820,9 @@
         "ignoreImmunity": true,
         "name": "Wrap",
         "num": 35,
-        "onHit": "onHit",
         "onTryMove": "onTryMove",
         "pp": 20,
         "priority": 0,
-        "secondary": null,
         "self": {
             "volatileStatus": "partialtrappinglock"
         },
