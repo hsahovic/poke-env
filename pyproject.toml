@@ -83,3 +83,7 @@ multi_line_output = 3
 [tool.pyright]
 include = ["src"]
 pythonVersion = "3.10"
+
+[tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["unit_tests"]

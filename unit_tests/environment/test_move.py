@@ -133,12 +133,12 @@ def test_move_use_pressure_and_override():
     assert move.current_pp == 0
 
 
-def test_max_pp_pre_gen3_cap_and_mimic_exception():
+def test_max_pp_pre_gen3_cap_applies_to_mimic_too():
     move = Move("splash", gen=2)
     mimic_move = Move("splash", gen=2, from_mimic=True)
 
     assert move.max_pp == 61
-    assert mimic_move.max_pp == 64
+    assert mimic_move.max_pp == 61
 
 
 def test_moveset_mimic_and_transform_resolution():
