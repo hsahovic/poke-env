@@ -202,6 +202,23 @@ def test_check_move_consistency_target_overrides():
     )
 
 
+def test_check_move_consistency_skips_early_gen_transform_maxpp():
+    ditto = Pokemon(species="ditto", gen=1)
+    ditto._add_move("transform")
+    target = Pokemon(species="snorlax", gen=1)
+    target._add_move("bodyslam")
+
+    ditto.transform(target)
+
+    ditto.check_move_consistency(
+        {"moves": [{"id": "bodyslam", "pp": 5, "maxpp": 15, "target": "normal"}]}
+    )
+
+
+def test_gen2_mimic_move_max_pp_respects_early_gen_cap():
+    assert Move("growth", gen=2, from_mimic=True).max_pp == 61
+
+
 def test_protect_counter_interactions():
     mon = Pokemon(species="xerneas", gen=8)
     mon.moved("protect", failed=False)

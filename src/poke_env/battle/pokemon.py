@@ -304,7 +304,11 @@ class Pokemon:
                 assert (
                     move_request["pp"] == move.current_pp
                 ), f"{move_request['pp']} != {move.current_pp}"
-            if "maxpp" in move_request:
+            if "maxpp" in move_request and not (self.transformed and self.gen < 5):
+                # Early-gen Transform requests do not expose a stable max PP value:
+                # Showdown can report copied moves with max PP that disagrees with
+                # the static move data, and we cannot reconstruct the source PP-up
+                # state from the battle event stream alone.
                 assert (
                     move_request["maxpp"] == move.max_pp
                 ), f"{move_request['maxpp']} != {move.max_pp}"
