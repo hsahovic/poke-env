@@ -1,11 +1,19 @@
 import json
 
-from data_script_utils import (
-    CURRENT_GEN,
-    MAX_MOVE_IDX_PER_GEN,
-    STATIC_DATA_ROOT,
-    fetch_and_clean_ps_data,
-)
+try:
+    from .data_script_utils import (
+        CURRENT_GEN,
+        MAX_MOVE_IDX_PER_GEN,
+        STATIC_DATA_ROOT,
+        fetch_and_clean_ps_data,
+    )
+except ImportError:
+    from data_script_utils import (
+        CURRENT_GEN,
+        MAX_MOVE_IDX_PER_GEN,
+        STATIC_DATA_ROOT,
+        fetch_and_clean_ps_data,
+    )
 
 data_by_gen = {
     CURRENT_GEN: fetch_and_clean_ps_data(

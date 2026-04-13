@@ -9,9 +9,24 @@ MAX_MOVE_IDX_PER_GEN = {1: 165, 2: 251, 3: 354, 4: 467, 5: 559, 6: 621, 7: 742, 
 STATIC_DATA_ROOT = "src/poke_env/data/static"
 
 
-def fetch_and_clean_ps_data(url: str, deserialize: bool = True):
-    data = requests.get(url, timeout=10.0).text
+def _replace_ps_callbacks(data: str) -> str:
+    for function_title_pattern in (r"on\w+", r"\w+Callback"):
+        pattern = (
+            r"^([ ]*)("
+            + function_title_pattern
+            + r")\([^)]*\)(?:: [^{]+)? \{\n(?:.*\n)+?\1\},"
+        )
+        sub = r'\1"\2": "\2",'
+        data = re.sub(pattern, sub, data, flags=re.MULTILINE)
 
+        pattern = r"(" + function_title_pattern + r")\([^)]*\)(?:: [^{]+)? \{\s*\}"
+        sub = r'"\1": "\1"'
+        data = re.sub(pattern, sub, data, flags=re.MULTILINE)
+
+    return data
+
+
+def clean_ps_data_text(data: str, deserialize: bool = True):
     if data == "404: Not Found":
         return {}
 
@@ -20,6 +35,10 @@ def fetch_and_clean_ps_data(url: str, deserialize: bool = True):
 
     # Transform tabs into spaces
     data = data.replace("\t", " ")
+
+    # Callback and handlers must be normalized before key quoting so typed
+    # arguments such as `target: Pokemon` do not get rewritten as JSON keys.
+    data = _replace_ps_callbacks(data)
 
     # Transform keys into correct json strings
     data = re.sub(r"([\w\d]+): ", r'"\1": ', data)
@@ -41,24 +60,6 @@ def fetch_and_clean_ps_data(url: str, deserialize: bool = True):
 
     # Correct isolated "undefined" values
     data = re.sub(r": undefined", r": null", data)
-
-    # Callback and handlers
-    for function_title_match in (r"(on\w+)", r"(\w+Callback)"):
-        for n_space in range(10):
-            spaces = " " * (n_space)
-            pattern = (
-                r"^"
-                + spaces
-                + function_title_match
-                + r"\((\w+, )*(\w+)?\) \{\n(.+\n)+?"
-                + spaces
-                + r"\},"
-            )
-            sub = spaces + r'"\1": "\1",'
-            data = re.sub(pattern, sub, data, flags=re.MULTILINE)
-        pattern = function_title_match + r"\(\) \{\s*\}"
-        sub = r'"\1": "\1"'
-        data = re.sub(pattern, sub, data, flags=re.MULTILINE)
 
     # Remove incorrect commas
     data = re.sub(r",\n( *)\}", r"\n\1}", data)
@@ -90,4 +91,9 @@ def fetch_and_clean_ps_data(url: str, deserialize: bool = True):
     except Exception:
         with open("out.json", "w+") as f:
             f.write(data)
-        raise Exception
+        raise
+
+
+def fetch_and_clean_ps_data(url: str, deserialize: bool = True):
+    data = requests.get(url, timeout=10.0).text
+    return clean_ps_data_text(data, deserialize=deserialize)
