@@ -103,8 +103,9 @@ class Pokemon:
         self._ivs: list[int] | None = None
         self._nature: str | None = None
         self._format: Optional[str] = format
-        self._learnset_format: bool = not any(
-            f in (self._format or "") for f in self._ALL_MOVES_FORMATS
+        self._learnset_format: bool = (
+            not any(f in (self._format or "") for f in self._ALL_MOVES_FORMATS)
+            and gen >= 3
         )
 
         # Battle related attributes
@@ -676,7 +677,29 @@ class Pokemon:
         self._weightkg = dex_entry["weightkg"]
 
         # Now the moveset
-        learnsets = GenData.from_gen(self.gen).learnset
+        current_gen = self.gen
+        while current_gen >= 3 and not self._learnset:
+            self.update_learnset(species, current_gen)
+            current_gen -= 1
+
+    def update_learnset(self, species: str, gen: int) -> None:
+        """
+        Update the learnset of the Pokemon based on its species and the gen.
+
+        This function is used to obtain a non empty learnset for the Pokémon
+        by going backwards if it has been Dexited. The learnset is not
+        available for the Gens 1 and 2 so this function would do nothing
+        for those Gens.
+
+        Args:
+            - species (str): the species to update the learnset for
+            - gen (int): the gen to update the learnset for
+
+        Returns:
+            - None: this method updates the learnset in place and does not return anything
+        """
+        dex_entry = GenData.from_gen(gen).pokedex[species]
+        learnsets = GenData.from_gen(gen).learnset
 
         all_moves: Dict[str, List[str]] = defaultdict(list)
 
@@ -724,7 +747,7 @@ class Pokemon:
 
         # Add the moves
         for move_id, gens in all_moves.items():
-            if any(g.startswith(str(self.gen)) for g in gens):
+            if any(g.startswith(str(gen)) for g in gens):
                 self._learnset.add(move_id)
 
     def _update_from_details(self, details: str):
