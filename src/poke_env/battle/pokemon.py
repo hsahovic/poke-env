@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from collections import defaultdict
 from typing import Any, Dict, List, Optional, Set, Union
 
 from poke_env.battle.effect import Effect
@@ -701,23 +700,23 @@ class Pokemon:
         dex_entry = GenData.from_gen(gen).pokedex[species]
         learnsets = GenData.from_gen(gen).learnset
 
-        all_moves: Dict[str, List[str]] = defaultdict(list)
-
         # Moveset from the current form
         if species in learnsets and "learnset" in learnsets[species]:
             learn = learnsets[species]["learnset"]
             if isinstance(learn, dict):
                 for move, sources in learn.items():
-                    all_moves[move].extend(sources)
+                    if any(s.startswith(str(gen)) for s in sources):
+                        self._learnset.add(move)
 
         # Moveset from the form without the item
-        if "species" in dex_entry and ("battleOnly" in dex_entry or not all_moves):
+        if "species" in dex_entry and ("battleOnly" in dex_entry or not self._learnset):
             dex_species = to_id_str(dex_entry["species"])
             if dex_species in learnsets and "learnset" in learnsets[dex_species]:
                 learn = learnsets[dex_species]["learnset"]
                 if isinstance(learn, dict):
                     for move, sources in learn.items():
-                        all_moves[move].extend(sources)
+                        if any(s.startswith(str(gen)) for s in sources):
+                            self._learnset.add(move)
 
         # Moveset from the form it comes from
         if "changesFrom" in dex_entry:
@@ -726,7 +725,8 @@ class Pokemon:
                 learn = learnsets[previous_form]["learnset"]
                 if isinstance(learn, dict):
                     for move, sources in learn.items():
-                        all_moves[move].extend(sources)
+                        if any(s.startswith(str(gen)) for s in sources):
+                            self._learnset.add(move)
 
         # Moveset from its prevolution line
         prevolution = to_id_str(dex_entry["prevo"]) if "prevo" in dex_entry else None
@@ -736,7 +736,8 @@ class Pokemon:
                 learn = learnsets[prevolution]["learnset"]
                 if isinstance(learn, dict):
                     for move, sources in learn.items():
-                        all_moves[move].extend(sources)
+                        if any(s.startswith(str(gen)) for s in sources):
+                            self._learnset.add(move)
 
             prevo_dex_entry = GenData.from_gen(self.gen).pokedex.get(prevolution, {})
             prevolution = (
@@ -744,11 +745,6 @@ class Pokemon:
                 if "prevo" in prevo_dex_entry
                 else None
             )
-
-        # Add the moves
-        for move_id, gens in all_moves.items():
-            if any(g.startswith(str(gen)) for g in gens):
-                self._learnset.add(move_id)
 
     def _update_from_details(self, details: str):
         if details == self._last_details:

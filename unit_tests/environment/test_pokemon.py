@@ -600,3 +600,13 @@ def test_basculin_learnset():
 
     assert basculegion_male.learnset == basculegion_female.learnset
     assert basculin_white.learnset.issubset(basculegion_male.learnset)
+
+
+def test_magearna_learnset():
+    """
+    The red magearna only has moves in gen 8, but it will need to appear in gen 7
+    with the normal moves.
+    """
+    magearna = Pokemon(species="magearna", gen=7)
+    magearna_og = Pokemon(species="magearnaoriginal", gen=7)
+    assert magearna.learnset == magearna_og.learnset
