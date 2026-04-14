@@ -313,7 +313,6 @@ class Player(ABC):
                 self._battle_finished_callback(battle)
                 async with self._battle_end_condition:
                     self._battle_end_condition.notify_all()
-                self.ps_client._battle_locks.pop(battle.battle_tag)
                 if hasattr(self.ps_client, "websocket"):
                     await self.ps_client.send_message(f"/leave {battle.battle_tag}")
             elif split_message[1] == "error":
