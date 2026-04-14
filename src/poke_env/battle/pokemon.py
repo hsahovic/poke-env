@@ -711,7 +711,7 @@ class Pokemon:
                     all_moves[move].extend(sources)
 
         # Moveset from the form without the item
-        if "species" in dex_entry and "battleOnly" in dex_entry:
+        if "species" in dex_entry and ("battleOnly" in dex_entry or not all_moves):
             dex_species = to_id_str(dex_entry["species"])
             if dex_species in learnsets and "learnset" in learnsets[dex_species]:
                 learn = learnsets[dex_species]["learnset"]

@@ -583,3 +583,20 @@ def test_indeedee_learnset():
     assert "reflect" in indeedee_female.learnset
     assert "lightscreen" not in indeedee_male.learnset
     assert "lightscreen" in indeedee_female.learnset
+
+
+def test_basculin_learnset():
+    basculin_blue = Pokemon(species="basculinbluestriped", gen=9)
+    basculin_red = Pokemon(species="basculin", gen=9)
+    basculin_white = Pokemon(species="basculinwhitestriped", gen=9)
+    basculegion_male = Pokemon(species="basculegion", gen=9)
+    basculegion_female = Pokemon(species="basculegionf", gen=9)
+
+    assert basculin_blue.learnset == basculin_red.learnset
+    assert "finalgambit" in basculin_blue.learnset
+    assert "finalgambit" not in basculin_white.learnset
+    assert "lastrespects" not in basculin_blue.learnset
+    assert "lastrespects" in basculin_white.learnset
+
+    assert basculegion_male.learnset == basculegion_female.learnset
+    assert basculin_white.learnset.issubset(basculegion_male.learnset)
