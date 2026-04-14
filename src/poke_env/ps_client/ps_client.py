@@ -172,6 +172,8 @@ class PSClient:
                     self._battle_locks[battle_tag] = asyncio.Lock()
                 async with self._battle_locks[battle_tag]:
                     await self._handle_battle_message(split_messages)  # type: ignore
+                if "|deinit" in message:
+                    self._battle_locks.pop(battle_tag)
             elif split_messages[0][1] == "challstr":
                 # Confirms connection to the server: we can login
                 await self.log_in(split_messages[0])
