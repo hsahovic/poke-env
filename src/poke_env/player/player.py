@@ -224,6 +224,7 @@ class Player(ABC):
                     )
 
                 if "bo3" in self.format:
+                    # In bo3, counting is handled by the game room, not sub-battles
                     self._battles[battle_tag] = battle
                 else:
                     await self._battle_count_queue.put(None)
@@ -371,12 +372,14 @@ class Player(ABC):
                     role, teambuilder_team, battle.teampreview_opponent_team
                 )
                 if self.accept_open_team_sheet and "bo3" not in self.format:
+                    # bo3 battles force players to accept OTS
                     await self._handle_battle_request(battle)
             elif split_message[1] == "win" or split_message[1] == "tie":
                 if split_message[1] == "win":
                     battle.won_by(split_message[2])
                 else:
                     battle.tied()
+                # In bo3, counting is handled by the game room, not sub-battles
                 if "bo3" not in self.format:
                     await self._battle_count_queue.get()
                     self._battle_count_queue.task_done()
