@@ -190,8 +190,8 @@ class Player(ABC):
         :rtype: AbstractBattle
         """
         # We check that the battle has the correct format
-        format_matches = split_message[1] == self._format or (
-            "bo3" in self.format and self._format.startswith(split_message[1])
+        format_matches = split_message[1] == self.format or (
+            "bo3" in self.format and self.format.startswith(split_message[1])
         )
         if format_matches and len(split_message) >= 2:
             # Battle initialisation
@@ -345,14 +345,11 @@ class Player(ABC):
             elif split_message[1] in self.MESSAGES_TO_IGNORE:
                 pass
             elif split_message[1] == "uhtml" and split_message[2] == "bestof":
-                m = re.search(r'href="/(game-[^"]+)"', split_message[3])
-                if m:
-                    game_tag = m.group(1)
-                    entry = self._bestof_games.get(game_tag)
-                    if entry and entry.get("packed_team"):
-                        battle._teambuilder_team = Teambuilder.parse_packed_team(
-                            entry["packed_team"]
-                        )
+                result = re.search(r'href="/(game-[^"]+)"', split_message[3])
+                assert result is not None
+                game_tag = result.group(1)
+                packed_team = self._bestof_games[game_tag]["packed_team"]
+                battle._teambuilder_team = Teambuilder.parse_packed_team(packed_team)
             elif split_message[1] == "request":
                 if split_message[2]:
                     request = orjson.loads(split_message[2])
