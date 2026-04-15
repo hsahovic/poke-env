@@ -191,7 +191,7 @@ class Player(ABC):
         """
         # We check that the battle has the correct format
         format_matches = split_message[1] == self._format or (
-            self._has_active_bestof() and self._format.startswith(split_message[1])
+            "bo3" in self.format and self._format.startswith(split_message[1])
         )
         if format_matches and len(split_message) >= 2:
             # Battle initialisation
@@ -218,12 +218,12 @@ class Player(ABC):
                         save_replays=self._save_replays,
                     )
 
-                if self._current_packed_team and not self._has_active_bestof():
+                if self._current_packed_team and "bo3" not in self.format:
                     battle._teambuilder_team = Teambuilder.parse_packed_team(
                         self._current_packed_team
                     )
 
-                if self._has_active_bestof():
+                if "bo3" in self.format:
                     # Sub-battle of a best-of series: skip counting
                     self._battles[battle_tag] = battle
                 else:
@@ -242,7 +242,7 @@ class Player(ABC):
                 if (
                     hasattr(self.ps_client, "websocket")
                     and "vgc" in self.format
-                    and not self._has_active_bestof()
+                    and "bo3" not in self.format
                 ):
                     if self.accept_open_team_sheet:
                         await self.ps_client.send_message(
@@ -267,10 +267,6 @@ class Player(ABC):
                 return self._battles[battle_tag]
             async with self._battle_start_condition:
                 await self._battle_start_condition.wait()
-
-    def _has_active_bestof(self) -> bool:
-        """Returns True if there is an active (non-finished) best-of series."""
-        return any(not g["finished"] for g in self._bestof_games.values())
 
     async def _handle_bestof_message(self, split_messages: List[List[str]]):
         """Handles messages from a best-of series room (e.g. bo3).
@@ -297,20 +293,13 @@ class Player(ABC):
                     self._battle_semaphore.release()
                     self._battle_start_condition.notify_all()
 
-            elif split_message[1] == "win":
+            elif split_message[1] == "win" or split_message[1] == "tie":
                 self._bestof_games[game_tag]["finished"] = True
-                self._bestof_games[game_tag]["won"] = split_message[2] == self.username
-                await self._battle_count_queue.get()
-                self._battle_count_queue.task_done()
-                async with self._battle_end_condition:
-                    self._battle_end_condition.notify_all()
-                self.ps_client._battle_locks.pop(game_tag, None)
-                if hasattr(self.ps_client, "websocket"):
-                    await self.ps_client.send_message(f"/leave {game_tag}")
-
-            elif split_message[1] == "tie":
-                self._bestof_games[game_tag]["finished"] = True
-                self._bestof_games[game_tag]["won"] = None
+                self._bestof_games[game_tag]["won"] = (
+                    split_message[2] == self.username
+                    if split_message[1] == "win"
+                    else None
+                )
                 await self._battle_count_queue.get()
                 self._battle_count_queue.task_done()
                 async with self._battle_end_condition:
@@ -377,7 +366,7 @@ class Player(ABC):
                     if not (
                         battle.teampreview
                         and self.accept_open_team_sheet
-                        and not self._has_active_bestof()
+                        and "bo3" not in self.format
                     ):
                         await self._handle_battle_request(battle)
             elif split_message[1] == "showteam":
@@ -390,19 +379,18 @@ class Player(ABC):
                 battle.apply_teambuilder_team(
                     role, teambuilder_team, battle.teampreview_opponent_team
                 )
-                if self.accept_open_team_sheet and not self._has_active_bestof():
+                if self.accept_open_team_sheet and "bo3" not in self.format:
                     await self._handle_battle_request(battle)
             elif split_message[1] == "win" or split_message[1] == "tie":
                 if split_message[1] == "win":
                     battle.won_by(split_message[2])
                 else:
                     battle.tied()
-                is_sub_battle = self._has_active_bestof()
-                if not is_sub_battle:
+                if "bo3" not in self.format:
                     await self._battle_count_queue.get()
                     self._battle_count_queue.task_done()
                 self._battle_finished_callback(battle)
-                if not is_sub_battle:
+                if "bo3" not in self.format:
                     async with self._battle_end_condition:
                         self._battle_end_condition.notify_all()
                 if hasattr(self.ps_client, "websocket"):
