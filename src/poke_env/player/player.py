@@ -374,7 +374,11 @@ class Player(ABC):
                 if split_message[2]:
                     request = orjson.loads(split_message[2])
                     battle.parse_request(request, self._strict_battle_tracking)
-                    if not (battle.teampreview and self.accept_open_team_sheet):
+                    if not (
+                        battle.teampreview
+                        and self.accept_open_team_sheet
+                        and not self._has_active_bestof()
+                    ):
                         await self._handle_battle_request(battle)
             elif split_message[1] == "showteam":
                 role = split_message[2]
@@ -386,7 +390,7 @@ class Player(ABC):
                 battle.apply_teambuilder_team(
                     role, teambuilder_team, battle.teampreview_opponent_team
                 )
-                if self.accept_open_team_sheet:
+                if self.accept_open_team_sheet and not self._has_active_bestof():
                     await self._handle_battle_request(battle)
             elif split_message[1] == "win" or split_message[1] == "tie":
                 if split_message[1] == "win":
