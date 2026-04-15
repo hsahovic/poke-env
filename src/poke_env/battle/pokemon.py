@@ -675,76 +675,8 @@ class Pokemon:
         self._heightm = dex_entry["heightm"]
         self._weightkg = dex_entry["weightkg"]
 
-        # Now the moveset
-        current_gen = self.gen
-        while current_gen >= 3 and not self._learnset:
-            self.update_learnset(species, current_gen)
-            current_gen -= 1
-
-    def update_learnset(self, species: str, gen: int) -> None:
-        """
-        Update the learnset of the Pokemon based on its species and the gen.
-
-        This function is used to obtain a non empty learnset for the Pokémon
-        by going backwards if it has been Dexited. The learnset is not
-        available for the Gens 1 and 2 so this function would do nothing
-        for those Gens.
-
-        Args:
-            - species (str): the species to update the learnset for
-            - gen (int): the gen to update the learnset for
-
-        Returns:
-            - None: this method updates the learnset in place and does not return anything
-        """
-        dex_entry = GenData.from_gen(gen).pokedex[species]
-        learnsets = GenData.from_gen(gen).learnset
-
-        # Moveset from the current form
-        if species in learnsets and "learnset" in learnsets[species]:
-            learn = learnsets[species]["learnset"]
-            if isinstance(learn, dict):
-                for move, sources in learn.items():
-                    if any(s.startswith(str(gen)) for s in sources):
-                        self._learnset.add(move)
-
-        # Moveset from the form without the item
-        if "species" in dex_entry and ("battleOnly" in dex_entry or not self._learnset):
-            dex_species = to_id_str(dex_entry["species"])
-            if dex_species in learnsets and "learnset" in learnsets[dex_species]:
-                learn = learnsets[dex_species]["learnset"]
-                if isinstance(learn, dict):
-                    for move, sources in learn.items():
-                        if any(s.startswith(str(gen)) for s in sources):
-                            self._learnset.add(move)
-
-        # Moveset from the form it comes from
-        if "changesFrom" in dex_entry:
-            previous_form = to_id_str(dex_entry["changesFrom"])
-            if previous_form in learnsets and "learnset" in learnsets[previous_form]:
-                learn = learnsets[previous_form]["learnset"]
-                if isinstance(learn, dict):
-                    for move, sources in learn.items():
-                        if any(s.startswith(str(gen)) for s in sources):
-                            self._learnset.add(move)
-
-        # Moveset from its prevolution line
-        prevolution = to_id_str(dex_entry["prevo"]) if "prevo" in dex_entry else None
-        while prevolution:
-
-            if prevolution in learnsets and "learnset" in learnsets[prevolution]:
-                learn = learnsets[prevolution]["learnset"]
-                if isinstance(learn, dict):
-                    for move, sources in learn.items():
-                        if any(s.startswith(str(gen)) for s in sources):
-                            self._learnset.add(move)
-
-            prevo_dex_entry = GenData.from_gen(self.gen).pokedex.get(prevolution, {})
-            prevolution = (
-                to_id_str(prevo_dex_entry["prevo"])
-                if "prevo" in prevo_dex_entry
-                else None
-            )
+        # Finally the learnset
+        self._learnset = GenData.obtain_learnset(species, self.gen)
 
     def _update_from_details(self, details: str):
         if details == self._last_details:

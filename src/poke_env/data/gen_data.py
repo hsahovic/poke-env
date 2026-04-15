@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Set, Union
 
 import orjson
 
@@ -9,7 +9,15 @@ from poke_env.data.normalize import to_id_str
 
 
 class GenData:
-    __slots__ = ("gen", "moves", "natures", "pokedex", "type_chart", "learnset")
+    __slots__ = (
+        "gen",
+        "moves",
+        "natures",
+        "raw_learnset",
+        "pokedex",
+        "type_chart",
+        "learnset",
+    )
 
     UNKNOWN_ITEM = "unknown_item"
 
@@ -24,7 +32,8 @@ class GenData:
         self.natures = self.load_natures()
         self.pokedex = self.load_pokedex(gen)
         self.type_chart = self.load_type_chart(gen)
-        self.learnset = self.load_learnset()
+        self.raw_learnset = self.load_raw_learnset()
+        self.learnset: Dict[str, Set[str]] = {}
 
     def __deepcopy__(self, memodict: Optional[Dict[int, Any]] = None) -> GenData:
         return self
@@ -39,7 +48,7 @@ class GenData:
         with open(os.path.join(self._static_files_root, "natures.json")) as f:
             return orjson.loads(f.read())
 
-    def load_learnset(
+    def load_raw_learnset(
         self,
     ) -> Dict[str, Dict[str, Union[int, float, Dict[str, List[str]]]]]:
         with open(os.path.join(self._static_files_root, "learnset.json")) as f:
@@ -124,3 +133,97 @@ class GenData:
     def from_format(cls, format: str) -> GenData:
         gen = int(format[3])  # Update when Gen 10 comes
         return cls.from_gen(gen)
+
+    @classmethod
+    def obtain_learnset(cls, pokemon_species: str, gen: int) -> Set[str]:
+        gen_data = cls.from_gen(gen)
+
+        if pokemon_species not in gen_data.learnset:
+            gen_data.generate_learnset(pokemon_species)
+
+        return gen_data.learnset[pokemon_species]
+
+    def generate_learnset(self, pokemon_species: str) -> None:
+        """
+        Update the learnset of the Pokemon based on its species and the gen.
+
+        This function is used to obtain a non empty learnset for the Pokémon
+        by going backwards if it has been Dexited. The learnset is not
+        available for the Gens 1 and 2 so this function would do nothing
+        for those Gens.
+
+        Args:
+            - species (str): the species to update the learnset for
+
+        Returns:
+            - None: this method updates the learnset in place and does not return anything
+        """
+        current_gen = self.gen
+        self.learnset[pokemon_species] = set()
+
+        while current_gen >= 3 and not self.learnset[pokemon_species]:
+            dex_entry = self.pokedex[pokemon_species]
+
+            # Moveset from the current form
+            if (
+                pokemon_species in self.raw_learnset
+                and "learnset" in self.raw_learnset[pokemon_species]
+            ):
+                learn = self.raw_learnset[pokemon_species]["learnset"]
+                if isinstance(learn, dict):
+                    for move, sources in learn.items():
+                        if any(s.startswith(str(current_gen)) for s in sources):
+                            self.learnset[pokemon_species].add(move)
+
+            # Moveset from the form without the item
+            if "species" in dex_entry and (
+                "battleOnly" in dex_entry or not self.learnset[pokemon_species]
+            ):
+                dex_species = to_id_str(dex_entry["species"])
+                if (
+                    dex_species in self.raw_learnset
+                    and "learnset" in self.raw_learnset[dex_species]
+                ):
+                    learn = self.raw_learnset[dex_species]["learnset"]
+                    if isinstance(learn, dict):
+                        for move, sources in learn.items():
+                            if any(s.startswith(str(current_gen)) for s in sources):
+                                self.learnset[pokemon_species].add(move)
+
+            # Moveset from the form it comes from
+            if "changesFrom" in dex_entry:
+                previous_form = to_id_str(dex_entry["changesFrom"])
+                if (
+                    previous_form in self.raw_learnset
+                    and "learnset" in self.raw_learnset[previous_form]
+                ):
+                    learn = self.raw_learnset[previous_form]["learnset"]
+                    if isinstance(learn, dict):
+                        for move, sources in learn.items():
+                            if any(s.startswith(str(current_gen)) for s in sources):
+                                self.learnset[pokemon_species].add(move)
+
+            # Moveset from its prevolution line
+            prevolution = (
+                to_id_str(dex_entry["prevo"]) if "prevo" in dex_entry else None
+            )
+            while prevolution:
+
+                if (
+                    prevolution in self.raw_learnset
+                    and "learnset" in self.raw_learnset[prevolution]
+                ):
+                    learn = self.raw_learnset[prevolution]["learnset"]
+                    if isinstance(learn, dict):
+                        for move, sources in learn.items():
+                            if any(s.startswith(str(self.gen)) for s in sources):
+                                self.learnset[pokemon_species].add(move)
+
+                prevo_dex_entry = self.pokedex.get(prevolution, {})
+                prevolution = (
+                    to_id_str(prevo_dex_entry["prevo"])
+                    if "prevo" in prevo_dex_entry
+                    else None
+                )
+
+            current_gen -= 1
