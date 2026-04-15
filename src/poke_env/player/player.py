@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import random
+import re
 from abc import ABC, abstractmethod
 from asyncio import Condition, Event, Queue, Semaphore
 from logging import Logger
@@ -217,7 +218,7 @@ class Player(ABC):
                         save_replays=self._save_replays,
                     )
 
-                if self._current_packed_team:
+                if self._current_packed_team and not self._has_active_bestof():
                     battle._teambuilder_team = Teambuilder.parse_packed_team(
                         self._current_packed_team
                     )
@@ -286,7 +287,11 @@ class Player(ABC):
             if split_message[1] == "init":
                 if game_tag in self._bestof_games:
                     continue
-                self._bestof_games[game_tag] = {"finished": False, "won": None}
+                self._bestof_games[game_tag] = {
+                    "finished": False,
+                    "won": None,
+                    "packed_team": self._current_packed_team,
+                }
                 await self._battle_count_queue.put(None)
                 async with self._battle_start_condition:
                     self._battle_semaphore.release()
@@ -356,6 +361,15 @@ class Player(ABC):
                 battle.parse_message(split_message)
             elif split_message[1] in self.MESSAGES_TO_IGNORE:
                 pass
+            elif split_message[1] == "uhtml" and split_message[2] == "bestof":
+                m = re.search(r'href="/(game-[^"]+)"', split_message[3])
+                if m:
+                    game_tag = m.group(1)
+                    entry = self._bestof_games.get(game_tag)
+                    if entry and entry.get("packed_team"):
+                        battle._teambuilder_team = Teambuilder.parse_packed_team(
+                            entry["packed_team"]
+                        )
             elif split_message[1] == "request":
                 if split_message[2]:
                     request = orjson.loads(split_message[2])
