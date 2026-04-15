@@ -224,7 +224,6 @@ class Player(ABC):
                     )
 
                 if "bo3" in self.format:
-                    # Sub-battle of a best-of series: skip counting
                     self._battles[battle_tag] = battle
                 else:
                     await self._battle_count_queue.put(None)
@@ -274,12 +273,10 @@ class Player(ABC):
         :param split_messages: The received best-of room messages.
         :type split_messages: List[List[str]]
         """
-        game_tag = split_messages[0][0][1:]  # strip >
-
+        game_tag = split_messages[0][0][1:]
         for split_message in split_messages[1:]:
             if not split_message or len(split_message) < 2:
                 continue
-
             if split_message[1] == "init":
                 if game_tag in self._bestof_games:
                     continue
@@ -292,7 +289,6 @@ class Player(ABC):
                 async with self._battle_start_condition:
                     self._battle_semaphore.release()
                     self._battle_start_condition.notify_all()
-
             elif split_message[1] == "win" or split_message[1] == "tie":
                 self._bestof_games[game_tag]["finished"] = True
                 self._bestof_games[game_tag]["won"] = (
@@ -307,9 +303,7 @@ class Player(ABC):
                 self.ps_client._battle_locks.pop(game_tag, None)
                 if hasattr(self.ps_client, "websocket"):
                     await self.ps_client.send_message(f"/leave {game_tag}")
-
             else:
-                # Auto-confirm ready prompts between games
                 joined = "|".join(split_message)
                 if "confirmready" in joined and "disabled" not in joined:
                     await self.ps_client.send_message("/confirmready", room=game_tag)
@@ -321,7 +315,7 @@ class Player(ABC):
         :type split_message: str
         """
         # Route best-of room messages to dedicated handler
-        if split_messages[0][0].startswith(">game-"):
+        if split_messages[0][0].startswith(">game"):
             await self._handle_bestof_message(split_messages)
             return
 
