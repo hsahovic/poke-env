@@ -190,8 +190,7 @@ class Player(ABC):
         """
         # We check that the battle has the correct format
         format_matches = split_message[1] == self._format or (
-            self._has_active_bestof()
-            and self._format.startswith(split_message[1])
+            self._has_active_bestof() and self._format.startswith(split_message[1])
         )
         if format_matches and len(split_message) >= 2:
             # Battle initialisation
@@ -304,9 +303,7 @@ class Player(ABC):
 
             elif split_message[1] == "win":
                 self._bestof_games[game_tag]["finished"] = True
-                self._bestof_games[game_tag]["won"] = (
-                    split_message[2] == self.username
-                )
+                self._bestof_games[game_tag]["won"] = split_message[2] == self.username
                 await self._battle_count_queue.get()
                 self._battle_count_queue.task_done()
                 async with self._battle_end_condition:
@@ -330,9 +327,7 @@ class Player(ABC):
                 # Auto-confirm ready prompts between games
                 joined = "|".join(split_message)
                 if "confirmready" in joined and "disabled" not in joined:
-                    await self.ps_client.send_message(
-                        "/confirmready", room=game_tag
-                    )
+                    await self.ps_client.send_message("/confirmready", room=game_tag)
 
     async def _handle_battle_message(self, split_messages: List[List[str]]):
         """Handles a battle message.
