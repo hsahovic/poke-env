@@ -217,14 +217,9 @@ class Player(ABC):
                         save_replays=self._save_replays,
                     )
 
-                packed_team = self._current_packed_team
-                for g in self._bestof_games.values():
-                    if not g["finished"] and g["packed_team"]:
-                        packed_team = g["packed_team"]
-                        break
-                if packed_team:
+                if self._current_packed_team:
                     battle._teambuilder_team = Teambuilder.parse_packed_team(
-                        packed_team
+                        self._current_packed_team
                     )
 
                 if self._has_active_bestof():
@@ -291,11 +286,7 @@ class Player(ABC):
             if split_message[1] == "init":
                 if game_tag in self._bestof_games:
                     continue
-                self._bestof_games[game_tag] = {
-                    "finished": False,
-                    "won": None,
-                    "packed_team": self._current_packed_team,
-                }
+                self._bestof_games[game_tag] = {"finished": False, "won": None}
                 await self._battle_count_queue.put(None)
                 async with self._battle_start_condition:
                     self._battle_semaphore.release()
@@ -381,7 +372,8 @@ class Player(ABC):
                 battle.apply_teambuilder_team(
                     role, teambuilder_team, battle.teampreview_opponent_team
                 )
-                await self._handle_battle_request(battle)
+                if self.accept_open_team_sheet:
+                    await self._handle_battle_request(battle)
             elif split_message[1] == "win" or split_message[1] == "tie":
                 if split_message[1] == "win":
                     battle.won_by(split_message[2])
