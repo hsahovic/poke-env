@@ -2,7 +2,12 @@ import asyncio
 
 import pytest
 
-from poke_env.player import ForfeitBattleOrder, RandomPlayer, SimpleHeuristicsPlayer, cross_evaluate
+from poke_env.player import (
+    ForfeitBattleOrder,
+    RandomPlayer,
+    SimpleHeuristicsPlayer,
+    cross_evaluate,
+)
 from poke_env.ps_client import AccountConfiguration, LocalhostServerConfiguration
 
 
@@ -60,16 +65,11 @@ async def test_bo3_cross_evaluation(showdown_format_teams):
             continue
         players = [
             RandomVGCPlayer(
-                battle_format=format_,
-                max_concurrent_battles=1,
-                team=team,
-                log_level=25,
+                battle_format=format_, max_concurrent_battles=1, team=team, log_level=25
             )
             for team in teams
         ]
-        await asyncio.wait_for(
-            cross_evaluate(players, n_challenges=1), timeout=120
-        )
+        await asyncio.wait_for(cross_evaluate(players, n_challenges=1), timeout=120)
         for player in players:
             await player.ps_client.stop_listening()
 
@@ -95,9 +95,7 @@ async def test_bo3_concurrent(showdown_format_teams):
             team=teams[-1],
             log_level=25,
         )
-        await asyncio.wait_for(
-            p1.battle_against(p2, n_battles=3), timeout=180
-        )
+        await asyncio.wait_for(p1.battle_against(p2, n_battles=3), timeout=180)
         assert p1.n_finished_battles >= 6
         assert p2.n_finished_battles >= 6
         assert all(g["finished"] for g in p1._bestof_games.values())
