@@ -118,6 +118,7 @@ class Effect(Enum):
     MAGNITUDE = auto()
     MAT_BLOCK = auto()
     MAX_GUARD = auto()
+    MEGA_SOL = auto()
     MIMIC = auto()
     MIMICRY = auto()
     MIND_READER = auto()
@@ -405,6 +406,7 @@ _FROM_ABILITY_EFFECTS: Set[Effect] = {
     Effect.LIMBER,
     Effect.LINGERING_AROMA,
     Effect.LIQUID_OOZE,
+    Effect.MEGA_SOL,
     Effect.MIMICRY,
     Effect.MUMMY,
     Effect.OBLIVIOUS,
@@ -883,6 +885,7 @@ _FROM_DATA: Dict[str, Effect] = {
     "MAGNITUDE": Effect.MAGNITUDE,
     "MATBLOCK": Effect.MAT_BLOCK,
     "MAXGUARD": Effect.MAX_GUARD,
+    "MEGASOL": Effect.MEGA_SOL,
     "MIMIC": Effect.MIMIC,
     "MIMICRY": Effect.MIMICRY,
     "MINDREADER": Effect.MIND_READER,
