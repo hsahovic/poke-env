@@ -209,6 +209,7 @@ class Effect(Enum):
     SWEET_VEIL = auto()
     SYMBIOSIS = auto()
     SYNCHRONIZE = auto()
+    TANGLING_HAIR = auto()
     TAR_SHOT = auto()
     TAUNT = auto()
     TELEKINESIS = auto()
@@ -440,6 +441,7 @@ _FROM_ABILITY_EFFECTS: Set[Effect] = {
     Effect.SWEET_VEIL,
     Effect.SYMBIOSIS,
     Effect.SYNCHRONIZE,
+    Effect.TANGLING_HAIR,
     Effect.TELEPATHY,
     Effect.TERA_SHELL,
     Effect.TERA_SHIFT,
@@ -976,6 +978,7 @@ _FROM_DATA: Dict[str, Effect] = {
     "SWEETVEIL": Effect.SWEET_VEIL,
     "SYMBIOSIS": Effect.SYMBIOSIS,
     "SYNCHRONIZE": Effect.SYNCHRONIZE,
+    "TANGLINGHAIR": Effect.TANGLING_HAIR,
     "TARSHOT": Effect.TAR_SHOT,
     "TAUNT": Effect.TAUNT,
     "TELEKINESIS": Effect.TELEKINESIS,
