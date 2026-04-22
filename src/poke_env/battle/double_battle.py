@@ -14,6 +14,24 @@ from poke_env.player.battle_order import (
     SingleBattleOrder,
 )
 
+_SHOWDOWN_TARGET_SLOTS = {
+    "ADJACENT_ALLY": ["ally"],
+    "ADJACENT_ALLY_OR_SELF": ["ally", "self"],
+    "ADJACENT_FOE": ["opp1", "opp2"],
+    "ALL": ["empty"],
+    "ALL_ADJACENT": ["empty"],
+    "ALL_ADJACENT_FOES": ["empty"],
+    "ALLIES": ["empty"],
+    "ALLY_SIDE": ["empty"],
+    "ALLY_TEAM": ["empty"],
+    "ANY": ["ally", "opp1", "opp2"],
+    "FOE_SIDE": ["empty"],
+    "NORMAL": ["ally", "opp1", "opp2"],
+    "RANDOM_NORMAL": ["empty"],
+    "SCRIPTED": ["empty"],
+    "SELF": ["empty"],
+}
+
 
 class DoubleBattle(AbstractBattle):
     POKEMON_1_POSITION = -1
@@ -320,12 +338,10 @@ class DoubleBattle(AbstractBattle):
             return [self.EMPTY_TARGET_POSITION]
 
         pokemon_1, pokemon_2 = self.active_pokemon
-        if pokemon == pokemon_1 and move.id in [m.id for m in self.available_moves[0]]:
+        if pokemon is pokemon_1:
             self_position = self.POKEMON_1_POSITION
             ally_position = self.POKEMON_2_POSITION
-        elif pokemon == pokemon_2 and move.id in [
-            m.id for m in self.available_moves[1]
-        ]:
+        elif pokemon is pokemon_2:
             self_position = self.POKEMON_2_POSITION
             ally_position = self.POKEMON_1_POSITION
         else:
@@ -339,9 +355,7 @@ class DoubleBattle(AbstractBattle):
                 targets = [self.EMPTY_TARGET_POSITION]
             else:
                 targets = [self.OPPONENT_1_POSITION, self.OPPONENT_2_POSITION]
-        elif move.non_ghost_target and (
-            PokemonType.GHOST not in pokemon.types
-        ):  # fixing target for Curse
+        elif move.non_ghost_target and PokemonType.GHOST not in pokemon.types:
             targets = [self.EMPTY_TARGET_POSITION]
         elif move.id == "pollenpuff" and Effect.HEAL_BLOCK in pokemon.effects:
             targets = [self.OPPONENT_1_POSITION, self.OPPONENT_2_POSITION]
@@ -353,45 +367,18 @@ class DoubleBattle(AbstractBattle):
         ):
             targets = [self.EMPTY_TARGET_POSITION]
         else:
-            targets = {
-                Target.from_showdown_message("adjacentAlly"): [ally_position],
-                Target.from_showdown_message("adjacentAllyOrSelf"): [
-                    ally_position,
-                    self_position,
-                ],
-                Target.from_showdown_message("adjacentFoe"): [
-                    self.OPPONENT_1_POSITION,
-                    self.OPPONENT_2_POSITION,
-                ],
-                Target.from_showdown_message("all"): [self.EMPTY_TARGET_POSITION],
-                Target.from_showdown_message("allAdjacent"): [
-                    self.EMPTY_TARGET_POSITION
-                ],
-                Target.from_showdown_message("allAdjacentFoes"): [
-                    self.EMPTY_TARGET_POSITION
-                ],
-                Target.from_showdown_message("allies"): [self.EMPTY_TARGET_POSITION],
-                Target.from_showdown_message("allySide"): [self.EMPTY_TARGET_POSITION],
-                Target.from_showdown_message("allyTeam"): [self.EMPTY_TARGET_POSITION],
-                Target.from_showdown_message("any"): [
-                    ally_position,
-                    self.OPPONENT_1_POSITION,
-                    self.OPPONENT_2_POSITION,
-                ],
-                Target.from_showdown_message("foeSide"): [self.EMPTY_TARGET_POSITION],
-                Target.from_showdown_message("normal"): [
-                    ally_position,
-                    self.OPPONENT_1_POSITION,
-                    self.OPPONENT_2_POSITION,
-                ],
-                Target.from_showdown_message("randomNormal"): [
-                    self.EMPTY_TARGET_POSITION
-                ],
-                Target.from_showdown_message("scripted"): [self.EMPTY_TARGET_POSITION],
-                Target.from_showdown_message("self"): [self.EMPTY_TARGET_POSITION],
-                self.EMPTY_TARGET_POSITION: [self.EMPTY_TARGET_POSITION],
-                None: [self.OPPONENT_1_POSITION, self.OPPONENT_2_POSITION],
-            }[move.deduced_target]
+            slot_map = {
+                "self": self_position,
+                "ally": ally_position,
+                "opp1": self.OPPONENT_1_POSITION,
+                "opp2": self.OPPONENT_2_POSITION,
+                "empty": self.EMPTY_TARGET_POSITION,
+            }
+            if move.deduced_target is None:
+                targets = [self.OPPONENT_1_POSITION, self.OPPONENT_2_POSITION]
+            else:
+                slots = _SHOWDOWN_TARGET_SLOTS[move.deduced_target.name]
+                targets = [slot_map[s] for s in slots]
 
         pokemon_ids = set(self._opponent_active_pokemon.keys())
         pokemon_ids.update(self._active_pokemon.keys())

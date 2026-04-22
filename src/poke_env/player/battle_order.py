@@ -95,8 +95,7 @@ class DoubleBattleOrder(BattleOrder):
             if not (first_order.terastallize and second_order.terastallize)
             if not (
                 isinstance(first_order.order, Pokemon)
-                and isinstance(second_order.order, Pokemon)
-                and str(first_order) == str(second_order)
+                and first_order.order is second_order.order
             )
             if not (
                 isinstance(first_order, PassBattleOrder)
