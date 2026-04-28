@@ -165,8 +165,8 @@ class PSClient:
             # The type of message is determined by the first entry in the message
             # For battles, this is the zero-th entry
             # Otherwise it is the one-th entry
-            if split_messages[0][0].startswith(">battle"):
-                # Battle update
+            if split_messages[0][0].startswith((">battle", ">game")):
+                # Battle update or best-of room
                 battle_tag = split_messages[0][0][1:]
                 if battle_tag not in self._battle_locks:
                     self._battle_locks[battle_tag] = asyncio.Lock()
