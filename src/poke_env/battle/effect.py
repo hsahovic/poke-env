@@ -118,6 +118,7 @@ class Effect(Enum):
     MAGNITUDE = auto()
     MAT_BLOCK = auto()
     MAX_GUARD = auto()
+    MEGA_SOL = auto()
     MIMIC = auto()
     MIMICRY = auto()
     MIND_READER = auto()
@@ -208,6 +209,7 @@ class Effect(Enum):
     SWEET_VEIL = auto()
     SYMBIOSIS = auto()
     SYNCHRONIZE = auto()
+    TANGLING_HAIR = auto()
     TAR_SHOT = auto()
     TAUNT = auto()
     TELEKINESIS = auto()
@@ -405,6 +407,7 @@ _FROM_ABILITY_EFFECTS: Set[Effect] = {
     Effect.LIMBER,
     Effect.LINGERING_AROMA,
     Effect.LIQUID_OOZE,
+    Effect.MEGA_SOL,
     Effect.MIMICRY,
     Effect.MUMMY,
     Effect.OBLIVIOUS,
@@ -438,6 +441,7 @@ _FROM_ABILITY_EFFECTS: Set[Effect] = {
     Effect.SWEET_VEIL,
     Effect.SYMBIOSIS,
     Effect.SYNCHRONIZE,
+    Effect.TANGLING_HAIR,
     Effect.TELEPATHY,
     Effect.TERA_SHELL,
     Effect.TERA_SHIFT,
@@ -883,6 +887,7 @@ _FROM_DATA: Dict[str, Effect] = {
     "MAGNITUDE": Effect.MAGNITUDE,
     "MATBLOCK": Effect.MAT_BLOCK,
     "MAXGUARD": Effect.MAX_GUARD,
+    "MEGASOL": Effect.MEGA_SOL,
     "MIMIC": Effect.MIMIC,
     "MIMICRY": Effect.MIMICRY,
     "MINDREADER": Effect.MIND_READER,
@@ -973,6 +978,7 @@ _FROM_DATA: Dict[str, Effect] = {
     "SWEETVEIL": Effect.SWEET_VEIL,
     "SYMBIOSIS": Effect.SYMBIOSIS,
     "SYNCHRONIZE": Effect.SYNCHRONIZE,
+    "TANGLINGHAIR": Effect.TANGLING_HAIR,
     "TARSHOT": Effect.TAR_SHOT,
     "TAUNT": Effect.TAUNT,
     "TELEKINESIS": Effect.TELEKINESIS,

@@ -796,6 +796,7 @@
         "name": "Belch",
         "num": 562,
         "onDisableMove": "onDisableMove",
+        "onTry": "onTry",
         "pp": 10,
         "priority": 0,
         "target": "normal",
@@ -9575,7 +9576,6 @@
         "name": "Polar Flare",
         "num": -3,
         "onAfterMoveSecondarySelf": "onAfterMoveSecondarySelf",
-        "onHit": "onHit",
         "pp": 10,
         "priority": 0,
         "secondary": {
@@ -10496,7 +10496,6 @@
         "name": "Relic Song",
         "num": 547,
         "onAfterMoveSecondarySelf": "onAfterMoveSecondarySelf",
-        "onHit": "onHit",
         "pp": 10,
         "priority": 0,
         "secondary": {

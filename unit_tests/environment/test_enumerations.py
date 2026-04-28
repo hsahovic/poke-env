@@ -30,6 +30,7 @@ def test_effect_build():
     assert Effect["TRICK"] == Effect.from_showdown_message("move: trick")
     assert Effect["MUMMY"] == Effect.from_showdown_message("ability: mummy")
     assert Effect["CUSTAP_BERRY"] == Effect.from_showdown_message("item: custap berry")
+    assert Effect["MEGA_SOL"] == Effect.from_showdown_message("MEGA_SOL")
     assert Effect["UNKNOWN"] == Effect.from_showdown_message("i don't know")
 
     assert Effect["HEAL_BLOCK"] == Effect.from_data("healblock")
