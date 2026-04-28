@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import asyncio
 import random
-import re
 from abc import ABC, abstractmethod
 from asyncio import Condition, Event, Queue, Semaphore
 from logging import Logger
@@ -141,7 +140,6 @@ class Player(ABC):
         self._waiting: Event = create_in_poke_loop(Event, loop)
         self._trying_again: Event = create_in_poke_loop(Event, loop)
         self._team: Optional[Teambuilder] = None
-        self._current_packed_team: str | None = None
         self._strict_battle_tracking = strict_battle_tracking
 
         if isinstance(team, Teambuilder):
@@ -218,10 +216,12 @@ class Player(ABC):
                         save_replays=self._save_replays,
                     )
 
-                if self._current_packed_team and "bo3" not in self.format:
-                    battle._teambuilder_team = Teambuilder.parse_packed_team(
-                        self._current_packed_team
-                    )
+                # Add our team as teampreview_team, as part of battle initialisation
+                if isinstance(self._team, ConstantTeambuilder):
+                    battle.teampreview_team = [
+                        Pokemon(gen=gen, teambuilder=tb_mon)
+                        for tb_mon in self._team.team
+                    ]
 
                 if "bo3" in self.format:
                     # In bo3, counting is handled by the game room, not sub-battles
@@ -281,11 +281,7 @@ class Player(ABC):
             if split_message[1] == "init":
                 if game_tag in self._bestof_games:
                     continue
-                self._bestof_games[game_tag] = {
-                    "finished": False,
-                    "won": None,
-                    "packed_team": self._current_packed_team,
-                }
+                self._bestof_games[game_tag] = {"finished": False, "won": None}
                 await self._battle_count_queue.put(None)
                 async with self._battle_start_condition:
                     self._battle_semaphore.release()
@@ -345,12 +341,6 @@ class Player(ABC):
                 battle.parse_message(split_message)
             elif split_message[1] in self.MESSAGES_TO_IGNORE:
                 pass
-            elif split_message[1] == "uhtml" and split_message[2] == "bestof":
-                result = re.search(r'href="/(game-[^"]+)"', split_message[3])
-                assert result is not None
-                game_tag = result.group(1)
-                packed_team = self._bestof_games[game_tag]["packed_team"]
-                battle._teambuilder_team = Teambuilder.parse_packed_team(packed_team)
             elif split_message[1] == "request":
                 if split_message[2]:
                     request = orjson.loads(split_message[2])
@@ -363,15 +353,32 @@ class Player(ABC):
                         await self._handle_battle_request(battle)
             elif split_message[1] == "showteam":
                 role = split_message[2]
-                if role == battle.player_role:
-                    continue
                 teambuilder_team = Teambuilder.parse_packed_team(
                     "|".join(split_message[3:])
                 )
-                battle.apply_teambuilder_team(
-                    role, teambuilder_team, battle.teampreview_opponent_team
+                teampreview_team = (
+                    battle.teampreview_team
+                    if role == battle.player_role
+                    else battle.teampreview_opponent_team
                 )
-                if self.accept_open_team_sheet and "bo3" not in self.format:
+                for preview_mon in teampreview_team:
+                    teambuilder_mon = [
+                        m
+                        for m in teambuilder_team
+                        if m.nickname is not None
+                        and preview_mon.identifies_as(m.nickname)
+                    ][0]
+                    mon = battle.get_pokemon(
+                        f"{role}: {teambuilder_mon.nickname}",
+                        details=preview_mon._last_details,
+                    )
+                    mon._update_from_teambuilder(teambuilder_mon)
+                # only handle battle request after all open sheets are processed
+                if (
+                    role == "p2"
+                    and self.accept_open_team_sheet
+                    and "bo3" not in self.format
+                ):
                     # bo3 battles force players to accept OTS
                     await self._handle_battle_request(battle)
             elif split_message[1] == "win" or split_message[1] == "tie":
@@ -494,10 +501,7 @@ class Player(ABC):
         self.logger.debug("Event logged in received in accept_challenge")
 
         for _ in range(n_challenges):
-            if packed_team:
-                self._current_packed_team = packed_team
-            else:
-                self.get_next_team()
+            team = packed_team or self.next_team
             while True:
                 username = to_id_str(await self._challenge_queue.get())
                 self.logger.debug(
@@ -508,9 +512,7 @@ class Player(ABC):
                     or (opponent == username)
                     or (isinstance(opponent, list) and (username in opponent))
                 ):
-                    await self.ps_client.accept_challenge(
-                        username, self._current_packed_team
-                    )
+                    await self.ps_client.accept_challenge(username, team)
                     await self._battle_semaphore.acquire()
                     break
         await self._battle_count_queue.join()
@@ -587,9 +589,7 @@ class Player(ABC):
 
         for _ in range(n_games):
             async with self._battle_start_condition:
-                await self.ps_client.search_ladder_game(
-                    self._format, self.get_next_team()
-                )
+                await self.ps_client.search_ladder_game(self._format, self.next_team)
                 await self._battle_start_condition.wait()
                 while self._battle_count_queue.full():
                     async with self._battle_end_condition:
@@ -662,7 +662,7 @@ class Player(ABC):
         start_time = perf_counter()
 
         for _ in range(n_challenges):
-            await self.ps_client.challenge(opponent, self._format, self.get_next_team())
+            await self.ps_client.challenge(opponent, self._format, self.next_team)
             await self._battle_semaphore.acquire()
         await self._battle_count_queue.join()
         self.logger.info(
@@ -777,12 +777,6 @@ class Player(ABC):
             )
         return battle.save_replay(file_path)
 
-    def get_next_team(self) -> str | None:
-        if self._team:
-            self._current_packed_team = self._team.yield_team()
-            return self._current_packed_team
-        return None
-
     @property
     def battles(self) -> Dict[str, AbstractBattle]:
         return self._battles
@@ -831,3 +825,9 @@ class Player(ABC):
     @property
     def username(self) -> str:
         return self.ps_client.username
+
+    @property
+    def next_team(self) -> Optional[str]:
+        if self._team:
+            return self._team.yield_team()
+        return None
