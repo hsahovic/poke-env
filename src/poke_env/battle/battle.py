@@ -100,11 +100,6 @@ class Battle(AbstractBattle):
 
         if side["pokemon"]:
             self._player_role = side["pokemon"][0]["ident"][:2]
-        if self.teambuilder_team is not None and not self.team:
-            assert self.player_role is not None
-            self.apply_teambuilder_team(
-                self.player_role, self.teambuilder_team, self.teampreview_team
-            )
         self._update_team_from_request(side, strict_battle_tracking)
 
         if "active" in request:

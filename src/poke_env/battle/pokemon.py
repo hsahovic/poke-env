@@ -769,10 +769,10 @@ class Pokemon:
             move = Move(Move.retrieve_id(move_str), gen=self.gen)
             self._moves[move.id] = move
 
-        if not all(e == 0 for e in tb.evs):
+        if tb.nature is not None:
             self._evs = tb.evs
             self._ivs = tb.ivs
-            self._nature = tb.nature.lower() if tb.nature is not None else "serious"
+            self._nature = tb.nature
 
         if tb.level:
             nature = tb.nature.lower() if tb.nature else "serious"

@@ -9,14 +9,12 @@ from poke_env.battle import (
     Battle,
     Effect,
     Field,
-    Pokemon,
     PokemonType,
     SideCondition,
     Status,
     Weather,
 )
 from poke_env.data import GenData
-from poke_env.teambuilder import Teambuilder
 
 
 def _extract_replay_log_lines(replay_html: str):
@@ -192,10 +190,6 @@ def test_battle_request_parsing(example_request):
         "spd": 211,
         "spe": 178,
     }
-    # No teambuilder data set, so nature/EVs/IVs should be None
-    assert mon.nature is None
-    assert mon._evs is None
-    assert mon._ivs is None
 
     moves = mon.moves
     assert (
@@ -223,25 +217,6 @@ def test_battle_request_parsing(example_request):
     assert len(battle.available_moves) == 4
 
     assert team["p2: Necrozma"].status == Status.TOX
-
-
-def test_battle_request_applies_teambuilder_data(example_request):
-    logger = MagicMock()
-    battle = Battle("tag", "username", logger, gen=8)
-
-    battle._teambuilder_team = Teambuilder.parse_packed_team(
-        "Venusaur||blacksludge|chlorophyll|leechseed,sleeppowder,substitute,sludgebomb"
-        "|Calm|252,,4,,252,|M|,,,,,||82|"
-    )
-    battle.teampreview_team = [Pokemon(details="Venusaur, L82, M", gen=8)]
-
-    battle.parse_request(example_request)
-
-    mon = battle.active_pokemon
-    assert mon.species == "venusaur"
-    assert mon.nature == "calm"
-    assert mon._evs == [252, 0, 4, 0, 252, 0]
-    assert mon._ivs == [31, 31, 31, 31, 31, 31]
 
 
 def test_battle_request_parsing_with_force_switch(force_switch_example_request):
