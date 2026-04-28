@@ -345,11 +345,12 @@ class Player(ABC):
                 if split_message[2]:
                     request = orjson.loads(split_message[2])
                     battle.parse_request(request, self._strict_battle_tracking)
-                    if not (
+                    if "bo3" in self.format or not (
                         battle.teampreview
                         and self.accept_open_team_sheet
-                        and "bo3" not in self.format
                     ):
+                        # if we want OTS in non-bo3 game, we need to wait for showteam
+                        # message to be received before making teampreview decision
                         await self._handle_battle_request(battle)
             elif split_message[1] == "showteam":
                 role = split_message[2]
@@ -373,8 +374,13 @@ class Player(ABC):
                         details=preview_mon._last_details,
                     )
                     mon._update_from_teambuilder(teambuilder_mon)
-                # only handle battle request after all open sheets are processed
-                if role == "p2":
+                if (
+                    "bo3" not in self.format
+                    and self.accept_open_team_sheet
+                    and role == "p2"
+                ):
+                    # in non-bo3 games, we need to wait for both showteam messages
+                    # to be received before making our teampreview decision
                     await self._handle_battle_request(battle)
             elif split_message[1] == "win" or split_message[1] == "tie":
                 if split_message[1] == "win":
