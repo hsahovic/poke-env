@@ -374,12 +374,7 @@ class Player(ABC):
                     )
                     mon._update_from_teambuilder(teambuilder_mon)
                 # only handle battle request after all open sheets are processed
-                if (
-                    role == "p2"
-                    and self.accept_open_team_sheet
-                    and "bo3" not in self.format
-                ):
-                    # bo3 battles force players to accept OTS
+                if role == "p2":
                     await self._handle_battle_request(battle)
             elif split_message[1] == "win" or split_message[1] == "tie":
                 if split_message[1] == "win":
