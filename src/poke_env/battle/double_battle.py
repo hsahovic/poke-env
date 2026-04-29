@@ -39,6 +39,8 @@ class DoubleBattle(AbstractBattle):
     OPPONENT_1_POSITION = 1
     OPPONENT_2_POSITION = 2
     EMPTY_TARGET_POSITION = 0  # symbolic, not used by showdown
+    ALLY_POSITIONS = {"a": POKEMON_1_POSITION, "b": POKEMON_2_POSITION}
+    FOE_POSITIONS = {"a": OPPONENT_1_POSITION, "b": OPPONENT_2_POSITION}
 
     def __init__(
         self,
@@ -380,18 +382,11 @@ class DoubleBattle(AbstractBattle):
                 slots = _SHOWDOWN_TARGET_SLOTS[move.deduced_target.name]
                 targets = [slot_map[s] for s in slots]
 
-        pokemon_ids = set(self._opponent_active_pokemon.keys())
-        pokemon_ids.update(self._active_pokemon.keys())
-        targets_to_keep = {
-            {
-                f"{self.player_role}a": -1,
-                f"{self.player_role}b": -2,
-                f"{self.opponent_role}a": 1,
-                f"{self.opponent_role}b": 2,
-            }[pokemon_identifier]
-            for pokemon_identifier in pokemon_ids
-        }
-        targets_to_keep.add(self.EMPTY_TARGET_POSITION)
+        targets_to_keep = (
+            {self.EMPTY_TARGET_POSITION}
+            | {self.ALLY_POSITIONS[pid[2]] for pid in self._active_pokemon}
+            | {self.FOE_POSITIONS[pid[2]] for pid in self._opponent_active_pokemon}
+        )
         targets = [target for target in targets if target in targets_to_keep]
 
         return targets
