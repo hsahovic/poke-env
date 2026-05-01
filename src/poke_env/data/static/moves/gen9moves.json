@@ -12850,7 +12850,7 @@
         "ignoreDefensive": true,
         "ignoreEvasion": true,
         "ignoreImmunity": {
-            "Fairy": true
+            "Dragon": true
         },
         "isNonstandard": "Future",
         "name": "Nihil Light",
