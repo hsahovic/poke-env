@@ -485,6 +485,7 @@ def test_normal_learnset():
         "gen9randomdoublesbattle",
         "gen9ou",
         "gen9ubers",
+        "gen9anythinggoes",
         "gen9ru",
         "gen9vgc2026regi",
         "gen9freeforallrandombattle",
@@ -498,9 +499,6 @@ def test_normal_learnset():
 
 def test_different_learnset():
     formats = [
-        (7, "gen7anythinggoes"),
-        (8, "gen8anythinggoes"),
-        (9, "gen9anythinggoes"),
         (6, "gen6purehackmons"),
         (7, "gen7balancedhackmons"),
         (9, "gen9stabmons"),

@@ -65,7 +65,7 @@ class Pokemon:
     )
 
     # The formats that have a different learnset
-    _ALL_MOVES_FORMATS = ["hackmons", "anythinggoes", "stabmons", "sketchmons"]
+    _ALL_MOVES_FORMATS = ["hackmons", "stabmons", "sketchmons"]
 
     def __init__(
         self,
