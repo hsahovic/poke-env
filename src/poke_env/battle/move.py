@@ -662,8 +662,9 @@ class Move:
         """
         if self.request_target:
             return self.request_target
-        elif "target" in self.entry:
-            return Target.from_showdown_message(self.entry["target"])
+        elif "target" not in self.entry:
+            return None
+        return Target.from_showdown_message(self.entry["target"])
 
     @property
     def terrain(self) -> Optional[Field]:
