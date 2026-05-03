@@ -371,8 +371,12 @@ class DoubleBattle(AbstractBattle):
                 "opp2": self.OPPONENT_2_POSITION,
                 "empty": self.EMPTY_TARGET_POSITION,
             }
-            slots = _SHOWDOWN_TARGET_SLOTS[move.deduced_target.name]
-            targets = [slot_map[s] for s in slots]
+            if move.target is None:
+                # give filler for SPECIAL_MOVES
+                targets = [self.OPPONENT_1_POSITION, self.OPPONENT_2_POSITION]
+            else:
+                slots = _SHOWDOWN_TARGET_SLOTS[move.target.name]
+                targets = [slot_map[s] for s in slots]
 
         targets_to_keep = (
             {self.EMPTY_TARGET_POSITION}
