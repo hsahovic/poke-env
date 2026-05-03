@@ -660,11 +660,9 @@ class Move:
         :return: Target of the move
         :rtype: Target | None
         """
-        if self.id in SPECIAL_MOVES:
-            return None
-        elif self.request_target:
+        if self.request_target:
             return self.request_target
-        else:
+        elif "target" in self.entry:
             return Target.from_showdown_message(self.entry["target"])
 
     @property
