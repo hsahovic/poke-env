@@ -245,21 +245,6 @@ class Move:
         return self.entry.get("damage", 0)
 
     @property
-    def deduced_target(self) -> Optional[Target]:
-        """
-        :return: Move deduced target, based on Move.target and showdown's request
-            messages.
-        :rtype: Optional[Target]
-        """
-        if self.id in SPECIAL_MOVES:
-            return self.target
-        elif self.request_target:
-            return self.request_target
-        elif self.target == "randomNormal":
-            return self.request_target
-        return self.target
-
-    @property
     def defensive_category(self) -> MoveCategory:
         """
         :return: Move's defender category.
@@ -670,14 +655,16 @@ class Move:
         return self.entry.get("stealsBoosts", False)
 
     @property
-    def target(self) -> Optional[Target]:
+    def target(self) -> Target | None:
         """
         :return: Target of the move
-        :rtype: Optional[Target]
+        :rtype: Target | None
         """
-        if "target" in self.entry:
-            return Target.from_showdown_message(self.entry["target"])
-        return None
+        if self.request_target:
+            return self.request_target
+        elif "target" not in self.entry:
+            return None
+        return Target.from_showdown_message(self.entry["target"])
 
     @property
     def terrain(self) -> Optional[Field]:
