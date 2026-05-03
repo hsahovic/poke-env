@@ -333,6 +333,7 @@ class DoubleBattle(AbstractBattle):
         """
         if move.id in SPECIAL_MOVES:
             return [self.EMPTY_TARGET_POSITION]
+        assert move.target is not None
 
         pokemon_1, pokemon_2 = self.active_pokemon
         if pokemon is pokemon_1:
@@ -371,7 +372,7 @@ class DoubleBattle(AbstractBattle):
                 "opp2": self.OPPONENT_2_POSITION,
                 "empty": self.EMPTY_TARGET_POSITION,
             }
-            slots = _SHOWDOWN_TARGET_SLOTS[move.deduced_target.name]
+            slots = _SHOWDOWN_TARGET_SLOTS[move.target.name]
             targets = [slot_map[s] for s in slots]
 
         targets_to_keep = (
