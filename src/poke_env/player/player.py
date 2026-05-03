@@ -46,7 +46,7 @@ class Player(ABC):
     Base class for players.
     """
 
-    MESSAGES_TO_IGNORE = {"t:", "expire", "uhtmlchange"}
+    MESSAGES_TO_IGNORE = {"t:", "expire", "uhtmlchange", "tempnotify", "tempnotifyoff"}
 
     # When an error resulting from an invalid choice is made, the next order has this
     # chance of being showdown's default order to prevent infinite loops
@@ -128,6 +128,7 @@ class Player(ABC):
         self._accept_open_team_sheet: bool = accept_open_team_sheet
 
         self._battles: Dict[str, AbstractBattle] = {}
+        self._bestof_games: Dict[str, Dict[str, Any]] = {}
         self._battle_semaphore: Semaphore = create_in_poke_loop(Semaphore, loop, 0)
 
         self._battle_start_condition: Condition = create_in_poke_loop(Condition, loop)
@@ -187,7 +188,10 @@ class Player(ABC):
         :rtype: AbstractBattle
         """
         # We check that the battle has the correct format
-        if split_message[1] == self._format and len(split_message) >= 2:
+        if (
+            self.format in [split_message[1], f"{split_message[1]}bo3"]
+            and len(split_message) >= 2
+        ):
             # Battle initialisation
             battle_tag = "-".join(split_message)[1:]
 
@@ -219,19 +223,25 @@ class Player(ABC):
                         for tb_mon in self._team.team
                     ]
 
-                await self._battle_count_queue.put(None)
-                if battle_tag in self._battles:
-                    await self._battle_count_queue.get()
-                    return self._battles[battle_tag]
-                async with self._battle_start_condition:
-                    self._battle_semaphore.release()
-                    self._battle_start_condition.notify_all()
-                    self._battles[battle_tag] = battle
+                if "bo3" not in self.format:
+                    # In bo3, counting is handled by the game room, not sub-battles
+                    await self._battle_count_queue.put(None)
+                    if battle_tag in self._battles:
+                        await self._battle_count_queue.get()
+                        return self._battles[battle_tag]
+                    async with self._battle_start_condition:
+                        self._battle_semaphore.release()
+                        self._battle_start_condition.notify_all()
+                self._battles[battle_tag] = battle
 
                 if self._start_timer_on_battle_start:
                     await self.ps_client.send_message("/timer on", battle.battle_tag)
 
-                if hasattr(self.ps_client, "websocket") and "vgc" in self.format:
+                if (
+                    hasattr(self.ps_client, "websocket")
+                    and "vgc" in self.format
+                    and "bo3" not in self.format
+                ):
                     if self.accept_open_team_sheet:
                         await self.ps_client.send_message(
                             "/acceptopenteamsheets", room=battle_tag
@@ -256,12 +266,54 @@ class Player(ABC):
             async with self._battle_start_condition:
                 await self._battle_start_condition.wait()
 
+    async def _handle_bestof_message(self, split_messages: List[List[str]]):
+        """Handles messages from a best-of series room (e.g. bo3).
+
+        :param split_messages: The received best-of room messages.
+        :type split_messages: List[List[str]]
+        """
+        game_tag = split_messages[0][0][1:]
+        for split_message in split_messages[1:]:
+            if not split_message or len(split_message) < 2:
+                continue
+            if split_message[1] == "init":
+                if game_tag in self._bestof_games:
+                    continue
+                self._bestof_games[game_tag] = {"finished": False, "won": None}
+                await self._battle_count_queue.put(None)
+                async with self._battle_start_condition:
+                    self._battle_semaphore.release()
+                    self._battle_start_condition.notify_all()
+            elif split_message[1] == "win" or split_message[1] == "tie":
+                self._bestof_games[game_tag]["finished"] = True
+                self._bestof_games[game_tag]["won"] = (
+                    split_message[2] == self.username
+                    if split_message[1] == "win"
+                    else None
+                )
+                await self._battle_count_queue.get()
+                self._battle_count_queue.task_done()
+                async with self._battle_end_condition:
+                    self._battle_end_condition.notify_all()
+                self.ps_client._battle_locks.pop(game_tag, None)
+                if hasattr(self.ps_client, "websocket"):
+                    await self.ps_client.send_message(f"/leave {game_tag}")
+            else:
+                joined = "|".join(split_message)
+                if "confirmready" in joined and "disabled" not in joined:
+                    await self.ps_client.send_message("/confirmready", room=game_tag)
+
     async def _handle_battle_message(self, split_messages: List[List[str]]):
         """Handles a battle message.
 
         :param split_message: The received battle message.
         :type split_message: str
         """
+        # Route best-of room messages to dedicated handler
+        if split_messages[0][0].startswith(">game"):
+            await self._handle_bestof_message(split_messages)
+            return
+
         # Battle messages can be multiline
         if (
             len(split_messages) > 1
@@ -291,7 +343,11 @@ class Player(ABC):
                 if split_message[2]:
                     request = orjson.loads(split_message[2])
                     battle.parse_request(request, self._strict_battle_tracking)
-                    if not (battle.teampreview and self.accept_open_team_sheet):
+                    if "bo3" in self.format or not (
+                        battle.teampreview and self.accept_open_team_sheet
+                    ):
+                        # if we want OTS in non-bo3 game, we need to wait for showteam
+                        # message to be received before making teampreview decision
                         await self._handle_battle_request(battle)
             elif split_message[1] == "showteam":
                 role = split_message[2]
@@ -315,19 +371,27 @@ class Player(ABC):
                         details=preview_mon._last_details,
                     )
                     mon._update_from_teambuilder(teambuilder_mon)
-                # only handle battle request after all open sheets are processed
-                if role == "p2":
+                if (
+                    "bo3" not in self.format
+                    and self.accept_open_team_sheet
+                    and role == "p2"
+                ):
+                    # in non-bo3 games, we need to wait for both showteam messages
+                    # to be received before making our teampreview decision
                     await self._handle_battle_request(battle)
             elif split_message[1] == "win" or split_message[1] == "tie":
                 if split_message[1] == "win":
                     battle.won_by(split_message[2])
                 else:
                     battle.tied()
-                await self._battle_count_queue.get()
-                self._battle_count_queue.task_done()
+                # In bo3, counting is handled by the game room, not sub-battles
+                if "bo3" not in self.format:
+                    await self._battle_count_queue.get()
+                    self._battle_count_queue.task_done()
                 self._battle_finished_callback(battle)
-                async with self._battle_end_condition:
-                    self._battle_end_condition.notify_all()
+                if "bo3" not in self.format:
+                    async with self._battle_end_condition:
+                        self._battle_end_condition.notify_all()
                 if hasattr(self.ps_client, "websocket"):
                     await self.ps_client.send_message(f"/leave {battle.battle_tag}")
             elif split_message[1] == "error":
@@ -629,6 +693,7 @@ class Player(ABC):
                     "Can not reset player's battles while they are still running"
                 )
         self._battles = {}
+        self._bestof_games = {}
 
     def teampreview(self, battle: AbstractBattle) -> Union[str, Awaitable[str]]:
         """Returns a teampreview order for the given battle.
