@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Set, Union
 
 from poke_env.battle.effect import Effect
 from poke_env.battle.field import Field
@@ -34,6 +34,8 @@ class Pokemon:
         "_ivs",
         "_last_details",
         "_last_request",
+        "_learnset",
+        "_learnset_format",
         "_level",
         "_max_hp",
         "_moves",
@@ -61,6 +63,9 @@ class Pokemon:
         "_weightkg",
     )
 
+    # The formats that have a different learnset
+    _ALL_MOVES_FORMATS = ["hackmons", "stabmons", "sketchmons"]
+
     def __init__(
         self,
         gen: int,
@@ -70,6 +75,7 @@ class Pokemon:
         request_pokemon: Optional[Dict[str, Any]] = None,
         details: Optional[str] = None,
         teambuilder: Optional[TeambuilderPokemon] = None,
+        format: Optional[str] = None,
     ):
         # Species related attributes
         self._base_stats: Dict[str, int]
@@ -79,6 +85,7 @@ class Pokemon:
         self._type_1: PokemonType
         self._type_2: Optional[PokemonType] = None
         self._weightkg: int
+        self._learnset: Set[str] = set()
 
         # Individual related attributes
         self._ability: Optional[str] = None
@@ -93,6 +100,9 @@ class Pokemon:
         self._evs: list[int] | None = None
         self._ivs: list[int] | None = None
         self._nature: str | None = None
+        self._learnset_format: bool = (
+            not any(f in (format or "") for f in self._ALL_MOVES_FORMATS) and gen >= 3
+        )
 
         # Battle related attributes
         self._gen = gen
@@ -666,6 +676,9 @@ class Pokemon:
         self._heightm = dex_entry["heightm"]
         self._weightkg = dex_entry["weightkg"]
 
+        # Finally the learnset
+        self._learnset = GenData.obtain_learnset(species, self.gen)
+
     def _update_from_details(self, details: str):
         if details == self._last_details:
             return
@@ -1138,6 +1151,14 @@ class Pokemon:
         :rtype: int
         """
         return self._level
+
+    @property
+    def learnset(self) -> Set[str]:
+        """
+        :return: The set of moves this pokemon can learn.
+        :rtype: Set[str]
+        """
+        return self._learnset
 
     @property
     def max_hp(self) -> int:

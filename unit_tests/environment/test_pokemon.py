@@ -494,3 +494,132 @@ def test_temporary():
     furret.switch_out({})
     assert furret.ability == "adaptability"
     assert furret.types == [PokemonType.DRAGON]
+
+
+def test_normal_learnset():
+    formats = [
+        "gen9randombattle",
+        "gen9randomdoublesbattle",
+        "gen9ou",
+        "gen9ubers",
+        "gen9anythinggoes",
+        "gen9ru",
+        "gen9vgc2026regi",
+        "gen9freeforallrandombattle",
+    ]
+
+    for format_ in formats:
+        mon = Pokemon(species="bulbasaur", gen=9, format=format_)
+        assert mon._learnset_format
+
+
+def test_different_learnset():
+    formats = [
+        (6, "gen6purehackmons"),
+        (7, "gen7balancedhackmons"),
+        (9, "gen9stabmons"),
+    ]
+
+    for gen, format_ in formats:
+        mon = Pokemon(species="bulbasaur", gen=gen, format=format_)
+        assert not mon._learnset_format
+
+
+def test_breloom_learnset():
+    # Breeloom only has spore from Shroomish
+
+    for gen in range(3, 8):
+        mon = Pokemon(species="breloom", gen=gen)
+        assert "spore" in mon.learnset
+
+
+def test_pikachu_learnset():
+
+    pikachu_normal = Pokemon(species="pikachu", gen=6)
+    pikachu_rock = Pokemon(species="pikachurockstar", gen=6)
+    raichu_normal = Pokemon(species="raichu", gen=7)
+    raichu_alola = Pokemon(species="raichualola", gen=7)
+
+    # Thunderbolt is in all learnsets
+    assert "thunderbolt" in pikachu_normal.learnset
+    assert "thunderbolt" in pikachu_rock.learnset
+    assert "thunderbolt" in raichu_normal.learnset
+    assert "thunderbolt" in raichu_alola.learnset
+
+    # Only pikachurockstar has meteormash
+    assert "meteormash" not in pikachu_normal.learnset
+    assert "meteormash" in pikachu_rock.learnset
+    assert "meteormash" not in raichu_normal.learnset
+    assert "meteormash" not in raichu_alola.learnset
+
+    # Only psychic on alolan raichu
+    assert "psychic" not in pikachu_normal.learnset
+    assert "psychic" not in pikachu_rock.learnset
+    assert "psychic" not in raichu_normal.learnset
+    assert "psychic" in raichu_alola.learnset
+
+
+def test_deoxys_learnset():
+    # Deoxys has the same learnset across all forms
+
+    for gen in [3, 4, 5, 6, 7, 9]:  # 8 DEXIT
+
+        deoxys_normal = Pokemon(species="deoxys", gen=gen)
+        deoxys_attack = Pokemon(species="deoxysattack", gen=gen)
+        deoxys_defense = Pokemon(species="deoxysdefense", gen=gen)
+        deoxys_speed = Pokemon(species="deoxysspeed", gen=gen)
+
+        assert (
+            deoxys_normal.learnset
+            == deoxys_attack.learnset
+            == deoxys_defense.learnset
+            == deoxys_speed.learnset
+        )
+
+
+def test_zamazenta_learnset():
+    zamazenta = Pokemon(species="zamazenta", gen=8)
+    zamazenta_crowned = Pokemon(species="zamazentacrowned", gen=8)
+    assert zamazenta.learnset.union({"behemothbash"}) == zamazenta_crowned.learnset
+
+
+def test_indeedee_learnset():
+    indeedee_male = Pokemon(species="indeedee", gen=8)
+    indeedee_female = Pokemon(species="indeedeef", gen=8)
+
+    # Encore only for male
+    assert "encore" in indeedee_male.learnset
+    assert "encore" not in indeedee_female.learnset
+
+    # Screens only for female
+    assert "reflect" not in indeedee_male.learnset
+    assert "reflect" in indeedee_female.learnset
+    assert "lightscreen" not in indeedee_male.learnset
+    assert "lightscreen" in indeedee_female.learnset
+
+
+def test_basculin_learnset():
+    basculin_blue = Pokemon(species="basculinbluestriped", gen=9)
+    basculin_red = Pokemon(species="basculin", gen=9)
+    basculin_white = Pokemon(species="basculinwhitestriped", gen=9)
+    basculegion_male = Pokemon(species="basculegion", gen=9)
+    basculegion_female = Pokemon(species="basculegionf", gen=9)
+
+    assert basculin_blue.learnset == basculin_red.learnset
+    assert "finalgambit" in basculin_blue.learnset
+    assert "finalgambit" not in basculin_white.learnset
+    assert "lastrespects" not in basculin_blue.learnset
+    assert "lastrespects" in basculin_white.learnset
+
+    assert basculegion_male.learnset == basculegion_female.learnset
+    assert basculin_white.learnset.issubset(basculegion_male.learnset)
+
+
+def test_magearna_learnset():
+    """
+    The red magearna only has moves in gen 8, but it will need to appear in gen 7
+    with the normal moves.
+    """
+    magearna = Pokemon(species="magearna", gen=7)
+    magearna_og = Pokemon(species="magearnaoriginal", gen=7)
+    assert magearna.learnset == magearna_og.learnset
