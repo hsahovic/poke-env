@@ -26,7 +26,6 @@ class Pokemon:
         "_dancing",
         "_effects",
         "_evs",
-        "_format",
         "_forme_change_ability",
         "_gen",
         "_gender",
@@ -101,10 +100,8 @@ class Pokemon:
         self._evs: list[int] | None = None
         self._ivs: list[int] | None = None
         self._nature: str | None = None
-        self._format: Optional[str] = format
         self._learnset_format: bool = (
-            not any(f in (self._format or "") for f in self._ALL_MOVES_FORMATS)
-            and gen >= 3
+            not any(f in (format or "") for f in self._ALL_MOVES_FORMATS) and gen >= 3
         )
 
         # Battle related attributes

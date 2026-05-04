@@ -493,7 +493,6 @@ def test_normal_learnset():
 
     for format_ in formats:
         mon = Pokemon(species="bulbasaur", gen=9, format=format_)
-        assert mon._format == format_
         assert mon._learnset_format
 
 
@@ -506,7 +505,6 @@ def test_different_learnset():
 
     for gen, format_ in formats:
         mon = Pokemon(species="bulbasaur", gen=gen, format=format_)
-        assert mon._format == format_
         assert not mon._learnset_format
 
 
