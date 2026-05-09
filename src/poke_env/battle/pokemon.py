@@ -226,10 +226,6 @@ class Pokemon:
             pkmn_request["active"] == self.active
         ), f"{pkmn_request['active']} != {self.active}"
         if self.gen >= 2:
-            if self.item == "unknown_item":
-                # needed for item initialization in start of game,
-                # done anyway in update_from_request()
-                self._item = pkmn_request["item"]
             assert pkmn_request["item"] == (
                 self.item or ""
             ), f"{pkmn_request['item']} != {self.item or ''}"
@@ -239,21 +235,10 @@ class Pokemon:
         assert (
             pkmn_request["condition"] == self.hp_status
         ), f"{pkmn_request['condition']} != {self.hp_status}"
-        if self.ability is None:
-            # needed for ability initialization in start of game,
-            # done anyway in update_from_request()
-            self.ability = pkmn_request["baseAbility"]
         assert pkmn_request["baseAbility"] == (
             self.base_ability or ""
         ), f"{pkmn_request['baseAbility']} != {self.base_ability or ''}"
         if "ability" in pkmn_request:
-            if (
-                pkmn_request["baseAbility"] != pkmn_request["ability"]
-                and self._temporary_ability is None
-            ):
-                # needed for ability initialization in start of game,
-                # done anyway in update_from_request()
-                self._temporary_ability = to_id_str(pkmn_request["ability"])
             assert pkmn_request["ability"] == (
                 self.ability or ""
             ), f"{pkmn_request['ability']} != {self.ability or ''}"
@@ -533,7 +518,12 @@ class Pokemon:
     # Param `store` dictates whether we should store the HP as a mon's stats
     def set_hp_status(self, hp_status: str, store=False):
         if hp_status == "0 fnt":
-            self.faint()
+            # Don't call faint() here: Showdown sends a separate |faint|
+            # event after any post-damage triggers (e.g. Wandering Spirit
+            # ability swaps), and faint() clears state that those triggers
+            # need to read. The |faint| event will finalize the faint.
+            self._current_hp = 0
+            self._status = Status.FNT
             return
 
         if " " in hp_status:

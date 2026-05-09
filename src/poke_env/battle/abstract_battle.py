@@ -598,6 +598,9 @@ class AbstractBattle(ABC):
                 spread = True
                 event = event[:-1]
 
+            while event[-1] == "[still]":
+                event = event[:-1]
+
             if event[-1] in {
                 "[from] lockedmove",
                 "[from]lockedmove",
@@ -667,9 +670,6 @@ class AbstractBattle(ABC):
             if event[-1] == "[from] Magic Coat" or event[-1] == "[from] Mirror Move":
                 use = False
                 reveal = False
-                event = event[:-1]
-
-            while event[-1] == "[still]":
                 event = event[:-1]
 
             presumed_target = None
@@ -992,7 +992,13 @@ class AbstractBattle(ABC):
                     "[from] move: Switcheroo",
                     "[from] move: Trick",
                 ]:
-                    # this event is handled when consuming -activate event
+                    # The swap was already applied in the preceding -activate
+                    # event, but if our local state still says the item is
+                    # unknown (e.g. we never observed the opponent's item),
+                    # use the authoritative value from this event.
+                    mon = self.get_pokemon(pokemon)
+                    if mon.item == "unknown_item":
+                        mon.item = to_id_str(item)
                     return
                 self.get_pokemon(pokemon).item = to_id_str(item)
         elif event[1] == "-mega":
@@ -1285,9 +1291,7 @@ class AbstractBattle(ABC):
 
         for pokemon in side["pokemon"]:
             if pokemon["ident"] in self._team:
-                if strict_battle_tracking and "illusion" not in [
-                    p.ability for p in self.team.values()
-                ]:
+                if strict_battle_tracking and self.turn > 1:
                     assert self.player_role is not None
                     self._team[pokemon["ident"]].check_consistency(
                         pokemon, self.player_role
