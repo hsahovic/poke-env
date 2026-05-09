@@ -520,8 +520,8 @@ class Pokemon:
         if hp_status == "0 fnt":
             # Don't call faint() here: Showdown sends a separate |faint|
             # event after any post-damage triggers (e.g. Wandering Spirit
-            # ability swaps), and faint() clears state those triggers need
-            # to read. The |faint| event will finalize the faint.
+            # ability swaps), and faint() clears state that those triggers
+            # need to read. The |faint| event will finalize the faint.
             self._current_hp = 0
             self._status = Status.FNT
             return
