@@ -598,6 +598,9 @@ class AbstractBattle(ABC):
                 spread = True
                 event = event[:-1]
 
+            while event[-1] == "[still]":
+                event = event[:-1]
+
             if event[-1] in {
                 "[from] lockedmove",
                 "[from]lockedmove",
@@ -667,9 +670,6 @@ class AbstractBattle(ABC):
             if event[-1] == "[from] Magic Coat" or event[-1] == "[from] Mirror Move":
                 use = False
                 reveal = False
-                event = event[:-1]
-
-            while event[-1] == "[still]":
                 event = event[:-1]
 
             presumed_target = None

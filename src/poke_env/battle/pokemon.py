@@ -518,7 +518,12 @@ class Pokemon:
     # Param `store` dictates whether we should store the HP as a mon's stats
     def set_hp_status(self, hp_status: str, store=False):
         if hp_status == "0 fnt":
-            self.faint()
+            # Don't call faint() here: Showdown sends a separate |faint|
+            # event after any post-damage triggers (e.g. Wandering Spirit
+            # ability swaps), and faint() clears state that those triggers
+            # need to read. The |faint| event will finalize the faint.
+            self._current_hp = 0
+            self._status = Status.FNT
             return
 
         if " " in hp_status:
