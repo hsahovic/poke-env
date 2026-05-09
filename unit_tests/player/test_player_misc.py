@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -270,6 +270,7 @@ async def test_create_teampreview_team(showdown_format_teams):
         battle_format="gen9vgc2024regg",
         team=showdown_format_teams["gen9vgc2024regg"][0],
     )
+    player.ps_client.send_message = AsyncMock()
 
     battle = await player._create_battle(["", "gen9vgc2024regg", "uuu"])
 
@@ -317,6 +318,7 @@ async def test_create_teampreview_team_handles_neutral_gender_from_packed():
 async def test_parse_showteam(packed_format_teams):
     packed_team = packed_format_teams["gen9vgc2024regg"][0]
     player = SimplePlayer(battle_format="gen9vgc2024regg", team=packed_team)
+    player.ps_client.send_message = AsyncMock()
     battle = await player._create_battle(["", "gen9vgc2024regg", "uuu"])
     battle._player_role = "p2"
     assert battle.opponent_role is not None

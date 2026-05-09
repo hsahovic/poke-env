@@ -236,11 +236,7 @@ class Player(ABC):
                 if self._start_timer_on_battle_start:
                     await self.ps_client.send_message("/timer on", battle.battle_tag)
 
-                if (
-                    hasattr(self.ps_client, "websocket")
-                    and "vgc" in self.format
-                    and not self.format_is_bestof
-                ):
+                if "vgc" in self.format and not self.format_is_bestof:
                     if self.accept_open_team_sheet:
                         await self.ps_client.send_message(
                             "/acceptopenteamsheets", room=battle_tag
@@ -288,8 +284,7 @@ class Player(ABC):
                 self._battle_count_queue.task_done()
                 async with self._battle_end_condition:
                     self._battle_end_condition.notify_all()
-                if hasattr(self.ps_client, "websocket"):
-                    await self.ps_client.send_message(f"/leave {game_tag}")
+                await self.ps_client.send_message(f"/leave {game_tag}")
             else:
                 # Showdown's confirmready prompt arrives as an html payload; match
                 # the literal token and skip the disabled (already-clicked) variant.
@@ -385,8 +380,7 @@ class Player(ABC):
                 if not self.format_is_bestof:
                     async with self._battle_end_condition:
                         self._battle_end_condition.notify_all()
-                if hasattr(self.ps_client, "websocket"):
-                    await self.ps_client.send_message(f"/leave {battle.battle_tag}")
+                await self.ps_client.send_message(f"/leave {battle.battle_tag}")
             elif split_message[1] == "error":
                 self.logger.log(
                     25, "Error message received: %s", "|".join(split_message)
