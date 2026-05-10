@@ -12,6 +12,8 @@ async def test_laddering_sequential(send_message_mock):
     async def send_message(self, *args, **kwargs):
         if tuple(send_message_mock.call_args) == (("/utm null",), {}):
             return
+        if send_message_mock.call_args[0][0].startswith("/leave "):
+            return
 
         interactions.append("Search start")
         asyncio.ensure_future(start_battle())
@@ -64,6 +66,8 @@ async def test_laddering_sequential(send_message_mock):
 async def test_laddering_parallel(send_message_mock):
     async def send_message(self, *args, **kwargs):
         if tuple(send_message_mock.call_args) == (("/utm null",), {}):
+            return
+        if send_message_mock.call_args[0][0].startswith("/leave "):
             return
 
         interactions.append("Search start")

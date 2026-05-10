@@ -92,5 +92,15 @@
             "showdown-file": "beast coast tom hayden27.showdown",
             "packed-format": "Indeedee-F||psychicseed|psychicsurge|followme,trickroom,dazzlinggleam,helpinghand|Relaxed|252,,252,4,,||,0,,,,0||50|,,,,,Dragon]Armarouge||twistedspoon|flashfire|heatwave,expandingforce,trickroom,wideguard|Quiet|252,,,252,4,||,0,,,,0||50|,,,,,Grass]Hatterene||lifeorb|magicbounce|psychic,trickroom,dazzlinggleam,terablast|Quiet|252,,,252,4,||,0,,,,0||50|,,,,,Flying]Ursaluna||flameorb|guts|headlongrush,facade,swordsdance,protect|Brave|252,252,,,4,||,,,,,0||50|,,,,,Ghost]Urshifu||choicescarf|unseenfist|wickedblow,closecombat,uturn,taunt|Adamant|4,252,,,,252||||50|,,,,,Dark]Torkoal||charcoal|drought|eruption,heatwave,protect,earthpower|Quiet|252,,,252,4,||,0,,,,0||50|,,,,,Fire"
         }
+    ],
+    "gen9championsvgc2026regmabo3": [
+        {
+            "showdown-file": "champions_sun.showdown",
+            "packed-format": "Garchomp||habanberry|roughskin|dragonclaw,earthquake,rockslide,protect|Adamant|24,20,,,1,21||||50|]Aerodactyl||aerodactylite|unnerve|rockslide,dualwingbeat,tailwind,protect|Jolly|2,32,,,,32||||50|]Venusaur||venusaurite|chlorophyll|energyball,sludgebomb,sleeppowder,protect|Modest|20,,,32,,13||||50|]Torkoal||sitrusberry|drought|eruption,heatwave,earthpower,protect|Quiet|32,,,32,1,||||50|]Kingambit||chopleberry|defiant|kowtowcleave,suckerpunch,ironhead,lowkick|Adamant|32,16,15,,,3||||50|]Basculegion-F||choicescarf|adaptability|shadowball,muddywater,hydropump,icebeam|Modest|,,2,32,,32||||50|"
+        },
+        {
+            "showdown-file": "champions_rain.showdown",
+            "packed-format": "Dragonite||dragoninite|multiscale|dracometeor,hurricane,extremespeed,protect|Modest|12,,,25,4,25||||50|]Pelipper||focussash|drizzle|hurricane,weatherball,wideguard,protect|Modest|,,2,32,,32||||50|]Basculegion||choicescarf|adaptability|lastrespects,wavecrash,flipturn,aquajet|Jolly|,32,2,,,32|M|||50|]Incineroar||sitrusberry|intimidate|fakeout,throatchop,willowisp,partingshot|Careful|27,,23,,10,6||||50|]Sneasler||whiteherb|unburden|fakeout,gunkshot,closecombat,protect|Adamant|9,20,1,,6,30||||50|]Kingambit||blackglasses|defiant|kowtowcleave,ironhead,suckerpunch,protect|Adamant|17,32,1,,1,15||||50|"
+        }
     ]
 }
