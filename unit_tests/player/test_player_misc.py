@@ -227,11 +227,6 @@ async def test_cross_evaluate():
     }
 
 
-class AsyncMock(MagicMock):
-    async def __call__(self, *args, **kwargs):
-        return super(AsyncMock, self).__call__(*args, **kwargs)
-
-
 async def return_move():
     return SingleBattleOrder(Move("bite", gen=8))
 
