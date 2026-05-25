@@ -27275,6 +27275,33 @@
         ],
         "weightkg": 1
     },
+    "obliteryx": {
+        "abilities": {
+            "0": "Opportunist",
+            "1": "Analytic"
+        },
+        "baseStats": {
+            "atk": 128,
+            "def": 126,
+            "hp": 102,
+            "spa": 45,
+            "spd": 90,
+            "spe": 64
+        },
+        "color": "Black",
+        "eggGroups": [
+            "Flying"
+        ],
+        "gen": 9,
+        "heightm": 1.6,
+        "name": "Obliteryx",
+        "num": -80,
+        "types": [
+            "Dark",
+            "Flying"
+        ],
+        "weightkg": 62
+    },
     "obstagoon": {
         "abilities": {
             "0": "Reckless",
