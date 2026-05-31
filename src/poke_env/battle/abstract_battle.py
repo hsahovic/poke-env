@@ -14,32 +14,6 @@ from poke_env.battle.weather import Weather
 from poke_env.data import GenData, to_id_str
 from poke_env.data.replay_template import REPLAY_TEMPLATE
 
-_LOCKED_MOVE_SOURCES = frozenset(
-    {"[from] lockedmove", "[from]lockedmove", "[from] Sky Attack"}
-)
-_MOVE_FAILED_SUFFIXES = ("[miss]", "[still]", "[notarget]")
-_MOVE_OVERRIDE_PREFIXES = ("[from] move: ", "[from]move: ")
-_NO_REVEAL_OVERRIDE_MOVES = frozenset({"Copycat", "Metronome", "Nature Power", "Round"})
-_PLEDGE_MOVES = frozenset({"Grass Pledge", "Water Pledge", "Fire Pledge"})
-_PRESSURE_TARGETS = frozenset(
-    {
-        "all",
-        "allAdjacent",
-        "allAdjacentFoes",
-        "any",
-        "normal",
-        "randomNormal",
-        "scripted",
-    }
-)
-_PURSUIT_OR_ZEFFECT_SOURCES = frozenset(
-    {"[from] Pursuit", "[from]Pursuit", "[zeffect]"}
-)
-_SHOWDOWN_TARGET_PREFIXES = ("p1: ", "p2: ", "p1a:", "p1b:", "p2a:", "p2b:")
-_SPECIAL_OVERRIDE_MOVES = frozenset(
-    {"Sleep Talk", "Copycat", "Metronome", "Nature Power"}
-)
-
 
 class AbstractBattle(ABC):
     MESSAGES_TO_IGNORE = {
@@ -611,7 +585,7 @@ class AbstractBattle(ABC):
             spread = False
             mon._dancing = False
 
-            for move_failed_suffix in _MOVE_FAILED_SUFFIXES:
+            for move_failed_suffix in ("[miss]", "[still]", "[notarget]"):
                 if event[-1] == move_failed_suffix:
                     event = event[:-1]
                     failed = True
@@ -626,12 +600,16 @@ class AbstractBattle(ABC):
             while event[-1] == "[still]":
                 event = event[:-1]
 
-            if event[-1] in _LOCKED_MOVE_SOURCES:
+            if event[-1] in {
+                "[from] lockedmove",
+                "[from]lockedmove",
+                "[from] Sky Attack",
+            }:
                 use = False
                 reveal = False
                 event = event[:-1]
 
-            if event[-1] in _PURSUIT_OR_ZEFFECT_SOURCES:
+            if event[-1] in {"[from] Pursuit", "[from]Pursuit", "[zeffect]"}:
                 event = event[:-1]
 
             if event[-1] == "[from] Sleep Talk":
@@ -640,15 +618,20 @@ class AbstractBattle(ABC):
             if event[-1].startswith("[anim]"):
                 event = event[:-1]
 
-            if event[-1].startswith(_MOVE_OVERRIDE_PREFIXES):
+            if event[-1].startswith(("[from] move: ", "[from]move: ")):
                 overridden_move = event.pop().split(": ")[-1]
 
                 if overridden_move == "Sleep Talk":
                     pass
-                elif overridden_move in _NO_REVEAL_OVERRIDE_MOVES:
+                elif overridden_move in {
+                    "Copycat",
+                    "Metronome",
+                    "Nature Power",
+                    "Round",
+                }:
                     # triggers moves not owned by actor, so no reveal
                     reveal = False
-                elif overridden_move in _PLEDGE_MOVES:
+                elif overridden_move in {"Grass Pledge", "Water Pledge", "Fire Pledge"}:
                     overridden_move = None
                 elif self.logger is not None:
                     self.logger.warning(
@@ -696,7 +679,7 @@ class AbstractBattle(ABC):
                 if presumed_target == "":
                     pass
                 elif len(presumed_target) > 4 and presumed_target.startswith(
-                    _SHOWDOWN_TARGET_PREFIXES
+                    ("p1: ", "p2: ", "p1a:", "p1b:", "p2a:", "p2b:")
                 ):
                     pass
                 elif self.logger is not None:
@@ -735,7 +718,12 @@ class AbstractBattle(ABC):
                 mon.moved(move, failed=failed, use=False, reveal=reveal)
                 overridden = mon.moves[Move.retrieve_id(overridden_move)]
                 overridden.use(pressure, overridden=True)
-            elif not failed and move in _SPECIAL_OVERRIDE_MOVES:
+            elif not failed and move in {
+                "Sleep Talk",
+                "Copycat",
+                "Metronome",
+                "Nature Power",
+            }:
                 # make preemptive deduction in case override move fails
                 mon.moved(move, failed=failed, use=use, reveal=reveal)
             else:
@@ -1217,7 +1205,16 @@ class AbstractBattle(ABC):
             target.ability == "pressure"
             and not target.fainted
             and (
-                move_data["target"] in _PRESSURE_TARGETS
+                move_data["target"]
+                in [
+                    "all",
+                    "allAdjacent",
+                    "allAdjacentFoes",
+                    "any",
+                    "normal",
+                    "randomNormal",
+                    "scripted",
+                ]
                 or "mustpressure" in move_data["flags"]
             )
         )
