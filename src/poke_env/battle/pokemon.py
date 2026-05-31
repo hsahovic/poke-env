@@ -759,18 +759,22 @@ class Pokemon:
             move = Move(Move.retrieve_id(move_str), gen=self.gen)
             self._moves[move.id] = move
 
-        if tb.nature is not None:
-            self._evs = tb.evs
-            self._ivs = tb.ivs
-            self._nature = tb.nature
+        # EVs/IVs are tracked independently of nature: open team sheets now
+        # reveal nature while leaving EVs/IVs hidden, in which case ``tb.evs`` /
+        # ``tb.ivs`` are ``None`` (unknown) rather than coerced defaults.
+        self._nature = tb.nature
+        self._evs = tb.evs
+        self._ivs = tb.ivs
 
         if tb.level:
             nature = tb.nature.lower() if tb.nature else "serious"
             self._stats = {}
+            # Stats are a best-effort estimate: when EVs/IVs are unknown we fall
+            # back to defaults so the computed stats stay populated.
             stats = compute_raw_stats(
                 self._species,
-                tb.evs,
-                tb.ivs,
+                tb.evs or [0] * 6,
+                tb.ivs or [31] * 6,
                 tb.level,
                 nature,
                 GenData.from_gen(self.gen),

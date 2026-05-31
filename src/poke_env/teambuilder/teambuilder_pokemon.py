@@ -27,8 +27,8 @@ class TeambuilderPokemon:
         "steel": [31, 31, 31, 31, 31, 30],
         "water": [31, 31, 31, 30, 30, 31],
     }
-    evs: List[int]
-    ivs: List[int]
+    evs: Optional[List[int]]
+    ivs: Optional[List[int]]
     moves: List[str]
 
     def __init__(
@@ -61,8 +61,13 @@ class TeambuilderPokemon:
         self.hiddenpowertype = hiddenpowertype
         self.gmax = gmax
         self.tera_type = tera_type
-        self.evs = evs if evs is not None else [0] * 6
-        self.ivs = ivs if ivs is not None else [31] * 6
+        # ``None`` is preserved to mean "unspecified" (e.g. EVs/IVs hidden in an
+        # open team sheet), as opposed to explicitly-default values. See
+        # ``packed_evs``/``packed_ivs`` for how this maps back to the packed
+        # format, where Showdown collapses both null and all-default to an empty
+        # field.
+        self.evs = evs
+        self.ivs = ivs
 
         if moves is None:
             self.moves = []
@@ -77,6 +82,8 @@ class TeambuilderPokemon:
 
     @property
     def packed_evs(self) -> str:
+        if self.evs is None:
+            return ""
         f_evs = ",".join([str(el) if el != 0 else "" for el in self.evs])
         if f_evs == "," * 5:
             return ""
@@ -84,6 +91,8 @@ class TeambuilderPokemon:
 
     @property
     def packed_ivs(self) -> str:
+        if self.ivs is None:
+            return ""
         f_ivs = ",".join([str(iv) if iv != 31 else "" for iv in self.ivs])
         if f_ivs == "," * 5:
             return ""
@@ -132,7 +141,7 @@ class TeambuilderPokemon:
             if (
                 move.startswith("hiddenpower")
                 and len(move) > 11
-                and all([iv == 31 for iv in self.ivs])
+                and (self.ivs is None or all([iv == 31 for iv in self.ivs]))
             ):
                 self.ivs = list(self.HP_TO_IVS[move[11:]])
 
@@ -258,6 +267,8 @@ class TeambuilderPokemon:
                 happiness = line.replace("Happiness: ", "")
                 mon.happiness = int(happiness.strip())
             elif line.startswith("EVs: "):
+                if mon.evs is None:
+                    mon.evs = [0] * 6
                 evs = line.replace("EVs: ", "")
                 split_evs = evs.split(" / ")
                 for ev in split_evs:
@@ -265,6 +276,8 @@ class TeambuilderPokemon:
                     idx = STATS_TO_IDX[stat.lower()]
                     mon.evs[idx] = int(n)
             elif line.startswith("IVs: "):
+                if mon.ivs is None:
+                    mon.ivs = [31] * 6
                 ivs = line.replace("IVs: ", "")
                 ivs_split = ivs.split(" / ")
                 for iv in ivs_split:
