@@ -165,19 +165,27 @@ class Pokemon:
     def _add_move(self, move_id: str) -> Optional[Move]:
         """Store the move if applicable."""
         id_ = Move.retrieve_id(move_id)
-        if id_ in self.moves:
-            return self.moves[id_]
-        if not Move.should_be_stored(id_, self.gen):
+        move_set = self._moves
+        transformed = move_set._transform_moves is not None
+
+        if not transformed and move_set._mimic_move is None:
+            base_moves = move_set._base_moves
+            if id_ in base_moves:
+                return base_moves[id_]
+        else:
+            moves = move_set.moves
+            if id_ in moves:
+                return moves[id_]
+            base_moves = move_set.base_moves
+
+        if not Move.should_be_stored(id_, self._gen):
             return None
-        if id_ not in self.base_moves:
+        if id_ not in base_moves:
             move = Move(
-                move_id=id_,
-                raw_id=move_id,
-                gen=self.gen,
-                from_transform=self.transformed,
+                move_id=id_, raw_id=move_id, gen=self._gen, from_transform=transformed
             )
-            self.base_moves[id_] = move
-        return self.base_moves[id_]
+            base_moves[id_] = move
+        return base_moves[id_]
 
     def boost(self, stat: str, amount: int):
         self._boosts[stat] += amount
@@ -456,7 +464,12 @@ class Pokemon:
         if use:
             if move is not None:
                 move.use(pressure)
-            for m in self.moves.values():
+            move_set = self._moves
+            if move_set._transform_moves is None and move_set._mimic_move is None:
+                move_values = move_set._base_moves.values()
+            else:
+                move_values = move_set.moves.values()
+            for m in move_values:
                 m._is_last_used = m is move
 
         if move is not None and move.is_protect_counter and not failed:
@@ -537,7 +550,12 @@ class Pokemon:
             hp = hp_status
             self._status = None
 
-        current_hp, max_hp = "".join([c for c in hp if c in "0123456789/"]).split("/")
+        if hp[0].isdigit() and hp[-1].isdigit():
+            current_hp, max_hp = hp.split("/")
+        else:
+            current_hp, max_hp = "".join([c for c in hp if c in "0123456789/"]).split(
+                "/"
+            )
         self._current_hp = int(current_hp)
         self._max_hp = int(max_hp)
 
@@ -604,7 +622,12 @@ class Pokemon:
         if self._status == Status.TOX:
             self._status_counter = 0
 
-        for move in self.moves.values():
+        move_set = self._moves
+        if move_set._transform_moves is None and move_set._mimic_move is None:
+            move_values = move_set._base_moves.values()
+        else:
+            move_values = move_set.moves.values()
+        for move in move_values:
             move._is_last_used = False
 
     def terastallize(self, type_: str):
@@ -706,13 +729,15 @@ class Pokemon:
     def update_from_request(self, request_pokemon: Dict[str, Any]):
         self._active = request_pokemon["active"]
 
-        if self.ability is None:
-            self.ability = request_pokemon["baseAbility"]
+        base_ability = request_pokemon["baseAbility"]
         if (
-            "ability" in request_pokemon
-            and request_pokemon["ability"] != request_pokemon["baseAbility"]
+            self._temporary_ability is None
+            and self._forme_change_ability is None
+            and self._ability is None
         ):
-            self.temporary_ability = request_pokemon["ability"]
+            self._ability = to_id_str(base_ability)
+        if "ability" in request_pokemon and request_pokemon["ability"] != base_ability:
+            self._temporary_ability = to_id_str(request_pokemon["ability"])
 
         self._last_request = request_pokemon
 
@@ -725,12 +750,24 @@ class Pokemon:
         details = request_pokemon["details"]
         self._update_from_details(details)
 
-        for move in request_pokemon["moves"]:
-            self._add_move(move)
+        move_set = self._moves
+        if move_set._transform_moves is None and move_set._mimic_move is None:
+            base_moves = move_set._base_moves
+            gen = self._gen
+            retrieve_id = Move.retrieve_id
+            should_be_stored = Move.should_be_stored
+            for move_id in request_pokemon["moves"]:
+                id_ = retrieve_id(move_id)
+                if id_ not in base_moves and should_be_stored(id_, gen):
+                    base_moves[id_] = Move(
+                        move_id=id_, raw_id=move_id, gen=gen, from_transform=False
+                    )
+        else:
+            for move in request_pokemon["moves"]:
+                self._add_move(move)
 
         if "stats" in request_pokemon:
-            for stat in request_pokemon["stats"]:
-                self._stats[stat] = request_pokemon["stats"][stat]
+            self._stats.update(request_pokemon["stats"])
 
     def _update_from_teambuilder(self, tb: TeambuilderPokemon):
         if tb.nickname is not None and tb.species is None:
@@ -795,24 +832,51 @@ class Pokemon:
         if Effect.COMMANDER in self.effects:
             return []
 
-        request_moves: List[str] = [
-            move["id"] for move in request["moves"] if not move.get("disabled", False)
-        ]
-        for move in request_moves:
-            if move in self.moves:
-                if self.is_dynamaxed:
-                    moves.append(self.moves[move].dynamaxed)
+        move_set = self._moves
+        if move_set._transform_moves is None and move_set._mimic_move is None:
+            known_moves = move_set._base_moves
+        else:
+            known_moves = move_set.moves
+        is_dynamaxed = self.is_dynamaxed
+        gen = self._gen
+        hidden_power_moves: Optional[List[Move]] = None
+
+        for request_move in request["moves"]:
+            if request_move.get("disabled", False):
+                continue
+
+            move = request_move["id"]
+            known_move = known_moves.get(move)
+            if known_move is not None:
+                if is_dynamaxed:
+                    moves.append(known_move.dynamaxed)
                 else:
-                    moves.append(self.moves[move])
+                    moves.append(known_move)
             elif move in SPECIAL_MOVES:
-                moves.append(Move(move, gen=self.gen))
-            elif (
-                move == "hiddenpower"
-                and len([m for m in self.moves if m.startswith("hiddenpower")]) == 1
-            ):
-                moves.append(
-                    [v for m, v in self.moves.items() if m.startswith("hiddenpower")][0]
-                )
+                moves.append(Move(move, gen=gen))
+            elif move == "hiddenpower":
+                if hidden_power_moves is None:
+                    hidden_power_moves = [
+                        hidden_move
+                        for hidden_id, hidden_move in known_moves.items()
+                        if hidden_id.startswith("hiddenpower")
+                    ]
+                if len(hidden_power_moves) == 1:
+                    moves.append(hidden_power_moves[0])
+                else:
+                    assert self.ability == "dancer" or {
+                        "copycat",
+                        "metronome",
+                        "mefirst",
+                        "mirrormove",
+                        "assist",
+                    }.intersection(known_moves), (
+                        f"Error with move {move}. Expected self.moves to contain "
+                        "copycat, metronome, mefirst, mirrormove, or assist, or to "
+                        f"have the ability dancer. Got {known_moves}, ability: "
+                        f"{self.ability}"
+                    )
+                    moves.append(Move(move, gen=gen))
             else:
                 assert self.ability == "dancer" or {
                     "copycat",
@@ -820,12 +884,12 @@ class Pokemon:
                     "mefirst",
                     "mirrormove",
                     "assist",
-                }.intersection(self.moves), (
+                }.intersection(known_moves), (
                     f"Error with move {move}. Expected self.moves to contain copycat, "
                     "metronome, mefirst, mirrormove, or assist, or to have the ability "
-                    f"dancer. Got {self.moves}, ability: {self.ability}"
+                    f"dancer. Got {known_moves}, ability: {self.ability}"
                 )
-                moves.append(Move(move, gen=self.gen))
+                moves.append(Move(move, gen=gen))
         return moves
 
     def damage_multiplier(self, type_or_move: Union[PokemonType, Move]) -> float:
