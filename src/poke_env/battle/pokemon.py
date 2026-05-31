@@ -759,18 +759,17 @@ class Pokemon:
             move = Move(Move.retrieve_id(move_str), gen=self.gen)
             self._moves[move.id] = move
 
-        if tb.nature is not None:
-            self._evs = tb.evs
-            self._ivs = tb.ivs
-            self._nature = tb.nature
+        self._nature = tb.nature
+        self._evs = tb.evs
+        self._ivs = tb.ivs
 
         if tb.level:
             nature = tb.nature.lower() if tb.nature else "serious"
             self._stats = {}
             stats = compute_raw_stats(
                 self._species,
-                tb.evs,
-                tb.ivs,
+                tb.evs or [0] * 6,
+                tb.ivs or [31] * 6,
                 tb.level,
                 nature,
                 GenData.from_gen(self.gen),
