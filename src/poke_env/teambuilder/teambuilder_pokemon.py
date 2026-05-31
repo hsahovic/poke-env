@@ -61,11 +61,6 @@ class TeambuilderPokemon:
         self.hiddenpowertype = hiddenpowertype
         self.gmax = gmax
         self.tera_type = tera_type
-        # ``None`` is preserved to mean "unspecified" (e.g. EVs/IVs hidden in an
-        # open team sheet), as opposed to explicitly-default values. See
-        # ``packed_evs``/``packed_ivs`` for how this maps back to the packed
-        # format, where Showdown collapses both null and all-default to an empty
-        # field.
         self.evs = evs
         self.ivs = ivs
 
