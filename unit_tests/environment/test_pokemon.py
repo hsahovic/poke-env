@@ -202,6 +202,35 @@ def test_check_move_consistency_target_overrides():
     )
 
 
+def test_check_move_consistency_terastallized_transform_target():
+    # A terastallized Imposter Ditto that switches back in re-triggers Transform,
+    # so it is both terastallized (type locked to its Tera type) and transformed.
+    # Terastallization takes precedence over the copied transform types, so Curse
+    # used by a Tera-Ghost mon targets a foe ("normal"), not itself ("self").
+    ditto = Pokemon(species="ditto", gen=9)
+    ditto._add_move("transform")
+    ditto.terastallize("ghost")
+    target = Pokemon(species="clodsire", gen=9)
+    target._add_move("curse")
+    ditto.transform(target)
+
+    assert ditto.types == [PokemonType.GHOST]
+
+    curse = ditto.moves["curse"]
+    ditto.check_move_consistency(
+        {
+            "moves": [
+                {
+                    "id": "curse",
+                    "pp": curse.current_pp,
+                    "maxpp": curse.max_pp,
+                    "target": "normal",
+                }
+            ]
+        }
+    )
+
+
 def test_check_move_consistency_skips_early_gen_transform_maxpp():
     ditto = Pokemon(species="ditto", gen=1)
     ditto._add_move("transform")

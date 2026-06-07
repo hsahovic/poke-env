@@ -26152,7 +26152,7 @@
     },
     "raichumegax": {
         "abilities": {
-            "0": "Surge Surfer"
+            "0": "Electric Surge"
         },
         "baseSpecies": "Raichu",
         "baseStats": {
@@ -26181,7 +26181,7 @@
     },
     "raichumegay": {
         "abilities": {
-            "0": "Surge Surfer"
+            "0": "No Guard"
         },
         "baseSpecies": "Raichu",
         "baseStats": {
