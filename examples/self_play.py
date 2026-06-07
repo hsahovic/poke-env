@@ -148,7 +148,7 @@ def train():
     # setup
     num_envs = 2
     env = SelfPlayEnv(battle_format=BATTLE_FORMAT, log_level=40, open_timeout=None)
-    vec_env = ss.pettingzoo_env_to_vec_env(env)
+    vec_env = ss.pettingzoo_env_to_vec_env_v1(env)
     vec_env = ss.concat_vec_envs_v1(
         vec_env,
         num_vec_envs=num_envs,
