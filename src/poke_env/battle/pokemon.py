@@ -1388,13 +1388,10 @@ class Pokemon:
             and also remove types, and override them too.
         :rtype: Tuple[PokemonType]
         """
-        if len(self._temporary_types) > 0:
-            return self._temporary_types
-        else:
-            types = [self.type_1]
-            if self.type_2 is not None:
-                types.append(self.type_2)
-            return types
+        types = [self.type_1]
+        if self.type_2 is not None:
+            types.append(self.type_2)
+        return types
 
     @property
     def weight(self) -> float:
