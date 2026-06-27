@@ -856,6 +856,7 @@
         "heightm": 25,
         "name": "Blastoise-Gmax",
         "num": 9,
+        "placeholderFor": "Blastoise",
         "types": [
             "Water"
         ],
@@ -1066,6 +1067,7 @@
         "heightm": 17,
         "name": "Butterfree-Gmax",
         "num": 12,
+        "placeholderFor": "Butterfree",
         "types": [
             "Bug",
             "Flying"
@@ -1356,6 +1358,7 @@
         "heightm": 28,
         "name": "Charizard-Gmax",
         "num": 6,
+        "placeholderFor": "Charizard",
         "types": [
             "Fire",
             "Flying"
@@ -2883,6 +2886,7 @@
         "heightm": 18,
         "name": "Eevee-Gmax",
         "num": 133,
+        "placeholderFor": "Eevee",
         "types": [
             "Normal"
         ],
@@ -3849,6 +3853,7 @@
         "heightm": 20,
         "name": "Gengar-Gmax",
         "num": 94,
+        "placeholderFor": "Gengar",
         "types": [
             "Ghost",
             "Poison"
@@ -5505,6 +5510,7 @@
         "heightm": 19,
         "name": "Kingler-Gmax",
         "num": 99,
+        "placeholderFor": "Kingler",
         "types": [
             "Water"
         ],
@@ -5706,6 +5712,7 @@
         "heightm": 24,
         "name": "Lapras-Gmax",
         "num": 131,
+        "placeholderFor": "Lapras",
         "types": [
             "Water",
             "Ice"
@@ -5913,6 +5920,7 @@
         "heightm": 25,
         "name": "Machamp-Gmax",
         "num": 68,
+        "placeholderFor": "Machamp",
         "types": [
             "Fighting"
         ],
@@ -6604,6 +6612,7 @@
         "heightm": 33,
         "name": "Meowth-Gmax",
         "num": 52,
+        "placeholderFor": "Meowth",
         "types": [
             "Normal"
         ],
@@ -8063,6 +8072,9 @@
         "heightm": 0.3,
         "name": "Pichu-Spiky-eared",
         "num": 172,
+        "tags": [
+            "True Past"
+        ],
         "types": [
             "Electric"
         ],
@@ -8301,6 +8313,9 @@
         "heightm": 0.4,
         "name": "Pikachu-Belle",
         "num": 25,
+        "tags": [
+            "True Past"
+        ],
         "types": [
             "Electric"
         ],
@@ -8329,6 +8344,9 @@
         "heightm": 0.4,
         "name": "Pikachu-Cosplay",
         "num": 25,
+        "tags": [
+            "True Past"
+        ],
         "types": [
             "Electric"
         ],
@@ -8357,6 +8375,7 @@
         "heightm": 21,
         "name": "Pikachu-Gmax",
         "num": 25,
+        "placeholderFor": "Pikachu",
         "types": [
             "Electric"
         ],
@@ -8442,6 +8461,9 @@
         "heightm": 0.4,
         "name": "Pikachu-Libre",
         "num": 25,
+        "tags": [
+            "True Past"
+        ],
         "types": [
             "Electric"
         ],
@@ -8527,6 +8549,9 @@
         "heightm": 0.4,
         "name": "Pikachu-PhD",
         "num": 25,
+        "tags": [
+            "True Past"
+        ],
         "types": [
             "Electric"
         ],
@@ -8556,6 +8581,9 @@
         "heightm": 0.4,
         "name": "Pikachu-Pop-Star",
         "num": 25,
+        "tags": [
+            "True Past"
+        ],
         "types": [
             "Electric"
         ],
@@ -8585,6 +8613,9 @@
         "heightm": 0.4,
         "name": "Pikachu-Rock-Star",
         "num": 25,
+        "tags": [
+            "True Past"
+        ],
         "types": [
             "Electric"
         ],
@@ -8902,6 +8933,11 @@
         "heightm": 1.5,
         "name": "Pokestar Black Belt",
         "num": -5014,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Fighting"
         ],
@@ -8931,6 +8967,11 @@
         "heightm": 1.5,
         "name": "Pokestar Black Door",
         "num": -5012,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Grass"
         ],
@@ -8960,6 +9001,11 @@
         "heightm": 1.5,
         "name": "Pokestar Brycen-Man",
         "num": -5002,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Dark",
             "Psychic"
@@ -8989,6 +9035,11 @@
         "heightm": 1.5,
         "name": "Pokestar F-00",
         "num": -5009,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Steel",
             "Normal"
@@ -9018,6 +9069,11 @@
         "heightm": 1.5,
         "name": "Pokestar F-002",
         "num": -5010,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Steel",
             "Normal"
@@ -9050,6 +9106,11 @@
         "heightm": 1.5,
         "name": "Pokestar Giant",
         "num": -5006,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Normal"
         ],
@@ -9078,6 +9139,11 @@
         "heightm": 1.5,
         "name": "Pokestar Humanoid",
         "num": -5007,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Normal"
         ],
@@ -9106,6 +9172,11 @@
         "heightm": 1.5,
         "name": "Pokestar Monster",
         "num": -5008,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Dark"
         ],
@@ -9135,6 +9206,11 @@
         "heightm": 1.5,
         "name": "Pokestar MT",
         "num": -5003,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Steel"
         ],
@@ -9164,6 +9240,11 @@
         "heightm": 1.5,
         "name": "Pokestar MT2",
         "num": -5004,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Steel",
             "Electric"
@@ -9191,6 +9272,11 @@
         "heightm": 1.5,
         "name": "Pokestar Smeargle",
         "num": -5000,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Normal"
         ],
@@ -9219,6 +9305,11 @@
         "heightm": 1.5,
         "name": "Pokestar Spirit",
         "num": -5011,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Dark",
             "Ghost"
@@ -9249,6 +9340,11 @@
         "heightm": 1.5,
         "name": "Pokestar Transport",
         "num": -5005,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Steel"
         ],
@@ -9282,6 +9378,11 @@
             "Pokestar UFO-2",
             "Pokestar UFO-PropU2"
         ],
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Flying",
             "Electric"
@@ -9311,6 +9412,11 @@
         "heightm": 1.5,
         "name": "Pokestar UFO-2",
         "num": -5001,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Psychic",
             "Electric"
@@ -9340,6 +9446,11 @@
         "heightm": 1.5,
         "name": "Pokestar UFO-PropU2",
         "num": -5001,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Psychic",
             "Electric"
@@ -9370,6 +9481,11 @@
         "heightm": 1.5,
         "name": "Pokestar White Door",
         "num": -5013,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Fire"
         ],
@@ -11747,6 +11863,7 @@
         "heightm": 35,
         "name": "Snorlax-Gmax",
         "num": 143,
+        "placeholderFor": "Snorlax",
         "types": [
             "Normal"
         ],
@@ -13319,6 +13436,7 @@
         "heightm": 24,
         "name": "Venusaur-Gmax",
         "num": 3,
+        "placeholderFor": "Venusaur",
         "types": [
             "Grass",
             "Poison"
