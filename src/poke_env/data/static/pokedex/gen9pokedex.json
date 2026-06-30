@@ -634,6 +634,7 @@
         "heightm": 30,
         "name": "Alcremie-Gmax",
         "num": 869,
+        "placeholderFor": "Alcremie",
         "types": [
             "Fairy"
         ],
@@ -1047,6 +1048,7 @@
         "heightm": 24,
         "name": "Appletun-Gmax",
         "num": 842,
+        "placeholderFor": "Appletun",
         "types": [
             "Grass",
             "Dragon"
@@ -1144,6 +1146,9 @@
         "heightm": 3.1,
         "name": "Araquanid-Totem",
         "num": 752,
+        "tags": [
+            "True Past"
+        ],
         "types": [
             "Water",
             "Bug"
@@ -2887,9 +2892,7 @@
     },
     "barbaraclemega": {
         "abilities": {
-            "0": "Tough Claws",
-            "1": "Sniper",
-            "H": "Pickpocket"
+            "0": "Tough Claws"
         },
         "baseSpecies": "Barbaracle",
         "baseStats": {
@@ -3817,6 +3820,7 @@
         "heightm": 25,
         "name": "Blastoise-Gmax",
         "num": 9,
+        "placeholderFor": "Blastoise",
         "types": [
             "Water"
         ],
@@ -4849,6 +4853,7 @@
         "heightm": 17,
         "name": "Butterfree-Gmax",
         "num": 12,
+        "placeholderFor": "Butterfree",
         "types": [
             "Bug",
             "Flying"
@@ -5698,6 +5703,7 @@
         "heightm": 75,
         "name": "Centiskorch-Gmax",
         "num": 851,
+        "placeholderFor": "Centiskorch",
         "types": [
             "Fire",
             "Bug"
@@ -5992,6 +5998,7 @@
         "heightm": 28,
         "name": "Charizard-Gmax",
         "num": 6,
+        "placeholderFor": "Charizard",
         "types": [
             "Fire",
             "Flying"
@@ -6848,6 +6855,7 @@
         "heightm": 27,
         "name": "Cinderace-Gmax",
         "num": 815,
+        "placeholderFor": "Cinderace",
         "types": [
             "Fire"
         ],
@@ -7250,6 +7258,7 @@
         "heightm": 42,
         "name": "Coalossal-Gmax",
         "num": 839,
+        "placeholderFor": "Coalossal",
         "types": [
             "Rock",
             "Fire"
@@ -7526,6 +7535,7 @@
         "heightm": 23,
         "name": "Copperajah-Gmax",
         "num": 879,
+        "placeholderFor": "Copperajah",
         "types": [
             "Steel"
         ],
@@ -7726,6 +7736,7 @@
         "heightm": 14,
         "name": "Corviknight-Gmax",
         "num": 823,
+        "placeholderFor": "Corviknight",
         "types": [
             "Flying",
             "Steel"
@@ -10243,9 +10254,7 @@
     },
     "dragalgemega": {
         "abilities": {
-            "0": "Poison Point",
-            "1": "Poison Touch",
-            "H": "Adaptability"
+            "0": "Regenerator"
         },
         "baseSpecies": "Dragalge",
         "baseStats": {
@@ -10647,6 +10656,7 @@
         "heightm": 24,
         "name": "Drednaw-Gmax",
         "num": 834,
+        "placeholderFor": "Drednaw",
         "types": [
             "Water",
             "Rock"
@@ -11208,6 +11218,7 @@
         "heightm": 43,
         "name": "Duraludon-Gmax",
         "num": 884,
+        "placeholderFor": "Duraludon",
         "types": [
             "Steel",
             "Dragon"
@@ -11451,7 +11462,7 @@
     },
     "eelektrossmega": {
         "abilities": {
-            "0": "Levitate"
+            "0": "Eelevate"
         },
         "baseSpecies": "Eelektross",
         "baseStats": {
@@ -11553,6 +11564,7 @@
         "heightm": 18,
         "name": "Eevee-Gmax",
         "num": 133,
+        "placeholderFor": "Eevee",
         "types": [
             "Normal"
         ],
@@ -12442,6 +12454,9 @@
         "heightm": 100,
         "name": "Eternatus-Eternamax",
         "num": 890,
+        "tags": [
+            "Past Unobtainable"
+        ],
         "types": [
             "Poison",
             "Dragon"
@@ -12675,8 +12690,7 @@
     },
     "falinksmega": {
         "abilities": {
-            "0": "Battle Armor",
-            "H": "Defiant"
+            "0": "Defiant"
         },
         "baseSpecies": "Falinks",
         "baseStats": {
@@ -13358,6 +13372,7 @@
         "heightm": 24,
         "name": "Flapple-Gmax",
         "num": 841,
+        "placeholderFor": "Flapple",
         "types": [
             "Grass",
             "Dragon"
@@ -14484,6 +14499,7 @@
         "heightm": 21,
         "name": "Garbodor-Gmax",
         "num": 569,
+        "placeholderFor": "Garbodor",
         "types": [
             "Poison"
         ],
@@ -14970,6 +14986,7 @@
         "heightm": 20,
         "name": "Gengar-Gmax",
         "num": 94,
+        "placeholderFor": "Gengar",
         "types": [
             "Ghost",
             "Poison"
@@ -16938,6 +16955,7 @@
         "heightm": 32,
         "name": "Grimmsnarl-Gmax",
         "num": 861,
+        "placeholderFor": "Grimmsnarl",
         "types": [
             "Dark",
             "Fairy"
@@ -17328,6 +17346,9 @@
         "heightm": 1.4,
         "name": "Gumshoos-Totem",
         "num": 735,
+        "tags": [
+            "True Past"
+        ],
         "types": [
             "Normal"
         ],
@@ -17643,6 +17664,7 @@
         "heightm": 26,
         "name": "Hatterene-Gmax",
         "num": 858,
+        "placeholderFor": "Hatterene",
         "types": [
             "Psychic",
             "Fairy"
@@ -19036,6 +19058,7 @@
         "heightm": 40,
         "name": "Inteleon-Gmax",
         "num": 818,
+        "placeholderFor": "Inteleon",
         "types": [
             "Water"
         ],
@@ -20191,6 +20214,7 @@
         "heightm": 19,
         "name": "Kingler-Gmax",
         "num": 99,
+        "placeholderFor": "Kingler",
         "types": [
             "Water"
         ],
@@ -20545,6 +20569,9 @@
         "heightm": 2.4,
         "name": "Kommo-o-Totem",
         "num": 784,
+        "tags": [
+            "True Past"
+        ],
         "types": [
             "Dragon",
             "Fighting"
@@ -21164,6 +21191,7 @@
         "heightm": 24,
         "name": "Lapras-Gmax",
         "num": 131,
+        "placeholderFor": "Lapras",
         "types": [
             "Water",
             "Ice"
@@ -22392,6 +22420,9 @@
         "heightm": 1.5,
         "name": "Lurantis-Totem",
         "num": 754,
+        "tags": [
+            "True Past"
+        ],
         "types": [
             "Grass"
         ],
@@ -22673,6 +22704,7 @@
         "heightm": 25,
         "name": "Machamp-Gmax",
         "num": 68,
+        "placeholderFor": "Machamp",
         "types": [
             "Fighting"
         ],
@@ -23231,9 +23263,7 @@
     },
     "malamarmega": {
         "abilities": {
-            "0": "Contrary",
-            "1": "Suction Cups",
-            "H": "Infiltrator"
+            "0": "Contrary"
         },
         "baseSpecies": "Malamar",
         "baseStats": {
@@ -24193,6 +24223,7 @@
         "heightm": 25,
         "name": "Melmetal-Gmax",
         "num": 809,
+        "placeholderFor": "Melmetal",
         "types": [
             "Steel"
         ],
@@ -24583,6 +24614,7 @@
         "heightm": 33,
         "name": "Meowth-Gmax",
         "num": 52,
+        "placeholderFor": "Meowth",
         "types": [
             "Normal"
         ],
@@ -25250,6 +25282,9 @@
         "heightm": 0.4,
         "name": "Mimikyu-Totem",
         "num": 778,
+        "tags": [
+            "True Past"
+        ],
         "types": [
             "Ghost",
             "Fairy"
@@ -27932,6 +27967,7 @@
         "heightm": 14,
         "name": "Orbeetle-Gmax",
         "num": 826,
+        "placeholderFor": "Orbeetle",
         "types": [
             "Bug",
             "Psychic"
@@ -29160,6 +29196,9 @@
         "heightm": 0.3,
         "name": "Pichu-Spiky-eared",
         "num": 172,
+        "tags": [
+            "True Past"
+        ],
         "types": [
             "Electric"
         ],
@@ -29477,6 +29516,9 @@
         "heightm": 0.4,
         "name": "Pikachu-Belle",
         "num": 25,
+        "tags": [
+            "True Past"
+        ],
         "types": [
             "Electric"
         ],
@@ -29505,6 +29547,9 @@
         "heightm": 0.4,
         "name": "Pikachu-Cosplay",
         "num": 25,
+        "tags": [
+            "True Past"
+        ],
         "types": [
             "Electric"
         ],
@@ -29534,6 +29579,7 @@
         "heightm": 21,
         "name": "Pikachu-Gmax",
         "num": 25,
+        "placeholderFor": "Pikachu",
         "types": [
             "Electric"
         ],
@@ -29621,6 +29667,9 @@
         "heightm": 0.4,
         "name": "Pikachu-Libre",
         "num": 25,
+        "tags": [
+            "True Past"
+        ],
         "types": [
             "Electric"
         ],
@@ -29708,6 +29757,9 @@
         "heightm": 0.4,
         "name": "Pikachu-PhD",
         "num": 25,
+        "tags": [
+            "True Past"
+        ],
         "types": [
             "Electric"
         ],
@@ -29737,6 +29789,9 @@
         "heightm": 0.4,
         "name": "Pikachu-Pop-Star",
         "num": 25,
+        "tags": [
+            "True Past"
+        ],
         "types": [
             "Electric"
         ],
@@ -29766,6 +29821,9 @@
         "heightm": 0.4,
         "name": "Pikachu-Rock-Star",
         "num": 25,
+        "tags": [
+            "True Past"
+        ],
         "types": [
             "Electric"
         ],
@@ -30237,6 +30295,11 @@
         "heightm": 1.5,
         "name": "Pokestar Black Belt",
         "num": -5014,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Fighting"
         ],
@@ -30266,6 +30329,11 @@
         "heightm": 1.5,
         "name": "Pokestar Black Door",
         "num": -5012,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Grass"
         ],
@@ -30295,6 +30363,11 @@
         "heightm": 1.5,
         "name": "Pokestar Brycen-Man",
         "num": -5002,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Dark",
             "Psychic"
@@ -30324,6 +30397,11 @@
         "heightm": 1.5,
         "name": "Pokestar F-00",
         "num": -5009,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Steel",
             "Normal"
@@ -30353,6 +30431,11 @@
         "heightm": 1.5,
         "name": "Pokestar F-002",
         "num": -5010,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Steel",
             "Normal"
@@ -30385,6 +30468,11 @@
         "heightm": 1.5,
         "name": "Pokestar Giant",
         "num": -5006,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Normal"
         ],
@@ -30413,6 +30501,11 @@
         "heightm": 1.5,
         "name": "Pokestar Humanoid",
         "num": -5007,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Normal"
         ],
@@ -30441,6 +30534,11 @@
         "heightm": 1.5,
         "name": "Pokestar Monster",
         "num": -5008,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Dark"
         ],
@@ -30470,6 +30568,11 @@
         "heightm": 1.5,
         "name": "Pokestar MT",
         "num": -5003,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Steel"
         ],
@@ -30499,6 +30602,11 @@
         "heightm": 1.5,
         "name": "Pokestar MT2",
         "num": -5004,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Steel",
             "Electric"
@@ -30527,6 +30635,11 @@
         "heightm": 1.5,
         "name": "Pokestar Smeargle",
         "num": -5000,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Normal"
         ],
@@ -30555,6 +30668,11 @@
         "heightm": 1.5,
         "name": "Pokestar Spirit",
         "num": -5011,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Dark",
             "Ghost"
@@ -30585,6 +30703,11 @@
         "heightm": 1.5,
         "name": "Pokestar Transport",
         "num": -5005,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Steel"
         ],
@@ -30618,6 +30741,11 @@
             "Pokestar UFO-2",
             "Pokestar UFO-PropU2"
         ],
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Flying",
             "Electric"
@@ -30647,6 +30775,11 @@
         "heightm": 1.5,
         "name": "Pokestar UFO-2",
         "num": -5001,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Psychic",
             "Electric"
@@ -30676,6 +30809,11 @@
         "heightm": 1.5,
         "name": "Pokestar UFO-PropU2",
         "num": -5001,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Psychic",
             "Electric"
@@ -30706,6 +30844,11 @@
         "heightm": 1.5,
         "name": "Pokestar White Door",
         "num": -5013,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Fire"
         ],
@@ -31717,9 +31860,7 @@
     },
     "pyroarmega": {
         "abilities": {
-            "0": "Rivalry",
-            "1": "Unnerve",
-            "H": "Moxie"
+            "0": "Fire Mane"
         },
         "baseSpecies": "Pyroar",
         "baseStats": {
@@ -33276,6 +33417,9 @@
         "heightm": 0.4,
         "name": "Ribombee-Totem",
         "num": 743,
+        "tags": [
+            "True Past"
+        ],
         "types": [
             "Bug",
             "Fairy"
@@ -33343,6 +33487,7 @@
         "heightm": 28,
         "name": "Rillaboom-Gmax",
         "num": 812,
+        "placeholderFor": "Rillaboom",
         "types": [
             "Grass"
         ],
@@ -34191,6 +34336,9 @@
         "heightm": 2.1,
         "name": "Salazzle-Totem",
         "num": 758,
+        "tags": [
+            "True Past"
+        ],
         "types": [
             "Poison",
             "Fire"
@@ -34324,6 +34472,7 @@
         "heightm": 22,
         "name": "Sandaconda-Gmax",
         "num": 844,
+        "placeholderFor": "Sandaconda",
         "types": [
             "Ground"
         ],
@@ -34858,9 +35007,7 @@
     },
     "scolipedemega": {
         "abilities": {
-            "0": "Poison Point",
-            "1": "Swarm",
-            "H": "Speed Boost"
+            "0": "Shell Armor"
         },
         "baseSpecies": "Scolipede",
         "baseStats": {
@@ -35024,9 +35171,7 @@
     },
     "scraftymega": {
         "abilities": {
-            "0": "Shed Skin",
-            "1": "Moxie",
-            "H": "Intimidate"
+            "0": "Intimidate"
         },
         "baseSpecies": "Scrafty",
         "baseStats": {
@@ -38227,6 +38372,7 @@
         "heightm": 35,
         "name": "Snorlax-Gmax",
         "num": 143,
+        "placeholderFor": "Snorlax",
         "types": [
             "Normal"
         ],
@@ -39083,8 +39229,7 @@
     },
     "staraptormega": {
         "abilities": {
-            "0": "Intimidate",
-            "H": "Reckless"
+            "0": "Contrary"
         },
         "baseSpecies": "Staraptor",
         "baseStats": {
@@ -41528,6 +41673,9 @@
         "heightm": 0.6,
         "name": "Togedemaru-Totem",
         "num": 777,
+        "tags": [
+            "True Past"
+        ],
         "types": [
             "Electric",
             "Steel"
@@ -42075,6 +42223,7 @@
         "heightm": 24,
         "name": "Toxtricity-Gmax",
         "num": 849,
+        "placeholderFor": "Toxtricity",
         "types": [
             "Electric",
             "Poison"
@@ -42138,6 +42287,7 @@
         "heightm": 24,
         "name": "Toxtricity-Low-Key-Gmax",
         "num": 849,
+        "placeholderFor": "Toxtricity-Low-Key",
         "types": [
             "Electric",
             "Poison"
@@ -43083,6 +43233,7 @@
         "heightm": 29,
         "name": "Urshifu-Gmax",
         "num": 892,
+        "placeholderFor": "Urshifu",
         "types": [
             "Fighting",
             "Dark"
@@ -43151,6 +43302,7 @@
         "heightm": 26,
         "name": "Urshifu-Rapid-Strike-Gmax",
         "num": 892,
+        "placeholderFor": "Urshifu-Rapid-Strike",
         "types": [
             "Fighting",
             "Water"
@@ -43585,6 +43737,7 @@
         "heightm": 24,
         "name": "Venusaur-Gmax",
         "num": 3,
+        "placeholderFor": "Venusaur",
         "types": [
             "Grass",
             "Poison"
@@ -43863,6 +44016,9 @@
         "heightm": 2.6,
         "name": "Vikavolt-Totem",
         "num": 738,
+        "tags": [
+            "True Past"
+        ],
         "types": [
             "Bug",
             "Electric"
