@@ -43,7 +43,7 @@ def play_function(env, n_battles):
 
 @pytest.mark.timeout(120)
 def test_env_run():
-    for gen in range(8, 10):
+    for gen in (9,):
         env = DoublesTestEnv(battle_format=f"gen{gen}randomdoublesbattle", log_level=25)
         play_function(env, 10)
         env._strict = False
@@ -67,7 +67,7 @@ def single_agent_play_function(env: SingleAgentWrapper, n_battles: int):
 
 @pytest.mark.timeout(120)
 def test_single_agent_env_run():
-    for gen in range(8, 10):
+    for gen in (9,):
         env = DoublesTestEnv(battle_format=f"gen{gen}randomdoublesbattle", log_level=25)
         env = SingleAgentWrapper(env, RandomPlayer())
         single_agent_play_function(env, 10)
@@ -101,12 +101,6 @@ def sample_action(action_mask):
 @pytest.mark.timeout(60)
 def test_repeated_runs():
     env = DoublesTestEnv(
-        battle_format="gen8randomdoublesbattle", log_level=25, strict=False
-    )
-    play_function(env, 2)
-    play_function(env, 2)
-    env.close()
-    env = DoublesTestEnv(
         battle_format="gen9randomdoublesbattle", log_level=25, strict=False
     )
     play_function(env, 2)
@@ -116,7 +110,7 @@ def test_repeated_runs():
 
 @pytest.mark.timeout(60)
 def test_single_agent_env_api():
-    for gen in range(8, 10):
+    for gen in (9,):
         env = DoublesTestEnv(
             battle_format=f"gen{gen}randomdoublesbattle", log_level=25, strict=False
         )

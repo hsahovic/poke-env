@@ -53,6 +53,7 @@ class Pokemon:
         "_selected_in_teampreview",
         "_temporary_ability",
         "_temporary_base_stats",
+        "_temporary_move",
         "_temporary_types",
         "_terastallized",
         "_terastallized_type",
@@ -133,6 +134,7 @@ class Pokemon:
         self._temporary_ability: Optional[str] = None
         self._forme_change_ability: Optional[str] = None
         self._temporary_base_stats: Optional[Dict[str, int]] = None
+        self._temporary_move: Optional[Move] = None
         self._temporary_types: List[PokemonType] = []
         self._dancing = False
 
@@ -451,13 +453,34 @@ class Pokemon:
         self._preparing_move = None
         self._preparing_target = None
         move = None
+        self._temporary_move = None
         if reveal:
-            move = self._add_move(move_id)
+            id_ = Move.retrieve_id(move_id)
+            requested_moves = {
+                Move.retrieve_id(requested_move)
+                for requested_move in (self._last_request or {}).get("moves", [])
+            }
+            if (
+                self.gen == 1
+                and requested_moves
+                and id_ not in requested_moves
+                and Move.should_be_stored(id_, self.gen)
+            ):
+                # Gen 1's Desync Clause Mod can make a thawed Pokemon use the
+                # last move selected by its team, even if it does not know that
+                # move. Keep the observed move available as last_move without
+                # polluting the Pokemon's actual move set.
+                move = Move(move_id=id_, raw_id=move_id, gen=self.gen)
+                self._temporary_move = move
+            else:
+                move = self._add_move(move_id)
         if use:
             if move is not None:
                 move.use(pressure)
             for m in self.moves.values():
                 m._is_last_used = m is move
+            if self._temporary_move is not None:
+                self._temporary_move._is_last_used = True
 
         if move is not None and move.is_protect_counter and not failed:
             self._protect_counter += 1
@@ -597,6 +620,7 @@ class Pokemon:
         self._protect_counter = 0
         self.temporary_ability = None
         self._temporary_base_stats = None
+        self._temporary_move = None
         self._moves._transform_moves = None
         self._moves.mimic_move = None
         self._temporary_types = []
@@ -1115,7 +1139,9 @@ class Pokemon:
         :return: The last move used by this pokemon, or None.
         :rtype: Move | None
         """
-        for move in self.moves.values():
+        for move in [self._temporary_move, *self.moves.values()]:
+            if move is None:
+                continue
             if move.is_last_used:
                 return move
         return None

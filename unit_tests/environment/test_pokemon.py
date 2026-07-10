@@ -29,6 +29,29 @@ def test_pokemon_moves():
     assert not mon.must_recharge
 
 
+def test_gen1_unowned_move_is_temporary():
+    request = {
+        "active": True,
+        "baseAbility": "noability",
+        "condition": "319/319",
+        "details": "Slowpoke, L83",
+        "ident": "p1: Slowpoke",
+        "item": "",
+        "moves": ["blizzard", "psychic", "amnesia", "thunderwave"],
+    }
+    mon = Pokemon(1, request_pokemon=request)
+
+    mon.moved("fireblast")
+
+    assert set(mon.moves) == {"blizzard", "psychic", "amnesia", "thunderwave"}
+    assert mon.last_move is not None
+    assert mon.last_move.id == "fireblast"
+    mon.check_consistency(request, "p1")
+
+    mon.moved("psychic")
+    assert mon.last_move == mon.moves["psychic"]
+
+
 def test_pokemon_types():
     # single type
     mon = Pokemon(species="pikachu", gen=8)
