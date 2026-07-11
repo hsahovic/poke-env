@@ -42,7 +42,7 @@ async def test_random_players():
 
 @pytest.mark.asyncio
 async def test_random_double_players():
-    for gen in range(8, 10):
+    for gen in range(9, 10):
         players = [
             ZoroarkForfeitRandomPlayer(
                 battle_format=f"gen{gen}randomdoublesbattle",

@@ -31,7 +31,7 @@ async def simple_cross_evaluation(n_battles, format_, i=0):
 
 
 @pytest.mark.asyncio
-async def test_small_cross_evaluation_gen8():
+async def test_small_cross_evaluation_gen9():
     await asyncio.wait_for(
-        simple_cross_evaluation(5, format_="gen8randomdoublesbattle", i=3), timeout=20
+        simple_cross_evaluation(5, format_="gen9randomdoublesbattle", i=3), timeout=20
     )
