@@ -62,7 +62,7 @@ jobs:
         run: uv run --no-sync pytest -x unit_tests/
 
       - name: Setup node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 18
 
