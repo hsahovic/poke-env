@@ -2320,6 +2320,7 @@
         "accuracy": 95,
         "basePower": 150,
         "category": "Special",
+        "chloroblastRecoil": true,
         "flags": {
             "metronome": 1,
             "mirror": 1,
@@ -11231,7 +11232,7 @@
         "mindBlownRecoil": true,
         "name": "Mind Blown",
         "num": 720,
-        "onAfterMove": "onAfterMove",
+        "onMoveFail": "onMoveFail",
         "pp": 5,
         "priority": 0,
         "target": "allAdjacent",
@@ -13650,7 +13651,7 @@
         "category": "Physical",
         "condition": {
             "duration": 1,
-            "onBeforeSwitchOut": "onBeforeSwitchOut"
+            "onFoeBeforeSwitchOut": "onFoeBeforeSwitchOut"
         },
         "contestType": "Clever",
         "flags": {
@@ -16964,7 +16965,7 @@
         "mindBlownRecoil": true,
         "name": "Steel Beam",
         "num": 796,
-        "onAfterMove": "onAfterMove",
+        "onMoveFail": "onMoveFail",
         "pp": 5,
         "priority": 0,
         "target": "normal",
