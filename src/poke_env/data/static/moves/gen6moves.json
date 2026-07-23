@@ -10085,7 +10085,7 @@
         "category": "Physical",
         "condition": {
             "duration": 1,
-            "onBeforeSwitchOut": "onBeforeSwitchOut"
+            "onFoeBeforeSwitchOut": "onFoeBeforeSwitchOut"
         },
         "contestType": "Clever",
         "flags": {
