@@ -76,12 +76,12 @@ class SmogonStats:
 
     @classmethod
     def fetch(
-        cls, battle_format: str, *, month: str, cutoff: int, timeout: float = 30
+        cls, battle_format: str, *, month: str, cutoff: int = 0, timeout: float = 30
     ) -> "SmogonStats":
         """Fetch and parse a snapshot from Smogon's public chaos directory.
 
-        ``month`` and ``cutoff`` are deliberately explicit so experiments remain
-        reproducible.
+        ``month`` is deliberately explicit so experiments remain reproducible.
+        The default ``cutoff=0`` selects Smogon's unweighted statistics.
         """
 
         normalized_format = to_id_str(battle_format)

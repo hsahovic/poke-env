@@ -178,6 +178,35 @@ def test_fetch_uses_explicit_snapshot(monkeypatch, chaos_payload):
     assert stats.battle_format == "gen9ou"
 
 
+def test_fetch_defaults_to_unweighted_snapshot(monkeypatch, chaos_document):
+    chaos_document["info"]["cutoff"] = 0
+
+    class Response:
+        status_code = 200
+        content = orjson.dumps(chaos_document)
+
+        @staticmethod
+        def raise_for_status():
+            return None
+
+    request = {}
+
+    def get(url, *, timeout):
+        request["url"] = url
+        request["timeout"] = timeout
+        return Response()
+
+    monkeypatch.setattr("poke_env.data.smogon.requests.get", get)
+
+    stats = SmogonStats.fetch("Gen 9 OU", month="2026-06")
+
+    assert request == {
+        "url": "https://www.smogon.com/stats/2026-06/chaos/gen9ou-0.json",
+        "timeout": 30,
+    }
+    assert stats.cutoff == 0
+
+
 def test_fetch_reports_missing_snapshot(monkeypatch):
     class Response:
         status_code = 404
