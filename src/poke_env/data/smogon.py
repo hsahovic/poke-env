@@ -83,7 +83,6 @@ class SmogonStats:
         ``month`` is deliberately explicit so experiments remain reproducible.
         The default ``cutoff=0`` selects Smogon's unweighted statistics.
         """
-
         normalized_format = to_id_str(battle_format)
         if not normalized_format:
             raise ValueError("battle_format must not be empty")
@@ -123,7 +122,6 @@ class SmogonStats:
         cls, path: Union[str, Path], *, month: str, source_url: Optional[str] = None
     ) -> "SmogonStats":
         """Parse a locally stored Smogon chaos JSON file."""
-
         file_path = Path(path)
         try:
             payload = file_path.read_bytes()
@@ -139,7 +137,6 @@ class SmogonStats:
         cls, payload: JsonPayload, *, month: str, source_url: Optional[str] = None
     ) -> "SmogonStats":
         """Parse a Smogon chaos JSON payload."""
-
         _validate_month(month)
         try:
             document = orjson.loads(payload)
@@ -184,12 +181,10 @@ class SmogonStats:
 
     def __getitem__(self, species: str) -> PokemonUsageStats:
         """Return statistics for a Pokemon name or Showdown id."""
-
         return self.pokemon[to_id_str(species)]
 
     def get(self, species: str) -> Optional[PokemonUsageStats]:
         """Return statistics for a Pokemon name or Showdown id, if present."""
-
         return self.pokemon.get(to_id_str(species))
 
     def top_pokemon(
@@ -200,7 +195,6 @@ class SmogonStats:
         min_raw_count: int = 0,
     ) -> tuple[PokemonUsageStats, ...]:
         """Return Pokemon ordered by weighted usage, with optional filters."""
-
         if limit is not None and limit < 0:
             raise ValueError("limit must not be negative")
         _validate_finite_number(min_usage, "min_usage")
