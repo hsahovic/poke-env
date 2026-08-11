@@ -2625,7 +2625,8 @@
             "durationCallback": "durationCallback",
             "inherit": true,
             "onResidualOrder": 10,
-            "onResidualSubOrder": 14
+            "onResidualSubOrder": 14,
+            "onStart": "onStart"
         },
         "contestType": "Cute",
         "flags": {
@@ -7462,7 +7463,7 @@
         "category": "Physical",
         "condition": {
             "inherit": true,
-            "onBeforeSwitchOut": "onBeforeSwitchOut"
+            "onFoeBeforeSwitchOut": "onFoeBeforeSwitchOut"
         },
         "contestType": "Clever",
         "flags": {

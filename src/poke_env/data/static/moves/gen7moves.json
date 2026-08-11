@@ -9282,7 +9282,7 @@
         "mindBlownRecoil": true,
         "name": "Mind Blown",
         "num": 720,
-        "onAfterMove": "onAfterMove",
+        "onMoveFail": "onMoveFail",
         "pp": 5,
         "priority": 0,
         "target": "allAdjacent",
@@ -11471,7 +11471,7 @@
         "category": "Physical",
         "condition": {
             "duration": 1,
-            "onBeforeSwitchOut": "onBeforeSwitchOut"
+            "onFoeBeforeSwitchOut": "onFoeBeforeSwitchOut"
         },
         "contestType": "Clever",
         "flags": {

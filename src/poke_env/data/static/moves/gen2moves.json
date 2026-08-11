@@ -3898,7 +3898,7 @@
         "category": "Physical",
         "condition": {
             "inherit": true,
-            "onBeforeSwitchOut": "onBeforeSwitchOut"
+            "onFoeBeforeSwitchOut": "onFoeBeforeSwitchOut"
         },
         "contestType": "Clever",
         "flags": {
