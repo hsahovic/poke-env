@@ -20090,19 +20090,21 @@
     "obliteryx": {
         "abilities": {
             "0": "Opportunist",
-            "1": "Analytic"
+            "1": "Early Bird",
+            "H": "Sniper"
         },
         "baseStats": {
             "atk": 128,
             "def": 126,
             "hp": 102,
             "spa": 45,
-            "spd": 90,
+            "spd": 78,
             "spe": 64
         },
         "color": "Black",
         "eggGroups": [
-            "Flying"
+            "Flying",
+            "Dragon"
         ],
         "gen": 9,
         "heightm": 1.6,
