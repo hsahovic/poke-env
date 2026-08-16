@@ -253,6 +253,32 @@ def test_fetch_uses_explicit_snapshot(monkeypatch, chaos_payload):
     )
 
 
+def test_fetch_defaults_to_latest_month(monkeypatch, chaos_payload):
+    index = (
+        b'<a href="2026-05/">2026-05/</a>'
+        b'<a href="2026-06-DLC1/">DLC</a>'
+        b'<a href="2026-06/">2026-06/</a>'
+    )
+    response = FakeResponse(gzip.compress(chaos_payload))
+    requested_urls = []
+
+    def get(url, *, timeout):
+        requested_urls.append((url, timeout))
+        if url == "https://www.smogon.com/stats/":
+            return FakeResponse(index)
+        return response
+
+    monkeypatch.setattr("poke_env.data.smogon.requests.get", get)
+
+    stats = SmogonStats.fetch("gen9ou", cutoff=1695, cache_dir=None)
+
+    assert stats.month == "2026-06"
+    assert requested_urls == [
+        ("https://www.smogon.com/stats/", 30),
+        ("https://www.smogon.com/stats/2026-06/chaos/gen9ou-1695.json.gz", 30),
+    ]
+
+
 def test_fetch_defaults_to_unweighted_snapshot(monkeypatch, chaos_document):
     chaos_document["info"]["cutoff"] = 0
     response = FakeResponse(gzip.compress(orjson.dumps(chaos_document)))

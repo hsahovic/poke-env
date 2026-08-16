@@ -16,7 +16,9 @@ from poke_env.data.normalize import to_id_str
 
 JsonPayload = Union[str, bytes, bytearray, memoryview]
 _MONTH_PATTERN = re.compile(r"^[0-9]{4}-(0[1-9]|1[0-2])$")
+_MONTH_DIRECTORY_PATTERN = re.compile(r'href="([0-9]{4}-(?:0[1-9]|1[0-2]))/"')
 _DEFAULT_CACHE_DIR = Path(".poke_env_stats_cache")
+_STATS_INDEX_URL = "https://www.smogon.com/stats/"
 
 
 class SmogonStatsError(Exception):
@@ -121,7 +123,7 @@ class SmogonStats:
         cls,
         battle_format: str,
         *,
-        month: str,
+        month: str = "latest",
         cutoff: int = 0,
         timeout: float = 30,
         cache_dir: Optional[Union[str, Path]] = _DEFAULT_CACHE_DIR,
@@ -129,8 +131,9 @@ class SmogonStats:
     ) -> "SmogonStats":
         """Fetch and parse a snapshot from Smogon's public chaos directory.
 
-        ``month`` is deliberately explicit so experiments remain reproducible.
-        The default ``cutoff=0`` selects Smogon's unweighted statistics.
+        ``month`` defaults to the latest month listed in Smogon's stats index;
+        pass an explicit month for reproducible historical snapshots. The default
+        ``cutoff=0`` selects Smogon's unweighted statistics.
 
         Downloads use Smogon's gzip-compressed snapshots and are cached under
         ``.poke_env_stats_cache`` in the current directory. Pass ``cache_dir=None``
@@ -141,10 +144,13 @@ class SmogonStats:
         normalized_format = to_id_str(battle_format)
         if not normalized_format:
             raise ValueError("battle_format must not be empty")
-        _validate_month(month)
         _validate_non_negative_int(cutoff, "cutoff")
         if timeout <= 0:
             raise ValueError("timeout must be greater than zero")
+        if month == "latest":
+            month = _fetch_latest_month(timeout)
+        else:
+            _validate_month(month)
 
         filename = f"{normalized_format}-{cutoff}.json"
         source_url = f"https://www.smogon.com/stats/{month}/chaos/{filename}"
@@ -453,6 +459,24 @@ def _non_negative_int(value: Any, field: str) -> int:
 def _validate_month(month: str) -> None:
     if not isinstance(month, str) or not _MONTH_PATTERN.fullmatch(month):
         raise ValueError("month must use YYYY-MM format")
+
+
+def _fetch_latest_month(timeout: float) -> str:
+    try:
+        response = requests.get(_STATS_INDEX_URL, timeout=timeout)
+        response.raise_for_status()
+        index = response.content.decode("utf-8")
+    except (requests.RequestException, UnicodeDecodeError) as exc:
+        raise SmogonStatsError(
+            "Failed to determine the latest Smogon stats month"
+        ) from exc
+
+    months = _MONTH_DIRECTORY_PATTERN.findall(index)
+    if not months:
+        raise SmogonStatsParseError(
+            "Smogon stats index does not contain any monthly snapshots"
+        )
+    return max(months)
 
 
 def _validate_finite_number(value: Any, field: str) -> None:
