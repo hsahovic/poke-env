@@ -1,9 +1,11 @@
 """Access to Smogon's monthly Pokemon Showdown usage statistics."""
 
+import gzip
 import re
 from dataclasses import dataclass
 from math import isfinite
 from pathlib import Path
+from tempfile import NamedTemporaryFile
 from types import MappingProxyType
 from typing import Any, Mapping, Optional, Union
 
@@ -14,6 +16,9 @@ from poke_env.data.normalize import to_id_str
 
 JsonPayload = Union[str, bytes, bytearray, memoryview]
 _MONTH_PATTERN = re.compile(r"^[0-9]{4}-(0[1-9]|1[0-2])$")
+_MONTH_DIRECTORY_PATTERN = re.compile(r'href="([0-9]{4}-(?:0[1-9]|1[0-2]))/"')
+_DEFAULT_CACHE_DIR = Path(".poke_env_stats_cache")
+_STATS_INDEX_URL = "https://www.smogon.com/stats/"
 
 
 class SmogonStatsError(Exception):
@@ -41,6 +46,27 @@ class Spread:
 
 
 @dataclass(frozen=True, slots=True)
+class CounterStats:
+    """Smogon's checks-and-counters statistics for one opposing Pokemon.
+
+    ``knockout_or_switch_probability`` is the probability that the subject Pokemon
+    was knocked out by, or switched out against, this opposing Pokemon during a
+    relevant encounter. ``standard_error`` measures the uncertainty in that
+    probability.
+    """
+
+    name: str
+    weighted_encounters: float
+    knockout_or_switch_probability: float
+    standard_error: float
+
+    @property
+    def score(self) -> float:
+        """Return Smogon's conservative checks-and-counters ranking score."""
+        return self.knockout_or_switch_probability - 4 * self.standard_error
+
+
+@dataclass(frozen=True, slots=True)
 class PokemonUsageStats:
     """Usage statistics for one Pokemon in a Smogon snapshot.
 
@@ -61,6 +87,24 @@ class PokemonUsageStats:
     spreads: Mapping[Spread, float]
     tera_types: Mapping[str, float]
     teammate_scores: Mapping[str, float]
+    checks_and_counters: Mapping[str, CounterStats]
+
+    def top_counters(
+        self, limit: Optional[int] = None, *, min_weighted_encounters: float = 0
+    ) -> tuple[CounterStats, ...]:
+        """Return checks and counters ordered by Smogon's conservative score."""
+        _validate_limit(limit)
+        _validate_finite_number(min_weighted_encounters, "min_weighted_encounters")
+        if min_weighted_encounters < 0:
+            raise ValueError("min_weighted_encounters must not be negative")
+
+        matches = (
+            (counter_id, counter)
+            for counter_id, counter in self.checks_and_counters.items()
+            if counter.weighted_encounters >= min_weighted_encounters
+        )
+        ordered = sorted(matches, key=lambda item: (-item[1].score, item[0]))
+        return tuple(counter for _, counter in ordered[:limit])
 
 
 @dataclass(frozen=True, slots=True)
@@ -76,28 +120,61 @@ class SmogonStats:
 
     @classmethod
     def fetch(
-        cls, battle_format: str, *, month: str, cutoff: int = 0, timeout: float = 30
+        cls,
+        battle_format: str,
+        *,
+        month: str = "latest",
+        cutoff: int = 0,
+        timeout: float = 30,
+        cache_dir: Optional[Union[str, Path]] = _DEFAULT_CACHE_DIR,
+        refresh: bool = False,
     ) -> "SmogonStats":
         """Fetch and parse a snapshot from Smogon's public chaos directory.
 
-        ``month`` is deliberately explicit so experiments remain reproducible.
-        The default ``cutoff=0`` selects Smogon's unweighted statistics.
+        ``month`` defaults to the latest month listed in Smogon's stats index;
+        pass an explicit month for reproducible historical snapshots. The default
+        ``cutoff=0`` selects Smogon's unweighted statistics.
+
+        Downloads use Smogon's gzip-compressed snapshots and are cached under
+        ``.poke_env_stats_cache`` in the current directory. Pass ``cache_dir=None``
+        to disable caching or ``refresh=True`` to replace a cached snapshot. If a
+        compressed snapshot is unavailable, fetching falls back to uncompressed JSON
+        and stores the result in the canonical compressed cache format.
         """
         normalized_format = to_id_str(battle_format)
         if not normalized_format:
             raise ValueError("battle_format must not be empty")
-        _validate_month(month)
         _validate_non_negative_int(cutoff, "cutoff")
         if timeout <= 0:
             raise ValueError("timeout must be greater than zero")
+        if month == "latest":
+            month = _fetch_latest_month(timeout)
+        else:
+            _validate_month(month)
 
-        source_url = (
-            f"https://www.smogon.com/stats/{month}/chaos/"
-            f"{normalized_format}-{cutoff}.json"
+        filename = f"{normalized_format}-{cutoff}.json"
+        source_url = f"https://www.smogon.com/stats/{month}/chaos/{filename}"
+        cache_path = (
+            Path(cache_dir) / month / f"{filename}.gz"
+            if cache_dir is not None
+            else None
         )
 
+        if cache_path is not None and cache_path.is_file() and not refresh:
+            try:
+                stats = cls.from_file(cache_path, month=month, source_url=source_url)
+                _validate_snapshot_metadata(stats, normalized_format, cutoff)
+                return stats
+            except SmogonStatsError:
+                # A partial or otherwise invalid cache entry is replaced below.
+                pass
+
+        download_url = f"{source_url}.gz"
         try:
-            response = requests.get(source_url, timeout=timeout)
+            response = requests.get(download_url, timeout=timeout)
+            if response.status_code == 404:
+                download_url = source_url
+                response = requests.get(download_url, timeout=timeout)
             if response.status_code == 404:
                 raise SmogonStatsNotFoundError(
                     f"Smogon stats snapshot not found: {source_url}"
@@ -107,26 +184,36 @@ class SmogonStats:
             raise
         except requests.RequestException as exc:
             raise SmogonStatsError(
-                f"Failed to fetch Smogon stats snapshot: {source_url}"
+                f"Failed to fetch Smogon stats snapshot: {download_url}"
             ) from exc
 
-        stats = cls.from_json(response.content, month=month, source_url=source_url)
-        if stats.battle_format != normalized_format or stats.cutoff != cutoff:
-            raise SmogonStatsParseError(
-                "Smogon stats metadata does not match the requested format and cutoff"
-            )
+        payload = (
+            _decompress(response.content, download_url)
+            if download_url.endswith(".gz")
+            else response.content
+        )
+        stats = cls.from_json(payload, month=month, source_url=source_url)
+        _validate_snapshot_metadata(stats, normalized_format, cutoff)
+        if cache_path is not None:
+            cache_payload = response.content
+            if not download_url.endswith(".gz"):
+                cache_payload = gzip.compress(cache_payload)
+            _write_cache(cache_path, cache_payload)
         return stats
 
     @classmethod
     def from_file(
         cls, path: Union[str, Path], *, month: str, source_url: Optional[str] = None
     ) -> "SmogonStats":
-        """Parse a locally stored Smogon chaos JSON file."""
+        """Parse a locally stored Smogon chaos JSON or JSON.gz file."""
         file_path = Path(path)
         try:
             payload = file_path.read_bytes()
         except OSError as exc:
             raise SmogonStatsError(f"Failed to read Smogon stats file: {path}") from exc
+
+        if file_path.suffix == ".gz":
+            payload = _decompress(payload, str(file_path))
 
         return cls.from_json(
             payload, month=month, source_url=source_url or file_path.resolve().as_uri()
@@ -195,8 +282,7 @@ class SmogonStats:
         min_raw_count: int = 0,
     ) -> tuple[PokemonUsageStats, ...]:
         """Return Pokemon ordered by weighted usage, with optional filters."""
-        if limit is not None and limit < 0:
-            raise ValueError("limit must not be negative")
+        _validate_limit(limit)
         _validate_finite_number(min_usage, "min_usage")
         if min_usage < 0:
             raise ValueError("min_usage must not be negative")
@@ -249,6 +335,9 @@ def _parse_pokemon(name: str, document: Mapping[str, Any]) -> PokemonUsageStats:
         teammate_scores=_normalized_named_mapping(
             _weight_mapping(document["Teammates"], f"{name}.Teammates"), weighted_count
         ),
+        checks_and_counters=_counter_mapping(
+            document["Checks and Counters"], f"{name}.Checks and Counters"
+        ),
     )
 
 
@@ -288,6 +377,45 @@ def _spread_mapping(
         spread = Spread(nature=nature, evs=evs)
         spreads[spread] = spreads.get(spread, 0.0) + weight / denominator
     return MappingProxyType(spreads)
+
+
+def _counter_mapping(value: Any, field: str) -> Mapping[str, CounterStats]:
+    raw_mapping = _mapping(value, field)
+    counters = {}
+    for name, counter_document in raw_mapping.items():
+        counter_name = _string(name, f"{field} key")
+        counter_id = to_id_str(counter_name)
+        if not counter_id:
+            raise SmogonStatsParseError(f"{field} contains an empty Pokemon name")
+        if counter_id in counters:
+            raise SmogonStatsParseError(
+                f"{field} contains duplicate normalized Pokemon id: {counter_id}"
+            )
+
+        counter = _mapping(counter_document, f"{field}.{counter_name}")
+        weighted_encounters = _finite_number(counter["n"], f"{field}.{counter_name}.n")
+        probability = _finite_number(counter["p"], f"{field}.{counter_name}.p")
+        standard_error = _finite_number(counter["d"], f"{field}.{counter_name}.d")
+        if weighted_encounters <= 0:
+            raise SmogonStatsParseError(
+                f"{field}.{counter_name}.n must be greater than zero"
+            )
+        if not 0 <= probability <= 1:
+            raise SmogonStatsParseError(
+                f"{field}.{counter_name}.p must be between zero and one"
+            )
+        if standard_error < 0:
+            raise SmogonStatsParseError(
+                f"{field}.{counter_name}.d must not be negative"
+            )
+
+        counters[counter_id] = CounterStats(
+            name=counter_name,
+            weighted_encounters=weighted_encounters,
+            knockout_or_switch_probability=probability,
+            standard_error=standard_error,
+        )
+    return MappingProxyType(counters)
 
 
 def _weight_mapping(value: Any, field: str) -> Mapping[str, float]:
@@ -333,6 +461,24 @@ def _validate_month(month: str) -> None:
         raise ValueError("month must use YYYY-MM format")
 
 
+def _fetch_latest_month(timeout: float) -> str:
+    try:
+        response = requests.get(_STATS_INDEX_URL, timeout=timeout)
+        response.raise_for_status()
+        index = response.content.decode("utf-8")
+    except (requests.RequestException, UnicodeDecodeError) as exc:
+        raise SmogonStatsError(
+            "Failed to determine the latest Smogon stats month"
+        ) from exc
+
+    months = _MONTH_DIRECTORY_PATTERN.findall(index)
+    if not months:
+        raise SmogonStatsParseError(
+            "Smogon stats index does not contain any monthly snapshots"
+        )
+    return max(months)
+
+
 def _validate_finite_number(value: Any, field: str) -> None:
     try:
         _finite_number(value, field)
@@ -345,3 +491,45 @@ def _validate_non_negative_int(value: Any, field: str) -> None:
         _non_negative_int(value, field)
     except SmogonStatsParseError as exc:
         raise ValueError(str(exc)) from exc
+
+
+def _validate_limit(limit: Optional[int]) -> None:
+    if limit is not None:
+        _validate_non_negative_int(limit, "limit")
+
+
+def _decompress(payload: bytes, source: str) -> bytes:
+    try:
+        return gzip.decompress(payload)
+    except (OSError, EOFError) as exc:
+        raise SmogonStatsParseError(
+            f"Invalid gzip-compressed Smogon stats snapshot: {source}"
+        ) from exc
+
+
+def _validate_snapshot_metadata(
+    stats: SmogonStats, battle_format: str, cutoff: int
+) -> None:
+    if stats.battle_format != battle_format or stats.cutoff != cutoff:
+        raise SmogonStatsParseError(
+            "Smogon stats metadata does not match the requested format and cutoff"
+        )
+
+
+def _write_cache(path: Path, payload: bytes) -> None:
+    temporary_path: Optional[Path] = None
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with NamedTemporaryFile(
+            dir=path.parent, prefix=f".{path.name}.", suffix=".tmp", delete=False
+        ) as temporary_file:
+            temporary_file.write(payload)
+            temporary_path = Path(temporary_file.name)
+        temporary_path.replace(path)
+    except OSError as exc:
+        raise SmogonStatsError(
+            f"Failed to cache Smogon stats snapshot: {path}"
+        ) from exc
+    finally:
+        if temporary_path is not None:
+            temporary_path.unlink(missing_ok=True)
