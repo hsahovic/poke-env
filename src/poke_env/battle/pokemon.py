@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Set, Union
+from typing import Any, Dict, FrozenSet, List, Optional, Union
 
 from poke_env.battle.effect import Effect
 from poke_env.battle.field import Field
@@ -35,7 +35,6 @@ class Pokemon:
         "_last_details",
         "_last_request",
         "_learnset",
-        "_learnset_format",
         "_level",
         "_max_hp",
         "_moves",
@@ -63,9 +62,6 @@ class Pokemon:
         "_weightkg",
     )
 
-    # The formats that have a different learnset
-    _ALL_MOVES_FORMATS = ["hackmons", "stabmons", "sketchmons"]
-
     def __init__(
         self,
         gen: int,
@@ -75,7 +71,6 @@ class Pokemon:
         request_pokemon: Optional[Dict[str, Any]] = None,
         details: Optional[str] = None,
         teambuilder: Optional[TeambuilderPokemon] = None,
-        format: Optional[str] = None,
     ):
         # Species related attributes
         self._base_stats: Dict[str, int]
@@ -85,7 +80,7 @@ class Pokemon:
         self._type_1: PokemonType
         self._type_2: Optional[PokemonType] = None
         self._weightkg: int
-        self._learnset: Set[str] = set()
+        self._learnset: FrozenSet[str] = frozenset()
 
         # Individual related attributes
         self._ability: Optional[str] = None
@@ -100,9 +95,6 @@ class Pokemon:
         self._evs: list[int] | None = None
         self._ivs: list[int] | None = None
         self._nature: str | None = None
-        self._learnset_format: bool = (
-            not any(f in (format or "") for f in self._ALL_MOVES_FORMATS) and gen >= 3
-        )
 
         # Battle related attributes
         self._gen = gen
@@ -1142,10 +1134,10 @@ class Pokemon:
         return self._level
 
     @property
-    def learnset(self) -> Set[str]:
+    def learnset(self) -> FrozenSet[str]:
         """
         :return: The set of moves this pokemon can learn.
-        :rtype: Set[str]
+        :rtype: FrozenSet[str]
         """
         return self._learnset
 

@@ -1,5 +1,7 @@
 from unittest.mock import MagicMock
 
+import pytest
+
 from poke_env.battle import DoubleBattle, Move, Pokemon, PokemonGender, PokemonType
 from poke_env.stats import _raw_hp, _raw_stat
 from poke_env.teambuilder import TeambuilderPokemon
@@ -525,41 +527,29 @@ def test_temporary():
     assert furret.types == [PokemonType.DRAGON]
 
 
-def test_normal_learnset():
-    formats = [
-        "gen9randombattle",
-        "gen9randomdoublesbattle",
-        "gen9ou",
-        "gen9ubers",
-        "gen9anythinggoes",
-        "gen9ru",
-        "gen9vgc2026regi",
-        "gen9freeforallrandombattle",
-    ]
-
-    for format_ in formats:
-        mon = Pokemon(species="bulbasaur", gen=9, format=format_)
-        assert mon._learnset_format
-
-
-def test_different_learnset():
-    formats = [
-        (6, "gen6purehackmons"),
-        (7, "gen7balancedhackmons"),
-        (9, "gen9stabmons"),
-    ]
-
-    for gen, format_ in formats:
-        mon = Pokemon(species="bulbasaur", gen=gen, format=format_)
-        assert not mon._learnset_format
-
-
 def test_breloom_learnset():
     # Breeloom only has spore from Shroomish
 
     for gen in range(3, 8):
         mon = Pokemon(species="breloom", gen=gen)
         assert "spore" in mon.learnset
+
+    assert "spore" in Pokemon(species="breloom", gen=8).learnset
+
+
+def test_learnset_includes_transfer_moves():
+    xatu = Pokemon(species="xatu", gen=7)
+    assert "aircutter" in xatu.learnset
+    assert "hiddenpower" not in Pokemon(species="pikachu", gen=9).learnset
+
+
+def test_learnset_is_immutable_and_cached_separately():
+    first = Pokemon(species="pikachu", gen=9)
+    second = Pokemon(species="pikachu", gen=9)
+
+    assert first.learnset is second.learnset
+    with pytest.raises(AttributeError):
+        first.learnset.add("splash")
 
 
 def test_pikachu_learnset():
