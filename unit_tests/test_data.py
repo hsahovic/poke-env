@@ -63,6 +63,11 @@ def test_gen_data_from_format():
     assert GenData.from_format("gen9doubleou") == GenData.from_gen(9)
 
 
+def test_learnset_remains_raw_data():
+    learnset = GenData.from_gen(9).learnset["bulbasaur"]["learnset"]
+    assert isinstance(learnset, dict)
+
+
 def test_cant_init_same_gen_twice():
     for gen in range(1, 9):
         GenData.from_gen(gen)
