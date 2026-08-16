@@ -53,7 +53,6 @@ class CounterStats:
     probability.
     """
 
-    id: str
     name: str
     weighted_encounters: float
     knockout_or_switch_probability: float
@@ -98,12 +97,12 @@ class PokemonUsageStats:
             raise ValueError("min_weighted_encounters must not be negative")
 
         matches = (
-            counter
-            for counter in self.checks_and_counters.values()
+            (counter_id, counter)
+            for counter_id, counter in self.checks_and_counters.items()
             if counter.weighted_encounters >= min_weighted_encounters
         )
-        ordered = sorted(matches, key=lambda counter: (-counter.score, counter.id))
-        return tuple(ordered[:limit])
+        ordered = sorted(matches, key=lambda item: (-item[1].score, item[0]))
+        return tuple(counter for _, counter in ordered[:limit])
 
 
 @dataclass(frozen=True, slots=True)
@@ -127,19 +126,17 @@ class SmogonStats:
         timeout: float = 30,
         cache_dir: Optional[Union[str, Path]] = _DEFAULT_CACHE_DIR,
         refresh: bool = False,
-        compressed: bool = True,
     ) -> "SmogonStats":
         """Fetch and parse a snapshot from Smogon's public chaos directory.
 
         ``month`` is deliberately explicit so experiments remain reproducible.
         The default ``cutoff=0`` selects Smogon's unweighted statistics.
 
-        Downloads use Smogon's gzip-compressed snapshots by default and are cached
-        under ``.poke_env_stats_cache`` in the current directory. Pass
-        ``cache_dir=None`` to disable caching, ``refresh=True`` to replace a cached
-        snapshot, or ``compressed=False`` to request uncompressed JSON. If a
-        compressed snapshot is unavailable, fetching falls back to uncompressed
-        JSON.
+        Downloads use Smogon's gzip-compressed snapshots and are cached under
+        ``.poke_env_stats_cache`` in the current directory. Pass ``cache_dir=None``
+        to disable caching or ``refresh=True`` to replace a cached snapshot. If a
+        compressed snapshot is unavailable, fetching falls back to uncompressed JSON
+        and stores the result in the canonical compressed cache format.
         """
         normalized_format = to_id_str(battle_format)
         if not normalized_format:
@@ -151,9 +148,10 @@ class SmogonStats:
 
         filename = f"{normalized_format}-{cutoff}.json"
         source_url = f"https://www.smogon.com/stats/{month}/chaos/{filename}"
-        cache_filename = f"{filename}.gz" if compressed else filename
         cache_path = (
-            Path(cache_dir) / month / cache_filename if cache_dir is not None else None
+            Path(cache_dir) / month / f"{filename}.gz"
+            if cache_dir is not None
+            else None
         )
 
         if cache_path is not None and cache_path.is_file() and not refresh:
@@ -165,10 +163,10 @@ class SmogonStats:
                 # A partial or otherwise invalid cache entry is replaced below.
                 pass
 
-        download_url = f"{source_url}.gz" if compressed else source_url
+        download_url = f"{source_url}.gz"
         try:
             response = requests.get(download_url, timeout=timeout)
-            if response.status_code == 404 and compressed:
+            if response.status_code == 404:
                 download_url = source_url
                 response = requests.get(download_url, timeout=timeout)
             if response.status_code == 404:
@@ -191,11 +189,9 @@ class SmogonStats:
         stats = cls.from_json(payload, month=month, source_url=source_url)
         _validate_snapshot_metadata(stats, normalized_format, cutoff)
         if cache_path is not None:
-            cache_payload = (
-                response.content
-                if download_url.endswith(".gz") or not compressed
-                else gzip.compress(response.content)
-            )
+            cache_payload = response.content
+            if not download_url.endswith(".gz"):
+                cache_payload = gzip.compress(cache_payload)
             _write_cache(cache_path, cache_payload)
         return stats
 
@@ -408,7 +404,6 @@ def _counter_mapping(value: Any, field: str) -> Mapping[str, CounterStats]:
             )
 
         counters[counter_id] = CounterStats(
-            id=counter_id,
             name=counter_name,
             weighted_encounters=weighted_encounters,
             knockout_or_switch_probability=probability,

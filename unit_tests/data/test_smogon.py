@@ -75,6 +75,16 @@ def chaos_payload(chaos_document):
     return orjson.dumps(chaos_document)
 
 
+class FakeResponse:
+    def __init__(self, content: bytes = b"", status_code: int = 200):
+        self.content = content
+        self.status_code = status_code
+
+    @staticmethod
+    def raise_for_status():
+        return None
+
+
 def test_from_json_parses_and_normalizes_chaos_data(chaos_payload):
     stats = SmogonStats.from_json(
         chaos_payload,
@@ -108,14 +118,12 @@ def test_from_json_parses_and_normalizes_chaos_data(chaos_payload):
     }
     assert great_tusk.checks_and_counters == {
         "hatterene": CounterStats(
-            id="hatterene",
             name="Hatterene",
             weighted_encounters=100.0,
             knockout_or_switch_probability=0.7,
             standard_error=0.04,
         ),
         "dondozo": CounterStats(
-            id="dondozo",
             name="Dondozo",
             weighted_encounters=200.0,
             knockout_or_switch_probability=0.72,
@@ -137,7 +145,7 @@ def test_snapshot_mappings_are_read_only(chaos_payload):
         stats["pikachu"].moves["thunder"] = 1.0
     with pytest.raises(TypeError):
         stats["greattusk"].checks_and_counters["corviknight"] = CounterStats(
-            "corviknight", "Corviknight", 100, 0.5, 0.05
+            "Corviknight", 100, 0.5, 0.05
         )
 
 
@@ -220,20 +228,14 @@ def test_from_file_reads_compressed_snapshot(tmp_path: Path, chaos_payload):
 
 
 def test_fetch_uses_explicit_snapshot(monkeypatch, chaos_payload):
-    class Response:
-        status_code = 200
-        content = gzip.compress(chaos_payload)
-
-        @staticmethod
-        def raise_for_status():
-            return None
+    response = FakeResponse(gzip.compress(chaos_payload))
 
     request = {}
 
     def get(url, *, timeout):
         request["url"] = url
         request["timeout"] = timeout
-        return Response()
+        return response
 
     monkeypatch.setattr("poke_env.data.smogon.requests.get", get)
 
@@ -253,21 +255,14 @@ def test_fetch_uses_explicit_snapshot(monkeypatch, chaos_payload):
 
 def test_fetch_defaults_to_unweighted_snapshot(monkeypatch, chaos_document):
     chaos_document["info"]["cutoff"] = 0
-
-    class Response:
-        status_code = 200
-        content = gzip.compress(orjson.dumps(chaos_document))
-
-        @staticmethod
-        def raise_for_status():
-            return None
+    response = FakeResponse(gzip.compress(orjson.dumps(chaos_document)))
 
     request = {}
 
     def get(url, *, timeout):
         request["url"] = url
         request["timeout"] = timeout
-        return Response()
+        return response
 
     monkeypatch.setattr("poke_env.data.smogon.requests.get", get)
 
@@ -283,19 +278,13 @@ def test_fetch_defaults_to_unweighted_snapshot(monkeypatch, chaos_document):
 def test_fetch_caches_compressed_snapshot_by_default(
     monkeypatch, tmp_path: Path, chaos_payload
 ):
-    class Response:
-        status_code = 200
-        content = gzip.compress(chaos_payload)
-
-        @staticmethod
-        def raise_for_status():
-            return None
+    response = FakeResponse(gzip.compress(chaos_payload))
 
     requests_made = []
 
     def get(url, *, timeout):
         requests_made.append((url, timeout))
-        return Response()
+        return response
 
     monkeypatch.chdir(tmp_path)
     monkeypatch.setattr("poke_env.data.smogon.requests.get", get)
@@ -304,66 +293,36 @@ def test_fetch_caches_compressed_snapshot_by_default(
     cached = SmogonStats.fetch("gen9ou", month="2026-06", cutoff=1695)
 
     cache_path = tmp_path / ".poke_env_stats_cache/2026-06/gen9ou-1695.json.gz"
-    assert cache_path.read_bytes() == Response.content
+    assert cache_path.read_bytes() == response.content
     assert requests_made == [
         ("https://www.smogon.com/stats/2026-06/chaos/gen9ou-1695.json.gz", 30)
     ]
     assert cached == downloaded
 
 
-def test_fetch_can_request_uncompressed_snapshot(monkeypatch, chaos_payload):
-    class Response:
-        status_code = 200
-        content = chaos_payload
-
-        @staticmethod
-        def raise_for_status():
-            return None
-
-    request = {}
-
-    def get(url, *, timeout):
-        request["url"] = url
-        request["timeout"] = timeout
-        return Response()
-
-    monkeypatch.setattr("poke_env.data.smogon.requests.get", get)
-
-    stats = SmogonStats.fetch(
-        "gen9ou", month="2026-06", cutoff=1695, cache_dir=None, compressed=False
-    )
-
-    assert request["url"].endswith("/gen9ou-1695.json")
-    assert stats["greattusk"].usage == 0.25
-
-
 def test_fetch_falls_back_when_compressed_snapshot_is_missing(
-    monkeypatch, chaos_payload
+    monkeypatch, tmp_path: Path, chaos_payload
 ):
-    class Response:
-        def __init__(self, status_code, content=b""):
-            self.status_code = status_code
-            self.content = content
-
-        def raise_for_status(self):
-            return None
-
     requested_urls = []
 
     def get(url, *, timeout):
         requested_urls.append(url)
         if url.endswith(".gz"):
-            return Response(404)
-        return Response(200, chaos_payload)
+            return FakeResponse(status_code=404)
+        return FakeResponse(chaos_payload)
 
     monkeypatch.setattr("poke_env.data.smogon.requests.get", get)
 
-    stats = SmogonStats.fetch("gen9ou", month="2026-06", cutoff=1695, cache_dir=None)
+    stats = SmogonStats.fetch(
+        "gen9ou", month="2026-06", cutoff=1695, cache_dir=tmp_path
+    )
 
     assert requested_urls == [
         "https://www.smogon.com/stats/2026-06/chaos/gen9ou-1695.json.gz",
         "https://www.smogon.com/stats/2026-06/chaos/gen9ou-1695.json",
     ]
+    cache_path = tmp_path / "2026-06/gen9ou-1695.json.gz"
+    assert gzip.decompress(cache_path.read_bytes()) == chaos_payload
     assert stats["greattusk"].usage == 0.25
 
 
@@ -374,32 +333,24 @@ def test_fetch_replaces_invalid_cached_snapshot(
     cache_path.parent.mkdir()
     cache_path.write_bytes(b"invalid")
 
-    class Response:
-        status_code = 200
-        content = gzip.compress(chaos_payload)
-
-        @staticmethod
-        def raise_for_status():
-            return None
+    response = FakeResponse(gzip.compress(chaos_payload))
 
     monkeypatch.setattr(
-        "poke_env.data.smogon.requests.get", lambda *args, **kwargs: Response()
+        "poke_env.data.smogon.requests.get", lambda *args, **kwargs: response
     )
 
     stats = SmogonStats.fetch(
         "gen9ou", month="2026-06", cutoff=1695, cache_dir=tmp_path
     )
 
-    assert cache_path.read_bytes() == Response.content
+    assert cache_path.read_bytes() == response.content
     assert stats["greattusk"].usage == 0.25
 
 
 def test_fetch_reports_missing_snapshot(monkeypatch):
-    class Response:
-        status_code = 404
-
     monkeypatch.setattr(
-        "poke_env.data.smogon.requests.get", lambda *args, **kwargs: Response()
+        "poke_env.data.smogon.requests.get",
+        lambda *args, **kwargs: FakeResponse(status_code=404),
     )
 
     with pytest.raises(SmogonStatsNotFoundError, match="not found"):

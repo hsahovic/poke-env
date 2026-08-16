@@ -16,9 +16,9 @@ and cached in ``.poke_env_stats_cache`` by default.
    great_tusk = stats["Great Tusk"]
    counters = great_tusk.top_counters(limit=5, min_weighted_encounters=100)
 
-Pass ``cache_dir=None`` to disable caching, ``refresh=True`` to replace a cached
-snapshot, or ``compressed=False`` to request uncompressed JSON. When an older
-snapshot has no compressed resource, fetching falls back to its uncompressed JSON.
+Pass ``cache_dir=None`` to disable caching or ``refresh=True`` to replace a cached
+snapshot. When an older snapshot has no compressed resource, fetching falls back to
+its uncompressed JSON and stores it in the compressed cache format.
 
 .. automodule:: poke_env.data.gen_data
    :members:
