@@ -1,7 +1,7 @@
 """Teambuilders backed by Smogon usage statistics."""
 
 from copy import deepcopy
-from math import exp
+from math import prod
 from random import Random
 from typing import Literal, Mapping, Optional, Sequence, TypeVar
 
@@ -19,8 +19,10 @@ class SmogonStatsTeambuilder(Teambuilder):
 
     The snapshot supplies marginal set frequencies, so fields of a Pokemon's set
     are selected independently.  Species selection starts from overall usage and
-    multiplies it by the exponential of the selected team's teammate scores. This
-    is a useful association heuristic, not a calibrated joint team distribution.
+    then uses the geometric mean of the selected Pokemon's teammate distributions.
+    Non-positive teammate scores are ignored when forming these distributions.
+    This is a useful association heuristic, not a calibrated joint team
+    distribution.
 
     :param stats: Statistics snapshot used for every completion.
     :param team: Partially specified Pokemon to retain and complete.
@@ -95,16 +97,40 @@ class SmogonStatsTeambuilder(Teambuilder):
             for pokemon in self.stats.pokemon.values()
             if pokemon.id not in selected_ids and pokemon.usage > 0
         }
-        weights = {
-            pokemon_id: pokemon.usage
-            * exp(
-                sum(
-                    selected.teammate_scores.get(pokemon_id, 0.0)
-                    for selected in selected_stats
+        if not selected_stats:
+            weights = {
+                pokemon_id: pokemon.usage for pokemon_id, pokemon in candidates.items()
+            }
+        else:
+            teammate_distributions = []
+            for selected in selected_stats:
+                positive_scores = {
+                    pokemon_id: max(selected.teammate_scores.get(pokemon_id, 0.0), 0.0)
+                    for pokemon_id in candidates
+                }
+                total = sum(positive_scores.values())
+                if total <= 0:
+                    weights = {
+                        pokemon_id: pokemon.usage
+                        for pokemon_id, pokemon in candidates.items()
+                    }
+                    break
+                teammate_distributions.append(
+                    {
+                        pokemon_id: score / total
+                        for pokemon_id, score in positive_scores.items()
+                    }
                 )
-            )
-            for pokemon_id, pokemon in candidates.items()
-        }
+            else:
+                weights = {
+                    pokemon_id: prod(
+                        distribution[pokemon_id]
+                        for distribution in teammate_distributions
+                    )
+                    ** (1 / len(teammate_distributions))
+                    for pokemon_id in candidates
+                }
+
         return candidates[self._choose(weights, "available Pokemon")]
 
     def _complete_pokemon(

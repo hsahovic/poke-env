@@ -67,6 +67,43 @@ def test_greedy_builder_completes_observed_set_and_team(smogon_stats):
     assert team[0].tera_type == "steel"
 
 
+def test_species_selection_uses_geometric_mean_of_teammates():
+    def pokemon(usage, teammates):
+        return {
+            "Raw count": 100,
+            "Abilities": {"ability": 10},
+            "Items": {},
+            "Spreads": {"Jolly:0/252/0/0/0/252": 10},
+            "Moves": {"moveone": 10, "movetwo": 10, "movethree": 10, "movefour": 10},
+            "Tera Types": {},
+            "Teammates": teammates,
+            "usage": usage,
+        }
+
+    stats = SmogonStats.from_json(
+        orjson.dumps(
+            {
+                "info": {
+                    "metagame": "gen9ou",
+                    "cutoff": 1695,
+                    "number of battles": 1000,
+                },
+                "data": {
+                    "Alpha": pokemon(0.4, {"Gamma": 9, "Delta": 4}),
+                    "Beta": pokemon(0.3, {"Gamma": 1, "Delta": 4}),
+                    "Gamma": pokemon(0.2, {}),
+                    "Delta": pokemon(0.1, {}),
+                },
+            }
+        ),
+        month="2026-06",
+    )
+
+    builder = SmogonStatsTeambuilder(stats)
+
+    assert builder._select_species([stats["Alpha"], stats["Beta"]]).id == "delta"
+
+
 def test_sample_builder_is_seeded_and_preserves_observed_values(smogon_stats):
     team = [TeambuilderPokemon(species="Alpha", item="Kept Item", moves=["Move One"])]
     first = SmogonStatsTeambuilder(smogon_stats, team, strategy="sample", rng=Random(7))
