@@ -165,7 +165,7 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
         account_configuration1: Optional[AccountConfiguration] = None,
         account_configuration2: Optional[AccountConfiguration] = None,
         avatar: Optional[int] = None,
-        battle_format: str = "gen8randombattle",
+        battle_format: str = "gen9randombattle",
         log_level: Optional[int] = None,
         save_replays: Union[bool, str] = False,
         server_configuration: Optional[
@@ -191,7 +191,7 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
         :param avatar: Player avatar id. Optional.
         :type avatar: int, optional
         :param battle_format: Name of the battle format this player plays. Defaults to
-            gen8randombattle.
+            gen9randombattle.
         :type battle_format: Optional, str. Default to randombattles, with specifics
             varying per class.
         :param log_level: The player's logger level.
