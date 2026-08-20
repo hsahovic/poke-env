@@ -25,6 +25,7 @@ def smogon_stats():
             },
             "Tera Types": {"Steel": 8, "Water": 2},
             "Teammates": teammates,
+            "Checks and Counters": {},
             "usage": usage,
         }
 
@@ -77,6 +78,7 @@ def test_species_selection_uses_geometric_mean_of_teammates():
             "Moves": {"moveone": 10, "movetwo": 10, "movethree": 10, "movefour": 10},
             "Tera Types": {},
             "Teammates": teammates,
+            "Checks and Counters": {},
             "usage": usage,
         }
 
