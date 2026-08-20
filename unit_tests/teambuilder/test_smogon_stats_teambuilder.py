@@ -108,9 +108,19 @@ def test_species_selection_uses_geometric_mean_of_teammates():
 
 def test_sample_builder_is_seeded_and_preserves_observed_values(smogon_stats):
     team = [TeambuilderPokemon(species="Alpha", item="Kept Item", moves=["Move One"])]
-    first = SmogonStatsTeambuilder(smogon_stats, team, strategy="sample", rng=Random(7))
+    first = SmogonStatsTeambuilder(
+        smogon_stats,
+        team,
+        team_strategy="sample",
+        pokemon_strategy="sample",
+        rng=Random(7),
+    )
     second = SmogonStatsTeambuilder(
-        smogon_stats, team, strategy="sample", rng=Random(7)
+        smogon_stats,
+        team,
+        team_strategy="sample",
+        pokemon_strategy="sample",
+        rng=Random(7),
     )
 
     first_team = Teambuilder.parse_packed_team(first.yield_team())
@@ -121,6 +131,37 @@ def test_sample_builder_is_seeded_and_preserves_observed_values(smogon_stats):
     assert first_team[0].item == "keptitem"
     assert first_team[0].moves[0] == "moveone"
     assert len(first_team[0].moves) == len(set(first_team[0].moves)) == 4
+
+
+def test_team_and_pokemon_strategies_are_independent(smogon_stats):
+    team = [TeambuilderPokemon(species="Alpha")]
+    greedy_team = SmogonStatsTeambuilder(
+        smogon_stats,
+        team,
+        team_strategy="greedy",
+        pokemon_strategy="sample",
+        rng=Random(7),
+    )
+    sample_team = SmogonStatsTeambuilder(
+        smogon_stats,
+        team,
+        team_strategy="sample",
+        pokemon_strategy="greedy",
+        rng=Random(7),
+    )
+
+    assert greedy_team.team_strategy == "greedy"
+    assert greedy_team.pokemon_strategy == "sample"
+    assert sample_team.team_strategy == "sample"
+    assert sample_team.pokemon_strategy == "greedy"
+    assert len(Teambuilder.parse_packed_team(greedy_team.yield_team())) == 6
+    assert len(Teambuilder.parse_packed_team(sample_team.yield_team())) == 6
+
+
+def test_pokemon_with_fewer_than_four_reported_moves_is_completed(smogon_stats):
+    builder = SmogonStatsTeambuilder(smogon_stats)
+
+    assert builder._choose_moves({"transform": 1.0}, []) == ["transform"]
 
 
 @pytest.mark.parametrize(

@@ -20,15 +20,19 @@ class SmogonStatsTeambuilder(Teambuilder):
     The snapshot supplies marginal set frequencies, so fields of a Pokemon's set
     are selected independently.  Species selection starts from overall usage and
     then uses the geometric mean of the selected Pokemon's teammate distributions.
-    Non-positive teammate scores are ignored when forming these distributions.
-    This is a useful association heuristic, not a calibrated joint team
-    distribution.
+    Negative or zero teammate scores do not contribute to the partner
+    distribution.  The teammate data describes pairs, so completions use pairwise
+    signals rather than attempting to reproduce the full distribution of teams.
 
     :param stats: Statistics snapshot used for every completion.
     :param team: Partially specified Pokemon to retain and complete.
-    :param strategy: ``"greedy"`` selects the most likely values; ``"sample"``
-        draws from the corresponding weighted distributions.
-    :param rng: Source of randomness for ``"sample"``. Supplying a seeded
+    :param team_strategy: ``"greedy"`` selects the most likely species at each
+        step; ``"sample"`` draws species from the corresponding distributions.
+    :param pokemon_strategy: ``"greedy"`` selects the most likely ability, item,
+        spread, move, and Tera type; ``"sample"`` draws each value from its
+        marginal distribution. If a snapshot reports fewer than four moves, all
+        reported moves are used.
+    :param rng: Source of randomness for sampled choices. Supplying a seeded
         :class:`random.Random` makes generated teams reproducible.
     """
 
@@ -37,11 +41,14 @@ class SmogonStatsTeambuilder(Teambuilder):
         stats: SmogonStats,
         team: Sequence[TeambuilderPokemon] = (),
         *,
-        strategy: Strategy = "greedy",
+        team_strategy: Strategy = "greedy",
+        pokemon_strategy: Strategy = "greedy",
         rng: Optional[Random] = None,
     ):
-        if strategy not in ("greedy", "sample"):
-            raise ValueError("strategy must be 'greedy' or 'sample'")
+        if team_strategy not in ("greedy", "sample"):
+            raise ValueError("team_strategy must be 'greedy' or 'sample'")
+        if pokemon_strategy not in ("greedy", "sample"):
+            raise ValueError("pokemon_strategy must be 'greedy' or 'sample'")
         if len(team) > 6:
             raise ValueError("team cannot contain more than six Pokemon")
         if any(not pokemon.species for pokemon in team):
@@ -49,7 +56,8 @@ class SmogonStatsTeambuilder(Teambuilder):
 
         self.stats = stats
         self._team = tuple(deepcopy(pokemon) for pokemon in team)
-        self.strategy = strategy
+        self.team_strategy = team_strategy
+        self.pokemon_strategy = pokemon_strategy
         self.rng = rng or Random()
 
         known_species = [
@@ -131,17 +139,21 @@ class SmogonStatsTeambuilder(Teambuilder):
                     for pokemon_id in candidates
                 }
 
-        return candidates[self._choose(weights, "available Pokemon")]
+        return candidates[
+            self._choose(weights, "available Pokemon", self.team_strategy)
+        ]
 
     def _complete_pokemon(
         self, pokemon: TeambuilderPokemon, usage: PokemonUsageStats
     ) -> None:
         if pokemon.ability is None:
-            pokemon.ability = self._choose(usage.abilities, "ability")
+            pokemon.ability = self._choose(
+                usage.abilities, "ability", self.pokemon_strategy
+            )
         if pokemon.item is None and usage.items:
-            pokemon.item = self._choose(usage.items, "item")
+            pokemon.item = self._choose(usage.items, "item", self.pokemon_strategy)
         if pokemon.nature is None or pokemon.evs is None:
-            spread = self._choose(usage.spreads, "spread")
+            spread = self._choose(usage.spreads, "spread", self.pokemon_strategy)
             if pokemon.nature is None:
                 pokemon.nature = spread.nature
             if pokemon.evs is None:
@@ -149,7 +161,9 @@ class SmogonStatsTeambuilder(Teambuilder):
         if len(pokemon.moves) < 4:
             pokemon.moves.extend(self._choose_moves(usage.moves, pokemon.moves))
         if pokemon.tera_type is None and usage.tera_types:
-            pokemon.tera_type = self._choose(usage.tera_types, "Tera type")
+            pokemon.tera_type = self._choose(
+                usage.tera_types, "Tera type", self.pokemon_strategy
+            )
 
     def _choose_moves(
         self, moves: Mapping[str, float], known_moves: Sequence[str]
@@ -159,21 +173,21 @@ class SmogonStatsTeambuilder(Teambuilder):
             for move, weight in moves.items()
             if move not in {to_id_str(move) for move in known_moves}
         }
-        needed = 4 - len(known_moves)
-        if len(remaining) < needed:
-            raise ValueError("statistics snapshot has fewer than four moves")
+        needed = min(4 - len(known_moves), len(remaining))
         selected = []
         for _ in range(needed):
-            move = self._choose(remaining, "move")
+            move = self._choose(remaining, "move", self.pokemon_strategy)
             selected.append(move)
             del remaining[move]
         return selected
 
-    def _choose(self, weights: Mapping[_Choice, float], description: str) -> _Choice:
+    def _choose(
+        self, weights: Mapping[_Choice, float], description: str, strategy: Strategy
+    ) -> _Choice:
         ordered = sorted(weights, key=str)
         if not ordered:
             raise ValueError(f"statistics snapshot has no {description} values")
-        if self.strategy == "greedy":
+        if strategy == "greedy":
             return max(ordered, key=lambda value: weights[value])
 
         total = sum(weights[value] for value in ordered)

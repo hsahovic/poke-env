@@ -1,0 +1,28 @@
+Smogon stats teambuilder
+========================
+
+``SmogonStatsTeambuilder`` completes a partial team from one Smogon usage
+statistics snapshot. It uses the snapshot's overall usage and teammate data to
+choose species, then fills in each Pokémon's missing ability, item, spread,
+moves, and Tera type from that Pokémon's marginal frequencies.
+
+Team and Pokémon completion are controlled independently:
+
+``team_strategy``
+   ``"greedy"`` chooses the highest-weight species at each step. ``"sample"``
+   draws each species from the current team-conditioned distribution.
+
+``pokemon_strategy``
+   ``"greedy"`` chooses the most frequent missing set values. ``"sample"``
+   draws each missing value from its marginal distribution.
+
+This gives all four combinations, for example sampled species with greedy set
+completion or greedy species with sampled set completion. A seeded
+``random.Random`` makes sampled completions reproducible.
+
+.. literalinclude:: ../../../examples/smogon_stats_teambuilder.py
+   :language: python
+
+The teammate data contains pairwise information rather than complete team
+observations, so the generated team is a practical completion based on those
+pairwise signals, not an exact reconstruction of the full team distribution.

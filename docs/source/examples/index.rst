@@ -13,6 +13,8 @@ Choose an Example
   local Showdown server.
 - :doc:`using_a_custom_teambuilder`: custom team selection and generation;
   requires a local Showdown server.
+- :doc:`smogon_stats_teambuilder`: complete a partial team from Smogon usage
+  statistics; no Showdown server is required.
 - :doc:`connecting_to_showdown_and_challenging_humans`: connecting to the
   official or a custom server and interacting with human players; an account is
   required for the public server.
@@ -32,6 +34,7 @@ Choose an Example
 
     quickstart
     using_a_custom_teambuilder
+    smogon_stats_teambuilder
     connecting_to_showdown_and_challenging_humans
     tracking_observations
     reinforcement_learning

@@ -21,6 +21,14 @@ Constant teambuilder
    :undoc-members:
    :show-inheritance:
 
+Smogon stats teambuilder
+*************************
+
+.. automodule:: poke_env.teambuilder.smogon_stats_teambuilder
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Teambuilder pokemon
 *******************
 
