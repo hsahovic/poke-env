@@ -4,7 +4,12 @@ import orjson
 import pytest
 
 from poke_env.data.smogon import SmogonStats
-from poke_env.teambuilder import SmogonStatsTeambuilder, TeambuilderPokemon
+from poke_env.teambuilder import (
+    SmogonStatsTeambuilder,
+    TeambuilderPokemon,
+    complete_team,
+    generate_team,
+)
 from poke_env.teambuilder.teambuilder import Teambuilder
 
 
@@ -162,6 +167,62 @@ def test_pokemon_with_fewer_than_four_reported_moves_is_completed(smogon_stats):
     builder = SmogonStatsTeambuilder(smogon_stats)
 
     assert builder._choose_moves({"transform": 1.0}, []) == ["transform"]
+
+
+def test_from_format_fetches_snapshot(monkeypatch, smogon_stats):
+    calls = {}
+
+    def fetch(cls, battle_format, **kwargs):
+        calls["battle_format"] = battle_format
+        calls["kwargs"] = kwargs
+        return smogon_stats
+
+    monkeypatch.setattr(SmogonStats, "fetch", classmethod(fetch))
+
+    builder = SmogonStatsTeambuilder.from_format(
+        "gen9ou",
+        month="2026-06",
+        cutoff=1695,
+        timeout=12,
+        cache_dir=None,
+        refresh=True,
+        team_strategy="sample",
+        pokemon_strategy="greedy",
+        rng=Random(7),
+    )
+
+    assert calls == {
+        "battle_format": "gen9ou",
+        "kwargs": {
+            "month": "2026-06",
+            "cutoff": 1695,
+            "timeout": 12,
+            "cache_dir": None,
+            "refresh": True,
+        },
+    }
+    assert builder.stats is smogon_stats
+    assert builder.team_strategy == "sample"
+    assert builder.pokemon_strategy == "greedy"
+
+
+def test_convenience_helpers_return_structured_teams(monkeypatch, smogon_stats):
+    monkeypatch.setattr(
+        SmogonStats,
+        "fetch",
+        classmethod(lambda cls, battle_format, **kwargs: smogon_stats),
+    )
+
+    generated = generate_team("gen9ou", rng=Random(7))
+    assert len(generated) == 6
+    assert all(isinstance(pokemon, TeambuilderPokemon) for pokemon in generated)
+
+    partial = [TeambuilderPokemon(species="Alpha", moves=["Observed Move"])]
+    completed = complete_team(partial, "gen9ou", rng=Random(7))
+
+    assert len(completed) == 6
+    assert completed[0].moves[0] == "Observed Move"
+    assert partial[0].moves == ["Observed Move"]
 
 
 @pytest.mark.parametrize(

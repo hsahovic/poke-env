@@ -6,6 +6,13 @@ statistics snapshot. It uses the snapshot's overall usage and teammate data to
 choose species, then fills in each Pokémon's missing ability, item, spread,
 moves, and Tera type from that Pokémon's marginal frequencies.
 
+For a reusable builder, load a snapshot directly or use
+``SmogonStatsTeambuilder.from_format("gen9ou")``. Its ``yield_team`` method
+returns the packed format expected by ``Player``. For one-off use, the
+``generate_team`` and ``complete_team`` helpers return lists of
+``TeambuilderPokemon`` objects, which can be inspected or modified before being
+packed with ``Teambuilder.join_team``.
+
 Team and Pokémon completion are controlled independently:
 
 ``team_strategy``

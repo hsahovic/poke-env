@@ -2,8 +2,9 @@
 
 from copy import deepcopy
 from math import prod
+from pathlib import Path
 from random import Random
-from typing import Literal, Mapping, Optional, Sequence, TypeVar
+from typing import Literal, Mapping, Optional, Sequence, TypeVar, Union
 
 from poke_env.data.normalize import to_id_str
 from poke_env.data.smogon import PokemonUsageStats, SmogonStats
@@ -78,8 +79,60 @@ class SmogonStatsTeambuilder(Teambuilder):
             if len(set(map(to_id_str, pokemon.moves))) != len(pokemon.moves):
                 raise ValueError(f"{pokemon.species} has duplicate specified moves")
 
+    @classmethod
+    def from_format(
+        cls,
+        battle_format: str,
+        team: Sequence[TeambuilderPokemon] = (),
+        *,
+        month: str = "latest",
+        cutoff: int = 0,
+        timeout: float = 30,
+        cache_dir: Optional[Union[str, Path]] = ".poke_env_stats_cache",
+        refresh: bool = False,
+        team_strategy: Strategy = "greedy",
+        pokemon_strategy: Strategy = "greedy",
+        rng: Optional[Random] = None,
+    ) -> "SmogonStatsTeambuilder":
+        """Create a teambuilder from a Smogon statistics format.
+
+        This is a convenience wrapper around :meth:`SmogonStats.fetch`. Use the
+        constructor directly when a parsed snapshot is already available.
+
+        :param battle_format: Format whose Smogon statistics should be used.
+        :param team: Partially specified Pokemon to retain and complete.
+        :param month: Statistics month, or ``"latest"``.
+        :param cutoff: Smogon rating cutoff for the statistics snapshot.
+        :param timeout: HTTP timeout used when fetching statistics.
+        :param cache_dir: Directory used for cached snapshots. Set to ``None`` to
+            disable caching.
+        :param refresh: Whether to replace an existing cached snapshot.
+        :param team_strategy: Strategy used to select missing species.
+        :param pokemon_strategy: Strategy used to complete missing set values.
+        :param rng: Source of randomness for sampled choices.
+        """
+        stats = SmogonStats.fetch(
+            battle_format,
+            month=month,
+            cutoff=cutoff,
+            timeout=timeout,
+            cache_dir=cache_dir,
+            refresh=refresh,
+        )
+        return cls(
+            stats,
+            team,
+            team_strategy=team_strategy,
+            pokemon_strategy=pokemon_strategy,
+            rng=rng,
+        )
+
     def yield_team(self) -> str:
         """Return a packed completed team."""
+        return self.join_team(self._build_team())
+
+    def _build_team(self) -> list[TeambuilderPokemon]:
+        """Return a structured completed team for the public convenience helpers."""
         team = [deepcopy(pokemon) for pokemon in self._team]
         selected_stats = [self._usage_for(pokemon) for pokemon in team]
 
@@ -90,7 +143,7 @@ class SmogonStatsTeambuilder(Teambuilder):
 
         for pokemon in team:
             self._complete_pokemon(pokemon, self._usage_for(pokemon))
-        return self.join_team(team)
+        return team
 
     def _usage_for(self, pokemon: TeambuilderPokemon) -> PokemonUsageStats:
         assert pokemon.species is not None
@@ -201,3 +254,71 @@ class SmogonStatsTeambuilder(Teambuilder):
             if threshold <= 0:
                 return value
         return ordered[-1]
+
+
+def generate_team(
+    battle_format: str,
+    *,
+    month: str = "latest",
+    cutoff: int = 0,
+    timeout: float = 30,
+    cache_dir: Optional[Union[str, Path]] = ".poke_env_stats_cache",
+    refresh: bool = False,
+    team_strategy: Strategy = "greedy",
+    pokemon_strategy: Strategy = "greedy",
+    rng: Optional[Random] = None,
+) -> list[TeambuilderPokemon]:
+    """Generate a structured team from a Smogon statistics format.
+
+    The returned list can be inspected or modified before being converted to a
+    packed team with :meth:`Teambuilder.join_team`. Use
+    :meth:`SmogonStatsTeambuilder.from_format` when the builder itself should be
+    reused or passed to a :class:`~poke_env.player.Player`.
+    """
+    builder = SmogonStatsTeambuilder.from_format(
+        battle_format,
+        month=month,
+        cutoff=cutoff,
+        timeout=timeout,
+        cache_dir=cache_dir,
+        refresh=refresh,
+        team_strategy=team_strategy,
+        pokemon_strategy=pokemon_strategy,
+        rng=rng,
+    )
+    return builder._build_team()
+
+
+def complete_team(
+    partial_team: Sequence[TeambuilderPokemon],
+    battle_format: str,
+    *,
+    month: str = "latest",
+    cutoff: int = 0,
+    timeout: float = 30,
+    cache_dir: Optional[Union[str, Path]] = ".poke_env_stats_cache",
+    refresh: bool = False,
+    team_strategy: Strategy = "greedy",
+    pokemon_strategy: Strategy = "greedy",
+    rng: Optional[Random] = None,
+) -> list[TeambuilderPokemon]:
+    """Complete a partial team using a Smogon statistics format.
+
+    ``partial_team`` should contain :class:`TeambuilderPokemon` objects, for
+    example from :meth:`Teambuilder.parse_showdown_team` or
+    :meth:`Teambuilder.parse_packed_team`. The returned list is independent of the
+    input and can be packed with :meth:`Teambuilder.join_team`.
+    """
+    builder = SmogonStatsTeambuilder.from_format(
+        battle_format,
+        partial_team,
+        month=month,
+        cutoff=cutoff,
+        timeout=timeout,
+        cache_dir=cache_dir,
+        refresh=refresh,
+        team_strategy=team_strategy,
+        pokemon_strategy=pokemon_strategy,
+        rng=rng,
+    )
+    return builder._build_team()
