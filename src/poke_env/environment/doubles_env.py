@@ -32,7 +32,7 @@ class DoublesEnv(PokeEnv[npt.NDArray[np.int64]]):
         account_configuration1: Optional[AccountConfiguration] = None,
         account_configuration2: Optional[AccountConfiguration] = None,
         avatar: Optional[int] = None,
-        battle_format: str = "gen8randomdoublesbattle",
+        battle_format: str = "gen9randomdoublesbattle",
         log_level: Optional[int] = None,
         save_replays: Union[bool, str] = False,
         server_configuration: Optional[
