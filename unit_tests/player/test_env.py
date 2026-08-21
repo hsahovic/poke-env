@@ -117,6 +117,39 @@ def test_player_options_build_player_kwargs():
     }
 
 
+def test_player_options_configure_environment():
+    options = PlayerOptions(
+        battle_format="gen9ou",
+        max_concurrent_battles=3,
+        accept_open_team_sheet=True,
+        server_configuration=server_configuration,
+        start_listening=False,
+    )
+    env = CustomEnv(player_options=options)
+
+    assert env._player_options == options
+    assert env._battle_format == "gen9ou"
+    assert env.agent1.format == "gen9ou"
+    assert env.agent1._max_concurrent_battles == 3
+    assert env.agent1.accept_open_team_sheet
+
+
+@pytest.mark.parametrize("environment_class", [SinglesEnv, DoublesEnv])
+def test_player_options_are_accepted_by_concrete_environments(environment_class):
+    options = PlayerOptions(start_listening=False, battle_format="gen9ou")
+    env = environment_class(player_options=options)
+
+    assert env._player_options == options
+    assert env._battle_format == "gen9ou"
+
+
+def test_player_options_cannot_be_combined_with_legacy_options():
+    with pytest.raises(
+        TypeError, match="player_options cannot be combined with non-default"
+    ):
+        CustomEnv(player_options=PlayerOptions(), team="team")
+
+
 def test_init_queue():
     q = _AsyncQueue(POKE_LOOP)
     assert isinstance(q, _AsyncQueue)

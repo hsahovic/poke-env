@@ -41,6 +41,8 @@ from poke_env.teambuilder.teambuilder import Teambuilder
 ItemType = TypeVar("ItemType")
 ActionType = TypeVar("ActionType")
 
+_DEFAULT_POKE_ENV_PLAYER_OPTIONS = PlayerOptions(battle_format="gen8randombattle")
+
 
 class _AsyncQueue(Generic[ItemType]):
     queue: asyncio.Queue[ItemType]
@@ -185,6 +187,7 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
         *,
         account_configuration1: Optional[AccountConfiguration] = None,
         account_configuration2: Optional[AccountConfiguration] = None,
+        player_options: Optional[PlayerOptions] = None,
         avatar: Optional[int] = None,
         battle_format: str = "gen9randombattle",
         log_level: Optional[int] = None,
@@ -209,6 +212,9 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
             automatically generated username with no password. This option must be set
             if the server configuration requires authentication.
         :type account_configuration: AccountConfiguration, optional
+        :param player_options: Shared options used to create both agents. When set,
+            the player-specific keyword arguments must remain at their defaults.
+        :type player_options: PlayerOptions, optional
         :param avatar: Player avatar id. Optional.
         :type avatar: int, optional
         :param battle_format: Name of the battle format this player plays. Defaults to
@@ -267,15 +273,11 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
         """
         self.metadata = {"name": "poke-env-v0", "render_modes": ["human"]}
         self.render_mode: str | None = None
-        self._avatar = avatar
-        self._battle_format = battle_format
         self._challenge_timeout = challenge_timeout
         self._choose_on_teampreview = choose_on_teampreview
         self._fake = fake
         self._strict = strict
-        self._loop = asyncio.new_event_loop()
-        Thread(target=self._loop.run_forever, daemon=True).start()
-        self._player_options = PlayerOptions(
+        legacy_player_options = PlayerOptions(
             avatar=avatar,
             battle_format=battle_format,
             log_level=log_level,
@@ -290,6 +292,20 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
             ping_timeout=ping_timeout,
             team=team,
         )
+        if (
+            player_options is not None
+            and legacy_player_options != _DEFAULT_POKE_ENV_PLAYER_OPTIONS
+        ):
+            raise TypeError(
+                "player_options cannot be combined with non-default player options"
+            )
+        self._player_options = (
+            player_options if player_options is not None else legacy_player_options
+        )
+        self._avatar = self._player_options.avatar
+        self._battle_format = self._player_options.battle_format
+        self._loop = asyncio.new_event_loop()
+        Thread(target=self._loop.run_forever, daemon=True).start()
         self.agent1 = self._create_agent(account_configuration1)
         self.agent2 = self._create_agent(account_configuration2)
 

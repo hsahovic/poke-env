@@ -14,6 +14,7 @@ from poke_env.player.battle_order import (
     SingleBattleOrder,
 )
 from poke_env.player.player import Player
+from poke_env.player.player_options import PlayerOptions
 from poke_env.ps_client import (
     AccountConfiguration,
     LocalhostServerConfiguration,
@@ -28,6 +29,7 @@ class SinglesEnv(PokeEnv[np.int64]):
         *,
         account_configuration1: Optional[AccountConfiguration] = None,
         account_configuration2: Optional[AccountConfiguration] = None,
+        player_options: Optional[PlayerOptions] = None,
         avatar: Optional[int] = None,
         battle_format: str = "gen9randombattle",
         log_level: Optional[int] = None,
@@ -50,6 +52,7 @@ class SinglesEnv(PokeEnv[np.int64]):
         super().__init__(
             account_configuration1=account_configuration1,
             account_configuration2=account_configuration2,
+            player_options=player_options,
             avatar=avatar,
             battle_format=battle_format,
             log_level=log_level,
@@ -67,7 +70,7 @@ class SinglesEnv(PokeEnv[np.int64]):
             fake=fake,
             strict=strict,
         )
-        gen = GenData.from_format(battle_format).gen
+        gen = GenData.from_format(self._player_options.battle_format).gen
         self.action_spaces: dict[str, Space[Any]] = {
             agent: Discrete(SinglesEnv.get_action_space_size(gen))
             for agent in self.possible_agents

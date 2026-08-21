@@ -18,6 +18,8 @@ from poke_env.teambuilder.teambuilder import Teambuilder
 class PlayerOptions:
     """Configuration shared by players created for the same environment.
 
+    Pass an instance through the ``player_options`` argument of ``PokeEnv``,
+    ``SinglesEnv``, or ``DoublesEnv`` to configure both environment agents.
     Account configuration and the event loop are supplied by the owner creating a
     player. They are intentionally not stored here because environments use one set
     of options for two accounts and recreate their loop when unpickled.
