@@ -41,7 +41,7 @@ from poke_env.teambuilder.teambuilder import Teambuilder
 ItemType = TypeVar("ItemType")
 ActionType = TypeVar("ActionType")
 
-_DEFAULT_POKE_ENV_PLAYER_OPTIONS = PlayerOptions(battle_format="gen8randombattle")
+_DEFAULT_POKE_ENV_PLAYER_OPTIONS = PlayerOptions(battle_format="gen9randombattle")
 
 
 class _AsyncQueue(Generic[ItemType]):

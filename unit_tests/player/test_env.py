@@ -75,6 +75,14 @@ def test_pickle_unpickle():
     assert len(restored.action_spaces) == 2
 
 
+def test_environment_defaults_to_gen9_random_battle():
+    env = CustomEnv(start_listening=False)
+
+    assert env._battle_format == "gen9randombattle"
+    assert env.agent1.format == "gen9randombattle"
+    assert env.agent2.format == "gen9randombattle"
+
+
 def test_player_options_build_player_kwargs():
     options = PlayerOptions(
         avatar="avatar",
