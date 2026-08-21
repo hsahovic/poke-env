@@ -18,6 +18,7 @@ from poke_env.player.battle_order import (
     SingleBattleOrder,
 )
 from poke_env.player.player import Player
+from poke_env.player.player_options import PlayerOptions
 from poke_env.ps_client import (
     AccountConfiguration,
     LocalhostServerConfiguration,
@@ -27,6 +28,8 @@ from poke_env.teambuilder import Teambuilder
 
 
 class DoublesEnv(PokeEnv[npt.NDArray[np.int64]]):
+    _default_battle_format = "gen9randomdoublesbattle"
+
     def __init__(
         self,
         account_configuration1: Optional[AccountConfiguration] = None,
@@ -49,10 +52,12 @@ class DoublesEnv(PokeEnv[npt.NDArray[np.int64]]):
         choose_on_teampreview: bool = True,
         fake: bool = False,
         strict: bool = True,
+        player_options: Optional[PlayerOptions] = None,
     ):
         super().__init__(
             account_configuration1=account_configuration1,
             account_configuration2=account_configuration2,
+            player_options=player_options,
             avatar=avatar,
             battle_format=battle_format,
             log_level=log_level,
@@ -70,7 +75,7 @@ class DoublesEnv(PokeEnv[npt.NDArray[np.int64]]):
             fake=fake,
             strict=strict,
         )
-        gen = GenData.from_format(battle_format).gen
+        gen = GenData.from_format(self._player_options.battle_format).gen
         action_space_size = DoublesEnv.get_action_space_size(gen)
         self.action_spaces = {
             agent: MultiDiscrete([action_space_size, action_space_size])
