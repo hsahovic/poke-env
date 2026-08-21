@@ -41,8 +41,6 @@ from poke_env.teambuilder.teambuilder import Teambuilder
 ItemType = TypeVar("ItemType")
 ActionType = TypeVar("ActionType")
 
-_DEFAULT_POKE_ENV_PLAYER_OPTIONS = PlayerOptions(battle_format="gen9randombattle")
-
 
 class _AsyncQueue(Generic[ItemType]):
     queue: asyncio.Queue[ItemType]
@@ -182,6 +180,8 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
     Base class implementing the PettingZoo API on the main thread.
     """
 
+    _default_battle_format = "gen9randombattle"
+
     def __init__(
         self,
         *,
@@ -292,9 +292,8 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
             ping_timeout=ping_timeout,
             team=team,
         )
-        if (
-            player_options is not None
-            and legacy_player_options != _DEFAULT_POKE_ENV_PLAYER_OPTIONS
+        if player_options is not None and legacy_player_options != PlayerOptions(
+            battle_format=self._default_battle_format
         ):
             raise TypeError(
                 "player_options cannot be combined with non-default player options"

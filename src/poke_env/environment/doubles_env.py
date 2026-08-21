@@ -28,6 +28,8 @@ from poke_env.teambuilder import Teambuilder
 
 
 class DoublesEnv(PokeEnv[npt.NDArray[np.int64]]):
+    _default_battle_format = "gen9randomdoublesbattle"
+
     def __init__(
         self,
         account_configuration1: Optional[AccountConfiguration] = None,
