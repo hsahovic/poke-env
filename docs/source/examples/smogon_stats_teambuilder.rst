@@ -30,6 +30,6 @@ completion or greedy species with sampled set completion. A seeded
 .. literalinclude:: ../../../examples/smogon_stats_teambuilder.py
    :language: python
 
-The teammate data contains pairwise information rather than complete team
-observations, so the generated team is a practical completion based on those
-pairwise signals, not an exact reconstruction of the full team distribution.
+The teammate statistics describe pairs of Pokémon, not complete teams. The
+builder uses them to make a plausible team, but it does not reproduce the
+original team distribution exactly.
