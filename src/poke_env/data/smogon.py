@@ -72,9 +72,9 @@ class PokemonUsageStats:
 
     Frequencies are represented as fractions. For example, an item value of ``0.4``
     means that 40% of the weighted sets for this Pokemon held that item. Teammate
-    scores are the signed difference between conditional teammate usage and overall
-    metagame usage, rather than probabilities. Moves are marginal frequencies, so
-    their values generally sum to four rather than one.
+    scores are conditional teammate frequencies: a value for teammate ``m`` is
+    ``P(m in the team | this Pokemon is in the team)``. Moves are marginal
+    frequencies, so their values generally sum to four rather than one.
     """
 
     id: str

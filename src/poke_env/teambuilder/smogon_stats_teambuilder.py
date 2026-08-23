@@ -1,7 +1,7 @@
 """Teambuilders backed by Smogon usage statistics."""
 
 from copy import deepcopy
-from math import prod
+from math import exp, log, sqrt
 from pathlib import Path
 from random import Random
 from typing import Literal, Mapping, Optional, Sequence, TypeVar, Union
@@ -19,11 +19,11 @@ class SmogonStatsTeambuilder(Teambuilder):
     """Complete teams using one explicit Smogon usage-statistics snapshot.
 
     The snapshot supplies marginal set frequencies, so fields of a Pokemon's set
-    are selected independently.  Species selection starts from overall usage and
-    then uses the geometric mean of the selected Pokemon's teammate distributions.
-    Negative or zero teammate scores do not contribute to the partner
-    distribution.  The teammate data describes pairs, so completions use pairwise
-    signals rather than attempting to reproduce the full distribution of teams.
+    are selected independently. Species selection starts from overall usage, then
+    pools the selected Pokemon's conditional teammate distributions in log-odds
+    space. Signals from positively correlated team members are downweighted so the
+    same evidence is not counted repeatedly. The teammate data describes pairs, so
+    completions do not reproduce the full distribution of teams exactly.
 
     :param stats: Statistics snapshot used for every completion.
     :param team: Partially specified Pokemon to retain and complete.
@@ -163,34 +163,13 @@ class SmogonStatsTeambuilder(Teambuilder):
                 pokemon_id: pokemon.usage for pokemon_id, pokemon in candidates.items()
             }
         else:
-            teammate_distributions = []
-            for selected in selected_stats:
-                positive_scores = {
-                    pokemon_id: max(selected.teammate_scores.get(pokemon_id, 0.0), 0.0)
-                    for pokemon_id in candidates
-                }
-                total = sum(positive_scores.values())
-                if total <= 0:
-                    weights = {
-                        pokemon_id: pokemon.usage
-                        for pokemon_id, pokemon in candidates.items()
-                    }
-                    break
-                teammate_distributions.append(
-                    {
-                        pokemon_id: score / total
-                        for pokemon_id, score in positive_scores.items()
-                    }
+            evidence_weights = _evidence_weights(selected_stats)
+            weights = {
+                pokemon_id: _pooled_probability(
+                    candidate, selected_stats, evidence_weights
                 )
-            else:
-                weights = {
-                    pokemon_id: prod(
-                        distribution[pokemon_id]
-                        for distribution in teammate_distributions
-                    )
-                    ** (1 / len(teammate_distributions))
-                    for pokemon_id in candidates
-                }
+                for pokemon_id, candidate in candidates.items()
+            }
 
         return candidates[
             self._choose(weights, "available Pokemon", self.team_strategy)
@@ -254,6 +233,57 @@ class SmogonStatsTeambuilder(Teambuilder):
             if threshold <= 0:
                 return value
         return ordered[-1]
+
+
+def _pooled_probability(
+    candidate: PokemonUsageStats,
+    selected: Sequence[PokemonUsageStats],
+    evidence_weights: Sequence[float],
+) -> float:
+    prior_logit = _logit(candidate.usage)
+    pooled_logit = prior_logit + sum(
+        weight * (_logit(teammate.teammate_scores.get(candidate.id, 0.0)) - prior_logit)
+        for teammate, weight in zip(selected, evidence_weights)
+    )
+    return _expit(pooled_logit)
+
+
+def _evidence_weights(selected: Sequence[PokemonUsageStats]) -> list[float]:
+    weights = []
+    for index, pokemon in enumerate(selected):
+        redundancy = 1.0
+        for other_index, other in enumerate(selected):
+            if index != other_index:
+                redundancy += _positive_correlation(pokemon, other)
+        weights.append(1 / redundancy)
+    return weights
+
+
+def _positive_correlation(first: PokemonUsageStats, second: PokemonUsageStats) -> float:
+    denominator = sqrt(
+        first.usage * (1 - first.usage) * second.usage * (1 - second.usage)
+    )
+    if denominator <= 0:
+        return 0.0
+
+    joint = (
+        first.usage * first.teammate_scores.get(second.id, 0.0)
+        + second.usage * second.teammate_scores.get(first.id, 0.0)
+    ) / 2
+    correlation = (joint - first.usage * second.usage) / denominator
+    return min(max(correlation, 0.0), 1.0)
+
+
+def _logit(probability: float) -> float:
+    probability = min(max(probability, 1e-12), 1 - 1e-12)
+    return log(probability) - log(1 - probability)
+
+
+def _expit(value: float) -> float:
+    if value >= 0:
+        return 1 / (1 + exp(-value))
+    exponent = exp(value)
+    return exponent / (1 + exponent)
 
 
 def generate_team(
