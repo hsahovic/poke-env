@@ -73,6 +73,15 @@ Useful entry points:
 - [Getting started](https://poke-env.readthedocs.io/en/stable/getting_started.html)
 - [Example guides](https://poke-env.readthedocs.io/en/stable/examples/index.html)
 
+## Projects using `poke-env`
+
+- [Jaxcalibur](https://jaxcalibur.github.io/) is a self-play reinforcement
+  learning bot that reached #1 on the Generation 9 Random Battle ladder.
+- [Pokémon Team](https://pokemon-team.com/) uses the `poke-env` teambuilding
+  algorithm to generate Pokémon Showdown teams from Smogon usage statistics.
+- [Algorithmic Pokémon Teambuilding](https://sahovic.fr/algorithmic-pokemon-teambuilding.html)
+  explores team optimization using simulated battles and statistical models.
+
 ## Development version
 
 You can also clone the latest master version with:
