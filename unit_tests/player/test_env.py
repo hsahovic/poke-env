@@ -28,6 +28,7 @@ from poke_env.player import (
     DoubleBattleOrder,
     ForfeitBattleOrder,
     Player,
+    PlayerOptions,
     SingleBattleOrder,
 )
 from poke_env.ps_client import AccountConfiguration, ServerConfiguration
@@ -62,6 +63,7 @@ def test_pickle_unpickle():
 
     assert isinstance(restored, CustomEnv)
     assert restored._battle_format == env._battle_format
+    assert restored._player_options == env._player_options
     assert restored._strict == env._strict
     assert restored._fake == env._fake
     assert restored.agent1 is not None
@@ -71,6 +73,89 @@ def test_pickle_unpickle():
     assert len(restored.possible_agents) == 2
     assert len(restored.observation_spaces) == 2
     assert len(restored.action_spaces) == 2
+
+
+def test_environment_defaults_to_gen9_random_battle():
+    env = CustomEnv(start_listening=False)
+
+    assert env._battle_format == "gen9randombattle"
+    assert env.agent1.format == "gen9randombattle"
+    assert env.agent2.format == "gen9randombattle"
+
+
+def test_player_options_build_player_kwargs():
+    options = PlayerOptions(
+        avatar="avatar",
+        battle_format="gen9ou",
+        log_level=25,
+        max_concurrent_battles=3,
+        accept_open_team_sheet=True,
+        save_replays=True,
+        server_configuration=server_configuration,
+        start_timer_on_battle_start=True,
+        start_listening=False,
+        open_timeout=None,
+        ping_interval=None,
+        ping_timeout=None,
+        team="team",
+        strict_battle_tracking=True,
+    )
+
+    kwargs = options.to_player_kwargs(
+        account_configuration=account_configuration1, loop=POKE_LOOP
+    )
+
+    assert kwargs == {
+        "account_configuration": account_configuration1,
+        "avatar": "avatar",
+        "battle_format": "gen9ou",
+        "log_level": 25,
+        "max_concurrent_battles": 3,
+        "accept_open_team_sheet": True,
+        "save_replays": True,
+        "server_configuration": server_configuration,
+        "start_timer_on_battle_start": True,
+        "start_listening": False,
+        "open_timeout": None,
+        "ping_interval": None,
+        "ping_timeout": None,
+        "loop": POKE_LOOP,
+        "team": "team",
+        "strict_battle_tracking": True,
+    }
+
+
+def test_player_options_configure_environment():
+    options = PlayerOptions(
+        battle_format="gen9ou",
+        max_concurrent_battles=3,
+        accept_open_team_sheet=True,
+        server_configuration=server_configuration,
+        start_listening=False,
+    )
+    env = CustomEnv(player_options=options)
+
+    assert env._player_options == options
+    assert env._battle_format == "gen9ou"
+    assert env.agent1.format == "gen9ou"
+    assert env.agent1._max_concurrent_battles == 3
+    assert env.agent1.accept_open_team_sheet
+
+
+@pytest.mark.parametrize("environment_class", [SinglesEnv, DoublesEnv])
+def test_player_options_are_accepted_by_concrete_environments(environment_class):
+    options = PlayerOptions(start_listening=False, battle_format="gen9ou")
+    env = environment_class(player_options=options)
+
+    assert env._player_options == options
+    assert env._battle_format == "gen9ou"
+
+
+def test_player_options_cannot_be_combined_with_legacy_options():
+    with pytest.raises(
+        TypeError, match="player_options cannot be combined with non-default"
+    ):
+        CustomEnv(player_options=PlayerOptions(), team="team")
 
 
 def test_init_queue():
