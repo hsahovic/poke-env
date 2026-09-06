@@ -990,13 +990,16 @@ class MoveSet:
         :return: The resolved move dictionary with Mimic substitution applied.
         :rtype: dict[str, Move]
         """
-        if self.mimic_move is None:
-            return self.base_moves
+        resolved = self._resolved()
+        mimic_move = resolved._mimic_move
+        base_moves = resolved._base_moves
+        if mimic_move is None:
+            return base_moves
         else:
             moves = {}
-            for k, v in self.base_moves.items():
+            for k, v in base_moves.items():
                 if k == "mimic":
-                    moves[self.mimic_move.id] = self.mimic_move
+                    moves[mimic_move.id] = mimic_move
                 else:
                     moves[k] = v
             return moves
