@@ -10541,6 +10541,7 @@
         "pp": 10,
         "priority": 0,
         "target": "any",
+        "tracksTarget": true,
         "type": "Flying"
     },
     "skyuppercut": {
