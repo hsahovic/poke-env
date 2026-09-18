@@ -27,11 +27,10 @@ async def cross_evaluation(n_battles, format_, teams):
             )
             for _ in range(2)
         ]
-    await cross_evaluate(players, n_challenges=n_battles)
-
-    for player in players:
-        player.reset_battles()
-        await player.ps_client.stop_listening()
+    try:
+        await cross_evaluate(players, n_challenges=n_battles)
+    finally:
+        await asyncio.gather(*(player.ps_client.stop_listening() for player in players))
 
 
 @pytest.mark.asyncio

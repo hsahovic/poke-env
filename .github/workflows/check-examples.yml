@@ -50,12 +50,13 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v7
         with:
-          node-version: 18
+          node-version: 24
 
       - name: Checkout PS
         uses: actions/checkout@v7
         with:
           repository: smogon/pokemon-showdown
+          ref: '2ddfa0476f8207e12e204b1c69f7c7683b17633c'
           path: pokemon-showdown
           submodules: recursive
 
@@ -70,10 +71,11 @@ jobs:
         uses: actions/cache@v6
         with:
           path: pokemon-showdown/node_modules
-          key: showdown-python3.11-${{ steps.showdown-hash.outputs.hash }}
-          restore-keys: showdown-python3.11-
+          key: showdown-${{ runner.os }}-node24-${{ steps.showdown-hash.outputs.hash }}
+          restore-keys: showdown-${{ runner.os }}-node24-
 
       - name: Install PS dependencies and start server
+        timeout-minutes: 3
         run: bash scripts/ci_setup_showdown.sh
 
       - name: Run example notebooks
@@ -86,3 +88,11 @@ jobs:
               fi
               rm examples/temp.ipynb
             done
+
+      - name: Upload Showdown log
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: showdown-examples
+          path: pokemon-showdown/server.log
+          if-no-files-found: ignore
