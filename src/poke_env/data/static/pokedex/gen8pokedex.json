@@ -14436,7 +14436,7 @@
     },
     "golisopodmega": {
         "abilities": {
-            "0": "Emergency Exit"
+            "0": "Tough Claws"
         },
         "baseSpecies": "Golisopod",
         "baseStats": {

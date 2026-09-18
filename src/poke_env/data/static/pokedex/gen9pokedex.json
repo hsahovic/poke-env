@@ -3215,8 +3215,7 @@
     },
     "baxcaliburmega": {
         "abilities": {
-            "0": "Thermal Exchange",
-            "H": "Ice Body"
+            "0": "Thermal Exchange"
         },
         "baseSpecies": "Baxcalibur",
         "baseStats": {
@@ -15934,7 +15933,7 @@
     },
     "golisopodmega": {
         "abilities": {
-            "0": "Emergency Exit"
+            "0": "Tough Claws"
         },
         "baseSpecies": "Golisopod",
         "baseStats": {
