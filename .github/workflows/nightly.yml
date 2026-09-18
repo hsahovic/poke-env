@@ -9,7 +9,7 @@ jobs:
   nightly:
     uses: ./.github/workflows/tests.yml
     with:
-      showdown-ref: master
+      latest-showdown: true
     secrets: inherit
   nightly-extra:
     runs-on: ubuntu-latest

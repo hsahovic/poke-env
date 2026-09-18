@@ -467,9 +467,7 @@ class Player(ABC):
         :type packed_team: string, optional.
         """
         await handle_threaded_coroutines(
-            self.ps_client._wait_for_operation(
-                self._accept_challenges(opponent, n_challenges, packed_team)
-            ),
+            self._accept_challenges(opponent, n_challenges, packed_team),
             self.ps_client.loop,
         )
 
@@ -568,10 +566,7 @@ class Player(ABC):
         :param n_games: Number of battles that will be played
         :type n_games: int
         """
-        await handle_threaded_coroutines(
-            self.ps_client._wait_for_operation(self._ladder(n_games)),
-            self.ps_client.loop,
-        )
+        await handle_threaded_coroutines(self._ladder(n_games), self.ps_client.loop)
 
     async def _ladder(self, n_games: int):
         await self.ps_client.logged_in.wait()
@@ -608,24 +603,14 @@ class Player(ABC):
 
     async def _battle_against(self, *opponents: Player, n_battles: int):
         for opponent in opponents:
-            tasks = [
-                asyncio.create_task(
-                    self.send_challenges(
-                        to_id_str(opponent.username),
-                        n_battles,
-                        to_wait=opponent.ps_client.logged_in,
-                    )
+            await asyncio.gather(
+                self.send_challenges(
+                    to_id_str(opponent.username),
+                    n_battles,
+                    to_wait=opponent.ps_client.logged_in,
                 ),
-                asyncio.create_task(
-                    opponent.accept_challenges(to_id_str(self.username), n_battles)
-                ),
-            ]
-            try:
-                await asyncio.gather(*tasks)
-            finally:
-                for task in tasks:
-                    task.cancel()
-                await asyncio.gather(*tasks, return_exceptions=True)
+                opponent.accept_challenges(to_id_str(self.username), n_battles),
+            )
 
     async def send_challenges(
         self, opponent: str, n_challenges: int, to_wait: Optional[Event] = None
@@ -647,10 +632,7 @@ class Player(ABC):
         :type to_wait: Event, optional.
         """
         await handle_threaded_coroutines(
-            self.ps_client._wait_for_operation(
-                self._send_challenges(opponent, n_challenges, to_wait)
-            ),
-            self.ps_client.loop,
+            self._send_challenges(opponent, n_challenges, to_wait), self.ps_client.loop
         )
 
     async def _send_challenges(

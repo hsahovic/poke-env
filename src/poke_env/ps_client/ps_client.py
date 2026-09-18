@@ -5,7 +5,7 @@ import json
 import logging
 from logging import Logger
 from time import perf_counter
-from typing import Any, Awaitable, Callable, Coroutine, List, Optional, Set, TypeVar
+from typing import Awaitable, Callable, List, Optional, Set
 
 import requests
 import websockets as ws
@@ -23,7 +23,6 @@ from poke_env.ps_client.server_configuration import ServerConfiguration
 
 BattleMessageCallback = Callable[[List[List[str]]], Awaitable[None]]
 ChallengeCallback = Callable[[List[str]], Awaitable[None]]
-T = TypeVar("T")
 
 
 async def _noop_battle_message(split_messages: List[List[str]]) -> None:
@@ -100,9 +99,6 @@ class PSClient:
         self._on_challenge_request = on_challenge_request or _noop_challenge_message
 
         self.loop = loop
-        self._message_error: asyncio.Future[BaseException] = create_in_poke_loop(
-            loop.create_future, loop
-        )
         self._logged_in: asyncio.Event = create_in_poke_loop(asyncio.Event, loop)
         self._sending_lock: asyncio.Lock = create_in_poke_loop(asyncio.Lock, loop)
 
@@ -202,8 +198,6 @@ class PSClient:
             elif split_messages[0][1] == "updatesearch":
                 pass
             elif split_messages[0][1] == "popup":
-                if split_messages[0][2].startswith("Your selected format is invalid:"):
-                    raise ShowdownException(message)
                 self.logger.warning("Popup message received: %s", message)
             elif split_messages[0][1] in ["nametaken"]:
                 self.logger.critical("Error message received: %s", message)
@@ -228,6 +222,8 @@ class PSClient:
                     )
             else:
                 self.logger.warning("Unhandled message: %s", message)
+        except asyncio.CancelledError as e:
+            self.logger.critical("CancelledError intercepted: %s", e)
         except Exception as exception:
             self.logger.exception(
                 "Unhandled exception raised while handling message:\n%s", message
@@ -235,31 +231,7 @@ class PSClient:
             raise exception
 
     async def _stop_listening(self):
-        if hasattr(self, "websocket"):
-            await self.websocket.close()
-        tasks = list(self._active_tasks)
-        for task in tasks:
-            task.cancel()
-        await asyncio.gather(*tasks, return_exceptions=True)
-
-    def _handle_task_result(self, task: asyncio.Task):
-        self._active_tasks.discard(task)
-        if not task.cancelled():
-            exception = task.exception()
-            if exception is not None and not self._message_error.done():
-                self._message_error.set_result(exception)
-
-    async def _wait_for_operation(self, operation: Coroutine[Any, Any, T]) -> T:
-        task = asyncio.create_task(operation)
-        futures: list[asyncio.Future] = [task, self._message_error]
-        try:
-            await asyncio.wait(futures, return_when=asyncio.FIRST_COMPLETED)
-            if self._message_error.done():
-                raise self._message_error.result()
-            return task.result()
-        finally:
-            task.cancel()
-            await asyncio.gather(task, return_exceptions=True)
+        await self.websocket.close()
 
     async def change_avatar(self, avatar_name: Optional[str]):
         """Changes the account's avatar.
@@ -287,7 +259,7 @@ class PSClient:
                     self.logger.info("\033[92m\033[1m<<<\033[0m %s", message)
                     task = asyncio.create_task(self._handle_message(str(message)))
                     self._active_tasks.add(task)
-                    task.add_done_callback(self._handle_task_result)
+                    task.add_done_callback(self._active_tasks.discard)
 
         except ConnectionClosedOK:
             self.logger.warning(
@@ -297,8 +269,6 @@ class PSClient:
             self.logger.critical("Listen interrupted by %s", e)
         except Exception as e:
             self.logger.exception(e)
-            if not self._message_error.done():
-                self._message_error.set_result(e)
 
     async def log_in(self, split_message: List[str]):
         """Log in with specified username and password.

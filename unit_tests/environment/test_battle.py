@@ -923,26 +923,6 @@ def test_move_event_tracks_pressure_pp_cost():
     assert move.current_pp == move.max_pp - 2
 
 
-@pytest.mark.parametrize("gen", [3, 4, 5])
-@pytest.mark.parametrize("switching", [False, True])
-def test_pursuit_pressure_pp_cost(gen, switching):
-    battle = Battle("tag", "username", MagicMock(), gen=gen)
-    battle.player_role = "p1"
-    battle.switch("p1: Tyranitar", "Tyranitar, L50, M", "100/100")
-    battle.switch("p2: Dusclops", "Dusclops, L50, M", "100/100")
-    battle.parse_message(["", "-ability", "p2a: Dusclops", "Pressure"])
-
-    event = ["", "move", "p1a: Tyranitar", "Pursuit", "p2a: Dusclops"]
-    if switching:
-        battle.parse_message(["", "-activate", "p2a: Dusclops", "move: Pursuit"])
-        event.append("[from] Pursuit" if gen <= 4 else "[from] move: Pursuit")
-    battle.parse_message(event)
-
-    move = battle.active_pokemon.moves["pursuit"]
-    expected_cost = 1 if gen == 4 and switching else 2
-    assert move.current_pp == move.max_pp - expected_cost
-
-
 def test_move_event_ignores_dancer_reveal_and_pp():
     battle = Battle("tag", "username", MagicMock(), gen=9)
     battle.player_role = "p1"

@@ -2,9 +2,9 @@ name: Run tests
 on:
   workflow_call:
     inputs:
-      showdown-ref:
-        type: string
-        default: '2ddfa0476f8207e12e204b1c69f7c7683b17633c'
+      latest-showdown:
+        type: boolean
+        default: false
   push:
     branches:
       - "master"
@@ -71,10 +71,20 @@ jobs:
           node-version: 24
 
       - name: Checkout PS
+        if: ${{ !inputs.latest-showdown }}
         uses: actions/checkout@v7
         with:
           repository: smogon/pokemon-showdown
-          ref: ${{ inputs.showdown-ref || '2ddfa0476f8207e12e204b1c69f7c7683b17633c' }}
+          ref: '2ddfa0476f8207e12e204b1c69f7c7683b17633c'
+          path: pokemon-showdown
+          submodules: recursive
+
+      - name: Checkout latest PS
+        if: inputs.latest-showdown
+        uses: actions/checkout@v7
+        with:
+          repository: smogon/pokemon-showdown
+          ref: master
           path: pokemon-showdown
           submodules: recursive
 
