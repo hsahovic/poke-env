@@ -15,6 +15,7 @@ from poke_env.player.battle_order import (
     SingleBattleOrder,
 )
 from poke_env.player.player import Player
+from poke_env.player.player_options import PlayerOptions
 from poke_env.player.utils import (
     background_cross_evaluate,
     background_evaluate_player,
@@ -28,6 +29,7 @@ __all__ = [
     "POKE_LOOP",
     "PSClient",
     "Player",
+    "PlayerOptions",
     "cross_evaluate",
     "background_cross_evaluate",
     "background_evaluate_player",

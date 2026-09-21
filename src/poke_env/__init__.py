@@ -7,6 +7,7 @@ from poke_env.exceptions import ShowdownException
 from poke_env.player import (
     MaxBasePowerPlayer,
     Player,
+    PlayerOptions,
     RandomPlayer,
     SimpleHeuristicsPlayer,
     cross_evaluate,
@@ -31,6 +32,7 @@ __all__ = [
     "LocalhostServerConfiguration",
     "MaxBasePowerPlayer",
     "Player",
+    "PlayerOptions",
     "RandomPlayer",
     "ServerConfiguration",
     "ShowdownException",
