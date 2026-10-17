@@ -1795,7 +1795,6 @@
             "metronome": 1
         },
         "name": "Curse",
-        "nonGhostTarget": "self",
         "num": 174,
         "onHit": "onHit",
         "onModifyMove": "onModifyMove",
@@ -2682,10 +2681,8 @@
         "basePower": 0,
         "category": "Status",
         "condition": {
-            "duration": 1,
-            "onDamage": "onDamage",
-            "onDamagePriority": -10,
-            "onStart": "onStart"
+            "inherit": true,
+            "onDamage": "onDamage"
         },
         "contestType": "Tough",
         "flags": {

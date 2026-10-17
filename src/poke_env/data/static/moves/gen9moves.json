@@ -3446,7 +3446,6 @@
             "metronome": 1
         },
         "name": "Curse",
-        "nonGhostTarget": "self",
         "num": 174,
         "onHit": "onHit",
         "onModifyMove": "onModifyMove",
@@ -12905,8 +12904,7 @@
         },
         "category": "Status",
         "condition": {
-            "onStart": "onStart",
-            "onTrapPokemon": "onTrapPokemon"
+            "onStart": "onStart"
         },
         "flags": {
             "metronome": 1,
