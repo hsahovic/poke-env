@@ -81,6 +81,7 @@ Useful entry points:
   algorithm to generate Pokémon Showdown teams from Smogon usage statistics.
 - [Algorithmic Pokémon Teambuilding](https://sahovic.fr/algorithmic-pokemon-teambuilding.html)
   explores team optimization using simulated battles and statistical models.
+- [Metamon](https://github.com/UT-Austin-RPL/metamon/tree/main) is a collection of models, datasets and utilities related to Pokémon RL
 
 ## Development version
 
