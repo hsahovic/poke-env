@@ -610,7 +610,13 @@ class AbstractBattle(ABC):
                 reveal = False
                 event = event[:-1]
 
-            if event[-1] in {"[from] Pursuit", "[from]Pursuit", "[zeffect]"}:
+            pursuit_intercept = event[-1] in {
+                "[from] Pursuit",
+                "[from]Pursuit",
+                "[from] move: Pursuit",
+                "[from]move: Pursuit",
+            }
+            if pursuit_intercept or event[-1] == "[zeffect]":
                 event = event[:-1]
 
             if event[-1] == "[from] Sleep Talk":
@@ -718,7 +724,9 @@ class AbstractBattle(ABC):
 
             if spread or presumed_target == "":
                 presumed_target = None
-            pressure = self._pressure_on(pokemon, move, presumed_target)
+            pressure = not (self.gen == 4 and pursuit_intercept) and self._pressure_on(
+                pokemon, move, presumed_target
+            )
             mon = self.get_pokemon(pokemon)
             if overridden_move:
                 mon.moved(move, failed=failed, use=False, reveal=reveal)
