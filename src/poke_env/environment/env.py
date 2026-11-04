@@ -30,6 +30,7 @@ from poke_env.player.battle_order import (
     _EmptyBattleOrder,
 )
 from poke_env.player.player import Player
+from poke_env.player.player_options import PlayerOptions
 from poke_env.ps_client import AccountConfiguration
 from poke_env.ps_client.server_configuration import (
     LocalhostServerConfiguration,
@@ -89,9 +90,29 @@ class _EnvPlayer(Player):
     order_queue: _AsyncQueue[BattleOrder]
 
     def __init__(
-        self, *args: Any, choose_on_teampreview: bool | None = None, **kwargs: Any
+        self,
+        account_configuration: AccountConfiguration | None = None,
+        *,
+        player_options: PlayerOptions | None = None,
+        choose_on_teampreview: bool | None = None,
+        loop: asyncio.AbstractEventLoop | None = None,
+        **kwargs: Any,
     ):
-        super().__init__(*args, **kwargs)
+        if player_options is None:
+            if loop is not None:
+                kwargs["loop"] = loop
+            super().__init__(account_configuration=account_configuration, **kwargs)
+        else:
+            if loop is None or kwargs:
+                raise TypeError(
+                    "player_options requires a loop and cannot be combined with "
+                    "individual player options"
+                )
+            super().__init__(
+                **player_options.to_player_kwargs(
+                    account_configuration=account_configuration, loop=loop
+                )
+            )
         if choose_on_teampreview is None:
             self.logger.warning(
                 "choose_on_teampreview arg was not set in environment - by default, teampreview decisions will be made randomly."
@@ -159,11 +180,14 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
     Base class implementing the PettingZoo API on the main thread.
     """
 
+    _default_battle_format = "gen9randombattle"
+
     def __init__(
         self,
         *,
         account_configuration1: Optional[AccountConfiguration] = None,
         account_configuration2: Optional[AccountConfiguration] = None,
+        player_options: Optional[PlayerOptions] = None,
         avatar: Optional[int] = None,
         battle_format: str = "gen9randombattle",
         log_level: Optional[int] = None,
@@ -188,6 +212,9 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
             automatically generated username with no password. This option must be set
             if the server configuration requires authentication.
         :type account_configuration: AccountConfiguration, optional
+        :param player_options: Shared options used to create both agents. When set,
+            the player-specific keyword arguments must remain at their defaults.
+        :type player_options: PlayerOptions, optional
         :param avatar: Player avatar id. Optional.
         :type avatar: int, optional
         :param battle_format: Name of the battle format this player plays. Defaults to
@@ -246,62 +273,41 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
         """
         self.metadata = {"name": "poke-env-v0", "render_modes": ["human"]}
         self.render_mode: str | None = None
-        self._avatar = avatar
-        self._battle_format = battle_format
-        self._log_level = log_level
-        self._save_replays = save_replays
-        self._server_configuration = server_configuration
-        self._accept_open_team_sheet = accept_open_team_sheet
-        self._start_timer_on_battle_start = start_timer_on_battle_start
-        self._start_listening = start_listening
-        self._open_timeout = open_timeout
-        self._ping_interval = ping_interval
-        self._ping_timeout = ping_timeout
         self._challenge_timeout = challenge_timeout
-        self._team = team
         self._choose_on_teampreview = choose_on_teampreview
         self._fake = fake
         self._strict = strict
+        legacy_player_options = PlayerOptions(
+            avatar=avatar,
+            battle_format=battle_format,
+            log_level=log_level,
+            max_concurrent_battles=1,
+            save_replays=save_replays,
+            server_configuration=server_configuration,
+            accept_open_team_sheet=accept_open_team_sheet,
+            start_timer_on_battle_start=start_timer_on_battle_start,
+            start_listening=start_listening,
+            open_timeout=open_timeout,
+            ping_interval=ping_interval,
+            ping_timeout=ping_timeout,
+            team=team,
+        )
+        if player_options is not None and legacy_player_options != PlayerOptions(
+            battle_format=self._default_battle_format
+        ):
+            raise TypeError(
+                "player_options cannot be combined with non-default player options"
+            )
+        self._player_options = (
+            player_options if player_options is not None else legacy_player_options
+        )
+        self._avatar = self._player_options.avatar
+        self._battle_format = self._player_options.battle_format
         self._loop = asyncio.new_event_loop()
         Thread(target=self._loop.run_forever, daemon=True).start()
-        self.agent1 = _EnvPlayer(
-            account_configuration=account_configuration1
-            or AccountConfiguration.generate(self.__class__.__name__, rand=True),
-            avatar=avatar,
-            battle_format=battle_format,
-            log_level=log_level,
-            max_concurrent_battles=1,
-            save_replays=save_replays,
-            server_configuration=server_configuration,
-            accept_open_team_sheet=accept_open_team_sheet,
-            start_timer_on_battle_start=start_timer_on_battle_start,
-            start_listening=start_listening,
-            open_timeout=open_timeout,
-            ping_interval=ping_interval,
-            ping_timeout=ping_timeout,
-            loop=self._loop,
-            team=team,
-            choose_on_teampreview=choose_on_teampreview,
-        )
-        self.agent2 = _EnvPlayer(
-            account_configuration=account_configuration2
-            or AccountConfiguration.generate(self.__class__.__name__, rand=True),
-            avatar=avatar,
-            battle_format=battle_format,
-            log_level=log_level,
-            max_concurrent_battles=1,
-            save_replays=save_replays,
-            server_configuration=server_configuration,
-            accept_open_team_sheet=accept_open_team_sheet,
-            start_timer_on_battle_start=start_timer_on_battle_start,
-            start_listening=start_listening,
-            open_timeout=open_timeout,
-            ping_interval=ping_interval,
-            ping_timeout=ping_timeout,
-            loop=self._loop,
-            team=team,
-            choose_on_teampreview=choose_on_teampreview,
-        )
+        self.agent1 = self._create_agent(account_configuration1)
+        self.agent2 = self._create_agent(account_configuration2)
+
         self.agents: List[str] = []
         self.possible_agents = [self.agent1.username, self.agent2.username]
         self.battle1: Optional[AbstractBattle] = None
@@ -313,6 +319,17 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
             WeakKeyDictionary()
         )
         self._challenge_task: Optional[Future[Any]] = None
+
+    def _create_agent(
+        self, account_configuration: Optional[AccountConfiguration]
+    ) -> _EnvPlayer:
+        return _EnvPlayer(
+            account_configuration=account_configuration
+            or AccountConfiguration.generate(self.__class__.__name__, rand=True),
+            player_options=self._player_options,
+            choose_on_teampreview=self._choose_on_teampreview,
+            loop=self._loop,
+        )
 
     def __setattr__(self, name: str, value: Any):
         if name == "observation_spaces":
@@ -345,46 +362,8 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
         self.__dict__.update(state)
         self._loop = asyncio.new_event_loop()
         Thread(target=self._loop.run_forever, daemon=True).start()
-        self.agent1 = _EnvPlayer(
-            account_configuration=AccountConfiguration.generate(
-                self.__class__.__name__, rand=True
-            ),
-            avatar=self._avatar,
-            battle_format=self._battle_format,
-            log_level=self._log_level,
-            max_concurrent_battles=1,
-            save_replays=self._save_replays,
-            server_configuration=self._server_configuration,
-            accept_open_team_sheet=self._accept_open_team_sheet,
-            start_timer_on_battle_start=self._start_timer_on_battle_start,
-            start_listening=self._start_listening,
-            open_timeout=self._open_timeout,
-            ping_interval=self._ping_interval,
-            ping_timeout=self._ping_timeout,
-            loop=self._loop,
-            team=self._team,
-            choose_on_teampreview=self._choose_on_teampreview,
-        )
-        self.agent2 = _EnvPlayer(
-            account_configuration=AccountConfiguration.generate(
-                self.__class__.__name__, rand=True
-            ),
-            avatar=self._avatar,
-            battle_format=self._battle_format,
-            log_level=self._log_level,
-            max_concurrent_battles=1,
-            save_replays=self._save_replays,
-            server_configuration=self._server_configuration,
-            accept_open_team_sheet=self._accept_open_team_sheet,
-            start_timer_on_battle_start=self._start_timer_on_battle_start,
-            start_listening=self._start_listening,
-            open_timeout=self._open_timeout,
-            ping_interval=self._ping_interval,
-            ping_timeout=self._ping_timeout,
-            loop=self._loop,
-            team=self._team,
-            choose_on_teampreview=self._choose_on_teampreview,
-        )
+        self.agent1 = self._create_agent(None)
+        self.agent2 = self._create_agent(None)
         self.agents = []
         old_names = self.possible_agents
         self.possible_agents = [self.agent1.username, self.agent2.username]

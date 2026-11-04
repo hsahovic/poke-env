@@ -13,6 +13,14 @@ Player
    :undoc-members:
    :show-inheritance:
 
+Player options
+**************
+
+.. automodule:: poke_env.player.player_options
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Baselines
 *********
 
