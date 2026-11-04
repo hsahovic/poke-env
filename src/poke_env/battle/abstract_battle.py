@@ -1134,7 +1134,15 @@ class AbstractBattle(ABC):
                 return
 
             username, rating_info = event[2].split("'s rating: ")
-            rating_int = int(rating_info[:4])
+            match = re.search(r"<strong>(\d+)</strong>", rating_info)
+            if match:
+                rating_int = int(match.group(1))
+            else:
+                numbers = re.findall(r"\b\d+\b", rating_info.split("(")[0])
+                if numbers:
+                    rating_int = int(numbers[-1])
+                else:
+                    return
             if username == self.player_username:
                 self._rating = rating_int
             elif username == self.opponent_username:

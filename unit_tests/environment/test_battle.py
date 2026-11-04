@@ -449,7 +449,7 @@ def test_battle_request_and_interactions(example_request):
             "ray's rating: 1049 &rarr; <strong>1079</strong><br />(+30 for winning)",
         ]
     )
-    assert battle.rating == 1049
+    assert battle.rating == 1079
     battle.parse_message(
         [
             "",
@@ -457,7 +457,19 @@ def test_battle_request_and_interactions(example_request):
             "wolfe's rating: 1025 &rarr; <strong>1012</strong><br />(-13 for losing)",
         ]
     )
-    assert battle.opponent_rating == 1025
+    assert battle.opponent_rating == 1012
+
+    # Variable length ratings and unbolded ratings
+    battle.parse_message(
+        [
+            "",
+            "raw",
+            "ray's rating: 980 &rarr; <strong>1005</strong><br />(+25 for winning)",
+        ]
+    )
+    assert battle.rating == 1005
+    battle.parse_message(["", "raw", "wolfe's rating: 1500"])
+    assert battle.opponent_rating == 1500
 
     battle.in_team_preview = True
     battle.parse_message(["", "start"])
