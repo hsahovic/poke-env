@@ -4,6 +4,7 @@ from typing import Any, Dict, List, Optional, Union
 from poke_env.battle.abstract_battle import AbstractBattle
 from poke_env.battle.move import Move
 from poke_env.battle.pokemon import Pokemon
+from poke_env.battle.status import Status
 from poke_env.player.battle_order import DefaultBattleOrder, SingleBattleOrder
 
 
@@ -108,11 +109,12 @@ class Battle(AbstractBattle):
             if active_request.get("trapped"):
                 self._trapped = True
 
-            if self.active_pokemon is not None:
+            active_pokemon = self.active_pokemon
+            if active_pokemon is not None:
                 if strict_battle_tracking:
-                    self.active_pokemon.check_move_consistency(active_request)
+                    active_pokemon.check_move_consistency(active_request)
                 self._available_moves.extend(
-                    self.active_pokemon.available_moves_from_request(active_request)
+                    active_pokemon.available_moves_from_request(active_request)
                 )
             if active_request.get("canMegaEvo", False):
                 self._can_mega_evolve = True
@@ -125,24 +127,28 @@ class Battle(AbstractBattle):
             if active_request.get("maybeTrapped", False):
                 self._maybe_trapped = True
 
-        if not self.trapped:
+        if not self._trapped:
+            team = self._team
+            reviving = self._reviving
             for pkmn_json in side["pokemon"]:
-                pokemon = self.team[pkmn_json["ident"]]
-                if self.reviving:
-                    if pokemon.fainted:
+                pokemon = team[pkmn_json["ident"]]
+                if reviving:
+                    if pokemon._status is Status.FNT:
                         self._available_switches.append(pokemon)
-                elif not pokemon.active and not pokemon.fainted:
+                elif not pokemon._active and pokemon._status is not Status.FNT:
                     self._available_switches.append(pokemon)
 
     def switch(self, pokemon_str: str, details: str, hp_status: str):
         identifier = pokemon_str.split(":")[0][:2]
 
         if identifier == self._player_role:
-            if self.active_pokemon:
-                self.active_pokemon.switch_out(self.fields)
+            active_pokemon = self.active_pokemon
+            if active_pokemon:
+                active_pokemon.switch_out(self._fields)
         else:
-            if self.opponent_active_pokemon:
-                self.opponent_active_pokemon.switch_out(self.fields)
+            opponent_active_pokemon = self.opponent_active_pokemon
+            if opponent_active_pokemon:
+                opponent_active_pokemon.switch_out(self._fields)
 
         pokemon = self.get_pokemon(pokemon_str, details=details)
 
@@ -155,8 +161,8 @@ class Battle(AbstractBattle):
         :return: The active pokemon
         :rtype: Optional[Pokemon]
         """
-        for pokemon in self.team.values():
-            if pokemon.active:
+        for pokemon in self._team.values():
+            if pokemon._active:
                 return pokemon
         return None
 
@@ -248,8 +254,8 @@ class Battle(AbstractBattle):
         :return: The opponent active pokemon
         :rtype: Pokemon
         """
-        for pokemon in self.opponent_team.values():
-            if pokemon.active:
+        for pokemon in self._opponent_team.values():
+            if pokemon._active:
                 return pokemon
         return None
 
