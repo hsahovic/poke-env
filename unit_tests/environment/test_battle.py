@@ -924,23 +924,33 @@ def test_move_event_tracks_pressure_pp_cost():
 
 
 @pytest.mark.parametrize("gen", [3, 4, 5])
-@pytest.mark.parametrize("switching", [False, True])
-def test_pursuit_pressure_pp_cost(gen, switching):
+@pytest.mark.parametrize("species, pressure", [("Dusclops", True), ("Blissey", False)])
+@pytest.mark.parametrize(
+    "suffix",
+    [
+        None,
+        "[from] Pursuit",
+        "[from]Pursuit",
+        "[from] move: Pursuit",
+        "[from]move: Pursuit",
+    ],
+)
+def test_pursuit_pressure_pp_cost(gen, species, pressure, suffix):
     battle = Battle("tag", "username", MagicMock(), gen=gen)
     battle.player_role = "p1"
     battle.switch("p1: Tyranitar", "Tyranitar, L50, M", "100/100")
-    battle.switch("p2: Dusclops", "Dusclops, L50, M", "100/100")
-    battle.parse_message(["", "-ability", "p2a: Dusclops", "Pressure"])
+    battle.switch(f"p2: {species}", f"{species}, L50, F", "100/100")
+    if pressure:
+        battle.parse_message(["", "-ability", f"p2a: {species}", "Pressure"])
 
-    event = ["", "move", "p1a: Tyranitar", "Pursuit", "p2a: Dusclops"]
-    if switching:
-        battle.parse_message(["", "-activate", "p2a: Dusclops", "move: Pursuit"])
-        event.append("[from] Pursuit" if gen <= 4 else "[from] move: Pursuit")
+    event = ["", "move", "p1a: Tyranitar", "Pursuit", f"p2a: {species}"]
+    if suffix:
+        battle.parse_message(["", "-activate", f"p2a: {species}", "move: Pursuit"])
+        event.append(suffix)
     battle.parse_message(event)
 
     move = battle.active_pokemon.moves["pursuit"]
-    expected_cost = 1 if gen == 4 and switching else 2
-    assert move.current_pp == move.max_pp - expected_cost
+    assert move.current_pp == move.max_pp - (2 if pressure else 1)
 
 
 def test_move_event_ignores_dancer_reveal_and_pp():
