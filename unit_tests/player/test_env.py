@@ -90,6 +90,33 @@ def test_queue():
     assert q.empty()
 
 
+@pytest.mark.asyncio
+async def test_queue_race_prefers_queued_item_and_handles_wait():
+    q = _AsyncQueue(asyncio.get_running_loop())
+    waiting = asyncio.Event()
+    waiting.set()
+    await q.async_put(1)
+
+    assert await q.async_race_get(waiting) == 1
+    assert await q.async_race_get(waiting) is None
+    await q.async_put(2)
+    assert await q.async_get() == 2
+
+
+@pytest.mark.asyncio
+async def test_cancelled_queue_race_does_not_consume_next_item():
+    q = _AsyncQueue(asyncio.get_running_loop())
+    task = asyncio.create_task(q.async_race_get(asyncio.Event()))
+    await asyncio.sleep(0)
+    await asyncio.sleep(0)
+    task.cancel()
+    with pytest.raises(asyncio.CancelledError):
+        await task
+    await asyncio.sleep(0)
+    await q.async_put(1)
+    assert await asyncio.wait_for(q.async_get(), timeout=1) == 1
+
+
 def test_async_player():
     def embed_battle(battle):
         return "battle"
@@ -181,6 +208,56 @@ def test_reset_step_close():
 
     # --- Part 3: Test close() ---
     env.close()
+
+
+@pytest.mark.parametrize("waiting_side", [0, 1])
+@pytest.mark.parametrize("signal", ["waiting", "trying_again"])
+def test_step_waits_and_retries(waiting_side, signal):
+    env = CustomEnv(start_listening=False, battle_format="gen1customgame")
+    players = (env.agent1, env.agent2)
+    battles = tuple(
+        Battle("battle-test", player.username, player.logger, gen=1)
+        for player in players
+    )
+    env.battle1, env.battle2 = battles
+    env.agents = env.possible_agents.copy()
+    env.agent1_to_move = env.agent2_to_move = True
+
+    async def respond():
+        orders = await asyncio.gather(
+            *(player.order_queue.async_get() for player in players)
+        )
+        assert all(isinstance(order, DefaultBattleOrder) for order in orders)
+        if signal == "waiting":
+            players[waiting_side]._waiting.set()
+        else:
+            players[1 - waiting_side]._trying_again.set()
+        await players[1 - waiting_side].battle_queue.async_put(
+            battles[1 - waiting_side]
+        )
+
+    response = asyncio.run_coroutine_threadsafe(respond(), env._loop)
+    try:
+        env.step({agent: np.int64(-2) for agent in env.agents})
+        response.result(timeout=5)
+        assert (env.agent1_to_move, env.agent2_to_move)[waiting_side] is False
+        assert (env.agent1_to_move, env.agent2_to_move)[1 - waiting_side] is True
+        assert not any(
+            player._waiting.is_set() or player._trying_again.is_set()
+            for player in players
+        )
+
+        players[0].battle_queue.put(battles[0])
+        players[1].battle_queue.put(battles[1])
+        env.step({agent: np.int64(-2) for agent in env.agents})
+        assert players[waiting_side].order_queue.empty()
+        assert isinstance(
+            players[1 - waiting_side].order_queue.get(), DefaultBattleOrder
+        )
+        assert env.agent1_to_move and env.agent2_to_move
+    finally:
+        env.close(force=False, wait=False)
+        env._loop.call_soon_threadsafe(env._loop.stop)
 
 
 def render(battle):
@@ -503,6 +580,143 @@ def test_singles_action_order_conversions():
             check_action_order_roundtrip(
                 p, Player.create_order(move, terastallize=True), battle
             )
+
+
+@pytest.mark.parametrize("gen", [1, 9])
+def test_singles_mask_tracks_legal_choices_and_returns_independent_orders(gen):
+    battle = Battle("battle-test", "player", None, gen=gen)
+    active = Pokemon(species="mew", gen=gen)
+    reserve = Pokemon(species="snorlax", gen=gen)
+    tackle = active._add_move("tackle")
+    thunderbolt = active._add_move("thunderbolt")
+    active._active = True
+    battle._team = {"p1: Mew": active, "p1: Snorlax": reserve}
+    battle._available_moves = [tackle, thunderbolt]
+    battle._available_switches = [reserve]
+
+    mask = SinglesEnv.get_action_mask(battle)
+    assert np.flatnonzero(mask).tolist() == [1, 6, 7]
+    for action in np.flatnonzero(mask):
+        order = SinglesEnv.action_to_order(np.int64(action), battle)
+        assert order.message in [legal.message for legal in battle.valid_orders]
+        assert SinglesEnv.order_to_action(order, battle) == action
+
+    order = SinglesEnv.action_to_order(np.int64(6), battle)
+    order.mega = True
+    assert (
+        SinglesEnv.action_to_order(np.int64(6), battle).message == "/choose move tackle"
+    )
+    mask[1] = 0
+    assert SinglesEnv.get_action_mask(battle)[1] == 1
+
+    battle._available_moves.pop(0)
+    assert np.flatnonzero(SinglesEnv.get_action_mask(battle)).tolist() == [1, 7]
+    with pytest.raises(ValueError):
+        SinglesEnv.action_to_order(np.int64(6), battle)
+    battle._trapped = True
+    assert np.flatnonzero(SinglesEnv.get_action_mask(battle)).tolist() == [7]
+    battle._trapped = False
+    battle._force_switch = True
+    assert np.flatnonzero(SinglesEnv.get_action_mask(battle)).tolist() == [1]
+    battle._wait = True
+    assert np.flatnonzero(SinglesEnv.get_action_mask(battle)).tolist() == [0]
+    assert isinstance(
+        SinglesEnv.action_to_order(np.int64(0), battle), DefaultBattleOrder
+    )
+
+
+@pytest.mark.parametrize("move_id", ["struggle", "recharge"])
+def test_singles_forced_move_uses_slot_one(move_id):
+    battle = Battle("battle-test", "player", None, gen=1)
+    active = Pokemon(species="mew", gen=1)
+    active._add_move("tackle")
+    active._active = True
+    battle._team = {"p1: Mew": active}
+    battle._available_moves = [Move(move_id, gen=1)]
+
+    assert np.flatnonzero(SinglesEnv.get_action_mask(battle)).tolist() == [6]
+    order = SinglesEnv.action_to_order(np.int64(6), battle)
+    assert order.message in [legal.message for legal in battle.valid_orders]
+    assert SinglesEnv.order_to_action(order, battle) == 6
+
+
+def test_singles_switch_mask_distinguishes_same_species_with_different_names():
+    battle = Battle("battle-test", "player", None, gen=1)
+    first = Pokemon(species="pikachu", name="first", gen=1)
+    second = Pokemon(species="pikachu", name="second", gen=1)
+    battle._team = {"p1: first": first, "p1: second": second}
+    battle._available_switches = [second]
+
+    assert np.flatnonzero(SinglesEnv.get_action_mask(battle)).tolist() == [1]
+    assert (
+        SinglesEnv.action_to_order(np.int64(1), battle).message
+        == "/choose switch second"
+    )
+    assert SinglesEnv.order_to_action(SingleBattleOrder(second), battle) == 1
+
+
+def test_singles_gen1_request_slots_override_accumulated_move_history():
+    battle = Battle("battle-test", "player", None, gen=1)
+    active = Pokemon(species="clefable", gen=1)
+    for move_id in ("metronome", "psychic", "rest", "thunderwave", "counter"):
+        active._add_move(move_id)
+    active._active = True
+    battle._team = {"p1: Clefable": active}
+    requested = ("counter", "psychic", "rest", "thunderwave")
+    battle._last_request = {
+        "active": [
+            {
+                "moves": [
+                    {"id": move_id, "disabled": move_id == "rest"}
+                    for move_id in requested
+                ]
+            }
+        ]
+    }
+    battle._available_moves = [
+        active.moves[move_id] for move_id in requested if move_id != "rest"
+    ]
+    battle._trapped = True
+
+    assert np.flatnonzero(SinglesEnv.get_action_mask(battle)).tolist() == [6, 7, 9]
+    assert [move.id for move in SinglesEnv.get_move_slots(battle)] == list(requested)
+    for action in (6, 7, 9):
+        order = SinglesEnv.action_to_order(np.int64(action), battle)
+        assert order.order.id == requested[action - 6]
+        assert SinglesEnv.order_to_action(order, battle) == action
+    assert (
+        SinglesEnv.order_to_action(SingleBattleOrder(Move("counter", gen=1)), battle)
+        == 6
+    )
+    with pytest.raises(ValueError):
+        SinglesEnv.action_to_order(np.int64(8), battle)
+
+
+def test_gen1_duplicate_move_slots_keep_independent_legality_and_commands():
+    battle = Battle("battle-test", "player", None, gen=1)
+    active = Pokemon(species="mew", gen=1)
+    active._add_move("thunderwave")
+    active._active = True
+    battle._team = {"p1: Mew": active}
+    battle._available_moves = [active.moves["thunderwave"]]
+    entries = [
+        {"id": "thunderwave", "disabled": True},
+        {"id": "thunderwave", "disabled": False},
+    ]
+    battle._last_request = {"active": [{"moves": entries}]}
+
+    assert np.flatnonzero(SinglesEnv.get_action_mask(battle)).tolist() == [7]
+    order = SinglesEnv.action_to_order(np.int64(7), battle)
+    assert order.message == "/choose move 2"
+    assert SinglesEnv.order_to_action(order, battle) == 7
+    with pytest.raises(ValueError):
+        SinglesEnv.action_to_order(np.int64(6), battle)
+    entries[0]["disabled"], entries[1]["disabled"] = False, True
+    assert np.flatnonzero(SinglesEnv.get_action_mask(battle)).tolist() == [6]
+    assert SinglesEnv.action_to_order(np.int64(6), battle).message == "/choose move 1"
+    entries[1]["disabled"] = False
+    order = SinglesEnv.action_to_order(np.int64(7), battle)
+    assert SinglesEnv.order_to_action(order, battle) == 7
 
 
 def test_doubles_action_order_conversions():

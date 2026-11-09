@@ -183,7 +183,8 @@ class SmogonStatsTeambuilder(Teambuilder):
                 usage.abilities, "ability", self.pokemon_strategy
             )
         if pokemon.item is None and usage.items:
-            pokemon.item = self._choose(usage.items, "item", self.pokemon_strategy)
+            item = self._choose(usage.items, "item", self.pokemon_strategy)
+            pokemon.item = None if item == "nothing" else item
         if pokemon.nature is None or pokemon.evs is None:
             spread = self._choose(usage.spreads, "spread", self.pokemon_strategy)
             if pokemon.nature is None:
