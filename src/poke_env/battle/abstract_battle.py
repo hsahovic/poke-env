@@ -610,7 +610,13 @@ class AbstractBattle(ABC):
                 reveal = False
                 event = event[:-1]
 
-            if event[-1] in {"[from] Pursuit", "[from]Pursuit", "[zeffect]"}:
+            if event[-1] in {
+                "[from] Pursuit",
+                "[from]Pursuit",
+                "[from] move: Pursuit",
+                "[from]move: Pursuit",
+                "[zeffect]",
+            }:
                 event = event[:-1]
 
             if event[-1] == "[from] Sleep Talk":
