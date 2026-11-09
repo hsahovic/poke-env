@@ -1046,3 +1046,112 @@ def test_auto_save_replay_includes_terminal_result_and_creates_nested_path(tmp_p
     assert replay_path.exists()
     assert replay_log_lines[0] == ">tag"
     assert "|win|username" in replay_log_lines
+
+
+@pytest.mark.parametrize("gen", [1, 6, 9])
+@pytest.mark.parametrize("imposter", [False, True])
+@pytest.mark.parametrize("transformer_side", ["p1", "p2"])
+def test_transform_copies_current_types(gen, imposter, transformer_side):
+    battle = Battle("tag", "username", MagicMock(), gen=gen)
+    battle.player_role = "p1"
+    target_side = "p2" if transformer_side == "p1" else "p1"
+    transformer = f"{transformer_side}: Ditto"
+    target = f"{target_side}: Charizard"
+    battle.switch(transformer, "Ditto", "100/100")
+    battle.switch(target, "Charizard", "100/100")
+    battle.parse_message(["", "-start", target, "typechange", "Water"])
+    event = ["", "-transform", transformer, target]
+    if imposter:
+        event.append("[from] ability: Imposter")
+    battle.parse_message(event)
+    mon = battle.get_pokemon(transformer)
+    assert mon.types == [PokemonType.WATER]
+    assert mon.damage_multiplier(PokemonType.ROCK) == 1
+    battle.parse_message(["", "-start", target, "typechange", "Fire"])
+    assert mon.types == [PokemonType.WATER]
+    mon.switch_out({})
+    assert mon.types == [PokemonType.NORMAL]
+
+
+def test_transform_copies_pre_tera_types_and_handles_correction():
+    battle = Battle("tag", "username", MagicMock(), gen=9)
+    battle.player_role = "p1"
+    battle.switch("p1: Ditto", "Ditto", "100/100")
+    battle.switch("p2: Charizard", "Charizard", "100/100")
+    battle.parse_message(["", "-start", "p2: Charizard", "typechange", "Water"])
+    battle.parse_message(["", "-terastallize", "p2: Charizard", "Grass"])
+    battle.parse_message(["", "-transform", "p1: Ditto", "p2: Charizard"])
+    mon = battle.get_pokemon("p1: Ditto")
+    assert mon.types == [PokemonType.WATER]
+    assert battle.get_pokemon("p2: Charizard").types == [PokemonType.GRASS]
+    battle.parse_message(["", "-start", "p1: Ditto", "typechange", "Water", "[silent]"])
+    assert mon.types == [PokemonType.WATER]
+    battle.parse_message(["", "-terastallize", "p1: Ditto", "Ghost"])
+    assert mon.types == [PokemonType.GHOST]
+    assert mon.base_types == [PokemonType.WATER]
+
+
+def test_transform_copies_types_before_roost_and_added_type():
+    battle = Battle("tag", "username", MagicMock(), gen=7)
+    battle.player_role = "p1"
+    battle.switch("p1: Ditto", "Ditto", "100/100")
+    battle.switch("p2: Charizard", "Charizard", "100/100")
+    battle.parse_message(["", "-start", "p2: Charizard", "typeadd", "Grass"])
+    battle.parse_message(["", "-singleturn", "p2: Charizard", "move: Roost"])
+    battle.parse_message(["", "-transform", "p1: Ditto", "p2: Charizard"])
+    mon = battle.get_pokemon("p1: Ditto")
+    assert mon.types == [PokemonType.FIRE, PokemonType.FLYING, PokemonType.GRASS]
+    assert mon.damage_multiplier(PokemonType.ICE) == 2
+    battle.parse_message(["", "-start", "p1: Ditto", "typechange", "Water", "[silent]"])
+    assert mon.types == [PokemonType.WATER]
+    battle.parse_message(["", "-start", "p1: Ditto", "typeadd", "Grass", "[silent]"])
+    assert mon.types == [PokemonType.WATER, PokemonType.GRASS]
+    battle.parse_message(["", "-start", "p1: Ditto", "typeadd", "Ghost"])
+    assert mon.types == [PokemonType.WATER, PokemonType.GHOST]
+    mon.switch_out({})
+    assert mon.types == [PokemonType.NORMAL]
+
+
+def test_reflect_type_copies_added_type_but_gen1_conversion_uses_reported_types():
+    battle = Battle("tag", "username", MagicMock(), gen=9)
+    battle.player_role = "p1"
+    battle.switch("p1: Ditto", "Ditto", "100/100")
+    battle.switch("p2: Charizard", "Charizard", "100/100")
+    battle.parse_message(["", "-start", "p2: Charizard", "typeadd", "Grass"])
+    battle.parse_message(
+        [
+            "",
+            "-start",
+            "p1: Ditto",
+            "typechange",
+            "[from] move: Reflect Type",
+            "[of] p2: Charizard",
+        ]
+    )
+    assert battle.get_pokemon("p1: Ditto").types == [
+        PokemonType.FIRE,
+        PokemonType.FLYING,
+        PokemonType.GRASS,
+    ]
+    battle.parse_message(
+        [
+            "",
+            "-start",
+            "p1: Ditto",
+            "typechange",
+            "Water",
+            "[from] move: Conversion",
+            "[of] p2: Charizard",
+        ]
+    )
+    assert battle.get_pokemon("p1: Ditto").types == [PokemonType.WATER]
+
+
+def test_added_flying_type_makes_a_dual_type_pokemon_ungrounded():
+    battle = Battle("tag", "username", MagicMock(), gen=9)
+    battle.player_role = "p1"
+    battle.switch("p1: Venusaur", "Venusaur", "100/100")
+    mon = battle.get_pokemon("p1: Venusaur")
+    assert battle.is_grounded(mon)
+    battle.parse_message(["", "-start", "p1: Venusaur", "typeadd", "Flying"])
+    assert not battle.is_grounded(mon)

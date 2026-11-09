@@ -18,6 +18,7 @@ from poke_env.teambuilder.teambuilder_pokemon import TeambuilderPokemon
 class Pokemon:
     __slots__ = (
         "_ability",
+        "_added_type",
         "_active",
         "_active_turns",
         "_base_stats",
@@ -99,6 +100,7 @@ class Pokemon:
         # Battle related attributes
         self._gen = gen
         self._active: bool = False
+        self._added_type: Optional[PokemonType] = None
         self._boosts: Dict[str, int] = {
             "accuracy": 0,
             "atk": 0,
@@ -360,6 +362,9 @@ class Pokemon:
 
         if effect == Effect.TYPECHANGE:
             self._temporary_types = []
+            self._added_type = None
+        elif effect == Effect.TYPEADD:
+            self._added_type = None
 
         elif effect == Effect.SKILL_SWAP:
             self._temporary_ability = None
@@ -557,9 +562,12 @@ class Pokemon:
             self._protect_counter = 0
 
         if effect == Effect.TYPECHANGE and details is not None:
+            self._added_type = None
             self._temporary_types = []
             for type_ in details.split("/"):
                 self._temporary_types.append(PokemonType.from_name(type_))
+        elif effect == Effect.TYPEADD and details is not None:
+            self._added_type = PokemonType.from_name(details)
         elif effect == Effect.SKILL_SWAP and details:
             # Skill Swap reveals a mon's ability
             if self.ability is None:
@@ -602,6 +610,7 @@ class Pokemon:
         self._moves._transform_moves = None
         self._moves.mimic_move = None
         self._temporary_types = []
+        self._added_type = None
 
         if self._status == Status.TOX:
             self._status_counter = 0
@@ -612,7 +621,7 @@ class Pokemon:
     def terastallize(self, type_: str):
         self._terastallized_type = PokemonType.from_name(type_)
         self._terastallized = True
-        self._temporary_types = []
+        self._added_type = None
 
     def transform(self, into: Pokemon):
         dex_entry = GenData.from_gen(self.gen).pokedex[into.species]
@@ -621,7 +630,8 @@ class Pokemon:
         self._temporary_base_stats = dex_entry["baseStats"]
         if into.ability is not None:
             self._temporary_ability = into.ability
-        self._temporary_types = [PokemonType.from_name(t) for t in dex_entry["types"]]
+        self._temporary_types = list(into.base_types)
+        self._added_type = into._added_type
         self._moves._transform_moves = MoveSet(
             {m.id: Move(m.id, m.gen, from_transform=True) for m in into.moves.values()}
         )
@@ -847,9 +857,15 @@ class Pokemon:
         """
         if isinstance(type_or_move, Move):
             type_or_move = type_or_move.type
-        return type_or_move.damage_multiplier(
-            self.type_1, self.type_2, type_chart=GenData.from_gen(self.gen).type_chart
+        type_chart = GenData.from_gen(self.gen).type_chart
+        multiplier = type_or_move.damage_multiplier(
+            self.type_1, self.type_2, type_chart=type_chart
         )
+        if len(self.types) > 2:
+            multiplier *= type_or_move.damage_multiplier(
+                self.types[2], type_chart=type_chart
+            )
+        return multiplier
 
     @property
     def ability(self) -> Optional[str]:
@@ -1388,11 +1404,11 @@ class Pokemon:
         :return: The pokemon's second type.
         :rtype: Optional[PokemonType]
         """
-        if self._terastallized or len(self._temporary_types) == 1:
+        if self._terastallized:
             return None
-        elif len(self._temporary_types) > 1:
-            return self._temporary_types[1]
-        return self._type_2
+        if len(self.base_types) > 1:
+            return self.base_types[1]
+        return self._added_type
 
     @property
     def types(self) -> List[PokemonType]:
@@ -1404,6 +1420,12 @@ class Pokemon:
         types = [self.type_1]
         if self.type_2 is not None:
             types.append(self.type_2)
+        if (
+            self._added_type is not None
+            and not self._terastallized
+            and len(self.base_types) > 1
+        ):
+            types.append(self._added_type)
         return types
 
     @property
