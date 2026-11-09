@@ -6,6 +6,7 @@ import asyncio
 import time
 from abc import abstractmethod
 from concurrent.futures import Future
+from dataclasses import replace
 from threading import Thread
 from typing import Any, Awaitable, Dict, Generic, List, Optional, Tuple, TypeVar, Union
 from weakref import WeakKeyDictionary
@@ -301,8 +302,14 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
         self._player_options = (
             player_options if player_options is not None else legacy_player_options
         )
+        resolved_format = self._player_options.battle_format
+        if resolved_format is None:
+            resolved_format = self._default_battle_format
+            self._player_options = replace(
+                self._player_options, battle_format=resolved_format
+            )
         self._avatar = self._player_options.avatar
-        self._battle_format = self._player_options.battle_format
+        self._battle_format = resolved_format
         self._loop = asyncio.new_event_loop()
         Thread(target=self._loop.run_forever, daemon=True).start()
         self.agent1 = self._create_agent(account_configuration1)
@@ -359,6 +366,21 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
         return state
 
     def __setstate__(self, state: Dict[str, Any]):
+        if "_player_options" not in state:
+            state["_player_options"] = PlayerOptions(
+                avatar=state["_avatar"],
+                battle_format=state["_battle_format"],
+                log_level=state["_log_level"],
+                save_replays=state["_save_replays"],
+                server_configuration=state["_server_configuration"],
+                accept_open_team_sheet=state["_accept_open_team_sheet"],
+                start_timer_on_battle_start=state["_start_timer_on_battle_start"],
+                start_listening=state["_start_listening"],
+                open_timeout=state["_open_timeout"],
+                ping_interval=state["_ping_interval"],
+                ping_timeout=state["_ping_timeout"],
+                team=state["_team"],
+            )
         self.__dict__.update(state)
         self._loop = asyncio.new_event_loop()
         Thread(target=self._loop.run_forever, daemon=True).start()

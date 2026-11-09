@@ -70,7 +70,7 @@ class SinglesEnv(PokeEnv[np.int64]):
             fake=fake,
             strict=strict,
         )
-        gen = GenData.from_format(self._player_options.battle_format).gen
+        gen = GenData.from_format(self._battle_format).gen
         self.action_spaces: dict[str, Space[Any]] = {
             agent: Discrete(SinglesEnv.get_action_space_size(gen))
             for agent in self.possible_agents

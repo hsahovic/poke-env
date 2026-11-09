@@ -23,10 +23,12 @@ class PlayerOptions:
     Account configuration and the event loop are supplied by the owner creating a
     player. They are intentionally not stored here because environments use one set
     of options for two accounts and recreate their loop when unpickled.
+    If ``battle_format`` is omitted, each environment uses its own default format;
+    ``to_player_kwargs`` uses the default singles format.
     """
 
     avatar: Optional[Union[str, int]] = None
-    battle_format: str = "gen9randombattle"
+    battle_format: Optional[str] = None
     log_level: Optional[int] = None
     max_concurrent_battles: int = 1
     accept_open_team_sheet: Optional[bool] = False
@@ -50,7 +52,11 @@ class PlayerOptions:
         return {
             "account_configuration": account_configuration,
             "avatar": self.avatar,
-            "battle_format": self.battle_format,
+            "battle_format": (
+                self.battle_format
+                if self.battle_format is not None
+                else "gen9randombattle"
+            ),
             "log_level": self.log_level,
             "max_concurrent_battles": self.max_concurrent_battles,
             "accept_open_team_sheet": self.accept_open_team_sheet,

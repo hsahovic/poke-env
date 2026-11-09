@@ -75,7 +75,7 @@ class DoublesEnv(PokeEnv[npt.NDArray[np.int64]]):
             fake=fake,
             strict=strict,
         )
-        gen = GenData.from_format(self._player_options.battle_format).gen
+        gen = GenData.from_format(self._battle_format).gen
         action_space_size = DoublesEnv.get_action_space_size(gen)
         self.action_spaces = {
             agent: MultiDiscrete([action_space_size, action_space_size])
