@@ -176,6 +176,20 @@ def test_get_possible_showdown_targets(example_doubles_request):
     assert battle.get_possible_showdown_targets(terastarstorm, mr_rime) == [0]
 
 
+def test_curse_targets_depend_on_users_type():
+    battle = DoubleBattle("tag", "username", MagicMock(), gen=9)
+    battle.player_role = "p1"
+    battle.switch("p1a: Blissey", "Blissey, L50, F", "100/100")
+    battle.switch("p1b: Gengar", "Gengar, L50, M", "100/100")
+    battle.switch("p2a: Milotic", "Milotic, L50, F", "100/100")
+    battle.switch("p2b: Tyranitar", "Tyranitar, L50, M", "100/100")
+    blissey, gengar = battle.active_pokemon
+    curse = Move("curse", gen=9)
+
+    assert battle.get_possible_showdown_targets(curse, blissey) == [0]
+    assert battle.get_possible_showdown_targets(curse, gengar) == [-1, 1, 2]
+
+
 def test_to_showdown_target(example_doubles_request):
     logger = MagicMock()
     battle = DoubleBattle("tag", "username", logger, gen=8)

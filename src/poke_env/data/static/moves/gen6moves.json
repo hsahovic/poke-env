@@ -2292,7 +2292,6 @@
             "metronome": 1
         },
         "name": "Curse",
-        "nonGhostTarget": "self",
         "num": 174,
         "onHit": "onHit",
         "onModifyMove": "onModifyMove",
