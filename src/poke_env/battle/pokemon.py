@@ -11,6 +11,7 @@ from poke_env.battle.status import Status
 from poke_env.battle.target import Target
 from poke_env.battle.z_crystal import Z_CRYSTAL
 from poke_env.data import GenData, to_id_str
+from poke_env.data.gen_data import load_move_aliases
 from poke_env.stats import compute_raw_stats
 from poke_env.teambuilder.teambuilder_pokemon import TeambuilderPokemon
 
@@ -761,7 +762,9 @@ class Pokemon:
             self._terastallized_type = PokemonType.from_name(tb.tera_type)
         self._moves = MoveSet({})
         for move_str in tb.moves:
-            move = Move(Move.retrieve_id(move_str), gen=self.gen)
+            move_id = to_id_str(move_str)
+            move_id = load_move_aliases().get(move_id, move_id)
+            move = Move(Move.retrieve_id(move_id), gen=self.gen)
             self._moves[move.id] = move
 
         self._nature = tb.nature
