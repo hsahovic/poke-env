@@ -1046,3 +1046,46 @@ def test_auto_save_replay_includes_terminal_result_and_creates_nested_path(tmp_p
     assert replay_path.exists()
     assert replay_log_lines[0] == ">tag"
     assert "|win|username" in replay_log_lines
+
+
+@pytest.mark.parametrize("gen", [3, 4, 5, 9])
+def test_flash_fire_persists_until_switch(gen):
+    battle = Battle("tag", "username", MagicMock(), gen=gen)
+    battle.player_role = "p1"
+    battle.parse_message(["", "switch", "p1a: Lunatone", "Lunatone, L88", "255/255"])
+    battle.parse_message(["", "switch", "p2a: Rapidash", "Rapidash, L83, F", "244/244"])
+    battle.parse_message(["", "-start", "p2a: Rapidash", "ability: Flash Fire"])
+    rapidash = battle.get_pokemon("p2a: Rapidash")
+
+    for turn, move in enumerate(["Fire Blast", "Fire Blast", "Quick Attack"], start=1):
+        battle.parse_message(["", "turn", str(turn)])
+        battle.parse_message(["", "move", "p2a: Rapidash", move, "p1a: Lunatone"])
+        assert Effect.FLASH_FIRE in rapidash.effects
+
+    battle.parse_message(["", "-immune", "p2a: Rapidash", "[from] ability: Flash Fire"])
+    assert Effect.FLASH_FIRE in rapidash.effects
+
+    battle.parse_message(["", "switch", "p2a: Arcanine", "Arcanine, L83, M", "244/244"])
+    assert Effect.FLASH_FIRE not in rapidash.effects
+    assert Effect.FLASH_FIRE not in battle.get_pokemon("p2a: Arcanine").effects
+    battle.parse_message(["", "switch", "p2a: Rapidash", "Rapidash, L83, F", "244/244"])
+    assert Effect.FLASH_FIRE not in rapidash.effects
+
+
+@pytest.mark.parametrize("gen", [3, 4, 5, 9])
+def test_flash_fire_ends_on_protocol_message_and_faint(gen):
+    battle = Battle("tag", "username", MagicMock(), gen=gen)
+    battle.player_role = "p1"
+    battle.parse_message(["", "switch", "p2a: Rapidash", "Rapidash, L83, F", "244/244"])
+    rapidash = battle.get_pokemon("p2a: Rapidash")
+
+    battle.parse_message(["", "-start", "p2a: Rapidash", "ability: Flash Fire"])
+    battle.parse_message(
+        ["", "-end", "p2a: Rapidash", "ability: Flash Fire", "[silent]"]
+    )
+    assert Effect.FLASH_FIRE not in rapidash.effects
+
+    battle.parse_message(["", "-start", "p2a: Rapidash", "ability: Flash Fire"])
+    assert Effect.FLASH_FIRE in rapidash.effects
+    battle.parse_message(["", "faint", "p2a: Rapidash"])
+    assert Effect.FLASH_FIRE not in rapidash.effects
