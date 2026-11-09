@@ -8,9 +8,12 @@ on:
 jobs:
   nightly:
     uses: ./.github/workflows/tests.yml
+    with:
+      latest-showdown: true
     secrets: inherit
   nightly-extra:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout repository code
         uses: actions/checkout@v7
@@ -32,7 +35,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v7
         with:
-          node-version: 18
+          node-version: 24
 
       - name: Checkout PS
         uses: actions/checkout@v7
@@ -52,11 +55,20 @@ jobs:
         uses: actions/cache@v6
         with:
           path: pokemon-showdown/node_modules
-          key: showdown-python3.13-${{ steps.showdown-hash.outputs.hash }}
-          restore-keys: showdown-python3.13-
+          key: showdown-${{ runner.os }}-node24-${{ steps.showdown-hash.outputs.hash }}
+          restore-keys: showdown-${{ runner.os }}-node24-
 
       - name: Install PS dependencies and start server
+        timeout-minutes: 3
         run: bash scripts/ci_setup_showdown.sh
 
       - name: Run nightly-only checks
         run: uv run pytest -x strict_integration_tests/
+
+      - name: Upload Showdown log
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: showdown-nightly-extra
+          path: pokemon-showdown/server.log
+          if-no-files-found: ignore

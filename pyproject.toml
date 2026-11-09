@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "poke_env"
-version = "0.16.0"
+version = "0.16.1"
 description = "A python interface for training Reinforcement Learning bots to battle on pokemon showdown."
 readme = "README.md"
 requires-python = ">=3.10.0"
@@ -31,7 +31,7 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dependencies = [
-    "gymnasium==1.3.0",
+    "gymnasium==1.4.0",
     "numpy>=2.0.2",
     "orjson>=3.10.15",
     "pettingzoo>=1.24.3",
@@ -50,10 +50,10 @@ docs = [
 [dependency-groups]
 # Local development dependencies managed by uv.
 dev = [
-    "black==26.5.1",
+    "black==26.10.1",
     "flake8>=7.1.1",
-    "isort==8.0.1",
-    "mypy==2.3.1",
+    "isort==9.0.2",
+    "mypy==2.4.1",
     "nbsphinx>=0.9.6",
     "pre-commit>=4.1.0",
     "pytest>=8.3.4",

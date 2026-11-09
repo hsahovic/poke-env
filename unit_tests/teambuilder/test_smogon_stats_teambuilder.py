@@ -10,6 +10,10 @@ from poke_env.teambuilder import (
     complete_team,
     generate_team,
 )
+from poke_env.teambuilder.smogon_stats_teambuilder import (
+    _evidence_weights,
+    _pooled_probability,
+)
 from poke_env.teambuilder.teambuilder import Teambuilder
 
 
@@ -73,7 +77,7 @@ def test_greedy_builder_completes_observed_set_and_team(smogon_stats):
     assert team[0].tera_type == "steel"
 
 
-def test_species_selection_uses_geometric_mean_of_teammates():
+def test_species_selection_downweights_correlated_teammate_evidence():
     def pokemon(usage, teammates):
         return {
             "Raw count": 100,
@@ -96,19 +100,26 @@ def test_species_selection_uses_geometric_mean_of_teammates():
                     "number of battles": 1000,
                 },
                 "data": {
-                    "Alpha": pokemon(0.4, {"Gamma": 9, "Delta": 4}),
-                    "Beta": pokemon(0.3, {"Gamma": 1, "Delta": 4}),
-                    "Gamma": pokemon(0.2, {}),
-                    "Delta": pokemon(0.1, {}),
+                    "Alpha": pokemon(0.1, {"Beta": 4, "Gamma": 4}),
+                    "Beta": pokemon(0.2, {"Alpha": 2, "Gamma": 5}),
+                    "Gamma": pokemon(0.2, {"Alpha": 2, "Beta": 5}),
+                    "Delta": pokemon(0.5, {}),
+                    "Epsilon": pokemon(0.5, {}),
+                    "Zeta": pokemon(0.5, {}),
                 },
             }
         ),
         month="2026-06",
     )
 
-    builder = SmogonStatsTeambuilder(stats)
+    selected = [stats["Beta"], stats["Gamma"]]
+    evidence_weights = _evidence_weights(selected)
 
-    assert builder._select_species([stats["Alpha"], stats["Beta"]]).id == "delta"
+    assert evidence_weights == pytest.approx([1 / 1.375, 1 / 1.375])
+    assert _pooled_probability(
+        stats["Alpha"], selected, evidence_weights
+    ) == pytest.approx(0.26547765980482235)
+    assert _pooled_probability(stats["Alpha"], selected[:1], [1]) == pytest.approx(0.2)
 
 
 def test_sample_builder_is_seeded_and_preserves_observed_values(smogon_stats):

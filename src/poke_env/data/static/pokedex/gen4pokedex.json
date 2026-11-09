@@ -192,7 +192,7 @@
     },
     "absolmegaz": {
         "abilities": {
-            "0": "Magic Bounce"
+            "0": "Sharpness"
         },
         "baseSpecies": "Absol",
         "baseStats": {
@@ -7259,7 +7259,7 @@
     },
     "garchompmegaz": {
         "abilities": {
-            "0": "Sand Force"
+            "0": "Levitate"
         },
         "baseSpecies": "Garchomp",
         "baseStats": {
@@ -10977,7 +10977,7 @@
     },
     "lucariomegaz": {
         "abilities": {
-            "0": "Adaptability"
+            "0": "Aura Guard"
         },
         "baseSpecies": "Lucario",
         "baseStats": {
@@ -14015,12 +14015,14 @@
         "color": "Black",
         "eggGroups": [
             "Flying",
-            "Dragon"
+            "Monster"
         ],
+        "evoLevel": 48,
         "gen": 9,
         "heightm": 1.6,
         "name": "Obliteryx",
         "num": -80,
+        "prevo": "Scraptor",
         "types": [
             "Dark",
             "Flying"
@@ -18401,6 +18403,37 @@
             "Steel"
         ],
         "weightkg": 125
+    },
+    "scraptor": {
+        "abilities": {
+            "0": "Opportunist",
+            "1": "Early Bird"
+        },
+        "baseStats": {
+            "atk": 78,
+            "def": 51,
+            "hp": 52,
+            "spa": 35,
+            "spd": 43,
+            "spe": 84
+        },
+        "color": "Black",
+        "eggGroups": [
+            "Flying",
+            "Monster"
+        ],
+        "evos": [
+            "Obliteryx"
+        ],
+        "gen": 9,
+        "heightm": 0.3,
+        "name": "Scraptor",
+        "num": -79,
+        "types": [
+            "Dark",
+            "Flying"
+        ],
+        "weightkg": 7
     },
     "scratchet": {
         "abilities": {
