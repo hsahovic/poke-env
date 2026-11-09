@@ -553,7 +553,7 @@ class AbstractBattle(ABC):
             return False
         elif mon.item == "airballoon":
             return False
-        elif mon.type_1 == PokemonType.FLYING or mon.type_2 == PokemonType.FLYING:
+        elif PokemonType.FLYING in mon.types:
             return False
         elif Effect.MAGNET_RISE in mon.effects:
             return False
@@ -797,13 +797,22 @@ class AbstractBattle(ABC):
             mon = self.get_pokemon(pokemon)
 
             if effect == "typechange":
-                if len(event) > 5 and event[5].startswith("[of] "):
-                    types = "/".join(
-                        map(lambda x: x.name, self.get_pokemon(event[5][5:]).types)
+                if event[4].startswith("[from] move: Reflect Type"):
+                    target_mon = self.get_pokemon(event[5][5:])
+                    types = (
+                        [target_mon.type_1]
+                        if target_mon.is_terastallized
+                        else target_mon.base_types
                     )
+                    types = [t for t in types if t != PokemonType.THREE_QUESTION_MARKS]
+                    mon.start_effect(
+                        effect, details="/".join(t.name for t in types) or "Normal"
+                    )
+                    mon._added_type = target_mon._added_type
                 else:
-                    types = event[4]
-                mon.start_effect(effect, details=types)
+                    mon.start_effect(effect, details=event[4])
+            elif effect == "typeadd":
+                mon.start_effect(effect, details=event[4])
             else:
                 if effect == "Mimic":
                     mon._moves.mimic_move = Move(
