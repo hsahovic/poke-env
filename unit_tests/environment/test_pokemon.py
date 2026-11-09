@@ -4,7 +4,7 @@ import pytest
 
 from poke_env.battle import DoubleBattle, Move, Pokemon, PokemonGender, PokemonType
 from poke_env.stats import _raw_hp, _raw_stat
-from poke_env.teambuilder import TeambuilderPokemon
+from poke_env.teambuilder import ConstantTeambuilder, TeambuilderPokemon
 from poke_env.teambuilder.teambuilder import Teambuilder
 
 
@@ -642,3 +642,38 @@ def test_magearna_learnset():
     magearna = Pokemon(species="magearna", gen=7)
     magearna_og = Pokemon(species="magearnaoriginal", gen=7)
     assert magearna.learnset == magearna_og.learnset
+
+
+@pytest.mark.parametrize(
+    ("gen", "packed_moves", "expected"),
+    [
+        (1, "ViceGrip,Tbolt", {"visegrip", "thunderbolt"}),
+        (2, "FaintAttack,Recover", {"feintattack", "recover"}),
+        (
+            6,
+            "FaintAttack,EQ,HPFire,Return102",
+            {"feintattack", "earthquake", "hiddenpower", "return"},
+        ),
+        (7, "ZThunderbolt", {"10000000voltthunderbolt"}),
+        (9, "HiJumpKick,PlayAround", {"highjumpkick", "playrough"}),
+    ],
+)
+def test_teambuilder_move_aliases(gen, packed_moves, expected):
+    builder = ConstantTeambuilder(f"Pikachu||||{packed_moves}|||||||")
+    mon = Pokemon(gen=gen, teambuilder=builder.team[0])
+
+    assert set(mon.moves) == expected
+    for move_id, move in mon.moves.items():
+        assert move.entry == Move(move_id, gen=gen).entry
+
+
+@pytest.mark.parametrize("move", ["NotAMove", "Charizard", "TBlast"])
+def test_teambuilder_rejects_unknown_or_unavailable_moves(move):
+    builder = ConstantTeambuilder(f"Pikachu||||{move}|||||||")
+
+    with pytest.raises(ValueError, match="Unknown move"):
+        Pokemon(gen=1, teambuilder=builder.team[0])
+
+
+def test_move_id_from_battle_messages_keeps_z_move_id():
+    assert Move.retrieve_id("Z-Thunderbolt") == "zthunderbolt"
