@@ -136,6 +136,123 @@ def test_faint_clears_mimic_move():
     assert "mimic" in mon.moves
 
 
+@pytest.mark.parametrize("gen", [1, 9])
+def test_move_requests_reuse_mimic_move_and_preserve_pp(gen):
+    mon = Pokemon(species="mew", gen=gen)
+    original = mon._add_move("mimic")
+    copied = Move("thunderbolt", gen=gen, from_mimic=True)
+    copied.use()
+    pp = copied.current_pp
+    mon._moves.mimic_move = copied
+
+    assert mon._add_move("Thunderbolt") is copied
+    available = mon.available_moves_from_request(
+        {"moves": [{"id": "thunderbolt"}, {"id": "mimic", "disabled": True}]}
+    )
+    assert available == [copied]
+    assert copied.current_pp == pp
+
+    mon.switch_out({})
+    assert mon._add_move("mimic") is original
+    assert "thunderbolt" not in mon.moves
+
+
+@pytest.mark.parametrize("gen", [1, 9])
+def test_repeated_requests_reconcile_dynamic_state_and_preserve_moves(gen):
+    request = {
+        "ident": "p1: Mew",
+        "details": "Mew",
+        "active": True,
+        "baseAbility": "synchronize",
+        "condition": "100/100 par",
+        "item": "",
+        "moves": ["tackle", "mimic"],
+        "stats": {
+            "hp": 100,
+            "atk": 100,
+            "def": 100,
+            "spa": 100,
+            "spd": 100,
+            "spe": 100,
+        },
+    }
+    mon = Pokemon(gen=gen, request_pokemon=request)
+    tackle = mon.moves["tackle"]
+    tackle.use()
+    mon.damage("50/100")
+    mon.stats["atk"] = 1
+    mon.update_from_request(request)
+
+    assert mon.current_hp == 100
+    assert mon.status.name == "PAR"
+    assert mon.stats["atk"] == 100
+    assert mon.moves["tackle"] is tackle
+    assert tackle.current_pp == tackle.max_pp - 1
+
+    request["moves"].append("thunderbolt")
+    request["stats"]["spe"] = 150
+    request["details"] = "Mew, L50"
+    request["condition"] = "75/100"
+    request["active"] = False
+    mon.update_from_request(request)
+
+    assert "thunderbolt" in mon.moves
+    assert mon.stats["spe"] == 150
+    assert mon.level == 50
+    assert mon.current_hp == 75
+    assert mon.status is None
+    assert not mon.active
+
+
+@pytest.mark.parametrize("gen", [1, 9])
+def test_unchanged_request_moves_follow_transform_and_mimic_state(gen):
+    request = {
+        "ident": "p1: Mew",
+        "details": "Mew",
+        "active": True,
+        "baseAbility": "synchronize",
+        "condition": "100/100",
+        "item": "",
+        "moves": ["tackle", "mimic"],
+    }
+    mon = Pokemon(gen=gen, request_pokemon=request)
+    original = mon.moves["tackle"]
+    original.use()
+    target = Pokemon(species="ditto", gen=gen)
+    target._add_move("tackle")
+    target._add_move("mimic")
+    mon.transform(target)
+    mon.update_from_request(request)
+    copied = mon.moves["tackle"]
+    assert copied is not original
+    assert copied.current_pp == 5
+    copied.use()
+    mon.update_from_request(request)
+    assert mon.moves["tackle"] is copied
+    assert copied.current_pp == 4
+
+    mon.switch_out({})
+    mon.update_from_request(request)
+    assert mon.moves["tackle"] is original
+    assert original.current_pp == original.max_pp - 1
+
+    mimic_copy = Move("thunderbolt", gen=gen, from_mimic=True)
+    mon._moves.mimic_move = mimic_copy
+    request["moves"] = ["tackle", "thunderbolt"]
+    mon.update_from_request(request)
+    mimic_copy.use()
+    mon.update_from_request(request)
+    assert mon.moves["thunderbolt"] is mimic_copy
+    assert mimic_copy.current_pp == mimic_copy.max_pp - 1
+    mon.faint()
+    request["condition"] = "0 fnt"
+    request["moves"] = ["tackle", "mimic"]
+    mon.update_from_request(request)
+    assert mon.fainted
+    assert "thunderbolt" not in mon.moves
+    assert "mimic" in mon.moves
+
+
 def test_check_move_consistency_target_overrides():
     mon = Pokemon(species="gengar", gen=9)
     mon._add_move("curse")

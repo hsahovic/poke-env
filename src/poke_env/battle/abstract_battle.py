@@ -605,7 +605,11 @@ class AbstractBattle(ABC):
                 "[from] lockedmove",
                 "[from]lockedmove",
                 "[from] Sky Attack",
-            }:
+            } or (
+                self.gen == 1
+                and event[-1]
+                in {"[from] Bind", "[from] Clamp", "[from] Fire Spin", "[from] Wrap"}
+            ):
                 use = False
                 reveal = False
                 event = event[:-1]
@@ -613,8 +617,8 @@ class AbstractBattle(ABC):
             if event[-1] in {"[from] Pursuit", "[from]Pursuit", "[zeffect]"}:
                 event = event[:-1]
 
-            if event[-1] == "[from] Sleep Talk":
-                event[-1] = "[from] move: Sleep Talk"
+            if event[-1] in {"[from] Sleep Talk", "[from] Metronome"}:
+                event[-1] = event[-1].replace("[from] ", "[from] move: ", 1)
 
             if event[-1].startswith("[anim]"):
                 event = event[:-1]
@@ -737,8 +741,11 @@ class AbstractBattle(ABC):
                     move, failed=failed, use=use, reveal=reveal, pressure=pressure
                 )
         elif event[1] == "cant":
-            pokemon, _ = event[2:4]
-            self.get_pokemon(pokemon).cant_move()
+            pokemon, reason = event[2:4]
+            mon = self.get_pokemon(pokemon)
+            if reason == "recharge" or (self.gen == 1 and reason == "flinch"):
+                mon.must_recharge = False
+            mon.cant_move()
         elif event[1] == "turn":
             self.end_turn(int(event[2]))
         elif event[1] == "-heal":
@@ -891,7 +898,19 @@ class AbstractBattle(ABC):
                 self.get_pokemon(target).start_effect(effect)
         elif event[1] == "-status":
             pokemon, status = event[2:4]
-            self.get_pokemon(pokemon).status = status
+            mon = self.get_pokemon(pokemon)
+            mon.status = status
+            if status == "slp":
+                mon._status_counter = 0
+                sleep_cause = next(
+                    (part for part in event[4:] if part.startswith("[from] move: ")),
+                    None,
+                )
+                mon.sleep_source = (
+                    "self"
+                    if sleep_cause == "[from] move: Rest"
+                    else "opponent" if sleep_cause else None
+                )
         elif event[1] == "rule":
             self.rules.append(event[2])
 

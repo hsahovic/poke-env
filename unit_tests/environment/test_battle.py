@@ -17,6 +17,28 @@ from poke_env.battle import (
 from poke_env.data import GenData
 
 
+def test_gen1_light_screen_survives_turn_and_clears_on_switch():
+    battle = Battle("tag", "username", MagicMock(), gen=1)
+    battle.player_role = "p1"
+    battle.parse_message(["", "switch", "p2a: Snorlax", "Snorlax", "100/100"])
+    mon = battle.opponent_active_pokemon
+    battle.parse_message(["", "-start", "p2a: Snorlax", "move: Light Screen"])
+    battle.parse_message(["", "turn", "2"])
+    assert Effect.LIGHT_SCREEN in mon.effects
+    battle.parse_message(["", "switch", "p2a: Tauros", "Tauros", "100/100"])
+    assert Effect.LIGHT_SCREEN not in mon.effects
+
+
+def test_haze_activation_does_not_persist_into_next_turn():
+    battle = Battle("tag", "username", MagicMock(), gen=1)
+    battle.player_role = "p1"
+    battle.parse_message(["", "switch", "p2a: Snorlax", "Snorlax", "100/100"])
+    battle.parse_message(["", "-activate", "p2a: Snorlax", "move: Haze"])
+    assert Effect.HAZE in battle.opponent_active_pokemon.effects
+    battle.parse_message(["", "turn", "2"])
+    assert Effect.HAZE not in battle.opponent_active_pokemon.effects
+
+
 def _extract_replay_log_lines(replay_html: str):
     match = re.search(
         r'<script type="text/plain" class="battle-log-data">\s*(.*?)\s*</script>',
@@ -67,6 +89,74 @@ def test_battle_get_pokemon():
         print(battle.get_pokemon("p2: pikachu"))
 
     assert "p2: pikachu" not in battle.team
+
+
+@pytest.mark.parametrize(
+    "gen, source", [(1, "[from] Metronome"), (9, "[from] move: Metronome")]
+)
+def test_metronome_called_move_preserves_moveset_and_pp(gen, source):
+    battle = Battle("tag", "username", MagicMock(), gen=gen)
+    battle.player_role = "p1"
+    battle.parse_message(["", "switch", "p2a: Snorlax", "Snorlax", "100/100"])
+    for move in ("Surf", "Hyper Beam", "Reflect", "Metronome"):
+        battle.parse_message(["", "move", "p2a: Snorlax", move, "p1a: Mew"])
+    pokemon = battle.get_pokemon("p2a: Snorlax")
+    pp = pokemon.moves["metronome"].current_pp
+
+    battle.parse_message(
+        ["", "move", "p2a: Snorlax", "Horn Attack", "p1a: Mew", source]
+    )
+
+    assert set(pokemon.moves) == {"surf", "hyperbeam", "reflect", "metronome"}
+    assert pokemon.moves["metronome"].current_pp == pp
+
+
+@pytest.mark.parametrize("move", ["Bind", "Clamp", "Fire Spin", "Wrap"])
+@pytest.mark.parametrize("actor", ["p1a: Dragonite", "p2a: Dragonite"])
+def test_gen1_partial_trapping_continuation_preserves_pp(move, actor):
+    logger = MagicMock()
+    battle = Battle("tag", "username", logger, gen=1)
+    battle.player_role = "p1"
+    target = "p2a: Slowbro" if actor.startswith("p1") else "p1a: Slowbro"
+    battle.parse_message(["", "switch", actor, "Dragonite", "100/100"])
+    battle.parse_message(["", "switch", target, "Slowbro", "100/100"])
+    battle.parse_message(["", "move", actor, move, target])
+    mon = battle.get_pokemon(actor)
+    known_move = next(iter(mon.moves.values()))
+    pp = known_move.current_pp
+    event = ["", "move", actor, move, target, f"[from] {move}"]
+
+    for turn in (2, 3, 4):
+        battle.parse_message(["", "turn", str(turn)])
+        battle.parse_message(event)
+        assert known_move.current_pp == pp
+        assert known_move.is_last_used
+    assert event[-1] == f"[from] {move}"
+    logger.warning.assert_not_called()
+    battle.parse_message(["", "move", actor, move, target])
+    assert known_move.current_pp == pp - 1
+
+
+@pytest.mark.parametrize("move", ["Bind", "Clamp", "Fire Spin", "Wrap"])
+def test_gen1_metronome_trapping_continuation_does_not_reveal_called_move(move):
+    logger = MagicMock()
+    battle = Battle("tag", "username", logger, gen=1)
+    battle.player_role = "p1"
+    battle.parse_message(["", "switch", "p2a: Snorlax", "Snorlax", "100/100"])
+    battle.parse_message(["", "move", "p2a: Snorlax", "Metronome", "p1a: Slowbro"])
+    battle.parse_message(
+        ["", "move", "p2a: Snorlax", move, "p1a: Slowbro", "[from] Metronome"]
+    )
+    mon = battle.get_pokemon("p2a: Snorlax")
+    pp = mon.moves["metronome"].current_pp
+
+    battle.parse_message(
+        ["", "move", "p2a: Snorlax", move, "p1a: Slowbro", f"[from] {move}"]
+    )
+
+    assert set(mon.moves) == {"metronome"}
+    assert mon.moves["metronome"].current_pp == pp
+    logger.warning.assert_not_called()
 
 
 def test_battle_side_start_end():
@@ -1046,3 +1136,61 @@ def test_auto_save_replay_includes_terminal_result_and_creates_nested_path(tmp_p
     assert replay_path.exists()
     assert replay_log_lines[0] == ">tag"
     assert "|win|username" in replay_log_lines
+
+
+def test_gen1_haze_ends_toxic_and_volatile_effects():
+    battle = Battle("tag", "username", MagicMock(), gen=1)
+    battle.player_role = "p1"
+    battle.parse_message(["", "switch", "p2a: Snorlax", "Snorlax", "100/100"])
+    mon = battle.opponent_active_pokemon
+    battle.parse_message(["", "-status", "p2a: Snorlax", "tox"])
+    for effect in ("Light Screen", "Reflect", "Disable", "confusion"):
+        battle.parse_message(["", "-start", "p2a: Snorlax", effect])
+    for effect in ("Light Screen", "Reflect", "Disable", "confusion", "Toxic counter"):
+        battle.parse_message(["", "-end", "p2a: Snorlax", effect, "[silent]"])
+    assert mon.status == Status.PSN
+    assert not mon.effects
+
+
+@pytest.mark.parametrize("gen", [1, 9])
+def test_confusion_counts_observed_activations(gen):
+    battle = Battle("tag", "username", MagicMock(), gen=gen)
+    battle.player_role = "p1"
+    battle.parse_message(["", "switch", "p2a: Snorlax", "Snorlax", "100/100"])
+    mon = battle.opponent_active_pokemon
+    battle.parse_message(["", "-start", "p2a: Snorlax", "confusion"])
+    battle.parse_message(["", "-activate", "p2a: Snorlax", "confusion"])
+    battle.parse_message(["", "-activate", "p2a: Snorlax", "confusion"])
+    assert mon.effects[Effect.CONFUSION] == 2
+    battle.parse_message(["", "-end", "p2a: Snorlax", "confusion"])
+    assert Effect.CONFUSION not in mon.effects
+
+
+@pytest.mark.parametrize("gen", [1, 9])
+@pytest.mark.parametrize(
+    "source, expected",
+    [("[from] move: Rest", "self"), ("[from] move: Spore", "opponent")],
+)
+def test_sleep_source_and_recharge_lifecycle(gen, source, expected):
+    battle = Battle("tag", "username", MagicMock(), gen=gen)
+    battle.player_role = "p1"
+    battle.parse_message(["", "switch", "p2a: Snorlax", "Snorlax", "100/100"])
+    mon = battle.opponent_active_pokemon
+    battle.parse_message(["", "-status", "p2a: Snorlax", "slp", source])
+    assert mon.sleep_source == expected
+    battle.parse_message(["", "cant", "p2a: Snorlax", "slp"])
+    assert mon.status_counter == 1
+    battle.parse_message(["", "-curestatus", "p2a: Snorlax", "slp"])
+    assert mon.sleep_source is None
+    battle.parse_message(["", "-mustrecharge", "p2a: Snorlax"])
+    battle.parse_message(["", "cant", "p2a: Snorlax", "recharge"])
+    assert not mon.must_recharge
+
+
+def test_gen1_flinch_clears_recharge():
+    battle = Battle("tag", "username", MagicMock(), gen=1)
+    battle.player_role = "p1"
+    battle.parse_message(["", "switch", "p2a: Snorlax", "Snorlax", "100/100"])
+    battle.parse_message(["", "-mustrecharge", "p2a: Snorlax"])
+    battle.parse_message(["", "cant", "p2a: Snorlax", "flinch"])
+    assert not battle.opponent_active_pokemon.must_recharge

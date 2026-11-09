@@ -57,21 +57,26 @@ class _AsyncQueue(Generic[ItemType]):
         )
         return res.result()
 
-    def race_get(self, *events: asyncio.Event) -> Optional[ItemType]:
-        async def _race_get() -> Optional[ItemType]:
-            get_task = asyncio.create_task(self.async_get())
-            wait_tasks = [asyncio.create_task(e.wait()) for e in events]
+    async def async_race_get(self, *events: asyncio.Event) -> Optional[ItemType]:
+        if not self.queue.empty():
+            return self.queue.get_nowait()
+        get_task = asyncio.create_task(self.async_get())
+        wait_tasks = [asyncio.create_task(e.wait()) for e in events]
+        tasks = {get_task, *wait_tasks}
+        pending = tasks
+        try:
             done, pending = await asyncio.wait(
-                {get_task, *wait_tasks}, return_when=asyncio.FIRST_COMPLETED
+                tasks, return_when=asyncio.FIRST_COMPLETED
             )
-            for p in pending:
-                p.cancel()
             if get_task in done:
                 return get_task.result()
-            else:
-                return None
+            return None
+        finally:
+            for task in pending:
+                task.cancel()
 
-        res = asyncio.run_coroutine_threadsafe(_race_get(), self._loop)
+    def race_get(self, *events: asyncio.Event) -> Optional[ItemType]:
+        res = asyncio.run_coroutine_threadsafe(self.async_race_get(*events), self._loop)
         return res.result()
 
     async def async_put(self, item: ItemType):
@@ -397,6 +402,21 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
     # PettingZoo API
     # https://pettingzoo.farama.org/api/parallel/#parallelenv
 
+    async def _exchange_orders(
+        self, order1: Optional[BattleOrder], order2: Optional[BattleOrder]
+    ) -> Tuple[Optional[AbstractBattle], Optional[AbstractBattle]]:
+        if order1 is not None:
+            self.agent1.order_queue.queue.put_nowait(order1)
+        if order2 is not None:
+            self.agent2.order_queue.queue.put_nowait(order2)
+        battle1 = await self.agent1.battle_queue.async_race_get(
+            self.agent1._waiting, self.agent2._trying_again
+        )
+        battle2 = await self.agent2.battle_queue.async_race_get(
+            self.agent2._waiting, self.agent1._trying_again
+        )
+        return battle1, battle2
+
     def step(
         self, actions: Dict[str, ActionType]
     ) -> Tuple[
@@ -410,6 +430,8 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
         assert self.battle2 is not None
         assert not self.battle1.finished
         assert not self.battle2.finished
+        order1 = None
+        order2 = None
         if self.agent1_to_move:
             self.agent1_to_move = False
             order1 = self.action_to_order(
@@ -418,7 +440,6 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
                 fake=self._fake,
                 strict=self._strict,
             )
-            self.agent1.order_queue.put(order1)
         if self.agent2_to_move:
             self.agent2_to_move = False
             order2 = self.action_to_order(
@@ -427,13 +448,9 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
                 fake=self._fake,
                 strict=self._strict,
             )
-            self.agent2.order_queue.put(order2)
-        battle1 = self.agent1.battle_queue.race_get(
-            self.agent1._waiting, self.agent2._trying_again
-        )
-        battle2 = self.agent2.battle_queue.race_get(
-            self.agent2._waiting, self.agent1._trying_again
-        )
+        battle1, battle2 = asyncio.run_coroutine_threadsafe(
+            self._exchange_orders(order1, order2), self._loop
+        ).result()
         self.agent1_to_move = battle1 is not None
         self.agent2_to_move = battle2 is not None
         if battle1 is None:

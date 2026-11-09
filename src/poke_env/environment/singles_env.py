@@ -3,7 +3,7 @@ from typing import Any, Optional, Union
 import numpy as np
 from gymnasium.spaces import Discrete, Space
 
-from poke_env.battle import Battle, Pokemon
+from poke_env.battle import Battle, Move, Pokemon
 from poke_env.battle.move import SPECIAL_MOVES
 from poke_env.data import GenData
 from poke_env.environment.env import PokeEnv
@@ -74,6 +74,88 @@ class SinglesEnv(PokeEnv[np.int64]):
         }
 
     @staticmethod
+    def get_move_slots(battle: Battle) -> tuple[Move, ...]:
+        active = battle.active_pokemon
+        known_moves = tuple(active.moves.values()) if active is not None else ()
+        if (
+            len(battle.available_moves) == 1
+            and battle.available_moves[0].id in SPECIAL_MOVES
+        ):
+            return tuple(battle.available_moves)
+        if battle.gen == 1 and battle.last_request.get("active"):
+            moves = {move.id: move for move in known_moves}
+            moves.update((move.id, move) for move in battle.available_moves)
+            return tuple(
+                (
+                    moves[entry["id"]]
+                    if entry["id"] in moves
+                    else Move(entry["id"], gen=battle.gen)
+                )
+                for entry in battle.last_request["active"][0]["moves"][:4]
+            )
+        slots = known_moves[:4]
+        if len(battle.available_moves) == 1 and battle.available_moves[0].id not in {
+            move.id for move in slots
+        }:
+            return tuple(battle.available_moves)
+        return slots
+
+    @staticmethod
+    def _action_targets(
+        battle: Battle,
+    ) -> tuple[Union[Move, Pokemon, DefaultBattleOrder, None], ...]:
+        team = tuple(battle.team.values())
+        active = battle.active_pokemon
+        known_moves = SinglesEnv.get_move_slots(battle)
+        available_moves = tuple(battle.available_moves)
+        requested_moves = (
+            battle.last_request.get("active", [{}])[0].get("moves", ())
+            if battle.gen == 1
+            else ()
+        )
+        disabled_slots = tuple(move.get("disabled", False) for move in requested_moves)
+        if len(available_moves) == 1 and available_moves[0].id in SPECIAL_MOVES:
+            disabled_slots = ()
+        targets: list[Union[Move, Pokemon, DefaultBattleOrder, None]] = [
+            None
+        ] * SinglesEnv.get_action_space_size(battle.gen)
+        if battle.wait:
+            targets[0] = DefaultBattleOrder()
+        else:
+            if not battle.trapped:
+                switches = set(battle.available_switches)
+                for index, pokemon in enumerate(team[:6]):
+                    if pokemon in switches:
+                        targets[index] = pokemon
+            if active is not None and not battle.force_switch:
+                available_ids = {move.id for move in available_moves}
+                moves = known_moves
+                z_move_ids = (
+                    {move.id for move in active.available_z_moves}
+                    if battle.can_z_move
+                    else set()
+                )
+                for index, move in enumerate(moves):
+                    if index < len(disabled_slots) and disabled_slots[index]:
+                        continue
+                    if move.id not in available_ids:
+                        continue
+                    targets[6 + index] = move
+                    if battle.can_mega_evolve and 10 + index < len(targets):
+                        targets[10 + index] = move
+                    if (
+                        battle.can_z_move
+                        and move.id in z_move_ids
+                        and 14 + index < len(targets)
+                    ):
+                        targets[14 + index] = move
+                    if battle.can_dynamax and 18 + index < len(targets):
+                        targets[18 + index] = move
+                    if battle.can_tera and 22 + index < len(targets):
+                        targets[22 + index] = move
+        return tuple(targets)
+
+    @staticmethod
     def action_to_order(
         action: np.int64, battle: Battle, fake: bool = False, strict: bool = True
     ) -> BattleOrder:
@@ -110,7 +192,34 @@ class SinglesEnv(PokeEnv[np.int64]):
                 return DefaultBattleOrder()
             elif action == -1:
                 return ForfeitBattleOrder()
-            elif action < 6:
+            if not fake:
+                targets = SinglesEnv._action_targets(battle)
+                index = int(action)
+                if 0 <= index < len(targets) and (target := targets[index]) is not None:
+                    if isinstance(target, DefaultBattleOrder):
+                        return DefaultBattleOrder()
+                    move_slot = 0
+                    if (
+                        index >= 6
+                        and battle.gen == 1
+                        and (requested := battle.last_request.get("active"))
+                    ):
+                        moves = requested[0]["moves"]
+                        if len({move["id"] for move in moves}) < len(moves):
+                            move_slot = index - 5
+                    return SingleBattleOrder(
+                        target,
+                        move_slot=move_slot,
+                        mega=10 <= index < 14,
+                        z_move=14 <= index < 18,
+                        dynamax=18 <= index < 22,
+                        terastallize=22 <= index < 26,
+                    )
+                raise ValueError(
+                    f"Invalid action {action} from player {battle.player_username} "
+                    f"in battle {battle.battle_tag}"
+                )
+            if action < 6:
                 order = Player.create_order(list(battle.team.values())[action])
             else:
                 if battle.active_pokemon is None:
@@ -119,14 +228,7 @@ class SinglesEnv(PokeEnv[np.int64]):
                         f"in battle {battle.battle_tag} - action specifies a "
                         f"move, but battle.active_pokemon is None!"
                     )
-                avail_ids = [m.id for m in battle.available_moves]
-                known_moves = list(battle.active_pokemon.moves.values())[:4]
-                known_ids = [m.id for m in known_moves]
-                mvs = (
-                    battle.available_moves
-                    if len(avail_ids) == 1 and avail_ids[0] not in known_ids
-                    else known_moves
-                )
+                mvs = SinglesEnv.get_move_slots(battle)
                 if (action - 6) % 4 not in range(len(mvs)):
                     raise ValueError(
                         f"Invalid action {action} from player {battle.player_username} "
@@ -186,6 +288,33 @@ class SinglesEnv(PokeEnv[np.int64]):
             else:
                 assert isinstance(order, SingleBattleOrder)
                 assert not isinstance(order.order, str)
+                if not fake:
+                    targets = SinglesEnv._action_targets(battle)
+                    if battle.gen == 1 and order.move_slot:
+                        index = 5 + order.move_slot
+                        if 0 <= index < len(targets) and targets[index] is order.order:
+                            return np.int64(index)
+                    if isinstance(order.order, Pokemon):
+                        choices = enumerate(targets[:6])
+                    else:
+                        if order.mega:
+                            gimmick = 4
+                        elif order.z_move:
+                            gimmick = 8
+                        elif order.dynamax:
+                            gimmick = 12
+                        elif order.terastallize:
+                            gimmick = 16
+                        else:
+                            gimmick = 0
+                        choices = enumerate(
+                            targets[6 + gimmick : 10 + gimmick], start=6 + gimmick
+                        )
+                    for index, target in choices:
+                        if target is order.order and (
+                            isinstance(target, Pokemon) or order.move_target == 0
+                        ):
+                            return np.int64(index)
                 if not fake and str(order) not in [str(o) for o in battle.valid_orders]:
                     raise ValueError(
                         f"Invalid order from player {battle.player_username} "
@@ -198,14 +327,7 @@ class SinglesEnv(PokeEnv[np.int64]):
                     )
                 else:
                     assert battle.active_pokemon is not None
-                    avail_ids = [m.id for m in battle.available_moves]
-                    known_moves = list(battle.active_pokemon.moves.values())[:4]
-                    known_ids = [m.id for m in known_moves]
-                    mvs = (
-                        battle.available_moves
-                        if len(avail_ids) == 1 and avail_ids[0] not in known_ids
-                        else known_moves
-                    )
+                    mvs = SinglesEnv.get_move_slots(battle)
                     action = [m.id for m in mvs].index(order.order.id)
                     if order.mega:
                         gimmick = 1
@@ -231,61 +353,10 @@ class SinglesEnv(PokeEnv[np.int64]):
 
     @staticmethod
     def get_action_mask(battle: Battle) -> list[int]:
-        switch_space = [
-            i
-            for i, pokemon in enumerate(battle.team.values())
-            if not battle.trapped
-            and pokemon.base_species
-            in [p.base_species for p in battle.available_switches]
+        return [
+            1 if target is not None else 0
+            for target in SinglesEnv._action_targets(battle)
         ]
-        if battle._wait:
-            actions = [0]
-        elif battle.active_pokemon is None:
-            actions = switch_space
-        else:
-            known_moves = list(battle.active_pokemon.moves.values())[:4]
-            move_space = [
-                i + 6
-                for i, move in enumerate(known_moves)
-                if move.id in [m.id for m in battle.available_moves]
-            ]
-            if (
-                not move_space
-                and len(battle.available_moves) == 1
-                and battle.available_moves[0].id not in SPECIAL_MOVES
-            ):
-                move_space = [6]
-            avail_move_ids = [m.id for m in battle.available_moves]
-            available_z_ids = [m.id for m in battle.active_pokemon.available_z_moves]
-            mega_space = [i + 4 for i in move_space if battle.can_mega_evolve]
-            zmove_space = [
-                i + 6 + 8
-                for i, move in enumerate(known_moves)
-                if battle.can_z_move
-                and move.id in avail_move_ids
-                and move.id in available_z_ids
-            ]
-            dynamax_space = [i + 12 for i in move_space if battle.can_dynamax]
-            tera_space = [i + 16 for i in move_space if battle.can_tera]
-            if (
-                not move_space
-                and len(battle.available_moves) == 1
-                and battle.available_moves[0].id in SPECIAL_MOVES
-            ):
-                move_space = [6]
-            actions = (
-                switch_space
-                + move_space
-                + mega_space
-                + zmove_space
-                + dynamax_space
-                + tera_space
-            )
-        action_mask = [
-            int(i in actions)
-            for i in range(SinglesEnv.get_action_space_size(battle.gen))
-        ]
-        return action_mask
 
     @staticmethod
     def get_action_space_size(gen: int) -> int:

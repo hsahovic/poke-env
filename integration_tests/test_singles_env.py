@@ -112,3 +112,13 @@ def test_single_agent_env_api():
         env = SingleAgentWrapper(env, RandomPlayer())
         check_env(env, skip_render_check=True, skip_close_check=True)
         env.close()
+
+
+@pytest.mark.timeout(60)
+@pytest.mark.parametrize("gen", [1, 6, 9])
+def test_masked_singles_battles(gen):
+    env = SinglesTestEnv(battle_format=f"gen{gen}randombattle", log_level=25)
+    try:
+        play_function(env, 3)
+    finally:
+        env.close()
