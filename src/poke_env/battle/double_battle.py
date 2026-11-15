@@ -49,9 +49,16 @@ class DoubleBattle(AbstractBattle):
         logger: Logger,
         gen: int,
         save_replays: Union[str, bool] = False,
+        *,
+        infer_abilities: bool = True,
     ):
         super(DoubleBattle, self).__init__(
-            battle_tag, username, logger, save_replays, gen=gen
+            battle_tag,
+            username,
+            logger,
+            save_replays,
+            gen=gen,
+            infer_abilities=infer_abilities,
         )
 
         # Turn choice attributes
