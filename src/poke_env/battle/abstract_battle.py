@@ -989,6 +989,11 @@ class AbstractBattle(ABC):
 
                     self.get_pokemon(thief).item = to_id_str(item)
                     self.get_pokemon(victim).item = None
+                elif cause == "[from] move: Bestow":
+                    receiver = event[2]
+                    giver = event[5].replace("[of] ", "")
+                    self.get_pokemon(receiver).item = to_id_str(item)
+                    self.get_pokemon(giver).item = None
                 else:
                     raise ValueError(f"Unhandled item message: {event}")
             else:
