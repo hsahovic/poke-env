@@ -1,11 +1,21 @@
 from __future__ import annotations
 
 import os
+from functools import lru_cache
 from typing import Any, Dict, FrozenSet, Optional, Set, Union
 
 import orjson
 
 from poke_env.data.normalize import to_id_str
+
+
+@lru_cache(maxsize=1)
+def load_move_aliases() -> Dict[str, str]:
+    path = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)), "static", "move_aliases.json"
+    )
+    with open(path) as f:
+        return orjson.loads(f.read())
 
 
 class GenData:
