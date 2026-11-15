@@ -5,12 +5,11 @@ import json
 import logging
 from logging import Logger
 from time import perf_counter
-from typing import Awaitable, Callable, List, Optional, Set
+from typing import Any, Awaitable, Callable, Coroutine, List, Optional, Set, TypeVar
 
 import requests
 import websockets as ws
 from websockets import ClientConnection
-from websockets.exceptions import ConnectionClosedOK
 
 from poke_env.concurrency import (
     POKE_LOOP,
@@ -20,6 +19,8 @@ from poke_env.concurrency import (
 from poke_env.exceptions import ShowdownException
 from poke_env.ps_client.account_configuration import AccountConfiguration
 from poke_env.ps_client.server_configuration import ServerConfiguration
+
+T = TypeVar("T")
 
 BattleMessageCallback = Callable[[List[List[str]]], Awaitable[None]]
 ChallengeCallback = Callable[[List[str]], Awaitable[None]]
@@ -39,7 +40,9 @@ class PSClient:
 
     Responsible for communicating with showdown servers. Also implements some higher
     level methods for basic tasks, such as changing avatar and low-level message
-    handling.
+    handling. A background handler or connection failure closes the client session.
+    Pending battle operations receive the failure; later operations require a new
+    client. Stopping the listener is permanent and waits for handler cleanup.
     """
 
     def __init__(
@@ -99,6 +102,9 @@ class PSClient:
         self._on_challenge_request = on_challenge_request or _noop_challenge_message
 
         self.loop = loop
+        self._closed = False
+        self._listener: Optional[asyncio.Task] = None
+        self._operation_errors: Set[asyncio.Future] = set()
         self._logged_in: asyncio.Event = create_in_poke_loop(asyncio.Event, loop)
         self._sending_lock: asyncio.Lock = create_in_poke_loop(asyncio.Lock, loop)
 
@@ -222,16 +228,55 @@ class PSClient:
                     )
             else:
                 self.logger.warning("Unhandled message: %s", message)
-        except asyncio.CancelledError as e:
-            self.logger.critical("CancelledError intercepted: %s", e)
         except Exception as exception:
             self.logger.exception(
                 "Unhandled exception raised while handling message:\n%s", message
             )
             raise exception
 
+    def _close_operations(self, error: BaseException):
+        self._closed = True
+        self.logged_in.clear()
+        for future in self._operation_errors:
+            if not future.done():
+                future.set_result(error)
+
+    async def _wait_for_operation(self, operation: Coroutine[Any, Any, T]) -> T:
+        if self._closed:
+            operation.close()
+            raise ConnectionError("PSClient is closed; create a new client")
+        error = self.loop.create_future()
+        self._operation_errors.add(error)
+        task = asyncio.create_task(operation)
+        try:
+            await asyncio.wait([task, error], return_when=asyncio.FIRST_COMPLETED)
+            if error.done():
+                raise error.result()
+            return task.result()
+        finally:
+            self._operation_errors.discard(error)
+            task.cancel()
+            await asyncio.gather(task, return_exceptions=True)
+
+    def _handle_task_result(self, task: asyncio.Task):
+        self._active_tasks.discard(task)
+        if not task.cancelled():
+            error = task.exception()
+            if error is not None and not self._closed:
+                self._close_operations(error)
+                if self._listener is not None:
+                    self._listener.cancel()
+
     async def _stop_listening(self):
-        await self.websocket.close()
+        self._close_operations(ConnectionError("PSClient stopped"))
+        listener = self._listener
+        if listener is not None:
+            listener.cancel()
+            await asyncio.gather(listener, return_exceptions=True)
+        elif hasattr(self, "_listening_coroutine"):
+            await asyncio.gather(
+                asyncio.wrap_future(self._listening_coroutine), return_exceptions=True
+            )
 
     async def change_avatar(self, avatar_name: Optional[str]):
         """Changes the account's avatar.
@@ -245,6 +290,11 @@ class PSClient:
 
     async def listen(self):
         """Listen to a showdown websocket and dispatch messages to be handled."""
+        if self._closed:
+            return
+        if self._listener is not None:
+            raise RuntimeError("PSClient is already listening")
+        self._listener = asyncio.current_task()
         self.logger.info("Starting listening to showdown websocket")
         try:
             async with ws.connect(
@@ -259,16 +309,21 @@ class PSClient:
                     self.logger.info("\033[92m\033[1m<<<\033[0m %s", message)
                     task = asyncio.create_task(self._handle_message(str(message)))
                     self._active_tasks.add(task)
-                    task.add_done_callback(self._active_tasks.discard)
+                    task.add_done_callback(self._handle_task_result)
 
-        except ConnectionClosedOK:
-            self.logger.warning(
-                "Websocket connection with %s closed", self.websocket_url
-            )
-        except (asyncio.CancelledError, RuntimeError) as e:
-            self.logger.critical("Listen interrupted by %s", e)
-        except Exception as e:
-            self.logger.exception(e)
+        except asyncio.CancelledError:
+            raise
+        except Exception as error:
+            self.logger.exception(error)
+            self._close_operations(error)
+        finally:
+            if not self._closed:
+                self._close_operations(ConnectionError("Showdown connection closed"))
+            tasks = list(self._active_tasks)
+            for task in tasks:
+                task.cancel()
+            await asyncio.gather(*tasks, return_exceptions=True)
+            self._listener = None
 
     async def log_in(self, split_message: List[str]):
         """Log in with specified username and password.
