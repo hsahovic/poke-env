@@ -480,14 +480,6 @@ class Pokemon:
             and use
         ):
             self.end_effect("Charge")
-        elif (
-            Effect.FLASH_FIRE in self.effects
-            and isinstance(move, Move)
-            and move.base_power > 0
-            and move.type == PokemonType.FIRE
-            and use
-        ):
-            self.end_effect("Flash Fire")
 
     def prepare(self, move_id: str, target: Optional[Pokemon]):
         ident = Move.retrieve_id(move_id)
