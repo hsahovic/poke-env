@@ -7,6 +7,7 @@ import pytest
 
 from poke_env.battle import (
     Battle,
+    DoubleBattle,
     Effect,
     Field,
     PokemonType,
@@ -1119,3 +1120,130 @@ def test_flash_fire_ends_on_protocol_message_and_faint(gen):
     assert Effect.FLASH_FIRE in rapidash.effects
     battle.parse_message(["", "faint", "p2a: Rapidash"])
     assert Effect.FLASH_FIRE not in rapidash.effects
+
+
+@pytest.mark.parametrize("battle_class", [Battle, DoubleBattle])
+@pytest.mark.parametrize("infer_abilities", [True, False])
+def test_opponent_ability_inference_and_revelation(battle_class, infer_abilities):
+    battle = battle_class(
+        "tag", "username", MagicMock(), gen=9, infer_abilities=infer_abilities
+    )
+    battle.player_role = "p1"
+    battle._register_teampreview_pokemon("p2", "Great Tusk")
+    preview = battle.teampreview_opponent_team[0]
+    assert preview.ability == ("protosynthesis" if infer_abilities else None)
+    battle.switch("p2a: Great Tusk", "Great Tusk, L50", "100/100")
+    mon = battle.get_pokemon("p2a: Great Tusk")
+    assert mon.ability == preview.ability
+    battle.switch("p1a: Iron Hands", "Iron Hands, L50", "100/100")
+    battle.parse_message(
+        [
+            "",
+            "-damage",
+            "p1a: Iron Hands",
+            "90/100",
+            "[from] ability: Rough Skin",
+            "[of] p2a: Great Tusk",
+        ]
+    )
+    assert mon.ability == mon.base_ability == "roughskin"
+    battle.switch("p2a: Pikachu", "Pikachu, L50", "100/100")
+    assert mon.ability == "roughskin"
+    battle.switch("p2a: Great Tusk", "Great Tusk, L50", "100/100")
+    assert mon.ability == "roughskin"
+    assert mon.temporary_ability is None
+
+
+@pytest.mark.parametrize("infer_abilities", [True, False])
+def test_arbitrary_ability_strict_requests(infer_abilities):
+    battle = Battle(
+        "tag", "username", MagicMock(), gen=9, infer_abilities=infer_abilities
+    )
+    request = {
+        "side": {
+            "id": "p1",
+            "name": "username",
+            "pokemon": [
+                {
+                    "ident": "p1: Iron Hands",
+                    "details": "Iron Hands, L50",
+                    "condition": "100/100",
+                    "active": True,
+                    "baseAbility": "sheerforce",
+                    "ability": "sheerforce",
+                    "item": "",
+                    "moves": ["tackle"],
+                }
+            ],
+        }
+    }
+    battle.turn = 2
+    for _ in range(2):
+        battle.parse_request(request, strict_battle_tracking=True)
+        assert battle.team["p1: Iron Hands"].ability == "sheerforce"
+
+
+@pytest.mark.parametrize("infer_abilities", [True, False])
+def test_unrevealed_ability_replacement_is_temporary(infer_abilities):
+    battle = Battle(
+        "tag", "username", MagicMock(), gen=9, infer_abilities=infer_abilities
+    )
+    battle.player_role = "p1"
+    battle.switch("p2a: Great Tusk", "Great Tusk, L50", "100/100")
+    mon = battle.get_pokemon("p2a: Great Tusk")
+    battle.parse_message(
+        ["", "-ability", "p2a: Great Tusk", "Insomnia", "[from] move: Worry Seed"]
+    )
+    assert mon.ability == "insomnia"
+    mon.switch_out({})
+    assert mon.ability == ("protosynthesis" if infer_abilities else None)
+
+
+@pytest.mark.parametrize("infer_abilities", [True, False])
+def test_trace_revelation_restores_trace_on_switch(infer_abilities):
+    battle = Battle(
+        "tag", "username", MagicMock(), gen=9, infer_abilities=infer_abilities
+    )
+    battle.player_role = "p1"
+    battle.switch("p2a: Great Tusk", "Great Tusk, L50", "100/100")
+    mon = battle.get_pokemon("p2a: Great Tusk")
+    battle.parse_message(["", "-ability", "p2a: Great Tusk", "Intimidate", "boost"])
+    battle.parse_message(
+        [
+            "",
+            "-ability",
+            "p2a: Great Tusk",
+            "Intimidate",
+            "[from] ability: Trace",
+            "[of] p1a: Luxray",
+        ]
+    )
+    assert mon.ability == "intimidate"
+    mon.switch_out({})
+    assert mon.ability == "trace"
+
+
+def test_skill_swap_reveals_both_original_abilities():
+    battle = Battle("tag", "username", MagicMock(), gen=9, infer_abilities=False)
+    battle.player_role = "p1"
+    battle.switch("p1a: Iron Hands", "Iron Hands, L50", "100/100")
+    battle.switch("p2a: Great Tusk", "Great Tusk, L50", "100/100")
+    battle.parse_message(
+        [
+            "",
+            "-activate",
+            "p2a: Great Tusk",
+            "move: Skill Swap",
+            "[ability] Levitate",
+            "[ability2] Rough Skin",
+            "[of] p1a: Iron Hands",
+        ]
+    )
+    target = battle.get_pokemon("p2a: Great Tusk")
+    actor = battle.get_pokemon("p1a: Iron Hands")
+    assert target.ability == "levitate"
+    assert actor.ability == "roughskin"
+    target.switch_out({})
+    actor.switch_out({})
+    assert target.ability == "roughskin"
+    assert actor.ability == "levitate"

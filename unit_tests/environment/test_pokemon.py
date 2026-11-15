@@ -677,3 +677,76 @@ def test_teambuilder_rejects_unknown_or_unavailable_moves(move):
 
 def test_move_id_from_battle_messages_keeps_z_move_id():
     assert Move.retrieve_id("Z-Thunderbolt") == "zthunderbolt"
+
+
+@pytest.mark.parametrize("infer_abilities", [True, False])
+def test_request_ability_overrides_inference(infer_abilities):
+    request = {
+        "ident": "p1: Iron Hands",
+        "details": "Iron Hands, L50",
+        "condition": "100/100",
+        "active": True,
+        "baseAbility": "sheerforce",
+        "ability": "sheerforce",
+        "item": "",
+        "moves": ["tackle"],
+    }
+    mon = Pokemon(9, species="ironhands", infer_abilities=infer_abilities)
+    for _ in range(2):
+        mon.update_from_request(request)
+        mon.check_consistency(request, "p1")
+        assert mon.ability == mon.base_ability == "sheerforce"
+        assert mon.temporary_ability is None
+    mon.update_from_request(dict(request, ability="mummy"))
+    assert mon.ability == "mummy"
+    assert mon.base_ability == "sheerforce"
+    mon.update_from_request(request)
+    assert mon.ability == "sheerforce"
+    assert mon.temporary_ability is None
+    mon.update_from_request(dict(request, baseAbility="roughskin", ability="roughskin"))
+    assert mon.ability == mon.base_ability == "roughskin"
+
+
+def test_revealed_ability_survives_details_and_forme_changes():
+    mon = Pokemon(9, species="eiscue", infer_abilities=False)
+    mon.ability = "Rough Skin"
+    mon.forme_change("Eiscue-Noice")
+    mon._update_from_details("Eiscue, L50")
+    mon.switch_out({})
+    assert mon.ability == "roughskin"
+
+
+@pytest.mark.parametrize("infer_abilities", [True, False])
+def test_mega_ability_and_request_preserve_original_ability(infer_abilities):
+    mon = Pokemon(9, species="charizard", infer_abilities=infer_abilities)
+    mon.ability = "Blaze"
+    mon.mega_evolve("Charizardite X")
+    assert mon.ability == "toughclaws"
+    mon.update_from_request(
+        {
+            "ident": "p1: Charizard",
+            "details": "Charizard-Mega-X, L50",
+            "condition": "100/100",
+            "active": True,
+            "baseAbility": "toughclaws",
+            "ability": "mummy",
+            "item": "charizarditex",
+            "moves": ["tackle"],
+        }
+    )
+    assert mon.ability == "mummy"
+    mon.switch_out({})
+    assert mon.ability == "toughclaws"
+    mon.forme_change("Charizard")
+    assert mon.ability == "blaze"
+
+
+def test_transform_revelations_do_not_become_base_ability():
+    mon = Pokemon(9, species="ditto", infer_abilities=False)
+    target = Pokemon(9, species="greattusk", infer_abilities=False)
+    target.ability = "Rough Skin"
+    mon.transform(target)
+    mon.ability = "Rough Skin"
+    assert mon.ability == "roughskin"
+    mon.switch_out({})
+    assert mon.ability is None

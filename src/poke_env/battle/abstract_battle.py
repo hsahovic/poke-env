@@ -83,6 +83,7 @@ class AbstractBattle(ABC):
         "_finished",
         "_force_switch",
         "_format",
+        "_infer_abilities",
         "_gen",
         "in_team_preview",
         "_last_request",
@@ -131,10 +132,12 @@ class AbstractBattle(ABC):
         logger: Logger,
         save_replays: Union[str, bool],
         gen: int,
+        infer_abilities: bool = True,
     ):
         # Utils attributes
         self._battle_tag: str = battle_tag
         self._gen: int = gen
+        self._infer_abilities = infer_abilities
         self._format: Optional[str] = None
         self._max_team_size: Optional[int] = None
         self._opponent_username: Optional[str] = None
@@ -216,7 +219,7 @@ class AbstractBattle(ABC):
 
             If it isn't broken, the request for the next turn will tell us the Zoroark is active. However
             the messages that tell us the active Pokémon will be referring to the illusion, so we use:
-            if believed_active._ability == "illusion":
+            if believed_active.base_ability == "illusion":
 
         :param identifier: The identifier to use to retrieve the pokemon.
         :type identifier: str
@@ -255,11 +258,11 @@ class AbstractBattle(ABC):
                         return believed_active
 
                     # Illusion has probably been broken the same turn as switching in
-                    if self._team[identifier]._ability == "illusion":
+                    if self._team[identifier].base_ability == "illusion":
                         return self._team[identifier]
 
                     # Illusion is active
-                    if believed_active._ability == "illusion":
+                    if believed_active.base_ability == "illusion":
                         return believed_active
 
                     # Something has gone wrong
@@ -314,12 +317,27 @@ class AbstractBattle(ABC):
             )
 
         if request:
-            team[identifier] = Pokemon(request_pokemon=request, name=name, gen=self.gen)
+            team[identifier] = Pokemon(
+                request_pokemon=request,
+                name=name,
+                gen=self.gen,
+                infer_abilities=self._infer_abilities,
+            )
         elif details:
-            team[identifier] = Pokemon(details=details, name=name, gen=self.gen)
+            team[identifier] = Pokemon(
+                details=details,
+                name=name,
+                gen=self.gen,
+                infer_abilities=self._infer_abilities,
+            )
         else:
             species = identifier[4:]
-            team[identifier] = Pokemon(species=species, name=name, gen=self.gen)
+            team[identifier] = Pokemon(
+                species=species,
+                name=name,
+                gen=self.gen,
+                infer_abilities=self._infer_abilities,
+            )
 
         return team[identifier]
 
@@ -795,7 +813,10 @@ class AbstractBattle(ABC):
                     mon.ability = "trace"
                 mon.ability = cause
             elif cause == "Neutralizing Gas":
+                mon.ability = cause
                 self.field_start(cause)
+            elif any(part.startswith("[from] move:") for part in event[4:]):
+                mon.temporary_ability = cause
             else:
                 mon.ability = cause
         elif split_message[1] == "-start":
@@ -842,7 +863,7 @@ class AbstractBattle(ABC):
                         if len(abilities) >= 2:
                             # Opponent swap, gen 5+: abilities revealed
                             target_mon.start_effect(effect, abilities[:2])
-                            actor_mon.temporary_ability = abilities[1]
+                            actor_mon.start_effect(effect, abilities[:2][::-1])
                         elif (
                             target_mon.ability is not None
                             and actor_mon.ability is not None
@@ -1232,7 +1253,9 @@ class AbstractBattle(ABC):
 
     def _register_teampreview_pokemon(self, player: str, details: str):
         if player != self._player_role:
-            mon = Pokemon(details=details, gen=self.gen)
+            mon = Pokemon(
+                details=details, gen=self.gen, infer_abilities=self._infer_abilities
+            )
             self._teampreview_opponent_team.append(mon)
 
     def side_end(self, side: str, condition_str: str):

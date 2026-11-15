@@ -19,6 +19,8 @@ from poke_env.teambuilder.teambuilder_pokemon import TeambuilderPokemon
 class Pokemon:
     __slots__ = (
         "_ability",
+        "_infer_abilities",
+        "_inferred_ability",
         "_active",
         "_active_turns",
         "_base_stats",
@@ -72,6 +74,7 @@ class Pokemon:
         request_pokemon: Optional[Dict[str, Any]] = None,
         details: Optional[str] = None,
         teambuilder: Optional[TeambuilderPokemon] = None,
+        infer_abilities: bool = True,
     ):
         # Species related attributes
         self._base_stats: Dict[str, int]
@@ -85,6 +88,8 @@ class Pokemon:
 
         # Individual related attributes
         self._ability: Optional[str] = None
+        self._infer_abilities = infer_abilities
+        self._inferred_ability: Optional[str] = None
         self._gender: Optional[PokemonGender] = None
         self._level: int = 100
         self._max_hp: Optional[int] = 0
@@ -644,7 +649,9 @@ class Pokemon:
                 to_id_str(ability) for ability in dex_entry["abilities"].values()
             ]
             if len(self._possible_abilities) == 1 and self.gen >= 3:
-                self._ability = self._possible_abilities[0]
+                self._inferred_ability = self._possible_abilities[0]
+            else:
+                self._inferred_ability = None
         else:
             self.forme_change_ability = None
 
@@ -704,14 +711,6 @@ class Pokemon:
     def update_from_request(self, request_pokemon: Dict[str, Any]):
         self._active = request_pokemon["active"]
 
-        if self.ability is None:
-            self.ability = request_pokemon["baseAbility"]
-        if (
-            "ability" in request_pokemon
-            and request_pokemon["ability"] != request_pokemon["baseAbility"]
-        ):
-            self.temporary_ability = request_pokemon["ability"]
-
         self._last_request = request_pokemon
 
         condition = request_pokemon["condition"]
@@ -722,6 +721,15 @@ class Pokemon:
 
         details = request_pokemon["details"]
         self._update_from_details(details)
+
+        base_ability = to_id_str(request_pokemon["baseAbility"])
+        if self.forme_change_ability is not None:
+            self.forme_change_ability = base_ability
+        else:
+            self._ability = base_ability
+        if "ability" in request_pokemon:
+            ability = to_id_str(request_pokemon["ability"])
+            self.temporary_ability = ability if ability != base_ability else None
 
         for move in request_pokemon["moves"]:
             self._add_move(move)
@@ -857,13 +865,18 @@ class Pokemon:
         elif self.forme_change_ability is not None:
             return self.forme_change_ability
         else:
-            return self._ability
+            return self.base_ability
 
     @ability.setter
     def ability(self, ability: str):
-        if self._ability is None:
+        if self._temporary_ability is not None:
+            self._temporary_ability = to_id_str(ability)
+        elif self.forme_change_ability is not None:
+            if to_id_str(ability) != self.forme_change_ability:
+                self.temporary_ability = ability
+        elif self._ability is None:
             self._ability = to_id_str(ability)
-        else:
+        elif to_id_str(ability) != self.base_ability:
             self._temporary_ability = to_id_str(ability)
 
     @property
@@ -904,7 +917,11 @@ class Pokemon:
         :return: The pokemon's base ability. None if unknown.
         :rtype: str, optional
         """
-        return self._forme_change_ability or self._ability
+        return (
+            self._forme_change_ability
+            or self._ability
+            or (self._inferred_ability if self._infer_abilities else None)
+        )
 
     @property
     def base_moves(self) -> Dict[str, Move]:

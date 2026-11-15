@@ -364,3 +364,15 @@ def test_player_save_replay_raises_on_unknown_battle_tag(tmp_path):
 
     with pytest.raises(KeyError, match="Unknown battle_tag"):
         player.save_replay("battle-gen9randombattle-missing", tmp_path / "missing.html")
+
+
+@pytest.mark.parametrize(
+    "battle_format", ["gen9almostanyability", "gen9doublescustomgame"]
+)
+@pytest.mark.asyncio
+async def test_player_disables_ability_inference(battle_format):
+    player = SimplePlayer(
+        battle_format=battle_format, infer_abilities=False, start_listening=False
+    )
+    battle = await player._create_battle(["battle", battle_format, "983"])
+    assert battle.get_pokemon("p2: Great Tusk").ability is None

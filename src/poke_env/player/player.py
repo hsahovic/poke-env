@@ -71,6 +71,7 @@ class Player(ABC):
         loop: asyncio.AbstractEventLoop = POKE_LOOP,
         team: Optional[Union[str, Teambuilder]] = None,
         strict_battle_tracking: bool = False,
+        infer_abilities: bool = True,
     ):
         """
         :param account_configuration: Player configuration. If empty, defaults to an
@@ -120,7 +121,12 @@ class Player(ABC):
             team string, a showdown packed team string, or a Teambuilder object.
             Defaults to None.
         :type team: str or Teambuilder, optional
+        :param infer_abilities: Infer single-ability species from the Pokedex. Set False
+            for formats allowing arbitrary abilities, such as Almost Any Ability or
+            Custom Game. Requests and revealed abilities are always tracked.
+        :type infer_abilities: bool
         """
+        self._infer_abilities = infer_abilities
         self._format: str = battle_format
         self._max_concurrent_battles: int = max_concurrent_battles
         self._save_replays = save_replays
@@ -203,6 +209,7 @@ class Player(ABC):
                         logger=self.logger,
                         save_replays=self._save_replays,
                         gen=gen,
+                        infer_abilities=self._infer_abilities,
                     )
                 else:
                     battle = Battle(
@@ -210,13 +217,18 @@ class Player(ABC):
                         username=self.username,
                         logger=self.logger,
                         gen=gen,
+                        infer_abilities=self._infer_abilities,
                         save_replays=self._save_replays,
                     )
 
                 # Add our team as teampreview_team, as part of battle initialisation
                 if isinstance(self._team, ConstantTeambuilder):
                     battle.teampreview_team = [
-                        Pokemon(gen=gen, teambuilder=tb_mon)
+                        Pokemon(
+                            gen=gen,
+                            teambuilder=tb_mon,
+                            infer_abilities=self._infer_abilities,
+                        )
                         for tb_mon in self._team.team
                     ]
 
