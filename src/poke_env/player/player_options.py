@@ -41,6 +41,7 @@ class PlayerOptions:
     ping_timeout: Optional[float] = 20.0
     team: Optional[Union[str, Teambuilder]] = None
     strict_battle_tracking: bool = False
+    infer_abilities: bool = True
 
     def to_player_kwargs(
         self,
@@ -70,4 +71,5 @@ class PlayerOptions:
             "loop": loop,
             "team": self.team,
             "strict_battle_tracking": self.strict_battle_tracking,
+            "infer_abilities": self.infer_abilities,
         }

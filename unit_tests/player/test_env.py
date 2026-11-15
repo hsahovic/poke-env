@@ -169,6 +169,7 @@ def test_player_options_build_player_kwargs():
         "loop": POKE_LOOP,
         "team": "team",
         "strict_battle_tracking": True,
+        "infer_abilities": True,
     }
 
 
@@ -836,3 +837,31 @@ def check_action_order_roundtrip(
     a = env.order_to_action(order, battle)
     o = env.action_to_order(a, battle)
     assert order.message == o.message
+
+
+@pytest.mark.parametrize("environment_class", [PokeEnv, SinglesEnv, DoublesEnv])
+@pytest.mark.parametrize("infer_abilities", [True, False])
+def test_environment_ability_inference_survives_pickle(
+    environment_class, infer_abilities
+):
+    options = PlayerOptions(start_listening=False, infer_abilities=infer_abilities)
+    env = environment_class(player_options=options)
+    env.action_spaces = {agent: Discrete(1) for agent in env.possible_agents}
+    env.observation_spaces = {agent: Discrete(1) for agent in env.possible_agents}
+    restored = pickle.loads(pickle.dumps(env))
+    try:
+        for instance in (env, restored):
+            for agent in (instance.agent1, instance.agent2):
+                battle = asyncio.run_coroutine_threadsafe(
+                    agent._create_battle(["battle", agent.format, "985"]),
+                    instance._loop,
+                ).result(timeout=5)
+                mon = battle.get_pokemon("p2: Great Tusk")
+                assert mon.ability == ("protosynthesis" if infer_abilities else None)
+                mon.ability = "Rough Skin"
+                mon.switch_out({})
+                assert mon.ability == "roughskin"
+                battle.tied()
+    finally:
+        env.close()
+        restored.close()
