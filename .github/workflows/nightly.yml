@@ -13,7 +13,21 @@ jobs:
     secrets: inherit
   nightly-extra:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        battle-format:
+          - gen1randombattle
+          - gen2randombattle
+          - gen3randombattle
+          - gen4randombattle
+          - gen5randombattle
+          - gen6randombattle
+          - gen7randombattle
+          - gen8randombattle
+          - gen9randombattle
+          - gen9randomdoublesbattle
     steps:
       - name: Checkout repository code
         uses: actions/checkout@v7
@@ -63,12 +77,20 @@ jobs:
         run: bash scripts/ci_setup_showdown.sh
 
       - name: Run nightly-only checks
-        run: uv run pytest -x strict_integration_tests/
+        run: uv run pytest -v strict_integration_tests/ -k "${{ matrix.battle-format }}" --junitxml=strict-results.xml
 
       - name: Upload Showdown log
         if: failure()
         uses: actions/upload-artifact@v7
         with:
-          name: showdown-nightly-extra
+          name: showdown-nightly-extra-${{ matrix.battle-format }}
           path: pokemon-showdown/server.log
+          if-no-files-found: ignore
+
+      - name: Upload strict test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: strict-results-${{ matrix.battle-format }}
+          path: strict-results.xml
           if-no-files-found: ignore

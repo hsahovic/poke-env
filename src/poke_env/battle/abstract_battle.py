@@ -625,6 +625,7 @@ class AbstractBattle(ABC):
                 event = event[:-1]
 
             if event[-1] in {
+                "[from] move: Sky Attack",
                 "[from] lockedmove",
                 "[from]lockedmove",
                 "[from] Sky Attack",
@@ -651,7 +652,11 @@ class AbstractBattle(ABC):
             if event[-1].startswith(("[from] move: ", "[from]move: ")):
                 overridden_move = event.pop().split(": ")[-1]
 
-                if overridden_move == "Sleep Talk":
+                if overridden_move == "Mirror Move":
+                    use = False
+                    reveal = False
+                    overridden_move = None
+                elif overridden_move == "Sleep Talk":
                     pass
                 elif overridden_move in {
                     "Copycat",

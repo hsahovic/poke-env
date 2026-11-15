@@ -12,49 +12,25 @@ class ZoroarkForfeitRandomPlayer(RandomPlayer):
         return super().choose_move(battle)
 
 
-async def simple_cross_evaluation(n_battles, players):
-    await cross_evaluate(players, n_challenges=n_battles)
-
-    for player in players:
-        player.reset_battles()
-        await player.ps_client.stop_listening()
-
-
 @pytest.mark.asyncio
-async def test_random_players():
-    for gen in range(1, 10):
-        players = [
-            ZoroarkForfeitRandomPlayer(
-                battle_format=f"gen{gen}randombattle",
-                max_concurrent_battles=10,
-                strict_battle_tracking=True,
-            ),
-            ZoroarkForfeitRandomPlayer(
-                battle_format=f"gen{gen}randombattle",
-                max_concurrent_battles=10,
-                strict_battle_tracking=True,
-            ),
-        ]
-        await asyncio.wait_for(
-            simple_cross_evaluation(100, players=players), timeout=100
+@pytest.mark.timeout(130)
+@pytest.mark.parametrize(
+    "battle_format",
+    [f"gen{gen}randombattle" for gen in range(1, 10)] + ["gen9randomdoublesbattle"],
+)
+async def test_random_players(battle_format):
+    players = [
+        ZoroarkForfeitRandomPlayer(
+            battle_format=battle_format,
+            max_concurrent_battles=10,
+            strict_battle_tracking=True,
         )
-
-
-@pytest.mark.asyncio
-async def test_random_double_players():
-    for gen in range(9, 10):
-        players = [
-            ZoroarkForfeitRandomPlayer(
-                battle_format=f"gen{gen}randomdoublesbattle",
-                max_concurrent_battles=10,
-                strict_battle_tracking=True,
-            ),
-            ZoroarkForfeitRandomPlayer(
-                battle_format=f"gen{gen}randomdoublesbattle",
-                max_concurrent_battles=10,
-                strict_battle_tracking=True,
-            ),
-        ]
+        for _ in range(2)
+    ]
+    try:
+        await asyncio.wait_for(cross_evaluate(players, n_challenges=100), timeout=100)
+    finally:
         await asyncio.wait_for(
-            simple_cross_evaluation(100, players=players), timeout=100
+            asyncio.gather(*(player.ps_client.stop_listening() for player in players)),
+            timeout=10,
         )
