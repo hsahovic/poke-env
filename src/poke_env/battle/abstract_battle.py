@@ -1329,42 +1329,40 @@ class AbstractBattle(ABC):
         # but switch events during illusion will have set the wrong mon active.\
         falsely_active = []
         truly_active = []
-        request_pokemon = side["pokemon"]
-        requested_team = []
-        team = self._team
-        for pokemon in request_pokemon:
-            ident = pokemon["ident"]
-            if ident not in team:
+        for pokemon in side["pokemon"]:
+            if pokemon["ident"] not in self.team:
                 self.get_pokemon(
-                    ident,
+                    pokemon["ident"],
                     force_self_team=True,
                     details=pokemon["details"],
                     request=pokemon,
                 )
-                team = self._team
-            mon = team[ident]
-            requested_team.append((pokemon, mon))
-            if pokemon["active"] and not mon._active:
+            mon = self.team[pokemon["ident"]]
+            if pokemon["active"] and not mon.active:
                 truly_active.append(mon)
-            elif not pokemon["active"] and mon._active:
+            elif not pokemon["active"] and mon.active:
                 falsely_active.append(mon)
 
-        fields = self._fields
         for illusioned in falsely_active:
-            illusioned.was_illusioned(fields)
+            illusioned.was_illusioned(self.fields)
         for illusionist in truly_active:
             illusionist.switch_in()
 
-        check_consistency = strict_battle_tracking and self._turn > 1
-        if check_consistency:
-            player_role = self._player_role
-            assert player_role is not None
-            for pokemon, mon in requested_team:
-                mon.check_consistency(pokemon, player_role)
-                mon.update_from_request(pokemon)
-        else:
-            for pokemon, mon in requested_team:
-                mon.update_from_request(pokemon)
+        for pokemon in side["pokemon"]:
+            if pokemon["ident"] in self._team:
+                if strict_battle_tracking and self.turn > 1:
+                    assert self.player_role is not None
+                    self._team[pokemon["ident"]].check_consistency(
+                        pokemon, self.player_role
+                    )
+                self._team[pokemon["ident"]].update_from_request(pokemon)
+            else:
+                self.get_pokemon(
+                    pokemon["ident"],
+                    force_self_team=True,
+                    details=pokemon["details"],
+                    request=pokemon,
+                )
 
     def won_by(self, player_name: str):
         if not self._has_terminal_replay_result():

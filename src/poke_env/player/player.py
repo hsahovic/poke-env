@@ -46,7 +46,7 @@ class Player(ABC):
     Base class for players.
     """
 
-    MESSAGES_TO_IGNORE = {"t:", "expire", "uhtmlchange", "tempnotify", "tempnotifyoff"}
+    MESSAGES_TO_IGNORE = {"expire", "uhtmlchange", "tempnotify", "tempnotifyoff"}
 
     # When an error resulting from an invalid choice is made, the next order has this
     # chance of being showdown's default order to prevent infinite loops
