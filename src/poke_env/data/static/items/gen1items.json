@@ -1,0 +1,83 @@
+{
+    "firestone": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 1,
+        "name": "Fire Stone",
+        "num": 82,
+        "spritenum": 142
+    },
+    "greatball": {
+        "gen": 1,
+        "isPokeball": true,
+        "name": "Great Ball",
+        "num": 3,
+        "spritenum": 174
+    },
+    "leafstone": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 1,
+        "name": "Leaf Stone",
+        "num": 85,
+        "spritenum": 241
+    },
+    "masterball": {
+        "gen": 1,
+        "isPokeball": true,
+        "name": "Master Ball",
+        "num": 1,
+        "spritenum": 276
+    },
+    "moonstone": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 1,
+        "name": "Moon Stone",
+        "num": 81,
+        "spritenum": 295
+    },
+    "pokeball": {
+        "gen": 1,
+        "isPokeball": true,
+        "name": "Poke Ball",
+        "num": 4,
+        "spritenum": 345
+    },
+    "safariball": {
+        "gen": 1,
+        "isNonstandard": "Unobtainable",
+        "isPokeball": true,
+        "name": "Safari Ball",
+        "num": 5,
+        "spritenum": 425
+    },
+    "thunderstone": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 1,
+        "name": "Thunder Stone",
+        "num": 83,
+        "spritenum": 492
+    },
+    "ultraball": {
+        "gen": 1,
+        "isPokeball": true,
+        "name": "Ultra Ball",
+        "num": 2,
+        "spritenum": 521
+    },
+    "waterstone": {
+        "fling": {
+            "basePower": 30
+        },
+        "gen": 1,
+        "name": "Water Stone",
+        "num": 84,
+        "spritenum": 529
+    }
+}

@@ -1,6 +1,24 @@
 Data: Access and manipulate comprehensive Pokémon data
 ======================================================
 
+Item data
+---------
+
+``GenData.items`` maps Showdown item IDs to metadata for that generation,
+including berry, Fling and Natural Gift attributes where applicable. Items
+introduced in later generations are excluded; Showdown nonstandard flags are
+preserved, so presence does not imply legality in every format. Callback names
+are stored as strings, as with move data, and are not executable effects.
+The bundled data is refreshed by the automatic data update workflow.
+
+.. code-block:: python
+
+   from poke_env.data import GenData, to_id_str
+
+   items = GenData.from_format("gen9ou").items
+   leftovers = items[to_id_str("Leftovers")]
+   berry_power = GenData.from_gen(5).items["sitrusberry"]["naturalGift"]["basePower"]
+
 Smogon usage statistics
 -----------------------
 
