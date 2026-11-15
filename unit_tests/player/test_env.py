@@ -28,6 +28,7 @@ from poke_env.player import (
     DoubleBattleOrder,
     ForfeitBattleOrder,
     Player,
+    PlayerOptions,
     SingleBattleOrder,
 )
 from poke_env.ps_client import AccountConfiguration, ServerConfiguration
@@ -62,6 +63,7 @@ def test_pickle_unpickle():
 
     assert isinstance(restored, CustomEnv)
     assert restored._battle_format == env._battle_format
+    assert restored._player_options == env._player_options
     assert restored._strict == env._strict
     assert restored._fake == env._fake
     assert restored.agent1 is not None
@@ -71,6 +73,183 @@ def test_pickle_unpickle():
     assert len(restored.possible_agents) == 2
     assert len(restored.observation_spaces) == 2
     assert len(restored.action_spaces) == 2
+
+
+def test_unpickle_legacy_environment_state():
+    env = CustomEnv(start_listening=False)
+    state = env.__getstate__()
+    del state["_player_options"]
+    state.update(
+        _avatar=12,
+        _battle_format="gen8randombattle",
+        _log_level=25,
+        _save_replays=True,
+        _server_configuration=server_configuration,
+        _accept_open_team_sheet=True,
+        _start_timer_on_battle_start=True,
+        _start_listening=False,
+        _open_timeout=3.0,
+        _ping_interval=4.0,
+        _ping_timeout=5.0,
+        _team="Pikachu\n- Thunderbolt",
+    )
+
+    restored = CustomEnv.__new__(CustomEnv)
+    restored.__setstate__(pickle.loads(pickle.dumps(state)))
+
+    assert restored._player_options == PlayerOptions(
+        avatar=12,
+        battle_format="gen8randombattle",
+        log_level=25,
+        save_replays=True,
+        server_configuration=server_configuration,
+        accept_open_team_sheet=True,
+        start_timer_on_battle_start=True,
+        start_listening=False,
+        open_timeout=3.0,
+        ping_interval=4.0,
+        ping_timeout=5.0,
+        team="Pikachu\n- Thunderbolt",
+    )
+    for agent in (restored.agent1, restored.agent2):
+        assert agent.format == "gen8randombattle"
+        assert agent.accept_open_team_sheet
+        assert agent.ps_client.server_configuration == server_configuration
+        assert "pikachu" in agent.next_team.lower()
+    assert set(restored.action_spaces) == set(restored.possible_agents)
+    assert set(restored.observation_spaces) == set(restored.possible_agents)
+    env.close()
+    restored.close()
+
+
+def test_environment_defaults_to_gen9_random_battle():
+    env = CustomEnv(start_listening=False)
+
+    assert env._battle_format == "gen9randombattle"
+    assert env.agent1.format == "gen9randombattle"
+    assert env.agent2.format == "gen9randombattle"
+
+
+def test_player_options_build_player_kwargs():
+    options = PlayerOptions(
+        avatar="avatar",
+        battle_format="gen9ou",
+        log_level=25,
+        max_concurrent_battles=3,
+        accept_open_team_sheet=True,
+        save_replays=True,
+        server_configuration=server_configuration,
+        start_timer_on_battle_start=True,
+        start_listening=False,
+        open_timeout=None,
+        ping_interval=None,
+        ping_timeout=None,
+        team="team",
+        strict_battle_tracking=True,
+    )
+
+    kwargs = options.to_player_kwargs(
+        account_configuration=account_configuration1, loop=POKE_LOOP
+    )
+
+    assert kwargs == {
+        "account_configuration": account_configuration1,
+        "avatar": "avatar",
+        "battle_format": "gen9ou",
+        "log_level": 25,
+        "max_concurrent_battles": 3,
+        "accept_open_team_sheet": True,
+        "save_replays": True,
+        "server_configuration": server_configuration,
+        "start_timer_on_battle_start": True,
+        "start_listening": False,
+        "open_timeout": None,
+        "ping_interval": None,
+        "ping_timeout": None,
+        "loop": POKE_LOOP,
+        "team": "team",
+        "strict_battle_tracking": True,
+    }
+
+
+def test_player_options_default_format_for_player():
+    kwargs = PlayerOptions().to_player_kwargs(
+        account_configuration=account_configuration1, loop=POKE_LOOP
+    )
+
+    assert kwargs["battle_format"] == "gen9randombattle"
+
+
+def test_player_options_configure_environment():
+    options = PlayerOptions(
+        battle_format="gen9ou",
+        max_concurrent_battles=3,
+        accept_open_team_sheet=True,
+        server_configuration=server_configuration,
+        start_listening=False,
+    )
+    env = CustomEnv(player_options=options)
+
+    assert env._player_options == options
+    assert env._battle_format == "gen9ou"
+    assert env.agent1.format == "gen9ou"
+    assert env.agent1._max_concurrent_battles == 3
+    assert env.agent1.accept_open_team_sheet
+
+
+@pytest.mark.parametrize(
+    ("environment_class", "battle_format", "is_doubles", "gen"),
+    [
+        (SinglesEnv, "gen6randombattle", False, 6),
+        (SinglesEnv, "gen8randombattle", False, 8),
+        (DoublesEnv, "gen7randomdoublesbattle", True, 7),
+        (DoublesEnv, "gen8randomdoublesbattle", True, 8),
+    ],
+)
+def test_player_options_are_accepted_by_concrete_environments(
+    environment_class, battle_format, is_doubles, gen
+):
+    options = PlayerOptions(start_listening=False, battle_format=battle_format)
+    env = environment_class(player_options=options)
+
+    assert env._player_options == options
+    for agent in (env.agent1, env.agent2):
+        assert agent.format == battle_format
+        assert agent.format_is_doubles is is_doubles
+        action_space = env.action_spaces[agent.username]
+        if is_doubles:
+            assert (
+                action_space.nvec.tolist()
+                == [DoublesEnv.get_action_space_size(gen)] * 2
+            )
+        else:
+            assert action_space.n == SinglesEnv.get_action_space_size(gen)
+    env.close()
+
+
+@pytest.mark.parametrize(
+    ("environment_class", "battle_format", "is_doubles"),
+    [
+        (SinglesEnv, "gen9randombattle", False),
+        (DoublesEnv, "gen9randomdoublesbattle", True),
+    ],
+)
+def test_player_options_use_environment_format_by_default(
+    environment_class, battle_format, is_doubles
+):
+    env = environment_class(player_options=PlayerOptions(start_listening=False))
+
+    for agent in (env.agent1, env.agent2):
+        assert agent.format == battle_format
+        assert agent.format_is_doubles is is_doubles
+    env.close()
+
+
+def test_player_options_cannot_be_combined_with_legacy_options():
+    with pytest.raises(
+        TypeError, match="player_options cannot be combined with non-default"
+    ):
+        CustomEnv(player_options=PlayerOptions(), team="team")
 
 
 def test_init_queue():
