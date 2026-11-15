@@ -1,4 +1,5 @@
 import pickle
+from copy import deepcopy
 from unittest.mock import MagicMock
 
 import pytest
@@ -247,6 +248,13 @@ def test_illusion_our_moves(example_doubles_zoroark_request):
     battle.parse_request(example_doubles_zoroark_request, strict_battle_tracking=True)
     assert battle.active_pokemon[0].species == "zoroarkhisui"
     assert battle.active_pokemon[1].species == "venusaur"
+
+    battle.end_turn(2)
+    battle.parse_request(example_doubles_zoroark_request, strict_battle_tracking=True)
+    inconsistent_request = deepcopy(example_doubles_zoroark_request)
+    inconsistent_request["side"]["pokemon"][2]["item"] = "choiceband"
+    with pytest.raises(AssertionError, match="choiceband"):
+        battle.parse_request(inconsistent_request, strict_battle_tracking=True)
 
     battle.parse_message(["", "move", "p1a: Alien", "Focus Blast", "p2a: Poliwrath"])
     assert battle.active_pokemon[0].species == "zoroarkhisui"

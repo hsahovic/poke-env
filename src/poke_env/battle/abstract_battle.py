@@ -115,6 +115,7 @@ class AbstractBattle(ABC):
         "_teampreview_team",
         "_teampreview_opponent_team",
         "_teampreview",
+        "_timestamp",
         "_trapped",
         "_turn",
         "_used_dynamax",
@@ -1244,6 +1245,8 @@ class AbstractBattle(ABC):
                     self._used_tera = True
                 elif mon in self.opponent_team.values():
                     self._opponent_used_tera = True
+        elif event[1] == "t:":
+            self._timestamp = event[2]
         else:
             raise NotImplementedError(event)
 

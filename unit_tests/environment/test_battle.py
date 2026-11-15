@@ -748,6 +748,13 @@ def test_illusion_our_moves(example_zoroark_request):
     battle.parse_request(example_zoroark_request, strict_battle_tracking=True)
     assert battle.active_pokemon.species == "zoroarkhisui"
 
+    battle.end_turn(2)
+    battle.parse_request(example_zoroark_request, strict_battle_tracking=True)
+    inconsistent_request = deepcopy(example_zoroark_request)
+    inconsistent_request["side"]["pokemon"][0]["item"] = "choiceband"
+    with pytest.raises(AssertionError, match="choiceband"):
+        battle.parse_request(inconsistent_request, strict_battle_tracking=True)
+
     battle.parse_message(["", "move", "p1a: Deoxys", "Focus Blast", "p2a: Poliwrath"])
     assert battle.active_pokemon.species == "zoroarkhisui"
     assert len(battle._team["p1: Deoxys"].moves) == 4
@@ -1077,6 +1084,36 @@ def test_transform_from_imposter_tracks_transform_and_ability():
     assert "transform" in mon._moves._base_moves
     assert mon.ability == "imposter"
     assert mon.transformed
+
+
+@pytest.mark.parametrize("result", ["win", "tie"])
+def test_replay_preserves_messages_when_input_list_is_reused(tmp_path, result):
+    battle = Battle("tag", "username", MagicMock(), gen=9)
+    message = ["", "tier", "[Gen 9] Random Battle"]
+    battle.parse_message(message)
+    message[:] = ["", "rule", "Sleep Clause"]
+    battle.parse_message(message)
+    message[:] = ["", "win", "intruder"]
+
+    if result == "win":
+        battle.won_by("username")
+        terminal_event = "|win|username"
+    else:
+        battle.tied()
+        terminal_event = "|tie"
+
+    replay_path = tmp_path / "battle_replay.html"
+    battle.save_replay(replay_path)
+    replay_log_lines = _extract_replay_log_lines(
+        replay_path.read_text(encoding="utf-8")
+    )
+
+    assert replay_log_lines == [
+        ">tag",
+        "|tier|[Gen 9] Random Battle",
+        "|rule|Sleep Clause",
+        terminal_event,
+    ]
 
 
 def test_save_replay_includes_terminal_win_event(tmp_path):
