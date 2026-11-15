@@ -20,11 +20,7 @@ from poke_env.ps_client.server_configuration import (
 )
 from poke_env.stats import compute_raw_stats
 
-__logger = logging.getLogger("poke-env")
-__stream_handler = logging.StreamHandler()
-__formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-__stream_handler.setFormatter(__formatter)
-__logger.addHandler(__stream_handler)
+logging.getLogger("poke-env").addHandler(logging.NullHandler())
 logging.addLevelName(25, "PS_ERROR")
 
 __all__ = [

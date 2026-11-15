@@ -64,7 +64,7 @@ class PSClient:
         :param avatar: Account avatar name. Optional.
         :type avatar: str, optional
         :param log_level: The client's logger level.
-        :type log_level: int. Defaults to logging's default level.
+        :type log_level: int. Defaults to None, preserving the configured or inherited level.
         :param server_configuration: Server configuration.
         :type server_configuration: ServerConfiguration
         :param start_listening: Whether to start listening to the server. Defaults to
@@ -130,27 +130,9 @@ class PSClient:
         await self.send_message(f"/challenge {username}, {format_}")
 
     def _create_logger(self, log_level: Optional[int]) -> Logger:
-        """Creates a logger for the client.
-
-        Returns a Logger displaying asctime and the account's username before messages.
-
-        :param log_level: The logger's level.
-        :type log_level: int
-        :return: The logger.
-        :rtype: Logger
-        """
-        logger = logging.getLogger(self.username)
-
-        stream_handler = logging.StreamHandler()
+        logger = logging.getLogger(f"poke-env.{self.username}")
         if log_level is not None:
             logger.setLevel(log_level)
-
-        formatter = logging.Formatter(
-            "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-        )
-        stream_handler.setFormatter(formatter)
-
-        logger.addHandler(stream_handler)
         return logger
 
     async def _handle_message(self, message: str):

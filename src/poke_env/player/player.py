@@ -84,7 +84,7 @@ class Player(ABC):
             gen9randombattle.
         :type battle_format: str
         :param log_level: The player's logger level.
-        :type log_level: int. Defaults to logging's default level.
+        :type log_level: int. Defaults to None, preserving the configured or inherited level.
         :param max_concurrent_battles: Maximum number of battles this player will play
             concurrently. If 0, no limit will be applied. Defaults to 1.
         :type max_concurrent_battles: int
