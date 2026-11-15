@@ -923,6 +923,36 @@ def test_move_event_tracks_pressure_pp_cost():
     assert move.current_pp == move.max_pp - 2
 
 
+@pytest.mark.parametrize("gen", [3, 4, 5])
+@pytest.mark.parametrize("species, pressure", [("Dusclops", True), ("Blissey", False)])
+@pytest.mark.parametrize(
+    "suffix",
+    [
+        None,
+        "[from] Pursuit",
+        "[from]Pursuit",
+        "[from] move: Pursuit",
+        "[from]move: Pursuit",
+    ],
+)
+def test_pursuit_pressure_pp_cost(gen, species, pressure, suffix):
+    battle = Battle("tag", "username", MagicMock(), gen=gen)
+    battle.player_role = "p1"
+    battle.switch("p1: Tyranitar", "Tyranitar, L50, M", "100/100")
+    battle.switch(f"p2: {species}", f"{species}, L50, F", "100/100")
+    if pressure:
+        battle.parse_message(["", "-ability", f"p2a: {species}", "Pressure"])
+
+    event = ["", "move", "p1a: Tyranitar", "Pursuit", f"p2a: {species}"]
+    if suffix:
+        battle.parse_message(["", "-activate", f"p2a: {species}", "move: Pursuit"])
+        event.append(suffix)
+    battle.parse_message(event)
+
+    move = battle.active_pokemon.moves["pursuit"]
+    assert move.current_pp == move.max_pp - (2 if pressure else 1)
+
+
 def test_move_event_ignores_dancer_reveal_and_pp():
     battle = Battle("tag", "username", MagicMock(), gen=9)
     battle.player_role = "p1"
@@ -1155,3 +1185,46 @@ def test_added_flying_type_makes_a_dual_type_pokemon_ungrounded():
     assert battle.is_grounded(mon)
     battle.parse_message(["", "-start", "p1: Venusaur", "typeadd", "Flying"])
     assert not battle.is_grounded(mon)
+
+
+@pytest.mark.parametrize("gen", [3, 4, 5, 9])
+def test_flash_fire_persists_until_switch(gen):
+    battle = Battle("tag", "username", MagicMock(), gen=gen)
+    battle.player_role = "p1"
+    battle.parse_message(["", "switch", "p1a: Lunatone", "Lunatone, L88", "255/255"])
+    battle.parse_message(["", "switch", "p2a: Rapidash", "Rapidash, L83, F", "244/244"])
+    battle.parse_message(["", "-start", "p2a: Rapidash", "ability: Flash Fire"])
+    rapidash = battle.get_pokemon("p2a: Rapidash")
+
+    for turn, move in enumerate(["Fire Blast", "Fire Blast", "Quick Attack"], start=1):
+        battle.parse_message(["", "turn", str(turn)])
+        battle.parse_message(["", "move", "p2a: Rapidash", move, "p1a: Lunatone"])
+        assert Effect.FLASH_FIRE in rapidash.effects
+
+    battle.parse_message(["", "-immune", "p2a: Rapidash", "[from] ability: Flash Fire"])
+    assert Effect.FLASH_FIRE in rapidash.effects
+
+    battle.parse_message(["", "switch", "p2a: Arcanine", "Arcanine, L83, M", "244/244"])
+    assert Effect.FLASH_FIRE not in rapidash.effects
+    assert Effect.FLASH_FIRE not in battle.get_pokemon("p2a: Arcanine").effects
+    battle.parse_message(["", "switch", "p2a: Rapidash", "Rapidash, L83, F", "244/244"])
+    assert Effect.FLASH_FIRE not in rapidash.effects
+
+
+@pytest.mark.parametrize("gen", [3, 4, 5, 9])
+def test_flash_fire_ends_on_protocol_message_and_faint(gen):
+    battle = Battle("tag", "username", MagicMock(), gen=gen)
+    battle.player_role = "p1"
+    battle.parse_message(["", "switch", "p2a: Rapidash", "Rapidash, L83, F", "244/244"])
+    rapidash = battle.get_pokemon("p2a: Rapidash")
+
+    battle.parse_message(["", "-start", "p2a: Rapidash", "ability: Flash Fire"])
+    battle.parse_message(
+        ["", "-end", "p2a: Rapidash", "ability: Flash Fire", "[silent]"]
+    )
+    assert Effect.FLASH_FIRE not in rapidash.effects
+
+    battle.parse_message(["", "-start", "p2a: Rapidash", "ability: Flash Fire"])
+    assert Effect.FLASH_FIRE in rapidash.effects
+    battle.parse_message(["", "faint", "p2a: Rapidash"])
+    assert Effect.FLASH_FIRE not in rapidash.effects

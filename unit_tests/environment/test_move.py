@@ -325,9 +325,8 @@ def test_no_pp_boosts():
 
 def test_non_ghost_target():
     flame_thrower = Move("flamethrower", gen=8)
-    curse = Move("curse", gen=8)
-
-    assert curse.non_ghost_target is True
+    for gen in range(2, 10):
+        assert Move("curse", gen=gen).non_ghost_target is True
     assert flame_thrower.non_ghost_target is False
 
     for move in move_generator():
