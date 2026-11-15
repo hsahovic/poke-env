@@ -258,28 +258,17 @@ def calculate_damage(
     ):
         move_priority = 1
 
-    first_type_effectiveness = get_move_effectiveness(
-        move,
-        move_type or move.type,
-        defender.type_1,
-        attacker_ability in ["scrappy", "mindseye"],
-        Field.GRAVITY in battle.fields,
-        defender.item == "ringtarget",
-    )
-    second_type_effectiveness = (
-        1
-        if len(defender.types) == 1
-        else get_move_effectiveness(
+    type_effectiveness = math.prod(
+        get_move_effectiveness(
             move,
             move_type or move.type,
-            defender.type_2,  # type: ignore
+            type_,
             attacker_ability in ["scrappy", "mindseye"],
             Field.GRAVITY in battle.fields,
             defender.item == "ringtarget",
         )
+        for type_ in defender.types
     )
-
-    type_effectiveness = first_type_effectiveness * second_type_effectiveness
 
     if (
         type_effectiveness == 0
@@ -760,29 +749,18 @@ def calculate_base_power_mods(
         bp_mods.append(2048)
     elif move.id in ["electrodrift", "collisioncourse"]:
 
-        first_type_effectiveness = get_move_effectiveness(
-            move,
-            move.type,
-            defender.type_1,
-            attacker.ability in ["scrappy", "mindseye"],
-            Field.GRAVITY in battle.fields,
-            defender.item == "ringtarget",
-        )
-
-        second_type_effectiveness = (
-            1
-            if len(defender.types) == 1
-            else get_move_effectiveness(
+        type_effectiveness = math.prod(
+            get_move_effectiveness(
                 move,
                 move.type,
-                defender.type_2,  # type: ignore
+                type_,
                 attacker.ability in ["scrappy", "mindseye"],
                 Field.GRAVITY in battle.fields,
                 defender.item == "ringtarget",
             )
+            for type_ in defender.types
         )
-
-        if first_type_effectiveness * second_type_effectiveness >= 2:
+        if type_effectiveness >= 2:
             bp_mods.append(5461)
 
     if Effect.HELPING_HAND in attacker.effects:
