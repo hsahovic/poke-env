@@ -57,9 +57,48 @@ def create_in_poke_loop(
 
 
 async def handle_threaded_coroutines(coro: Any, loop: asyncio.AbstractEventLoop):
-    task = asyncio.run_coroutine_threadsafe(coro, loop)
-    await asyncio.wrap_future(task)
-    return task.result()
+    if asyncio.get_running_loop() is loop:
+        return await coro
+    completed = asyncio.get_running_loop().create_future()
+    caller_loop = asyncio.get_running_loop()
+    remote_task = None
+    cancel_requested = False
+
+    def finish(task):
+        if task.cancelled():
+            completed.cancel()
+        elif task.exception() is not None:
+            completed.set_exception(task.exception())
+        else:
+            completed.set_result(task.result())
+
+    def start():
+        nonlocal remote_task
+        remote_task = loop.create_task(coro)
+        remote_task.add_done_callback(
+            lambda task: caller_loop.call_soon_threadsafe(finish, task)
+        )
+        if cancel_requested:
+            remote_task.cancel()
+
+    def cancel():
+        if remote_task is not None:
+            remote_task.cancel()
+
+    loop.call_soon_threadsafe(start)
+    try:
+        return await asyncio.shield(completed)
+    except asyncio.CancelledError:
+        cancel_requested = True
+        loop.call_soon_threadsafe(cancel)
+        while not completed.done():
+            try:
+                await asyncio.shield(completed)
+            except (asyncio.CancelledError, Exception):
+                pass
+        if not completed.cancelled():
+            completed.exception()
+        raise
 
 
 POKE_LOOP = asyncio.new_event_loop()

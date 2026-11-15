@@ -32,7 +32,7 @@ from poke_env.player.battle_order import (
 )
 from poke_env.player.player import Player
 from poke_env.player.player_options import PlayerOptions
-from poke_env.ps_client import AccountConfiguration
+from poke_env.ps_client import AccountConfiguration, PSClient
 from poke_env.ps_client.server_configuration import (
     LocalhostServerConfiguration,
     ServerConfiguration,
@@ -46,11 +46,19 @@ ActionType = TypeVar("ActionType")
 class _AsyncQueue(Generic[ItemType]):
     queue: asyncio.Queue[ItemType]
 
-    def __init__(self, loop: asyncio.AbstractEventLoop, maxsize: int = 0):
+    def __init__(
+        self,
+        loop: asyncio.AbstractEventLoop,
+        maxsize: int = 0,
+        client: Optional[PSClient] = None,
+    ):
         self.queue = create_in_poke_loop(asyncio.Queue, loop, maxsize)
         self._loop = loop
+        self._client = client
 
     async def async_get(self) -> ItemType:
+        if self._client is not None:
+            return await self._client._wait_for_operation(self.queue.get())
         return await self.queue.get()
 
     def get(self, timeout: Optional[float] = None) -> ItemType:
@@ -63,15 +71,16 @@ class _AsyncQueue(Generic[ItemType]):
         async def _race_get() -> Optional[ItemType]:
             get_task = asyncio.create_task(self.async_get())
             wait_tasks = [asyncio.create_task(e.wait()) for e in events]
-            done, pending = await asyncio.wait(
-                {get_task, *wait_tasks}, return_when=asyncio.FIRST_COMPLETED
-            )
-            for p in pending:
-                p.cancel()
-            if get_task in done:
-                return get_task.result()
-            else:
+            tasks = [get_task, *wait_tasks]
+            try:
+                done, _ = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+                if get_task in done:
+                    return get_task.result()
                 return None
+            finally:
+                for task in tasks:
+                    task.cancel()
+                await asyncio.gather(*tasks, return_exceptions=True)
 
         res = asyncio.run_coroutine_threadsafe(_race_get(), self._loop)
         return res.result()
@@ -119,7 +128,9 @@ class _EnvPlayer(Player):
                 "choose_on_teampreview arg was not set in environment - by default, teampreview decisions will be made randomly."
             )
         self._choose_on_teampreview = choose_on_teampreview or False
-        self.battle_queue = _AsyncQueue(self.ps_client.loop, maxsize=1)
+        self.battle_queue = _AsyncQueue(
+            self.ps_client.loop, maxsize=1, client=self.ps_client
+        )
         self.order_queue = _AsyncQueue(self.ps_client.loop, maxsize=1)
         self.battle: Optional[AbstractBattle] = None
 
