@@ -20360,7 +20360,7 @@
         "eggGroups": [
             "Bug"
         ],
-        "evoCondition": "Black Augurite",
+        "evoItem": "Black Augurite",
         "evoType": "useItem",
         "heightm": 1.8,
         "name": "Kleavor",
