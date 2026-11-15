@@ -10,7 +10,7 @@ STATIC_DATA_ROOT = "src/poke_env/data/static"
 
 
 def _replace_ps_callbacks(data: str) -> str:
-    for function_title_pattern in (r"on\w+", r"\w+Callback"):
+    for function_title_pattern in (r"on\w+", r"\w+Callback", r"effect"):
         pattern = (
             r"^([ ]*)("
             + function_title_pattern

@@ -22,6 +22,7 @@ class GenData:
     __slots__ = (
         "gen",
         "moves",
+        "items",
         "natures",
         "raw_learnset",
         "pokedex",
@@ -39,6 +40,7 @@ class GenData:
             raise ValueError(f"GenData for gen {gen} already initialized.")
 
         self.gen = gen
+        self.items = self.load_items(gen)
         self.moves = self.load_moves(gen)
         self.natures = self.load_natures()
         self.pokedex = self.load_pokedex(gen)
@@ -51,6 +53,12 @@ class GenData:
 
     def __deepcopy__(self, memodict: Optional[Dict[int, Any]] = None) -> GenData:
         return self
+
+    def load_items(self, gen: int) -> Dict[str, Any]:
+        with open(
+            os.path.join(self._static_files_root, "items", f"gen{gen}items.json")
+        ) as f:
+            return orjson.loads(f.read())
 
     def load_moves(self, gen: int) -> Dict[str, Any]:
         with open(

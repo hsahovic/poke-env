@@ -5,3 +5,5 @@ include src/poke_env/data/static/moves/*.json
 include src/poke_env/data/static/pokedex/*.json
 include src/poke_env/data/static/typechart/*.json
 include src/poke_env/py.typed
+
+include src/poke_env/data/static/items/*.json

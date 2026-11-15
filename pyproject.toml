@@ -57,6 +57,7 @@ dev = [
     "nbsphinx>=0.9.6",
     "pre-commit>=4.1.0",
     "pytest>=8.3.4",
+    "setuptools>=61.0",
     "pytest-asyncio>=0.25.3",
     "pytest-cov>=6.0.0",
     "pytest-timeout>=2.3.1",
