@@ -533,6 +533,8 @@ def test_battle_request_and_interactions(example_request):
 
     battle._player_username = "ray"
     battle._opponent_username = "wolfe"
+    assert battle.rating_before is None
+    assert battle.opponent_rating_before is None
     battle.parse_message(
         [
             "",
@@ -541,6 +543,7 @@ def test_battle_request_and_interactions(example_request):
         ]
     )
     assert battle.rating == 1079
+    assert battle.rating_before == 1049
     battle.parse_message(
         [
             "",
@@ -549,6 +552,7 @@ def test_battle_request_and_interactions(example_request):
         ]
     )
     assert battle.opponent_rating == 1012
+    assert battle.opponent_rating_before == 1025
 
     # Variable length ratings and unbolded ratings
     battle.parse_message(
@@ -559,8 +563,16 @@ def test_battle_request_and_interactions(example_request):
         ]
     )
     assert battle.rating == 1005
+    assert battle.rating_before == 980
     battle.parse_message(["", "raw", "wolfe's rating: 1500"])
     assert battle.opponent_rating == 1500
+    assert battle.opponent_rating_before is None
+
+    battle.parse_message(
+        ["", "raw", "wolfe's rating: 1500 &rarr; 1490 (-10 for losing)"]
+    )
+    assert battle.opponent_rating == 1490
+    assert battle.opponent_rating_before == 1500
 
     battle.in_team_preview = True
     battle.parse_message(["", "start"])
