@@ -90,6 +90,7 @@ class AbstractBattle(ABC):
         "_maybe_trapped",
         "_opponent_dynamax_turn",
         "_opponent_rating",
+        "_opponent_rating_before",
         "_opponent_side_conditions",
         "_opponent_team",
         "_opponent_used_dynamax",
@@ -101,6 +102,7 @@ class AbstractBattle(ABC):
         "_player_username",
         "_players",
         "_rating",
+        "_rating_before",
         "_reconnected",
         "_replay_data",
         "rules",
@@ -163,7 +165,9 @@ class AbstractBattle(ABC):
         self._turn: int = 0
         self._opponent_dynamax_turn: Optional[int] = None
         self._opponent_rating: Optional[int] = None
+        self._opponent_rating_before: Optional[int] = None
         self._rating: Optional[int] = None
+        self._rating_before: Optional[int] = None
         self._won: Optional[bool] = None
 
         # In game battle state attributes
@@ -1154,6 +1158,8 @@ class AbstractBattle(ABC):
                 return
 
             username, rating_info = event[2].split("'s rating: ")
+            before_match = re.match(r"(\d+)\s*&rarr;", rating_info)
+            rating_before = int(before_match.group(1)) if before_match else None
             match = re.search(r"<strong>(\d+)</strong>", rating_info)
             if match:
                 rating_int = int(match.group(1))
@@ -1165,8 +1171,10 @@ class AbstractBattle(ABC):
                     return
             if username == self.player_username:
                 self._rating = rating_int
+                self._rating_before = rating_before
             elif username == self.opponent_username:
                 self._opponent_rating = rating_int
+                self._opponent_rating_before = rating_before
             elif self.logger is not None:
                 self.logger.warning(
                     "Rating information regarding an unrecognized username received. "
@@ -1651,6 +1659,10 @@ class AbstractBattle(ABC):
         return self._rating
 
     @property
+    def rating_before(self) -> Optional[int]:
+        return self._rating_before
+
+    @property
     def opponent_rating(self) -> Optional[int]:
         """
         Opponent's rating after the end of the battle, if it was received.
@@ -1659,6 +1671,10 @@ class AbstractBattle(ABC):
         :rtype: int, optional
         """
         return self._opponent_rating
+
+    @property
+    def opponent_rating_before(self) -> Optional[int]:
+        return self._opponent_rating_before
 
     @property
     def side_conditions(self) -> Dict[SideCondition, int]:

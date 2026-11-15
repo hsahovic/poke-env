@@ -75,8 +75,14 @@ Finally, you can use the ``ladder`` method to play games on the ladder.
     # Play five games on the ladder
     await player.ladder(5)
 
-After playing games on the ladder, you may receive rating information. You can
-access it with the ``Battle.rating`` and ``Battle.opponent_rating`` properties:
+After playing games on the ladder, you may receive rating information.
+``Battle.rating`` and ``Battle.opponent_rating`` contain the updated ratings;
+``Battle.rating_before`` and ``Battle.opponent_rating_before`` contain the
+ratings before the ladder update. These values are ``None`` until the
+corresponding rating message is received; unrated battles may not receive one.
+Rating updates may arrive after the battle-finished callback.
+
+For example:
 
 .. code-block:: python
 
