@@ -748,6 +748,13 @@ def test_illusion_our_moves(example_zoroark_request):
     battle.parse_request(example_zoroark_request, strict_battle_tracking=True)
     assert battle.active_pokemon.species == "zoroarkhisui"
 
+    battle.end_turn(2)
+    battle.parse_request(example_zoroark_request, strict_battle_tracking=True)
+    inconsistent_request = deepcopy(example_zoroark_request)
+    inconsistent_request["side"]["pokemon"][0]["item"] = "choiceband"
+    with pytest.raises(AssertionError, match="choiceband"):
+        battle.parse_request(inconsistent_request, strict_battle_tracking=True)
+
     battle.parse_message(["", "move", "p1a: Deoxys", "Focus Blast", "p2a: Poliwrath"])
     assert battle.active_pokemon.species == "zoroarkhisui"
     assert len(battle._team["p1: Deoxys"].moves) == 4

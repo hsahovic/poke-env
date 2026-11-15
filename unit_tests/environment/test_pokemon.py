@@ -31,6 +31,141 @@ def test_pokemon_moves():
     assert not mon.must_recharge
 
 
+@pytest.fixture
+def pikachu_request():
+    return {
+        "ident": "p1: Pikachu",
+        "details": "Pikachu",
+        "condition": "200/200",
+        "active": True,
+        "baseAbility": "static",
+        "item": "",
+        "moves": ["thunderbolt", "tackle"],
+    }
+
+
+def test_repeated_request_preserves_known_move_pp(pikachu_request):
+    mon = Pokemon(request_pokemon=pikachu_request, gen=7)
+    mon.moved("thunderbolt")
+    thunderbolt = mon.moves["thunderbolt"]
+    remaining_pp = thunderbolt.current_pp
+    pikachu_request["moves"] = ["thunderbolt", "tackle", "struggle"]
+    pikachu_request["condition"] = "120/200 par"
+
+    mon.update_from_request(pikachu_request)
+
+    assert mon.moves["thunderbolt"] is thunderbolt
+    assert thunderbolt.current_pp == remaining_pp
+    assert set(mon.moves) == {"thunderbolt", "tackle"}
+    assert mon.current_hp == 120
+    assert mon.ability == "static"
+
+
+def test_request_preserves_known_and_temporary_abilities(pikachu_request):
+    mon = Pokemon(request_pokemon=pikachu_request, gen=7)
+    pikachu_request.pop("baseAbility")
+    mon.update_from_request(pikachu_request)
+    assert mon.ability == "static"
+
+    pikachu_request["baseAbility"] = "static"
+    pikachu_request["ability"] = "Lightning Rod"
+    mon.update_from_request(pikachu_request)
+    assert mon.ability == "lightningrod"
+
+    mon.temporary_ability = None
+    assert mon.ability == "static"
+
+
+def test_request_preserves_transformed_moves_until_switch(pikachu_request):
+    mon = Pokemon(request_pokemon=pikachu_request, gen=7)
+    target = Pokemon(species="dragonite", gen=7)
+    target.moved("hypervoice")
+    target.moved("earthquake")
+    mon.transform(target)
+    copied = mon.moves["hypervoice"]
+    mon.moved("hypervoice")
+    remaining_pp = copied.current_pp
+    pikachu_request["moves"] = ["hypervoice", "earthquake"]
+
+    mon.update_from_request(pikachu_request)
+    available = mon.available_moves_from_request(
+        {"moves": [{"id": "hypervoice"}, {"id": "earthquake", "disabled": True}]}
+    )
+
+    assert available == [copied]
+    assert copied.current_pp == remaining_pp
+    mon.switch_out({})
+    assert set(mon.moves) == {"thunderbolt", "tackle"}
+
+
+def test_request_preserves_mimic_copy_until_switch(pikachu_request):
+    pikachu_request["moves"] = ["mimic", "tackle"]
+    mon = Pokemon(request_pokemon=pikachu_request, gen=7)
+    copied = Move("surf", gen=7, from_mimic=True)
+    mon._moves.mimic_move = copied
+    mon.moved("surf")
+    remaining_pp = copied.current_pp
+    pikachu_request["moves"] = ["surf", "tackle"]
+
+    mon.update_from_request(pikachu_request)
+    available = mon.available_moves_from_request(
+        {"moves": [{"id": "surf"}, {"id": "tackle", "disabled": True}]}
+    )
+
+    assert available == [copied]
+    assert copied.current_pp == remaining_pp
+    mon.switch_out({})
+    assert set(mon.moves) == {"mimic", "tackle"}
+
+
+def test_request_resolves_typed_hidden_power_and_disabled_moves():
+    mon = Pokemon(species="pikachu", gen=7)
+    hidden_power = Move("hiddenpowerfire", gen=7)
+    mon.base_moves[hidden_power.id] = hidden_power
+    mon._add_move("tackle")
+
+    available = mon.available_moves_from_request(
+        {
+            "moves": [
+                {"id": "hiddenpower"},
+                {"id": "tackle", "disabled": True},
+                {"id": "struggle"},
+            ]
+        }
+    )
+
+    assert available[0] is hidden_power
+    assert [move.id for move in available] == ["hiddenpowerfire", "struggle"]
+
+
+def test_request_resolves_dynamaxed_moves():
+    mon = Pokemon(species="pikachu", gen=8)
+    mon._add_move("thunderbolt")
+    mon._add_move("tackle")
+    mon.start_effect("Dynamax")
+
+    available = mon.available_moves_from_request(
+        {"moves": [{"id": "thunderbolt"}, {"id": "tackle", "disabled": True}]}
+    )
+
+    assert available == [mon.moves["thunderbolt"].dynamaxed]
+
+
+def test_request_rejects_ambiguous_hidden_power_unless_move_can_be_copied():
+    mon = Pokemon(species="pikachu", gen=7)
+    mon.base_moves["hiddenpowerfire"] = Move("hiddenpowerfire", gen=7)
+    mon.base_moves["hiddenpowerice"] = Move("hiddenpowerice", gen=7)
+    request = {"moves": [{"id": "hiddenpower"}]}
+
+    with pytest.raises(AssertionError, match="Error with move hiddenpower"):
+        mon.available_moves_from_request(request)
+
+    mon._add_move("metronome")
+    assert [move.id for move in mon.available_moves_from_request(request)] == [
+        "hiddenpower"
+    ]
+
+
 def test_pokemon_types():
     # single type
     mon = Pokemon(species="pikachu", gen=8)
