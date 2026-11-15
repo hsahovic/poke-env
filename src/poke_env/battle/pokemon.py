@@ -617,6 +617,8 @@ class Pokemon:
 
         if self._status == Status.TOX:
             self._status_counter = 0
+            if self.gen <= 2:
+                self._status = Status.PSN
 
         for move in self.moves.values():
             move._is_last_used = False

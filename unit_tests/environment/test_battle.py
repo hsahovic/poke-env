@@ -1457,3 +1457,48 @@ def test_skill_swap_reveals_both_original_abilities():
     actor.switch_out({})
     assert target.ability == "roughskin"
     assert actor.ability == "levitate"
+
+
+@pytest.mark.parametrize("gen", [1, 2, 7])
+@pytest.mark.parametrize("source", ["[from] Mirror Move", "[from] move: Mirror Move"])
+def test_mirror_move_does_not_learn_called_move(gen, source):
+    battle = Battle("tag", "username", MagicMock(), gen=gen)
+    battle.player_role = "p1"
+    battle.parse_message(["", "switch", "p1a: Pidgeot", "Pidgeot", "100/100"])
+    mon = battle.active_pokemon
+    for move in ("agility", "mirrormove", "doubleedge", "hyperbeam"):
+        mon._add_move(move)
+    battle.parse_message(["", "move", "p1a: Pidgeot", "Mirror Move", "p1a: Pidgeot"])
+    pp = mon.moves["mirrormove"].current_pp
+    battle.parse_message(
+        ["", "move", "p1a: Pidgeot", "Thunder Wave", "p2a: Starmie", source]
+    )
+    assert set(mon.moves) == {"agility", "mirrormove", "doubleedge", "hyperbeam"}
+    assert mon.moves["mirrormove"].current_pp == pp
+
+
+@pytest.mark.parametrize("gen", [1, 2, 3, 9])
+def test_toxic_switch_out_status(gen):
+    battle = Battle("tag", "username", MagicMock(), gen=gen)
+    battle.player_role = "p1"
+    battle.parse_message(["", "switch", "p1a: Mew", "Mew", "100/100"])
+    mon = battle.active_pokemon
+    battle.parse_message(["", "-status", "p1a: Mew", "tox"])
+    mon._status_counter = 3
+    battle.parse_message(["", "switch", "p1a: Snorlax", "Snorlax", "100/100"])
+    assert mon.status == (Status.PSN if gen <= 2 else Status.TOX)
+    assert mon.status_counter == 0
+
+
+@pytest.mark.parametrize("source", ["[from] Sky Attack", "[from] move: Sky Attack"])
+def test_sky_attack_continuation_does_not_spend_pp(source):
+    battle = Battle("tag", "username", MagicMock(), gen=1)
+    battle.player_role = "p1"
+    battle.parse_message(["", "switch", "p1a: Pidgeot", "Pidgeot", "100/100"])
+    battle.parse_message(
+        ["", "move", "p1a: Pidgeot", "Sky Attack", "p2a: Mew", "[still]"]
+    )
+    mon = battle.active_pokemon
+    pp = mon.moves["skyattack"].current_pp
+    battle.parse_message(["", "move", "p1a: Pidgeot", "Sky Attack", "p2a: Mew", source])
+    assert mon.moves["skyattack"].current_pp == pp

@@ -33,6 +33,14 @@ def clean_ps_data_text(data: str, deserialize: bool = True):
     # Remove start and end of the file
     data = "{" + "= {".join(data.split("= {")[1:])[:-2]
 
+    strings = []
+
+    def store_string(match):
+        strings.append(match.group())
+        return f'"__PS_STRING_{len(strings) - 1}__"'
+
+    data = re.sub(r'"(?:[^"\\]|\\.)*"', store_string, data)
+
     # Transform tabs into spaces
     data = data.replace("\t", " ")
 
@@ -82,6 +90,8 @@ def clean_ps_data_text(data: str, deserialize: bool = True):
     data = re.sub(r"H: ", r'"H": ', data)
     data = re.sub(r", moves:", r', "moves":', data)
     data = re.sub(r", nature:", r', "nature":', data)
+
+    data = re.sub(r'"__PS_STRING_(\d+)__"', lambda match: strings[int(match[1])], data)
 
     try:
         if deserialize:
