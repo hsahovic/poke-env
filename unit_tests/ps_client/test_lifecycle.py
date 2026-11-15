@@ -252,3 +252,24 @@ async def test_public_environment_waits_receive_failure(operation):
                 asyncio.wrap_future(env._challenge_task), return_exceptions=True
             )
         env._loop.call_soon_threadsafe(env._loop.stop)
+
+
+@pytest.mark.asyncio
+async def test_connection_setup_failure_reaches_pending_public_call():
+    player = RandomPlayer(start_listening=False)
+    error = OSError("connection refused")
+    pending = asyncio.create_task(player.ladder(1))
+
+    async def connect():
+        while not player.ps_client._operation_errors:
+            await asyncio.sleep(0.001)
+        with patch("poke_env.ps_client.ps_client.ws.connect", side_effect=error):
+            await player.ps_client.listen()
+
+    await asyncio.wait_for(
+        handle_threaded_coroutines(connect(), player.ps_client.loop), 1
+    )
+    with pytest.raises(OSError) as caught:
+        await asyncio.wait_for(pending, 1)
+    assert caught.value is error
+    await player.ps_client.stop_listening()
