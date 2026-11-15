@@ -70,20 +70,23 @@ class _AsyncQueue(Generic[ItemType]):
 
     def race_get(self, *events: asyncio.Event) -> Optional[ItemType]:
         async def _race_get() -> Optional[ItemType]:
-            get_task = asyncio.create_task(self.async_get())
+            get_task = asyncio.create_task(self.queue.get())
             wait_tasks = [asyncio.create_task(e.wait()) for e in events]
             tasks = [get_task, *wait_tasks]
             try:
-                done, _ = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
-                if get_task in done:
-                    return get_task.result()
-                return None
+                await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
             finally:
                 for task in tasks:
                     task.cancel()
                 await asyncio.gather(*tasks, return_exceptions=True)
+            if not get_task.cancelled():
+                return get_task.result()
+            return None
 
-        res = asyncio.run_coroutine_threadsafe(_race_get(), self._loop)
+        operation = _race_get()
+        for client in self._clients:
+            operation = client._wait_for_operation(operation)
+        res = asyncio.run_coroutine_threadsafe(operation, self._loop)
         return res.result()
 
     async def async_put(self, item: ItemType):

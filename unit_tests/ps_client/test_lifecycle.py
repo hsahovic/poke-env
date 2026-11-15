@@ -275,3 +275,25 @@ async def test_connection_setup_failure_reaches_pending_public_call():
         await asyncio.wait_for(pending, 1)
     assert caught.value is error
     await player.ps_client.stop_listening()
+
+
+@pytest.mark.asyncio
+async def test_environment_queue_race_preserves_consumed_item():
+    ps_client = client()
+    queue = _AsyncQueue(ps_client.loop, client=ps_client)
+    queue._clients = (ps_client, client())
+    event = asyncio.Event()
+
+    class Queue(asyncio.Queue):
+        async def get(self):
+            item = await super().get()
+            event.set()
+            return item
+
+    queue.queue = Queue()
+    waiting = asyncio.create_task(asyncio.to_thread(queue.race_get, event))
+    await asyncio.sleep(0.03)
+    queue.queue.put_nowait(7)
+    result = await asyncio.wait_for(waiting, 1)
+    assert result == 7
+    assert not ps_client._operation_errors
