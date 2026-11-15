@@ -17,7 +17,7 @@ The :doc:`reinforcement_learning` example wraps the two-agent ``PokeEnv`` with `
 +---------------------------------------+---------------------------------------------+
 | Single-agent RL                       | Self-play RL                                |
 +=======================================+=============================================+
-| ``SingleAgentWrapper(env, opponent)`` | ``ss.pettingzoo_env_to_vec_env(env)``       |
+| ``SingleAgentWrapper(env, opponent)`` | ``ss.pettingzoo_env_to_vec_env_v1(env)``    |
 +---------------------------------------+---------------------------------------------+
 | Fixed opponent (scripted bot)         | Both sides share the learning policy        |
 +---------------------------------------+---------------------------------------------+
@@ -76,7 +76,7 @@ SuperSuit converts the two-agent PettingZoo ``ParallelEnv`` into an SB3-compatib
 
     num_envs = 2
     env = SelfPlayEnv(battle_format=BATTLE_FORMAT, log_level=40, open_timeout=None)
-    vec_env = ss.pettingzoo_env_to_vec_env(env)
+    vec_env = ss.pettingzoo_env_to_vec_env_v1(env)
     vec_env = ss.concat_vec_envs_v1(
         vec_env,
         num_vec_envs=num_envs,
@@ -84,7 +84,7 @@ SuperSuit converts the two-agent PettingZoo ``ParallelEnv`` into an SB3-compatib
         base_class="stable_baselines3",
     )
 
-``pettingzoo_env_to_vec_env`` turns each agent into a sub-environment in a vectorized env. ``concat_vec_envs_v1`` stacks ``num_envs`` copies and wraps the result in an SB3-compatible ``VecEnv``, giving a total of ``num_envs * 2`` sub-environments (two agents per env).
+``pettingzoo_env_to_vec_env_v1`` turns each agent into a sub-environment in a vectorized env. ``concat_vec_envs_v1`` stacks ``num_envs`` copies and wraps the result in an SB3-compatible ``VecEnv``, giving a total of ``num_envs * 2`` sub-environments (two agents per env).
 
 Because both sub-environments feed into the same PPO policy, every battle generates training data from **both** perspectives — the agent learns from its wins and its losses simultaneously.
 

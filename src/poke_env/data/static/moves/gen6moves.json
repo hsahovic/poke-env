@@ -2292,7 +2292,6 @@
             "metronome": 1
         },
         "name": "Curse",
-        "nonGhostTarget": "self",
         "num": 174,
         "onHit": "onHit",
         "onModifyMove": "onModifyMove",
@@ -5925,9 +5924,9 @@
         "isNonstandard": null,
         "name": "Hidden Power Bug",
         "num": 237,
+        "placeholderFor": "Hidden Power",
         "pp": 15,
         "priority": 0,
-        "realMove": "Hidden Power",
         "target": "normal",
         "type": "Bug"
     },
@@ -5943,9 +5942,9 @@
         "isNonstandard": null,
         "name": "Hidden Power Dark",
         "num": 237,
+        "placeholderFor": "Hidden Power",
         "pp": 15,
         "priority": 0,
-        "realMove": "Hidden Power",
         "target": "normal",
         "type": "Dark"
     },
@@ -5961,9 +5960,9 @@
         "isNonstandard": null,
         "name": "Hidden Power Dragon",
         "num": 237,
+        "placeholderFor": "Hidden Power",
         "pp": 15,
         "priority": 0,
-        "realMove": "Hidden Power",
         "target": "normal",
         "type": "Dragon"
     },
@@ -5979,9 +5978,9 @@
         "isNonstandard": null,
         "name": "Hidden Power Electric",
         "num": 237,
+        "placeholderFor": "Hidden Power",
         "pp": 15,
         "priority": 0,
-        "realMove": "Hidden Power",
         "target": "normal",
         "type": "Electric"
     },
@@ -5997,9 +5996,9 @@
         "isNonstandard": null,
         "name": "Hidden Power Fighting",
         "num": 237,
+        "placeholderFor": "Hidden Power",
         "pp": 15,
         "priority": 0,
-        "realMove": "Hidden Power",
         "target": "normal",
         "type": "Fighting"
     },
@@ -6015,9 +6014,9 @@
         "isNonstandard": null,
         "name": "Hidden Power Fire",
         "num": 237,
+        "placeholderFor": "Hidden Power",
         "pp": 15,
         "priority": 0,
-        "realMove": "Hidden Power",
         "target": "normal",
         "type": "Fire"
     },
@@ -6033,9 +6032,9 @@
         "isNonstandard": null,
         "name": "Hidden Power Flying",
         "num": 237,
+        "placeholderFor": "Hidden Power",
         "pp": 15,
         "priority": 0,
-        "realMove": "Hidden Power",
         "target": "normal",
         "type": "Flying"
     },
@@ -6051,9 +6050,9 @@
         "isNonstandard": null,
         "name": "Hidden Power Ghost",
         "num": 237,
+        "placeholderFor": "Hidden Power",
         "pp": 15,
         "priority": 0,
-        "realMove": "Hidden Power",
         "target": "normal",
         "type": "Ghost"
     },
@@ -6069,9 +6068,9 @@
         "isNonstandard": null,
         "name": "Hidden Power Grass",
         "num": 237,
+        "placeholderFor": "Hidden Power",
         "pp": 15,
         "priority": 0,
-        "realMove": "Hidden Power",
         "target": "normal",
         "type": "Grass"
     },
@@ -6087,9 +6086,9 @@
         "isNonstandard": null,
         "name": "Hidden Power Ground",
         "num": 237,
+        "placeholderFor": "Hidden Power",
         "pp": 15,
         "priority": 0,
-        "realMove": "Hidden Power",
         "target": "normal",
         "type": "Ground"
     },
@@ -6105,9 +6104,9 @@
         "isNonstandard": null,
         "name": "Hidden Power Ice",
         "num": 237,
+        "placeholderFor": "Hidden Power",
         "pp": 15,
         "priority": 0,
-        "realMove": "Hidden Power",
         "target": "normal",
         "type": "Ice"
     },
@@ -6123,9 +6122,9 @@
         "isNonstandard": null,
         "name": "Hidden Power Poison",
         "num": 237,
+        "placeholderFor": "Hidden Power",
         "pp": 15,
         "priority": 0,
-        "realMove": "Hidden Power",
         "target": "normal",
         "type": "Poison"
     },
@@ -6141,9 +6140,9 @@
         "isNonstandard": null,
         "name": "Hidden Power Psychic",
         "num": 237,
+        "placeholderFor": "Hidden Power",
         "pp": 15,
         "priority": 0,
-        "realMove": "Hidden Power",
         "target": "normal",
         "type": "Psychic"
     },
@@ -6159,9 +6158,9 @@
         "isNonstandard": null,
         "name": "Hidden Power Rock",
         "num": 237,
+        "placeholderFor": "Hidden Power",
         "pp": 15,
         "priority": 0,
-        "realMove": "Hidden Power",
         "target": "normal",
         "type": "Rock"
     },
@@ -6177,9 +6176,9 @@
         "isNonstandard": null,
         "name": "Hidden Power Steel",
         "num": 237,
+        "placeholderFor": "Hidden Power",
         "pp": 15,
         "priority": 0,
-        "realMove": "Hidden Power",
         "target": "normal",
         "type": "Steel"
     },
@@ -6195,9 +6194,9 @@
         "isNonstandard": null,
         "name": "Hidden Power Water",
         "num": 237,
+        "placeholderFor": "Hidden Power",
         "pp": 15,
         "priority": 0,
-        "realMove": "Hidden Power",
         "target": "normal",
         "type": "Water"
     },
@@ -7393,6 +7392,9 @@
         "recoil": [
             1,
             2
+        ],
+        "tags": [
+            "Past Unobtainable"
         ],
         "target": "normal",
         "type": "Fairy"
@@ -10082,7 +10084,7 @@
         "category": "Physical",
         "condition": {
             "duration": 1,
-            "onBeforeSwitchOut": "onBeforeSwitchOut"
+            "onFoeBeforeSwitchOut": "onFoeBeforeSwitchOut"
         },
         "contestType": "Clever",
         "flags": {
@@ -11886,6 +11888,7 @@
         "pp": 10,
         "priority": 0,
         "target": "any",
+        "tracksTarget": true,
         "type": "Flying"
     },
     "skyuppercut": {

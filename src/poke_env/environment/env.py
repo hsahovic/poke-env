@@ -165,7 +165,7 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
         account_configuration1: Optional[AccountConfiguration] = None,
         account_configuration2: Optional[AccountConfiguration] = None,
         avatar: Optional[int] = None,
-        battle_format: str = "gen8randombattle",
+        battle_format: str = "gen9randombattle",
         log_level: Optional[int] = None,
         save_replays: Union[bool, str] = False,
         server_configuration: Optional[
@@ -191,7 +191,7 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
         :param avatar: Player avatar id. Optional.
         :type avatar: int, optional
         :param battle_format: Name of the battle format this player plays. Defaults to
-            gen8randombattle.
+            gen9randombattle.
         :type battle_format: Optional, str. Default to randombattles, with specifics
             varying per class.
         :param log_level: The player's logger level.
@@ -324,7 +324,7 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
                             low=0,
                             high=1,
                             shape=(flatdim(self.action_spaces[agent]),),
-                            dtype=np.int64,
+                            dtype=np.int8,
                         ),
                     }
                 )
@@ -447,11 +447,11 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
         observations = {
             self.agents[0]: {
                 "observation": self.embed_battle(battle1),
-                "action_mask": np.array(self.get_action_mask(battle1)),
+                "action_mask": np.array(self.get_action_mask(battle1), dtype=np.int8),
             },
             self.agents[1]: {
                 "observation": self.embed_battle(battle2),
-                "action_mask": np.array(self.get_action_mask(battle2)),
+                "action_mask": np.array(self.get_action_mask(battle2), dtype=np.int8),
             },
         }
         reward = {
@@ -505,11 +505,15 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
         observations = {
             self.agents[0]: {
                 "observation": self.embed_battle(self.battle1),
-                "action_mask": np.array(self.get_action_mask(self.battle1)),
+                "action_mask": np.array(
+                    self.get_action_mask(self.battle1), dtype=np.int8
+                ),
             },
             self.agents[1]: {
                 "observation": self.embed_battle(self.battle2),
-                "action_mask": np.array(self.get_action_mask(self.battle2)),
+                "action_mask": np.array(
+                    self.get_action_mask(self.battle2), dtype=np.int8
+                ),
             },
         }
         return observations, self.get_additional_info()

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, FrozenSet, List, Optional, Union
 
 from poke_env.battle.effect import Effect
 from poke_env.battle.field import Field
@@ -11,6 +11,7 @@ from poke_env.battle.status import Status
 from poke_env.battle.target import Target
 from poke_env.battle.z_crystal import Z_CRYSTAL
 from poke_env.data import GenData, to_id_str
+from poke_env.data.gen_data import load_move_aliases
 from poke_env.stats import compute_raw_stats
 from poke_env.teambuilder.teambuilder_pokemon import TeambuilderPokemon
 
@@ -34,6 +35,7 @@ class Pokemon:
         "_ivs",
         "_last_details",
         "_last_request",
+        "_learnset",
         "_level",
         "_max_hp",
         "_moves",
@@ -79,6 +81,7 @@ class Pokemon:
         self._type_1: PokemonType
         self._type_2: Optional[PokemonType] = None
         self._weightkg: int
+        self._learnset: FrozenSet[str] = frozenset()
 
         # Individual related attributes
         self._ability: Optional[str] = None
@@ -491,14 +494,6 @@ class Pokemon:
             and use
         ):
             self.end_effect("Charge")
-        elif (
-            Effect.FLASH_FIRE in self.effects
-            and isinstance(move, Move)
-            and move.base_power > 0
-            and move.type == PokemonType.FIRE
-            and use
-        ):
-            self.end_effect("Flash Fire")
 
     def prepare(self, move_id: str, target: Optional[Pokemon]):
         ident = Move.retrieve_id(move_id)
@@ -679,6 +674,9 @@ class Pokemon:
         self._heightm = dex_entry["heightm"]
         self._weightkg = dex_entry["weightkg"]
 
+        # Finally the learnset
+        self._learnset = GenData.obtain_learnset(species, self.gen)
+
     def _update_from_details(self, details: str):
         if details == self._last_details:
             return
@@ -793,7 +791,9 @@ class Pokemon:
             self._terastallized_type = PokemonType.from_name(tb.tera_type)
         self._moves = MoveSet({})
         for move_str in tb.moves:
-            move = Move(Move.retrieve_id(move_str), gen=self.gen)
+            move_id = to_id_str(move_str)
+            move_id = load_move_aliases().get(move_id, move_id)
+            move = Move(Move.retrieve_id(move_id), gen=self.gen)
             self._moves[move.id] = move
 
         self._nature = tb.nature
@@ -1193,6 +1193,14 @@ class Pokemon:
         return self._level
 
     @property
+    def learnset(self) -> FrozenSet[str]:
+        """
+        :return: The set of moves this pokemon can learn.
+        :rtype: FrozenSet[str]
+        """
+        return self._learnset
+
+    @property
     def max_hp(self) -> int:
         """
         :return: The pokemon's max hp. For your pokemons, this is the actual value.
@@ -1452,13 +1460,10 @@ class Pokemon:
             and also remove types, and override them too.
         :rtype: Tuple[PokemonType]
         """
-        if len(self._temporary_types) > 0:
-            return self._temporary_types
-        else:
-            types = [self.type_1]
-            if self.type_2 is not None:
-                types.append(self.type_2)
-            return types
+        types = [self.type_1]
+        if self.type_2 is not None:
+            types.append(self.type_2)
+        return types
 
     @property
     def weight(self) -> float:

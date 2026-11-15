@@ -133,7 +133,7 @@ class PseudoBattle(Battle):
 class SimpleHeuristicsPlayer(Player):
     ENTRY_HAZARDS = {
         "spikes": SideCondition.SPIKES,
-        "stealhrock": SideCondition.STEALTH_ROCK,
+        "stealthrock": SideCondition.STEALTH_ROCK,
         "stickyweb": SideCondition.STICKY_WEB,
         "toxicspikes": SideCondition.TOXIC_SPIKES,
     }

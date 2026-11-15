@@ -1,6 +1,10 @@
 name: Run tests
 on:
   workflow_call:
+    inputs:
+      latest-showdown:
+        type: boolean
+        default: false
   push:
     branches:
       - "master"
@@ -22,11 +26,11 @@ jobs:
 
     steps:
       - name: Checkout repository code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       # Setup Python
       - name: Setup Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.version }}
 
@@ -45,9 +49,9 @@ jobs:
         run: uv run coverage xml
 
       - name: Upload coverage report to Codecov
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@v7
         with:
-          file: coverage.xml
+          files: coverage.xml
 
       - name: Build package
         run: uv build
@@ -62,14 +66,25 @@ jobs:
         run: uv run --no-sync pytest -x unit_tests/
 
       - name: Setup node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
-          node-version: 18
+          node-version: 24
 
       - name: Checkout PS
-        uses: actions/checkout@v6
+        if: ${{ !inputs.latest-showdown }}
+        uses: actions/checkout@v7
         with:
           repository: smogon/pokemon-showdown
+          ref: '2ddfa0476f8207e12e204b1c69f7c7683b17633c'
+          path: pokemon-showdown
+          submodules: recursive
+
+      - name: Checkout latest PS
+        if: inputs.latest-showdown
+        uses: actions/checkout@v7
+        with:
+          repository: smogon/pokemon-showdown
+          ref: master
           path: pokemon-showdown
           submodules: recursive
 
@@ -81,14 +96,23 @@ jobs:
           echo "hash=$hash" >> $GITHUB_OUTPUT
 
       - name: Restore server cache
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: pokemon-showdown/node_modules
-          key: showdown-python${{ matrix.version }}-${{ steps.showdown-hash.outputs.hash }}
-          restore-keys: showdown-python${{ matrix.version }}-
+          key: showdown-${{ runner.os }}-node24-${{ steps.showdown-hash.outputs.hash }}
+          restore-keys: showdown-${{ runner.os }}-node24-
 
       - name: Install PS dependencies and start server
+        timeout-minutes: 3
         run: bash scripts/ci_setup_showdown.sh
 
       - name: Run integration tests
         run: uv run --no-sync pytest -x integration_tests/
+
+      - name: Upload Showdown log
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: showdown-python${{ matrix.version }}
+          path: pokemon-showdown/server.log
+          if-no-files-found: ignore

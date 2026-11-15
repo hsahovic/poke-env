@@ -1,8 +1,10 @@
 from unittest.mock import MagicMock
 
+import pytest
+
 from poke_env.battle import DoubleBattle, Move, Pokemon, PokemonGender, PokemonType
 from poke_env.stats import _raw_hp, _raw_stat
-from poke_env.teambuilder import TeambuilderPokemon
+from poke_env.teambuilder import ConstantTeambuilder, TeambuilderPokemon
 from poke_env.teambuilder.teambuilder import Teambuilder
 
 
@@ -196,6 +198,35 @@ def test_check_move_consistency_target_overrides():
                     "pp": tera_starstorm.current_pp,
                     "maxpp": tera_starstorm.max_pp,
                     "target": "allAdjacentFoes",
+                }
+            ]
+        }
+    )
+
+
+def test_check_move_consistency_terastallized_transform_target():
+    # A terastallized Imposter Ditto that switches back in re-triggers Transform,
+    # so it is both terastallized (type locked to its Tera type) and transformed.
+    # Terastallization takes precedence over the copied transform types, so Curse
+    # used by a Tera-Ghost mon targets a foe ("normal"), not itself ("self").
+    ditto = Pokemon(species="ditto", gen=9)
+    ditto._add_move("transform")
+    ditto.terastallize("ghost")
+    target = Pokemon(species="clodsire", gen=9)
+    target._add_move("curse")
+    ditto.transform(target)
+
+    assert ditto.types == [PokemonType.GHOST]
+
+    curse = ditto.moves["curse"]
+    ditto.check_move_consistency(
+        {
+            "moves": [
+                {
+                    "id": "curse",
+                    "pp": curse.current_pp,
+                    "maxpp": curse.max_pp,
+                    "target": "normal",
                 }
             ]
         }
@@ -494,3 +525,155 @@ def test_temporary():
     furret.switch_out({})
     assert furret.ability == "adaptability"
     assert furret.types == [PokemonType.DRAGON]
+
+
+def test_breloom_learnset():
+    # Breeloom only has spore from Shroomish
+
+    for gen in range(3, 8):
+        mon = Pokemon(species="breloom", gen=gen)
+        assert "spore" in mon.learnset
+
+    assert "spore" in Pokemon(species="breloom", gen=8).learnset
+
+
+def test_learnset_includes_transfer_moves():
+    xatu = Pokemon(species="xatu", gen=7)
+    assert "aircutter" in xatu.learnset
+    assert "hiddenpower" not in Pokemon(species="pikachu", gen=9).learnset
+
+
+def test_learnset_is_immutable_and_cached_separately():
+    first = Pokemon(species="pikachu", gen=9)
+    second = Pokemon(species="pikachu", gen=9)
+
+    assert first.learnset is second.learnset
+    with pytest.raises(AttributeError):
+        first.learnset.add("splash")
+
+
+def test_pikachu_learnset():
+
+    pikachu_normal = Pokemon(species="pikachu", gen=6)
+    pikachu_rock = Pokemon(species="pikachurockstar", gen=6)
+    raichu_normal = Pokemon(species="raichu", gen=7)
+    raichu_alola = Pokemon(species="raichualola", gen=7)
+
+    # Thunderbolt is in all learnsets
+    assert "thunderbolt" in pikachu_normal.learnset
+    assert "thunderbolt" in pikachu_rock.learnset
+    assert "thunderbolt" in raichu_normal.learnset
+    assert "thunderbolt" in raichu_alola.learnset
+
+    # Only pikachurockstar has meteormash
+    assert "meteormash" not in pikachu_normal.learnset
+    assert "meteormash" in pikachu_rock.learnset
+    assert "meteormash" not in raichu_normal.learnset
+    assert "meteormash" not in raichu_alola.learnset
+
+    # Only psychic on alolan raichu
+    assert "psychic" not in pikachu_normal.learnset
+    assert "psychic" not in pikachu_rock.learnset
+    assert "psychic" not in raichu_normal.learnset
+    assert "psychic" in raichu_alola.learnset
+
+
+def test_deoxys_learnset():
+    # Deoxys has the same learnset across all forms
+
+    for gen in [3, 4, 5, 6, 7, 9]:  # 8 DEXIT
+
+        deoxys_normal = Pokemon(species="deoxys", gen=gen)
+        deoxys_attack = Pokemon(species="deoxysattack", gen=gen)
+        deoxys_defense = Pokemon(species="deoxysdefense", gen=gen)
+        deoxys_speed = Pokemon(species="deoxysspeed", gen=gen)
+
+        assert (
+            deoxys_normal.learnset
+            == deoxys_attack.learnset
+            == deoxys_defense.learnset
+            == deoxys_speed.learnset
+        )
+
+
+def test_zamazenta_learnset():
+    zamazenta = Pokemon(species="zamazenta", gen=8)
+    zamazenta_crowned = Pokemon(species="zamazentacrowned", gen=8)
+    assert zamazenta.learnset.union({"behemothbash"}) == zamazenta_crowned.learnset
+
+
+def test_indeedee_learnset():
+    indeedee_male = Pokemon(species="indeedee", gen=8)
+    indeedee_female = Pokemon(species="indeedeef", gen=8)
+
+    # Encore only for male
+    assert "encore" in indeedee_male.learnset
+    assert "encore" not in indeedee_female.learnset
+
+    # Screens only for female
+    assert "reflect" not in indeedee_male.learnset
+    assert "reflect" in indeedee_female.learnset
+    assert "lightscreen" not in indeedee_male.learnset
+    assert "lightscreen" in indeedee_female.learnset
+
+
+def test_basculin_learnset():
+    basculin_blue = Pokemon(species="basculinbluestriped", gen=9)
+    basculin_red = Pokemon(species="basculin", gen=9)
+    basculin_white = Pokemon(species="basculinwhitestriped", gen=9)
+    basculegion_male = Pokemon(species="basculegion", gen=9)
+    basculegion_female = Pokemon(species="basculegionf", gen=9)
+
+    assert basculin_blue.learnset == basculin_red.learnset
+    assert "finalgambit" in basculin_blue.learnset
+    assert "finalgambit" not in basculin_white.learnset
+    assert "lastrespects" not in basculin_blue.learnset
+    assert "lastrespects" in basculin_white.learnset
+
+    assert basculegion_male.learnset == basculegion_female.learnset
+    assert basculin_white.learnset.issubset(basculegion_male.learnset)
+
+
+def test_magearna_learnset():
+    """
+    The red magearna only has moves in gen 8, but it will need to appear in gen 7
+    with the normal moves.
+    """
+    magearna = Pokemon(species="magearna", gen=7)
+    magearna_og = Pokemon(species="magearnaoriginal", gen=7)
+    assert magearna.learnset == magearna_og.learnset
+
+
+@pytest.mark.parametrize(
+    ("gen", "packed_moves", "expected"),
+    [
+        (1, "ViceGrip,Tbolt", {"visegrip", "thunderbolt"}),
+        (2, "FaintAttack,Recover", {"feintattack", "recover"}),
+        (
+            6,
+            "FaintAttack,EQ,HPFire,Return102",
+            {"feintattack", "earthquake", "hiddenpower", "return"},
+        ),
+        (7, "ZThunderbolt", {"10000000voltthunderbolt"}),
+        (9, "HiJumpKick,PlayAround", {"highjumpkick", "playrough"}),
+    ],
+)
+def test_teambuilder_move_aliases(gen, packed_moves, expected):
+    builder = ConstantTeambuilder(f"Pikachu||||{packed_moves}|||||||")
+    mon = Pokemon(gen=gen, teambuilder=builder.team[0])
+
+    assert set(mon.moves) == expected
+    for move_id, move in mon.moves.items():
+        assert move.entry == Move(move_id, gen=gen).entry
+
+
+@pytest.mark.parametrize("move", ["NotAMove", "Charizard", "TBlast"])
+def test_teambuilder_rejects_unknown_or_unavailable_moves(move):
+    builder = ConstantTeambuilder(f"Pikachu||||{move}|||||||")
+
+    with pytest.raises(ValueError, match="Unknown move"):
+        Pokemon(gen=1, teambuilder=builder.team[0])
+
+
+def test_move_id_from_battle_messages_keeps_z_move_id():
+    assert Move.retrieve_id("Z-Thunderbolt") == "zthunderbolt"

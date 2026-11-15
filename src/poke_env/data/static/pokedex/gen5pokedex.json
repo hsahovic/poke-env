@@ -196,7 +196,7 @@
     },
     "absolmegaz": {
         "abilities": {
-            "0": "Magic Bounce"
+            "0": "Sharpness"
         },
         "baseSpecies": "Absol",
         "baseStats": {
@@ -2667,6 +2667,7 @@
         "heightm": 25,
         "name": "Blastoise-Gmax",
         "num": 9,
+        "placeholderFor": "Blastoise",
         "types": [
             "Water"
         ],
@@ -3375,6 +3376,7 @@
         "heightm": 17,
         "name": "Butterfree-Gmax",
         "num": 12,
+        "placeholderFor": "Butterfree",
         "types": [
             "Bug",
             "Flying"
@@ -4101,6 +4103,7 @@
         "heightm": 28,
         "name": "Charizard-Gmax",
         "num": 6,
+        "placeholderFor": "Charizard",
         "types": [
             "Fire",
             "Flying"
@@ -7433,7 +7436,7 @@
     },
     "eelektrossmega": {
         "abilities": {
-            "0": "Levitate"
+            "0": "Eelevate"
         },
         "baseSpecies": "Eelektross",
         "baseStats": {
@@ -7535,6 +7538,7 @@
         "heightm": 18,
         "name": "Eevee-Gmax",
         "num": 133,
+        "placeholderFor": "Eevee",
         "types": [
             "Normal"
         ],
@@ -9298,6 +9302,7 @@
         "heightm": 21,
         "name": "Garbodor-Gmax",
         "num": 569,
+        "placeholderFor": "Garbodor",
         "types": [
             "Poison"
         ],
@@ -9372,7 +9377,7 @@
     },
     "garchompmegaz": {
         "abilities": {
-            "0": "Sand Force"
+            "0": "Levitate"
         },
         "baseSpecies": "Garchomp",
         "baseStats": {
@@ -9754,6 +9759,7 @@
         "heightm": 20,
         "name": "Gengar-Gmax",
         "num": 94,
+        "placeholderFor": "Gengar",
         "types": [
             "Ghost",
             "Poison"
@@ -12826,6 +12832,7 @@
         "heightm": 19,
         "name": "Kingler-Gmax",
         "num": 99,
+        "placeholderFor": "Kingler",
         "types": [
             "Water"
         ],
@@ -13562,6 +13569,7 @@
         "heightm": 24,
         "name": "Lapras-Gmax",
         "num": 131,
+        "placeholderFor": "Lapras",
         "types": [
             "Water",
             "Ice"
@@ -14435,7 +14443,7 @@
     },
     "lucariomegaz": {
         "abilities": {
-            "0": "Adaptability"
+            "0": "Aura Guard"
         },
         "baseSpecies": "Lucario",
         "baseStats": {
@@ -14731,6 +14739,7 @@
         "heightm": 25,
         "name": "Machamp-Gmax",
         "num": 68,
+        "placeholderFor": "Machamp",
         "types": [
             "Fighting"
         ],
@@ -16034,6 +16043,7 @@
         "heightm": 33,
         "name": "Meowth-Gmax",
         "num": 52,
+        "placeholderFor": "Meowth",
         "types": [
             "Normal"
         ],
@@ -17809,24 +17819,28 @@
     "obliteryx": {
         "abilities": {
             "0": "Opportunist",
-            "1": "Analytic"
+            "1": "Early Bird",
+            "H": "Sniper"
         },
         "baseStats": {
             "atk": 128,
             "def": 126,
             "hp": 102,
             "spa": 45,
-            "spd": 90,
+            "spd": 78,
             "spe": 64
         },
         "color": "Black",
         "eggGroups": [
-            "Flying"
+            "Flying",
+            "Monster"
         ],
+        "evoLevel": 48,
         "gen": 9,
         "heightm": 1.6,
         "name": "Obliteryx",
         "num": -80,
+        "prevo": "Scraptor",
         "types": [
             "Dark",
             "Flying"
@@ -18637,6 +18651,9 @@
         "heightm": 0.3,
         "name": "Pichu-Spiky-eared",
         "num": 172,
+        "tags": [
+            "True Past"
+        ],
         "types": [
             "Electric"
         ],
@@ -18945,6 +18962,9 @@
         "heightm": 0.4,
         "name": "Pikachu-Belle",
         "num": 25,
+        "tags": [
+            "True Past"
+        ],
         "types": [
             "Electric"
         ],
@@ -18973,6 +18993,9 @@
         "heightm": 0.4,
         "name": "Pikachu-Cosplay",
         "num": 25,
+        "tags": [
+            "True Past"
+        ],
         "types": [
             "Electric"
         ],
@@ -19002,6 +19025,7 @@
         "heightm": 21,
         "name": "Pikachu-Gmax",
         "num": 25,
+        "placeholderFor": "Pikachu",
         "types": [
             "Electric"
         ],
@@ -19087,6 +19111,9 @@
         "heightm": 0.4,
         "name": "Pikachu-Libre",
         "num": 25,
+        "tags": [
+            "True Past"
+        ],
         "types": [
             "Electric"
         ],
@@ -19172,6 +19199,9 @@
         "heightm": 0.4,
         "name": "Pikachu-PhD",
         "num": 25,
+        "tags": [
+            "True Past"
+        ],
         "types": [
             "Electric"
         ],
@@ -19201,6 +19231,9 @@
         "heightm": 0.4,
         "name": "Pikachu-Pop-Star",
         "num": 25,
+        "tags": [
+            "True Past"
+        ],
         "types": [
             "Electric"
         ],
@@ -19230,6 +19263,9 @@
         "heightm": 0.4,
         "name": "Pikachu-Rock-Star",
         "num": 25,
+        "tags": [
+            "True Past"
+        ],
         "types": [
             "Electric"
         ],
@@ -19612,6 +19648,11 @@
         "heightm": 1.5,
         "name": "Pokestar Black Belt",
         "num": -5014,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Fighting"
         ],
@@ -19641,6 +19682,11 @@
         "heightm": 1.5,
         "name": "Pokestar Black Door",
         "num": -5012,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Grass"
         ],
@@ -19670,6 +19716,11 @@
         "heightm": 1.5,
         "name": "Pokestar Brycen-Man",
         "num": -5002,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Dark",
             "Psychic"
@@ -19699,6 +19750,11 @@
         "heightm": 1.5,
         "name": "Pokestar F-00",
         "num": -5009,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Steel",
             "Normal"
@@ -19728,6 +19784,11 @@
         "heightm": 1.5,
         "name": "Pokestar F-002",
         "num": -5010,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Steel",
             "Normal"
@@ -19760,6 +19821,11 @@
         "heightm": 1.5,
         "name": "Pokestar Giant",
         "num": -5006,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Normal"
         ],
@@ -19788,6 +19854,11 @@
         "heightm": 1.5,
         "name": "Pokestar Humanoid",
         "num": -5007,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Normal"
         ],
@@ -19816,6 +19887,11 @@
         "heightm": 1.5,
         "name": "Pokestar Monster",
         "num": -5008,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Dark"
         ],
@@ -19845,6 +19921,11 @@
         "heightm": 1.5,
         "name": "Pokestar MT",
         "num": -5003,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Steel"
         ],
@@ -19874,6 +19955,11 @@
         "heightm": 1.5,
         "name": "Pokestar MT2",
         "num": -5004,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Steel",
             "Electric"
@@ -19902,6 +19988,11 @@
         "heightm": 1.5,
         "name": "Pokestar Smeargle",
         "num": -5000,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Normal"
         ],
@@ -19930,6 +20021,11 @@
         "heightm": 1.5,
         "name": "Pokestar Spirit",
         "num": -5011,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Dark",
             "Ghost"
@@ -19960,6 +20056,11 @@
         "heightm": 1.5,
         "name": "Pokestar Transport",
         "num": -5005,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Steel"
         ],
@@ -19993,6 +20094,11 @@
             "Pokestar UFO-2",
             "Pokestar UFO-PropU2"
         ],
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Flying",
             "Electric"
@@ -20022,6 +20128,11 @@
         "heightm": 1.5,
         "name": "Pokestar UFO-2",
         "num": -5001,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Psychic",
             "Electric"
@@ -20051,6 +20162,11 @@
         "heightm": 1.5,
         "name": "Pokestar UFO-PropU2",
         "num": -5001,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Psychic",
             "Electric"
@@ -20081,6 +20197,11 @@
         "heightm": 1.5,
         "name": "Pokestar White Door",
         "num": -5013,
+        "tags": [
+            "Pokestar",
+            "True Past",
+            "Past Unobtainable"
+        ],
         "types": [
             "Fire"
         ],
@@ -20912,7 +21033,7 @@
     },
     "raichumegax": {
         "abilities": {
-            "0": "Surge Surfer"
+            "0": "Electric Surge"
         },
         "baseSpecies": "Raichu",
         "baseStats": {
@@ -20941,7 +21062,7 @@
     },
     "raichumegay": {
         "abilities": {
-            "0": "Surge Surfer"
+            "0": "No Guard"
         },
         "baseSpecies": "Raichu",
         "baseStats": {
@@ -22861,9 +22982,7 @@
     },
     "scolipedemega": {
         "abilities": {
-            "0": "Poison Point",
-            "1": "Swarm",
-            "H": "Speed Boost"
+            "0": "Shell Armor"
         },
         "baseSpecies": "Scolipede",
         "baseStats": {
@@ -22929,9 +23048,7 @@
     },
     "scraftymega": {
         "abilities": {
-            "0": "Shed Skin",
-            "1": "Moxie",
-            "H": "Intimidate"
+            "0": "Intimidate"
         },
         "baseSpecies": "Scrafty",
         "baseStats": {
@@ -22989,6 +23106,38 @@
             "Fighting"
         ],
         "weightkg": 11.8
+    },
+    "scraptor": {
+        "abilities": {
+            "0": "Opportunist",
+            "1": "Early Bird",
+            "H": "Pickup"
+        },
+        "baseStats": {
+            "atk": 78,
+            "def": 51,
+            "hp": 52,
+            "spa": 35,
+            "spd": 43,
+            "spe": 84
+        },
+        "color": "Black",
+        "eggGroups": [
+            "Flying",
+            "Monster"
+        ],
+        "evos": [
+            "Obliteryx"
+        ],
+        "gen": 9,
+        "heightm": 0.3,
+        "name": "Scraptor",
+        "num": -79,
+        "types": [
+            "Dark",
+            "Flying"
+        ],
+        "weightkg": 7
     },
     "scratchet": {
         "abilities": {
@@ -24921,6 +25070,7 @@
         "heightm": 35,
         "name": "Snorlax-Gmax",
         "num": 143,
+        "placeholderFor": "Snorlax",
         "types": [
             "Normal"
         ],
@@ -25412,8 +25562,7 @@
     },
     "staraptormega": {
         "abilities": {
-            "0": "Intimidate",
-            "H": "Reckless"
+            "0": "Contrary"
         },
         "baseSpecies": "Staraptor",
         "baseStats": {
@@ -28212,6 +28361,7 @@
         "heightm": 24,
         "name": "Venusaur-Gmax",
         "num": 3,
+        "placeholderFor": "Venusaur",
         "types": [
             "Grass",
             "Poison"

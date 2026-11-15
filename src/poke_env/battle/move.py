@@ -494,7 +494,7 @@ class Move:
         :return: True for curse.
         :rtype: bool
         """
-        return "nonGhostTarget" in self.entry
+        return self.id == "curse"
 
     @property
     def priority(self) -> int:

@@ -138,6 +138,8 @@ def test_reset_step_close():
     np.testing.assert_array_equal(
         obs[env.agents[1]]["observation"], np.array([0, 1, 2])
     )
+    for agent in env.agents:
+        assert obs[agent]["action_mask"].dtype == np.int8
     assert add_info == {env.agents[0]: {}, env.agents[1]: {}}
 
     # --- Part 2: Test step() ---
@@ -164,6 +166,8 @@ def test_reset_step_close():
     np.testing.assert_array_equal(
         obs_step[env.agents[1]]["observation"], np.array([0, 1, 2])
     )
+    for agent in env.agents:
+        assert obs_step[agent]["action_mask"].dtype == np.int8
     # Check that rewards match CustomEnv.calc_reward.
     assert rew[env.agents[0]] == 69.42
     assert rew[env.agents[1]] == 69.42
