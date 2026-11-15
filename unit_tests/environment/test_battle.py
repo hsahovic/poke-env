@@ -7,6 +7,7 @@ import pytest
 
 from poke_env.battle import (
     Battle,
+    DoubleBattle,
     Effect,
     Field,
     PokemonType,
@@ -996,6 +997,46 @@ def test_activate_events_handle_leppa_and_trick_item_swaps():
         ["", "-item", "p1: Gengar", "Mystic Water", "[from] move: Trick"]
     )
     assert battle.active_pokemon.item == "choiceband"
+
+
+@pytest.mark.parametrize("battle_class", [Battle, DoubleBattle])
+@pytest.mark.parametrize("player_role", ["p1", "p2"])
+@pytest.mark.parametrize("receiver_role", ["p1", "p2"])
+@pytest.mark.parametrize(
+    "cause, ability",
+    [
+        ("move: Bestow", None),
+        ("move: Thief", None),
+        ("move: Covet", None),
+        ("ability: Pickpocket", "pickpocket"),
+        ("ability: Magician", "magician"),
+    ],
+)
+def test_item_transfer(battle_class, player_role, receiver_role, cause, ability):
+    battle = battle_class("tag", "username", MagicMock(), gen=9)
+    battle.player_role = player_role
+    giver_role = "p2" if receiver_role == "p1" else "p1"
+    receiver_id = f"{receiver_role}a: Snorlax"
+    giver_id = f"{giver_role}a: Ambipom"
+    receiver = battle.get_pokemon(receiver_id)
+    giver = battle.get_pokemon(giver_id)
+    receiver.item = None
+    giver.item = "leftovers"
+    receiver_ability = receiver.ability
+    giver_ability = giver.ability
+
+    battle.parse_message(
+        ["", "-item", receiver_id, "Leftovers", f"[from] {cause}", f"[of] {giver_id}"]
+    )
+
+    assert receiver.item == "leftovers"
+    assert giver.item is None
+    assert receiver.ability == (ability or receiver_ability)
+    assert giver.ability == giver_ability
+    own_mon = receiver if player_role == receiver_role else giver
+    opponent_mon = giver if player_role == receiver_role else receiver
+    assert own_mon in battle.team.values()
+    assert opponent_mon in battle.opponent_team.values()
 
 
 def test_transform_from_imposter_tracks_transform_and_ability():
