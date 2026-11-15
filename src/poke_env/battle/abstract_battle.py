@@ -557,7 +557,7 @@ class AbstractBattle(ABC):
         return True
 
     def parse_message(self, split_message: List[str]):
-        self._replay_data.append(split_message)
+        self._replay_data.append(split_message[:])
 
         event_type = split_message[1]
         event = split_message

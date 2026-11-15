@@ -1067,6 +1067,36 @@ def test_transform_from_imposter_tracks_transform_and_ability():
     assert mon.transformed
 
 
+@pytest.mark.parametrize("result", ["win", "tie"])
+def test_replay_preserves_messages_when_input_list_is_reused(tmp_path, result):
+    battle = Battle("tag", "username", MagicMock(), gen=9)
+    message = ["", "tier", "[Gen 9] Random Battle"]
+    battle.parse_message(message)
+    message[:] = ["", "rule", "Sleep Clause"]
+    battle.parse_message(message)
+    message[:] = ["", "win", "intruder"]
+
+    if result == "win":
+        battle.won_by("username")
+        terminal_event = "|win|username"
+    else:
+        battle.tied()
+        terminal_event = "|tie"
+
+    replay_path = tmp_path / "battle_replay.html"
+    battle.save_replay(replay_path)
+    replay_log_lines = _extract_replay_log_lines(
+        replay_path.read_text(encoding="utf-8")
+    )
+
+    assert replay_log_lines == [
+        ">tag",
+        "|tier|[Gen 9] Random Battle",
+        "|rule|Sleep Clause",
+        terminal_event,
+    ]
+
+
 def test_save_replay_includes_terminal_win_event(tmp_path):
     battle = Battle("tag", "username", MagicMock(), gen=9)
     battle.parse_message(["", "tier", "[Gen 9] Random Battle"])
