@@ -82,6 +82,14 @@ Useful entry points:
 - [Algorithmic Pokémon Teambuilding](https://sahovic.fr/algorithmic-pokemon-teambuilding.html)
   explores team optimization using simulated battles and statistical models.
 - [Metamon](https://github.com/UT-Austin-RPL/metamon/tree/main) is a collection of models, datasets and utilities related to Pokémon RL
+- [PokéChamp](https://github.com/sethkarten/pokechamp) combines large language
+  models with minimax search for competitive Pokémon battles.
+- [PokéLLMon](https://github.com/git-disl/PokeLLMon) is a large language model
+  agent for Pokémon battles using knowledge retrieval and in-context learning.
+- [VGC-Bench](https://github.com/cameronangliss/vgc-bench) is a benchmark for
+  Pokémon VGC with reinforcement learning, behavior cloning, LLM, and heuristic agents.
+- [Laplace](https://github.com/influxtion/Laplace-Pokemon-Showdown-AI) is a
+  Generation 9 Random Battle bot using Monte Carlo tree search and a trained value network.
 
 ## Development version
 
