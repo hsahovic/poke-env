@@ -804,3 +804,18 @@ def test_expanding_force():
     assert calculate_damage(
         attacker_ident, defender_ident, Move("expandingforce", gen=9), battle
     ) == (63, 75)
+
+
+def test_damage_against_transformed_pokemon_with_added_type():
+    attacker = Pokemon(9, species="furret", name="attacker")
+    defender = Pokemon(9, species="ditto", name="defender")
+    target = Pokemon(9, species="charizard")
+    target.start_effect("typeadd", "Ghost")
+    defender.transform(target)
+    battle = create_battle(p1a=attacker, p2a=defender, doubles=False)
+    assert calculate_damage(
+        attacker.identifier("p1"),
+        defender.identifier("p2"),
+        Move("doubleedge", gen=9),
+        battle,
+    ) == (0, 0)
