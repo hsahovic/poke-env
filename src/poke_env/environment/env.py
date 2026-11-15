@@ -54,12 +54,13 @@ class _AsyncQueue(Generic[ItemType]):
     ):
         self.queue = create_in_poke_loop(asyncio.Queue, loop, maxsize)
         self._loop = loop
-        self._client = client
+        self._clients: tuple[PSClient, ...] = (client,) if client is not None else ()
 
     async def async_get(self) -> ItemType:
-        if self._client is not None:
-            return await self._client._wait_for_operation(self.queue.get())
-        return await self.queue.get()
+        operation = self.queue.get()
+        for client in self._clients:
+            operation = client._wait_for_operation(operation)
+        return await operation
 
     def get(self, timeout: Optional[float] = None) -> ItemType:
         res = asyncio.run_coroutine_threadsafe(
@@ -325,6 +326,9 @@ class PokeEnv(ParallelEnv[str, Dict[str, Any], ActionType]):
         Thread(target=self._loop.run_forever, daemon=True).start()
         self.agent1 = self._create_agent(account_configuration1)
         self.agent2 = self._create_agent(account_configuration2)
+        clients = (self.agent1.ps_client, self.agent2.ps_client)
+        self.agent1.battle_queue._clients = clients
+        self.agent2.battle_queue._clients = clients
 
         self.agents: List[str] = []
         self.possible_agents = [self.agent1.username, self.agent2.username]

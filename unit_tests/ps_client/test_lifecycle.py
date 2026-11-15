@@ -223,7 +223,8 @@ class Environment(SinglesEnv):
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("operation", ["reset", "step"])
-async def test_public_environment_waits_receive_failure(operation):
+@pytest.mark.parametrize("failing_agent", ["agent1", "agent2"])
+async def test_public_environment_waits_receive_failure(operation, failing_agent):
     env = Environment(start_listening=False)
     error = ValueError("battle parser failed")
     if operation == "step":
@@ -233,9 +234,10 @@ async def test_public_environment_waits_receive_failure(operation):
     waiting = asyncio.create_task(asyncio.to_thread(call))
 
     async def fail_when_waiting():
-        while not env.agent1.ps_client._operation_errors:
+        ps_client = getattr(env, failing_agent).ps_client
+        while len(ps_client._operation_errors) < (2 if operation == "reset" else 1):
             await asyncio.sleep(0.001)
-        env.agent1.ps_client._close_operations(error)
+        ps_client._close_operations(error)
 
     try:
         await asyncio.wait_for(
