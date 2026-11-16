@@ -237,6 +237,8 @@ class Effect(Enum):
     WRAP = auto()
     YAWN = auto()
     ZERO_TO_HERO = auto()
+    LIGHT_SCREEN = auto()
+    HAZE = auto()
 
     def __str__(self) -> str:
         return f"{self.name} (effect) object"
@@ -259,6 +261,8 @@ class Effect(Enum):
 
         if message == "FALLENUNDEFINED":
             message = "FALLEN"
+        elif message == "PARTIALLYTRAPPED":
+            message = "PARTIALLY_TRAPPED"
 
         try:
             return Effect[message]
@@ -476,6 +480,8 @@ _FROM_ITEM_EFFECTS: Set[Effect] = {
 }
 
 _FROM_MOVE_EFFECTS: Set[Effect] = {
+    Effect.LIGHT_SCREEN,
+    Effect.HAZE,
     Effect.AFTER_YOU,
     Effect.AQUA_RING,
     Effect.AROMATHERAPY,
@@ -617,6 +623,7 @@ _FROM_MOVE_EFFECTS: Set[Effect] = {
 }
 
 _VOLATILE_STATUS_EFFECTS: Set[Effect] = {
+    Effect.LIGHT_SCREEN,
     Effect.FORESIGHT,
     Effect.DISABLE,
     Effect.SMACK_DOWN,
@@ -750,6 +757,7 @@ _ENDS_ON_SWITCH_EFFECTS = {
 }
 
 _ENDS_ON_TURN_EFFECTS = {
+    Effect.HAZE,
     Effect.AFTER_YOU,
     Effect.BANEFUL_BUNKER,
     Effect.BEAK_BLAST,
@@ -778,9 +786,11 @@ _ENDS_ON_TURN_EFFECTS = {
     Effect.FOCUS_PUNCH,
 }
 
-_ACTION_COUNTER_EFFECTS: Set[Effect] = {Effect.RAGE, Effect.STOCKPILE}
+_ACTION_COUNTER_EFFECTS: Set[Effect] = {Effect.CONFUSION, Effect.RAGE, Effect.STOCKPILE}
 
 _FROM_DATA: Dict[str, Effect] = {
+    "LIGHTSCREEN": Effect.LIGHT_SCREEN,
+    "HAZE": Effect.HAZE,
     "UNKNOWN": Effect.UNKNOWN,
     "AFTERYOU": Effect.AFTER_YOU,
     "AFTERMATH": Effect.AFTERMATH,

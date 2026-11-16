@@ -41,6 +41,7 @@ class SingleBattleOrder(BattleOrder):
     dynamax: bool = False
     terastallize: bool = False
     move_target: int = 0
+    move_slot: int = 0
 
     @property
     def message(self) -> str:
@@ -48,7 +49,7 @@ class SingleBattleOrder(BattleOrder):
             if self.order.id == "recharge":
                 return "/choose move 1"
 
-            message = f"/choose move {self.order.id}"
+            message = f"/choose move {self.move_slot or self.order.id}"
             if self.mega:
                 message += " mega"
             elif self.z_move:

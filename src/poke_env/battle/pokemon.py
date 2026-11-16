@@ -64,6 +64,7 @@ class Pokemon:
         "_type_1",
         "_type_2",
         "_weightkg",
+        "sleep_source",
     )
 
     def __init__(
@@ -140,6 +141,7 @@ class Pokemon:
         }
         self._status: Optional[Status] = None
         self._status_counter: int = 0
+        self.sleep_source: str | None = None
         self._temporary_ability: Optional[str] = None
         self._forme_change_ability: Optional[str] = None
         self._temporary_base_stats: Optional[Dict[str, int]] = None
@@ -357,11 +359,18 @@ class Pokemon:
             self._status_counter = 0
         elif status is None and not self.fainted:
             self._status = None
+        if self._status != Status.SLP:
+            self.sleep_source = None
 
     def damage(self, hp_status: str):
         self.set_hp_status(hp_status)
 
     def end_effect(self, effect_str: str):
+        if self.gen == 1 and effect_str == "Toxic counter":
+            if self._status == Status.TOX:
+                self._status = Status.PSN
+                self._status_counter = 0
+            return
         effect = Effect.from_showdown_message(effect_str)
         if effect in self._effects:
             self._effects.pop(effect)
@@ -420,6 +429,8 @@ class Pokemon:
     def faint(self):
         self._current_hp = 0
         self._status = Status.FNT
+        self.sleep_source = None
+        self._must_recharge = False
         self.temporary_ability = None
         self._temporary_base_stats = None
         self._moves._transform_moves = None
@@ -528,19 +539,19 @@ class Pokemon:
             # ability swaps), and faint() clears state that those triggers
             # need to read. The |faint| event will finalize the faint.
             self._current_hp = 0
-            self._status = Status.FNT
+            self.status = Status.FNT
             return
 
         if " " in hp_status:
             hp, status = hp_status.split(" ")
-            self._status = Status[status.upper()]
+            self.status = Status[status.upper()]
 
             # Handle silent effect ending
             if self._status == Status.SLP and Effect.YAWN in self.effects:
                 self.end_effect("yawn")
         else:
             hp = hp_status
-            self._status = None
+            self.status = None
 
         if hp[0].isdigit() and hp[-1].isdigit():
             current_hp, max_hp = hp.split("/")
@@ -1353,6 +1364,8 @@ class Pokemon:
     @status.setter
     def status(self, status: Optional[Union[Status, str]]):
         self._status = Status[status.upper()] if isinstance(status, str) else status
+        if self._status != Status.SLP:
+            self.sleep_source = None
 
     @property
     def status_counter(self) -> int:

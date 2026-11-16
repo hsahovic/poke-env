@@ -34,6 +34,7 @@ def test_effect_build():
     assert Effect["UNKNOWN"] == Effect.from_showdown_message("i don't know")
 
     assert Effect["HEAL_BLOCK"] == Effect.from_data("healblock")
+    assert Effect.PARTIALLY_TRAPPED == Effect.from_showdown_message("partiallytrapped")
 
     assert Effect["FEINT"].breaks_protect
     assert not Effect["HEAL_BLOCK"].breaks_protect
@@ -68,9 +69,15 @@ def test_effect_build():
         if move.volatile_status:
             volatile_statuses.add(move.volatile_status)
 
-    assert volatile_statuses == set(
-        filter(lambda x: x.is_volatile_status, list(Effect))
-    )
+    classified = {effect for effect in Effect if effect.is_volatile_status}
+    assert volatile_statuses <= classified
+
+    for name in GenData.from_gen(1).moves:
+        move = Move(name, gen=1)
+        if move.volatile_status:
+            volatile_statuses.add(move.volatile_status)
+
+    assert classified <= volatile_statuses
 
     # These Effects aren't directly from moves, items or abilities
     no_effects = [

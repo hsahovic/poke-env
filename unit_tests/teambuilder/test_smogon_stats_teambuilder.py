@@ -77,6 +77,39 @@ def test_greedy_builder_completes_observed_set_and_team(smogon_stats):
     assert team[0].tera_type == "steel"
 
 
+def test_no_held_item_from_stats_is_exported_as_an_empty_slot():
+    stats = SmogonStats.from_json(
+        orjson.dumps(
+            {
+                "info": {"metagame": "gen1ou", "cutoff": 0, "number of battles": 100},
+                "data": {
+                    species: {
+                        "Raw count": 100,
+                        "usage": 1,
+                        "Abilities": {"noability": 100},
+                        "Items": {"nothing": 100},
+                        "Spreads": {"Hardy:252/252/252/252/252/252": 100},
+                        "Moves": {"tackle": 100},
+                        "Teammates": {},
+                        "Checks and Counters": {},
+                    }
+                    for species in [
+                        "Tauros",
+                        "Chansey",
+                        "Snorlax",
+                        "Exeggutor",
+                        "Starmie",
+                        "Alakazam",
+                    ]
+                },
+            }
+        ),
+        month="2026-09",
+    )
+    team = SmogonStatsTeambuilder(stats).yield_team()
+    assert all(pokemon.split("|")[2] == "" for pokemon in team.split("]"))
+
+
 def test_species_selection_downweights_correlated_teammate_evidence():
     def pokemon(usage, teammates):
         return {

@@ -7,7 +7,7 @@ from gymnasium.utils.env_checker import check_env
 from pettingzoo.test.parallel_test import parallel_api_test
 
 from poke_env.environment import SingleAgentWrapper, SinglesEnv
-from poke_env.player import RandomPlayer
+from poke_env.player import PlayerOptions, RandomPlayer
 
 
 class SinglesTestEnv(SinglesEnv):
@@ -111,4 +111,21 @@ def test_single_agent_env_api():
         )
         env = SingleAgentWrapper(env, RandomPlayer())
         check_env(env, skip_render_check=True, skip_close_check=True)
+        env.close()
+
+
+@pytest.mark.timeout(60)
+@pytest.mark.parametrize("gen", [1, 6, 9])
+@pytest.mark.parametrize("shared_options", [False, True])
+def test_masked_singles_battles(gen, shared_options):
+    battle_format = f"gen{gen}randombattle"
+    if shared_options:
+        env = SinglesTestEnv(
+            player_options=PlayerOptions(battle_format=battle_format, log_level=25)
+        )
+    else:
+        env = SinglesTestEnv(battle_format=battle_format, log_level=25)
+    try:
+        play_function(env, 3)
+    finally:
         env.close()
